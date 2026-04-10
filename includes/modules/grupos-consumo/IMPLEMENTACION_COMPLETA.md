@@ -36,7 +36,7 @@ Fecha de finalización: 27 de enero de 2026
 **Líneas**: 398
 
 **Contenido**:
-- ✅ Clase singleton con namespace `flavor-chat-ia/v1`
+- ✅ Clase singleton con namespace `flavor-platform/v1`
 - ✅ 6 endpoints REST completos:
   - `GET /pedidos` - Listar pedidos
   - `GET /pedidos/{id}` - Detalles de pedido
@@ -382,7 +382,7 @@ Claude tiene acceso a información estructurada sobre:
 ## 📱 API REST para Móviles
 
 ### Namespace
-`flavor-chat-ia/v1`
+`flavor-platform/v1`
 
 ### Endpoints Implementados
 

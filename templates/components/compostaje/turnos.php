@@ -2,7 +2,7 @@
 /**
  * Template: Calendario de turnos de mantenimiento de composteras
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  *
  * Variables esperadas en $args:

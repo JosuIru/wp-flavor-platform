@@ -4,7 +4,7 @@
  *
  * Reorganiza el menú gigante "Gestión" en múltiples menús por categoría
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  */
 

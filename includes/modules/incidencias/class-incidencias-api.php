@@ -2,7 +2,7 @@
 /**
  * API REST para Incidencias (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Incidencias_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,35 +28,35 @@ class Flavor_Incidencias_API {
 
     public function register_routes() {
         // GET /incidencias/dashboard
-        register_rest_route(self::NAMESPACE, '/incidencias/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /incidencias
-        register_rest_route(self::NAMESPACE, '/incidencias', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_incidencias'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /incidencias/mis-incidencias
-        register_rest_route(self::NAMESPACE, '/incidencias/mis-incidencias', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/mis-incidencias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_incidencias'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /incidencias/{id}
-        register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_incidencia'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /incidencias
-        register_rest_route(self::NAMESPACE, '/incidencias', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_incidencia'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -94,14 +94,14 @@ class Flavor_Incidencias_API {
         ]);
 
         // POST /incidencias/{id}/votar
-        register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)/votar', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)/votar', [
             'methods' => 'POST',
             'callback' => [$this, 'votar_incidencia'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /incidencias/{id}/comentario
-        register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)/comentario', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/(?P<id>\d+)/comentario', [
             'methods' => 'POST',
             'callback' => [$this, 'agregar_comentario'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -115,14 +115,14 @@ class Flavor_Incidencias_API {
         ]);
 
         // GET /incidencias/categorias
-        register_rest_route(self::NAMESPACE, '/incidencias/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /incidencias/mapa
-        register_rest_route(self::NAMESPACE, '/incidencias/mapa', [
+        flavor_register_rest_route(self::NAMESPACE, '/incidencias/mapa', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mapa'],
             'permission_callback' => [$this, 'check_authentication'],

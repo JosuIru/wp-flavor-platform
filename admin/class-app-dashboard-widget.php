@@ -4,7 +4,7 @@
  *
  * Muestra métricas clave de las aplicaciones móviles en el dashboard principal.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.4.0
  */
 
@@ -73,16 +73,16 @@ class Flavor_App_Dashboard_Widget {
 
         wp_enqueue_style(
             'flavor-app-widget',
-            FLAVOR_CHAT_IA_URL . 'admin/css/app-dashboard-widget.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/app-dashboard-widget.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-app-widget',
-            FLAVOR_CHAT_IA_URL . 'admin/js/app-dashboard-widget.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/app-dashboard-widget.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

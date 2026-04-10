@@ -4,7 +4,7 @@
  *
  * Panel para configurar las pasarelas de pago disponibles.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Views
  * @since 4.1.0
  */

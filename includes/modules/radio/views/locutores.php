@@ -5,7 +5,7 @@
  * Dashboard mejorado con estadísticas, filtros avanzados, paginación
  * y visualización de datos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Radio
  */
 

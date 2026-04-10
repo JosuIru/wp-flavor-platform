@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Viajes - Carpooling
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Carpooling
  */
 

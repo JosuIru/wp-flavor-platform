@@ -8,7 +8,7 @@
  * - $item: array normalizado del item
  *   - id, tipo, tipo_info, origen, autor, contenido, multimedia, contexto, interacciones, fecha, fecha_humana, url
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -42,13 +42,13 @@ $item_classes = [
 
     <!-- Cabecera -->
     <header class="mi-red-card__header">
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('mi-red', $autor['id'], 'perfil')); ?>" class="mi-red-card__avatar">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('mi-red', $autor['id'], 'perfil')); ?>" class="mi-red-card__avatar">
             <img src="<?php echo esc_url($autor['avatar']); ?>" alt="<?php echo esc_attr($autor['nombre']); ?>" loading="lazy">
         </a>
 
         <div class="mi-red-card__meta">
             <div class="mi-red-card__author-line">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('mi-red', $autor['id'], 'perfil')); ?>" class="mi-red-card__author-name">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('mi-red', $autor['id'], 'perfil')); ?>" class="mi-red-card__author-name">
                     <?php echo esc_html($autor['nombre']); ?>
                 </a>
                 <span class="mi-red-card__badge" style="--badge-color: <?php echo esc_attr($tipo_info['color'] ?? '#6b7280'); ?>">

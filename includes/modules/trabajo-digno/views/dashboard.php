@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para bolsa de empleo ético.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

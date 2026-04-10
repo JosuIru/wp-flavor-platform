@@ -5,7 +5,7 @@
  * Gestión centralizada de templates, design tokens y widgets globales
  * para redes WordPress multisite.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.3.0
  */

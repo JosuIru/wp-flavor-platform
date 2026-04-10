@@ -2,7 +2,7 @@
 /**
  * Módulo de Ayuda Vecinal para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Ayuda Vecinal - Red de ayuda mutua entre vecinos
  */
-class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Ayuda_Vecinal_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -86,8 +86,8 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/ayuda-vecinal/assets/';
-        $version = FLAVOR_CHAT_IA_VERSION;
+        $assets_url = FLAVOR_PLATFORM_URL . 'includes/modules/ayuda-vecinal/assets/';
+        $version = FLAVOR_PLATFORM_VERSION;
 
         // CSS del admin
         wp_enqueue_style(
@@ -98,10 +98,10 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         );
 
         // Estilos comunes del plugin si existen
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/admin-common.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/css/admin-common.css')) {
             wp_enqueue_style(
                 'flavor-admin-common',
-                FLAVOR_CHAT_IA_URL . 'admin/css/admin-common.css',
+                FLAVOR_PLATFORM_URL . 'admin/css/admin-common.css',
                 [],
                 $version
             );
@@ -115,7 +115,7 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes);
     }
 
     /**
@@ -232,7 +232,7 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             $this->create_tables();
         }
     }
@@ -750,7 +750,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return 0;
         }
 
@@ -771,7 +771,7 @@ KNOWLEDGE;
         $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return $estadisticas;
         }
 
@@ -788,7 +788,7 @@ KNOWLEDGE;
         ];
 
         // Total de voluntarios activos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_ofertas)) {
             $total_voluntarios = (int) $wpdb->get_var(
                 "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE estado = 'activa'"
             );
@@ -829,19 +829,19 @@ KNOWLEDGE;
         }
 
         // Estadísticas generales
-        $solicitudes_abiertas = Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)
+        $solicitudes_abiertas = Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)
             ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'abierta'")
             : 0;
 
-        $solicitudes_completadas = Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)
+        $solicitudes_completadas = Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)
             ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'completada'")
             : 0;
 
-        $total_voluntarios = Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)
+        $total_voluntarios = Flavor_Platform_Helpers::tabla_existe($tabla_ofertas)
             ? (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE estado = 'activa'")
             : 0;
 
-        $solicitudes_urgentes = Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)
+        $solicitudes_urgentes = Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)
             ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'abierta' AND urgencia IN ('alta', 'urgente')")
             : 0;
 
@@ -878,7 +878,7 @@ KNOWLEDGE;
             echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. El detalle puede revisarse, pero la gestión operativa de solicitudes sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -998,7 +998,7 @@ KNOWLEDGE;
             echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles de usuario y la gestión avanzada de voluntarios siguen reservados a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_ofertas)) {
             echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -1458,7 +1458,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return new \WP_Error(
                 'rest_table_not_found',
                 __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1571,7 +1571,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return new \WP_Error(
                 'rest_table_not_found',
                 __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2962,8 +2962,8 @@ KNOWLEDGE;
      * Encola los assets CSS y JS para el frontend
      */
     private function enqueue_frontend_assets() {
-        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/ayuda-vecinal/assets/';
-        $version = FLAVOR_CHAT_IA_VERSION;
+        $assets_url = FLAVOR_PLATFORM_URL . 'includes/modules/ayuda-vecinal/assets/';
+        $version = FLAVOR_PLATFORM_VERSION;
 
         // CSS frontend
         wp_enqueue_style(
@@ -4240,4 +4240,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Ayuda_Vecinal_Module', false)) {
+    class_alias('Flavor_Platform_Ayuda_Vecinal_Module', 'Flavor_Chat_Ayuda_Vecinal_Module');
 }

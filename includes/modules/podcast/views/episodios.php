@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Episodios del módulo Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

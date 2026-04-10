@@ -9,7 +9,7 @@
  * - Diffie-Hellman Ratchet: Renueva claves DH periódicamente
  * - Symmetric-key Ratchet: Deriva nuevas claves por mensaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Crypto
  */
 

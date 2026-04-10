@@ -5,7 +5,7 @@
  * Gestiona la bolsa de empleo ético, ofertas de trabajo con condiciones dignas,
  * cooperativismo y formación laboral.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -823,7 +823,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_ofertas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -874,7 +874,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_candidaturas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -931,7 +931,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_ofertas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_ofertas();
         }
 
@@ -942,7 +942,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_ofertas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $demos = $this->get_demo_ofertas();
             foreach ($demos as $o) {
                 if ($o['id'] == $oferta_id) return $o;

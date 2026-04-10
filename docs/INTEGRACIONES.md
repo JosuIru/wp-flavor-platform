@@ -49,7 +49,7 @@ class Mi_Modulo extends Flavor_Chat_Module_Base {
     protected function get_integration_content_type() {
         return [
             'id'         => 'mi_contenido',
-            'label'      => __('Mi Contenido', 'flavor-chat-ia'),
+            'label'      => __('Mi Contenido', 'flavor-platform'),
             'icon'       => 'dashicons-admin-post',
             'post_type'  => 'mi_post_type', // O 'table' => 'mi_tabla'
             'capability' => 'edit_posts',

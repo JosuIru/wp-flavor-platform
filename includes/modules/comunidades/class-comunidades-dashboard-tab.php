@@ -4,7 +4,7 @@
  *
  * Muestra las comunidades del usuario, su actividad reciente y notificaciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Comunidades
  */
 
@@ -27,7 +27,7 @@ class Flavor_Comunidades_Dashboard_Tab {
     /**
      * Referencia al módulo de comunidades
      *
-     * @var Flavor_Chat_Comunidades_Module|null
+     * @var Flavor_Platform_Module_Interface|null
      */
     private $module = null;
 
@@ -55,7 +55,7 @@ class Flavor_Comunidades_Dashboard_Tab {
     /**
      * Establece la referencia al módulo
      *
-     * @param Flavor_Chat_Comunidades_Module $module Instancia del módulo
+     * @param Flavor_Platform_Module_Interface $module Instancia del módulo
      */
     public function set_module($module) {
         $this->module = $module;
@@ -117,7 +117,7 @@ class Flavor_Comunidades_Dashboard_Tab {
 
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             return null;
         }
 
@@ -145,7 +145,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         $tabla_notificaciones = $wpdb->prefix . 'flavor_notificaciones';
 
         // Si existe la tabla de notificaciones centralizada
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_notificaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_notificaciones)) {
             $tipos_comunidad = ['nueva_publicacion', 'nuevo_evento', 'nuevo_miembro', 'recurso_compartido', 'mencion', 'crosspost'];
             $tipos_placeholder = implode("','", array_map('esc_sql', $tipos_comunidad));
 
@@ -173,7 +173,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             echo '<div class="flavor-dashboard-empty">';
             echo '<span class="dashicons dashicons-warning"></span>';
             echo '<p>' . __('El módulo de comunidades no está configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
@@ -195,7 +195,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         <div class="flavor-dashboard-comunidades">
             <div class="flavor-dashboard-section-header">
                 <h3><?php _e('Mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', '')); ?>" class="flavor-btn-secondary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('comunidades', '')); ?>" class="flavor-btn-secondary flavor-btn-sm">
                     <span class="dashicons dashicons-search"></span>
                     <?php _e('Explorar más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -205,7 +205,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 <div class="flavor-dashboard-empty">
                     <span class="dashicons dashicons-groups"></span>
                     <p><?php _e('Aún no perteneces a ninguna comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', '')); ?>" class="flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('comunidades', '')); ?>" class="flavor-btn-primary">
                         <?php _e('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -230,7 +230,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                             <div class="flavor-comunidad-content">
                                 <div class="flavor-comunidad-header">
                                     <h4 class="flavor-comunidad-nombre">
-                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $comunidad->id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle'))); ?>">
+                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $comunidad->id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle'))); ?>">
                                             <?php echo esc_html($comunidad->nombre); ?>
                                         </a>
                                     </h4>
@@ -267,7 +267,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         );
                                         ?>
                                     </span>
-                                    <a href="<?php echo esc_url(add_query_arg('comunidad_id', $comunidad->id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle'))); ?>" class="flavor-btn-link">
+                                    <a href="<?php echo esc_url(add_query_arg('comunidad_id', $comunidad->id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle'))); ?>" class="flavor-btn-link">
                                         <?php _e('Ver comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                                     </a>
@@ -365,7 +365,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             echo '<div class="flavor-dashboard-empty">';
             echo '<span class="dashicons dashicons-warning"></span>';
             echo '<p>' . __('El módulo de comunidades no está configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
@@ -434,7 +434,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         <?php echo esc_html(wp_trim_words($actividad->contenido, 25, '...')); ?>
                                     </p>
                                     <div class="flavor-actividad-meta">
-                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $actividad->comunidad_id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle'))); ?>" class="flavor-actividad-comunidad">
+                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $actividad->comunidad_id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle'))); ?>" class="flavor-actividad-comunidad">
                                             <span class="dashicons dashicons-groups"></span>
                                             <?php echo esc_html($actividad->comunidad_nombre); ?>
                                         </a>
@@ -480,7 +480,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         <span class="flavor-feed-accion">
                                             <?php echo esc_html($this->obtener_texto_accion($entrada->tipo)); ?>
                                         </span>
-                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $entrada->comunidad_id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle'))); ?>">
+                                        <a href="<?php echo esc_url(add_query_arg('comunidad_id', $entrada->comunidad_id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle'))); ?>">
                                             <?php echo esc_html($entrada->comunidad_nombre); ?>
                                         </a>
                                     </div>
@@ -552,7 +552,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         // Obtener notificaciones de comunidades
         $notificaciones = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_notificaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_notificaciones)) {
             $tipos_comunidad = ['nueva_publicacion', 'nuevo_evento', 'nuevo_miembro', 'recurso_compartido', 'mencion', 'crosspost', 'comunidad_relacionada', 'evento_red'];
             $tipos_placeholder = implode("','", array_map('esc_sql', $tipos_comunidad));
 
@@ -752,7 +752,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
         $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             return null;
         }
 
@@ -762,7 +762,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         ));
 
         $publicaciones_total = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             $publicaciones_total = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_actividad WHERE user_id = %d",
                 $usuario_id
@@ -794,7 +794,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -826,7 +826,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 ),
                 'mensaje'    => !empty($actividad->titulo) ? $actividad->titulo : wp_trim_words($actividad->contenido, 10, '...'),
                 'created_at' => $actividad->fecha,
-                'link'       => add_query_arg('comunidad_id', $actividad->comunidad_id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle')),
+                'link'       => add_query_arg('comunidad_id', $actividad->comunidad_id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle')),
                 'leida'      => false,
             ];
         }
@@ -974,7 +974,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 global $wpdb;
                 $tabla_notificaciones = $wpdb->prefix . 'flavor_notificaciones';
 
-                if (Flavor_Chat_Helpers::tabla_existe($tabla_notificaciones)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla_notificaciones)) {
                     $tipos_comunidad = ['nueva_publicacion', 'nuevo_evento', 'nuevo_miembro', 'recurso_compartido', 'mencion', 'crosspost'];
                     $tipos_placeholder = implode("','", array_map('esc_sql', $tipos_comunidad));
 

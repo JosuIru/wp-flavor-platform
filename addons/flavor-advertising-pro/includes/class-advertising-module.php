@@ -2,14 +2,14 @@
 /**
  * Módulo de Publicidad Ética
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Advertising_Module extends Flavor_Platform_Module_Base {
 
     public function __construct() {
         $this->id = 'advertising';
@@ -221,4 +221,9 @@ KNOWLEDGE;
         return $options;
     }
 
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Advertising_Module', false)) {
+    class_alias('Flavor_Platform_Advertising_Module', 'Flavor_Chat_Advertising_Module');
 }

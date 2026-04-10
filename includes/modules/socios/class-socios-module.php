@@ -2,7 +2,7 @@
 /**
  * Módulo de Gestión de Socios para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Gestión de Socios - Control de socios/miembros de la cooperativa
  */
-class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Socios_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -51,7 +51,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_socios);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_socios);
     }
 
     /**
@@ -132,14 +132,14 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $this->registrar_en_panel_unificado();
 
         // Cargar sistema de cuotas periodicas
-        $ruta_archivo_subscriptions = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
+        $ruta_archivo_subscriptions = FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
         if (file_exists($ruta_archivo_subscriptions)) {
             require_once $ruta_archivo_subscriptions;
             Flavor_Socios_Subscriptions::get_instance();
         }
 
         // Cargar gestor de pagos
-        $ruta_archivo_payments = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
+        $ruta_archivo_payments = FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
         if (file_exists($ruta_archivo_payments)) {
             require_once $ruta_archivo_payments;
             Flavor_Socios_Payment_Manager::get_instance();
@@ -228,7 +228,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             }
 
             // Obtener gateways de pago
-            $ruta_archivo_payments = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
+            $ruta_archivo_payments = FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
             if (file_exists($ruta_archivo_payments)) {
                 require_once $ruta_archivo_payments;
                 $payment_manager = Flavor_Socios_Payment_Manager::get_instance();
@@ -400,14 +400,14 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             'flavor-socios',
             $directorio_plugin . 'modules/socios/assets/css/socios.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-socios',
             $directorio_plugin . 'modules/socios/assets/js/socios.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -580,7 +580,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
             return 0;
         }
 
@@ -600,7 +600,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
         $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             return $estadisticas;
         }
 
@@ -617,7 +617,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Cuotas pendientes
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
             $cuotas_pendientes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'pendiente'"
             );
@@ -2308,4 +2308,8 @@ KNOWLEDGE;
             Flavor_Socios_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Socios_Module', false)) {
+    class_alias('Flavor_Platform_Socios_Module', 'Flavor_Chat_Socios_Module');
 }

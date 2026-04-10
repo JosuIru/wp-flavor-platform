@@ -42,7 +42,7 @@ curl -X GET "http://basaberenueva.local/wp-json/app-discovery/v1/info" | jq
       "name": "Flavor Chat IA",
       "active": true,
       "version": "1.5.0",
-      "api_namespace": "flavor-chat-ia/v1",
+      "api_namespace": "flavor-platform/v1",
       "profile": "personalizado",
       "modules": ["grupos_consumo"],
       "features": ["chat", "pedidos_colectivos", "productores", "repartos"],
@@ -51,8 +51,8 @@ curl -X GET "http://basaberenueva.local/wp-json/app-discovery/v1/info" | jq
         "modules": "/wp-json/app-discovery/v1/modules",
         "theme": "/wp-json/app-discovery/v1/theme",
         "grupos_consumo": {
-          "pedidos": "/wp-json/flavor-chat-ia/v1/pedidos",
-          "mis_pedidos": "/wp-json/flavor-chat-ia/v1/mis-pedidos"
+          "pedidos": "/wp-json/flavor-platform/v1/pedidos",
+          "mis_pedidos": "/wp-json/flavor-platform/v1/mis-pedidos"
         }
       }
     }
@@ -96,7 +96,7 @@ curl -X GET "http://basaberenueva.local/wp-json/app-discovery/v1/modules" | jq
       "name": "Grupos de Consumo",
       "description": "Sistema de pedidos colectivos y grupos de consumo",
       "system": "flavor-chat-ia",
-      "api_namespace": "flavor-chat-ia/v1",
+      "api_namespace": "flavor-platform/v1",
       "icon": "shopping_basket",
       "color": "#46b450",
       "show_in_navigation": true,

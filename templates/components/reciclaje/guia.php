@@ -3,7 +3,7 @@
  * Template: Guía Visual de Reciclaje
  * Guía visual de reciclaje (qué va en cada contenedor con iconos y colores)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

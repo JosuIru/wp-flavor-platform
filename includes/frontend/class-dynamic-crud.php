@@ -5,7 +5,7 @@
  * Genera automáticamente formularios y listados para cualquier módulo,
  * permitiendo a los usuarios crear, ver, editar y eliminar sus registros.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  */
 
@@ -1594,7 +1594,7 @@ class Flavor_Dynamic_CRUD {
         wp_add_inline_style('flavor-crud', $this->get_crud_styles());
 
         // JS inline
-        wp_register_script('flavor-crud', false, ['jquery'], FLAVOR_CHAT_IA_VERSION, true);
+        wp_register_script('flavor-crud', false, ['jquery'], FLAVOR_PLATFORM_VERSION, true);
         wp_enqueue_script('flavor-crud');
         wp_add_inline_script('flavor-crud', $this->get_crud_scripts());
 

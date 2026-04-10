@@ -2,7 +2,7 @@
 /**
  * Tests para el trait de notificaciones de módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';

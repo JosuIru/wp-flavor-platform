@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para control horario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

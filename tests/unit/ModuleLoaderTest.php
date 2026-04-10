@@ -2,7 +2,7 @@
 /**
  * Tests para el Module Loader
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';

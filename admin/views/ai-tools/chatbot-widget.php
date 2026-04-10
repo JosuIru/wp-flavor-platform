@@ -5,7 +5,7 @@
  * Widget de chat contextual que aparece en todas las páginas Flavor.
  * Proporciona ayuda específica según el módulo actual.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

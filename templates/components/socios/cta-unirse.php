@@ -5,7 +5,7 @@
  * Seccion de llamada a la accion con testimonio de socio,
  * garantia de cancelacion y boton principal.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

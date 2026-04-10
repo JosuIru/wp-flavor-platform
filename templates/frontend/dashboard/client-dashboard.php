@@ -22,7 +22,7 @@
  *   $atributos          - Atributos del shortcode
  *   $dashboard_instance - Instancia de Flavor_Client_Dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.1.0
  */
 
@@ -34,7 +34,7 @@ $tema_usuario = $preferencias['tema'] ?? 'auto';
 $clase_tema = $tema_usuario === 'dark' ? 'flavor-dark fl-dark' : ($tema_usuario === 'light' ? 'flavor-light fl-light' : '');
 
 // Obtener URL actual para breadcrumbs
-$url_actual = home_url($_SERVER['REQUEST_URI'] ?? Flavor_Chat_Helpers::get_action_url('', ''));
+$url_actual = home_url($_SERVER['REQUEST_URI'] ?? Flavor_Platform_Helpers::get_action_url('', ''));
 $nombre_pagina = get_the_title() ?: __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN);
 ?>
 

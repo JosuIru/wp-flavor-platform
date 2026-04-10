@@ -5,7 +5,7 @@
  * Nota: Los conductores se derivan de usuarios que han publicado viajes,
  * ya que no existe tabla separada de conductores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Carpooling
  */
 

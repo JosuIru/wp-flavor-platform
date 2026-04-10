@@ -5,7 +5,7 @@
  * Card específica para mostrar productos del marketplace
  * con precio, vendedor y condición.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array $item  Datos del producto (o usar $card_item si viene de items-grid)

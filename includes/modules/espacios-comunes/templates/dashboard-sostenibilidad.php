@@ -2,7 +2,7 @@
 /**
  * Template: Dashboard de Sostenibilidad de Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EspaciosComunes
  * @since 4.2.0
  *

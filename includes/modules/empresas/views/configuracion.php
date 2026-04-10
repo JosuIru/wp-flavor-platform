@@ -2,7 +2,7 @@
 /**
  * Configuración del Módulo Empresas - Admin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

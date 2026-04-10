@@ -4,7 +4,7 @@
  *
  * Panel principal del usuario para ver y gestionar sus tramites
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -30,7 +30,7 @@ $usuario_id = get_current_user_id();
 $usuario = wp_get_current_user();
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_expedientes)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -101,7 +101,7 @@ $estados_colores = [
     'cancelado' => '#6b7280',
 ];
 
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="mis-tramites-wrapper">

@@ -4,7 +4,7 @@
  *
  * Endpoints para configurar títulos, descripciones, Open Graph, Schema.org.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */

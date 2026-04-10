@@ -4,7 +4,7 @@
  *
  * Crea y gestiona las tablas necesarias para el sistema de red.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

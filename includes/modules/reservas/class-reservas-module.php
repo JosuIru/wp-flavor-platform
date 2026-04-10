@@ -2,7 +2,7 @@
 /**
  * Modulo de Reservas Generico para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Reservas - Gestion generica de reservas para distintos tipos de negocio
  */
-class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -41,8 +41,8 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $nombre_tabla_reservas = $wpdb->prefix . 'flavor_reservas';
         $nombre_tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
-        return Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas)
-            && Flavor_Chat_Helpers::tabla_existe($nombre_tabla_recursos);
+        return Flavor_Platform_Helpers::tabla_existe($nombre_tabla_reservas)
+            && Flavor_Platform_Helpers::tabla_existe($nombre_tabla_recursos);
     }
 
     /**
@@ -142,6 +142,9 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_reservas_cancelar', [$this, 'ajax_cancelar_reserva']);
         add_action('wp_ajax_reservas_disponibilidad', [$this, 'ajax_consultar_disponibilidad']);
         add_action('wp_ajax_nopriv_reservas_disponibilidad', [$this, 'ajax_consultar_disponibilidad']);
+
+        // Handler para actualizar reserva desde admin
+        add_action('admin_post_flavor_actualizar_reserva', [$this, 'handle_actualizar_reserva']);
     }
 
     /**
@@ -1784,7 +1787,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_reservas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
         $hoy = date('Y-m-d');
@@ -1804,7 +1807,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_reservas';
         $stats = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $stats;
         }
 
@@ -2204,8 +2207,8 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $nombre_tabla_reservas = $wpdb->prefix . 'flavor_reservas';
         $nombre_tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas)
-            || !Flavor_Chat_Helpers::tabla_existe($nombre_tabla_recursos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($nombre_tabla_reservas)
+            || !Flavor_Platform_Helpers::tabla_existe($nombre_tabla_recursos)) {
             $this->create_tables();
         }
     }
@@ -2214,7 +2217,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas necesarias
      */
     private function create_tables() {
-        $ruta_instalador = FLAVOR_CHAT_IA_PATH . 'includes/modules/reservas/install.php';
+        $ruta_instalador = FLAVOR_PLATFORM_PATH . 'includes/modules/reservas/install.php';
 
         if (file_exists($ruta_instalador)) {
             require_once $ruta_instalador;
@@ -2943,6 +2946,16 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             'reservas-config',
             [$this, 'render_pagina_config']
         );
+
+        // Editar reserva - página oculta
+        add_submenu_page(
+            null,
+            __('Editar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Editar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            $capability,
+            'reservas-editar',
+            [$this, 'render_pagina_editar']
+        );
     }
 
     /**
@@ -3018,6 +3031,177 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             echo '<div class="wrap"><h1>' . esc_html__('Configuración de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
             echo '<p>' . esc_html__('Página de configuración en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
+    }
+
+    /**
+     * Renderizar página de edición de reserva
+     */
+    public function render_pagina_editar() {
+        global $wpdb;
+
+        $reserva_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
+        if (!$reserva_id) {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Editar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('ID de reserva no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=reservas-listado')) . '" class="button">' . esc_html__('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
+            echo '</div>';
+            return;
+        }
+
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $reserva = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_reservas WHERE id = %d", $reserva_id));
+
+        if (!$reserva) {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Editar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Reserva no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=reservas-listado')) . '" class="button">' . esc_html__('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
+            echo '</div>';
+            return;
+        }
+
+        $views_path = dirname(__FILE__) . '/views/editar.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            // Renderizar formulario básico de edición inline
+            $this->render_formulario_edicion_inline($reserva);
+        }
+    }
+
+    /**
+     * Renderizar formulario de edición inline (fallback)
+     *
+     * @param object $reserva Datos de la reserva
+     */
+    private function render_formulario_edicion_inline($reserva) {
+        $settings = $this->get_settings();
+        $estados = $settings['estados_reserva'] ?? [
+            'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada'  => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ];
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html__('Editar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> #<?php echo esc_html($reserva->id); ?></h1>
+
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <?php wp_nonce_field('editar_reserva_' . $reserva->id, 'reserva_nonce'); ?>
+                <input type="hidden" name="action" value="flavor_actualizar_reserva">
+                <input type="hidden" name="reserva_id" value="<?php echo esc_attr($reserva->id); ?>">
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><label for="nombre_cliente"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="text" id="nombre_cliente" name="nombre_cliente" value="<?php echo esc_attr($reserva->nombre_cliente); ?>" class="regular-text" required></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="email_cliente"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="email" id="email_cliente" name="email_cliente" value="<?php echo esc_attr($reserva->email_cliente); ?>" class="regular-text" required></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="telefono_cliente"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="tel" id="telefono_cliente" name="telefono_cliente" value="<?php echo esc_attr($reserva->telefono_cliente ?? ''); ?>" class="regular-text"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="fecha_reserva"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="date" id="fecha_reserva" name="fecha_reserva" value="<?php echo esc_attr($reserva->fecha_reserva); ?>" required></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="hora_inicio"><?php esc_html_e('Hora inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="time" id="hora_inicio" name="hora_inicio" value="<?php echo esc_attr($reserva->hora_inicio); ?>" required></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="hora_fin"><?php esc_html_e('Hora fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="time" id="hora_fin" name="hora_fin" value="<?php echo esc_attr($reserva->hora_fin ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="num_personas"><?php esc_html_e('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><input type="number" id="num_personas" name="num_personas" value="<?php echo esc_attr($reserva->num_personas ?? 1); ?>" min="1" class="small-text"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td>
+                            <select id="estado" name="estado">
+                                <?php foreach ($estados as $valor_estado => $etiqueta_estado): ?>
+                                    <option value="<?php echo esc_attr($valor_estado); ?>" <?php selected($reserva->estado, $valor_estado); ?>>
+                                        <?php echo esc_html($etiqueta_estado); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="notas"><?php esc_html_e('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
+                        <td><textarea id="notas" name="notas" rows="4" class="large-text"><?php echo esc_textarea($reserva->notas ?? ''); ?></textarea></td>
+                    </tr>
+                </table>
+
+                <p class="submit">
+                    <input type="submit" name="submit" class="button button-primary" value="<?php esc_attr_e('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-listado')); ?>" class="button"><?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Procesar actualización de reserva desde formulario admin
+     */
+    public function handle_actualizar_reserva() {
+        global $wpdb;
+
+        // Verificar permisos
+        if (!current_user_can('manage_options')) {
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $reserva_id = isset($_POST['reserva_id']) ? absint($_POST['reserva_id']) : 0;
+
+        // Verificar nonce
+        if (!wp_verify_nonce($_POST['reserva_nonce'] ?? '', 'editar_reserva_' . $reserva_id)) {
+            wp_die(__('Error de seguridad. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        if (!$reserva_id) {
+            wp_redirect(admin_url('admin.php?page=reservas-listado&error=id_invalido'));
+            exit;
+        }
+
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+
+        // Sanitizar datos
+        $datos_actualizacion = [
+            'nombre_cliente'   => sanitize_text_field($_POST['nombre_cliente'] ?? ''),
+            'email_cliente'    => sanitize_email($_POST['email_cliente'] ?? ''),
+            'telefono_cliente' => sanitize_text_field($_POST['telefono_cliente'] ?? ''),
+            'fecha_reserva'    => sanitize_text_field($_POST['fecha_reserva'] ?? ''),
+            'hora_inicio'      => sanitize_text_field($_POST['hora_inicio'] ?? ''),
+            'hora_fin'         => sanitize_text_field($_POST['hora_fin'] ?? ''),
+            'num_personas'     => absint($_POST['num_personas'] ?? 1),
+            'estado'           => sanitize_text_field($_POST['estado'] ?? 'pendiente'),
+            'notas'            => sanitize_textarea_field($_POST['notas'] ?? ''),
+            'updated_at'       => current_time('mysql'),
+        ];
+
+        $resultado = $wpdb->update(
+            $tabla_reservas,
+            $datos_actualizacion,
+            ['id' => $reserva_id],
+            ['%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s'],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_redirect(admin_url('admin.php?page=reservas-editar&id=' . $reserva_id . '&error=db'));
+        } else {
+            wp_redirect(admin_url('admin.php?page=reservas-listado&updated=1'));
+        }
+        exit;
     }
 
     // =========================================================================
@@ -4171,4 +4355,8 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Reservas_Module', false)) {
+    class_alias('Flavor_Platform_Reservas_Module', 'Flavor_Chat_Reservas_Module');
 }

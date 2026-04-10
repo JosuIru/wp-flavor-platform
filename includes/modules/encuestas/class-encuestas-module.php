@@ -5,7 +5,7 @@
  * Sistema central de encuestas que puede integrarse en múltiples contextos:
  * red social, chat-grupos, foros, comunidades, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Encuestas y Formularios
  */
-class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Encuestas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -106,7 +106,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_encuestas = $wpdb->prefix . 'flavor_encuestas';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_encuestas);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_encuestas);
     }
 
     /**
@@ -2041,7 +2041,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_encuestas = $wpdb->prefix . 'flavor_encuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             return 0;
         }
 
@@ -2061,7 +2061,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         $tabla_encuestas = $prefix . 'encuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             return [];
         }
 
@@ -2105,7 +2105,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_encuestas = $wpdb->prefix . 'flavor_encuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             echo '<p>' . __('Módulo no inicializado.', 'flavor-platform') . '</p>';
             return;
         }
@@ -2140,7 +2140,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $tabla_encuestas = $prefix . 'encuestas';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             $this->render_page_header(__('Dashboard de Encuestas', 'flavor-platform'));
             echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas. Por favor, desactiva y reactiva el módulo.', 'flavor-platform') . '</p></div>';
             return;
@@ -3496,4 +3496,9 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Encuestas_Module', false)) {
+    class_alias('Flavor_Platform_Encuestas_Module', 'Flavor_Chat_Encuestas_Module');
 }

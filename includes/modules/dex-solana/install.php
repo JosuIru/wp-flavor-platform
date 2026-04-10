@@ -2,7 +2,7 @@
 /**
  * Instalacion de tablas para DEX Solana
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

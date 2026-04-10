@@ -2,14 +2,17 @@
 /**
  * Template: Formación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$sectores = Flavor_Chat_Trabajo_Digno_Module::SECTORES;
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$sectores = $trabajo_digno_module_class::SECTORES;
 $user_id = get_current_user_id();
 
 $formaciones = get_posts([

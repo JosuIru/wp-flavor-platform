@@ -5,7 +5,7 @@
  * Permite configurar la visibilidad y permisos de acceso de cada módulo
  * desde el panel de administración de WordPress.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Admin
  */
 
@@ -178,7 +178,7 @@ class Flavor_Module_Visibility_Admin {
      * @return string HTML de la sección
      */
     public function renderizar_seccion_visibilidad() {
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $informacion_modulos = $loader->get_all_modules_visibility_info();
 
         // Agrupar módulos por visibilidad actual

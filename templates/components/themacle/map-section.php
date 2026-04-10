@@ -5,7 +5,7 @@
  * Two-column contact layout: contact info with SVG icons on the left,
  * embedded Google Maps iframe on the right, plus an optional contact form.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo              Section heading text.
  * @var string $direccion           Physical address displayed and used for the map embed.

@@ -2,7 +2,7 @@
 /**
  * Listado Público de Empresas - Frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

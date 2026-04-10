@@ -2,7 +2,7 @@
 /**
  * Vista completa para firmar campania.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

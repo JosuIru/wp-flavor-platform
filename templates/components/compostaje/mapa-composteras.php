@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Mapa de Composteras
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo
  * @var string $descripcion

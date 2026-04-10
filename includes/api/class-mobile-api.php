@@ -701,7 +701,7 @@ class Chat_IA_Mobile_API {
         ]);
 
         // ==========================================
-        // MARKETPLACE (PROXY A flavor-chat-ia/v1)
+        // MARKETPLACE (PROXY A Flavor Platform REST)
         // ==========================================
         register_rest_route(self::API_NAMESPACE, '/marketplace/anuncio', [
             'methods' => 'POST',
@@ -748,7 +748,7 @@ class Chat_IA_Mobile_API {
 
             // Log para auditoría
             if ($regenerate) {
-                flavor_chat_ia_log( 'Admin site secret regenerado', 'info', 'MobileAPI' );
+                flavor_platform_log( 'Admin site secret regenerado', 'info', 'MobileAPI' );
             }
         }
 
@@ -769,7 +769,7 @@ class Chat_IA_Mobile_API {
 
         if (!hash_equals($valid_secret, $site_token)) {
             // Log intento fallido
-            flavor_chat_ia_log( 'Intento de vinculación admin fallido desde IP: ' . $_SERVER['REMOTE_ADDR'], 'warning', 'MobileAPI' );
+            flavor_platform_log( 'Intento de vinculación admin fallido desde IP: ' . $_SERVER['REMOTE_ADDR'], 'warning', 'MobileAPI' );
             return new WP_Error('invalid_token', 'Token de sitio inválido', ['status' => 403]);
         }
 
@@ -1428,7 +1428,7 @@ class Chat_IA_Mobile_API {
 
         // Obtener días del calendario con disponibilidad
         $tabla_calendario = $wpdb->prefix . 'calendario_experiencias';
-        $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla_calendario);
+        $tabla_existe = Flavor_Platform_Helpers::tabla_existe($tabla_calendario);
 
         if (!$tabla_existe) {
             // Si no hay tabla, devolver todos los tickets sin filtro de fecha
@@ -2716,7 +2716,7 @@ class Chat_IA_Mobile_API {
         flavor_log_debug( "get_admin_dashboard llamado - tabla: $tabla", 'MobileAPI' );
 
         // Verificar si la tabla existe
-        $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla);
+        $tabla_existe = Flavor_Platform_Helpers::tabla_existe($tabla);
         flavor_log_debug( 'Tabla existe: ' . ( $tabla_existe ? 'SI' : 'NO' ), 'MobileAPI' );
         if (!$tabla_existe) {
             return rest_ensure_response([
@@ -2843,7 +2843,7 @@ class Chat_IA_Mobile_API {
         $tabla = $wpdb->prefix . 'reservas_tickets';
 
         // Verificar si la tabla existe
-        $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla);
+        $tabla_existe = Flavor_Platform_Helpers::tabla_existe($tabla);
         if (!$tabla_existe) {
             return rest_ensure_response([
                 'success' => true,
@@ -3229,7 +3229,7 @@ class Chat_IA_Mobile_API {
         $tabla = $wpdb->prefix . 'reservas_tickets';
 
         // Verificar si la tabla existe
-        $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla);
+        $tabla_existe = Flavor_Platform_Helpers::tabla_existe($tabla);
         if (!$tabla_existe) {
             return rest_ensure_response([
                 'success' => true,
@@ -3361,7 +3361,7 @@ class Chat_IA_Mobile_API {
         $tabla = $wpdb->prefix . 'reservas_tickets';
 
         // Verificar si la tabla existe
-        $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla);
+        $tabla_existe = Flavor_Platform_Helpers::tabla_existe($tabla);
         if (!$tabla_existe) {
             return rest_ensure_response([
                 'success' => true,
@@ -4390,8 +4390,8 @@ class Chat_IA_Mobile_API {
 
         // Obtener módulos activos
         $active_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_modules = \Flavor_Platform_Module_Loader::get_active_modules_cached();
         }
 
         global $wpdb;
@@ -4491,8 +4491,8 @@ class Chat_IA_Mobile_API {
 
         // Obtener módulos activos para filtrar actividad relevante
         $active_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_modules = \Flavor_Platform_Module_Loader::get_active_modules_cached();
         }
 
         // Eventos recientes a los que se inscribió
@@ -4601,7 +4601,7 @@ class Chat_IA_Mobile_API {
         $tabla_tickets = $wpdb->prefix . 'reservas_tickets';
 
         // Verificar que existe la tabla
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_tickets)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_tickets)) {
             return rest_ensure_response([
                 'success' => true,
                 'reservations' => [],
@@ -5032,8 +5032,8 @@ class Chat_IA_Mobile_API {
             'tramites' => ['action' => 'my_procedures', 'label' => 'Mis trámites', 'icon' => 'description'],
         ];
         $quick_action_sources = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $system_modules = Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $system_modules = Flavor_Platform_Module_Loader::get_active_modules_cached();
             foreach ($system_modules as $mod_id) {
                 $normalized_id = str_replace('-', '_', $mod_id);
                 $active_modules[] = $normalized_id;

@@ -2,7 +2,7 @@
 /**
  * Template: Impacto ambiental global del compostaje comunitario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  *
  * Variables esperadas en $args:

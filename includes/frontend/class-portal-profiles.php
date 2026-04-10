@@ -5,7 +5,7 @@
  * Define layouts simples y adaptativos según el tipo de aplicación/comunidad.
  * Evita saturar al usuario mostrando solo lo relevante.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  * @since 4.2.0
  */
@@ -67,9 +67,9 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '🛒 Hacer Pedido', 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido'), 'color' => 'primary'],
-                            ['label' => '📅 Próximos Eventos', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'proximos'), 'color' => 'secondary'],
-                            ['label' => '💶 Mi Cuota', 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-cuota'), 'color' => 'tertiary'],
+                            ['label' => '🛒 Hacer Pedido', 'url' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido'), 'color' => 'primary'],
+                            ['label' => '📅 Próximos Eventos', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'proximos'), 'color' => 'secondary'],
+                            ['label' => '💶 Mi Cuota', 'url' => Flavor_Platform_Helpers::get_action_url('socios', 'mi-cuota'), 'color' => 'tertiary'],
                         ],
                     ],
                     'stats' => [
@@ -90,10 +90,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'tabs', // tabs, sidebar, dropdown
                     'items' => [
-                        ['label' => 'Inicio', 'url' => Flavor_Chat_Helpers::get_portal_url()],
-                        ['label' => 'Pedidos', 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
-                        ['label' => 'Eventos', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado')],
-                        ['label' => 'Comunidad', 'url' => Flavor_Chat_Helpers::get_action_url('comunidades', '')],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Pedidos', 'url' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
+                        ['label' => 'Eventos', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'listado')],
+                        ['label' => 'Comunidad', 'url' => Flavor_Platform_Helpers::get_action_url('comunidades', '')],
                     ],
                 ],
                 'busqueda' => false, // No mostrar búsqueda (simplificar)
@@ -116,10 +116,10 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '📅 Eventos', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado'), 'color' => 'primary'],
-                            ['label' => '💬 Foros', 'url' => Flavor_Chat_Helpers::get_action_url('foros', ''), 'color' => 'secondary'],
-                            ['label' => '🎓 Talleres', 'url' => Flavor_Chat_Helpers::get_action_url('talleres', 'listado'), 'color' => 'tertiary'],
-                            ['label' => '🗳️ Participación', 'url' => Flavor_Chat_Helpers::get_action_url('participacion', ''), 'color' => 'success'],
+                            ['label' => '📅 Eventos', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'listado'), 'color' => 'primary'],
+                            ['label' => '💬 Foros', 'url' => Flavor_Platform_Helpers::get_action_url('foros', ''), 'color' => 'secondary'],
+                            ['label' => '🎓 Talleres', 'url' => Flavor_Platform_Helpers::get_action_url('talleres', 'listado'), 'color' => 'tertiary'],
+                            ['label' => '🗳️ Participación', 'url' => Flavor_Platform_Helpers::get_action_url('participacion', ''), 'color' => 'success'],
                         ],
                     ],
                     'stats' => [
@@ -140,11 +140,11 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'sidebar',
                     'items' => [
-                        ['label' => 'Inicio', 'url' => Flavor_Chat_Helpers::get_portal_url(), 'icon' => 'home'],
-                        ['label' => 'Eventos', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado'), 'icon' => 'calendar'],
-                        ['label' => 'Talleres', 'url' => Flavor_Chat_Helpers::get_action_url('talleres', 'listado'), 'icon' => 'graduation-cap'],
-                        ['label' => 'Foros', 'url' => Flavor_Chat_Helpers::get_action_url('foros', ''), 'icon' => 'comments'],
-                        ['label' => 'Mi Perfil', 'url' => Flavor_Chat_Helpers::get_action_url('usuario', 'perfil'), 'icon' => 'user'],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url(), 'icon' => 'home'],
+                        ['label' => 'Eventos', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'listado'), 'icon' => 'calendar'],
+                        ['label' => 'Talleres', 'url' => Flavor_Platform_Helpers::get_action_url('talleres', 'listado'), 'icon' => 'graduation-cap'],
+                        ['label' => 'Foros', 'url' => Flavor_Platform_Helpers::get_action_url('foros', ''), 'icon' => 'comments'],
+                        ['label' => 'Mi Perfil', 'url' => Flavor_Platform_Helpers::get_action_url('usuario', 'perfil'), 'icon' => 'user'],
                     ],
                 ],
                 'busqueda' => true,
@@ -167,10 +167,10 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '🤝 Pedir/Ofrecer Ayuda', 'url' => Flavor_Chat_Helpers::get_action_url('ayuda-vecinal', ''), 'color' => 'primary'],
-                            ['label' => '🚲 Reservar Bici', 'url' => Flavor_Chat_Helpers::get_action_url('bicicletas-compartidas', ''), 'color' => 'eco'],
-                            ['label' => '🌱 Huertos', 'url' => Flavor_Chat_Helpers::get_action_url('huertos-urbanos', ''), 'color' => 'success'],
-                            ['label' => '⚠️ Reportar Incidencia', 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva'), 'color' => 'warning'],
+                            ['label' => '🤝 Pedir/Ofrecer Ayuda', 'url' => Flavor_Platform_Helpers::get_action_url('ayuda-vecinal', ''), 'color' => 'primary'],
+                            ['label' => '🚲 Reservar Bici', 'url' => Flavor_Platform_Helpers::get_action_url('bicicletas-compartidas', ''), 'color' => 'eco'],
+                            ['label' => '🌱 Huertos', 'url' => Flavor_Platform_Helpers::get_action_url('huertos-urbanos', ''), 'color' => 'success'],
+                            ['label' => '⚠️ Reportar Incidencia', 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'nueva'), 'color' => 'warning'],
                         ],
                     ],
                     'stats' => [
@@ -192,10 +192,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'tabs',
                     'items' => [
-                        ['label' => 'Inicio', 'url' => Flavor_Chat_Helpers::get_portal_url()],
-                        ['label' => 'Ayuda', 'url' => Flavor_Chat_Helpers::get_action_url('ayuda-vecinal', '')],
-                        ['label' => 'Recursos', 'url' => Flavor_Chat_Helpers::get_action_url('recursos', '')],
-                        ['label' => 'Incidencias', 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', '')],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Ayuda', 'url' => Flavor_Platform_Helpers::get_action_url('ayuda-vecinal', '')],
+                        ['label' => 'Recursos', 'url' => Flavor_Platform_Helpers::get_action_url('recursos', '')],
+                        ['label' => 'Incidencias', 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', '')],
                     ],
                 ],
                 'busqueda' => false, // Simplificar
@@ -217,9 +217,9 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '📅 Nueva Reserva', 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'nueva'), 'color' => 'primary'],
-                            ['label' => '🏢 Mis Espacios', 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'mis-reservas'), 'color' => 'secondary'],
-                            ['label' => '📊 Mi Facturación', 'url' => Flavor_Chat_Helpers::get_action_url('facturas', ''), 'color' => 'tertiary'],
+                            ['label' => '📅 Nueva Reserva', 'url' => Flavor_Platform_Helpers::get_action_url('reservas', 'nueva'), 'color' => 'primary'],
+                            ['label' => '🏢 Mis Espacios', 'url' => Flavor_Platform_Helpers::get_action_url('reservas', 'mis-reservas'), 'color' => 'secondary'],
+                            ['label' => '📊 Mi Facturación', 'url' => Flavor_Platform_Helpers::get_action_url('facturas', ''), 'color' => 'tertiary'],
                         ],
                     ],
                     'stats' => [
@@ -239,10 +239,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'sidebar',
                     'items' => [
-                        ['label' => 'Dashboard', 'url' => Flavor_Chat_Helpers::get_portal_url()],
-                        ['label' => 'Reservas', 'url' => Flavor_Chat_Helpers::get_action_url('reservas', '')],
-                        ['label' => 'Facturación', 'url' => Flavor_Chat_Helpers::get_action_url('facturas', '')],
-                        ['label' => 'Comunidad', 'url' => Flavor_Chat_Helpers::get_action_url('comunidades', '')],
+                        ['label' => 'Dashboard', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Reservas', 'url' => Flavor_Platform_Helpers::get_action_url('reservas', '')],
+                        ['label' => 'Facturación', 'url' => Flavor_Platform_Helpers::get_action_url('facturas', '')],
+                        ['label' => 'Comunidad', 'url' => Flavor_Platform_Helpers::get_action_url('comunidades', '')],
                     ],
                 ],
                 'busqueda' => true,
@@ -265,10 +265,10 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '🗳️ Votaciones Activas', 'url' => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'), 'color' => 'primary'],
-                            ['label' => '💰 Presupuestos', 'url' => Flavor_Chat_Helpers::get_action_url('presupuestos-participativos', ''), 'color' => 'success'],
-                            ['label' => '📊 Transparencia', 'url' => Flavor_Chat_Helpers::get_action_url('transparencia', ''), 'color' => 'info'],
-                            ['label' => '📅 Asambleas', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'asambleas'), 'color' => 'secondary'],
+                            ['label' => '🗳️ Votaciones Activas', 'url' => Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'), 'color' => 'primary'],
+                            ['label' => '💰 Presupuestos', 'url' => Flavor_Platform_Helpers::get_action_url('presupuestos-participativos', ''), 'color' => 'success'],
+                            ['label' => '📊 Transparencia', 'url' => Flavor_Platform_Helpers::get_action_url('transparencia', ''), 'color' => 'info'],
+                            ['label' => '📅 Asambleas', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'asambleas'), 'color' => 'secondary'],
                         ],
                     ],
                     'stats' => [
@@ -289,10 +289,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'sidebar',
                     'items' => [
-                        ['label' => 'Inicio', 'url' => Flavor_Chat_Helpers::get_portal_url()],
-                        ['label' => 'Participación', 'url' => Flavor_Chat_Helpers::get_action_url('participacion', '')],
-                        ['label' => 'Transparencia', 'url' => Flavor_Chat_Helpers::get_action_url('transparencia', '')],
-                        ['label' => 'Eventos', 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado')],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Participación', 'url' => Flavor_Platform_Helpers::get_action_url('participacion', '')],
+                        ['label' => 'Transparencia', 'url' => Flavor_Platform_Helpers::get_action_url('transparencia', '')],
+                        ['label' => 'Eventos', 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'listado')],
                     ],
                 ],
                 'busqueda' => true,
@@ -315,9 +315,9 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '📚 Mis Cursos', 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'), 'color' => 'primary'],
-                            ['label' => '🎓 Explorar Cursos', 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'listado'), 'color' => 'secondary'],
-                            ['label' => '🏆 Certificados', 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'certificados'), 'color' => 'success'],
+                            ['label' => '📚 Mis Cursos', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'mis-cursos'), 'color' => 'primary'],
+                            ['label' => '🎓 Explorar Cursos', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'listado'), 'color' => 'secondary'],
+                            ['label' => '🏆 Certificados', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'certificados'), 'color' => 'success'],
                         ],
                     ],
                     'stats' => [

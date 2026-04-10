@@ -2,7 +2,7 @@
 /**
  * Vista Dashboard del módulo Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

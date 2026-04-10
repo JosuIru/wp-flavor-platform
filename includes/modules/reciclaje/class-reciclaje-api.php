@@ -2,7 +2,7 @@
 /**
  * API REST para Reciclaje (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Reciclaje_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,7 +28,7 @@ class Flavor_Reciclaje_API {
 
     public function register_routes() {
         // GET /reciclaje/dashboard
-        register_rest_route(self::NAMESPACE, '/reciclaje/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/reciclaje/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],

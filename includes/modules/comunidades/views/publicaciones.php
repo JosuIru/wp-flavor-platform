@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Publicaciones de Comunidades
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

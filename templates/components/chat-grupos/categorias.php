@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Chat Grupos Categorias
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

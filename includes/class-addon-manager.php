@@ -131,14 +131,14 @@ class Flavor_Addon_Manager {
     /**
      * Escanea el directorio addons/ y carga los archivos principales de cada addon
      *
-     * Busca subdirectorios en FLAVOR_CHAT_IA_PATH/addons/ que contengan
+     * Busca subdirectorios en FLAVOR_PLATFORM_PATH/addons/ que contengan
      * un archivo PHP con el mismo nombre que el directorio (convención WordPress).
      *
      * @return void
      * @since 3.0.0
      */
     public function scan_addons_directory() {
-        $directorio_addons = FLAVOR_CHAT_IA_PATH . 'addons/';
+        $directorio_addons = FLAVOR_PLATFORM_PATH . 'addons/';
 
         if (!is_dir($directorio_addons)) {
             return;
@@ -163,7 +163,7 @@ class Flavor_Addon_Manager {
         }
 
         if ($addons_encontrados > 0) {
-            flavor_chat_ia_log(sprintf(
+            flavor_platform_log(sprintf(
                 'Escaneado directorio addons/: %d addons encontrados',
                 $addons_encontrados
             ));
@@ -189,7 +189,7 @@ class Flavor_Addon_Manager {
          */
         do_action('flavor_register_addons');
 
-        flavor_chat_ia_log(sprintf(
+        flavor_platform_log(sprintf(
             'Sistema de addons iniciado. %d addons registrados',
             count($this->addons_registrados)
         ));
@@ -236,7 +236,7 @@ class Flavor_Addon_Manager {
 
         // Evitar duplicados
         if (isset($instancia->addons_registrados[$slug_addon])) {
-            flavor_chat_ia_log("Addon duplicado intentó registrarse: {$slug_addon}", 'warning');
+            flavor_platform_log("Addon duplicado intentó registrarse: {$slug_addon}", 'warning');
             return new WP_Error('addon_duplicado', sprintf(
                 __('El addon "%s" ya está registrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $slug_addon
@@ -245,12 +245,12 @@ class Flavor_Addon_Manager {
 
         // Verificar compatibilidad con el core
         if (!empty($configuracion['requires_core'])) {
-            if (version_compare(FLAVOR_CHAT_IA_VERSION, $configuracion['requires_core'], '<')) {
+            if (version_compare(FLAVOR_PLATFORM_VERSION, $configuracion['requires_core'], '<')) {
                 return new WP_Error('version_core_incompatible', sprintf(
                     __('El addon "%s" requiere Flavor Platform versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $configuracion['name'],
                     $configuracion['requires_core'],
-                    FLAVOR_CHAT_IA_VERSION
+                    FLAVOR_PLATFORM_VERSION
                 ));
             }
         }
@@ -275,7 +275,7 @@ class Flavor_Addon_Manager {
         // Registrar el addon
         $instancia->addons_registrados[$slug_addon] = $configuracion;
 
-        flavor_chat_ia_log("Addon registrado: {$slug_addon} v{$configuracion['version']}");
+        flavor_platform_log("Addon registrado: {$slug_addon} v{$configuracion['version']}");
 
         /**
          * Acción después de registrar un addon
@@ -299,7 +299,7 @@ class Flavor_Addon_Manager {
             $this->load_addon($slug_addon);
         }
 
-        flavor_chat_ia_log(sprintf(
+        flavor_platform_log(sprintf(
             '%d addons cargados de %d activos',
             count($this->addons_cargados),
             count($this->addons_activos)
@@ -315,7 +315,7 @@ class Flavor_Addon_Manager {
     public function load_addon($slug_addon) {
         // Verificar que esté registrado
         if (!isset($this->addons_registrados[$slug_addon])) {
-            flavor_chat_ia_log("Addon no registrado: {$slug_addon}", 'warning');
+            flavor_platform_log("Addon no registrado: {$slug_addon}", 'warning');
             return new WP_Error('addon_no_registrado', sprintf(
                 __('El addon "%s" no está registrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $slug_addon
@@ -337,7 +337,7 @@ class Flavor_Addon_Manager {
             );
 
             if (is_wp_error($verificacion)) {
-                flavor_chat_ia_log("Addon {$slug_addon} falló verificación de dependencias: " . $verificacion->get_error_message(), 'error');
+                flavor_platform_log("Addon {$slug_addon} falló verificación de dependencias: " . $verificacion->get_error_message(), 'error');
                 return $verificacion;
             }
         }
@@ -350,7 +350,7 @@ class Flavor_Addon_Manager {
         // Marcar como cargado
         $this->addons_cargados[$slug_addon] = true;
 
-        flavor_chat_ia_log("Addon cargado: {$slug_addon}");
+        flavor_platform_log("Addon cargado: {$slug_addon}");
 
         /**
          * Acción después de cargar un addon
@@ -419,7 +419,7 @@ class Flavor_Addon_Manager {
          */
         do_action('flavor_addon_activated', $slug_addon);
 
-        flavor_chat_ia_log("Addon activado: {$slug_addon}");
+        flavor_platform_log("Addon activado: {$slug_addon}");
 
         return true;
     }
@@ -452,7 +452,7 @@ class Flavor_Addon_Manager {
          */
         do_action('flavor_addon_deactivated', $slug_addon);
 
-        flavor_chat_ia_log("Addon desactivado: {$slug_addon}");
+        flavor_platform_log("Addon desactivado: {$slug_addon}");
 
         return true;
     }
@@ -668,7 +668,7 @@ class Flavor_Addon_Manager {
                                     </p>
                                 <?php endif; ?>
 
-                                <?php if (!empty($addon['requires_core']) && version_compare(FLAVOR_CHAT_IA_VERSION, $addon['requires_core'], '<')): ?>
+                                <?php if (!empty($addon['requires_core']) && version_compare(FLAVOR_PLATFORM_VERSION, $addon['requires_core'], '<')): ?>
                                     <div class="addon-requirements-error">
                                         <span class="dashicons dashicons-warning"></span>
                                         <?php printf(

@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Estaciones - Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales
  */
 

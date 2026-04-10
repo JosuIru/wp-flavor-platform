@@ -5,7 +5,7 @@
  * Gestión de usuarios de la aplicación móvil,
  * dispositivos registrados, sesiones y estadísticas.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  */
 
@@ -85,16 +85,16 @@ class Flavor_App_Users_Panel {
 
         wp_enqueue_style(
             'flavor-app-users',
-            FLAVOR_CHAT_IA_URL . 'admin/css/app-users.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/app-users.css',
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-app-users',
-            FLAVOR_CHAT_IA_URL . 'admin/js/app-users.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/app-users.js',
             array( 'jquery', 'wp-util' ),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

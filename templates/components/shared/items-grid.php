@@ -5,7 +5,7 @@
  * Grid de items/cards reutilizable con soporte para templates personalizados,
  * card genérica configurable y estado vacío integrado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array    $items          Array de items a mostrar

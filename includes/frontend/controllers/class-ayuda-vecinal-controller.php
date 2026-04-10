@@ -2,7 +2,7 @@
 /**
  * Controlador frontend: Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -27,7 +27,7 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
         $tabla = $wpdb->prefix . 'flavor_ayuda_vecinal';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_archive_data();
         }
 
@@ -81,7 +81,7 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_ayuda_vecinal';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_single_data($item_id);
         }
 
@@ -108,7 +108,7 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_ayuda_vecinal';
 
-        if (empty($query) || !Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (empty($query) || !Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [
                 'resultados' => [],
                 'total_resultados' => 0,

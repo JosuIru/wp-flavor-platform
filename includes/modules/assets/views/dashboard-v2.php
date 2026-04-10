@@ -2,7 +2,7 @@
 /**
  * Dashboard del módulo Assets - Versión Mejorada
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -229,7 +229,7 @@ $shortcodes_table = [
             <p><strong>' . __('¿Cómo usar estos componentes?', 'flavor-platform') . '</strong></p>
             <p>' . __('Todos los módulos pueden usar estos componentes para crear dashboards consistentes y atractivos:', 'flavor-platform') . '</p>
             <pre style="background: var(--dm-bg-secondary); padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
-require_once FLAVOR_CHAT_IA_PATH . \'/includes/dashboard/class-dashboard-components.php\';
+require_once FLAVOR_PLATFORM_PATH . \'/includes/dashboard/class-dashboard-components.php\';
 $DC = \'Flavor_Dashboard_Components\';
 
 // Stat card

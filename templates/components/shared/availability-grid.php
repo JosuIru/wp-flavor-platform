@@ -4,7 +4,7 @@
  *
  * Grid de disponibilidad para mostrar slots de tiempo disponibles/ocupados.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $dates       Fechas a mostrar: ['2026-02-27', '2026-02-28', ...]

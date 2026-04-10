@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Contacto Empresarial
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 ?>

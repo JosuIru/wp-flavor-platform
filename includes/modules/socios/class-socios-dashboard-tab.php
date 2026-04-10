@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Socios
  */
 
@@ -57,13 +57,13 @@ class Flavor_Socios_Dashboard_Tab {
         $socio = null;
         $tipo_socio = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
             ));
 
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
                 $tipo_socio = $wpdb->get_row($wpdb->prepare(
                     "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
                     $socio->tipo_socio
@@ -82,7 +82,7 @@ class Flavor_Socios_Dashboard_Tab {
                     <span class="dashicons dashicons-id"></span>
                     <h3><?php esc_html_e('¡Únete como socio!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Hacerme socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -143,15 +143,15 @@ class Flavor_Socios_Dashboard_Tab {
                     </div>
 
                     <div class="membresia-footer">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('socios', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php esc_html_e('Actualizar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php if (!$socio->carnet_emitido): ?>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php esc_html_e('Solicitar carnet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-secondary">
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-secondary">
                                 <?php esc_html_e('Ver carnet digital', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
@@ -176,13 +176,13 @@ class Flavor_Socios_Dashboard_Tab {
         $socio = null;
         $cuotas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT id FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
             ));
 
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
                 $cuotas = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla_cuotas} WHERE socio_id = %d ORDER BY fecha_vencimiento DESC LIMIT 12",
                     $socio->id
@@ -239,7 +239,7 @@ class Flavor_Socios_Dashboard_Tab {
                                     </td>
                                     <td>
                                         <?php if ($cuota->estado === 'pendiente' || $cuota->estado === 'vencida'): ?>
-                                            <a href="<?php echo esc_url(add_query_arg('cuota_id', $cuota->id, Flavor_Chat_Helpers::get_action_url('socios', 'pagar-cuota'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                                            <a href="<?php echo esc_url(add_query_arg('cuota_id', $cuota->id, Flavor_Platform_Helpers::get_action_url('socios', 'pagar-cuota'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                                 <?php esc_html_e('Pagar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php elseif ($cuota->factura_url): ?>

@@ -2,7 +2,7 @@
 /**
  * Template: Evaluación de Necesidades
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,7 +10,10 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
+$economia_suficiencia_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Suficiencia_Module')
+    : 'Flavor_Chat_Economia_Suficiencia_Module';
+$categorias = $economia_suficiencia_module_class::CATEGORIAS_NECESIDADES;
 $evaluacion_anterior = get_user_meta($user_id, '_es_evaluacion_necesidades', true) ?: [];
 ?>
 

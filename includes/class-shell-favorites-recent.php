@@ -5,7 +5,7 @@
  * Sistema para gestionar páginas favoritas y visitadas recientemente
  * por cada usuario en el Admin Shell.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

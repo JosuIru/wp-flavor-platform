@@ -8,7 +8,7 @@
  * - Favoritos: Contenido marcado como favorito (likes)
  * - Estadisticas: Metricas de vistas y likes del contenido
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Multimedia
  * @since 4.3.0
  */
@@ -122,7 +122,7 @@ class Flavor_Multimedia_Dashboard_Tab {
      * @return bool
      */
     private function tablas_existen() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia);
     }
 
     /**
@@ -176,7 +176,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="dashicons dashicons-format-gallery"></span>
                     <?php esc_html_e('Mis Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-upload"></span>
                     <?php esc_html_e('Subir Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -212,7 +212,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <p><?php esc_html_e('Aun no has subido ninguna foto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Comparte tus mejores momentos con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-upload"></span>
                             <?php esc_html_e('Subir mi primera foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -242,11 +242,11 @@ class Flavor_Multimedia_Dashboard_Tab {
                                         </span>
                                     </div>
                                     <div class="flavor-galeria-actions">
-                                        <a href="<?php echo esc_url(add_query_arg('archivo_id', $foto->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
+                                        <a href="<?php echo esc_url(add_query_arg('archivo_id', $foto->id, Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
                                            class="flavor-btn-icon" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-visibility"></span>
                                         </a>
-                                        <a href="<?php echo esc_url(add_query_arg('editar_archivo', $foto->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
+                                        <a href="<?php echo esc_url(add_query_arg('editar_archivo', $foto->id, Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
                                            class="flavor-btn-icon" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-edit"></span>
                                         </a>
@@ -275,7 +275,7 @@ class Flavor_Multimedia_Dashboard_Tab {
 
                 <?php if ($total_fotos > 50): ?>
                     <div class="flavor-panel-footer">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php printf(esc_html__('Ver todas (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_fotos); ?>
                         </a>
                     </div>
@@ -322,7 +322,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="dashicons dashicons-portfolio"></span>
                     <?php esc_html_e('Mis Albumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
-                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -334,7 +334,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <p><?php esc_html_e('Aun no has creado ningun album.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Organiza tus fotos en albumes tematicos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus-alt"></span>
                             <?php esc_html_e('Crear mi primer album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -374,11 +374,11 @@ class Flavor_Multimedia_Dashboard_Tab {
                                 </div>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(add_query_arg('album_id', $album->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
+                                <a href="<?php echo esc_url(add_query_arg('album_id', $album->id, Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver Album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
-                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'editar_album' => $album->id], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
+                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'editar_album' => $album->id], Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
                                    class="flavor-btn-icon" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
@@ -401,7 +401,7 @@ class Flavor_Multimedia_Dashboard_Tab {
             return;
         }
 
-        if (!$this->tablas_existen() || !Flavor_Chat_Helpers::tabla_existe($this->tabla_likes)) {
+        if (!$this->tablas_existen() || !Flavor_Platform_Helpers::tabla_existe($this->tabla_likes)) {
             $this->render_modulo_no_disponible();
             return;
         }
@@ -444,7 +444,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <p><?php esc_html_e('Aun no has marcado contenido como favorito.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Explora la galeria y dale "me gusta" al contenido que te interese.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-search"></span>
                             <?php esc_html_e('Explorar Galeria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -499,7 +499,7 @@ class Flavor_Multimedia_Dashboard_Tab {
 
                 <?php if ($total_favoritos > 50): ?>
                     <div class="flavor-panel-footer">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'favoritos')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'favoritos')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php printf(esc_html__('Ver todos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_favoritos); ?>
                         </a>
                     </div>
@@ -574,7 +574,7 @@ class Flavor_Multimedia_Dashboard_Tab {
 
         // Likes recibidos este mes
         $likes_mes = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_likes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_likes)) {
             $likes_mes = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*)
                  FROM {$this->tabla_likes} l
@@ -834,7 +834,7 @@ class Flavor_Multimedia_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-panel-warning">
             <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
                 <?php esc_html_e('Iniciar Sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

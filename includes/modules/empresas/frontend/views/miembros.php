@@ -2,7 +2,7 @@
 /**
  * Miembros de la Empresa - Frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

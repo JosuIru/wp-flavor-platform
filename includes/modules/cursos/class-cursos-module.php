@@ -2,7 +2,7 @@
 /**
  * Módulo de Cursos y Formación para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Cursos - Plataforma de formación comunitaria
  */
-class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -44,7 +44,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_cursos);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_cursos);
     }
 
     /**
@@ -229,7 +229,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
             return 0;
         }
 
@@ -252,7 +252,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             return 0;
         }
 
@@ -278,13 +278,13 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             'cursos_completados' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
             $estadisticas['cursos_activos'] = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_cursos WHERE estado IN ('publicado', 'en_curso')"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $estadisticas['total_alumnos'] = (int) $wpdb->get_var(
                 "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_inscripciones WHERE estado IN ('activo', 'completado')"
             );
@@ -332,7 +332,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
         $cursos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
             $cursos = $wpdb->get_results(
                 "SELECT id, instructor_id, titulo, slug, descripcion, imagen_destacada, estado, nivel, duracion_horas, precio, es_gratuito, max_alumnos, alumnos_inscritos, fecha_inicio, fecha_fin, destacado, valoracion_media, numero_valoraciones, fecha_creacion
                  FROM $tabla_cursos
@@ -352,7 +352,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
         $inscripciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $inscripciones = $wpdb->get_results(
                 "SELECT i.*, c.titulo as curso_titulo, u.display_name as alumno_nombre, u.user_email as alumno_email
                  FROM $tabla_inscripciones i
@@ -478,7 +478,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
             $this->create_tables();
         }
     }
@@ -502,7 +502,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
             return;
         }
 
@@ -2912,4 +2912,8 @@ KNOWLEDGE;
             include $views_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Cursos_Module', false)) {
+    class_alias('Flavor_Platform_Cursos_Module', 'Flavor_Chat_Cursos_Module');
 }

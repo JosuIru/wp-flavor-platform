@@ -2,7 +2,7 @@
 /**
  * Vista: Automatizaciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

@@ -2,14 +2,14 @@
 /**
  * Modulo de Contabilidad transversal para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Contabilidad_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -32,7 +32,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     }
 
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_movimientos);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_movimientos);
     }
 
     public function get_activation_error() {
@@ -90,6 +90,9 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         // Integracion con Email Marketing.
         add_action('flavor_em_campaign_status_changed', [$this, 'on_email_marketing_campaign_status_changed'], 10, 2);
         add_action('flavor_em_subscriber_created', [$this, 'on_email_marketing_subscriber_created'], 10, 2);
+
+        // API REST
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
     }
 
     protected function get_admin_config() {
@@ -126,7 +129,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     }
 
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_movimientos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_movimientos)) {
             $this->create_tables();
         } else {
             // Migración: añadir columna empresa_id si no existe
@@ -156,8 +159,11 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     public function get_empresa_usuario($user_id = null) {
         $user_id = $user_id ?: get_current_user_id();
 
-        if (class_exists('Flavor_Chat_Empresas_Module')) {
-            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+        $empresas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Empresas_Module')
+            : 'Flavor_Chat_Empresas_Module';
+        if (class_exists($empresas_module_class)) {
+            $empresas_module = Flavor_Platform_Module_Loader::get_instance()->get_module('empresas');
             if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
                 return $empresas_module->get_empresa_actual_usuario($user_id);
             }
@@ -299,7 +305,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_facturas = $wpdb->prefix . 'flavor_facturas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_facturas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_facturas)) {
             return;
         }
 
@@ -339,7 +345,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_facturas = $wpdb->prefix . 'flavor_facturas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_facturas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_facturas)) {
             return;
         }
 
@@ -385,7 +391,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
         $tabla_transacciones = $wpdb->prefix . 'flavor_socios_transacciones';
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
             return;
         }
 
@@ -398,7 +404,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         }
 
         $transaccion = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_transacciones) && $transaccion_id) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_transacciones) && $transaccion_id) {
             $transaccion = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_transacciones} WHERE id = %d",
                 absint($transaccion_id)
@@ -406,7 +412,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         }
 
         $socio = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios) && $socio_id) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios) && $socio_id) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE id = %d",
                 absint($socio_id)
@@ -651,7 +657,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_aportaciones = $wpdb->prefix . 'flavor_crowdfunding_aportaciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_aportaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_aportaciones)) {
             return;
         }
 
@@ -2239,7 +2245,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     private function action_listar_movimientos($params) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_movimientos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_movimientos)) {
             return ['success' => false, 'error' => __('Tabla de contabilidad no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
@@ -2550,8 +2556,8 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         $modulos = array_values(array_filter(array_map('strval', (array) $rows)));
 
         // Fallback: incluir módulos registrados aunque todavía no tengan movimientos.
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $registered = (array) $loader->get_registered_modules();
             if (!empty($registered)) {
                 foreach (array_keys($registered) as $module_id) {
@@ -2881,4 +2887,410 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'iva_neto' => $iva_repercutido - $iva_soportado,
         ];
     }
+
+    // =========================================================================
+    // API REST PARA APP MÓVIL
+    // =========================================================================
+
+    /**
+     * Registra rutas REST API para la app móvil
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // Dashboard con resumen
+        register_rest_route($namespace, '/contabilidad/dashboard', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_dashboard'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // Listar movimientos
+        register_rest_route($namespace, '/contabilidad/movimientos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_movimientos'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // Obtener movimiento por ID
+        register_rest_route($namespace, '/contabilidad/movimientos/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_movimiento'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // Crear movimiento
+        register_rest_route($namespace, '/contabilidad/movimientos', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_crear_movimiento'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        // Resumen por período
+        register_rest_route($namespace, '/contabilidad/resumen', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_resumen_periodo'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // Categorías
+        register_rest_route($namespace, '/contabilidad/categorias', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_categorias'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // Gráfico mensual
+        register_rest_route($namespace, '/contabilidad/grafico-mensual', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_grafico_mensual'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+    }
+
+    /**
+     * API: Dashboard con resumen
+     */
+    public function api_dashboard($request) {
+        $ano = $request->get_param('ano') ?: date('Y');
+        $mes = $request->get_param('mes') ?: date('m');
+
+        $desde_mes = "$ano-$mes-01";
+        $hasta_mes = date('Y-m-t', strtotime($desde_mes));
+
+        // Totales del mes
+        $resumen_mes = $this->api_obtener_resumen_periodo($desde_mes, $hasta_mes);
+
+        // Totales del año
+        $totales_ano = $this->obtener_totales_ano();
+
+        // Últimos movimientos
+        $ultimos = $this->obtener_ultimos_movimientos(10);
+
+        // Desglose por categoría del mes
+        $ingresos_categoria = $this->obtener_desglose_categoria($desde_mes, $hasta_mes, 'ingreso');
+        $gastos_categoria = $this->obtener_desglose_categoria($desde_mes, $hasta_mes, 'gasto');
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => [
+                'mes' => [
+                    'periodo' => "$ano-$mes",
+                    'ingresos' => (float) ($resumen_mes['ingresos'] ?? 0),
+                    'gastos' => (float) ($resumen_mes['gastos'] ?? 0),
+                    'resultado' => (float) (($resumen_mes['ingresos'] ?? 0) - ($resumen_mes['gastos'] ?? 0)),
+                ],
+                'ano' => $totales_ano,
+                'ultimos_movimientos' => array_map([$this, 'formatear_movimiento_api'], $ultimos),
+                'ingresos_por_categoria' => $ingresos_categoria,
+                'gastos_por_categoria' => $gastos_categoria,
+            ],
+        ]);
+    }
+
+    /**
+     * API: Listar movimientos con filtros
+     */
+    public function api_listar_movimientos($request) {
+        global $wpdb;
+
+        $tipo = $request->get_param('tipo') ?: '';
+        $categoria = $request->get_param('categoria') ?: '';
+        $desde = $request->get_param('desde') ?: date('Y-m-01');
+        $hasta = $request->get_param('hasta') ?: date('Y-m-t');
+        $limite = min(100, absint($request->get_param('per_page') ?: 50));
+        $pagina = max(1, absint($request->get_param('page') ?: 1));
+        $offset = ($pagina - 1) * $limite;
+
+        $empresa_id = $this->get_empresa_usuario();
+
+        $where = ["estado = 'confirmado'"];
+        $params = [];
+
+        if ($empresa_id) {
+            $where[] = "empresa_id = %d";
+            $params[] = $empresa_id;
+        }
+
+        $where[] = "fecha_movimiento BETWEEN %s AND %s";
+        $params[] = $desde;
+        $params[] = $hasta;
+
+        if ($tipo && in_array($tipo, ['ingreso', 'gasto', 'ajuste'])) {
+            $where[] = "tipo_movimiento = %s";
+            $params[] = $tipo;
+        }
+
+        if ($categoria) {
+            $where[] = "categoria = %s";
+            $params[] = sanitize_text_field($categoria);
+        }
+
+        $where_sql = implode(' AND ', $where);
+
+        // Contar total
+        $total = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->tabla_movimientos} WHERE $where_sql",
+            ...$params
+        ));
+
+        // Obtener movimientos
+        $params[] = $limite;
+        $params[] = $offset;
+
+        $movimientos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_movimientos}
+             WHERE $where_sql
+             ORDER BY fecha_movimiento DESC, id DESC
+             LIMIT %d OFFSET %d",
+            ...$params
+        ));
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => array_map([$this, 'formatear_movimiento_api'], $movimientos),
+            'total' => $total,
+            'paginas' => ceil($total / $limite),
+            'pagina_actual' => $pagina,
+        ]);
+    }
+
+    /**
+     * API: Obtener movimiento por ID
+     */
+    public function api_obtener_movimiento($request) {
+        global $wpdb;
+
+        $id = absint($request->get_param('id'));
+        $empresa_id = $this->get_empresa_usuario();
+
+        $where = "id = %d";
+        $params = [$id];
+
+        if ($empresa_id) {
+            $where .= " AND empresa_id = %d";
+            $params[] = $empresa_id;
+        }
+
+        $movimiento = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_movimientos} WHERE $where",
+            ...$params
+        ));
+
+        if (!$movimiento) {
+            return new WP_Error('not_found', __('Movimiento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $this->formatear_movimiento_api($movimiento),
+        ]);
+    }
+
+    /**
+     * API: Crear movimiento
+     */
+    public function api_crear_movimiento($request) {
+        $data = [
+            'fecha_movimiento' => $request->get_param('fecha') ?: current_time('Y-m-d'),
+            'tipo_movimiento' => $request->get_param('tipo') ?: 'ingreso',
+            'concepto' => $request->get_param('concepto') ?: '',
+            'categoria' => $request->get_param('categoria') ?: 'otros',
+            'base_imponible' => (float) $request->get_param('base_imponible') ?: 0,
+            'iva_porcentaje' => (float) $request->get_param('iva_porcentaje') ?: 0,
+            'iva_importe' => (float) $request->get_param('iva_importe') ?: 0,
+            'total' => (float) $request->get_param('total') ?: 0,
+            'tercero_nombre' => $request->get_param('tercero') ?: '',
+            'modulo_origen' => 'api_mobile',
+        ];
+
+        $id = $this->registrar_movimiento($data);
+
+        if (!$id) {
+            return new WP_Error('error', __('No se pudo crear el movimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => ['id' => $id],
+            'message' => __('Movimiento creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * API: Resumen por período
+     */
+    public function api_resumen_periodo($request) {
+        $desde = $request->get_param('desde') ?: date('Y-m-01');
+        $hasta = $request->get_param('hasta') ?: date('Y-m-t');
+
+        $resumen = $this->api_obtener_resumen_periodo($desde, $hasta);
+
+        // Desglose
+        $ingresos_categoria = $this->obtener_desglose_categoria($desde, $hasta, 'ingreso');
+        $gastos_categoria = $this->obtener_desglose_categoria($desde, $hasta, 'gasto');
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => [
+                'periodo' => [
+                    'desde' => $desde,
+                    'hasta' => $hasta,
+                ],
+                'ingresos' => (float) ($resumen['ingresos'] ?? 0),
+                'gastos' => (float) ($resumen['gastos'] ?? 0),
+                'resultado' => (float) (($resumen['ingresos'] ?? 0) - ($resumen['gastos'] ?? 0)),
+                'iva_repercutido' => (float) ($resumen['iva_repercutido'] ?? 0),
+                'iva_soportado' => (float) ($resumen['iva_soportado'] ?? 0),
+                'ingresos_por_categoria' => $ingresos_categoria,
+                'gastos_por_categoria' => $gastos_categoria,
+            ],
+        ]);
+    }
+
+    /**
+     * API: Categorías disponibles
+     */
+    public function api_categorias($request) {
+        $categorias_ingreso = $this->get_setting('categorias_ingreso', []);
+        $categorias_gasto = $this->get_setting('categorias_gasto', []);
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => [
+                'ingresos' => $categorias_ingreso,
+                'gastos' => $categorias_gasto,
+            ],
+        ]);
+    }
+
+    /**
+     * API: Gráfico mensual (últimos 12 meses)
+     */
+    public function api_grafico_mensual($request) {
+        global $wpdb;
+
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
+        $datos = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $fecha = date('Y-m', strtotime("-$i months"));
+            $desde = "$fecha-01";
+            $hasta = date('Y-m-t', strtotime($desde));
+
+            $ingresos = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(total),0) FROM {$this->tabla_movimientos}
+                 WHERE estado = 'confirmado' AND tipo_movimiento = 'ingreso'
+                 AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+                $desde, $hasta
+            ));
+
+            $gastos = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(total),0) FROM {$this->tabla_movimientos}
+                 WHERE estado = 'confirmado' AND tipo_movimiento = 'gasto'
+                 AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+                $desde, $hasta
+            ));
+
+            $datos[] = [
+                'mes' => $fecha,
+                'ingresos' => $ingresos,
+                'gastos' => $gastos,
+                'resultado' => $ingresos - $gastos,
+            ];
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $datos,
+        ]);
+    }
+
+    /**
+     * Formatea un movimiento para la API
+     */
+    private function formatear_movimiento_api($mov) {
+        return [
+            'id' => (int) $mov->id,
+            'fecha' => $mov->fecha_movimiento,
+            'tipo' => $mov->tipo_movimiento,
+            'estado' => $mov->estado,
+            'concepto' => $mov->concepto,
+            'categoria' => $mov->categoria,
+            'subcategoria' => $mov->subcategoria,
+            'modulo_origen' => $mov->modulo_origen,
+            'tercero' => $mov->tercero_nombre,
+            'base_imponible' => (float) $mov->base_imponible,
+            'iva_porcentaje' => (float) $mov->iva_porcentaje,
+            'iva_importe' => (float) $mov->iva_importe,
+            'retencion_porcentaje' => (float) $mov->retencion_porcentaje,
+            'retencion_importe' => (float) $mov->retencion_importe,
+            'total' => (float) $mov->total,
+            'moneda' => $mov->moneda,
+        ];
+    }
+
+    /**
+     * Obtiene resumen para un periodo (para API)
+     */
+    private function api_obtener_resumen_periodo($desde, $hasta) {
+        global $wpdb;
+
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
+        $ingresos = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(total),0) FROM {$this->tabla_movimientos}
+             WHERE estado = 'confirmado' AND tipo_movimiento = 'ingreso'
+             AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+            $desde, $hasta
+        ));
+
+        $gastos = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(total),0) FROM {$this->tabla_movimientos}
+             WHERE estado = 'confirmado' AND tipo_movimiento = 'gasto'
+             AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+            $desde, $hasta
+        ));
+
+        $iva_repercutido = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(iva_importe),0) FROM {$this->tabla_movimientos}
+             WHERE estado = 'confirmado' AND tipo_movimiento = 'ingreso'
+             AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+            $desde, $hasta
+        ));
+
+        $iva_soportado = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(iva_importe),0) FROM {$this->tabla_movimientos}
+             WHERE estado = 'confirmado' AND tipo_movimiento = 'gasto'
+             AND fecha_movimiento BETWEEN %s AND %s" . $filtro_empresa,
+            $desde, $hasta
+        ));
+
+        return [
+            'ingresos' => $ingresos,
+            'gastos' => $gastos,
+            'iva_repercutido' => $iva_repercutido,
+            'iva_soportado' => $iva_soportado,
+        ];
+    }
+}
+
+if (!class_exists('Flavor_Chat_Contabilidad_Module', false)) {
+    class_alias('Flavor_Platform_Contabilidad_Module', 'Flavor_Chat_Contabilidad_Module');
 }

@@ -3,7 +3,7 @@
  * Template: Como Unirse a Comunidades
  *
  * @var string $titulo_seccion
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -139,7 +139,7 @@ add_action('wp_enqueue_scripts', 'flavor_starter_scripts');
  * Verificar si el plugin Flavor Chat IA está activo
  */
 function flavor_starter_is_plugin_active() {
-    return defined('FLAVOR_CHAT_IA_VERSION');
+    return defined('FLAVOR_PLATFORM_VERSION');
 }
 
 /**

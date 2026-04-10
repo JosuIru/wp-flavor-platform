@@ -59,6 +59,11 @@ import '../../features/modules/themacle/themacle_screen.dart';
 import '../../features/modules/email_marketing/email_marketing_screen.dart';
 import '../../features/modules/bares/bares_screen.dart';
 import '../../features/modules/reservas/reservas_screen.dart';
+import '../../features/modules/encuestas/encuestas_screen.dart';
+import '../../features/modules/chat_estados/chat_estados_screen.dart';
+import '../../features/modules/campanias/campanias_screen.dart';
+import '../../features/modules/crowdfunding/crowdfunding_screen.dart';
+import '../../features/modules/kulturaka/kulturaka_screen.dart';
 import '../../features/modules/module_placeholder_screen.dart';
 import '../../features/client/camps/camps_screen.dart';
 
@@ -161,6 +166,11 @@ class ModuleScreenRegistry {
         'email-marketing', (_) => const EmailMarketingScreen());
     loader.registerScreenBuilder('bares', (_) => const BaresScreen());
     loader.registerScreenBuilder('reservas', (_) => const ReservasScreen());
+    loader.registerScreenBuilder('encuestas', (_) => const EncuestasScreen());
+    loader.registerScreenBuilder('chat-estados', (_) => const ChatEstadosScreen());
+    loader.registerScreenBuilder('campanias', (_) => const CampaniasScreen());
+    loader.registerScreenBuilder('crowdfunding', (_) => const CrowdfundingScreen());
+    loader.registerScreenBuilder('kulturaka', (_) => const KulturakaScreen());
     loader.registerScreenBuilder('campamentos', (_) => const CampsScreen());
 
     // Variantes con guion bajo (compatibilidad)
@@ -215,6 +225,10 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('dex_solana', (_) => const DexSolanaScreen());
     loader.registerScreenBuilder(
         'email_marketing', (_) => const EmailMarketingScreen());
+
+    // Variantes adicionales
+    loader.registerScreenBuilder(
+        'chat_estados', (_) => const ChatEstadosScreen());
 
     debugPrint('✅ Registradas ${loader.loadedCount} pantallas de módulos');
   }

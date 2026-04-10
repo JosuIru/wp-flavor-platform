@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

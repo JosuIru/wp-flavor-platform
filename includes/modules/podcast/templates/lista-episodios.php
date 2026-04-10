@@ -9,7 +9,7 @@
  * @var int    $total_paginas - Total de paginas
  * @var bool   $esta_suscrito - Si el usuario esta suscrito a la serie
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

@@ -138,7 +138,7 @@ class Flavor_Addon_Updater {
                 if (version_compare($addon['version'], $update['version'], '<')) {
                     $addon_file = isset($addon['file']) && is_string($addon['file']) ? trim($addon['file']) : '';
                     if ($addon_file === '') {
-                        flavor_chat_ia_log(
+                        flavor_platform_log(
                             sprintf('Addon updater omitido para "%s": file inválido o vacío', $slug),
                             'warning'
                         );
@@ -195,7 +195,7 @@ class Flavor_Addon_Updater {
             'site_url' => get_site_url(),
             'wp_version' => get_bloginfo('version'),
             'php_version' => PHP_VERSION,
-            'core_version' => FLAVOR_CHAT_IA_VERSION,
+            'core_version' => FLAVOR_PLATFORM_VERSION,
         ];
 
         // Hacer request al servidor
@@ -203,13 +203,13 @@ class Flavor_Addon_Updater {
             'body' => json_encode($request_data),
             'headers' => [
                 'Content-Type' => 'application/json',
-                'User-Agent' => 'FlavorPlatform/' . FLAVOR_CHAT_IA_VERSION . '; ' . get_bloginfo('url'),
+                'User-Agent' => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION . '; ' . get_bloginfo('url'),
             ],
             'timeout' => 15,
         ]);
 
         if (is_wp_error($response)) {
-            flavor_chat_ia_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'error');
+            flavor_platform_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'error');
             return [];
         }
 
@@ -351,7 +351,7 @@ class Flavor_Addon_Updater {
         // Obtener nuevas actualizaciones
         $this->obtener_actualizaciones_remotas();
 
-        flavor_chat_ia_log('Verificación de actualizaciones completada');
+        flavor_platform_log('Verificación de actualizaciones completada');
     }
 
     /**

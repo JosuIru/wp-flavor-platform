@@ -2,7 +2,7 @@
 /**
  * Hero Section - Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Bicicletas
  */
 

@@ -4,7 +4,7 @@
  *
  * Template para mostrar los intercambios del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -232,7 +232,7 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <div class="fl-empty-state">
             <span class="dashicons dashicons-randomize"></span>
             <p><?php esc_html_e('No tienes intercambios activos. ¡Explora los servicios disponibles!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', '')); ?>" class="fl-btn fl-btn-outline">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', '')); ?>" class="fl-btn fl-btn-outline">
                 <?php esc_html_e('Ver servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

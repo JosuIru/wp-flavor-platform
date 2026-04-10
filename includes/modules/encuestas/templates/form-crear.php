@@ -7,7 +7,7 @@
  * - $contexto_id: int
  * - $tipos_campo: array
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -133,7 +133,12 @@ $contexto_id = $contexto_id ?? 0;
                 </div>
                 <div class="flavor-encuesta-crear__field">
                     <select name="campos[{index}][tipo]" class="campo-tipo-select">
-                        <?php foreach (Flavor_Chat_Encuestas_Module::TIPOS_CAMPO as $valor => $etiqueta): ?>
+                        <?php
+                        $encuestas_module_class = function_exists('flavor_get_runtime_class_name')
+                            ? flavor_get_runtime_class_name('Flavor_Chat_Encuestas_Module')
+                            : 'Flavor_Chat_Encuestas_Module';
+                        foreach ($encuestas_module_class::TIPOS_CAMPO as $valor => $etiqueta):
+                        ?>
                             <option value="<?php echo esc_attr($valor); ?>"><?php echo esc_html($etiqueta); ?></option>
                         <?php endforeach; ?>
                     </select>

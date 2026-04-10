@@ -4,7 +4,7 @@
  *
  * Proporciona acceso a la documentación técnica desde el panel de administración.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -79,9 +79,9 @@ class Flavor_Documentation_Page {
 
         wp_enqueue_style(
             'flavor-docs-page',
-            FLAVOR_CHAT_IA_URL . 'assets/css/admin-docs.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/admin-docs.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Prism.js para syntax highlighting
@@ -239,7 +239,7 @@ class Flavor_Documentation_Page {
 
                     <div class="docs-version">
                         <small>
-                            <?php printf(__('Flavor Platform v%s', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_CHAT_IA_VERSION); ?>
+                            <?php printf(__('Flavor Platform v%s', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_PLATFORM_VERSION); ?>
                         </small>
                     </div>
                 </div>
@@ -352,7 +352,7 @@ class Flavor_Documentation_Page {
      * Renderiza un archivo Markdown
      */
     private function render_markdown_file($filename) {
-        $filepath = FLAVOR_CHAT_IA_PATH . 'docs/' . $filename;
+        $filepath = FLAVOR_PLATFORM_PATH . 'docs/' . $filename;
 
         if (!file_exists($filepath)) {
             echo '<div class="notice notice-error"><p>';

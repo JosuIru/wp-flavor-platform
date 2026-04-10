@@ -6,7 +6,7 @@
  * y las crea automáticamente. Los módulos declaran sus propias páginas vía
  * el método get_pages_definition().
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -47,11 +47,11 @@ class Flavor_Page_Creator_V3 {
     public function on_module_activated($module_id) {
         flavor_log_debug( "Módulo activado: {$module_id}, creando páginas...", 'PageCreator' );
 
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
         $module_instance = $module_loader->get_module_instance($module_id);
 
         if (!$module_instance) {
-            flavor_chat_ia_log( "No se pudo obtener instancia del módulo {$module_id}", 'warning', 'PageCreator' );
+            flavor_platform_log( "No se pudo obtener instancia del módulo {$module_id}", 'warning', 'PageCreator' );
             return;
         }
 
@@ -89,7 +89,7 @@ class Flavor_Page_Creator_V3 {
      */
     public function get_all_pages_definitions() {
         $all_pages = [];
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
         $loaded_modules = $module_loader->get_loaded_modules();
 
         foreach ($loaded_modules as $module_id => $module_instance) {
@@ -152,7 +152,7 @@ class Flavor_Page_Creator_V3 {
 
         // Validar datos requeridos
         if (empty($page_data['title']) || empty($page_data['slug'])) {
-            flavor_chat_ia_log( "Error: página sin título o slug en módulo {$module_id}", 'warning', 'PageCreator' );
+            flavor_platform_log( "Error: página sin título o slug en módulo {$module_id}", 'warning', 'PageCreator' );
             return new WP_Error('invalid_page_data', 'Título y slug son requeridos');
         }
 

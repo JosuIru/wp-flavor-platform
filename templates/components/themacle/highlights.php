@@ -7,7 +7,7 @@
  *   - icons:   Circle image/icon at top with text below.
  *   - minimal: Simple text list with a small accent marker.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo Section heading text.
  * @var array  $items  Repeater array with keys: imagen, titulo, descripcion, url.

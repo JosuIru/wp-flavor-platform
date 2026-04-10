@@ -4,7 +4,7 @@
  *
  * Panel principal con estadísticas y resúmenes del banco de tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

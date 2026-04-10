@@ -4,7 +4,7 @@
  *
  * Gestiona la visibilidad y permisos de acceso a los módulos de Flavor Platform.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -226,8 +226,8 @@ class Flavor_Module_Access_Control {
      */
     public function obtener_visibilidad_modulo($module_slug) {
         // Usar caché centralizada del Module Loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $visibilidades = Flavor_Chat_Module_Loader::get_visibility_settings_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $visibilidades = Flavor_Platform_Module_Loader::get_visibility_settings_cached();
         } else {
             $visibilidades = get_option('flavor_modules_visibility', []);
         }
@@ -248,8 +248,8 @@ class Flavor_Module_Access_Control {
      */
     public function obtener_capacidad_modulo($module_slug) {
         // Usar caché centralizada del Module Loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $capacidades = Flavor_Chat_Module_Loader::get_capabilities_settings_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $capacidades = Flavor_Platform_Module_Loader::get_capabilities_settings_cached();
         } else {
             $capacidades = get_option('flavor_modules_capabilities', []);
         }
@@ -388,7 +388,7 @@ class Flavor_Module_Access_Control {
         $modulos_accesibles = [];
 
         // Obtener loader de módulos
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
 
         foreach ($modulos_registrados as $module_id => $modulo_info) {
@@ -434,7 +434,7 @@ class Flavor_Module_Access_Control {
         }
 
         // Intentar cargar template
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'templates/access/login-required.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'templates/access/login-required.php';
 
         if (file_exists($ruta_template)) {
             ob_start();
@@ -467,7 +467,7 @@ class Flavor_Module_Access_Control {
         }
 
         // Luego en plugin
-        return FLAVOR_CHAT_IA_PATH . 'templates/access/' . $archivo;
+        return FLAVOR_PLATFORM_PATH . 'templates/access/' . $archivo;
     }
 
     /**

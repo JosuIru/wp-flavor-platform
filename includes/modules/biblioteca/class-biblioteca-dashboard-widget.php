@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Biblioteca
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Biblioteca
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {

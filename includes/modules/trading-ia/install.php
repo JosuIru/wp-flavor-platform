@@ -2,7 +2,7 @@
 /**
  * Instalacion de tablas para Trading IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

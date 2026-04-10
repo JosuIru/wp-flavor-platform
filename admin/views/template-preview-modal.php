@@ -5,7 +5,7 @@
  * Muestra la vista previa de lo que se instalara al activar una plantilla.
  * Usa datos cargados via AJAX en plantillaSeleccionadaData.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

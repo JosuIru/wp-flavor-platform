@@ -4,7 +4,7 @@
  *
  * Componente reutilizable para mostrar estados vacíos de forma visual y accionable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

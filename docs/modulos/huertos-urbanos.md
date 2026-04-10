@@ -340,17 +340,17 @@ Pagos de cuotas y depositos.
 ### Endpoints Disponibles
 
 ```
-GET  /wp-json/flavor-chat-ia/v1/huertos-urbanos/dashboard
+GET  /wp-json/flavor-platform/v1/huertos-urbanos/dashboard
      Obtiene dashboard completo del usuario
 
-POST /wp-json/flavor-chat-ia/v1/huertos-urbanos/solicitar-parcela
+POST /wp-json/flavor-platform/v1/huertos-urbanos/solicitar-parcela
      Envia solicitud de parcela
      Params: tamanio (required), observaciones
 
-POST /wp-json/flavor-chat-ia/v1/huertos-urbanos/tareas/{id}/completar
+POST /wp-json/flavor-platform/v1/huertos-urbanos/tareas/{id}/completar
      Marca tarea como completada
 
-POST /wp-json/flavor-chat-ia/v1/huertos-urbanos/intercambios/{id}/contactar
+POST /wp-json/flavor-platform/v1/huertos-urbanos/intercambios/{id}/contactar
      Contacta con usuario de intercambio
      Params: mensaje (required)
 ```

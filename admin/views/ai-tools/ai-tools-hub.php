@@ -2,7 +2,7 @@
 /**
  * Hub Central de Herramientas IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

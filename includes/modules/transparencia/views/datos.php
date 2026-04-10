@@ -4,7 +4,7 @@
  *
  * Gestión de documentos y datos publicados en el portal de transparencia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

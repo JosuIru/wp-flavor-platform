@@ -9,7 +9,7 @@
  * @var bool   $mostrar_precios
  * @var bool   $mostrar_alergenos
  * @var string $component_classes
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

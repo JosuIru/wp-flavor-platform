@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Productos de WooCommerce
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage WooCommerce
  */
 

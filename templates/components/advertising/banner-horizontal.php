@@ -4,7 +4,7 @@
  *
  * Banner publicitario horizontal responsive
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $ad_id ID del anuncio
  * @var bool $mostrar_etiqueta Mostrar badge de "Anuncio"
  */

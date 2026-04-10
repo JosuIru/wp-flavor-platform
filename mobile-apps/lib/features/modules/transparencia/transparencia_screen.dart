@@ -24,6 +24,9 @@ class _TransparenciaScreenState extends ConsumerState<TransparenciaScreen> {
   String? _categoriaSeleccionada;
   List<String> _categorias = [];
   final _searchController = TextEditingController();
+  bool _mostrarEstadisticas = true;
+  Map<String, int> _statsPorCategoria = {};
+  int _totalDescargas = 0;
 
   @override
   void initState() {
@@ -46,14 +49,28 @@ class _TransparenciaScreenState extends ConsumerState<TransparenciaScreen> {
             response.data!['data'] ??
             [];
 
-        // Extraer categorías únicas
+        // Extraer categorías únicas y calcular estadísticas
         final categoriasSet = <String>{};
+        final statsCategoria = <String, int>{};
+        int descargasTotales = 0;
+
         for (final doc in docs) {
-          final cat = (doc as Map<String, dynamic>)['categoria'] ??
-              doc['category'] ??
-              doc['tipo'];
-          if (cat != null && cat.toString().isNotEmpty) {
-            categoriasSet.add(cat.toString());
+          final documentoMap = doc as Map<String, dynamic>;
+          final categoria = documentoMap['categoria'] ??
+              documentoMap['category'] ??
+              documentoMap['tipo'];
+          if (categoria != null && categoria.toString().isNotEmpty) {
+            final categoriaStr = categoria.toString();
+            categoriasSet.add(categoriaStr);
+            statsCategoria[categoriaStr] = (statsCategoria[categoriaStr] ?? 0) + 1;
+          }
+
+          // Sumar descargas
+          final descargas = documentoMap['descargas'] ?? documentoMap['downloads'] ?? 0;
+          if (descargas is int) {
+            descargasTotales += descargas;
+          } else if (descargas is String) {
+            descargasTotales += int.tryParse(descargas) ?? 0;
           }
         }
 
@@ -61,6 +78,8 @@ class _TransparenciaScreenState extends ConsumerState<TransparenciaScreen> {
           _documentos = docs;
           _documentosFiltrados = docs;
           _categorias = categoriasSet.toList()..sort();
+          _statsPorCategoria = statsCategoria;
+          _totalDescargas = descargasTotales;
           _loading = false;
         });
       } else {
@@ -249,6 +268,10 @@ class _TransparenciaScreenState extends ConsumerState<TransparenciaScreen> {
                 )
               : Column(
                   children: [
+                    // Dashboard de estadísticas
+                    if (_documentos.isNotEmpty)
+                      _buildStatsDashboard(),
+
                     // Mostrar filtros activos
                     if (hayFiltrosActivos)
                       Container(
@@ -320,6 +343,288 @@ class _TransparenciaScreenState extends ConsumerState<TransparenciaScreen> {
                   ],
                 ),
     );
+  }
+
+  Widget _buildStatsDashboard() {
+    final coloresCategoria = <String, Color>{
+      'presupuestos': Colors.green,
+      'contratos': Colors.blue,
+      'subvenciones': Colors.purple,
+      'normativa': Colors.orange,
+      'actas': Colors.teal,
+      'personal': Colors.pink,
+      'indicadores': Colors.indigo,
+      'patrimonio': Colors.amber,
+    };
+
+    final iconosCategoria = <String, IconData>{
+      'presupuestos': Icons.account_balance_wallet,
+      'contratos': Icons.description,
+      'subvenciones': Icons.volunteer_activism,
+      'normativa': Icons.gavel,
+      'actas': Icons.assignment,
+      'personal': Icons.people,
+      'indicadores': Icons.analytics,
+      'patrimonio': Icons.account_balance,
+    };
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      child: _mostrarEstadisticas
+          ? Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.3),
+                  ],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header con toggle
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.insights,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Resumen de Transparencia',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          _mostrarEstadisticas
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _mostrarEstadisticas = !_mostrarEstadisticas;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Stats principales
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          icon: Icons.folder_open,
+                          value: '${_documentos.length}',
+                          label: 'Documentos',
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard(
+                          icon: Icons.category,
+                          value: '${_categorias.length}',
+                          label: 'Categorías',
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard(
+                          icon: Icons.download,
+                          value: _formatNumber(_totalDescargas),
+                          label: 'Descargas',
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Gráfico de categorías
+                  if (_statsPorCategoria.isNotEmpty) ...[
+                    Text(
+                      'Documentos por categoría',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 120,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _statsPorCategoria.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final categoriaEntry = _statsPorCategoria.entries.elementAt(index);
+                          final categoriaKey = categoriaEntry.key.toLowerCase();
+                          final cantidad = categoriaEntry.value;
+                          final porcentaje = (_documentos.isNotEmpty)
+                              ? (cantidad / _documentos.length * 100).round()
+                              : 0;
+
+                          final colorCategoria = coloresCategoria[categoriaKey] ??
+                              Colors.primaries[index % Colors.primaries.length];
+                          final iconoCategoria = iconosCategoria[categoriaKey] ?? Icons.folder;
+
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _categoriaSeleccionada = categoriaEntry.key;
+                                _filtrarDocumentos();
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: 100,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: colorCategoria.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: _categoriaSeleccionada == categoriaEntry.key
+                                    ? Border.all(color: colorCategoria, width: 2)
+                                    : null,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 44,
+                                        height: 44,
+                                        child: CircularProgressIndicator(
+                                          value: porcentaje / 100,
+                                          strokeWidth: 4,
+                                          backgroundColor: colorCategoria.withOpacity(0.2),
+                                          valueColor: AlwaysStoppedAnimation(colorCategoria),
+                                        ),
+                                      ),
+                                      Icon(iconoCategoria, color: colorCategoria, size: 20),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    '$cantidad',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: colorCategoria,
+                                    ),
+                                  ),
+                                  Text(
+                                    categoriaEntry.key,
+                                    style: const TextStyle(fontSize: 10),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            )
+          : InkWell(
+              onTap: () {
+                setState(() {
+                  _mostrarEstadisticas = true;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.insights,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${_documentos.length} documentos · ${_categorias.length} categorías',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Icon(Icons.expand_more, size: 20),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: color,
+            ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
   }
 
   Widget _buildDocumentoCard(dynamic item) {

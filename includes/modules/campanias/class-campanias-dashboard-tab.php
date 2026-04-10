@@ -7,7 +7,7 @@
  * - Campanias que ha creado
  * - Campanias que sigue
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -129,16 +129,16 @@ class Flavor_Campanias_Dashboard_Tab {
 
         wp_enqueue_style(
             'flavor-campanias-dashboard',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/css/campanias-dashboard.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/campanias/assets/css/campanias-dashboard.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-campanias-dashboard',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/js/campanias-dashboard.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/campanias/assets/js/campanias-dashboard.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -665,7 +665,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * @return string
      */
     private function get_url_campanias() {
-        return Flavor_Chat_Helpers::get_action_url('campanias', 'listar') ?: home_url('/campanias/');
+        return Flavor_Platform_Helpers::get_action_url('campanias', 'listar') ?: home_url('/campanias/');
     }
 
     /**
@@ -675,7 +675,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * @return string
      */
     private function get_url_detalle_campania($campania_id) {
-        $base_url = Flavor_Chat_Helpers::get_action_url('campanias', 'detalle') ?: home_url('/campania/');
+        $base_url = Flavor_Platform_Helpers::get_action_url('campanias', 'detalle') ?: home_url('/campania/');
         return add_query_arg('campania_id', $campania_id, $base_url);
     }
 
@@ -685,7 +685,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * @return string
      */
     private function get_url_crear_campania() {
-        return Flavor_Chat_Helpers::get_action_url('campanias', 'crear') ?: home_url('/crear-campania/');
+        return Flavor_Platform_Helpers::get_action_url('campanias', 'crear') ?: home_url('/crear-campania/');
     }
 
     /**
@@ -695,7 +695,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * @return string
      */
     private function get_url_editar_campania($campania_id) {
-        $base_url = Flavor_Chat_Helpers::get_action_url('campanias', 'editar') ?: home_url('/editar-campania/');
+        $base_url = Flavor_Platform_Helpers::get_action_url('campanias', 'editar') ?: home_url('/editar-campania/');
         return add_query_arg('campania_id', $campania_id, $base_url);
     }
 

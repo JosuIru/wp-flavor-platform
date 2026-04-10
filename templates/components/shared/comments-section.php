@@ -4,7 +4,7 @@
  *
  * Sección de comentarios unificada para cualquier tipo de contenido.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $item_type    Tipo de item (incidencia, evento, propuesta, etc.)

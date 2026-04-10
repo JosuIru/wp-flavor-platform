@@ -4,7 +4,7 @@
  *
  * Campo de formulario genérico reutilizable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $type        Tipo: text, email, password, textarea, select, checkbox, radio, file, date, number, tel, url, hidden

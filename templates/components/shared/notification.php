@@ -4,7 +4,7 @@
  *
  * Alertas y notificaciones reutilizables.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $type       Tipo: 'info', 'success', 'warning', 'error'

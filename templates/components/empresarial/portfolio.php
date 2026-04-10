@@ -2,7 +2,7 @@
 /**
  * Template: Portfolio / Casos de Éxito
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

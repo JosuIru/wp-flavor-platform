@@ -4,7 +4,7 @@
  *
  * Controlador frontend con shortcodes, AJAX handlers y tabs para el dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Colectivos
  * @since 4.2.0
  */
@@ -134,16 +134,16 @@ class Flavor_Colectivos_Frontend_Controller {
     public function registrar_assets() {
         wp_register_style(
             'flavor-colectivos-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/colectivos/assets/css/colectivos-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/colectivos/assets/css/colectivos-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-colectivos-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/colectivos/assets/js/colectivos-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/colectivos/assets/js/colectivos-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -182,7 +182,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         $this->enqueue_assets();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_colectivos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_colectivos)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
                    __('El sistema de colectivos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
@@ -221,7 +221,7 @@ class Flavor_Colectivos_Frontend_Controller {
                 <h2><?php _e('Colectivos y Asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-colectivos-acciones">
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>"
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -274,7 +274,7 @@ class Flavor_Colectivos_Frontend_Controller {
      * Renderiza tarjeta de colectivo
      */
     private function render_card_colectivo($colectivo) {
-        $imagen = !empty($colectivo->imagen) ? $colectivo->imagen : FLAVOR_CHAT_IA_URL . 'assets/images/colectivo-default.png';
+        $imagen = !empty($colectivo->imagen) ? $colectivo->imagen : FLAVOR_PLATFORM_URL . 'assets/images/colectivo-default.png';
         ?>
         <div class="flavor-colectivo-card">
             <div class="flavor-colectivo-imagen">
@@ -465,7 +465,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                 <?php endforeach; ?>
                             </div>
                             <?php if ($es_admin): ?>
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'nuevo-proyecto', ['colectivo_id' => $colectivo_id])); ?>"
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'nuevo-proyecto', ['colectivo_id' => $colectivo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <span class="dashicons dashicons-plus"></span>
                                     <?php _e('Nuevo Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -656,7 +656,7 @@ class Flavor_Colectivos_Frontend_Controller {
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('colectivos')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('colectivos')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -1010,7 +1010,7 @@ class Flavor_Colectivos_Frontend_Controller {
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-plus-alt"></span></div>
                     <div class="flavor-kpi-contenido">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                             <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
@@ -1107,7 +1107,7 @@ class Flavor_Colectivos_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Colectivo creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'colectivo_id' => $colectivo_id,
-                'redirect' => Flavor_Chat_Helpers::get_item_url('colectivos', $colectivo_id),
+                'redirect' => Flavor_Platform_Helpers::get_item_url('colectivos', $colectivo_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

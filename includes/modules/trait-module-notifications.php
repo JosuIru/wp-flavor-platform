@@ -252,11 +252,11 @@ trait Flavor_Module_Notifications_Trait {
 
 // Hook para procesar notificaciones programadas
 add_action('flavor_enviar_notificacion_programada', function($evento_data) {
-    if (!class_exists('Flavor_Chat_Module_Loader')) {
+    if (!class_exists('Flavor_Platform_Module_Loader')) {
         return;
     }
 
-    $loader = Flavor_Chat_Module_Loader::get_instance();
+    $loader = Flavor_Platform_Module_Loader::get_instance();
     $modulo = $loader->get_module($evento_data['modulo']);
 
     if ($modulo && method_exists($modulo, 'emitir_notificacion')) {

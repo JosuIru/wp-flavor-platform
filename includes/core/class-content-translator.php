@@ -7,7 +7,7 @@
  * - Posts, páginas, eventos, productos
  * - Mantiene formato y estructura
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

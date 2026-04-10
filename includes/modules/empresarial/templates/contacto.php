@@ -2,7 +2,7 @@
 /**
  * Template: Formulario de Contacto Empresarial
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $atts Atributos del shortcode
  */
 

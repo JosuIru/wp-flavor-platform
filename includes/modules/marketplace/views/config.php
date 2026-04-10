@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Marketplace
  */
 

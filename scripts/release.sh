@@ -29,8 +29,10 @@ COLOR_AZUL='\033[0;34m'
 
 # Directorio del plugin
 DIRECTORIO_PLUGIN="$(cd "$(dirname "$0")/.." && pwd)"
-NOMBRE_PLUGIN="flavor-chat-ia"
-ARCHIVO_PRINCIPAL="${DIRECTORIO_PLUGIN}/flavor-chat-ia.php"
+SLUG_TECNICO_PLUGIN="flavor-chat-ia"
+SLUG_DIST_PLUGIN="flavor-platform"
+ARCHIVO_PRINCIPAL="${DIRECTORIO_PLUGIN}/flavor-platform.php"
+NOMBRE_ARCHIVO_PRINCIPAL="$(basename "${ARCHIVO_PRINCIPAL}")"
 ARCHIVO_PACKAGE="${DIRECTORIO_PLUGIN}/package.json"
 ARCHIVO_CHANGELOG="${DIRECTORIO_PLUGIN}/CHANGELOG.md"
 DIRECTORIO_DIST="${DIRECTORIO_PLUGIN}/dist"
@@ -154,7 +156,7 @@ validar_pre_release() {
 
     # Verificar archivos criticos
     local ARCHIVOS_REQUERIDOS=(
-        "flavor-chat-ia.php"
+        "${NOMBRE_ARCHIVO_PRINCIPAL}"
         "uninstall.php"
         "README.md"
     )
@@ -189,7 +191,7 @@ actualizar_version_archivos() {
         # Actualizar constante de version si existe
         sed -i "s/define('FLAVOR_VERSION', '${VERSION_ACTUAL}')/define('FLAVOR_VERSION', '${VERSION_NUEVA}')/" "${ARCHIVO_PRINCIPAL}"
 
-        imprimir_mensaje success "flavor-chat-ia.php actualizado"
+        imprimir_mensaje success "Bootstrap principal actualizado"
     fi
 
     # Actualizar readme.txt si existe
@@ -249,8 +251,8 @@ generar_zip_distribucion() {
     # Crear directorio dist si no existe
     mkdir -p "${DIRECTORIO_DIST}"
 
-    local ARCHIVO_ZIP="${DIRECTORIO_DIST}/${NOMBRE_PLUGIN}-${VERSION_NUEVA}.zip"
-    local DIRECTORIO_TEMPORAL="${DIRECTORIO_DIST}/${NOMBRE_PLUGIN}"
+    local ARCHIVO_ZIP="${DIRECTORIO_DIST}/${SLUG_DIST_PLUGIN}-${VERSION_NUEVA}.zip"
+    local DIRECTORIO_TEMPORAL="${DIRECTORIO_DIST}/${SLUG_DIST_PLUGIN}"
 
     # Limpiar directorio temporal si existe
     rm -rf "${DIRECTORIO_TEMPORAL}"
@@ -268,6 +270,11 @@ generar_zip_distribucion() {
 
     # Copiar README.md (es necesario para WordPress)
     cp "${DIRECTORIO_PLUGIN}/README.md" "${DIRECTORIO_TEMPORAL}/" 2>/dev/null || true
+
+    if [[ ! -f "${DIRECTORIO_TEMPORAL}/${NOMBRE_ARCHIVO_PRINCIPAL}" ]]; then
+        imprimir_mensaje error "No se encontró el archivo principal para preparar la distribución"
+        exit 1
+    fi
 
     # Verificaciones minimas del paquete para evitar zips contaminados.
     local RUTAS_BLOQUEADAS=(
@@ -294,7 +301,7 @@ generar_zip_distribucion() {
     # Crear ZIP
     cd "${DIRECTORIO_DIST}"
     rm -f "${ARCHIVO_ZIP}"
-    zip -r "${ARCHIVO_ZIP}" "${NOMBRE_PLUGIN}"
+    zip -r "${ARCHIVO_ZIP}" "${SLUG_DIST_PLUGIN}"
 
     # Limpiar directorio temporal
     rm -rf "${DIRECTORIO_TEMPORAL}"
@@ -339,7 +346,7 @@ imprimir_resumen() {
     echo -e "${COLOR_AZUL}========================================${COLOR_RESET}"
     echo -e "  Version anterior: ${VERSION_ACTUAL}"
     echo -e "  Version nueva: ${COLOR_VERDE}${VERSION_NUEVA}${COLOR_RESET}"
-    echo -e "  ZIP: dist/${NOMBRE_PLUGIN}-${VERSION_NUEVA}.zip"
+    echo -e "  ZIP: dist/${SLUG_DIST_PLUGIN}-${VERSION_NUEVA}.zip"
     echo -e "${COLOR_AZUL}========================================${COLOR_RESET}"
     echo ""
 }

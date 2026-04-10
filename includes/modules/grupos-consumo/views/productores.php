@@ -2,7 +2,7 @@
 /**
  * Vista Productores - Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -9,7 +9,7 @@
  * - Indicadores de escritura mejorados
  * - Read receipts grupales
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules
  * @since 1.5.0
  */

@@ -5,7 +5,7 @@
  * Grid de categorias de datos abiertos con icono,
  * nombre, cantidad de documentos y enlaces de descarga.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -2,7 +2,7 @@
 /**
  * Vista: Mis colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $colectivos     Lista de colectivos del usuario
  * @var array $etiquetas_rol  Etiquetas de roles
  * @var array $atributos      Atributos del shortcode
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 <div class="flavor-col-mis-colectivos">
     <div class="flavor-col-header">
         <h2><?php esc_html_e('Mis colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
@@ -28,10 +28,10 @@ if (!defined('ABSPATH')) {
             <h3><?php esc_html_e('Aún no perteneces a ningún colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php esc_html_e('Explora los colectivos disponibles y únete a los que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-col-vacio-acciones">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-col-btn flavor-col-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-col-btn flavor-col-btn-secondary">
                     <?php esc_html_e('Explorar colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
                     <?php esc_html_e('Crear mi colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) {
                     <div class="flavor-col-item-content">
                         <div class="flavor-col-item-header">
                             <h3 class="flavor-col-item-nombre">
-                                <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>">
+                                <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Platform_Helpers::get_action_url('colectivos', ''))); ?>">
                                     <?php echo esc_html($colectivo['nombre']); ?>
                                 </a>
                             </h3>
@@ -83,7 +83,7 @@ if (!defined('ABSPATH')) {
                     </div>
 
                     <div class="flavor-col-item-acciones">
-                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Platform_Helpers::get_action_url('colectivos', ''))); ?>"
                            class="flavor-col-btn flavor-col-btn-ver">
                             <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>

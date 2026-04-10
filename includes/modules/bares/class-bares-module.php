@@ -5,7 +5,7 @@
  * Directorio y gestion de bares, restaurantes y locales de hosteleria
  * con carta, eventos y reservas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
  * Gestiona un directorio completo de establecimientos de hosteleria,
  * incluyendo cartas/menus, reservas, valoraciones y estadisticas.
  */
-class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Bares_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -66,7 +66,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_bares = $wpdb->prefix . 'flavor_bares';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_bares);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_bares);
     }
 
     /**
@@ -475,7 +475,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
         $eventos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $condicion_fecha = $solo_proximos ? "AND fecha >= CURDATE()" : "";
 
             $eventos = $wpdb->get_results($wpdb->prepare(
@@ -603,7 +603,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_bares = $wpdb->prefix . 'flavor_bares';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bares)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bares)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -624,7 +624,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_reservas = $wpdb->prefix . 'flavor_bares_reservas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -643,7 +643,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         $tabla_reservas = $wpdb->prefix . 'flavor_bares_reservas';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bares)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bares)) {
             return $estadisticas;
         }
 
@@ -660,7 +660,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Reservas pendientes
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             $reservas_pendientes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_reservas WHERE estado = 'pendiente'"
             );
@@ -869,7 +869,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_bares = $wpdb->prefix . 'flavor_bares';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bares)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bares)) {
             $this->create_tables();
         }
     }
@@ -2334,5 +2334,8 @@ KNOWLEDGE;
             Flavor_Bares_Frontend_Controller::get_instance();
         }
     }
+}
 
+if (!class_exists('Flavor_Chat_Bares_Module', false)) {
+    class_alias('Flavor_Platform_Bares_Module', 'Flavor_Chat_Bares_Module');
 }

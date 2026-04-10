@@ -4,7 +4,7 @@
  *
  * Indicador de pasos/etapas para procesos multi-paso.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $steps        Array de pasos: [['label' => '', 'description' => '', 'icon' => '']]

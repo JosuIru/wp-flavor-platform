@@ -4,7 +4,7 @@
  *
  * Define los planes disponibles y qué módulos incluye cada uno
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Licensing
  * @since 3.2.0
  */
@@ -293,7 +293,7 @@ class Flavor_License_Plans {
      * @return array
      */
     public function get_all_available_modules() {
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
         $all_modules = $module_loader->get_available_modules();
 
         return array_keys($all_modules);

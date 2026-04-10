@@ -2,7 +2,7 @@
 /**
  * Modulo de Parkings Comunitarios para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Parkings - Gestion completa de plazas de parking comunitarias
  */
-class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Parkings_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -78,7 +78,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_parkings);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_parkings);
     }
 
     /**
@@ -172,7 +172,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_parkings)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_parkings)) {
             $this->create_tables();
         }
     }
@@ -511,14 +511,14 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
             'flavor-parkings',
             $modulo_url . 'css/parkings.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-parkings',
             $modulo_url . 'js/parkings.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -3912,7 +3912,7 @@ KNOWLEDGE;
         );
 
         $plazas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_plazas)) {
             $plazas = $wpdb->get_results(
                 "SELECT p.*, pk.nombre as parking_nombre
                  FROM {$this->tabla_plazas} p
@@ -4041,7 +4041,7 @@ KNOWLEDGE;
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_plazas)) {
             return 0;
         }
 
@@ -4066,7 +4066,7 @@ KNOWLEDGE;
         $plazas_ocupadas = 0;
         $reservas_activas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_plazas)) {
             $total_plazas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_plazas}");
             $plazas_libres = (int) $wpdb->get_var(
                 $wpdb->prepare("SELECT COUNT(*) FROM {$this->tabla_plazas} WHERE estado = %s", self::ESTADO_PLAZA_LIBRE)
@@ -4076,7 +4076,7 @@ KNOWLEDGE;
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_reservas)) {
             $reservas_activas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'activa'"
             );
@@ -4331,4 +4331,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
+}
+
+if (!class_exists('Flavor_Chat_Parkings_Module', false)) {
+    class_alias('Flavor_Platform_Parkings_Module', 'Flavor_Chat_Parkings_Module');
 }

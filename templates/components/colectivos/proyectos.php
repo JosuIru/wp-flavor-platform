@@ -6,7 +6,7 @@
  * @var bool   $mostrar_progreso
  * @var string $component_classes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -24,7 +24,7 @@ global $wpdb;
 $tabla_colectivos_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
 $tabla_colectivos           = $wpdb->prefix . 'flavor_colectivos';
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_colectivos_proyectos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_colectivos_proyectos)) {
     $proyectos_para_mostrar = $wpdb->get_results(
         "SELECT p.*, c.nombre as colectivo_nombre, c.tipo as colectivo_tipo
          FROM $tabla_colectivos_proyectos p

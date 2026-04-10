@@ -2,7 +2,7 @@
 /**
  * Paper Trading - Simulacion de trading sin dinero real
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

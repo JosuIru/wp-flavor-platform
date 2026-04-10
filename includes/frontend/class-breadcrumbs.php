@@ -7,7 +7,7 @@
  * - ARIA attributes
  * - Integracion con paginas dinamicas del portal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  * @since 4.1.0
  */

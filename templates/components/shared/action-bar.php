@@ -4,7 +4,7 @@
  *
  * Barra de acciones para bulk actions, filtros y búsqueda.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $bulk_actions   Acciones masivas: [['id' => 'delete', 'label' => 'Eliminar', 'icon' => '🗑', 'confirm' => true, 'danger' => true]]

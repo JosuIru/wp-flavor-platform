@@ -5,7 +5,7 @@
  * Contiene las definiciones expandidas de todas las plantillas disponibles
  * incluyendo modulos, paginas, landing pages, configuracion y datos demo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator
  */
 

@@ -2,7 +2,7 @@
 /**
  * Gestión de perfiles de Artista (extensión Kulturaka)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Socios\Artistas
  */
 

@@ -9,7 +9,7 @@
  * @var int    $indice_actual     - Indice del episodio actual en la playlist
  * @var bool   $puede_interactuar - Si el usuario puede interactuar
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

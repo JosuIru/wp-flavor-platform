@@ -5,7 +5,7 @@
  * Permite sincronización en tiempo real entre nodos
  * mediante notificaciones push.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

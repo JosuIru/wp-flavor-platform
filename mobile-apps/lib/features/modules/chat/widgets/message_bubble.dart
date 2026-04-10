@@ -13,6 +13,7 @@ class MessageBubble extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final VoidCallback? onReplyTap;
+  final void Function(String messageId, String optionId)? onPollVote;
 
   const MessageBubble({
     super.key,
@@ -22,6 +23,7 @@ class MessageBubble extends StatelessWidget {
     this.onTap,
     this.onLongPress,
     this.onReplyTap,
+    this.onPollVote,
   });
 
   @override
@@ -549,9 +551,18 @@ class MessageBubble extends StatelessWidget {
   }
 
   Widget _buildPollMessage(BuildContext context, ColorScheme colorScheme) {
-    // TODO: Implementar encuestas
+    // Parsear datos de la encuesta desde metadata
+    final pollData = message.metadata;
+    final question = pollData?['question'] as String? ?? message.content;
+    final options = (pollData?['options'] as List<dynamic>?)?.cast<Map<String, dynamic>>() ?? [];
+    final totalVotes = options.fold<int>(0, (sum, opt) => sum + (opt['votes'] as int? ?? 0));
+    final myVote = pollData?['my_vote'] as String?;
+    final allowMultiple = pollData?['allow_multiple'] as bool? ?? false;
+    final isExpired = pollData?['is_expired'] as bool? ?? false;
+
     return Container(
       padding: const EdgeInsets.all(12),
+      constraints: const BoxConstraints(minWidth: 250, maxWidth: 300),
       decoration: BoxDecoration(
         color: isMe
             ? colorScheme.primary.withOpacity(0.15)
@@ -561,15 +572,121 @@ class MessageBubble extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header de encuesta
           Row(
             children: [
-              const Icon(Icons.poll, size: 20),
+              Icon(Icons.poll, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
-              Text(message.content, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(
+                  question,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text('Encuesta - toca para ver'),
+          if (allowMultiple)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                'Selección múltiple',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+            ),
+          const SizedBox(height: 12),
+
+          // Opciones de la encuesta
+          if (options.isNotEmpty)
+            ...options.map((opt) {
+              final optionId = opt['id'] as String? ?? '';
+              final optionText = opt['text'] as String? ?? '';
+              final votes = opt['votes'] as int? ?? 0;
+              final percentage = totalVotes > 0 ? (votes / totalVotes * 100) : 0.0;
+              final isSelected = myVote == optionId;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: InkWell(
+                  onTap: isExpired || onPollVote == null
+                      ? null
+                      : () => onPollVote!(message.id, optionId),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? colorScheme.primary.withOpacity(0.2)
+                          : colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isSelected
+                            ? colorScheme.primary
+                            : colorScheme.outline.withOpacity(0.3),
+                        width: isSelected ? 2 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (isSelected)
+                              Icon(Icons.check_circle, size: 16, color: colorScheme.primary)
+                            else
+                              Icon(Icons.circle_outlined, size: 16, color: Colors.grey[400]),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(optionText)),
+                            Text(
+                              '${percentage.toStringAsFixed(0)}%',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: percentage / 100,
+                            backgroundColor: colorScheme.outline.withOpacity(0.2),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              isSelected ? colorScheme.primary : colorScheme.primary.withOpacity(0.6),
+                            ),
+                            minHeight: 4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+
+          // Footer con total de votos
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '$totalVotes ${totalVotes == 1 ? 'voto' : 'votos'}',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+              if (isExpired)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    'Finalizada',
+                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
           _buildTimeAndStatus(colorScheme),
         ],
       ),

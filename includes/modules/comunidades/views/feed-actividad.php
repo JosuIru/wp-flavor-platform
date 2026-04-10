@@ -6,7 +6,7 @@
  * - $actividades: array de actividades
  * - $comunidad_id: int ID de la comunidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

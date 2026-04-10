@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para mediación y resolución de conflictos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

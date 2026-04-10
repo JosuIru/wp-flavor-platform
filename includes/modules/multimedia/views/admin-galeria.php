@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Galeria Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

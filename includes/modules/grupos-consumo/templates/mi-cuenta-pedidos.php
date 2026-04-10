@@ -2,7 +2,7 @@
 /**
  * Template: Tab Mis Pedidos en Mi Cuenta
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 

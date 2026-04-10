@@ -7,7 +7,7 @@
  * @var string $tipo_filtro
  * @var string $component_classes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -33,7 +33,7 @@ $colectivos_para_mostrar = [];
 global $wpdb;
 $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_colectivos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_colectivos)) {
     $condicion_tipo = '';
     $valores_preparacion = [];
 

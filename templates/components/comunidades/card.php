@@ -5,7 +5,7 @@
  * Card específica para mostrar comunidades con tipo,
  * miembros, ubicación y estado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array $item  Datos de la comunidad (o usar $card_item si viene de items-grid)

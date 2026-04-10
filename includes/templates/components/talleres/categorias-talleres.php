@@ -4,7 +4,7 @@
  *
  * Displays workshop categories with icons and descriptions
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Talleres
  */
 

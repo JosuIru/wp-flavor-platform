@@ -5,7 +5,7 @@
  * Esta es una plantilla de ejemplo que muestra cómo usar
  * los componentes mejorados para crear dashboards atractivos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

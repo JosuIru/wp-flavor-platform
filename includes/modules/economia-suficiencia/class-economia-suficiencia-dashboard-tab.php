@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Economía de la Suficiencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EconomiaSuficiencia
  */
 
@@ -92,7 +92,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         $recursos_compartidos = 0;
         $comunidad_participantes = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_compromisos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_compromisos)) {
             $mis_compromisos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_compromisos} WHERE usuario_id = %d",
                 $user_id
@@ -106,7 +106,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_recursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_recursos)) {
             $recursos_compartidos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_recursos} WHERE propietario_id = %d AND compartido = 1",
                 $user_id
@@ -176,11 +176,11 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-compromiso')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'nuevo-compromiso')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-flag"></span>
                     <?php esc_html_e('Nuevo Compromiso', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-book"></span>
                     <?php esc_html_e('Biblioteca', 'flavor-platform'); ?>
                 </a>
@@ -203,7 +203,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         $tabla_recursos = $wpdb->prefix . 'flavor_suficiencia_recursos';
 
         $mis_recursos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_recursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_recursos)) {
             $mis_recursos = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_recursos} WHERE propietario_id = %d ORDER BY fecha_registro DESC LIMIT 20",
                 $user_id
@@ -214,7 +214,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         <div class="flavor-panel flavor-recursos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-portfolio"></span> <?php esc_html_e('Mis Recursos', 'flavor-platform'); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-recurso')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'nuevo-recurso')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Añadir', 'flavor-platform'); ?>
                 </a>

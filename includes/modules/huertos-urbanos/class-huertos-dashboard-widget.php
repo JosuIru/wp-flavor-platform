@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\HuertosUrbanos
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -82,7 +82,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_parcelas,
                 'label' => __('Mis parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_parcelas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'mis-parcelas'),
+                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Platform_Helpers::get_action_url('huertos_urbanos', 'mis-parcelas'),
             ];
         }
 
@@ -91,7 +91,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $parcelas_disponibles,
             'label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $parcelas_disponibles > 0 ? 'info' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&tab=disponibles') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'disponibles'),
+            'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&tab=disponibles') : Flavor_Platform_Helpers::get_action_url('huertos_urbanos', 'disponibles'),
         ];
 
         $items = $user_id ? $this->get_mis_parcelas($user_id, 3) : [];
@@ -103,7 +103,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Platform_Helpers::get_action_url('huertos_urbanos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -137,7 +137,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-carrot',
                 'title' => $parcela->nombre ?: __('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'meta' => $parcela->ubicacion ?: '',
-                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&parcela=' . $parcela->id) : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'parcela') . '/' . $parcela->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&parcela=' . $parcela->id) : Flavor_Platform_Helpers::get_action_url('huertos_urbanos', 'parcela') . '/' . $parcela->id . '/',
             ];
         }
 

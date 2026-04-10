@@ -4,7 +4,7 @@
  *
  * Live radio player with now playing information
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Radio
  */
 

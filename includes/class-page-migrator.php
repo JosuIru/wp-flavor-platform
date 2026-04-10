@@ -2,7 +2,7 @@
 /**
  * Page Migrator - Actualiza páginas existentes al nuevo formato
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -2,7 +2,7 @@
 /**
  * Vista Recursos y Herramientas - Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

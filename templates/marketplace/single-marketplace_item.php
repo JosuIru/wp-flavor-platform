@@ -5,7 +5,7 @@
  * Este archivo puede ser sobrescrito copiándolo a:
  * tu-tema/flavor-chat-ia/marketplace/single-marketplace_item.php
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -32,8 +32,8 @@ while (have_posts()) : the_post();
     // Autor del anuncio
     $autor_id = get_the_author_meta('ID');
     $autor_nombre = get_the_author();
-    $autor_avatar = Flavor_Chat_Helpers::obtener_avatar_url($autor_id, 96);
-    $fecha_publicacion = Flavor_Chat_Helpers::tiempo_transcurrido(get_the_time('U'));
+    $autor_avatar = Flavor_Platform_Helpers::obtener_avatar_url($autor_id, 96);
+    $fecha_publicacion = Flavor_Platform_Helpers::tiempo_transcurrido(get_the_time('U'));
 
     // Traducciones de estado
     $estados_traduccion = [
@@ -87,7 +87,7 @@ while (have_posts()) : the_post();
 
                     <?php if ($precio && in_array($tipos[0]->slug ?? '', ['venta', 'alquiler'])): ?>
                         <div class="marketplace-precio">
-                            <?php echo Flavor_Chat_Helpers::formatear_precio($precio); ?>
+                            <?php echo Flavor_Platform_Helpers::formatear_precio($precio); ?>
                             <?php if ($tipos[0]->slug === 'alquiler'): ?>
                                 <span class="marketplace-precio-periodo"><?php _e('/ día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
@@ -125,7 +125,7 @@ while (have_posts()) : the_post();
                                 <?php
                                 printf(
                                     __('Válido hasta %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                                    Flavor_Chat_Helpers::formatear_fecha($fecha_expiracion, 'short')
+                                    Flavor_Platform_Helpers::formatear_fecha($fecha_expiracion, 'short')
                                 );
                                 ?>
                             </span>
@@ -164,7 +164,7 @@ while (have_posts()) : the_post();
                                 <?php
                                 printf(
                                     __('Miembro desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                                    Flavor_Chat_Helpers::formatear_fecha(get_the_author_meta('user_registered', $autor_id), 'short')
+                                    Flavor_Platform_Helpers::formatear_fecha(get_the_author_meta('user_registered', $autor_id), 'short')
                                 );
                                 ?>
                             </span>
@@ -255,7 +255,7 @@ while (have_posts()) : the_post();
                                 <?php
                                 $precio_rel = get_post_meta(get_the_ID(), '_marketplace_precio', true);
                                 if ($precio_rel): ?>
-                                    <p class="marketplace-card-precio"><?php echo Flavor_Chat_Helpers::formatear_precio($precio_rel); ?></p>
+                                    <p class="marketplace-card-precio"><?php echo Flavor_Platform_Helpers::formatear_precio($precio_rel); ?></p>
                                 <?php endif; ?>
                             </a>
                         </div>

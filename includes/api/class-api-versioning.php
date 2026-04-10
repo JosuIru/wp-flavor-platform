@@ -2,7 +2,7 @@
 /**
  * Sistema de versionado de API con deprecation
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  */
 

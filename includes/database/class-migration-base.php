@@ -524,8 +524,8 @@ abstract class Flavor_Migration_Base {
      * @return void
      */
     protected function log($message, $level = 'info') {
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("[Migration: {$this->migration_name}] {$message}", $level, 'database');
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("[Migration: {$this->migration_name}] {$message}", $level, 'database');
         }
     }
 }

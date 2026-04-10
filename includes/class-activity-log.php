@@ -5,7 +5,7 @@
  * Registra acciones de todos los modulos en una tabla centralizada
  * para seguimiento, auditoria y diagnostico.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.1.0
  */
 
@@ -54,7 +54,7 @@ class Flavor_Activity_Log {
 
     private function maybe_create_table() {
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->nombre_tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->nombre_tabla)) {
             $this->create_table();
         } else {
             // Verificar y actualizar estructura si es necesario
@@ -375,7 +375,7 @@ class Flavor_Activity_Log {
         ));
 
         if ($registros_eliminados > 0) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Activity Log: eliminados %d registros anteriores a %s', $registros_eliminados, $fecha_limite),
                 'info'
             );

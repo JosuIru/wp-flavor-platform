@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Programas de Radio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

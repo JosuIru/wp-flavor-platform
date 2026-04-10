@@ -10,7 +10,7 @@
  * 2. Cada modulo base declara que "acepta" (ej: productos acepta recetas, videos)
  * 3. El sistema crea automaticamente las relaciones cuando ambos estan activos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

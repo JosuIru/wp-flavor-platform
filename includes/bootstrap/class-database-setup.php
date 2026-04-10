@@ -78,7 +78,7 @@ final class Flavor_Database_Setup {
         $results = $runner->run_pending();
 
         if (!empty($results['executed'])) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Migrations ejecutadas: %d', count($results['executed'])),
                 'info',
                 'database'
@@ -86,7 +86,7 @@ final class Flavor_Database_Setup {
         }
 
         if (!empty($results['errors'])) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Errores en migrations: %s', implode(', ', $results['errors'])),
                 'error',
                 'database'
@@ -246,7 +246,8 @@ final class Flavor_Database_Setup {
         }
 
         // Hook para instalaciones adicionales de módulos
-        do_action('flavor_chat_ia_install_modules');
+        do_action('flavor_platform_install_modules');
+        do_action('flavor_platform_install_modules');
     }
 
     /**
@@ -257,7 +258,7 @@ final class Flavor_Database_Setup {
      * @return void
      */
     private function maybe_run_module_installer($module_slug, $function_name) {
-        $install_path = FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/install.php";
+        $install_path = FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/install.php";
 
         if (file_exists($install_path)) {
             require_once $install_path;
@@ -310,7 +311,7 @@ final class Flavor_Database_Setup {
         // Instalar tablas
         if (class_exists('Flavor_Database_Installer')) {
             Flavor_Database_Installer::install_tables();
-            flavor_chat_ia_log('Tablas de módulos instaladas automáticamente', 'info');
+            flavor_platform_log('Tablas de módulos instaladas automáticamente', 'info');
         }
     }
 
@@ -393,7 +394,7 @@ final class Flavor_Database_Setup {
 
                 foreach ($registros as $registro) {
                     $url_original = $registro->url;
-                    $url_corregida = Flavor_Chat_Helpers::fix_placeholder_url($url_original);
+                    $url_corregida = Flavor_Platform_Helpers::fix_placeholder_url($url_original);
 
                     if ($url_corregida !== $url_original) {
                         $wpdb->update(

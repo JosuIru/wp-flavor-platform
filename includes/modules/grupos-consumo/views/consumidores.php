@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Gestión de Consumidores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -288,7 +288,10 @@ $todos_los_grupos = get_posts([
                                     </a>
                                     <?php
                                     // Boton de crear factura si el modulo de facturas esta activo
-                                    $modulo_facturas_activo = class_exists('Flavor_Chat_Facturas_Module');
+                                    $facturas_module_class = function_exists('flavor_get_runtime_class_name')
+                                        ? flavor_get_runtime_class_name('Flavor_Chat_Facturas_Module')
+                                        : 'Flavor_Chat_Facturas_Module';
+                                    $modulo_facturas_activo = class_exists($facturas_module_class);
                                     if ($modulo_facturas_activo):
                                         $url_factura = admin_url('admin.php?page=facturas-nueva&cliente_id=' . $consumidor->usuario_id . '&cliente_tipo=consumidor');
                                     ?>

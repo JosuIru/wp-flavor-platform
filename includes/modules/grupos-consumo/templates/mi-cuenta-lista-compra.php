@@ -2,7 +2,7 @@
 /**
  * Template: Tab Lista de Compra en Mi Cuenta
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 
@@ -30,7 +30,7 @@ $ciclo_actual = $args['ciclo'] ?? null;
             <div class="gc-empty-icon">🛒</div>
             <h3><?php _e('Tu lista está vacía', 'flavor-platform'); ?></h3>
             <p><?php _e('Añade productos para preparar tu próximo pedido.', 'flavor-platform'); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                 <span class="dashicons dashicons-cart"></span>
                 <?php _e('Explorar productos', 'flavor-platform'); ?>
             </a>

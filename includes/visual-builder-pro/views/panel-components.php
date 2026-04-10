@@ -4,7 +4,7 @@
  *
  * Panel del sidebar izquierdo para gestionar componentes reutilizables.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.22
  */

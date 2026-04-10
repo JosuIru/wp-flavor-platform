@@ -2,7 +2,7 @@
 /**
  * Template: Logros Ecológicos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,7 +10,10 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$modulo = new Flavor_Chat_Huella_Ecologica_Module();
+$huella_ecologica_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Huella_Ecologica_Module')
+    : 'Flavor_Chat_Huella_Ecologica_Module';
+$modulo = new $huella_ecologica_module_class();
 $logros = $modulo->get_logros_usuario($user_id);
 
 $logros_obtenidos = array_filter($logros, fn($l) => $l['obtenido']);
@@ -101,7 +104,7 @@ $puntos_totales = array_sum(array_map(fn($l) => $l['puntos'], $logros_obtenidos)
         <p style="color: var(--he-text-light); margin-bottom: 1rem;">
             <?php esc_html_e('Sigue registrando acciones ecológicas para desbloquear más logros', 'flavor-platform'); ?>
         </p>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'mis-registros')); ?>" class="he-btn he-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'mis-registros')); ?>" class="he-btn he-btn--primary">
             <span class="dashicons dashicons-yes-alt"></span>
             <?php esc_html_e('Registrar acción', 'flavor-platform'); ?>
         </a>

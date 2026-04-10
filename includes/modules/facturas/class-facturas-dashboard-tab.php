@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Facturas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -599,8 +599,8 @@ class Flavor_Facturas_Dashboard_Tab {
         }
 
         $module = null;
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             if ($loader && method_exists($loader, 'get_module')) {
                 $module = $loader->get_module('facturas');
             }

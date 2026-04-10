@@ -8,7 +8,7 @@
  * - Previene desactivar módulos si otros dependen de ellos
  * - Genera mapas visuales de dependencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -124,10 +124,10 @@ class Flavor_Module_Dependency_Resolver {
 
         // Filtrar solo los dependientes que están activos
         $active_dependents = [];
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         foreach ($dependents as $dependent_id) {
-            if (Flavor_Chat_Module_Loader::is_module_active($dependent_id)) {
+            if (Flavor_Platform_Module_Loader::is_module_active($dependent_id)) {
                 $active_dependents[] = $dependent_id;
             }
         }
@@ -158,11 +158,11 @@ class Flavor_Module_Dependency_Resolver {
      * @return array
      */
     public function get_module_dependencies($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $instance = $loader->get_module_instance($module_id);
 
         if (!$instance || !method_exists($instance, 'get_dependencies')) {
@@ -185,11 +185,11 @@ class Flavor_Module_Dependency_Resolver {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $missing = [];
 
         foreach ($dependencies as $dep_id) {
-            if (!Flavor_Chat_Module_Loader::is_module_active($dep_id)) {
+            if (!Flavor_Platform_Module_Loader::is_module_active($dep_id)) {
                 $missing[] = $dep_id;
             }
         }
@@ -268,11 +268,11 @@ class Flavor_Module_Dependency_Resolver {
             return $this->dependency_map;
         }
 
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $all_modules = $loader->get_registered_modules();
         $map = [];
 
@@ -344,10 +344,10 @@ class Flavor_Module_Dependency_Resolver {
         $graph .= "    classDef inactive fill:#ef4444,stroke:#dc2626,color:#fff\n";
 
         // Marcar módulos activos
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         foreach (array_keys($filtered) as $module_id) {
-            if (Flavor_Chat_Module_Loader::is_module_active($module_id)) {
+            if (Flavor_Platform_Module_Loader::is_module_active($module_id)) {
                 $graph .= "    class {$module_id} active\n";
             } else {
                 $graph .= "    class {$module_id} inactive\n";
@@ -380,7 +380,7 @@ class Flavor_Module_Dependency_Resolver {
         foreach ($dependencies as $dep_id) {
             $tree[$dep_id] = [
                 'name' => $this->get_module_name($dep_id),
-                'active' => Flavor_Chat_Module_Loader::is_module_active($dep_id),
+                'active' => Flavor_Platform_Module_Loader::is_module_active($dep_id),
                 'dependencies' => $this->get_dependency_tree($dep_id, $depth - 1),
             ];
         }
@@ -421,11 +421,11 @@ class Flavor_Module_Dependency_Resolver {
      * @return string
      */
     private function get_module_name($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return ucfirst(str_replace('_', ' ', $module_id));
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $instance = $loader->get_module_instance($module_id);
 
         if ($instance && method_exists($instance, 'get_name')) {
@@ -442,12 +442,12 @@ class Flavor_Module_Dependency_Resolver {
      * @return bool
      */
     private function is_module_active($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return false;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        return Flavor_Chat_Module_Loader::is_module_active($module_id);
+        $loader = Flavor_Platform_Module_Loader::get_instance();
+        return Flavor_Platform_Module_Loader::is_module_active($module_id);
     }
 
     /**
@@ -466,7 +466,7 @@ class Flavor_Module_Dependency_Resolver {
     public function generate_dependency_report() {
         $dependency_map = $this->get_dependency_map();
         $reverse_map = $this->get_reverse_dependency_map();
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         $report = [
             'modules_with_dependencies' => 0,
@@ -501,7 +501,7 @@ class Flavor_Module_Dependency_Resolver {
 
             $report['details'][$module_id] = [
                 'name' => $this->get_module_name($module_id),
-                'active' => Flavor_Chat_Module_Loader::is_module_active($module_id),
+                'active' => Flavor_Platform_Module_Loader::is_module_active($module_id),
                 'requires' => $dependencies,
                 'required_by' => $reverse_map[$module_id] ?? [],
             ];

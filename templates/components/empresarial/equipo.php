@@ -2,7 +2,7 @@
 /**
  * Template: Equipo / Staff
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

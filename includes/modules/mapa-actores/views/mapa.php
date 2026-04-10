@@ -2,7 +2,7 @@
 /**
  * Vista territorial de actores por municipio.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

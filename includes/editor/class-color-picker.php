@@ -2,7 +2,7 @@
 /**
  * Color Picker Avanzado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

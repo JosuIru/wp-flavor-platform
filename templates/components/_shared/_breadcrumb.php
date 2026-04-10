@@ -2,7 +2,7 @@
 /**
  * Componente Compartido: Breadcrumb
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $migas Array de ['label' => '', 'url' => '']
  * @var string $color_enlace
  */

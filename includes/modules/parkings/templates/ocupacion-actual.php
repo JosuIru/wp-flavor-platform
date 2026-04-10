@@ -4,7 +4,7 @@
  *
  * Muestra un resumen compacto de la ocupación de parkings para widgets y sidebars.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_parkings)) {
     return;
 }
 
@@ -72,7 +72,7 @@ if ($porcentaje_general >= 90) {
     $color_estado = '#f59e0b'; // Amarillo
 }
 
-$parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
+$parkings_url = Flavor_Platform_Helpers::get_action_url('parkings', '');
 ?>
 
 <div class="widget-ocupacion-actual">

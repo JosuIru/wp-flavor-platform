@@ -7,7 +7,7 @@
  * - Estado de seguimiento
  * - Incidencias recientes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Incidencias
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -193,7 +193,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_abiertas,
                 'label' => __('Mis incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_abiertas > 0 ? 'warning' : 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=incidencias&filter=mias') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
+                'url' => $es_admin ? admin_url('admin.php?page=incidencias&filter=mias') : Flavor_Platform_Helpers::get_action_url('incidencias', 'mis-incidencias'),
             ];
         }
 
@@ -204,7 +204,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $actualizaciones_nuevas,
                 'label' => __('Actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
+                'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Platform_Helpers::get_action_url('incidencias', 'mis-incidencias'),
             ];
         }
 
@@ -214,7 +214,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_abiertas,
             'label' => __('En la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Chat_Helpers::get_action_url('incidencias', ''),
+            'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Platform_Helpers::get_action_url('incidencias', ''),
         ];
 
         // Stat 4: Reportar nueva
@@ -224,7 +224,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'danger',
-                'url' => $es_admin ? admin_url('admin.php?page=incidencias&action=nueva') : Flavor_Chat_Helpers::get_action_url('incidencias', 'reportar'),
+                'url' => $es_admin ? admin_url('admin.php?page=incidencias&action=nueva') : Flavor_Platform_Helpers::get_action_url('incidencias', 'reportar'),
             ];
         }
 
@@ -244,7 +244,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver mapa de incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=incidencias&view=mapa') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mapa'),
+                    'url' => $es_admin ? admin_url('admin.php?page=incidencias&view=mapa') : Flavor_Platform_Helpers::get_action_url('incidencias', 'mapa'),
                     'icon' => 'dashicons-location-alt',
                 ],
             ],
@@ -305,7 +305,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => wp_trim_words($incidencia->titulo, 5, '...'),
                 'meta' => $incidencia->direccion ? wp_trim_words($incidencia->direccion, 4, '...') : human_time_diff(strtotime($incidencia->fecha_creacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=incidencias&id=' . $incidencia->id) : add_query_arg('incidencia_id', $incidencia->id, Flavor_Chat_Helpers::get_action_url('incidencias', 'ver')),
+                'url' => $es_admin ? admin_url('admin.php?page=incidencias&id=' . $incidencia->id) : add_query_arg('incidencia_id', $incidencia->id, Flavor_Platform_Helpers::get_action_url('incidencias', 'ver')),
                 'badge' => $badge,
             ];
         }

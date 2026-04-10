@@ -4,7 +4,7 @@
  *
  * Sección explicativa del proceso de un módulo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $steps Pasos del proceso [{icon, title, text}]

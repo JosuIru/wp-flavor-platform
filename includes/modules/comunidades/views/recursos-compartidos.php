@@ -8,7 +8,7 @@
  * - $recursos: Array de recursos combinados
  * - $atributos: Atributos del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -3,7 +3,7 @@
  * Vista Red - Kulturaka
  * Mapa de nodos de la red cultural descentralizada
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

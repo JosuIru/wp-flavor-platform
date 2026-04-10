@@ -10,7 +10,7 @@
  * - mostrar_grafico: Tipo de gráfico ('barras', 'donut', 'ambos')
  * - moneda: Símbolo de moneda
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

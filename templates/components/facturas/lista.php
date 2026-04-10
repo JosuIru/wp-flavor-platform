@@ -2,7 +2,7 @@
 /**
  * Template: Listado de Facturas del Usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 

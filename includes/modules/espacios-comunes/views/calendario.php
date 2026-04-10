@@ -3,7 +3,7 @@
  * Vista de Calendario Maestro de Espacios Comunes
  * Visualización completa de todas las reservas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

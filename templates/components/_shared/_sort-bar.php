@@ -2,7 +2,7 @@
 /**
  * Componente Compartido: Barra de Ordenación y Filtros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $total_items
  * @var string $etiqueta_items Ej: "servicios", "productos"
  * @var string $ordenacion_actual

@@ -5,7 +5,7 @@
  * Maneja vistas frontend, shortcodes, AJAX y dashboard tabs
  * para el sistema de parkings comunitarios.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

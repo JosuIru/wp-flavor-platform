@@ -8,7 +8,7 @@
  * - $todos_eventos: Array de eventos combinados
  * - $atributos: Atributos del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

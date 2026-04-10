@@ -6,7 +6,7 @@
  * configuración en la base de datos. Estas relaciones son ejemplos
  * de configuración común y se pueden modificar desde el admin.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -276,7 +276,7 @@ function flavor_init_default_module_relations($context = 'global') {
 
     foreach ($relations as $parent_id => $children) {
         // Verificar si el módulo parent está activo
-        if (!Flavor_Chat_Module_Loader::is_module_active($parent_id)) {
+        if (!Flavor_Platform_Module_Loader::is_module_active($parent_id)) {
             continue;
         }
 
@@ -295,7 +295,7 @@ function flavor_init_default_module_relations($context = 'global') {
         $priority = 10;
         foreach ($children as $child_id) {
             // Verificar que el child también está activo
-            if (!Flavor_Chat_Module_Loader::is_module_active($child_id)) {
+            if (!Flavor_Platform_Module_Loader::is_module_active($child_id)) {
                 continue;
             }
 

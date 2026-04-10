@@ -5,7 +5,7 @@
  * Dashboard de resultados con tarjetas resumen y listado
  * de proyectos aprobados con estado y porcentaje de avance.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -1,14 +1,14 @@
 <?php
 /**
  * Modulo de Eventos para Chat IA
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) { exit; }
 
 // Incluir API REST
 require_once __DIR__ . '/class-eventos-api.php';
 
-class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -46,7 +46,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $nombre_tabla = $wpdb->prefix . 'flavor_eventos';
-        return Flavor_Chat_Helpers::tabla_existe($nombre_tabla);
+        return Flavor_Platform_Helpers::tabla_existe($nombre_tabla);
     }
 
     public function get_activation_error() {
@@ -72,7 +72,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return;
         }
 
@@ -406,7 +406,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             echo '<div class="flavor-empty-state"><p>' . esc_html__('El modulo de eventos no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
@@ -993,7 +993,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return null;
         }
 
@@ -1211,7 +1211,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return 0;
         }
         return (int) $wpdb->get_var($wpdb->prepare(
@@ -1231,7 +1231,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return $estadisticas;
         }
 
@@ -1249,7 +1249,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Asistentes registrados (inscripciones confirmadas o pendientes)
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $total_asistentes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado IN ('confirmada', 'pendiente')"
             );
@@ -2642,13 +2642,13 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $asistentes_totales = 0;
         $ingresos_totales = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $eventos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'publicado' AND fecha_inicio >= NOW()"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $entradas_vendidas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE estado = 'confirmada'"
             );
@@ -2664,7 +2664,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         // Datos para gráfico de categorías
         $categorias_data = ['labels' => [], 'values' => []];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $categorias = $wpdb->get_results(
                 "SELECT tipo, COUNT(*) as total FROM {$tabla_eventos}
                  WHERE estado = 'publicado' GROUP BY tipo ORDER BY total DESC LIMIT 5"
@@ -2677,7 +2677,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         // Datos para gráfico de asistencia mensual
         $asistencia_data = ['labels' => [], 'values' => []];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             for ($i = 5; $i >= 0; $i--) {
                 $mes = date('Y-m', strtotime("-{$i} months"));
                 $asistencia_data['labels'][] = date_i18n('M', strtotime($mes . '-01'));
@@ -2815,4 +2815,8 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Eventos_Module', false)) {
+    class_alias('Flavor_Platform_Eventos_Module', 'Flavor_Chat_Eventos_Module');
 }

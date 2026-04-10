@@ -4,7 +4,7 @@
  *
  * Tarjeta de acción rápida para dashboards.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title       Título de la acción

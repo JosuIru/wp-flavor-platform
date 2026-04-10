@@ -4,7 +4,7 @@
  *
  * Template del sidebar de navegación elegante
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  *
  * Variables disponibles:

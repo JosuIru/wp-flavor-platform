@@ -2,7 +2,7 @@
 /**
  * Vista del Dashboard de Analytics
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.8.0
  */
 

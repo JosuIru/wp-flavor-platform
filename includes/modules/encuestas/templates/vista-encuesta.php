@@ -8,7 +8,7 @@
  * - $ya_participo: bool
  * - $puede_ver_resultados: bool
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

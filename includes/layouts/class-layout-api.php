@@ -5,7 +5,7 @@
  * Proporciona endpoints para que las apps móviles
  * obtengan la configuración de menús y footers.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -414,8 +414,8 @@ class Flavor_Layout_API {
      */
     private function get_logo_url() {
         // Usar función helper centralizada que prioriza flavor_logo_url
-        if (class_exists('Flavor_Chat_Helpers')) {
-            $logo_url = Flavor_Chat_Helpers::get_site_logo();
+        if (class_exists('Flavor_Platform_Helpers')) {
+            $logo_url = Flavor_Platform_Helpers::get_site_logo();
             if (!empty($logo_url)) {
                 return $logo_url;
             }

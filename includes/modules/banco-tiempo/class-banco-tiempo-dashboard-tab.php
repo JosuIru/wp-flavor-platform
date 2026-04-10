@@ -4,7 +4,7 @@
  *
  * Compatible con el sistema de tabs de dashboard de cliente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\BancoTiempo
  */
 
@@ -344,7 +344,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
             'valoracion_promedio' => 0,
         ];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_transacciones)) {
             return $balance;
         }
 
@@ -379,7 +379,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
         // Valoracion promedio si existe la tabla de reputacion
         $valoracion_promedio = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reputacion)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_reputacion)) {
             $valoracion_promedio = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(rating_promedio, 0) FROM {$this->tabla_reputacion} WHERE usuario_id = %d",
                 $user_id
@@ -474,11 +474,11 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
             <!-- Acciones -->
             <div class="flavor-panel-actions" style="margin-top: 1.5rem;">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Buscar Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -500,7 +500,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         global $wpdb;
         $mis_servicios = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_servicios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_servicios)) {
             $mis_servicios = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$this->tabla_servicios}
                  WHERE usuario_id = %d
@@ -524,7 +524,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         <div class="flavor-panel flavor-bt-servicios-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -535,7 +535,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-clock"></span>
                     <p><?php esc_html_e('Aun no has publicado ningun servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p><?php esc_html_e('Comparte tus habilidades con la comunidad y gana horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Ofrecer mi primer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -578,7 +578,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver mis servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -600,7 +600,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         global $wpdb;
         $mis_intercambios = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_transacciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_transacciones)) {
             $mis_intercambios = $wpdb->get_results($wpdb->prepare(
                 "SELECT t.*, s.titulo as servicio_titulo
                  FROM {$this->tabla_transacciones} t
@@ -633,7 +633,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-randomize"></span>
                     <p><?php esc_html_e('No tienes intercambios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p><?php esc_html_e('Busca servicios que necesites o publica los tuyos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -699,7 +699,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'intercambios')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'intercambios')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver historial completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -720,7 +720,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
         global $wpdb;
         $reputacion = null;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reputacion)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_reputacion)) {
             $reputacion = $wpdb->get_row(
                 $wpdb->prepare("SELECT * FROM {$this->tabla_reputacion} WHERE usuario_id = %d LIMIT 1", $user_id),
                 ARRAY_A

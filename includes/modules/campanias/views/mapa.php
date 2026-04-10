@@ -2,7 +2,7 @@
 /**
  * Vista completa de mapa de acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

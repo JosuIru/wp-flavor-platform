@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:video_player/video_player.dart';
 import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/services/media_upload_service.dart';
 import '../../../../core/widgets/flavor_state_widgets.dart';
+import '../widgets/emoji_picker.dart';
 
 /// Pantalla de estados tipo WhatsApp Stories
 class StatusScreen extends ConsumerStatefulWidget {
@@ -84,12 +88,27 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
 
       setState(() => _isLoading = true);
 
-      // TODO: Subir imagen y obtener URL
-      await _chatService.createStatus(
-        type: StatusType.image,
-        content: caption ?? '',
-        mediaUrl: image.path,
+      // Subir imagen al servidor
+      final uploadService = MediaUploadService();
+      final uploadResult = await uploadService.uploadImage(
+        File(image.path),
+        maxWidth: 1080,
+        quality: 85,
       );
+
+      if (uploadResult.success && uploadResult.url != null) {
+        await _chatService.createStatus(
+          type: StatusType.image,
+          content: caption ?? '',
+          mediaUrl: uploadResult.url,
+        );
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(uploadResult.error ?? 'Error al subir imagen')),
+          );
+        }
+      }
 
       await _loadStatuses();
     }
@@ -336,9 +355,23 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
             subtitle: const Text('Toma una foto ahora'),
             onTap: () async {
               Navigator.pop(context);
-              final image = await _imagePicker.pickImage(source: ImageSource.camera);
+              final image = await _imagePicker.pickImage(
+                source: ImageSource.camera,
+                imageQuality: 85,
+              );
               if (image != null) {
-                // TODO: Crear estado con foto
+                final caption = await _showCaptionDialog();
+
+                setState(() => _isLoading = true);
+
+                // Crear estado con la foto capturada
+                await _chatService.createStatus(
+                  type: StatusType.image,
+                  content: caption ?? '',
+                  mediaUrl: image.path,
+                );
+
+                await _loadStatuses();
               }
             },
           ),
@@ -441,12 +474,37 @@ class CreateTextStatusScreen extends StatefulWidget {
 class _CreateTextStatusScreenState extends State<CreateTextStatusScreen> {
   final TextEditingController _textController = TextEditingController();
   String _backgroundColor = '#128C7E';
+  int _fontIndex = 0;
 
   final List<String> _colors = [
     '#128C7E', '#075E54', '#25D366', '#34B7F1',
     '#9C27B0', '#E91E63', '#F44336', '#FF9800',
     '#2196F3', '#607D8B', '#795548', '#000000',
   ];
+
+  // Fuentes disponibles para estados
+  static const List<String> _fontFamilies = [
+    'Default',
+    'Serif',
+    'Monospace',
+  ];
+
+  TextStyle get _currentTextStyle {
+    final baseStyle = const TextStyle(
+      color: Colors.white,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    );
+
+    switch (_fontIndex) {
+      case 1:
+        return baseStyle.copyWith(fontFamily: 'serif');
+      case 2:
+        return baseStyle.copyWith(fontFamily: 'monospace');
+      default:
+        return baseStyle;
+    }
+  }
 
   @override
   void dispose() {
@@ -469,13 +527,42 @@ class _CreateTextStatusScreenState extends State<CreateTextStatusScreen> {
           IconButton(
             icon: const Icon(Icons.emoji_emotions_outlined, color: Colors.white),
             onPressed: () {
-              // TODO: Mostrar selector de emojis
+              showEmojiPicker(
+                context,
+                onEmojiSelected: (emoji) {
+                  final cursorPosition = _textController.selection.baseOffset;
+                  final text = _textController.text;
+
+                  String newText;
+                  if (cursorPosition < 0 || cursorPosition > text.length) {
+                    newText = text + emoji;
+                  } else {
+                    newText = text.substring(0, cursorPosition) +
+                        emoji +
+                        text.substring(cursorPosition);
+                  }
+
+                  _textController.text = newText;
+                  _textController.selection = TextSelection.collapsed(
+                    offset: cursorPosition < 0 ? newText.length : cursorPosition + emoji.length,
+                  );
+                  setState(() {});
+                },
+              );
             },
           ),
           IconButton(
             icon: const Icon(Icons.text_fields, color: Colors.white),
             onPressed: () {
-              // TODO: Cambiar fuente
+              setState(() {
+                _fontIndex = (_fontIndex + 1) % _fontFamilies.length;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Fuente: ${_fontFamilies[_fontIndex]}'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
             },
           ),
           IconButton(
@@ -495,14 +582,10 @@ class _CreateTextStatusScreenState extends State<CreateTextStatusScreen> {
                   autofocus: true,
                   textAlign: TextAlign.center,
                   maxLines: null,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  decoration: const InputDecoration(
+                  style: _currentTextStyle,
+                  decoration: InputDecoration(
                     hintText: 'Escribe tu estado...',
-                    hintStyle: TextStyle(color: Colors.white54),
+                    hintStyle: _currentTextStyle.copyWith(color: Colors.white54),
                     border: InputBorder.none,
                   ),
                   onChanged: (_) => setState(() {}),
@@ -617,6 +700,8 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   late AnimationController _progressController;
+  VideoPlayerController? _videoController;
+  bool _videoInitialized = false;
 
   @override
   void initState() {
@@ -632,14 +717,58 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
       }
     });
 
-    _startProgress();
+    _initializeCurrentStatus();
     _viewCurrentStatus();
   }
 
   @override
   void dispose() {
     _progressController.dispose();
+    _videoController?.dispose();
     super.dispose();
+  }
+
+  void _initializeCurrentStatus() {
+    final status = widget.statuses[_currentIndex];
+
+    if (status.type == StatusType.video && status.mediaUrl != null) {
+      _initializeVideo(status.mediaUrl!);
+    } else {
+      _startProgress();
+    }
+  }
+
+  Future<void> _initializeVideo(String videoUrl) async {
+    _videoController?.dispose();
+    _videoController = null;
+    _videoInitialized = false;
+
+    try {
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+      await _videoController!.initialize();
+
+      if (!mounted) return;
+
+      // Configurar duración del progreso según el video
+      _progressController.duration = _videoController!.value.duration;
+
+      setState(() => _videoInitialized = true);
+
+      // Reproducir video
+      _videoController!.play();
+      _startProgress();
+
+      // Escuchar cuando termine el video
+      _videoController!.addListener(() {
+        if (_videoController!.value.position >= _videoController!.value.duration) {
+          _nextStatus();
+        }
+      });
+    } catch (e) {
+      // Si falla el video, usar duración estándar
+      _progressController.duration = const Duration(seconds: 5);
+      _startProgress();
+    }
   }
 
   void _startProgress() {
@@ -653,9 +782,11 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
   }
 
   void _nextStatus() {
+    _videoController?.pause();
+
     if (_currentIndex < widget.statuses.length - 1) {
       setState(() => _currentIndex++);
-      _startProgress();
+      _initializeCurrentStatus();
       _viewCurrentStatus();
     } else {
       Navigator.pop(context);
@@ -663,9 +794,11 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
   }
 
   void _previousStatus() {
+    _videoController?.pause();
+
     if (_currentIndex > 0) {
       setState(() => _currentIndex--);
-      _startProgress();
+      _initializeCurrentStatus();
     }
   }
 
@@ -680,12 +813,15 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
       body: GestureDetector(
         onTapDown: (_) {
           _progressController.stop();
+          _videoController?.pause();
         },
         onTapUp: (_) {
           _progressController.forward();
+          _videoController?.play();
         },
         onTapCancel: () {
           _progressController.forward();
+          _videoController?.play();
         },
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity! < 0) {
@@ -868,19 +1004,75 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
         );
 
       case StatusType.video:
-        // TODO: Implementar video player
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.play_circle_outline, size: 64, color: Colors.white),
-              const SizedBox(height: 16),
-              Text(
-                status.content,
-                style: const TextStyle(color: Colors.white),
+        if (!_videoInitialized || _videoController == null) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          );
+        }
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Video
+            Center(
+              child: AspectRatio(
+                aspectRatio: _videoController!.value.aspectRatio,
+                child: VideoPlayer(_videoController!),
               ),
-            ],
-          ),
+            ),
+
+            // Caption si existe
+            if (status.content.isNotEmpty)
+              Positioned(
+                bottom: 80,
+                left: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    status.content,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+
+            // Control de play/pause
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (_videoController!.value.isPlaying) {
+                    _videoController!.pause();
+                    _progressController.stop();
+                  } else {
+                    _videoController!.play();
+                    _progressController.forward();
+                  }
+                });
+              },
+              child: AnimatedOpacity(
+                opacity: _videoController!.value.isPlaying ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: Colors.black45,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
     }
   }

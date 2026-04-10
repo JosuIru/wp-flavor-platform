@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Ayuntamiento
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#1d4ed8';

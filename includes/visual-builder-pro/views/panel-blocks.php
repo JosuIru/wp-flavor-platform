@@ -3,7 +3,7 @@
  * Visual Builder Pro - Panel de Bloques Mejorado
  * Con vista grid/lista, favoritos, filtros rápidos y descripciones
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.3.0
  */

@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Marketplace
  */
 
@@ -61,7 +61,7 @@ class Flavor_Marketplace_Dashboard_Tab {
         $mis_favoritos = 0;
         $mis_ventas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $total_anuncios = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'publicado'"
             );
@@ -79,7 +79,7 @@ class Flavor_Marketplace_Dashboard_Tab {
             }
         }
 
-        if ($user_id && Flavor_Chat_Helpers::tabla_existe($tabla_fav)) {
+        if ($user_id && Flavor_Platform_Helpers::tabla_existe($tabla_fav)) {
             $mis_favoritos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_fav} WHERE usuario_id = %d",
                 $user_id
@@ -125,11 +125,11 @@ class Flavor_Marketplace_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -149,7 +149,7 @@ class Flavor_Marketplace_Dashboard_Tab {
         $tabla = $wpdb->prefix . 'flavor_marketplace_anuncios';
 
         $anuncios = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $anuncios = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla} WHERE usuario_id = %d ORDER BY created_at DESC LIMIT 10",
                 $user_id
@@ -160,7 +160,7 @@ class Flavor_Marketplace_Dashboard_Tab {
         <div class="flavor-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -170,7 +170,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-megaphone"></span>
                     <p><?php esc_html_e('No has publicado ningún anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Publicar mi primer anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -201,10 +201,10 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 </p>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
-                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], Flavor_Chat_Helpers::get_action_url('marketplace', ''))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
+                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], Flavor_Platform_Helpers::get_action_url('marketplace', ''))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
                                     <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
@@ -228,7 +228,7 @@ class Flavor_Marketplace_Dashboard_Tab {
         $tabla_fav = $wpdb->prefix . 'flavor_marketplace_favoritos';
 
         $favoritos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla) && Flavor_Chat_Helpers::tabla_existe($tabla_fav)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla) && Flavor_Platform_Helpers::tabla_existe($tabla_fav)) {
             $favoritos = $wpdb->get_results($wpdb->prepare(
                 "SELECT a.* FROM {$tabla} a
                  JOIN {$tabla_fav} f ON a.id = f.anuncio_id
@@ -248,7 +248,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
                     <p><?php esc_html_e('No tienes anuncios favoritos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -268,7 +268,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>

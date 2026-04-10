@@ -2,7 +2,7 @@
 /**
  * Vista: Balance Energético - Lecturas y Producción
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -46,7 +46,7 @@ $stats = [
     'ahorro_total' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_lecturas)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_lecturas)) {
     $stats['total_generado'] = $wpdb->get_var($wpdb->prepare(
         "SELECT COALESCE(SUM(kwh_generados), 0) FROM $tabla_lecturas WHERE fecha_lectura BETWEEN %s AND %s",
         $fecha_inicio, $fecha_fin

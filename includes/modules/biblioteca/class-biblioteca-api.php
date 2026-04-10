@@ -2,7 +2,7 @@
 /**
  * API REST para Biblioteca (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Biblioteca_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,49 +28,49 @@ class Flavor_Biblioteca_API {
 
     public function register_routes() {
         // GET /biblioteca/dashboard
-        register_rest_route(self::NAMESPACE, '/biblioteca/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /biblioteca/libros
-        register_rest_route(self::NAMESPACE, '/biblioteca/libros', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/libros', [
             'methods' => 'GET',
             'callback' => [$this, 'get_libros'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /biblioteca/libros/{id}
-        register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_libro'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /biblioteca/mis-prestamos
-        register_rest_route(self::NAMESPACE, '/biblioteca/mis-prestamos', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/mis-prestamos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_prestamos'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /biblioteca/libros/{id}/reservar
-        register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)/reservar', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)/reservar', [
             'methods' => 'POST',
             'callback' => [$this, 'reservar_libro'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /biblioteca/reservas/{id}
-        register_rest_route(self::NAMESPACE, '/biblioteca/reservas/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/reservas/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_reserva'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /biblioteca/libros/{id}/resena
-        register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)/resena', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/libros/(?P<id>\d+)/resena', [
             'methods' => 'POST',
             'callback' => [$this, 'agregar_resena'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -89,7 +89,7 @@ class Flavor_Biblioteca_API {
         ]);
 
         // GET /biblioteca/categorias
-        register_rest_route(self::NAMESPACE, '/biblioteca/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/biblioteca/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'check_authentication'],

@@ -4,7 +4,7 @@
  *
  * Gestiona el dashboard tab y funcionalidades frontend del repositorio legal.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -140,14 +140,14 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
             'flavor-documentacion-legal',
             $modulo_url . '/assets/css/documentacion-legal.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-documentacion-legal',
             $modulo_url . '/assets/js/documentacion-legal.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -185,7 +185,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
             return $tabs;
         }
 
@@ -364,7 +364,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['total' => 0, 'leyes' => 0, 'modelos' => 0];
         }
 
@@ -393,7 +393,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal_guardados';
         $user_id = get_current_user_id();
 
-        if (!$user_id || !Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!$user_id || !Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -411,7 +411,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal_guardados';
         $user_id = get_current_user_id();
 
-        if (!$user_id || !Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!$user_id || !Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return false;
         }
 
@@ -430,7 +430,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
         $tabla_guardados = $wpdb->prefix . 'flavor_documentacion_legal_guardados';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_guardados)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_guardados)) {
             return [];
         }
 
@@ -453,7 +453,7 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 

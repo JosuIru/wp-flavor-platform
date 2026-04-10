@@ -5,7 +5,7 @@
  * Gestiona las relaciones entre entidades (grupos, eventos, comunidades)
  * y su contenido asociado de módulos de red (foros, chats, galerías).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -108,8 +108,8 @@ class Flavor_Entity_Content_Manager {
         dbDelta($sql);
 
         // Log
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log('[EntityContent] Tabla creada: ' . $this->table_name);
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log('[EntityContent] Tabla creada: ' . $this->table_name);
         }
     }
 

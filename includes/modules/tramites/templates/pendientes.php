@@ -4,7 +4,7 @@
  *
  * Muestra los tramites pendientes del usuario que requieren atencion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -28,7 +28,7 @@ $tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
 $usuario_id = get_current_user_id();
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_expedientes)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -120,7 +120,7 @@ $prioridad_colores = [
     'baja' => '#10b981',
 ];
 
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 $current_url = $tramites_base_url . 'pendientes/';
 ?>
 

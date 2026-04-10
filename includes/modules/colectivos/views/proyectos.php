@@ -2,7 +2,7 @@
 /**
  * Vista: Proyectos de colectivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $proyectos             Lista de proyectos
  * @var int   $colectivo_id          ID del colectivo
  * @var int   $identificador_usuario ID del usuario actual

@@ -4,7 +4,7 @@
  *
  * Gestión de solicitudes de trámites con workflow completo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

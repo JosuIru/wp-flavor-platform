@@ -5,7 +5,7 @@
  * Maneja todas las vistas frontend, shortcodes, AJAX y dashboard tabs
  * para el sistema de compostaje comunitario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

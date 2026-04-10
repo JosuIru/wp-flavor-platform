@@ -9,7 +9,7 @@
  * - Eventos Colaborativos: Co-organización
  * - Dashboard de Impacto Social: Métricas de participación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Eventos
  * @since 4.2.0
  */

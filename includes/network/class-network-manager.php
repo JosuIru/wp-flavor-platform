@@ -6,7 +6,7 @@
  * nodos, conexiones, contenido compartido, colaboraciones,
  * mensajería, mapa, directorio y sellos de calidad.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {
@@ -57,7 +57,7 @@ class Flavor_Network_Manager {
      * Inicializa el panel de administración de red
      */
     private function init_admin() {
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-admin.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-admin.php';
         Flavor_Network_Admin::get_instance();
     }
 
@@ -1299,7 +1299,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-directory.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-directory.php';
         return ob_get_clean();
     }
 
@@ -1313,7 +1313,7 @@ class Flavor_Network_Manager {
         ob_start();
         $this->enqueue_frontend_assets();
         $this->enqueue_map_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-map.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-map.php';
         return ob_get_clean();
     }
 
@@ -1325,7 +1325,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-board.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-board.php';
         return ob_get_clean();
     }
 
@@ -1336,7 +1336,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-events.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-events.php';
         return ob_get_clean();
     }
 
@@ -1347,7 +1347,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-alerts.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-alerts.php';
         return ob_get_clean();
     }
 
@@ -1359,7 +1359,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-catalog.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-catalog.php';
         return ob_get_clean();
     }
 
@@ -1371,7 +1371,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-collaborations.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-collaborations.php';
         return ob_get_clean();
     }
 
@@ -1383,7 +1383,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-time-offers.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-time-offers.php';
         return ob_get_clean();
     }
 
@@ -1398,7 +1398,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-node-profile.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-node-profile.php';
         return ob_get_clean();
     }
 
@@ -1410,7 +1410,7 @@ class Flavor_Network_Manager {
 
         ob_start();
         $this->enqueue_frontend_assets();
-        include FLAVOR_CHAT_IA_PATH . 'includes/network/templates/network-questions.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/network/templates/network-questions.php';
         return ob_get_clean();
     }
 
@@ -1454,14 +1454,14 @@ class Flavor_Network_Manager {
 
         wp_enqueue_style(
             'flavor-network-frontend',
-            FLAVOR_CHAT_IA_URL . "assets/css/modules/network-frontend{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/modules/network-frontend{$sufijo_asset}.css",
             [],
             self::VERSION
         );
 
         wp_enqueue_script(
             'flavor-network-frontend',
-            FLAVOR_CHAT_IA_URL . "assets/js/network-frontend{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/network-frontend{$sufijo_asset}.js",
             ['jquery'],
             self::VERSION,
             true
@@ -1501,7 +1501,7 @@ class Flavor_Network_Manager {
 
         wp_enqueue_script(
             'flavor-network-map',
-            FLAVOR_CHAT_IA_URL . "assets/js/network-map{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/network-map{$sufijo_asset}.js",
             ['jquery', 'leaflet', 'flavor-network-frontend'],
             self::VERSION,
             true
@@ -1517,7 +1517,7 @@ class Flavor_Network_Manager {
      */
     public function register_dashboard_widget($registry) {
         // Cargar la clase del widget si no existe
-        $widget_path = FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-dashboard-widget.php';
+        $widget_path = FLAVOR_PLATFORM_PATH . 'includes/network/class-network-dashboard-widget.php';
 
         if (!class_exists('Flavor_Network_Dashboard_Widget') && file_exists($widget_path)) {
             require_once $widget_path;

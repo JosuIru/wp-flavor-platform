@@ -5,7 +5,7 @@
  * Permite a los usuarios dejar comentarios en elementos del canvas
  * para facilitar la colaboración y revisión de diseños.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Visual_Builder_Pro
  * @since 2.2.0
  */

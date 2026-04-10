@@ -4,7 +4,7 @@
  *
  * Gestiona el registro de tokens de dispositivos y el envío de notificaciones push.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */

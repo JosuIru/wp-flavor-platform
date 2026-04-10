@@ -5,7 +5,7 @@
  * Gestiona los tokens FCM de dispositivos de los usuarios.
  * Proporciona endpoints REST para registro/eliminacion de tokens.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Notifications
  */
 
@@ -28,13 +28,13 @@ class Flavor_Push_Token_Manager {
      * Registrar rutas REST API
      */
     public static function registrar_rutas_rest() {
-        register_rest_route('flavor-chat-ia/v1', '/push/register', [
+        flavor_register_rest_route(FLAVOR_PLATFORM_REST_NAMESPACE, '/push/register', [
             'methods'  => 'POST',
             'callback' => [__CLASS__, 'endpoint_registrar_token'],
             'permission_callback' => [__CLASS__, 'verificar_autenticacion'],
         ]);
 
-        register_rest_route('flavor-chat-ia/v1', '/push/unregister', [
+        flavor_register_rest_route(FLAVOR_PLATFORM_REST_NAMESPACE, '/push/unregister', [
             'methods'  => 'DELETE',
             'callback' => [__CLASS__, 'endpoint_eliminar_token'],
             'permission_callback' => [__CLASS__, 'verificar_autenticacion'],

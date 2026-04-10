@@ -4,7 +4,7 @@
  *
  * Muestra productos disponibles en el ciclo actual
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -89,7 +89,7 @@ $productos = get_posts([
                                     <?php _e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
-                                <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm flavor-btn--full">
+                                <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm flavor-btn--full">
                                     <?php _e('Inicia sesión para pedir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
@@ -99,7 +99,7 @@ $productos = get_posts([
             </div>
 
             <div class="flavor-section-footer">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="flavor-btn flavor-btn--primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="flavor-btn flavor-btn--primary">
                     <?php _e('Ver todo el catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>

@@ -4,7 +4,7 @@
  *
  * Integración con PayPal REST API (Orders v2).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */

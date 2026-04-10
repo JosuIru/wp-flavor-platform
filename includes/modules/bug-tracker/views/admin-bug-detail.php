@@ -2,7 +2,7 @@
 /**
  * Vista de detalle de un bug
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Bug_Tracker
  * @var object $bug_detalle Bug a mostrar
  */

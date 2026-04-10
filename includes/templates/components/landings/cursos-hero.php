@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Cursos
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#a855f7';

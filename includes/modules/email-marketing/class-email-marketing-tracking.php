@@ -2,7 +2,7 @@
 /**
  * Clase para tracking de emails
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 
@@ -294,7 +294,7 @@ class Flavor_EM_Tracking {
 
         // Detectar columna de fecha en suscriptores
         $col_fecha_suscriptor = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_suscriptores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_suscriptores)) {
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_suscriptores");
             $col_fecha_suscriptor = in_array('creado_en', $columnas) ? 'creado_en' :
                                    (in_array('fecha_registro', $columnas) ? 'fecha_registro' : null);

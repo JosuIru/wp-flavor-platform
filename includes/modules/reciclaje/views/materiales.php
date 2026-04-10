@@ -3,7 +3,7 @@
  * Vista Materiales - Módulo Reciclaje
  * Gestión de categorías de materiales reciclables
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

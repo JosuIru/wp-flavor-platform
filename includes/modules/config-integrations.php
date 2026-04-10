@@ -8,7 +8,7 @@
  *
  * NOTA: Los modulos con traits implementados tienen prioridad sobre esta config.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -479,12 +479,12 @@ function flavor_register_integration_config() {
  */
 if (!function_exists('flavor_is_module_active')) {
     function flavor_is_module_active($module_id) {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            return Flavor_Chat_Module_Loader::is_module_active($module_id);
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            return Flavor_Platform_Module_Loader::is_module_active($module_id);
         }
 
         // Fallback: verificar en ambas opciones
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         $modulos_legacy = get_option('flavor_active_modules', []);

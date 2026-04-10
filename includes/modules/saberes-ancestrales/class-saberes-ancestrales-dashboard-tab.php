@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Saberes Ancestrales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\SaberesAncestrales
  */
 
@@ -92,7 +92,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         $transmisiones_activas = 0;
         $categorias_saberes = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_saberes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_saberes)) {
             $total_saberes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_saberes} WHERE estado = 'publicado'");
             $mis_aportes = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_saberes} WHERE autor_id = %d",
@@ -101,7 +101,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
             $categorias_saberes = (int) $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM {$tabla_saberes}");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_transmisiones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_transmisiones)) {
             $transmisiones_activas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_transmisiones} WHERE estado = 'activa'"
             );
@@ -176,15 +176,15 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'explorar')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'explorar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Saberes', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-share"></span>
                     <?php esc_html_e('Compartir un Saber', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'transmisiones')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'transmisiones')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Transmisiones', 'flavor-platform'); ?>
                 </a>
@@ -207,7 +207,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         $tabla_saberes = $wpdb->prefix . 'flavor_saberes';
 
         $mis_saberes = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_saberes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_saberes)) {
             $mis_saberes = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_saberes} WHERE autor_id = %d ORDER BY fecha_creacion DESC LIMIT 20",
                 $user_id
@@ -218,7 +218,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         <div class="flavor-panel flavor-aportes-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-edit"></span> <?php esc_html_e('Mis Aportes', 'flavor-platform'); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Compartir Saber', 'flavor-platform'); ?>
                 </a>
@@ -229,7 +229,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
                     <span class="dashicons dashicons-book-alt"></span>
                     <p><?php esc_html_e('Aún no has compartido ningún saber ancestral.', 'flavor-platform'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Tu conocimiento es valioso. Compártelo con la comunidad para que perdure.', 'flavor-platform'); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Compartir mi primer saber', 'flavor-platform'); ?>
                     </a>
                 </div>

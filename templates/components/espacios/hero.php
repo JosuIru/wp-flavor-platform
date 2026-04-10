@@ -4,7 +4,7 @@
  *
  * Muestra una sección hero con imagen de fondo, título y CTA de reserva
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

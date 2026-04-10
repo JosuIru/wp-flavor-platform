@@ -4,7 +4,7 @@
  *
  * Tabla de clasificación/ranking con posiciones, avatares y puntuaciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $users      Array de usuarios: [['id' => x, 'name' => '', 'avatar' => '', 'score' => 0, 'change' => 0, 'badges' => []]]

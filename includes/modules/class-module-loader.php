@@ -2,7 +2,7 @@
 /**
  * Cargador de módulos para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,75 +10,81 @@ if (!defined('ABSPATH')) {
 }
 
 // Cargar trait para páginas de admin de módulos
-$trait_file = FLAVOR_CHAT_IA_PATH . 'includes/admin/trait-module-admin-pages.php';
+$trait_file = FLAVOR_PLATFORM_PATH . 'includes/admin/trait-module-admin-pages.php';
 if (file_exists($trait_file) && !trait_exists('Flavor_Module_Admin_Pages_Trait')) {
     require_once $trait_file;
 }
 
 // Cargar trait para tabs de dashboard (sistema flexible)
-$trait_dashboard_tabs = FLAVOR_CHAT_IA_PATH . 'includes/traits/trait-module-dashboard-tabs.php';
+$trait_dashboard_tabs = FLAVOR_PLATFORM_PATH . 'includes/traits/trait-module-dashboard-tabs.php';
 if (file_exists($trait_dashboard_tabs) && !trait_exists('Flavor_Module_Dashboard_Tabs_Trait')) {
     require_once $trait_dashboard_tabs;
 }
 
 // Cargar trait para integraciones de tabs de módulos de red
-$trait_tab_integrations = FLAVOR_CHAT_IA_PATH . 'includes/traits/trait-module-tab-integrations.php';
+$trait_tab_integrations = FLAVOR_PLATFORM_PATH . 'includes/traits/trait-module-tab-integrations.php';
 if (file_exists($trait_tab_integrations) && !trait_exists('Flavor_Module_Tab_Integrations_Trait')) {
     require_once $trait_tab_integrations;
 }
 
 // Cargar traits para integraciones dinámicas entre módulos (Provider/Consumer)
-$trait_integrations = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-integrations.php';
+$trait_integrations = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-integrations.php';
 if (file_exists($trait_integrations) && !trait_exists('Flavor_Module_Integration_Consumer')) {
     require_once $trait_integrations;
 }
 
 // Cargar trait de notificaciones de módulos
-$trait_notifications = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-notifications.php';
+$trait_notifications = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-notifications.php';
 if (file_exists($trait_notifications) && !trait_exists('Flavor_Module_Notifications_Trait')) {
     require_once $trait_notifications;
 }
 
 // Cargar trait de funciones WhatsApp
-$trait_whatsapp = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-whatsapp-features.php';
+$trait_whatsapp = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-whatsapp-features.php';
 if (file_exists($trait_whatsapp) && !trait_exists('Flavor_WhatsApp_Features')) {
     require_once $trait_whatsapp;
 }
 
 // Cargar trait de Admin UI
-$trait_admin_ui = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-admin-ui.php';
+$trait_admin_ui = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-admin-ui.php';
 if (file_exists($trait_admin_ui) && !trait_exists('Flavor_Module_Admin_UI_Trait')) {
     require_once $trait_admin_ui;
 }
 
 // Cargar trait de Dashboard Widget
-$trait_dashboard_widget = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-dashboard-widget.php';
+$trait_dashboard_widget = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-dashboard-widget.php';
 if (file_exists($trait_dashboard_widget) && !trait_exists('Flavor_Dashboard_Widget_Trait')) {
     require_once $trait_dashboard_widget;
 }
 
 // Cargar trait de acciones frontend
-$trait_frontend_actions = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-frontend-actions.php';
+$trait_frontend_actions = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-frontend-actions.php';
 if (file_exists($trait_frontend_actions) && !trait_exists('Flavor_Module_Frontend_Actions')) {
     require_once $trait_frontend_actions;
 }
 
 // Cargar gestor de contenido de entidades
-$entity_content_manager = FLAVOR_CHAT_IA_PATH . 'includes/class-entity-content-manager.php';
+$entity_content_manager = FLAVOR_PLATFORM_PATH . 'includes/class-entity-content-manager.php';
 if (file_exists($entity_content_manager) && !class_exists('Flavor_Entity_Content_Manager')) {
     require_once $entity_content_manager;
 }
 
 // Cargar trait de funcionalidades de encuestas
-$trait_encuestas_features = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-encuestas-features.php';
+$trait_encuestas_features = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-encuestas-features.php';
 if (file_exists($trait_encuestas_features) && !trait_exists('Flavor_Encuestas_Features')) {
     require_once $trait_encuestas_features;
+}
+
+// Cargar trait de caché de dashboards (optimización de rendimiento)
+$trait_dashboard_cache = FLAVOR_PLATFORM_PATH . 'includes/modules/trait-dashboard-cache.php';
+if (file_exists($trait_dashboard_cache) && !trait_exists('Flavor_Dashboard_Cache_Trait')) {
+    require_once $trait_dashboard_cache;
 }
 
 /**
  * Clase que gestiona la carga de módulos
  */
-class Flavor_Chat_Module_Loader {
+class Flavor_Platform_Module_Loader {
 
     /**
      * Instancia singleton
@@ -305,7 +311,7 @@ class Flavor_Chat_Module_Loader {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Module_Loader
+     * @return Flavor_Platform_Module_Loader
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -456,257 +462,257 @@ class Flavor_Chat_Module_Loader {
      * Descubre los módulos disponibles
      */
     private function discover_modules() {
-        $modules_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
+        $modules_path = FLAVOR_PLATFORM_PATH . 'includes/modules/';
 
         // Módulos incorporados
         $builtin_modules = [
             'woocommerce' => [
                 'file' => $modules_path . 'woocommerce/class-woocommerce-module.php',
-                'class' => 'Flavor_Chat_WooCommerce_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_WooCommerce_Module'),
             ],
             'banco_tiempo' => [
                 'file' => $modules_path . 'banco-tiempo/class-banco-tiempo-module.php',
-                'class' => 'Flavor_Chat_Banco_Tiempo_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Banco_Tiempo_Module'),
             ],
             'marketplace' => [
                 'file' => $modules_path . 'marketplace/class-marketplace-module.php',
-                'class' => 'Flavor_Chat_Marketplace_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Marketplace_Module'),
             ],
             'grupos_consumo' => [
                 'file' => $modules_path . 'grupos-consumo/class-grupos-consumo-module.php',
-                'class' => 'Flavor_Chat_Grupos_Consumo_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Grupos_Consumo_Module'),
             ],
             'facturas' => [
                 'file' => $modules_path . 'facturas/class-facturas-module.php',
-                'class' => 'Flavor_Chat_Facturas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Facturas_Module'),
             ],
             'contabilidad' => [
                 'file' => $modules_path . 'contabilidad/class-contabilidad-module.php',
-                'class' => 'Flavor_Chat_Contabilidad_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Contabilidad_Module'),
             ],
             'empresas' => [
                 'file' => $modules_path . 'empresas/class-empresas-module.php',
-                'class' => 'Flavor_Chat_Empresas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Empresas_Module'),
             ],
             'fichaje_empleados' => [
                 'file' => $modules_path . 'fichaje-empleados/class-fichaje-empleados-module.php',
-                'class' => 'Flavor_Chat_Fichaje_Empleados_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Fichaje_Empleados_Module'),
             ],
             'eventos' => [
                 'file' => $modules_path . 'eventos/class-eventos-module.php',
-                'class' => 'Flavor_Chat_Eventos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module'),
             ],
             'socios' => [
                 'file' => $modules_path . 'socios/class-socios-module.php',
-                'class' => 'Flavor_Chat_Socios_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Socios_Module'),
             ],
             'incidencias' => [
                 'file' => $modules_path . 'incidencias/class-incidencias-module.php',
-                'class' => 'Flavor_Chat_Incidencias_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Incidencias_Module'),
             ],
             'participacion' => [
                 'file' => $modules_path . 'participacion/class-participacion-module.php',
-                'class' => 'Flavor_Chat_Participacion_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Participacion_Module'),
             ],
             'presupuestos_participativos' => [
                 'file' => $modules_path . 'presupuestos-participativos/class-presupuestos-participativos-module.php',
-                'class' => 'Flavor_Chat_Presupuestos_Participativos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Presupuestos_Participativos_Module'),
             ],
             'avisos_municipales' => [
                 'file' => $modules_path . 'avisos-municipales/class-avisos-municipales-module.php',
-                'class' => 'Flavor_Chat_Avisos_Municipales_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Avisos_Municipales_Module'),
             ],
             'advertising' => [
                 'file' => $modules_path . 'advertising/class-advertising-module.php',
-                'class' => 'Flavor_Chat_Advertising_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Advertising_Module'),
             ],
             'ayuda_vecinal' => [
                 'file' => $modules_path . 'ayuda-vecinal/class-ayuda-vecinal-module.php',
-                'class' => 'Flavor_Chat_Ayuda_Vecinal_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Ayuda_Vecinal_Module'),
             ],
             'biblioteca' => [
                 'file' => $modules_path . 'biblioteca/class-biblioteca-module.php',
-                'class' => 'Flavor_Chat_Biblioteca_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Biblioteca_Module'),
             ],
             'bicicletas_compartidas' => [
                 'file' => $modules_path . 'bicicletas-compartidas/class-bicicletas-compartidas-module.php',
-                'class' => 'Flavor_Chat_Bicicletas_Compartidas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Bicicletas_Compartidas_Module'),
             ],
             'carpooling' => [
                 'file' => $modules_path . 'carpooling/class-carpooling-module.php',
-                'class' => 'Flavor_Chat_Carpooling_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Carpooling_Module'),
             ],
             'chat_grupos' => [
                 'file' => $modules_path . 'chat-grupos/class-chat-grupos-module.php',
-                'class' => 'Flavor_Chat_Chat_Grupos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Chat_Grupos_Module'),
             ],
             'chat_interno' => [
                 'file' => $modules_path . 'chat-interno/class-chat-interno-module.php',
-                'class' => 'Flavor_Chat_Chat_Interno_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Chat_Interno_Module'),
             ],
             'chat_estados' => [
                 'file' => $modules_path . 'chat-estados/class-chat-estados-module.php',
-                'class' => 'Flavor_Chat_Estados_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Estados_Module'),
             ],
             'compostaje' => [
                 'file' => $modules_path . 'compostaje/class-compostaje-module.php',
-                'class' => 'Flavor_Chat_Compostaje_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Compostaje_Module'),
             ],
             'cursos' => [
                 'file' => $modules_path . 'cursos/class-cursos-module.php',
-                'class' => 'Flavor_Chat_Cursos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Cursos_Module'),
             ],
             'empresarial' => [
                 'file' => $modules_path . 'empresarial/class-empresarial-module.php',
-                'class' => 'Flavor_Chat_Empresarial_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Empresarial_Module'),
             ],
             'espacios_comunes' => [
                 'file' => $modules_path . 'espacios-comunes/class-espacios-comunes-module.php',
-                'class' => 'Flavor_Chat_Espacios_Comunes_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Espacios_Comunes_Module'),
             ],
             'huertos_urbanos' => [
                 'file' => $modules_path . 'huertos-urbanos/class-huertos-urbanos-module.php',
-                'class' => 'Flavor_Chat_Huertos_Urbanos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Huertos_Urbanos_Module'),
             ],
             'multimedia' => [
                 'file' => $modules_path . 'multimedia/class-multimedia-module.php',
-                'class' => 'Flavor_Chat_Multimedia_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Multimedia_Module'),
             ],
             'parkings' => [
                 'file' => $modules_path . 'parkings/class-parkings-module.php',
-                'class' => 'Flavor_Chat_Parkings_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Parkings_Module'),
             ],
             'podcast' => [
                 'file' => $modules_path . 'podcast/class-podcast-module.php',
-                'class' => 'Flavor_Chat_Podcast_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Podcast_Module'),
             ],
             'radio' => [
                 'file' => $modules_path . 'radio/class-radio-module.php',
-                'class' => 'Flavor_Chat_Radio_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Radio_Module'),
             ],
             'reciclaje' => [
                 'file' => $modules_path . 'reciclaje/class-reciclaje-module.php',
-                'class' => 'Flavor_Chat_Reciclaje_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Reciclaje_Module'),
             ],
             'red_social' => [
                 'file' => $modules_path . 'red-social/class-red-social-module.php',
-                'class' => 'Flavor_Chat_Red_Social_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'),
             ],
             'talleres' => [
                 'file' => $modules_path . 'talleres/class-talleres-module.php',
-                'class' => 'Flavor_Chat_Talleres_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Talleres_Module'),
             ],
             'tramites' => [
                 'file' => $modules_path . 'tramites/class-tramites-module.php',
-                'class' => 'Flavor_Chat_Tramites_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Tramites_Module'),
             ],
             'transparencia' => [
                 'file' => $modules_path . 'transparencia/class-transparencia-module.php',
-                'class' => 'Flavor_Chat_Transparencia_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Transparencia_Module'),
             ],
             'colectivos' => [
                 'file' => $modules_path . 'colectivos/class-colectivos-module.php',
-                'class' => 'Flavor_Chat_Colectivos_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Colectivos_Module'),
             ],
             'foros' => [
                 'file' => $modules_path . 'foros/class-foros-module.php',
-                'class' => 'Flavor_Chat_Foros_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Foros_Module'),
             ],
             'clientes' => [
                 'file' => $modules_path . 'clientes/class-clientes-module.php',
-                'class' => 'Flavor_Chat_Clientes_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Clientes_Module'),
             ],
             'comunidades' => [
                 'file' => $modules_path . 'comunidades/class-comunidades-module.php',
-                'class' => 'Flavor_Chat_Comunidades_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Comunidades_Module'),
             ],
             'bares' => [
                 'file' => $modules_path . 'bares/class-bares-module.php',
-                'class' => 'Flavor_Chat_Bares_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Bares_Module'),
             ],
             'trading_ia' => [
                 'file' => $modules_path . 'trading-ia/class-trading-ia-module.php',
-                'class' => 'Flavor_Chat_Trading_IA_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Trading_IA_Module'),
             ],
             'dex_solana' => [
                 'file' => $modules_path . 'dex-solana/class-dex-solana-module.php',
-                'class' => 'Flavor_Chat_Dex_Solana_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Dex_Solana_Module'),
             ],
             'themacle' => [
                 'file' => $modules_path . 'themacle/class-themacle-module.php',
-                'class' => 'Flavor_Chat_Themacle_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Themacle_Module'),
             ],
             'reservas' => [
                 'file' => $modules_path . 'reservas/class-reservas-module.php',
-                'class' => 'Flavor_Chat_Reservas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Reservas_Module'),
             ],
             'email_marketing' => [
                 'file' => $modules_path . 'email-marketing/class-email-marketing-module.php',
-                'class' => 'Flavor_Chat_Email_Marketing_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Email_Marketing_Module'),
             ],
             'sello_conciencia' => [
                 'file' => $modules_path . 'sello-conciencia/class-sello-conciencia-module.php',
-                'class' => 'Flavor_Chat_Sello_Conciencia_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Sello_Conciencia_Module'),
             ],
             'circulos_cuidados' => [
                 'file' => $modules_path . 'circulos-cuidados/class-circulos-cuidados-module.php',
-                'class' => 'Flavor_Chat_Circulos_Cuidados_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Circulos_Cuidados_Module'),
             ],
             'economia_don' => [
                 'file' => $modules_path . 'economia-don/class-economia-don-module.php',
-                'class' => 'Flavor_Chat_Economia_Don_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Economia_Don_Module'),
             ],
             'justicia_restaurativa' => [
                 'file' => $modules_path . 'justicia-restaurativa/class-justicia-restaurativa-module.php',
-                'class' => 'Flavor_Chat_Justicia_Restaurativa_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Justicia_Restaurativa_Module'),
             ],
             'huella_ecologica' => [
                 'file' => $modules_path . 'huella-ecologica/class-huella-ecologica-module.php',
-                'class' => 'Flavor_Chat_Huella_Ecologica_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Huella_Ecologica_Module'),
             ],
             'economia_suficiencia' => [
                 'file' => $modules_path . 'economia-suficiencia/class-economia-suficiencia-module.php',
-                'class' => 'Flavor_Chat_Economia_Suficiencia_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Economia_Suficiencia_Module'),
             ],
             'energia_comunitaria' => [
                 'file' => $modules_path . 'energia-comunitaria/class-energia-comunitaria-module.php',
-                'class' => 'Flavor_Chat_Energia_Comunitaria_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Energia_Comunitaria_Module'),
             ],
             'saberes_ancestrales' => [
                 'file' => $modules_path . 'saberes-ancestrales/class-saberes-ancestrales-module.php',
-                'class' => 'Flavor_Chat_Saberes_Ancestrales_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Saberes_Ancestrales_Module'),
             ],
             'biodiversidad_local' => [
                 'file' => $modules_path . 'biodiversidad-local/class-biodiversidad-local-module.php',
-                'class' => 'Flavor_Chat_Biodiversidad_Local_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Biodiversidad_Local_Module'),
             ],
             'trabajo_digno' => [
                 'file' => $modules_path . 'trabajo-digno/class-trabajo-digno-module.php',
-                'class' => 'Flavor_Chat_Trabajo_Digno_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module'),
             ],
             'recetas' => [
                 'file' => $modules_path . 'recetas/class-recetas-module.php',
-                'class' => 'Flavor_Chat_Recetas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Recetas_Module'),
             ],
             'campanias' => [
                 'file' => $modules_path . 'campanias/class-campanias-module.php',
-                'class' => 'Flavor_Chat_Campanias_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Campanias_Module'),
             ],
             'documentacion_legal' => [
                 'file' => $modules_path . 'documentacion-legal/class-documentacion-legal-module.php',
-                'class' => 'Flavor_Chat_Documentacion_Legal_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Documentacion_Legal_Module'),
             ],
             'seguimiento_denuncias' => [
                 'file' => $modules_path . 'seguimiento-denuncias/class-seguimiento-denuncias-module.php',
-                'class' => 'Flavor_Chat_Seguimiento_Denuncias_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Seguimiento_Denuncias_Module'),
             ],
             'mapa_actores' => [
                 'file' => $modules_path . 'mapa-actores/class-mapa-actores-module.php',
-                'class' => 'Flavor_Chat_Mapa_Actores_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Mapa_Actores_Module'),
             ],
             'encuestas' => [
                 'file' => $modules_path . 'encuestas/class-encuestas-module.php',
-                'class' => 'Flavor_Chat_Encuestas_Module',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Encuestas_Module'),
             ],
             'agregador_contenido' => [
                 'file' => $modules_path . 'agregador-contenido/class-agregador-contenido-module.php',
@@ -718,6 +724,13 @@ class Flavor_Chat_Module_Loader {
             ],
         ];
 
+        foreach ($builtin_modules as &$module) {
+            if (!empty($module['class']) && is_string($module['class'])) {
+                $module['class'] = flavor_get_runtime_class_name($module['class']);
+            }
+        }
+        unset($module);
+
         foreach ($builtin_modules as $id => $module) {
             // Validar que el archivo del módulo es válido antes de verificar existencia
             if (!empty($module['file']) && is_string($module['file']) && file_exists($module['file'])) {
@@ -726,7 +739,7 @@ class Flavor_Chat_Module_Loader {
         }
 
         // Permitir que otros plugins registren módulos
-        $this->registered_modules = apply_filters('flavor_chat_ia_modules', $this->registered_modules);
+        $this->registered_modules = apply_filters('flavor_platform_modules', $this->registered_modules);
 
         // Validar módulos añadidos por filtros externos
         foreach ($this->registered_modules as $id => $module) {
@@ -770,29 +783,31 @@ class Flavor_Chat_Module_Loader {
 
         // Validar que la información del módulo existe y tiene archivo
         if (!$module_info || empty($module_info['file']) || !is_string($module_info['file'])) {
-            flavor_chat_ia_log("Información de módulo inválida: {$module_id}", 'error');
+            flavor_platform_log("Información de módulo inválida: {$module_id}", 'error');
             return false;
         }
 
         // Cargar archivo
         if (!file_exists($module_info['file'])) {
-            flavor_chat_ia_log("Módulo no encontrado: {$module_id}", 'error');
+            flavor_platform_log("Módulo no encontrado: {$module_id}", 'error');
             return false;
         }
 
         require_once $module_info['file'];
 
         // Instanciar
-        if (!class_exists($module_info['class'])) {
-            flavor_chat_ia_log("Clase de módulo no encontrada: {$module_info['class']}", 'error');
+        $module_class = flavor_get_runtime_class_name($module_info['class']);
+
+        if (!class_exists($module_class)) {
+            flavor_platform_log("Clase de módulo no encontrada: {$module_info['class']}", 'error');
             return false;
         }
 
-        $module = new $module_info['class']();
+        $module = new $module_class();
 
         // Verificar que implementa la interface
-        if (!($module instanceof Flavor_Chat_Module_Interface)) {
-            flavor_chat_ia_log("Módulo no implementa interface: {$module_id}", 'error');
+        if (!($module instanceof Flavor_Platform_Module_Interface)) {
+            flavor_platform_log("Módulo no implementa interface: {$module_id}", 'error');
             return false;
         }
 
@@ -804,7 +819,7 @@ class Flavor_Chat_Module_Loader {
 
         // Si no puede activarse, intentar crear tablas automáticamente
         if (!$module->can_activate()) {
-            flavor_chat_ia_log("Intentando crear tablas para módulo: {$module_id}", 'info');
+            flavor_platform_log("Intentando crear tablas para módulo: {$module_id}", 'info');
 
             // Intentar activate() primero (algunos módulos lo implementan)
             if (method_exists($module, 'activate')) {
@@ -818,7 +833,7 @@ class Flavor_Chat_Module_Loader {
 
             // Verificar de nuevo tras crear tablas
             if (!$module->can_activate()) {
-                flavor_chat_ia_log("Módulo no puede activarse tras crear tablas: {$module_id} - " . $module->get_activation_error(), 'warning');
+                flavor_platform_log("Módulo no puede activarse tras crear tablas: {$module_id} - " . $module->get_activation_error(), 'warning');
                 return false;
             }
         }
@@ -828,7 +843,7 @@ class Flavor_Chat_Module_Loader {
 
         $this->loaded_modules[$module_id] = $module;
 
-        flavor_chat_ia_log("Módulo cargado: {$module_id}", 'info');
+        flavor_platform_log("Módulo cargado: {$module_id}", 'info');
 
         return true;
     }
@@ -851,7 +866,7 @@ class Flavor_Chat_Module_Loader {
         }
 
         // Buscar en flavor_chat_ia_settings['active_modules'] (preferido)
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $configuracion_plugin = flavor_get_main_settings();
         $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
 
         // También buscar en flavor_active_modules (legacy/compatibilidad)
@@ -963,7 +978,7 @@ class Flavor_Chat_Module_Loader {
      * Obtiene un módulo cargado
      *
      * @param string $module_id
-     * @return Flavor_Chat_Module_Interface|null
+     * @return Flavor_Platform_Module_Interface|null
      */
     public function get_module($module_id) {
         if (isset($this->loaded_modules[$module_id])) {
@@ -983,7 +998,7 @@ class Flavor_Chat_Module_Loader {
             return null;
         }
 
-        $allow_lazy_load = apply_filters('flavor_chat_ia_lazy_load_modules', true, $module_id);
+        $allow_lazy_load = apply_filters('flavor_platform_lazy_load_modules', true, $module_id);
         if ($allow_lazy_load || self::is_module_active($module_id)) {
             $this->load_module($module_id);
         }
@@ -1370,7 +1385,7 @@ class Flavor_Chat_Module_Loader {
      * Obtiene la instancia de un módulo (cargado o registrado)
      *
      * @param string $module_id
-     * @return Flavor_Chat_Module_Interface|null
+     * @return Flavor_Platform_Module_Interface|null
      */
     public function get_module_instance($module_id) {
         // Primero intentar obtener de módulos cargados
@@ -1385,7 +1400,7 @@ class Flavor_Chat_Module_Loader {
             return null;
         }
 
-        $class_name = $registered[$module_id]['class'];
+        $class_name = flavor_get_runtime_class_name($registered[$module_id]['class']);
         if (!class_exists($class_name)) {
             return null;
         }
@@ -1399,22 +1414,30 @@ class Flavor_Chat_Module_Loader {
     }
 }
 
+if (!class_exists('Flavor_Chat_Module_Loader', false)) {
+    class_alias('Flavor_Platform_Module_Loader', 'Flavor_Chat_Module_Loader');
+}
+
 // Invalidar caché de módulos activos cuando se actualizan los settings
 add_action('update_option_flavor_chat_ia_settings', function () {
-    Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
+    Flavor_Platform_Module_Loader::invalidate_active_modules_cache();
+}, 10, 0);
+
+add_action('update_option_flavor_platform_settings', function () {
+    Flavor_Platform_Module_Loader::invalidate_active_modules_cache();
 }, 10, 0);
 
 add_action('update_option_flavor_active_modules', function () {
-    Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
+    Flavor_Platform_Module_Loader::invalidate_active_modules_cache();
 }, 10, 0);
 
 // Invalidar caché de visibilidad cuando cambian las configuraciones
 add_action('update_option_flavor_modules_visibility', function () {
-    Flavor_Chat_Module_Loader::invalidate_visibility_cache();
+    Flavor_Platform_Module_Loader::invalidate_visibility_cache();
 }, 10, 0);
 
 add_action('update_option_flavor_modules_capabilities', function () {
-    Flavor_Chat_Module_Loader::invalidate_visibility_cache();
+    Flavor_Platform_Module_Loader::invalidate_visibility_cache();
 }, 10, 0);
 
 // Auto-rebuild metadata cache cuando se actualiza el plugin
@@ -1423,8 +1446,8 @@ add_action('upgrader_process_complete', function ($upgrader, $options) {
         return;
     }
 
-    $plugin_file = defined('FLAVOR_CHAT_IA_FILE') && is_string(FLAVOR_CHAT_IA_FILE)
-        ? trim(FLAVOR_CHAT_IA_FILE)
+    $plugin_file = function_exists('flavor_get_runtime_plugin_file')
+        ? trim((string) flavor_get_runtime_plugin_file())
         : '';
     if ($plugin_file === '') {
         return;
@@ -1435,8 +1458,8 @@ add_action('upgrader_process_complete', function ($upgrader, $options) {
 
     if (in_array($our_plugin, $updated_plugins, true)) {
         // Invalidar cachés para forzar rebuild en próxima carga
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $loader->invalidate_metadata_cache();
-        Flavor_Chat_Module_Loader::invalidate_visibility_cache();
+        Flavor_Platform_Module_Loader::invalidate_visibility_cache();
     }
 }, 10, 2);

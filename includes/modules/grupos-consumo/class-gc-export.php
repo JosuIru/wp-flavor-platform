@@ -2,7 +2,7 @@
 /**
  * Exportación de Datos para Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

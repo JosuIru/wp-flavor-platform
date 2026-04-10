@@ -2,7 +2,7 @@
 /**
  * Template: Listado de Dones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -29,8 +29,11 @@ if (!empty($atts['categoria'])) {
 }
 
 $dones = new WP_Query($args);
-$categorias = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
-$estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
+$economia_don_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Don_Module')
+    : 'Flavor_Chat_Economia_Don_Module';
+$categorias = $economia_don_module_class::CATEGORIAS_DON;
+$estados = $economia_don_module_class::ESTADOS_DON;
 ?>
 
 <div class="ed-listado">
@@ -56,7 +59,7 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
 
     <?php if (is_user_logged_in()) : ?>
     <div style="text-align: center; margin-bottom: 2rem;">
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="ed-btn-publicar">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="ed-btn-publicar">
             <span class="dashicons dashicons-heart"></span>
             <?php esc_html_e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>

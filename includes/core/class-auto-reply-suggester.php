@@ -8,7 +8,7 @@
  * - Comentarios en foros
  * - Solicitudes de socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

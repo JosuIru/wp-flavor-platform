@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Servicios Banco de Tiempo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $limite = $limite ?? 8;

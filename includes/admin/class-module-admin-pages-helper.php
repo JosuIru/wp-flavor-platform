@@ -5,7 +5,7 @@
  * En PHP 8.2+ no se puede llamar directamente a métodos/propiedades estáticos
  * de un trait. Esta clase usa el trait y expone sus métodos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

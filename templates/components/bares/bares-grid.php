@@ -10,7 +10,7 @@
  * @var string $tipo_filtro
  * @var bool   $mostrar_valoracion
  * @var string $component_classes
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -6,7 +6,7 @@
  * - $resultados: array - Datos de resultados
  * - $formato: string - barras, pastel, texto
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

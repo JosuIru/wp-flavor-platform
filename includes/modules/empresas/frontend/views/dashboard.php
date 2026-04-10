@@ -2,7 +2,7 @@
 /**
  * Dashboard Frontend - Empresa
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

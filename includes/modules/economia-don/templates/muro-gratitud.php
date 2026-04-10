@@ -2,7 +2,7 @@
 /**
  * Template: Muro de Gratitud
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

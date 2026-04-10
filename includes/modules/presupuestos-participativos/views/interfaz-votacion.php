@@ -12,7 +12,7 @@
  * - $configuracion: array de configuracion
  * - $atributos: array con configuracion del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

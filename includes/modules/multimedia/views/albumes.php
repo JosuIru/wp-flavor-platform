@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Álbumes - Dashboard Mejorado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.0.0
  */
 

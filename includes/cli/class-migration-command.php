@@ -56,7 +56,7 @@ class Flavor_Migration_Command {
      */
     public function __construct() {
         // Cargar dependencias
-        $base_path = FLAVOR_CHAT_IA_PATH . 'includes/database/';
+        $base_path = FLAVOR_PLATFORM_PATH . 'includes/database/';
         require_once $base_path . 'class-migration-base.php';
         require_once $base_path . 'class-migration-runner.php';
 
@@ -403,7 +403,7 @@ class Flavor_Migration_Command {
         // Generar timestamp
         $timestamp = gmdate('Y_m_d_His');
         $filename = "{$timestamp}_{$name}.php";
-        $filepath = FLAVOR_CHAT_IA_PATH . "includes/database/migrations/{$filename}";
+        $filepath = FLAVOR_PLATFORM_PATH . "includes/database/migrations/{$filename}";
 
         // Generar nombre de clase
         $class_name = 'Migration_' . $timestamp . '_' . str_replace(' ', '_', ucwords(str_replace('_', ' ', $name)));

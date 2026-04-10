@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Incidencias
  */
 
@@ -206,7 +206,7 @@ function flavor_incidencias_maybe_add_empresa_id() {
     global $wpdb;
     $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
         return;
     }
 

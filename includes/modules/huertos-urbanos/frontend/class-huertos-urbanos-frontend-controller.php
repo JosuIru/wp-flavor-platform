@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\HuertosUrbanos
  */
 
@@ -58,7 +58,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-huertos-urbanos',
@@ -132,7 +132,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         global $wpdb;
         $tabla_huertos = $wpdb->prefix . 'flavor_huertos_urbanos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
             return '<p class="flavor-error">' . __('El módulo de huertos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -214,7 +214,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         $tabla_huertos = $wpdb->prefix . 'flavor_huertos_urbanos';
 
         $huertos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
             $huertos = $wpdb->get_results(
                 "SELECT id, nombre, slug, direccion, latitud, longitud, parcelas_disponibles
                  FROM {$tabla_huertos}
@@ -276,7 +276,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         }
 
         $parcelas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_parcelas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_parcelas)) {
             $parcelas = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_parcelas} WHERE huerto_id = %d ORDER BY numero ASC",
                 $huerto->id
@@ -466,7 +466,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         $tabla_huertos = $wpdb->prefix . 'flavor_huertos_urbanos';
 
         $asignacion = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_asignaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_asignaciones)) {
             $asignacion = $wpdb->get_row($wpdb->prepare(
                 "SELECT a.*, p.numero, p.superficie, p.huerto_id, h.nombre as huerto_nombre, h.slug as huerto_slug
                  FROM {$tabla_asignaciones} a
@@ -531,7 +531,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         $tabla_actividades = $wpdb->prefix . 'flavor_huertos_actividades';
 
         $actividades = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_actividades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_actividades)) {
             $actividades = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_actividades}
                  WHERE usuario_id = %d
@@ -656,7 +656,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         $tabla_asignaciones = $wpdb->prefix . 'flavor_huertos_asignaciones';
 
         $cultivos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cultivos) && Flavor_Chat_Helpers::tabla_existe($tabla_asignaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cultivos) && Flavor_Platform_Helpers::tabla_existe($tabla_asignaciones)) {
             $cultivos = $wpdb->get_results($wpdb->prepare(
                 "SELECT c.* FROM {$tabla_cultivos} c
                  JOIN {$tabla_asignaciones} a ON c.parcela_id = a.parcela_id

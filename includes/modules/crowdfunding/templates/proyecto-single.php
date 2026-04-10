@@ -2,7 +2,7 @@
 /**
  * Template: Proyecto de Crowdfunding (Single)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Crowdfunding
  *
  * Variables disponibles:

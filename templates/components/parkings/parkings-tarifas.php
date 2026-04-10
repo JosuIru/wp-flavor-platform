@@ -2,7 +2,7 @@
 /**
  * Template: Tarifas de Parkings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

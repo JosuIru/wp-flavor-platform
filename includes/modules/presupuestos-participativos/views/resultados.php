@@ -9,7 +9,7 @@
  * - $total_proyectos: int numero total de proyectos
  * - $atributos: array con configuracion del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

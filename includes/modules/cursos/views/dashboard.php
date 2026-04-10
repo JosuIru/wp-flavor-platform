@@ -2,7 +2,7 @@
 /**
  * Vista Dashboard - Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Servicios Empresariales
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $columnas = $columnas ?? 3;

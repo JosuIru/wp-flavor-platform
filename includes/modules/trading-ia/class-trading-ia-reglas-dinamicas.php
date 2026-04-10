@@ -2,7 +2,7 @@
 /**
  * Motor de Reglas Dinamicas de Trading
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Muestra un grid con los diferentes espacios disponibles para reserva
  * (sala reuniones, auditorio, coworking, etc.)
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

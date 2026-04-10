@@ -2,7 +2,7 @@
 /**
  * Template: Tareas de Voluntariado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EspaciosComunes
  * @since 4.2.0
  *

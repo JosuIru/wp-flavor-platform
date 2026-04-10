@@ -4,7 +4,7 @@
  *
  * Vista del perfil de usuario con sus publicaciones y estadísticas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -78,7 +78,7 @@ $es_propio = ($perfil['id'] ?? 0) === ($usuario['id'] ?? 0);
         <?php else : ?>
             <div class="mi-red-feed__list">
                 <?php foreach ($publicaciones as $item) : ?>
-                    <?php include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php'; ?>
+                    <?php include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/partials/feed-item.php'; ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>

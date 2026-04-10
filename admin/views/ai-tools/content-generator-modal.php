@@ -4,7 +4,7 @@
  *
  * Modal que aparece al hacer clic en "Generar con IA" en campos de texto.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

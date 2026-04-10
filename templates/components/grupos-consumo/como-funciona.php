@@ -8,7 +8,7 @@
  * @var array  $pasos_proceso Array con datos de los pasos
  * @var string $component_classes Clases CSS adicionales para el componente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

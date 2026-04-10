@@ -2,7 +2,7 @@
 /**
  * Vista: Estadísticas de Email Marketing
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

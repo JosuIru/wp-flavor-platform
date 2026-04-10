@@ -4,7 +4,7 @@
  *
  * Widget compacto para mostrar un resumen del presupuesto actual.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -18,7 +18,7 @@ $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
 $tabla_presupuestos = $prefijo_tabla . 'presupuestos';
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_presupuestos)) {
     return;
 }
 

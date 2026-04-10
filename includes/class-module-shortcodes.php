@@ -4,7 +4,7 @@
  *
  * Registra shortcodes automáticamente para cada módulo activo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @version 1.1.0
  */
 
@@ -108,7 +108,7 @@ class Flavor_Module_Shortcodes {
 
         // Cargar Archive Renderer
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
         $renderer = new Flavor_Archive_Renderer();
 
@@ -382,8 +382,8 @@ class Flavor_Module_Shortcodes {
 
         try {
             // Intentar primero por instancia (más seguro para implementaciones mixtas).
-            if (class_exists('Flavor_Chat_Module_Loader')) {
-                $loader = Flavor_Chat_Module_Loader::get_instance();
+            if (class_exists('Flavor_Platform_Module_Loader')) {
+                $loader = Flavor_Platform_Module_Loader::get_instance();
                 $instance = $loader->get_module(str_replace('-', '_', $module_slug));
                 if (is_object($instance) && method_exists($instance, 'get_renderer_config')) {
                     try {
@@ -1148,7 +1148,7 @@ class Flavor_Module_Shortcodes {
         }
 
         $template_file = $template_files_map[$module_slug][$template_name];
-        $template_path = FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_file}";
+        $template_path = FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/views/{$template_file}";
 
         if (!file_exists($template_path)) {
             return null;
@@ -1307,7 +1307,7 @@ class Flavor_Module_Shortcodes {
      */
     private function render_with_archive_renderer($module_slug, $type, $atts) {
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -1356,7 +1356,7 @@ class Flavor_Module_Shortcodes {
         $args = $form_config;
         $args['module'] = $module_slug;
         $args['action'] = $template_name;
-        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/form-builder.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/components/shared/form-builder.php';
         return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-form">' . ob_get_clean() . '</div>';
     }
 
@@ -1771,7 +1771,7 @@ class Flavor_Module_Shortcodes {
 
         // Obtener eventos/items del módulo
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
         $renderer = new Flavor_Archive_Renderer();
         $data = $renderer->get_module_data($module_slug, ['per_page' => 100]);
@@ -1916,7 +1916,7 @@ class Flavor_Module_Shortcodes {
     private function render_module_map($module_slug, $template_name, $atts) {
         // Obtener items con ubicación
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
         $renderer = new Flavor_Archive_Renderer();
         $data = $renderer->get_module_data($module_slug, ['per_page' => 100]);
@@ -2088,7 +2088,7 @@ class Flavor_Module_Shortcodes {
 
         // Obtener datos del módulo
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
         $renderer = new Flavor_Archive_Renderer();
         $user_id = get_current_user_id();
@@ -2242,7 +2242,7 @@ class Flavor_Module_Shortcodes {
     private function render_coming_soon_message($module_slug, $template_name) {
         // Usar Archive Renderer dinámicamente en lugar de mostrar "próximamente"
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -2302,11 +2302,11 @@ class Flavor_Module_Shortcodes {
      * Registra shortcodes para todos los módulos activos
      */
     public function register_module_shortcodes() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos = $loader->get_loaded_modules();
 
         foreach ($modulos as $id => $instance) {
@@ -2451,9 +2451,9 @@ class Flavor_Module_Shortcodes {
         $vista_slug = str_replace('_', '-', $vista);
 
         $template_paths = [
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/templates/{$vista_slug}.php",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/{$vista_slug}.php",
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$vista_slug}.php",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/templates/{$vista_slug}.php",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/frontend/{$vista_slug}.php",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/{$module_slug}/{$vista_slug}.php",
         ];
 
         foreach ($template_paths as $path) {
@@ -2614,12 +2614,12 @@ class Flavor_Module_Shortcodes {
         }
 
         // Obtener módulo
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             wp_send_json_error(__('Sistema no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $instance = $loader->get_module($module_id);
 
         if (!$instance) {
@@ -3068,17 +3068,17 @@ class Flavor_Module_Shortcodes {
         $modulo_guiones_bajos = str_replace('-', '_', $modulo_id);
 
         // 1. Templates en el directorio views del módulo (includes/modules/{modulo}/views/)
-        $paths[] = FLAVOR_CHAT_IA_PATH . "includes/modules/{$modulo_guiones}/views/{$vista}.php";
-        $paths[] = FLAVOR_CHAT_IA_PATH . "includes/modules/{$modulo_guiones_bajos}/views/{$vista}.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "includes/modules/{$modulo_guiones}/views/{$vista}.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "includes/modules/{$modulo_guiones_bajos}/views/{$vista}.php";
 
         // 2. Template específico del módulo en el plugin principal
-        $paths[] = FLAVOR_CHAT_IA_PATH . "templates/components/{$modulo_id}/{$modulo_id}-{$vista}.php";
-        $paths[] = FLAVOR_CHAT_IA_PATH . "templates/components/{$modulo_guiones}/{$vista}.php";
-        $paths[] = FLAVOR_CHAT_IA_PATH . "templates/components/{$modulo_id}/grid.php";
-        $paths[] = FLAVOR_CHAT_IA_PATH . "templates/frontend/{$modulo_id}/archive.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "templates/components/{$modulo_id}/{$modulo_id}-{$vista}.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "templates/components/{$modulo_guiones}/{$vista}.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "templates/components/{$modulo_id}/grid.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "templates/frontend/{$modulo_id}/archive.php";
 
         // 3. Template genérico en el plugin principal
-        $paths[] = FLAVOR_CHAT_IA_PATH . "templates/components/unified/_generic-grid.php";
+        $paths[] = FLAVOR_PLATFORM_PATH . "templates/components/unified/_generic-grid.php";
 
         // 4. Templates del Web Builder Pro addon
         if (defined('FLAVOR_WEB_BUILDER_PATH')) {
@@ -3501,7 +3501,7 @@ class Flavor_Module_Shortcodes {
         ob_start();
         $items = $list_items;
         $empty_text = __('No hay registros recientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
-        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/quick-list.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/components/shared/quick-list.php';
         return ob_get_clean();
     }
 
@@ -3542,7 +3542,7 @@ class Flavor_Module_Shortcodes {
 
         // Usar Archive Renderer con configuración mínima
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
         $renderer = new Flavor_Archive_Renderer();
 
@@ -3602,7 +3602,7 @@ class Flavor_Module_Shortcodes {
 
             ob_start();
             $type = 'cta';
-            include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+            include FLAVOR_PLATFORM_PATH . 'templates/components/shared/sidebar-widget.php';
             return ob_get_clean();
         }
 
@@ -3619,7 +3619,7 @@ class Flavor_Module_Shortcodes {
 
         ob_start();
         $type = 'info';
-        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/components/shared/sidebar-widget.php';
         return ob_get_clean();
     }
 
@@ -3673,7 +3673,7 @@ class Flavor_Module_Shortcodes {
         ob_start();
         $items = $user_stats;
         $type = 'stats';
-        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/components/shared/sidebar-widget.php';
         return ob_get_clean();
     }
 

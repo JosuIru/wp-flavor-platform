@@ -14,7 +14,7 @@
  * @var string $url_realizar_pedido URL para realizar un pedido
  * @var string $component_classes Clases CSS adicionales para el componente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

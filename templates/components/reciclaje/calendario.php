@@ -3,7 +3,7 @@
  * Template: Calendario de Recogidas de Residuos
  * Calendario de recogidas de residuos (orgánico, envases, papel, vidrio) por zonas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

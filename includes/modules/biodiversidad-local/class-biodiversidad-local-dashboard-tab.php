@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Biodiversidad Local
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\BiodiversidadLocal
  */
 
@@ -93,21 +93,21 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
         $proyectos_activos = 0;
         $especies_amenazadas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_especies)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_especies)) {
             $total_especies = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_especies}");
             $especies_amenazadas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_especies} WHERE estado_conservacion IN ('vulnerable', 'en_peligro', 'en_peligro_critico')"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_avistamientos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_avistamientos)) {
             $mis_avistamientos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_avistamientos} WHERE usuario_id = %d",
                 $user_id
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
             $proyectos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_proyectos} WHERE estado = 'activo'"
             );
@@ -151,15 +151,15 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'catalogo')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad_local', 'catalogo')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'proyectos')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad_local', 'proyectos')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Ver Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -183,7 +183,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
         $tabla_especies = $wpdb->prefix . 'flavor_especies';
 
         $avistamientos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_avistamientos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_avistamientos)) {
             $avistamientos = $wpdb->get_results($wpdb->prepare(
                 "SELECT a.*, e.nombre_comun, e.nombre_cientifico
                  FROM {$tabla_avistamientos} a
@@ -199,7 +199,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
         <div class="flavor-panel flavor-avistamientos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Mis Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -209,7 +209,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-visibility"></span>
                     <p><?php esc_html_e('Aún no has registrado ningún avistamiento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Registrar mi primer avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>

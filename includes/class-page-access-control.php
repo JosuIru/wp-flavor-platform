@@ -4,7 +4,7 @@
  *
  * Middleware que verifica permisos antes de mostrar páginas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

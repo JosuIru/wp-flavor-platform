@@ -81,7 +81,7 @@ class Flavor_Migration_Runner {
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->tracking_table = $wpdb->prefix . 'flavor_migrations';
-        $this->migrations_path = FLAVOR_CHAT_IA_PATH . 'includes/database/migrations/';
+        $this->migrations_path = FLAVOR_PLATFORM_PATH . 'includes/database/migrations/';
     }
 
     /**
@@ -479,8 +479,8 @@ class Flavor_Migration_Runner {
      * @return void
      */
     private function log($message, $level = 'info') {
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("[Migration Runner] {$message}", $level, 'database');
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("[Migration Runner] {$message}", $level, 'database');
         }
     }
 

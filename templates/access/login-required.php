@@ -7,7 +7,7 @@
  * Variables disponibles:
  * - $redirect_url: URL a la que redirigir tras el login
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -4,7 +4,7 @@
  *
  * Reproductor de vídeo con soporte para múltiples fuentes y embeds.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $src        URL del vídeo o embed (YouTube, Vimeo)

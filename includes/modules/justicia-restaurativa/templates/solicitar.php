@@ -2,14 +2,17 @@
 /**
  * Template: Solicitar Mediación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$tipos = Flavor_Chat_Justicia_Restaurativa_Module::TIPOS_PROCESO;
+$justicia_restaurativa_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Justicia_Restaurativa_Module')
+    : 'Flavor_Chat_Justicia_Restaurativa_Module';
+$tipos = $justicia_restaurativa_module_class::TIPOS_PROCESO;
 ?>
 
 <div class="jr-solicitar">

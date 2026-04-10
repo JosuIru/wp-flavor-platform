@@ -4,7 +4,7 @@
  *
  * Contenedor para gráficos con header y controles.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title      Título del gráfico

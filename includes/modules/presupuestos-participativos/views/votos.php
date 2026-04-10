@@ -2,7 +2,7 @@
 /**
  * Vista Seguimiento de Votos - Módulo Presupuestos Participativos (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  */
 if (!defined('ABSPATH')) exit;

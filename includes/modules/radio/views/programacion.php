@@ -2,7 +2,7 @@
 /**
  * Vista de Programación de Radio (Parrilla Horaria)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

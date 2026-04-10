@@ -1,7 +1,7 @@
 <?php
 /**
  * Estadísticas e Impacto - Ayuda Vecinal
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 ?>

@@ -3,7 +3,7 @@
  * Gestión de Reservas de Espacios Comunes
  * Lista y gestión de reservas con calendario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

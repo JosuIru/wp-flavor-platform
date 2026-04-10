@@ -4,7 +4,7 @@
  *
  * Galería personal de contenido multimedia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

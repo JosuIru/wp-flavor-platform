@@ -5,7 +5,7 @@
  * Seccion hero para el modulo de socios/membresia.
  * Titulo, subtitulo y estadisticas de la comunidad.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

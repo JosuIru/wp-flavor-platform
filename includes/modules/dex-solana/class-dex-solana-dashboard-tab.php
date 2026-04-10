@@ -4,7 +4,7 @@
  *
  * Integración con exchange descentralizado en Solana.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -89,15 +89,15 @@ class Flavor_Dex_Solana_Dashboard_Tab {
                     <p>Conecta tu wallet de Solana para empezar a operar en el DEX.</p>
                     <div class="wallet-opciones">
                         <button class="wallet-btn" data-wallet="phantom">
-                            <img src="<?php echo FLAVOR_CHAT_IA_URL; ?>assets/images/phantom.svg" alt="Phantom">
+                            <img src="<?php echo FLAVOR_PLATFORM_URL; ?>assets/images/phantom.svg" alt="Phantom">
                             Phantom
                         </button>
                         <button class="wallet-btn" data-wallet="solflare">
-                            <img src="<?php echo FLAVOR_CHAT_IA_URL; ?>assets/images/solflare.svg" alt="Solflare">
+                            <img src="<?php echo FLAVOR_PLATFORM_URL; ?>assets/images/solflare.svg" alt="Solflare">
                             Solflare
                         </button>
                         <button class="wallet-btn" data-wallet="backpack">
-                            <img src="<?php echo FLAVOR_CHAT_IA_URL; ?>assets/images/backpack.svg" alt="Backpack">
+                            <img src="<?php echo FLAVOR_PLATFORM_URL; ?>assets/images/backpack.svg" alt="Backpack">
                             Backpack
                         </button>
                     </div>

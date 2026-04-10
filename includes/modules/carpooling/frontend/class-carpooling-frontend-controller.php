@@ -2,7 +2,7 @@
 /**
  * Controller Frontend para Carpooling
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -2,14 +2,17 @@
 /**
  * Template: Catálogo de Saberes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$categorias = Flavor_Chat_Saberes_Ancestrales_Module::CATEGORIAS_SABER;
+$saberes_ancestrales_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Saberes_Ancestrales_Module')
+    : 'Flavor_Chat_Saberes_Ancestrales_Module';
+$categorias = $saberes_ancestrales_module_class::CATEGORIAS_SABER;
 
 $saberes = get_posts([
     'post_type' => 'sa_saber',
@@ -97,7 +100,7 @@ $saberes = get_posts([
         <span class="dashicons dashicons-book"></span>
         <p><?php esc_html_e('Aún no hay saberes documentados.', 'flavor-platform'); ?></p>
         <?php if (is_user_logged_in()) : ?>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="sa-btn sa-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="sa-btn sa-btn--primary">
             <?php esc_html_e('Compartir un saber', 'flavor-platform'); ?>
         </a>
         <?php endif; ?>

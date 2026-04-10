@@ -94,7 +94,7 @@ Reviews de cursos.
 
 ## Endpoints API REST
 
-**Namespace:** `flavor-chat-ia/v1`
+**Namespace:** `flavor-platform/v1`
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|

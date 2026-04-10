@@ -4,7 +4,7 @@
  *
  * Sección hero principal con buscador de viajes compartidos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -111,7 +111,7 @@ function flavor_restaurant_ordering_init() {
     }
 
     // Log de inicialización en modo debug
-    if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
+    if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
         flavor_log_debug( 'Addon inicializado correctamente v' . FLAVOR_RESTAURANT_VERSION, 'RestaurantOrdering' );
     }
 }

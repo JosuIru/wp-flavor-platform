@@ -4,7 +4,7 @@
  *
  * Lista de usuarios para administración y gestión.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $users       Usuarios: [['id' => 1, 'name' => '', 'email' => '', 'avatar' => '', 'role' => '', 'status' => '', 'meta' => []]]

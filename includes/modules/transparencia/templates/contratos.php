@@ -4,7 +4,7 @@
  *
  * Muestra los contratos publicos con filtros y opciones de descarga.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -21,7 +21,7 @@ $tablas_documentos_candidatas = [
     $prefijo_tabla . 'documentos',
 ];
 foreach ($tablas_documentos_candidatas as $tabla_candidata) {
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_candidata)) {
         $tabla_documentos = $tabla_candidata;
         break;
     }

@@ -4,7 +4,7 @@
  *
  * Proporciona navegación consistente dentro de cada módulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -168,9 +168,9 @@ class Flavor_Module_Navigation {
                 ['slug' => 'crear', 'label' => __('Proponer Taller', 'flavor-platform'), 'url' => home_url('/talleres/crear/'), 'icon' => '➕'],
             ],
             'grupos-consumo' => [
-                ['slug' => 'listado', 'label' => __('Todos los Grupos', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''), 'icon' => '🌱'],
-                ['slug' => 'mi-grupo', 'label' => __('Mi Grupo', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '⭐'],
-                ['slug' => 'pedidos', 'label' => __('Pedidos', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'pedidos'), 'icon' => '🛒'],
+                ['slug' => 'listado', 'label' => __('Todos los Grupos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', ''), 'icon' => '🌱'],
+                ['slug' => 'mi-grupo', 'label' => __('Mi Grupo', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '⭐'],
+                ['slug' => 'pedidos', 'label' => __('Pedidos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'pedidos'), 'icon' => '🛒'],
             ],
             'incidencias' => [
                 ['slug' => 'listado', 'label' => __('Todas las Incidencias', 'flavor-platform'), 'url' => home_url('/incidencias/'), 'icon' => '🔧'],
@@ -183,11 +183,11 @@ class Flavor_Module_Navigation {
                 ['slug' => 'reservar', 'label' => __('Reservar Espacio', 'flavor-platform'), 'url' => home_url('/espacios-comunes/reservar/'), 'icon' => '➕'],
             ],
             'mi-red' => [
-                ['slug' => 'feed', 'label' => __('Feed', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', ''), 'icon' => '🏠'],
-                ['slug' => 'explorar', 'label' => __('Explorar', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'explorar'), 'icon' => '🔍'],
-                ['slug' => 'mensajes', 'label' => __('Mensajes', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'mensajes'), 'icon' => '💬'],
-                ['slug' => 'notificaciones', 'label' => __('Notificaciones', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'notificaciones'), 'icon' => '🔔'],
-                ['slug' => 'perfil', 'label' => __('Mi Perfil', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil'), 'icon' => '👤'],
+                ['slug' => 'feed', 'label' => __('Feed', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', ''), 'icon' => '🏠'],
+                ['slug' => 'explorar', 'label' => __('Explorar', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', 'explorar'), 'icon' => '🔍'],
+                ['slug' => 'mensajes', 'label' => __('Mensajes', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', 'mensajes'), 'icon' => '💬'],
+                ['slug' => 'notificaciones', 'label' => __('Notificaciones', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', 'notificaciones'), 'icon' => '🔔'],
+                ['slug' => 'perfil', 'label' => __('Mi Perfil', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', 'perfil'), 'icon' => '👤'],
             ],
         ];
 

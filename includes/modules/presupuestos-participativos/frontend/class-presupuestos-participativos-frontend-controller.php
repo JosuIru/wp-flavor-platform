@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Presupuestos Participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  */
 
@@ -60,7 +60,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-presupuestos',
@@ -130,7 +130,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
         global $wpdb;
         $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_procesos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_procesos)) {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 

@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Reciclaje
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -80,7 +80,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_puntos,
                 'label' => __('Puntos limpios', 'flavor-platform'),
                 'color' => $total_puntos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'puntos'),
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Platform_Helpers::get_action_url('reciclaje', 'puntos'),
             ],
         ];
 
@@ -91,7 +91,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha_formateada,
                 'label' => $proxima_recogida->tipo ?: __('Próx. recogida', 'flavor-platform'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&tab=recogidas') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'calendario'),
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&tab=recogidas') : Flavor_Platform_Helpers::get_action_url('reciclaje', 'calendario'),
             ];
         }
 
@@ -104,7 +104,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver mapa', 'flavor-platform'),
-                    'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Platform_Helpers::get_action_url('reciclaje', ''),
                     'icon' => 'dashicons-location',
                 ],
             ],
@@ -135,7 +135,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-location-alt',
                 'title' => wp_trim_words($punto->nombre, 4, '...'),
                 'meta' => $punto->tipo ?: $punto->direccion,
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&punto=' . $punto->id) : Flavor_Chat_Helpers::get_action_url('reciclaje', 'punto') . '/' . $punto->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&punto=' . $punto->id) : Flavor_Platform_Helpers::get_action_url('reciclaje', 'punto') . '/' . $punto->id . '/',
             ];
         }
 

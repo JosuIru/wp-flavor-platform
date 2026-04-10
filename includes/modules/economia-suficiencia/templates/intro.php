@@ -2,7 +2,7 @@
 /**
  * Template: Introducción a la Economía de Suficiencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -67,7 +67,10 @@ if (!defined('ABSPATH')) {
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;">
             <?php
-            $categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
+            $economia_suficiencia_module_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Suficiencia_Module')
+                : 'Flavor_Chat_Economia_Suficiencia_Module';
+            $categorias = $economia_suficiencia_module_class::CATEGORIAS_NECESIDADES;
             foreach ($categorias as $cat_id => $cat_data) :
             ?>
             <div class="es-card" style="text-align: center; border-top: 3px solid <?php echo esc_attr($cat_data['color']); ?>">
@@ -88,7 +91,7 @@ if (!defined('ABSPATH')) {
         <p style="color: var(--es-text-light); margin-bottom: 1.5rem;">
             <?php esc_html_e('Evalúa cómo estás satisfaciendo tus necesidades y descubre tu camino hacia la suficiencia.', 'flavor-platform'); ?>
         </p>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--primary">
             <span class="dashicons dashicons-chart-bar"></span>
             <?php esc_html_e('Evaluar mis necesidades', 'flavor-platform'); ?>
         </a>

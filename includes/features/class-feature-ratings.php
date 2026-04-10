@@ -4,7 +4,7 @@
  *
  * Permite a los usuarios valorar entidades con estrellas (1-5).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Features
  */
 

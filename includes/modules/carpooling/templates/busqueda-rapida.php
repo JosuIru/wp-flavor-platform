@@ -5,7 +5,7 @@
  * Widget compacto para busqueda rapida de viajes compartidos.
  * Ideal para sidebars, headers o secciones destacadas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules/Carpooling
  */
 

@@ -2,7 +2,7 @@
 /**
  * Vista de Mantenimiento - Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BicicletasCompartidas
  */
 

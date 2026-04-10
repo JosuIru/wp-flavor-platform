@@ -2,7 +2,7 @@
 /**
  * Gestión de Membresías y Solicitudes de Unión a Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -1724,7 +1724,7 @@ class Flavor_GC_Membership {
                             $imagen_url = get_the_post_thumbnail_url($grupo_id, 'medium');
                         }
                         if (!$imagen_url) {
-                            $imagen_url = FLAVOR_CHAT_IA_URL . 'assets/images/default-grupo.png';
+                            $imagen_url = FLAVOR_PLATFORM_URL . 'assets/images/default-grupo.png';
                         }
 
                         $descripcion = $es_grupo_virtual

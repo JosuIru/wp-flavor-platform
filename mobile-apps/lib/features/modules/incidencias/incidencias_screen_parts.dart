@@ -191,11 +191,34 @@ class _IncidenciaDetailScreenState extends ConsumerState<IncidenciaDetailScreen>
     super.dispose();
   }
 
+  String? _currentEstado;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalle de incidencia'),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            tooltip: 'Acciones',
+            onSelected: (value) {
+              if (value == 'cambiar_estado') {
+                _showChangeEstadoDialog();
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'cambiar_estado',
+                child: ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text('Cambiar estado'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: FutureBuilder<ApiResponse<Map<String, dynamic>>>(
         future: _future,
@@ -225,6 +248,9 @@ class _IncidenciaDetailScreenState extends ConsumerState<IncidenciaDetailScreen>
           final ubicacion = incidencia['ubicacion']?.toString() ?? '';
           final fecha = incidencia['fecha']?.toString() ?? '';
           final reportadoPor = incidencia['reportado_por']?.toString() ?? '';
+
+          // Guardar estado actual para el diálogo de cambio
+          _currentEstado = estado;
 
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -397,6 +423,96 @@ class _IncidenciaDetailScreenState extends ConsumerState<IncidenciaDetailScreen>
         },
       ),
     );
+  }
+
+  Future<void> _showChangeEstadoDialog() async {
+    final estados = ['abierto', 'en_progreso', 'resuelto', 'cerrado'];
+    final estadosLabels = {
+      'abierto': 'Abierto',
+      'en_progreso': 'En progreso',
+      'resuelto': 'Resuelto',
+      'cerrado': 'Cerrado',
+    };
+
+    final nuevoEstado = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Cambiar estado'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: estados.map((estado) {
+              return ListTile(
+                leading: Icon(
+                  _getIconForEstado(estado),
+                  color: _getColorForEstado(estado),
+                ),
+                title: Text(estadosLabels[estado] ?? estado),
+                selected: estado == _currentEstado,
+                onTap: () => Navigator.pop(context, estado),
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (nuevoEstado != null && nuevoEstado != _currentEstado) {
+      await _updateEstado(nuevoEstado);
+    }
+  }
+
+  IconData _getIconForEstado(String estado) {
+    switch (estado.toLowerCase()) {
+      case 'abierto':
+        return Icons.schedule;
+      case 'en_progreso':
+        return Icons.engineering;
+      case 'resuelto':
+        return Icons.check_circle;
+      case 'cerrado':
+        return Icons.done_all;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
+  Color _getColorForEstado(String estado) {
+    switch (estado.toLowerCase()) {
+      case 'abierto':
+        return Colors.orange;
+      case 'en_progreso':
+        return Colors.blue;
+      case 'resuelto':
+        return Colors.green;
+      case 'cerrado':
+        return Colors.grey;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Future<void> _updateEstado(String nuevoEstado) async {
+    final api = ref.read(apiClientProvider);
+    final res = await api.updateIncidenciaEstado(
+      incidenciaId: widget.incidenciaId,
+      estado: nuevoEstado,
+    );
+
+    if (mounted) {
+      if (res.success) {
+        FlavorSnackbar.showSuccess(context, 'Estado actualizado a: $nuevoEstado');
+        _refresh();
+      } else {
+        FlavorSnackbar.showError(context, res.error ?? 'Error al actualizar el estado');
+      }
+    }
   }
 
   Future<void> _addComment() async {

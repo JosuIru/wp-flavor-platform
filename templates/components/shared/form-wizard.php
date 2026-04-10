@@ -4,7 +4,7 @@
  *
  * Formulario multi-paso con navegación y validación.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $steps       Pasos: [['id' => '', 'title' => '', 'icon' => '', 'fields' => [...], 'description' => '']]

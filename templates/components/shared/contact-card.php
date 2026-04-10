@@ -4,7 +4,7 @@
  *
  * Tarjeta de contacto con información y acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $name        Nombre completo

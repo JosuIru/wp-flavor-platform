@@ -311,7 +311,7 @@ class Flavor_Addon_Marketplace {
         wp_add_inline_style('wp-admin', $css);
 
         // JavaScript
-        wp_enqueue_script('flavor-marketplace', '', ['jquery'], FLAVOR_CHAT_IA_VERSION, true);
+        wp_enqueue_script('flavor-marketplace', '', ['jquery'], FLAVOR_PLATFORM_VERSION, true);
 
         $js = "
             (function($) {

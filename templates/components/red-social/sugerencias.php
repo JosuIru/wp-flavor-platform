@@ -2,7 +2,7 @@
 /**
  * Template: Sugerencias de Conexión
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales del template
  */
 

@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Eventos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Eventos
  */
 
@@ -54,7 +54,7 @@ class Flavor_Eventos_Dashboard_Tab {
         $mis_inscripciones = 0;
         $eventos_proximos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $total_eventos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'publicado'"
             );
@@ -72,7 +72,7 @@ class Flavor_Eventos_Dashboard_Tab {
             ));
         }
 
-        if ($user_id && Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if ($user_id && Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $mis_inscripciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE usuario_id = %d AND estado = 'confirmada'",
                 $user_id
@@ -133,7 +133,7 @@ class Flavor_Eventos_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
@@ -148,7 +148,7 @@ class Flavor_Eventos_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
                     <?php esc_html_e('Ver todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
@@ -168,7 +168,7 @@ class Flavor_Eventos_Dashboard_Tab {
         $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
 
         $inscripciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones) && Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones) && Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $inscripciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT i.*, e.titulo, e.fecha_inicio, e.ubicacion_nombre, e.slug
                  FROM {$tabla_inscripciones} i
@@ -189,7 +189,7 @@ class Flavor_Eventos_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-tickets-alt"></span>
                     <p><?php esc_html_e('No estás inscrito en ningún evento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -215,7 +215,7 @@ class Flavor_Eventos_Dashboard_Tab {
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="<?php echo esc_url(add_query_arg('evento_id', $insc->evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                        <a href="<?php echo esc_url(add_query_arg('evento_id', $insc->evento_id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                             <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </td>

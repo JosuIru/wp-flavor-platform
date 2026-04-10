@@ -7,7 +7,7 @@
  * - Formularios de acción
  * - Páginas frontend automáticas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.0.0
  */
 

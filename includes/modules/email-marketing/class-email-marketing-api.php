@@ -2,7 +2,7 @@
 /**
  * API REST para Email Marketing
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 
@@ -237,7 +237,7 @@ class Flavor_Email_Marketing_API {
         $lista = sanitize_text_field($request->get_param('lista') ?: 'newsletter-principal');
         $nombre = sanitize_text_field($request->get_param('nombre') ?: '');
 
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
 
         if (!$modulo) {
             return new WP_REST_Response(['success' => false, 'error' => __('Módulo no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)], 500);
@@ -254,7 +254,7 @@ class Flavor_Email_Marketing_API {
     public static function confirmar($request) {
         $token = sanitize_text_field($request->get_param('token'));
 
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
         $resultado = $modulo->confirmar_suscripcion($token);
 
         return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 400);
@@ -271,7 +271,7 @@ class Flavor_Email_Marketing_API {
         global $wpdb;
 
         // Por simplicidad, asumimos que el token es el hash del ID + salt
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
 
         // Buscar suscriptor por token
         $suscriptor = null;
@@ -369,7 +369,7 @@ class Flavor_Email_Marketing_API {
         }
 
         // Actualizar listas
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
 
         // Obtener listas actuales
         $listas_actuales = $wpdb->get_col($wpdb->prepare(
@@ -585,7 +585,7 @@ class Flavor_Email_Marketing_API {
      * Admin: Crear campaña
      */
     public static function admin_crear_campania($request) {
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
 
         $datos = [
             'nombre' => $request->get_param('nombre'),
@@ -669,7 +669,7 @@ class Flavor_Email_Marketing_API {
         $id = absint($request['id']);
         $fecha_programada = $request->get_param('fecha_programada');
 
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
         $resultado = $modulo->programar_campania($id, $fecha_programada);
 
         return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 400);
@@ -697,7 +697,7 @@ class Flavor_Email_Marketing_API {
             return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
-        $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+        $modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
         $settings = $modulo->get_settings();
 
         $sender = new Flavor_EM_Sender($settings);

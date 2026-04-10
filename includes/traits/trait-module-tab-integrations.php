@@ -5,7 +5,7 @@
  * Permite que módulos de red (foros, chat, red-social, multimedia, podcast)
  * inyecten tabs automáticamente en otros módulos cuando están activos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -65,13 +65,14 @@ trait Flavor_Module_Tab_Integrations_Trait {
         ];
 
         // Obtener el loader de módulos
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return $tabs;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         foreach (self::$network_modules as $mod_id => $clase) {
+            $clase = flavor_get_runtime_class_name($clase);
             // No integrar un módulo consigo mismo
             if ($mod_id === $modulo_actual) {
                 continue;
@@ -353,11 +354,11 @@ trait Flavor_Module_Tab_Integrations_Trait {
      * @return bool
      */
     public function is_network_module_available($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return false;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         return $loader->is_module_active($module_id);
     }
 }

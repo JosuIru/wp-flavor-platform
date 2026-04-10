@@ -4,7 +4,7 @@
  *
  * Listado y administracion de hilos/temas del foro
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

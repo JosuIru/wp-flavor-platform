@@ -4,7 +4,7 @@
  *
  * Panel de control con estadísticas de datos públicos y solicitudes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

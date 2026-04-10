@@ -3,7 +3,7 @@
  * Template: WooCommerce Mini Carrito
  * Muestra un mini carrito con items, total y botones de accion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

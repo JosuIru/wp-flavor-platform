@@ -4,7 +4,7 @@
  *
  * Sección de dashboard reutilizable con header, contenido y acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title       Título de la sección

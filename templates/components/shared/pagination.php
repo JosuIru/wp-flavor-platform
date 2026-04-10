@@ -4,7 +4,7 @@
  *
  * Paginación reutilizable con estilos consistentes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param int    $total       Total de items

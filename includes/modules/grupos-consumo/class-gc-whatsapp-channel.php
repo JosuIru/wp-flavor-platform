@@ -2,7 +2,7 @@
 /**
  * Canal de Notificaciones WhatsApp Business API
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -604,7 +604,7 @@ class Flavor_GC_WhatsApp_Channel {
      * Registrar endpoint para webhook
      */
     public function registrar_webhook_endpoint() {
-        register_rest_route('flavor-chat-ia/v1', '/gc/whatsapp/webhook', [
+        flavor_register_rest_route(FLAVOR_PLATFORM_REST_NAMESPACE, '/gc/whatsapp/webhook', [
             [
                 'methods' => 'GET',
                 'callback' => [$this, 'webhook_verificacion'],

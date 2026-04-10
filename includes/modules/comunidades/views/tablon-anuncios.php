@@ -4,7 +4,7 @@
  *
  * Muestra anuncios importantes de todas las comunidades del usuario y la red federada
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

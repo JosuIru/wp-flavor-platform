@@ -4,7 +4,7 @@
  *
  * Muro de agradecimientos/testimonios tipo post-its.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $messages    Array de mensajes: [['id' => x, 'message' => '', 'author' => '', 'avatar' => '', 'date' => '', 'color' => '', 'likes' => 0]]

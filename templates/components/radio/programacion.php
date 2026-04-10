@@ -5,7 +5,7 @@
  * Muestra la programacion de radio organizada por dias, con el programa
  * actual destacado y los proximos programas.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Radio
  */
 

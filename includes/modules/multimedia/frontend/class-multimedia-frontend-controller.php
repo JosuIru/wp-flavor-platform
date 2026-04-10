@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Multimedia
  */
 
@@ -104,14 +104,14 @@ class Flavor_Multimedia_Frontend_Controller {
             'flavor-multimedia-frontend',
             plugin_dir_url(__FILE__) . '../assets/css/multimedia-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-multimedia-frontend',
             plugin_dir_url(__FILE__) . '../assets/js/multimedia-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
     }
@@ -177,7 +177,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $mis_likes = 0;
         $total_vistas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia)) {
             $mis_fotos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'imagen'",
                 $user_id
@@ -200,7 +200,7 @@ class Flavor_Multimedia_Frontend_Controller {
         }
 
         $mis_albumes = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_albumes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_albumes)) {
             $mis_albumes = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE usuario_id = %d",
                 $user_id
@@ -275,7 +275,7 @@ class Flavor_Multimedia_Frontend_Controller {
     private function render_contenido_reciente($user_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia)) {
             return;
         }
 
@@ -340,7 +340,7 @@ class Flavor_Multimedia_Frontend_Controller {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia)) {
             return '<p class="flavor-notice">' . esc_html__('Galería no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -430,7 +430,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $user_id = get_current_user_id();
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia)) {
             return '<p class="flavor-notice">' . esc_html__('Multimedia no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -579,7 +579,7 @@ class Flavor_Multimedia_Frontend_Controller {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_albumes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_albumes)) {
             return '<p class="flavor-notice">' . esc_html__('Álbumes no disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -1008,7 +1008,7 @@ class Flavor_Multimedia_Frontend_Controller {
             'likes' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_multimedia)) {
             $stats['fotos'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'imagen'",
                 $user_id
@@ -1023,7 +1023,7 @@ class Flavor_Multimedia_Frontend_Controller {
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_albumes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_albumes)) {
             $stats['albumes'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE usuario_id = %d",
                 $user_id

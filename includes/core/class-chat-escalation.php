@@ -2,14 +2,14 @@
 /**
  * Gestión de escalado a humanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Escalation {
+class Flavor_Platform_Escalation {
 
     /**
      * Instancia singleton
@@ -19,7 +19,7 @@ class Flavor_Chat_Escalation {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Escalation
+     * @return Flavor_Platform_Escalation
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -36,7 +36,7 @@ class Flavor_Chat_Escalation {
     /**
      * Crea un ticket de escalado
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param string $reason
      * @param string $contact_method
      * @return array
@@ -100,7 +100,7 @@ class Flavor_Chat_Escalation {
     /**
      * Genera un resumen de la conversación
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @return string
      */
     private function generate_summary($session) {
@@ -287,4 +287,8 @@ class Flavor_Chat_Escalation {
             ['%d']
         ) !== false;
     }
+}
+
+if (!class_exists('Flavor_Chat_Escalation', false)) {
+    class_alias('Flavor_Platform_Escalation', 'Flavor_Chat_Escalation');
 }

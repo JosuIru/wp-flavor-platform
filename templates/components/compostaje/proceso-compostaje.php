@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Proceso de Compostaje
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo
  * @var string $descripcion

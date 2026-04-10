@@ -2,7 +2,7 @@
 /**
  * Componente Compartido: Estado Vacío
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var string $icono Emoji o SVG
  * @var string $titulo
  * @var string $descripcion

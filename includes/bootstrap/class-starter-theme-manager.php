@@ -76,7 +76,7 @@ final class Flavor_Starter_Theme_Manager {
      * @return string
      */
     public function get_bundle_path() {
-        return FLAVOR_CHAT_IA_PATH . 'assets/companion-theme/flavor-starter';
+        return FLAVOR_PLATFORM_PATH . 'assets/companion-theme/flavor-starter';
     }
 
     /**

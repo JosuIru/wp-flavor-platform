@@ -4,7 +4,7 @@
  *
  * Gestiona recetas que pueden vincularse a productos de WooCommerce
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  * - Otros modulos pueden vincular recetas a sus entidades
  * - Ejemplo: productos, eventos, talleres, huertos pueden tener recetas vinculadas
  */
-class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Provider;
@@ -141,9 +141,360 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         // AJAX
         add_action('wp_ajax_flavor_buscar_recetas', [$this, 'ajax_buscar_recetas']);
 
+        // REST API para app móvil
+        $this->register_rest_routes();
+
         // Assets
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+    }
+
+    /**
+     * Registra rutas REST API para app móvil
+     */
+    private function register_rest_routes() {
+        add_action('rest_api_init', function() {
+            // Listar recetas con metadatos completos
+            register_rest_route('flavor/v1', '/recetas', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_listar_recetas'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Obtener receta con todos los detalles
+            register_rest_route('flavor/v1', '/recetas/(?P<id>\d+)', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_obtener_receta'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Obtener categorías de recetas
+            register_rest_route('flavor/v1', '/recetas/categorias', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_categorias'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Buscar recetas
+            register_rest_route('flavor/v1', '/recetas/buscar', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_buscar'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Recetas destacadas/populares
+            register_rest_route('flavor/v1', '/recetas/destacadas', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_destacadas'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Recetas por producto
+            register_rest_route('flavor/v1', '/recetas/producto/(?P<id>\d+)', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_recetas_producto'],
+                'permission_callback' => '__return_true',
+            ]);
+        });
+    }
+
+    /**
+     * API: Listar recetas
+     */
+    public function api_listar_recetas($request) {
+        $categoria = $request->get_param('categoria');
+        $tipo_cocina = $request->get_param('tipo_cocina');
+        $dificultad = $request->get_param('dificultad');
+        $limite = intval($request->get_param('limite')) ?: 20;
+        $pagina = intval($request->get_param('pagina')) ?: 1;
+
+        $args = [
+            'post_type' => 'flavor_receta',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+            'paged' => $pagina,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ];
+
+        // Filtros por taxonomías
+        $tax_query = [];
+        if ($categoria) {
+            $tax_query[] = [
+                'taxonomy' => 'receta_categoria',
+                'field' => 'slug',
+                'terms' => $categoria,
+            ];
+        }
+        if ($tipo_cocina) {
+            $tax_query[] = [
+                'taxonomy' => 'tipo_cocina',
+                'field' => 'slug',
+                'terms' => $tipo_cocina,
+            ];
+        }
+        if (!empty($tax_query)) {
+            $args['tax_query'] = $tax_query;
+        }
+
+        // Filtro por dificultad
+        if ($dificultad) {
+            $args['meta_query'] = [
+                [
+                    'key' => '_receta_dificultad',
+                    'value' => $dificultad,
+                ],
+            ];
+        }
+
+        $query = new WP_Query($args);
+        $recetas = [];
+
+        foreach ($query->posts as $post) {
+            $recetas[] = $this->formatear_receta_para_api($post);
+        }
+
+        return rest_ensure_response([
+            'recetas' => $recetas,
+            'total' => $query->found_posts,
+            'paginas' => $query->max_num_pages,
+            'pagina_actual' => $pagina,
+        ]);
+    }
+
+    /**
+     * API: Obtener receta completa
+     */
+    public function api_obtener_receta($request) {
+        $post = get_post($request['id']);
+
+        if (!$post || $post->post_type !== 'flavor_receta' || $post->post_status !== 'publish') {
+            return new WP_Error('not_found', 'Receta no encontrada', ['status' => 404]);
+        }
+
+        $receta = $this->formatear_receta_para_api($post, true);
+
+        return rest_ensure_response(['receta' => $receta]);
+    }
+
+    /**
+     * API: Categorías de recetas
+     */
+    public function api_categorias($request) {
+        $categorias = get_terms([
+            'taxonomy' => 'receta_categoria',
+            'hide_empty' => false,
+        ]);
+
+        $tipos_cocina = get_terms([
+            'taxonomy' => 'tipo_cocina',
+            'hide_empty' => false,
+        ]);
+
+        $resultado_categorias = [];
+        foreach ($categorias as $cat) {
+            $resultado_categorias[] = [
+                'id' => $cat->term_id,
+                'nombre' => $cat->name,
+                'slug' => $cat->slug,
+                'descripcion' => $cat->description,
+                'total' => $cat->count,
+            ];
+        }
+
+        $resultado_tipos = [];
+        foreach ($tipos_cocina as $tipo) {
+            $resultado_tipos[] = [
+                'id' => $tipo->term_id,
+                'nombre' => $tipo->name,
+                'slug' => $tipo->slug,
+                'descripcion' => $tipo->description,
+                'total' => $tipo->count,
+            ];
+        }
+
+        return rest_ensure_response([
+            'categorias' => $resultado_categorias,
+            'tipos_cocina' => $resultado_tipos,
+        ]);
+    }
+
+    /**
+     * API: Buscar recetas
+     */
+    public function api_buscar($request) {
+        $busqueda = sanitize_text_field($request->get_param('q'));
+        $limite = intval($request->get_param('limite')) ?: 20;
+
+        if (empty($busqueda)) {
+            return rest_ensure_response(['recetas' => []]);
+        }
+
+        $args = [
+            'post_type' => 'flavor_receta',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+            's' => $busqueda,
+        ];
+
+        $query = new WP_Query($args);
+        $recetas = [];
+
+        foreach ($query->posts as $post) {
+            $recetas[] = $this->formatear_receta_para_api($post);
+        }
+
+        return rest_ensure_response([
+            'recetas' => $recetas,
+            'total' => $query->found_posts,
+        ]);
+    }
+
+    /**
+     * API: Recetas destacadas
+     */
+    public function api_destacadas($request) {
+        $limite = intval($request->get_param('limite')) ?: 10;
+
+        $args = [
+            'post_type' => 'flavor_receta',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+            'meta_key' => '_receta_destacada',
+            'meta_value' => '1',
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ];
+
+        $query = new WP_Query($args);
+
+        // Si no hay destacadas, mostrar las más recientes
+        if ($query->post_count === 0) {
+            $args = [
+                'post_type' => 'flavor_receta',
+                'post_status' => 'publish',
+                'posts_per_page' => $limite,
+                'orderby' => 'date',
+                'order' => 'DESC',
+            ];
+            $query = new WP_Query($args);
+        }
+
+        $recetas = [];
+        foreach ($query->posts as $post) {
+            $recetas[] = $this->formatear_receta_para_api($post);
+        }
+
+        return rest_ensure_response(['recetas' => $recetas]);
+    }
+
+    /**
+     * API: Recetas vinculadas a un producto
+     */
+    public function api_recetas_producto($request) {
+        global $wpdb;
+        $producto_id = intval($request['id']);
+
+        // Buscar recetas que tengan este producto vinculado
+        $receta_ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT post_id FROM {$wpdb->postmeta}
+             WHERE meta_key = '_receta_productos_vinculados'
+             AND meta_value LIKE %s",
+            '%"' . $producto_id . '"%'
+        ));
+
+        // También buscar en formato serializado
+        $receta_ids_serial = $wpdb->get_col($wpdb->prepare(
+            "SELECT post_id FROM {$wpdb->postmeta}
+             WHERE meta_key = '_receta_productos_vinculados'
+             AND meta_value LIKE %s",
+            '%i:' . $producto_id . ';%'
+        ));
+
+        $receta_ids = array_unique(array_merge($receta_ids, $receta_ids_serial));
+
+        $recetas = [];
+        foreach ($receta_ids as $receta_id) {
+            $post = get_post($receta_id);
+            if ($post && $post->post_status === 'publish') {
+                $recetas[] = $this->formatear_receta_para_api($post);
+            }
+        }
+
+        return rest_ensure_response(['recetas' => $recetas]);
+    }
+
+    /**
+     * Formatea una receta para la API
+     */
+    private function formatear_receta_para_api($post, $completo = false) {
+        $receta = [
+            'id' => $post->ID,
+            'titulo' => $post->post_title,
+            'slug' => $post->post_name,
+            'extracto' => get_the_excerpt($post),
+            'imagen' => get_the_post_thumbnail_url($post->ID, 'large'),
+            'imagen_thumb' => get_the_post_thumbnail_url($post->ID, 'medium'),
+            'fecha' => $post->post_date,
+            'tiempo_preparacion' => get_post_meta($post->ID, '_receta_tiempo_preparacion', true),
+            'tiempo_coccion' => get_post_meta($post->ID, '_receta_tiempo_coccion', true),
+            'tiempo_total' => intval(get_post_meta($post->ID, '_receta_tiempo_preparacion', true)) +
+                              intval(get_post_meta($post->ID, '_receta_tiempo_coccion', true)),
+            'porciones' => get_post_meta($post->ID, '_receta_porciones', true),
+            'dificultad' => get_post_meta($post->ID, '_receta_dificultad', true),
+            'calorias' => get_post_meta($post->ID, '_receta_calorias', true),
+        ];
+
+        // Categorías
+        $categorias = wp_get_post_terms($post->ID, 'receta_categoria', ['fields' => 'names']);
+        $receta['categorias'] = is_array($categorias) ? $categorias : [];
+
+        // Tipos de cocina
+        $tipos = wp_get_post_terms($post->ID, 'tipo_cocina', ['fields' => 'names']);
+        $receta['tipos_cocina'] = is_array($tipos) ? $tipos : [];
+
+        // Si se pide completo, incluir ingredientes, pasos y contenido
+        if ($completo) {
+            $receta['contenido'] = apply_filters('the_content', $post->post_content);
+            $receta['contenido_raw'] = $post->post_content;
+
+            // Ingredientes
+            $ingredientes = get_post_meta($post->ID, '_receta_ingredientes', true);
+            $receta['ingredientes'] = is_array($ingredientes) ? $ingredientes : [];
+
+            // Pasos
+            $pasos = get_post_meta($post->ID, '_receta_pasos', true);
+            $receta['pasos'] = is_array($pasos) ? array_values(array_filter($pasos)) : [];
+
+            // Productos vinculados
+            $productos_ids = get_post_meta($post->ID, '_receta_productos_vinculados', true);
+            $productos = [];
+            if (is_array($productos_ids) && class_exists('WooCommerce')) {
+                foreach ($productos_ids as $producto_id) {
+                    $producto = wc_get_product($producto_id);
+                    if ($producto) {
+                        $productos[] = [
+                            'id' => $producto_id,
+                            'nombre' => $producto->get_name(),
+                            'precio' => $producto->get_price(),
+                            'precio_html' => $producto->get_price_html(),
+                            'imagen' => wp_get_attachment_url($producto->get_image_id()),
+                            'url' => get_permalink($producto_id),
+                        ];
+                    }
+                }
+            }
+            $receta['productos_vinculados'] = $productos;
+
+            // Autor
+            $autor = get_userdata($post->post_author);
+            $receta['autor'] = [
+                'id' => $post->post_author,
+                'nombre' => $autor ? $autor->display_name : 'Anónimo',
+            ];
+        }
+
+        return $receta;
     }
 
     /**
@@ -327,14 +678,14 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         // Para multimedia/videos, verificar si la tabla existe
         if ($module_id === 'multimedia' || $module_id === 'videos') {
             global $wpdb;
-            return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_multimedia');
+            return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_multimedia');
         }
 
         // Fallback al Module Loader
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return false;
         }
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $active_modules = $loader->get_loaded_modules();
         return isset($active_modules[$module_id]);
     }
@@ -810,7 +1161,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
 
         // Verificar que la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
             echo '<div class="notice notice-info inline" style="margin: 0;"><p>';
             echo __('El módulo de Multimedia no está activo.', 'flavor-platform');
             echo '</p></div>';
@@ -1049,7 +1400,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                 // Verificar que los videos existen en la tabla multimedia
                 global $wpdb;
                 $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
                     $videos = array_filter($videos, function($id) use ($wpdb, $tabla_multimedia) {
                         return (bool) $wpdb->get_var($wpdb->prepare(
                             "SELECT id FROM {$tabla_multimedia} WHERE id = %d AND tipo = 'video'",
@@ -1729,7 +2080,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     <h2><?php esc_html_e('Multimedia de la receta', 'flavor-platform'); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'subir') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
                     <?php esc_html_e('Subir archivo', 'flavor-platform'); ?>
                 </a>
             </div>
@@ -1766,7 +2117,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     <h2><?php esc_html_e('Actividad social de la receta', 'flavor-platform'); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'crear') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('red_social', 'crear') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
                     <?php esc_html_e('Publicar', 'flavor-platform'); ?>
                 </a>
             </div>
@@ -2081,4 +2432,9 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         }
     }
 
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Recetas_Module', false)) {
+    class_alias('Flavor_Platform_Recetas_Module', 'Flavor_Chat_Recetas_Module');
 }

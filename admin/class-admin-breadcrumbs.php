@@ -5,7 +5,7 @@
  * Muestra navegación de migas de pan en las páginas de edición
  * de los custom post types de Flavor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

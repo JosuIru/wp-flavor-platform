@@ -2,7 +2,7 @@
 /**
  * Vista Mantenimiento - Compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

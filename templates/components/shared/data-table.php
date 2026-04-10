@@ -4,7 +4,7 @@
  *
  * Tabla de datos reutilizable para admin y dashboards.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $columns     Columnas: [['key' => 'name', 'label' => 'Nombre', 'sortable' => true, 'width' => '200px']]

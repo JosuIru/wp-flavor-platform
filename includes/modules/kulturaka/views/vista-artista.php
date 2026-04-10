@@ -3,7 +3,7 @@
  * Vista Artista - Kulturaka
  * Panel para artistas: propuestas enviadas, gira, métricas, espacios disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

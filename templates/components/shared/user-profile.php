@@ -4,7 +4,7 @@
  *
  * Vista de perfil de usuario completa.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $user       Datos del usuario: id, name, email, avatar, bio, role, verified, member_since

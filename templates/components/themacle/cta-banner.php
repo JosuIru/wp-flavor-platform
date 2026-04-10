@@ -5,7 +5,7 @@
  * Full-width banner with background image or solid color,
  * centered text content (title, subtitle) and a CTA button.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo           Banner heading text.
  * @var string $subtitulo        Banner subheading text.

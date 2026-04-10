@@ -2,7 +2,7 @@
 /**
  * Template: Episodios Recientes de Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

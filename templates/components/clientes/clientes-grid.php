@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Clientes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -20,7 +20,7 @@ if (class_exists('wpdb')) {
     global $wpdb;
     $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
 
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
         $condicion_estado = '';
         $valores_sql = [];
 

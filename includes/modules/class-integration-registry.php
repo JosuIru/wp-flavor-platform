@@ -10,7 +10,7 @@
  * - Consumer: Modulo que ACEPTA contenido de otros (Productos, Productores, Eventos, etc.)
  * - Integration: Relacion activa entre un provider y un consumer
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -311,7 +311,7 @@ class Flavor_Integration_Registry {
         }
 
         if (!class_exists('Flavor_Module_Widget')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
         }
 
         $registry->register(new Flavor_Module_Widget([

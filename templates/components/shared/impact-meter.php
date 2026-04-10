@@ -4,7 +4,7 @@
  *
  * Medidor de impacto/huella con visualización atractiva.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param float  $value       Valor actual

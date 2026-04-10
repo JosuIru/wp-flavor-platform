@@ -275,13 +275,13 @@ class Flavor_Dependency_Checker {
     private static function check_module_dependency($clave, $configuracion) {
         $id_modulo = str_replace('module:', '', $clave);
 
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return new WP_Error('module_loader_no_disponible',
                 __('El sistema de módulos no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
-        if (!Flavor_Chat_Module_Loader::is_module_active($id_modulo)) {
+        if (!Flavor_Platform_Module_Loader::is_module_active($id_modulo)) {
             $nombre_modulo = is_array($configuracion) && isset($configuracion['name'])
                 ? $configuracion['name']
                 : $id_modulo;

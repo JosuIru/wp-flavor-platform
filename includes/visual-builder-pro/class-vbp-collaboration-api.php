@@ -4,7 +4,7 @@
  *
  * API REST para colaboración en tiempo real
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.2.0
  */

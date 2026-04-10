@@ -5,7 +5,7 @@
  * Newsletter, campañas, automatizaciones y gestión de suscriptores.
  * Sistema completo de email marketing integrado con WordPress.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  * @version 2.0.0
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -486,7 +486,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_suscriptores = $wpdb->prefix . 'flavor_em_suscriptores';
         $tabla_campanias = $wpdb->prefix . 'flavor_em_campanias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_suscriptores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_suscriptores)) {
             return $estadisticas;
         }
 
@@ -502,7 +502,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Campañas enviadas este mes (verificar si la columna existe)
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             $columnas_campanias = $wpdb->get_col("SHOW COLUMNS FROM $tabla_campanias");
             $col_fecha_envio = in_array('fecha_inicio_envio', $columnas_campanias) ? 'fecha_inicio_envio' :
                               (in_array('fecha_envio', $columnas_campanias) ? 'fecha_envio' : null);
@@ -1179,14 +1179,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'flavor-em-admin',
             plugins_url('assets/css/em-admin.css', __FILE__),
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-em-admin',
             plugins_url('assets/js/em-admin.js', __FILE__),
             ['jquery', 'wp-util'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1255,14 +1255,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'flavor-em-frontend',
             plugins_url('assets/css/em-frontend.css', __FILE__),
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-em-frontend',
             plugins_url('assets/js/em-frontend.js', __FILE__),
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -7628,4 +7628,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Email_Marketing_Module', false)) {
+    class_alias('Flavor_Platform_Email_Marketing_Module', 'Flavor_Chat_Email_Marketing_Module');
 }

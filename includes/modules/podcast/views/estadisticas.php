@@ -2,7 +2,7 @@
 /**
  * Vista de Estadísticas Detalladas de Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -8,7 +8,7 @@
  * - Sincronizar carrito
  * - Cargar mas productos (paginacion)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 
@@ -570,7 +570,7 @@ class Flavor_GC_Ajax_Handlers {
             'pedido_id' => $pedido_id,
             'total' => $total_final,
             'total_formateado' => number_format($total_final, 2, ',', '.') . ' EUR',
-            'redirect_url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
+            'redirect_url' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
         ]);
     }
 
@@ -674,7 +674,7 @@ class Flavor_GC_Ajax_Handlers {
                     'imagen' => get_the_post_thumbnail_url($producto_id, 'medium') ?: '',
                     'en_lista' => isset($lista_compra[$producto_id]),
                     'cantidad_en_lista' => $lista_compra[$producto_id] ?? 1,
-                    'enlace' => add_query_arg('product', intval($producto_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')),
+                    'enlace' => add_query_arg('product', intval($producto_id), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')),
                 ];
             }
             wp_reset_postdata();

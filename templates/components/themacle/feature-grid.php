@@ -5,7 +5,7 @@
  * Displays a grid of feature cards with dashicon, title, and description.
  * All items are center-aligned with subtle hover effects.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo    Section heading text.
  * @var string $subtitulo Section subheading text.

@@ -2,7 +2,7 @@
 /**
  * Admin page that shows module gap statuses.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -190,7 +190,7 @@ class Flavor_Module_Gap_Admin {
      * @return string
      */
     private function resolve_matrix_path() {
-        $runtime_files = glob(FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz_runtime_*.csv');
+        $runtime_files = glob(FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz_runtime_*.csv');
         if (is_array($runtime_files) && !empty($runtime_files)) {
             usort($runtime_files, static function ($a, $b) {
                 return filemtime($b) <=> filemtime($a);
@@ -204,8 +204,8 @@ class Flavor_Module_Gap_Admin {
         }
 
         $candidates = [
-            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz_actual_2026-03-01.csv',
-            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv',
+            FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz_actual_2026-03-01.csv',
+            FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz.csv',
         ];
 
         foreach ($candidates as $candidate) {
@@ -215,7 +215,7 @@ class Flavor_Module_Gap_Admin {
             return $candidate;
         }
 
-        return FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv';
+        return FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz.csv';
     }
 
     /**

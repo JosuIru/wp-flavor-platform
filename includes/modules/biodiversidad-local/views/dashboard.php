@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para gestión de especies, avistamientos y proyectos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

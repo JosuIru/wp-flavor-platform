@@ -4,7 +4,7 @@
  *
  * Renderiza un grid de tarjetas de acción rápida.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $actions  Array de acciones [{title, icon, url, color, description, badge}]

@@ -209,9 +209,9 @@ class Flavor_Admin_Page_Chrome {
 
         $printed = true;
         $handle = 'flavor-admin-page-chrome';
-        $path = FLAVOR_CHAT_IA_PATH . 'admin/css/admin-page-chrome.css';
-        $url = FLAVOR_CHAT_IA_URL . 'admin/css/admin-page-chrome.css';
-        $version = file_exists($path) ? (string) filemtime($path) : (defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : null);
+        $path = FLAVOR_PLATFORM_PATH . 'admin/css/admin-page-chrome.css';
+        $url = FLAVOR_PLATFORM_URL . 'admin/css/admin-page-chrome.css';
+        $version = file_exists($path) ? (string) filemtime($path) : (defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : null);
 
         wp_enqueue_style($handle, $url, [], $version);
         wp_print_styles([$handle]);

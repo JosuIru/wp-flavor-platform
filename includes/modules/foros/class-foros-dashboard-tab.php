@@ -8,7 +8,7 @@
  * - Siguiendo: Temas que sigue el usuario
  * - Menciones: Menciones al usuario en respuestas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Foros
  * @since 4.3.0
  */
@@ -96,7 +96,7 @@ class Flavor_Foros_Dashboard_Tab {
         $charset_collate = $wpdb->get_charset_collate();
 
         // Verificar si ya existen
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_seguidos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_seguidos)) {
             return;
         }
 
@@ -369,7 +369,7 @@ class Flavor_Foros_Dashboard_Tab {
                             <div class="flavor-empty-state">
                                 <span class="dashicons dashicons-star-empty"></span>
                                 <p><?php esc_html_e('No hay actividad reciente en los temas que sigues.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Explorar foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
@@ -442,7 +442,7 @@ class Flavor_Foros_Dashboard_Tab {
         <div class="flavor-dashboard-mis-temas">
             <div class="flavor-panel-header-actions">
                 <h3><?php esc_html_e('Mis Temas de Discusion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', 'nuevo-tema')); ?>"
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('foros', 'nuevo-tema')); ?>"
                    class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus"></span>
                     <?php esc_html_e('Crear tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -454,7 +454,7 @@ class Flavor_Foros_Dashboard_Tab {
                     <span class="dashicons dashicons-admin-comments"></span>
                     <h4><?php esc_html_e('No has creado ningun tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p><?php esc_html_e('Crea tu primer tema de discusion para iniciar conversaciones con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', 'nuevo-tema')); ?>"
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('foros', 'nuevo-tema')); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Crear mi primer tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -572,7 +572,7 @@ class Flavor_Foros_Dashboard_Tab {
                     <span class="dashicons dashicons-format-status"></span>
                     <h4><?php esc_html_e('No has respondido a ningun tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p><?php esc_html_e('Participa en las discusiones respondiendo a temas que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>"
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('foros')); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -682,7 +682,7 @@ class Flavor_Foros_Dashboard_Tab {
                     <span class="dashicons dashicons-star-empty"></span>
                     <h4><?php esc_html_e('No sigues ningun tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p><?php esc_html_e('Sigue temas para recibir notificaciones cuando haya nuevas respuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>"
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('foros')); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -1141,7 +1141,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_mis_temas($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_hilos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_hilos)) {
             return 0;
         }
 
@@ -1157,7 +1157,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_mis_respuestas($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_respuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_respuestas)) {
             return 0;
         }
 
@@ -1173,7 +1173,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_temas_seguidos($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_seguidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_seguidos)) {
             return 0;
         }
 
@@ -1189,7 +1189,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_menciones_no_leidas($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_menciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_menciones)) {
             return 0;
         }
 
@@ -1207,7 +1207,7 @@ class Flavor_Foros_Dashboard_Tab {
 
         $total_notificaciones = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_notificaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_notificaciones)) {
             $total_notificaciones += (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_notificaciones} WHERE usuario_id = %d AND leida = 0",
                 $usuario_id
@@ -1225,7 +1225,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_votos_recibidos($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_respuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_respuestas)) {
             return 0;
         }
 
@@ -1241,7 +1241,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function contar_soluciones_aceptadas($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_respuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_respuestas)) {
             return 0;
         }
 
@@ -1261,7 +1261,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function obtener_notificaciones_recientes($usuario_id, $limite = 5) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_notificaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_notificaciones)) {
             return [];
         }
 
@@ -1282,7 +1282,7 @@ class Flavor_Foros_Dashboard_Tab {
     private function obtener_actividad_temas_seguidos($usuario_id, $limite = 5) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_seguidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_seguidos)) {
             return [];
         }
 
@@ -1303,7 +1303,7 @@ class Flavor_Foros_Dashboard_Tab {
      * Obtiene la URL de un tema
      */
     private function get_url_tema($hilo_id) {
-        return add_query_arg('tema_id', absint($hilo_id), Flavor_Chat_Helpers::get_action_url('foros', ''));
+        return add_query_arg('tema_id', absint($hilo_id), Flavor_Platform_Helpers::get_action_url('foros', ''));
     }
 
     // =========================================================

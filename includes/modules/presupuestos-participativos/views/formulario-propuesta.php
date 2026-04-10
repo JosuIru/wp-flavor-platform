@@ -7,7 +7,7 @@
  * - $categorias: array de categorias disponibles
  * - $configuracion: array de configuracion del modulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

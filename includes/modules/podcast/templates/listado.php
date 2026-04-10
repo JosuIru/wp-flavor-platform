@@ -12,7 +12,7 @@
  * @var int    $total_paginas    - Total de paginas
  * @var array  $estadisticas     - Estadisticas globales del catalogo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -282,7 +282,7 @@ $estadisticas = $estadisticas ?? [];
         <div class="flavor-cta-contenido">
             <h2><?php esc_html_e('Crea tu propio podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p><?php esc_html_e('Comparte tu voz con la comunidad. Crear una serie es facil y gratuito.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', 'crear-serie')); ?>"
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('podcast', 'crear-serie')); ?>"
                class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <span class="dashicons dashicons-plus-alt"></span>
                 <?php esc_html_e('Crear nueva serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>

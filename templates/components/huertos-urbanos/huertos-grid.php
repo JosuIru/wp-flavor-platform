@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

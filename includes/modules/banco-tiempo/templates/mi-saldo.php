@@ -4,7 +4,7 @@
  *
  * Template para mostrar el saldo del usuario en el dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

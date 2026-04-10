@@ -7,7 +7,7 @@
  * - reservas-proximas: Proximas reservas programadas
  * - reservas-historial: Historial de reservas pasadas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Reservas
  * @since 3.1.1
  */
@@ -92,7 +92,7 @@ class Flavor_Reservas_Dashboard_Tab {
      * @return bool
      */
     private function tabla_existe() {
-        return Flavor_Chat_Helpers::tabla_existe($this->nombre_tabla_reservas);
+        return Flavor_Platform_Helpers::tabla_existe($this->nombre_tabla_reservas);
     }
 
     /**
@@ -698,7 +698,7 @@ class Flavor_Reservas_Dashboard_Tab {
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-calendar-alt"></span>
                             <p><?php esc_html_e('No tienes reservas activas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                            <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php esc_html_e('Hacer una reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
@@ -731,11 +731,11 @@ class Flavor_Reservas_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(add_query_arg('tab', 'mis-reservas', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'mis-reservas', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-secondary">
                     <?php esc_html_e('Ver todas mis reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
@@ -813,7 +813,7 @@ class Flavor_Reservas_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clock"></span>
                     <p><?php esc_html_e('No tienes reservas confirmadas para los proximos dias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Hacer una reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -862,7 +862,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -1027,7 +1027,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>

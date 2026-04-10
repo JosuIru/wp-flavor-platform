@@ -2,7 +2,7 @@
 /**
  * Template para Landing Pages del Visual Builder
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

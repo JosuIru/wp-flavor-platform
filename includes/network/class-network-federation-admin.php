@@ -5,7 +5,7 @@
  * Gestiona la visualización y administración del contenido
  * sincronizado desde otros nodos de la red.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

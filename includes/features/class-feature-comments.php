@@ -4,7 +4,7 @@
  *
  * Sistema de comentarios integrado para entidades.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Features
  */
 

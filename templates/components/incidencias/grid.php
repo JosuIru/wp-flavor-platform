@@ -3,7 +3,7 @@
  * Template: Grid Alternativo de Incidencias
  * Vista en grid para mostrar incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

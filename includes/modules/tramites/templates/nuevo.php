@@ -4,7 +4,7 @@
  *
  * Pagina de seleccion de tipo de tramite para iniciar uno nuevo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ global $wpdb;
 $tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_tipos_tramite)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_tipos_tramite)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -80,7 +80,7 @@ foreach ($tipos_tramite as $tipo) {
     $tramites_por_categoria[$cat][] = $tipo;
 }
 
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="nuevo-tramite-wrapper">

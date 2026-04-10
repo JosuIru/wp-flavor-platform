@@ -2,7 +2,7 @@
 /**
  * Template: CTA para Hacerse Voluntario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -12,14 +12,14 @@
  * - madurez_ciclica: 0.10 (Flujo natural de dar/recibir)
  * - valor_intrinseco: 0.15 (El valor está en el acto de dar)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Consumer;
@@ -1274,14 +1274,14 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-economia-don',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/css/economia-don.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/css/economia-don.css',
             [],
             '1.0.0'
         );
 
         wp_enqueue_script(
             'flavor-economia-don',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
             ['jquery'],
             '1.0.0',
             true
@@ -1472,7 +1472,7 @@ KNOWLEDGE;
         }
 
         $tabla = $wpdb->prefix . 'flavor_economia_dones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -1682,4 +1682,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Economia_Don_Module', false)) {
+    class_alias('Flavor_Platform_Economia_Don_Module', 'Flavor_Chat_Economia_Don_Module');
 }

@@ -2,7 +2,7 @@
 /**
  * Template: Huella Ecológica del Ciclo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  * @since 4.2.0
  *

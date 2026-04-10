@@ -2,7 +2,7 @@
 /**
  * API REST para Talleres (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Talleres_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,49 +28,49 @@ class Flavor_Talleres_API {
 
     public function register_routes() {
         // GET /talleres/dashboard
-        register_rest_route(self::NAMESPACE, '/talleres/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /talleres
-        register_rest_route(self::NAMESPACE, '/talleres', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres', [
             'methods' => 'GET',
             'callback' => [$this, 'get_talleres'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /talleres/mis-talleres
-        register_rest_route(self::NAMESPACE, '/talleres/mis-talleres', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/mis-talleres', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_talleres'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /talleres/{id}
-        register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_taller'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /talleres/{id}/inscribir
-        register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/inscribir', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/inscribir', [
             'methods' => 'POST',
             'callback' => [$this, 'inscribirse'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /talleres/{id}/cancelar
-        register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/cancelar', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/cancelar', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_inscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /talleres/{id}/valorar
-        register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/valorar', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/(?P<id>\d+)/valorar', [
             'methods' => 'POST',
             'callback' => [$this, 'valorar_taller'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -89,7 +89,7 @@ class Flavor_Talleres_API {
         ]);
 
         // GET /talleres/categorias
-        register_rest_route(self::NAMESPACE, '/talleres/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/talleres/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'check_authentication'],

@@ -3,7 +3,7 @@
  * Vista Calendario - Módulo Reciclaje
  * Calendario de recogidas programadas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

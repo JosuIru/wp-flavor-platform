@@ -2,7 +2,7 @@
 /**
  * Modulo de Avisos Municipales para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Avisos Municipales - Comunicados oficiales y notificaciones
  */
-class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -51,7 +51,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tablas['avisos']);
+        return Flavor_Platform_Helpers::tabla_existe($this->tablas['avisos']);
     }
 
     /**
@@ -319,7 +319,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         $tabla_avisos = $this->tablas['avisos'];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_avisos)) {
             return;
         }
 
@@ -505,9 +505,9 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         if ($es_pagina_avisos) {
             wp_enqueue_style(
                 'flavor-dashboard-module-components',
-                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-module-components.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-module-components.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
     }
@@ -2224,7 +2224,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Chat del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('chat_grupos', 'mensajes') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-secondary">'
+            . '<a href="' . esc_url(Flavor_Platform_Helpers::get_action_url('chat_grupos', 'mensajes') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-secondary">'
             . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2240,7 +2240,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Archivos del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
+            . '<a href="' . esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'subir') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
             . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2260,7 +2260,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Actividad social del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'crear') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
+            . '<a href="' . esc_url(Flavor_Platform_Helpers::get_action_url('red_social', 'crear') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
             . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2460,7 +2460,7 @@ KNOWLEDGE;
 
         global $wpdb;
         $tabla_avisos = $this->tablas['avisos'];
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_avisos)) {
             return 0;
         }
         return (int) $wpdb->get_var($wpdb->prepare(
@@ -2479,7 +2479,7 @@ KNOWLEDGE;
         $tabla_avisos = $this->tablas['avisos'];
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_avisos)) {
             return $estadisticas;
         }
 
@@ -2665,7 +2665,7 @@ KNOWLEDGE;
         // Categoría
         $tabla_categorias = $this->tablas['categorias'];
         $categorias_lista = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_categorias)) {
             $categorias_lista = $wpdb->get_results("SELECT id, nombre FROM $tabla_categorias ORDER BY orden ASC");
         }
         if (!empty($categorias_lista)) {
@@ -2824,7 +2824,7 @@ KNOWLEDGE;
 
         // Categorías para filtro
         $categorias = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_categorias)) {
             $categorias = $wpdb->get_results("SELECT id, nombre FROM $tabla_categorias ORDER BY orden ASC");
         }
 
@@ -3036,5 +3036,8 @@ KNOWLEDGE;
             Flavor_Avisos_Municipales_Frontend_Controller::get_instance();
         }
     }
+}
 
+if (!class_exists('Flavor_Chat_Avisos_Municipales_Module', false)) {
+    class_alias('Flavor_Platform_Avisos_Municipales_Module', 'Flavor_Chat_Avisos_Municipales_Module');
 }

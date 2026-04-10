@@ -1,14 +1,14 @@
 <?php
 /**
  * Template: Eventos Hero
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) { exit; }
 
 // Obtener datos del modulo
 $modulo_eventos = null;
-if (class_exists('Flavor_Chat_Module_Loader')) {
-    $loader = Flavor_Chat_Module_Loader::get_instance();
+if (class_exists('Flavor_Platform_Module_Loader')) {
+    $loader = Flavor_Platform_Module_Loader::get_instance();
     $modulo_eventos = $loader->get_module('eventos');
 }
 
@@ -19,7 +19,7 @@ $total_tipos = 8;
 if ($modulo_eventos) {
     global $wpdb;
     $tabla = $wpdb->prefix . 'flavor_eventos';
-    if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
         $total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'publicado'");
         $eventos_proximos = (int) $wpdb->get_var(
             $wpdb->prepare("SELECT COUNT(*) FROM $tabla WHERE estado = 'publicado' AND fecha_inicio > %s", current_time('mysql'))

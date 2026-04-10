@@ -7,7 +7,7 @@
  * - Componentes Themacle (si el módulo está activo)
  * - Componentes básicos (texto, imagen, botón, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage VisualBuilder
  * @since 4.0.0
  */
@@ -68,8 +68,9 @@ class Flavor_VB_All_Components {
      * Cargar componentes de Themacle si está disponible
      */
     private function cargar_componentes_themacle() {
-        if (class_exists('Flavor_Chat_Themacle_Module')) {
-            $themacle = new Flavor_Chat_Themacle_Module();
+        $module_class = flavor_get_runtime_class_name('Flavor_Chat_Themacle_Module');
+        if (class_exists($module_class)) {
+            $themacle = new $module_class();
             if ($themacle->is_active()) {
                 $this->themacle_components = $themacle->get_web_components();
             }
@@ -490,7 +491,7 @@ class Flavor_VB_All_Components {
         $rutas_posibles = [
             get_stylesheet_directory() . '/flavor-templates/components/' . $template . '.php',
             get_template_directory() . '/flavor-templates/components/' . $template . '.php',
-            FLAVOR_CHAT_IA_PATH . 'templates/components/' . $template . '.php',
+            FLAVOR_PLATFORM_PATH . 'templates/components/' . $template . '.php',
         ];
 
         foreach ($rutas_posibles as $ruta) {

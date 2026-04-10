@@ -5,7 +5,7 @@
  * Controlador principal del editor visual fullscreen tipo Photoshop/Figma.
  * Reemplaza el editor Gutenberg para el CPT flavor_landing.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -370,9 +370,9 @@ class Flavor_VBP_Editor {
         $editor_features      = $this->obtener_feature_flags_editor( $post_id );
 
         // Obtener URLs base
-        $url_css    = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/';
-        $url_js     = FLAVOR_CHAT_IA_URL . 'assets/vbp/js/';
-        $url_vendor = FLAVOR_CHAT_IA_URL . 'assets/vbp/vendor/';
+        $url_css    = FLAVOR_PLATFORM_URL . 'assets/vbp/css/';
+        $url_js     = FLAVOR_PLATFORM_URL . 'assets/vbp/js/';
+        $url_vendor = FLAVOR_PLATFORM_URL . 'assets/vbp/vendor/';
 
         // SortableJS local (sin CDN para mejor rendimiento y privacidad)
         wp_enqueue_script(
@@ -434,14 +434,14 @@ class Flavor_VBP_Editor {
         add_filter( 'script_loader_tag', array( $this, 'agregar_defer_alpine' ), 10, 2 );
 
         // CSS de Design Tokens (sistema unificado de diseño)
-        $url_css_base = FLAVOR_CHAT_IA_URL . 'assets/css/';
+        $url_css_base = FLAVOR_PLATFORM_URL . 'assets/css/';
         $design_tokens_css = array(
             'fl-design-tokens'        => 'design-tokens.css',
             'fl-design-tokens-compat' => 'design-tokens-compat.css',
         );
 
         foreach ( $design_tokens_css as $handle => $archivo ) {
-            $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'assets/css/' . $archivo;
+            $ruta_archivo = FLAVOR_PLATFORM_PATH . 'assets/css/' . $archivo;
             if ( file_exists( $ruta_archivo ) ) {
                 wp_enqueue_style(
                     $handle,
@@ -535,13 +535,13 @@ class Flavor_VBP_Editor {
             // En producción, intentar cargar la versión minificada
             if ( $usar_css_minificado ) {
                 $archivo_min = str_replace( '.css', '.min.css', $archivo );
-                $ruta_min    = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/' . $archivo_min;
+                $ruta_min    = FLAVOR_PLATFORM_PATH . 'assets/vbp/css/' . $archivo_min;
                 if ( file_exists( $ruta_min ) ) {
                     $archivo = $archivo_min;
                 }
             }
 
-            $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/' . $archivo;
+            $ruta_archivo = FLAVOR_PLATFORM_PATH . 'assets/vbp/css/' . $archivo;
             if ( file_exists( $ruta_archivo ) ) {
                 wp_enqueue_style(
                     'vbp-' . $handle,
@@ -636,13 +636,13 @@ class Flavor_VBP_Editor {
             // En producción, intentar cargar la versión minificada
             if ( $usar_minificado ) {
                 $archivo_min = str_replace( '.js', '.min.js', $archivo );
-                $ruta_min    = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/' . $archivo_min;
+                $ruta_min    = FLAVOR_PLATFORM_PATH . 'assets/vbp/js/' . $archivo_min;
                 if ( file_exists( $ruta_min ) ) {
                     $archivo = $archivo_min;
                 }
             }
 
-            $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/' . $archivo;
+            $ruta_archivo = FLAVOR_PLATFORM_PATH . 'assets/vbp/js/' . $archivo;
 
             if ( file_exists( $ruta_archivo ) ) {
                 wp_enqueue_script(
@@ -679,7 +679,7 @@ class Flavor_VBP_Editor {
         $datos_localizados = array(
             'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
             'restUrl'        => rest_url( 'flavor-vbp/v1/' ),
-            'assetsUrl'      => FLAVOR_CHAT_IA_URL . 'assets/vbp/',
+            'assetsUrl'      => FLAVOR_PLATFORM_URL . 'assets/vbp/',
             'settingsUrl'    => admin_url( 'admin.php?page=flavor-platform-settings' ),
             'siteUrl'        => home_url(),
             'nonce'          => wp_create_nonce( 'vbp_editor_nonce' ),
@@ -697,10 +697,10 @@ class Flavor_VBP_Editor {
             ),
             'features'       => $editor_features,
             'optionalScripts' => array(
-                'componentLibrary' => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-component-library.min.js' ) ? 'vbp-component-library.min.js' : 'vbp-component-library.js' ),
-                'helpSystem'       => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-help-system.min.js' ) ? 'vbp-help-system.min.js' : 'vbp-help-system.js' ),
-                'designTokens'     => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/modules/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/modules/vbp-app-design-tokens.min.js' ) ? 'vbp-app-design-tokens.min.js' : 'vbp-app-design-tokens.js' ),
-                'aiAssistant'      => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-ai-assistant.min.js' ) ? 'vbp-ai-assistant.min.js' : 'vbp-ai-assistant.js' ),
+                'componentLibrary' => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-component-library.min.js' ) ? 'vbp-component-library.min.js' : 'vbp-component-library.js' ),
+                'helpSystem'       => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-help-system.min.js' ) ? 'vbp-help-system.min.js' : 'vbp-help-system.js' ),
+                'designTokens'     => FLAVOR_PLATFORM_URL . 'assets/vbp/js/modules/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/modules/vbp-app-design-tokens.min.js' ) ? 'vbp-app-design-tokens.min.js' : 'vbp-app-design-tokens.js' ),
+                'aiAssistant'      => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-ai-assistant.min.js' ) ? 'vbp-ai-assistant.min.js' : 'vbp-ai-assistant.js' ),
             ),
             'designSettings' => $design_settings,
             'blocks'         => $bloques_categorias,
@@ -925,7 +925,7 @@ class Flavor_VBP_Editor {
         }
 
         // Fallback: verificar si hay API key configurada
-        $settings = get_option( 'flavor_chat_ia_settings', array() );
+        $settings = flavor_get_main_settings();
         $providers = array( 'claude_api_key', 'openai_api_key', 'deepseek_api_key', 'mistral_api_key' );
 
         foreach ( $providers as $provider_key ) {
@@ -943,7 +943,7 @@ class Flavor_VBP_Editor {
      * @return bool
      */
     private function figma_esta_configurado() {
-        $settings = get_option( 'flavor_chat_ia_settings', array() );
+        $settings = flavor_get_main_settings();
         return ! empty( $settings['figma_personal_token'] );
     }
 
@@ -1074,7 +1074,7 @@ class Flavor_VBP_Editor {
         }
 
         // Cargar el template del editor fullscreen
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/views/editor-fullscreen.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/views/editor-fullscreen.php';
         if ( file_exists( $ruta_template ) ) {
             include $ruta_template;
         } else {

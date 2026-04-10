@@ -2,7 +2,7 @@
 /**
  * Template: Mis Ingresos por Publicidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -2,7 +2,7 @@
 /**
  * Vista: Configuración de Email Marketing
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
+$modulo = Flavor_Platform_Module_Loader::get_module('email_marketing');
 $settings = $modulo->get_settings();
 
 // Guardar configuración

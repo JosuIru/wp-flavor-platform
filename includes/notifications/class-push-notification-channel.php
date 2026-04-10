@@ -5,7 +5,7 @@
  * Envia notificaciones push a dispositivos moviles usando FCM.
  * Se integra con el sistema de canales de Flavor_Notification_Manager.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Notifications
  */
 
@@ -24,18 +24,18 @@ class Flavor_Push_Notification_Channel {
     public function send($usuario_id, $titulo, $mensaje, $datos = []) {
         $tokens_fcm_del_usuario = Flavor_Push_Token_Manager::obtener_tokens($usuario_id);
         if (empty($tokens_fcm_del_usuario)) {
-            flavor_chat_ia_log(sprintf('Push: No hay tokens FCM para usuario %d', $usuario_id), 'info');
+            flavor_platform_log(sprintf('Push: No hay tokens FCM para usuario %d', $usuario_id), 'info');
             return ['enviados' => 0, 'fallidos' => 0, 'sin_token' => true];
         }
         $access_token_oauth = self::get_access_token();
         if (!$access_token_oauth) {
-            flavor_chat_ia_log('Push: No se pudo obtener access token de Firebase', 'error');
+            flavor_platform_log('Push: No se pudo obtener access token de Firebase', 'error');
             return ['enviados' => 0, 'fallidos' => count($tokens_fcm_del_usuario), 'error' => 'no_access_token'];
         }
         $configuracion_firebase = get_option('flavor_firebase_config', []);
         $proyecto_id_firebase = $configuracion_firebase['project_id'] ?? '';
         if (empty($proyecto_id_firebase)) {
-            flavor_chat_ia_log('Push: No se ha configurado el project_id de Firebase', 'error');
+            flavor_platform_log('Push: No se ha configurado el project_id de Firebase', 'error');
             return ['enviados' => 0, 'fallidos' => count($tokens_fcm_del_usuario), 'error' => 'no_project_id'];
         }
         $url_endpoint_fcm = self::FCM_API_BASE_URL . $proyecto_id_firebase . '/messages:send';
@@ -60,7 +60,7 @@ class Flavor_Push_Notification_Channel {
             foreach ($tokens_invalidos_a_eliminar as $token_invalido) {
                 Flavor_Push_Token_Manager::eliminar_token($usuario_id, $token_invalido);
             }
-            flavor_chat_ia_log(sprintf('Push: Se eliminaron %d tokens invalidos del usuario %d', count($tokens_invalidos_a_eliminar), $usuario_id), 'info');
+            flavor_platform_log(sprintf('Push: Se eliminaron %d tokens invalidos del usuario %d', count($tokens_invalidos_a_eliminar), $usuario_id), 'info');
         }
         return ['enviados' => $contador_enviados, 'fallidos' => $contador_fallidos, 'tokens_eliminados' => count($tokens_invalidos_a_eliminar)];
     }
@@ -91,7 +91,7 @@ class Flavor_Push_Notification_Channel {
         $cuerpo_mensaje_fcm['message']['apns'] = ['payload' => ['aps' => ['sound' => 'default', 'badge' => 1, 'content-available' => 1]]];
         $respuesta_http = wp_remote_post($url_endpoint, ['headers' => ['Authorization' => 'Bearer ' . $access_token, 'Content-Type' => 'application/json; UTF-8'], 'body' => wp_json_encode($cuerpo_mensaje_fcm), 'timeout' => 15]);
         if (is_wp_error($respuesta_http)) {
-            flavor_chat_ia_log('Push FCM Error: ' . $respuesta_http->get_error_message(), 'error');
+            flavor_platform_log('Push FCM Error: ' . $respuesta_http->get_error_message(), 'error');
             return ['success' => false, 'token_invalido' => false, 'error' => $respuesta_http->get_error_message()];
         }
         $codigo_respuesta_http = wp_remote_retrieve_response_code($respuesta_http);
@@ -106,7 +106,7 @@ class Flavor_Push_Notification_Channel {
         if ($codigo_error_fcm === 'UNREGISTERED' || $estado_error_fcm === 'NOT_FOUND' || ($estado_error_fcm === 'INVALID_ARGUMENT' && strpos($cuerpo_respuesta, 'token') !== false)) {
             $token_es_invalido = true;
         }
-        flavor_chat_ia_log(sprintf('Push FCM Error (HTTP %d): %s', $codigo_respuesta_http, $cuerpo_respuesta), 'error');
+        flavor_platform_log(sprintf('Push FCM Error (HTTP %d): %s', $codigo_respuesta_http, $cuerpo_respuesta), 'error');
         return ['success' => false, 'token_invalido' => $token_es_invalido, 'error' => $cuerpo_respuesta, 'http_code' => $codigo_respuesta_http];
     }
 
@@ -116,18 +116,18 @@ class Flavor_Push_Notification_Channel {
         $configuracion_firebase = get_option('flavor_firebase_config', []);
         $json_service_account = $configuracion_firebase['service_account_json'] ?? '';
         if (empty($json_service_account)) {
-            flavor_chat_ia_log('Push: No se ha configurado el service account de Firebase', 'error');
+            flavor_platform_log('Push: No se ha configurado el service account de Firebase', 'error');
             return false;
         }
         $datos_service_account = json_decode($json_service_account, true);
         if (!$datos_service_account) {
-            flavor_chat_ia_log('Push: El JSON del service account es invalido', 'error');
+            flavor_platform_log('Push: El JSON del service account es invalido', 'error');
             return false;
         }
         $email_cuenta_servicio = $datos_service_account['client_email'] ?? '';
         $clave_privada_pem = $datos_service_account['private_key'] ?? '';
         if (empty($email_cuenta_servicio) || empty($clave_privada_pem)) {
-            flavor_chat_ia_log('Push: Faltan client_email o private_key en el service account', 'error');
+            flavor_platform_log('Push: Faltan client_email o private_key en el service account', 'error');
             return false;
         }
         $timestamp_actual = time();
@@ -138,20 +138,20 @@ class Flavor_Push_Notification_Channel {
         $firma_binaria = '';
         $resultado_firma = openssl_sign($contenido_a_firmar, $firma_binaria, $clave_privada_pem, OPENSSL_ALGO_SHA256);
         if (!$resultado_firma) {
-            flavor_chat_ia_log('Push: Error al firmar JWT - ' . openssl_error_string(), 'error');
+            flavor_platform_log('Push: Error al firmar JWT - ' . openssl_error_string(), 'error');
             return false;
         }
         $firma_codificada = self::base64url_encode($firma_binaria);
         $jwt_completo = $contenido_a_firmar . '.' . $firma_codificada;
         $respuesta_oauth = wp_remote_post(self::GOOGLE_OAUTH2_TOKEN_URL, ['body' => ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $jwt_completo], 'timeout' => 15]);
         if (is_wp_error($respuesta_oauth)) {
-            flavor_chat_ia_log('Push: Error al obtener access token - ' . $respuesta_oauth->get_error_message(), 'error');
+            flavor_platform_log('Push: Error al obtener access token - ' . $respuesta_oauth->get_error_message(), 'error');
             return false;
         }
         $cuerpo_respuesta_oauth = json_decode(wp_remote_retrieve_body($respuesta_oauth), true);
         $access_token_obtenido = $cuerpo_respuesta_oauth['access_token'] ?? '';
         if (empty($access_token_obtenido)) {
-            flavor_chat_ia_log('Push: Respuesta OAuth2 sin access_token - ' . wp_remote_retrieve_body($respuesta_oauth), 'error');
+            flavor_platform_log('Push: Respuesta OAuth2 sin access_token - ' . wp_remote_retrieve_body($respuesta_oauth), 'error');
             return false;
         }
         set_transient(self::TOKEN_TRANSIENT_KEY, $access_token_obtenido, self::TOKEN_CACHE_DURATION_SECONDS);

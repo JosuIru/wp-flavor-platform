@@ -5,7 +5,7 @@
  * Endpoints para que los usuarios finales (clientes) accedan a su
  * dashboard personal: estadisticas, actividad, notificaciones y widgets.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage API
  * @since 3.2.0
  */
@@ -540,8 +540,8 @@ class Flavor_Client_Dashboard_API {
 
         // Obtener modulos activos
         $active_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_modules = \Flavor_Platform_Module_Loader::get_active_modules_cached();
         }
 
         global $wpdb;
@@ -1262,7 +1262,7 @@ class Flavor_Client_Dashboard_API {
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
         $usuarios_activos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             $usuarios_activos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_actividad}
                 WHERE fecha BETWEEN %s AND %s",
@@ -1286,12 +1286,12 @@ class Flavor_Client_Dashboard_API {
      * @return array Estadisticas de modulos.
      */
     private function get_network_module_stats($rango_fechas) {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         $total_modulos_disponibles = 0;
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $cargador_modulos = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $cargador_modulos = Flavor_Platform_Module_Loader::get_instance();
             $total_modulos_disponibles = count($cargador_modulos->get_available_modules());
         }
 
@@ -1313,7 +1313,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [
                 'total_actions' => 0,
                 'avg_per_day'   => 0,
@@ -1374,7 +1374,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1419,7 +1419,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1456,8 +1456,8 @@ class Flavor_Client_Dashboard_API {
      * @return string Nombre del modulo.
      */
     private function get_module_display_name($id_modulo) {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $cargador_modulos = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $cargador_modulos = Flavor_Platform_Module_Loader::get_instance();
             $modulos_disponibles = $cargador_modulos->get_available_modules();
 
             if (isset($modulos_disponibles[$id_modulo]['name'])) {
@@ -1485,7 +1485,7 @@ class Flavor_Client_Dashboard_API {
         $limite_contenido = max(5, $limite * 2);
 
         $tabla_eventos = $wpdb->prefix . 'flavor_network_events';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $eventos = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT id, titulo, fecha_inicio, nodo_origen_nombre
@@ -1518,7 +1518,7 @@ class Flavor_Client_Dashboard_API {
         }
 
         $tabla_contenido = $wpdb->prefix . 'flavor_network_shared_content';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_contenido)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_contenido)) {
             $contenidos = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT id, titulo, tipo, nodo_origen_nombre, created_at
@@ -1660,7 +1660,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1704,7 +1704,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1750,7 +1750,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1816,7 +1816,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -1860,7 +1860,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [
                 'current'  => 0,
                 'previous' => 0,
@@ -2059,7 +2059,7 @@ class Flavor_Client_Dashboard_API {
         $estadisticas_por_modulo = [];
 
         // Obtener modulos activos
-        $configuracion_settings = get_option('flavor_chat_ia_settings', []);
+        $configuracion_settings = flavor_get_main_settings();
         $modulos_activos        = $configuracion_settings['active_modules'] ?? [];
 
         foreach ($modulos_activos as $slug_modulo) {
@@ -2231,7 +2231,7 @@ class Flavor_Client_Dashboard_API {
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return [];
         }
 
@@ -2310,7 +2310,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_actividad)) {
             return 0;
         }
 
@@ -2420,7 +2420,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_notificaciones = $wpdb->prefix . 'flavor_notifications';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_notificaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_notificaciones)) {
             return 0;
         }
 
@@ -2525,7 +2525,7 @@ class Flavor_Client_Dashboard_API {
         ];
 
         // Obtener widgets de modulos activos
-        $configuracion_settings = get_option('flavor_chat_ia_settings', []);
+        $configuracion_settings = flavor_get_main_settings();
         $modulos_activos        = $configuracion_settings['active_modules'] ?? [];
 
         foreach ($modulos_activos as $slug_modulo) {
@@ -2614,7 +2614,7 @@ class Flavor_Client_Dashboard_API {
 
         $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             return 0;
         }
 
@@ -2742,7 +2742,7 @@ class Flavor_Client_Dashboard_API {
         $total_paginas = wp_count_posts('page');
 
         // Modulos activos
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         // Actividad reciente (ultimas 24 horas)

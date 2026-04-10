@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para gestión de encuestas y formularios.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

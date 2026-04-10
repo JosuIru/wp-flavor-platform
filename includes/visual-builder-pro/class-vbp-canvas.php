@@ -4,7 +4,7 @@
  *
  * Renderizado de elementos para el canvas y frontend.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -77,8 +77,8 @@ class Flavor_VBP_Canvas {
             null
         );
 
-        $css_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/frontend-components.css';
-        $css_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/frontend-components.css';
+        $css_url = FLAVOR_PLATFORM_URL . 'assets/vbp/css/frontend-components.css';
+        $css_path = FLAVOR_PLATFORM_PATH . 'assets/vbp/css/frontend-components.css';
 
         if ( file_exists( $css_path ) ) {
             wp_enqueue_style(
@@ -90,8 +90,8 @@ class Flavor_VBP_Canvas {
         }
 
         // Cargar CSS de animaciones
-        $anim_css_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/animations.css';
-        $anim_css_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/animations.css';
+        $anim_css_url = FLAVOR_PLATFORM_URL . 'assets/vbp/css/animations.css';
+        $anim_css_path = FLAVOR_PLATFORM_PATH . 'assets/vbp/css/animations.css';
 
         if ( file_exists( $anim_css_path ) ) {
             wp_enqueue_style(
@@ -103,8 +103,8 @@ class Flavor_VBP_Canvas {
         }
 
         // Cargar JavaScript para componentes interactivos
-        $js_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/js/vbp-frontend.js';
-        $js_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-frontend.js';
+        $js_url = FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-frontend.js';
+        $js_path = FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-frontend.js';
 
         if ( file_exists( $js_path ) ) {
             wp_enqueue_script(
@@ -124,8 +124,8 @@ class Flavor_VBP_Canvas {
         }
 
         // Cargar JavaScript de animaciones
-        $anim_js_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/js/vbp-animations.js';
-        $anim_js_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-animations.js';
+        $anim_js_url = FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-animations.js';
+        $anim_js_path = FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-animations.js';
 
         if ( file_exists( $anim_js_path ) ) {
             wp_enqueue_script(

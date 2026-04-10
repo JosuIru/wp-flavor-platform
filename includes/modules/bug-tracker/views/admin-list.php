@@ -2,7 +2,7 @@
 /**
  * Vista de lista de bugs para el panel de administración
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Bug_Tracker
  */
 
@@ -470,7 +470,7 @@ add_action('wp_ajax_flavor_bug_tracker_action', function() {
     $bug_id = intval($_POST['bug_id'] ?? 0);
     $accion = sanitize_text_field($_POST['bug_action'] ?? '');
 
-    $modulo = Flavor_Chat_Module_Loader::get_instance()->get_module('bug-tracker');
+    $modulo = Flavor_Platform_Module_Loader::get_instance()->get_module('bug-tracker');
     if (!$modulo) {
         wp_send_json_error('Módulo no disponible');
     }

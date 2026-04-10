@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Podcasts
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

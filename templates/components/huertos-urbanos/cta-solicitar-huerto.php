@@ -2,7 +2,7 @@
 /**
  * Template: CTA para Solicitar Huerto
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

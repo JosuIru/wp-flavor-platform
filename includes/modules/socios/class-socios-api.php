@@ -2,7 +2,7 @@
 /**
  * API REST para Socios (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Socios_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,42 +28,42 @@ class Flavor_Socios_API {
 
     public function register_routes() {
         // GET /socios/perfil
-        register_rest_route(self::NAMESPACE, '/socios/perfil', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/perfil', [
             'methods' => 'GET',
             'callback' => [$this, 'get_perfil'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // PUT /socios/perfil
-        register_rest_route(self::NAMESPACE, '/socios/perfil', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/perfil', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_perfil'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /socios/cuotas
-        register_rest_route(self::NAMESPACE, '/socios/cuotas', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/cuotas', [
             'methods' => 'GET',
             'callback' => [$this, 'get_cuotas'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /socios/carnet
-        register_rest_route(self::NAMESPACE, '/socios/carnet', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/carnet', [
             'methods' => 'GET',
             'callback' => [$this, 'get_carnet'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /socios/beneficios
-        register_rest_route(self::NAMESPACE, '/socios/beneficios', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/beneficios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_beneficios'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /socios/actividad
-        register_rest_route(self::NAMESPACE, '/socios/actividad', [
+        flavor_register_rest_route(self::NAMESPACE, '/socios/actividad', [
             'methods' => 'GET',
             'callback' => [$this, 'get_actividad'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -263,7 +263,7 @@ class Flavor_Socios_API {
         $tabla_beneficios = $wpdb->prefix . 'flavor_socios_beneficios';
 
         // Verificar si existe la tabla
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_beneficios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_beneficios)) {
             // Retornar beneficios por defecto
             return new WP_REST_Response([
                 'success' => true,
@@ -337,7 +337,7 @@ class Flavor_Socios_API {
 
         // Eventos inscritos
         $tabla_eventos_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos_inscripciones)) {
             $eventos = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_eventos_inscripciones WHERE usuario_id = %d",
                 $usuario_id
@@ -347,7 +347,7 @@ class Flavor_Socios_API {
 
         // Cursos completados
         $tabla_cursos_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cursos_inscripciones)) {
             $cursos = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_cursos_inscripciones WHERE usuario_id = %d AND estado IN ('completado', 'activo')",
                 $usuario_id
@@ -357,7 +357,7 @@ class Flavor_Socios_API {
 
         // Reservas de espacios
         $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             $reservas = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_reservas WHERE usuario_id = %d",
                 $usuario_id
@@ -367,7 +367,7 @@ class Flavor_Socios_API {
 
         // Préstamos biblioteca
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamos = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_prestamos WHERE usuario_id = %d",
                 $usuario_id

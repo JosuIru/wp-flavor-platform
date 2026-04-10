@@ -8,7 +8,7 @@
  * - Apoyo en enfermedad/duelo
  * - Bancos de horas de cuidado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\CirculosCuidados
  * @since 4.2.0
  */
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo Círculos de Cuidados
  */
-class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Consumer;
@@ -1087,14 +1087,14 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-circulos-cuidados',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-cuidados.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-cuidados.css',
             [],
             '1.0.0'
         );
 
         wp_enqueue_script(
             'flavor-circulos-cuidados',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-cuidados.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-cuidados.js',
             ['jquery'],
             '1.0.0',
             true
@@ -1503,4 +1503,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Circulos_Cuidados_Module', false)) {
+    class_alias('Flavor_Platform_Circulos_Cuidados_Module', 'Flavor_Chat_Circulos_Cuidados_Module');
 }

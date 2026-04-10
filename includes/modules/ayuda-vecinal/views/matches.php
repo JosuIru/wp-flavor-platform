@@ -1,7 +1,7 @@
 <?php
 /**
  * Matching de Solicitudes y Voluntarios - Ayuda Vecinal
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 ?>

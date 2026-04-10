@@ -5,7 +5,7 @@
  * Proporciona utilidades comunes para operaciones criptográficas
  * utilizando libsodium (incluido en PHP 7.2+)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Crypto
  */
 

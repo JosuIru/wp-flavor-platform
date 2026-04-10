@@ -5,7 +5,7 @@
  * Carga y registra automáticamente los widgets de los módulos
  * en el Dashboard Unificado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Dashboard
  * @since 4.1.0
  */
@@ -288,7 +288,7 @@ class Flavor_Widgets_Loader {
      * @return string
      */
     private function get_ruta_widget(array $config): string {
-        return FLAVOR_CHAT_IA_PATH . 'includes/modules/' . $config['modulo'] . '/' . $config['archivo'];
+        return FLAVOR_PLATFORM_PATH . 'includes/modules/' . $config['modulo'] . '/' . $config['archivo'];
     }
 
     /**
@@ -318,7 +318,7 @@ class Flavor_Widgets_Loader {
      */
     private function cargar_modulos_activos(): array {
         // Leer de flavor_chat_ia_settings['active_modules'] (preferido)
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $modulos_activos = $settings['active_modules'] ?? [];
 
         // También leer de flavor_active_modules (legacy/compatibilidad)

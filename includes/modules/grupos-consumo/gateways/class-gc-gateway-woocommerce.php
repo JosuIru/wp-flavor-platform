@@ -5,7 +5,7 @@
  * Usa el sistema de checkout de WooCommerce para procesar pagos.
  * Requiere WooCommerce activo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */

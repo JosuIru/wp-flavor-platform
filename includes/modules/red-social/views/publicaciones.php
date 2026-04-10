@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Publicaciones de Red Social
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

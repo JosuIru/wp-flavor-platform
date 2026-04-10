@@ -2,7 +2,7 @@
 /**
  * Template: Tarifas de Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

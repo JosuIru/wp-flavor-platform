@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración del Sistema de Publicidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Advertising
  */
 

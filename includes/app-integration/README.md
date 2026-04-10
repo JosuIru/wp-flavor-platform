@@ -77,7 +77,7 @@ GET /wp-json/app-discovery/v1/info
       "name": "Flavor Chat IA",
       "active": true,
       "version": "1.5.0",
-      "api_namespace": "flavor-chat-ia/v1",
+      "api_namespace": "flavor-platform/v1",
       "profile": "grupo_consumo",
       "modules": ["grupos_consumo", "woocommerce"],
       "features": ["chat", "pedidos_colectivos", "productos"],
@@ -86,8 +86,8 @@ GET /wp-json/app-discovery/v1/info
         "modules": "/wp-json/app-discovery/v1/modules",
         "theme": "/wp-json/app-discovery/v1/theme",
         "grupos_consumo": {
-          "pedidos": "/wp-json/flavor-chat-ia/v1/pedidos",
-          "mis_pedidos": "/wp-json/flavor-chat-ia/v1/mis-pedidos"
+          "pedidos": "/wp-json/flavor-platform/v1/pedidos",
+          "mis_pedidos": "/wp-json/flavor-platform/v1/mis-pedidos"
         }
       }
     }
@@ -123,7 +123,7 @@ GET /wp-json/app-discovery/v1/modules
       "name": "Grupos de Consumo",
       "description": "Sistema de pedidos colectivos",
       "system": "flavor-chat-ia",
-      "api_namespace": "flavor-chat-ia/v1",
+      "api_namespace": "flavor-platform/v1",
       "icon": "shopping_basket",
       "color": "#46b450",
       "show_in_navigation": true,

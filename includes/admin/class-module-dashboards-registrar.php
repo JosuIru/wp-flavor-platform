@@ -74,7 +74,7 @@ class Flavor_Module_Dashboards_Registrar {
         $modulos_activos = $this->get_active_modules();
 
         // Directorio base de módulos
-        $modules_dir = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
+        $modules_dir = FLAVOR_PLATFORM_PATH . 'includes/modules/';
 
         foreach ($modulos_activos as $module_id) {
             // Normalizar ID (guiones bajos a guiones)
@@ -501,9 +501,9 @@ class Flavor_Module_Dashboards_Registrar {
         // Estilos base para dashboards de módulos
         wp_enqueue_style(
             'flavor-module-dashboard',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-module-components.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-module-components.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Chart.js para gráficos
@@ -641,12 +641,12 @@ class Flavor_Module_Dashboards_Registrar {
      * @return array
      */
     private function get_related_modules_with_dashboards($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
         $normalized_module_id = $this->normalize_module_id($module_id);
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader->get_registered_modules();
         $current_module_meta = $this->find_registered_module_meta($registered_modules, $normalized_module_id);
 
@@ -727,12 +727,12 @@ class Flavor_Module_Dashboards_Registrar {
      * @return array
      */
     private function get_related_transversal_modules_with_dashboards($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
         $normalized_module_id = $this->normalize_module_id($module_id);
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader->get_registered_modules();
 
         $related_map = [];

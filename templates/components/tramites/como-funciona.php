@@ -5,7 +5,7 @@
  * Seccion de 4 pasos explicando el proceso de tramitacion:
  * Buscar, Rellenar, Adjuntar y Recibir resolucion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

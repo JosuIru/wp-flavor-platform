@@ -5,7 +5,7 @@
  * Sistema de componentes visuales para crear dashboards
  * atractivos y consistentes en todos los módulos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

@@ -2,7 +2,7 @@
 /**
  * Vista: Panel principal de fichaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

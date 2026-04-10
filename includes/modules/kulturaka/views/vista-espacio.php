@@ -3,7 +3,7 @@
  * Vista Espacio - Kulturaka
  * Panel de gestión para espacios culturales: propuestas recibidas, programación, métricas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

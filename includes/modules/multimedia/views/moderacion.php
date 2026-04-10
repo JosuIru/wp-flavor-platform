@@ -2,7 +2,7 @@
 /**
  * Vista de Moderación de Contenido Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

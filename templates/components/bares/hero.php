@@ -8,7 +8,7 @@
  * @var string $titulo
  * @var string $subtitulo
  * @var string $imagen_fondo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

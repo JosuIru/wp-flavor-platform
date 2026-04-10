@@ -12,14 +12,14 @@
  * - madurez_ciclica: 0.20 (Proceso de sanación tiene su tiempo)
  * - valor_intrinseco: 0.15 (Dignidad de todas las partes)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -987,14 +987,14 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-justicia-restaurativa',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/justicia-restaurativa/assets/css/justicia-restaurativa.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/justicia-restaurativa/assets/css/justicia-restaurativa.css',
             [],
             '1.0.0'
         );
 
         wp_enqueue_script(
             'flavor-justicia-restaurativa',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/justicia-restaurativa/assets/js/justicia-restaurativa.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/justicia-restaurativa/assets/js/justicia-restaurativa.js',
             ['jquery'],
             '1.0.0',
             true
@@ -1441,4 +1441,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Justicia_Restaurativa_Module', false)) {
+    class_alias('Flavor_Platform_Justicia_Restaurativa_Module', 'Flavor_Chat_Justicia_Restaurativa_Module');
 }

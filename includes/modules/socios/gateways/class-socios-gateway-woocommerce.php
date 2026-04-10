@@ -2,7 +2,7 @@
 /**
  * Gateway WooCommerce para módulo Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

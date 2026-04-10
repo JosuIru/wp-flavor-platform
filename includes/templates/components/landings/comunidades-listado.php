@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Listado Comunidades
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $limite = $limite ?? 6;

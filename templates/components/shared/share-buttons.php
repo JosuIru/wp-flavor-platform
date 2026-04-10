@@ -4,7 +4,7 @@
  *
  * Botones para compartir en redes sociales y copiar enlace.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $url        URL a compartir (default: URL actual)

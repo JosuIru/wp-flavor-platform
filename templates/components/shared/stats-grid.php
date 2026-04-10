@@ -4,7 +4,7 @@
  *
  * Grid de estadísticas/KPIs reutilizable con iconos y colores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $stats    Array de estadísticas, cada una con: value, label, icon, color

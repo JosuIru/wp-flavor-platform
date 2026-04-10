@@ -2,7 +2,7 @@
 /**
  * Módulo de Espacios Comunes para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Espacios Comunes - Reserva de espacios comunitarios
  */
-class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Notifications_Trait;
     use Flavor_Module_Admin_Pages_Trait;
@@ -219,7 +219,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_espacios);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_espacios);
     }
 
     /**
@@ -504,7 +504,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
             $this->create_tables();
         }
     }
@@ -1497,7 +1497,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
     public function shortcode_listado($atts) {
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         $atts = shortcode_atts([
             'tipo' => '',
@@ -1514,13 +1514,13 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/listado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/espacios-comunes/templates/listado.php';
         return ob_get_clean();
     }
 
     public function shortcode_detalle($atts) {
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         $atts = shortcode_atts(['id' => 0], $atts);
         $espacio_id = $atts['id'] ?: (isset($_GET['espacio_id']) ? intval($_GET['espacio_id']) : 0);
@@ -1540,13 +1540,13 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/detalle.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/espacios-comunes/templates/detalle.php';
         return ob_get_clean();
     }
 
     public function shortcode_mis_reservas($atts) {
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         if (!is_user_logged_in()) {
             return '<p>' . __('Debes iniciar sesión para ver tus reservas.', 'flavor-platform') . '</p>';
@@ -1562,13 +1562,13 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/mis-reservas.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/espacios-comunes/templates/mis-reservas.php';
         return ob_get_clean();
     }
 
     public function shortcode_calendario($atts) {
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         $atts = shortcode_atts(['espacio_id' => 0], $atts);
 
@@ -1582,20 +1582,20 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/calendario.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/espacios-comunes/templates/calendario.php';
         return ob_get_clean();
     }
 
     public function shortcode_equipamiento($atts) {
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         $atts = shortcode_atts(['categoria' => ''], $atts);
 
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/equipamiento.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/espacios-comunes/templates/equipamiento.php';
         return ob_get_clean();
     }
 
@@ -2063,7 +2063,7 @@ KNOWLEDGE;
         $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
 
         // Verificar que las tablas existan
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
             return $estadisticas;
         }
 
@@ -2081,7 +2081,7 @@ KNOWLEDGE;
 
         // Reservas del usuario actual
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             // Reservas activas (confirmadas o en curso)
             $reservas_activas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_reservas}
@@ -2463,4 +2463,9 @@ KNOWLEDGE;
             $this->sincronizar_espacio_con_red($espacio->id);
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Espacios_Comunes_Module', false)) {
+    class_alias('Flavor_Platform_Espacios_Comunes_Module', 'Flavor_Chat_Espacios_Comunes_Module');
 }

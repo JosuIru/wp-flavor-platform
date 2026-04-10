@@ -2,7 +2,7 @@
 /**
  * Clase base para controladores frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -268,7 +268,7 @@ abstract class Flavor_Frontend_Controller_Base {
         extract($datos);
 
         // Ruta de la plantilla
-        $template_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/' . $this->slug . '/' . $template . '.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'templates/frontend/' . $this->slug . '/' . $template . '.php';
 
         // Buscar plantilla en el tema primero (permite override)
         $theme_template = locate_template('flavor-chat-ia/' . $this->slug . '/' . $template . '.php');
@@ -458,24 +458,24 @@ abstract class Flavor_Frontend_Controller_Base {
      * Registra rutas REST API
      */
     public function register_rest_routes() {
-        $namespace = 'flavor-chat-ia/v1';
+        $namespace = FLAVOR_PLATFORM_REST_NAMESPACE;
 
         // GET /modulo/
-        register_rest_route($namespace, '/' . $this->slug, [
+        flavor_register_rest_route($namespace, '/' . $this->slug, [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_items'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /modulo/{id}
-        register_rest_route($namespace, '/' . $this->slug . '/(?P<id>[\d]+)', [
+        flavor_register_rest_route($namespace, '/' . $this->slug . '/(?P<id>[\d]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_item'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // POST /modulo/ (crear)
-        register_rest_route($namespace, '/' . $this->slug, [
+        flavor_register_rest_route($namespace, '/' . $this->slug, [
             'methods' => 'POST',
             'callback' => [$this, 'rest_create_item'],
             'permission_callback' => [$this, 'rest_permission_check'],

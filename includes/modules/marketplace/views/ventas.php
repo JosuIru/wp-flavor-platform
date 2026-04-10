@@ -5,7 +5,7 @@
  * Gestión completa de ventas del marketplace con estadísticas,
  * filtros avanzados y paginación.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Marketplace
  */
 

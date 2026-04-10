@@ -4,7 +4,7 @@
  *
  * Mapa interactivo con Leaflet para mostrar ubicaciones y marcadores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $markers     Array de marcadores: [['lat' => x, 'lng' => y, 'title' => '', 'popup' => '', 'icon' => '', 'color' => '']]

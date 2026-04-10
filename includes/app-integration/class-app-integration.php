@@ -5,7 +5,7 @@
  * Permite que las APKs existentes de wp-calendario-experiencias
  * funcionen con Flavor Chat IA sin recompilar
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -283,10 +283,10 @@ class Flavor_App_Integration {
 
         // Módulos de Flavor Chat IA - usar get_active_modules_cached() para obtener TODOS los activos
         if ($this->plugin_detector->is_flavor_chat_active()) {
-            if (class_exists('Flavor_Chat_Module_Loader')) {
+            if (class_exists('Flavor_Platform_Module_Loader')) {
                 // Obtener todos los módulos activos (no solo los cargados)
-                $active_module_ids = Flavor_Chat_Module_Loader::get_active_modules_cached();
-                $loader = Flavor_Chat_Module_Loader::get_instance();
+                $active_module_ids = Flavor_Platform_Module_Loader::get_active_modules_cached();
+                $loader = Flavor_Platform_Module_Loader::get_instance();
                 $loaded_modules = $loader->get_loaded_modules();
 
                 foreach ($active_module_ids as $module_id) {
@@ -298,7 +298,8 @@ class Flavor_App_Integration {
                             'name' => $module->get_name(),
                             'description' => $module->get_description(),
                             'system' => FLAVOR_PLATFORM_TEXT_DOMAIN,
-                            'api_namespace' => 'flavor-chat-ia/v1',
+                            'api_namespace' => FLAVOR_PLATFORM_REST_NAMESPACE,
+                            'api_namespaces' => [FLAVOR_PLATFORM_REST_NAMESPACE, FLAVOR_CHAT_IA_REST_NAMESPACE],
                             'icon' => $this->get_module_icon($module_id),
                             'color' => $this->get_module_color($module_id),
                             'show_in_navigation' => true,
@@ -312,7 +313,8 @@ class Flavor_App_Integration {
                             'name' => $meta['name'] ?? ucwords(str_replace(['_', '-'], ' ', $module_id)),
                             'description' => $meta['description'] ?? '',
                             'system' => FLAVOR_PLATFORM_TEXT_DOMAIN,
-                            'api_namespace' => 'flavor-chat-ia/v1',
+                            'api_namespace' => FLAVOR_PLATFORM_REST_NAMESPACE,
+                            'api_namespaces' => [FLAVOR_PLATFORM_REST_NAMESPACE, FLAVOR_CHAT_IA_REST_NAMESPACE],
                             'icon' => $meta['icon'] ?? $this->get_module_icon($module_id),
                             'color' => $meta['color'] ?? $this->get_module_color($module_id),
                             'show_in_navigation' => true,
@@ -869,7 +871,7 @@ class Flavor_App_Integration {
      *         'icon' => 'star',
      *         'content_type' => 'module',
      *         'content_ref' => 'mi_modulo',
-     *         'api_endpoint' => '/wp-json/flavor-chat-ia/v1/modules/mi_modulo',
+     *         'api_endpoint' => '/wp-json/flavor-platform/v1/modules/mi_modulo',
      *         'order' => 100,
      *         'depth' => 0,
      *     ];
@@ -1590,7 +1592,7 @@ class Flavor_App_Integration {
 
 // Inicializar integración
 add_action('plugins_loaded', function() {
-    if (class_exists('Flavor_Chat_IA')) {
+    if (class_exists('Flavor_Platform')) {
         Flavor_App_Integration::get_instance();
     }
 }, 20);

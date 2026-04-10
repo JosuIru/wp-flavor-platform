@@ -5,7 +5,7 @@
  * Los módulos pueden usar este trait para registrar fácilmente
  * sus páginas de administración en el panel de gestión unificado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

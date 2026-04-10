@@ -5,7 +5,7 @@
  * Panel para locutores con instrucciones de conexión,
  * estado de emisión y herramientas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -16,7 +16,7 @@ $user_id = get_current_user_id();
 $user = wp_get_current_user();
 
 // Obtener configuración del módulo radio
-$radio_settings = get_option('flavor_chat_ia_settings', []);
+$radio_settings = flavor_get_main_settings();
 $radio_config = $radio_settings['radio'] ?? [];
 
 // Verificar si tiene permisos de locutor
@@ -27,7 +27,7 @@ global $wpdb;
 $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 $mis_programas = [];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
     $mis_programas = $wpdb->get_results($wpdb->prepare(
         "SELECT * FROM $tabla_programas WHERE locutor_id = %d AND estado = 'activo'",
         $user_id
@@ -332,7 +332,7 @@ if (empty($locutor_token)) {
                         <span class="dashicons dashicons-calendar-alt"></span>
                         <?php _e('Ver Programación', 'flavor-platform'); ?>
                     </a>
-                    <a href="<?php echo Flavor_Chat_Helpers::get_action_url('radio', ''); ?>" class="button" target="_blank">
+                    <a href="<?php echo Flavor_Platform_Helpers::get_action_url('radio', ''); ?>" class="button" target="_blank">
                         <span class="dashicons dashicons-visibility"></span>
                         <?php _e('Ver Portal Público', 'flavor-platform'); ?>
                     </a>

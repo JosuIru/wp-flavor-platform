@@ -2,7 +2,7 @@
 /**
  * Gestión de Perfiles de Aplicación en el Admin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -50,10 +50,15 @@ class Flavor_App_Profile_Admin {
     private function init_hooks() {
         // Menu registrado centralmente por Flavor_Admin_Menu_Manager
         add_action('admin_post_flavor_chat_ia_cambiar_perfil', [$this, 'procesar_cambio_perfil']);
+        add_action('admin_post_flavor_platform_cambiar_perfil', [$this, 'procesar_cambio_perfil']);
         add_action('admin_post_flavor_chat_ia_toggle_modulo', [$this, 'procesar_toggle_modulo']);
+        add_action('admin_post_flavor_platform_toggle_modulo', [$this, 'procesar_toggle_modulo']);
         add_action('admin_post_flavor_chat_ia_toggle_modulo_frontend', [$this, 'procesar_toggle_modulo_frontend']);
+        add_action('admin_post_flavor_platform_toggle_modulo_frontend', [$this, 'procesar_toggle_modulo_frontend']);
         add_action('admin_post_flavor_chat_ia_crear_landing_frontend', [$this, 'procesar_crear_landing_frontend']);
+        add_action('admin_post_flavor_platform_crear_landing_frontend', [$this, 'procesar_crear_landing_frontend']);
         add_action('admin_post_flavor_chat_ia_crear_todas_landings_frontend', [$this, 'procesar_crear_todas_landings_frontend']);
+        add_action('admin_post_flavor_platform_crear_todas_landings_frontend', [$this, 'procesar_crear_todas_landings_frontend']);
         add_action('admin_enqueue_scripts', [$this, 'cargar_estilos_admin']);
 
         // Hooks del Template Orchestrator
@@ -90,42 +95,42 @@ class Flavor_App_Profile_Admin {
         // CSS de tokens de diseño (base para todos los estilos)
         wp_enqueue_style(
             'flavor-design-tokens',
-            FLAVOR_CHAT_IA_URL . "admin/css/design-tokens{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/design-tokens{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // CSS del compositor
         wp_enqueue_style(
             'flavor-app-composer',
-            FLAVOR_CHAT_IA_URL . "admin/css/app-composer{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/app-composer{$sufijo_asset}.css",
             ['flavor-design-tokens'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // CSS del Template Orchestrator
         wp_enqueue_style(
             'flavor-template-orchestrator',
-            FLAVOR_CHAT_IA_URL . "admin/css/template-orchestrator{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/template-orchestrator{$sufijo_asset}.css",
             ['flavor-app-composer'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // App Composer JS - registra el componente Alpine
         wp_enqueue_script(
             'flavor-app-composer',
-            FLAVOR_CHAT_IA_URL . "admin/js/app-composer{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "admin/js/app-composer{$sufijo_asset}.js",
             [],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true // Cargar en footer
         );
 
         // Template Orchestrator JS
         wp_enqueue_script(
             'flavor-template-orchestrator',
-            FLAVOR_CHAT_IA_URL . "admin/js/template-orchestrator{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "admin/js/template-orchestrator{$sufijo_asset}.js",
             ['flavor-app-composer'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -210,7 +215,7 @@ class Flavor_App_Profile_Admin {
         $landing_tags = $this->obtener_tags_landings();
 
         // CRÍTICO: Limpiar caché y leer directo de BD para evitar datos desactualizados
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete('flavor_platform_settings', 'options');
         wp_cache_delete('alloptions', 'options');
 
         // Leer directamente de la BD para evitar cualquier caché persistente
@@ -228,7 +233,7 @@ class Flavor_App_Profile_Admin {
         flavor_log_debug( 'Compositor: Módulos activos cargados de BD: ' . implode(', ', $modulos_activos), 'AppProfile' );
         flavor_log_debug( 'Perfiles activos: ' . implode(', ', $perfiles_activos), 'AppProfile' );
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
         $perfiles_ecosistema = [];
         foreach ($perfiles as $perfil_id => $perfil_data) {
@@ -904,14 +909,14 @@ class Flavor_App_Profile_Admin {
      * Renderiza el modal de preview de plantilla dinamicamente
      */
     private function renderizar_modal_preview_plantilla() {
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/template-preview-modal.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/template-preview-modal.php';
     }
 
     /**
      * Renderiza la vista de progreso de instalacion
      */
     private function renderizar_vista_progreso() {
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/template-progress.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/template-progress.php';
     }
 
     /**
@@ -1111,12 +1116,12 @@ class Flavor_App_Profile_Admin {
                     'modulos_activos' => $modulos_activos,
                     'menu_sync' => $menu_sync,
                 ]);
-                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+                Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfiles_cambiados'],
                     admin_url('admin.php')
                 ));
             } else {
-                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+                Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'error' => 'perfiles_invalidos'],
                     admin_url('admin.php')
                 ));
@@ -1136,12 +1141,12 @@ class Flavor_App_Profile_Admin {
                     'modulos_activos' => $modulos_activos,
                     'menu_sync' => $menu_sync,
                 ]);
-                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+                Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfil_cambiado'],
                     admin_url('admin.php')
                 ));
             } else {
-                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+                Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'error' => 'perfil_invalido'],
                     admin_url('admin.php')
                 ));
@@ -1172,7 +1177,7 @@ class Flavor_App_Profile_Admin {
         // Sincronizar con configuración de apps móviles
         $this->sincronizar_modulo_movil($modulo_id, $activar);
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_actualizado'],
             admin_url('admin.php')
         ));
@@ -1259,7 +1264,7 @@ class Flavor_App_Profile_Admin {
             global $wpdb;
             $configuracion_raw = $wpdb->get_var($wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                FLAVOR_CHAT_IA_SETTINGS_OPTION
+                flavor_get_primary_settings_option()
             ));
             $configuracion = maybe_unserialize($configuracion_raw);
             $modulos_activos = $configuracion['active_modules'] ?? [];
@@ -1343,7 +1348,7 @@ class Flavor_App_Profile_Admin {
             Flavor_Frontend_Loader::schedule_flush_rewrite();
         }
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_frontend_actualizado'],
             admin_url('admin.php')
         ));
@@ -1362,7 +1367,7 @@ class Flavor_App_Profile_Admin {
 
         $modulo_slug = sanitize_title($_POST['modulo_slug'] ?? '');
         if (empty($modulo_slug)) {
-            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+            Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_error'],
                 admin_url('admin.php')
             ));
@@ -1402,7 +1407,7 @@ class Flavor_App_Profile_Admin {
             update_post_meta($post_id, '_flavor_auto_page_modules', str_replace('-', '_', $modulo_slug));
         }
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_creada'],
             admin_url('admin.php')
         ));
@@ -1442,7 +1447,7 @@ class Flavor_App_Profile_Admin {
             }
         }
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'landings_creadas'],
             admin_url('admin.php')
         ));
@@ -1967,8 +1972,8 @@ class Flavor_App_Profile_Admin {
         }
 
         // 2. Si no hay configuración guardada, intentar con Module Loader
-        if (empty($modulos_realmente_activos) && class_exists('Flavor_Chat_Module_Loader')) {
-            $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        if (empty($modulos_realmente_activos) && class_exists('Flavor_Platform_Module_Loader')) {
+            $module_loader = Flavor_Platform_Module_Loader::get_instance();
             if (method_exists($module_loader, 'get_loaded_modules')) {
                 $loaded_modules = $module_loader->get_loaded_modules();
                 $modulos_realmente_activos = array_keys($loaded_modules);
@@ -1987,14 +1992,14 @@ class Flavor_App_Profile_Admin {
 
         // Network (Red de Comunidades) - verificar si sus tablas existen
         $tabla_network = $wpdb->prefix . 'flavor_network_nodes';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_network)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_network)) {
             $modulos_realmente_activos[] = 'network';
         }
 
         // Red Social - verificar tablas (si no está ya detectada)
         if (!in_array('red_social', $modulos_realmente_activos, true)) {
             $tabla_red_social = $wpdb->prefix . 'flavor_red_social_publicaciones';
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_red_social)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_red_social)) {
                 $modulos_realmente_activos[] = 'red_social';
             }
         }
@@ -2211,12 +2216,12 @@ class Flavor_App_Profile_Admin {
         $resultado = $this->activar_plantilla_completa($plantilla_id, $opciones);
 
         if ($resultado['success']) {
-            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+            Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_activada'],
                 admin_url('admin.php')
             ));
         } else {
-            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+            Flavor_Platform_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_error', 'error' => urlencode($resultado['mensaje'] ?? '')],
                 admin_url('admin.php')
             ));
@@ -2252,7 +2257,7 @@ class Flavor_App_Profile_Admin {
 
         $modulos_requeridos = $this->normalizar_ids_modulos((array) ($perfil['modulos_requeridos'] ?? []));
         $modulos_opcionales = $this->normalizar_ids_modulos((array) ($perfil['modulos_opcionales'] ?? []));
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
         $perfil_ecosistema = $this->get_profile_ecosystem_data($perfil, $modulos_registrados);
 
@@ -2401,7 +2406,7 @@ class Flavor_App_Profile_Admin {
                 $wpdb_result_legacy = $wpdb->replace(
                     $wpdb->options,
                     [
-                        'option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION,
+                        'option_name' => flavor_get_primary_settings_option(),
                         'option_value' => $serialized,
                         'autoload' => 'yes',
                     ],
@@ -2420,7 +2425,7 @@ class Flavor_App_Profile_Admin {
                 flavor_log_debug( 'WPDB replace platform result: ' . $wpdb_result_platform, 'InstalarModulos' );
 
                 // Limpiar caché de opciones
-                wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+                wp_cache_delete(flavor_get_primary_settings_option(), 'options');
                 wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
                 wp_cache_delete('alloptions', 'options');
             }
@@ -2432,7 +2437,7 @@ class Flavor_App_Profile_Admin {
 
             // Cargar el helper para guardar el perfil directamente en BD
             flavor_log_debug( 'Cargando Profile Saver...', 'InstalarModulos' );
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-profile-saver.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-profile-saver.php';
 
             // Guardar app_profile directamente en BD (bypass WordPress cache/hooks)
             flavor_log_debug( 'Guardando perfil...', 'InstalarModulos' );
@@ -2441,22 +2446,22 @@ class Flavor_App_Profile_Admin {
 
             // IMPORTANTE: Limpiar caché para asegurar que los módulos se vean como activos
             flavor_log_debug( 'Limpiando caché...', 'InstalarModulos' );
-            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete('flavor_platform_settings', 'options');
             wp_cache_delete('alloptions', 'options');
 
             // IMPORTANTE: Inicializar módulos recién activados
             flavor_log_debug( 'Inicializando módulos...', 'InstalarModulos' );
 
             // Asegurar que Module Loader esté disponible
-            if (!class_exists('Flavor_Chat_Module_Loader')) {
-                flavor_log_debug( 'Cargando Flavor_Chat_Module_Loader...', 'InstalarModulos' );
-                require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
+            if (!class_exists('Flavor_Platform_Module_Loader')) {
+                flavor_log_debug( 'Cargando Flavor_Platform_Module_Loader...', 'InstalarModulos' );
+                require_once FLAVOR_PLATFORM_PATH . 'includes/modules/class-module-loader.php';
                 flavor_log_debug( 'Clase cargada correctamente', 'InstalarModulos' );
             }
 
             $modulos_inicializados = 0;
             $errores_inicializacion = [];
-            $module_loader = Flavor_Chat_Module_Loader::get_instance();
+            $module_loader = Flavor_Platform_Module_Loader::get_instance();
 
             foreach ($modulos_a_activar as $module_id) {
                 flavor_log_debug( 'Procesando módulo: ' . $module_id, 'InstalarModulos' );
@@ -2801,8 +2806,8 @@ class Flavor_App_Profile_Admin {
         }
 
         // Actualizar configuración de módulos (esto sí debe actualizarse siempre)
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $registered_modules = $loader->get_registered_modules();
             $modules_config = $config['modules'] ?? [];
             foreach ($registered_modules as $module_id => $module_data) {
@@ -2830,14 +2835,14 @@ class Flavor_App_Profile_Admin {
      */
     private function aplicar_transformacion_sitio($plantilla_id) {
         // Cargar el componente Site Transformer
-        $archivo_transformer = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/components/class-site-transformer.php';
+        $archivo_transformer = FLAVOR_PLATFORM_PATH . 'includes/orchestrator/components/class-site-transformer.php';
 
         if (!file_exists($archivo_transformer)) {
             return ['success' => false, 'error' => __('Site Transformer no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Cargar interface si no esta cargada
-        $archivo_interface = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/interface-template-component.php';
+        $archivo_interface = FLAVOR_PLATFORM_PATH . 'includes/orchestrator/interface-template-component.php';
         if (file_exists($archivo_interface) && !interface_exists('Flavor_Template_Component_Interface')) {
             require_once $archivo_interface;
         }
@@ -2845,7 +2850,7 @@ class Flavor_App_Profile_Admin {
         require_once $archivo_transformer;
 
         // Obtener definicion completa de la plantilla
-        $archivo_definiciones = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/class-template-definitions.php';
+        $archivo_definiciones = FLAVOR_PLATFORM_PATH . 'includes/orchestrator/class-template-definitions.php';
         if (!file_exists($archivo_definiciones)) {
             return ['success' => false, 'error' => __('Definiciones no encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }

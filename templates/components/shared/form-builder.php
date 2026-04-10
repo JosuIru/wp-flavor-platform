@@ -4,7 +4,7 @@
  *
  * Genera formularios dinámicos a partir de configuración.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * Variables disponibles:

@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para gestión de grupos de chat.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

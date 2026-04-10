@@ -11,7 +11,7 @@
  * - terminos_url: URL de los términos y condiciones
  * - action_url: URL de envío del formulario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

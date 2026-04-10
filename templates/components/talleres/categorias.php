@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Categorias Talleres
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

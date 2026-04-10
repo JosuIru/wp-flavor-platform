@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Eventos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -104,7 +104,7 @@ class Flavor_Eventos_Frontend_Controller {
         }
 
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_enqueue_style(
@@ -322,7 +322,7 @@ class Flavor_Eventos_Frontend_Controller {
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             echo '<p class="flavor-error">' . __('El módulo de eventos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
@@ -896,7 +896,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         // Obtener próximos eventos
         $proximos_eventos = [];
-        if ($atts['mostrar_proximos'] === 'true' && Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if ($atts['mostrar_proximos'] === 'true' && Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $proximos_eventos = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, titulo, fecha_inicio, ubicacion, tipo
                  FROM $tabla_eventos
@@ -909,7 +909,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         // Obtener inscripciones del usuario actual
         $mis_inscripciones = [];
-        if ($atts['mostrar_mis_inscripciones'] === 'true' && is_user_logged_in() && Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if ($atts['mostrar_mis_inscripciones'] === 'true' && is_user_logged_in() && Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $usuario_id = get_current_user_id();
             $mis_inscripciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT i.*, e.titulo, e.fecha_inicio, e.ubicacion
@@ -1021,7 +1021,7 @@ class Flavor_Eventos_Frontend_Controller {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
         $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
@@ -1565,7 +1565,7 @@ class Flavor_Eventos_Frontend_Controller {
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 

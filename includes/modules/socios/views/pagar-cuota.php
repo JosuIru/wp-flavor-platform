@@ -2,7 +2,7 @@
 /**
  * Vista: Pagar cuota de socio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array  $cuotas_pendientes   Lista de cuotas pendientes
  * @var array  $socio               Datos del socio
  * @var array  $gateways            Métodos de pago disponibles
@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-info-outline"></span>
             <h3><?php esc_html_e('No eres socio aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php esc_html_e('Para acceder a esta sección necesitas ser socio de la cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
                 <?php esc_html_e('Hacerse socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

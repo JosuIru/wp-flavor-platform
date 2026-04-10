@@ -2,7 +2,7 @@
 /**
  * Controlador Frontend: Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -30,7 +30,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
             'pedidos_mes' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             $grupos = $wpdb->get_results("SELECT * FROM $tabla_grupos WHERE estado = 'activo' ORDER BY nombre ASC", ARRAY_A);
             $estadisticas['total_grupos'] = count($grupos);
 
@@ -104,7 +104,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
         $productores = [];
         $proximos_pedidos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             $grupo = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_grupos WHERE id = %d", $item_id), ARRAY_A);
         }
 
@@ -166,7 +166,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
         $tabla_grupos = $wpdb->prefix . 'flavor_grupos_consumo';
         $resultados = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             $resultados = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM $tabla_grupos WHERE (nombre LIKE %s OR descripcion LIKE %s) AND estado = 'activo'",
                 '%' . $wpdb->esc_like($query) . '%',
@@ -207,7 +207,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
         $tabla_socios = $wpdb->prefix . 'flavor_gc_socios';
         $usuario_id = get_current_user_id();
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             return (bool) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_socios WHERE grupo_id = %d AND usuario_id = %d AND estado = 'activo'",
                 $grupo_id, $usuario_id

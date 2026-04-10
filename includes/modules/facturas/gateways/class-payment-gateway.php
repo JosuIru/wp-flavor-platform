@@ -3,7 +3,7 @@
  * Clase abstracta base para gateways de pago
  * Define la interfaz común para todas las pasarelas (Stripe, PayPal, Redsys, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Facturas
  */
 

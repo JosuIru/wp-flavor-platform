@@ -4,7 +4,7 @@
  *
  * Panel principal con estadísticas de dones, solicitudes y gratitudes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -66,8 +66,11 @@ if ($cpt_exists) {
     $totalGratitudes = (int) wp_count_posts('ed_gratitud')->publish;
 
     // Dones por categoría
-    if (class_exists('Flavor_Chat_Economia_Don_Module') && defined('Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON')) {
-        $categoriasDon = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
+    $economia_don_module_class = function_exists('flavor_get_runtime_class_name')
+        ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Don_Module')
+        : 'Flavor_Chat_Economia_Don_Module';
+    if (class_exists($economia_don_module_class) && defined($economia_don_module_class . '::CATEGORIAS_DON')) {
+        $categoriasDon = $economia_don_module_class::CATEGORIAS_DON;
         foreach ($categoriasDon as $categoriaKey => $categoriaInfo) {
             $cantidad = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$wpdb->posts} p

@@ -3,8 +3,9 @@
  * Vista Dashboard - Socios
  *
  * Dashboard administrativo operativo para membresía, cuotas y seguimiento.
+ * OPTIMIZADO: Usa caché de estadísticas (5 min) para reducir queries.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -30,35 +31,100 @@ $hoy = current_time('Y-m-d');
 $inicio_mes = gmdate('Y-m-01 00:00:00', current_time('timestamp', true));
 $hace_30_dias = gmdate('Y-m-d H:i:s', strtotime('-30 days', current_time('timestamp', true)));
 
-$total_socios = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_socios}");
-$socios_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_socios} WHERE estado = 'activo'");
-$socios_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_socios} WHERE estado = 'pendiente'");
-$socios_suspendidos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_socios} WHERE estado IN ('suspendido', 'moroso')");
-$socios_baja_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_socios} WHERE estado = 'baja' AND fecha_baja >= %s",
-    gmdate('Y-m-01', current_time('timestamp', true))
-));
-$altas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_socios} WHERE fecha_alta >= %s",
-    gmdate('Y-m-01', current_time('timestamp', true))
-));
+// ============================================================================
+// ESTADÍSTICAS CACHEADAS (5 minutos) - Reduce ~12 queries a 2
+// ============================================================================
+$stats = flavor_get_dashboard_stats('socios', function() use ($wpdb, $tabla_socios, $tabla_cuotas, $tabla_cuotas_existe, $inicio_mes) {
+    $inicio_mes_fecha = gmdate('Y-m-01', current_time('timestamp', true));
 
-$tipos_socio = $wpdb->get_results(
-    "SELECT tipo_socio, COUNT(*) as total
-     FROM {$tabla_socios}
-     WHERE estado = 'activo'
-     GROUP BY tipo_socio
-     ORDER BY total DESC
-     LIMIT 6"
-);
+    // Query combinada para socios
+    $socios_stats = $wpdb->get_row($wpdb->prepare("
+        SELECT
+            COUNT(*) as total,
+            SUM(estado = 'activo') as activos,
+            SUM(estado = 'pendiente') as pendientes,
+            SUM(estado IN ('suspendido', 'moroso')) as suspendidos,
+            SUM(estado = 'baja' AND fecha_baja >= %s) as bajas_mes,
+            SUM(fecha_alta >= %s) as altas_mes
+        FROM {$tabla_socios}
+    ", $inicio_mes_fecha, $inicio_mes_fecha), ARRAY_A);
 
-$por_estado = $wpdb->get_results(
-    "SELECT estado, COUNT(*) as total
-     FROM {$tabla_socios}
-     GROUP BY estado
-     ORDER BY total DESC"
-);
+    $stats = [
+        'total_socios' => (int) ($socios_stats['total'] ?? 0),
+        'socios_activos' => (int) ($socios_stats['activos'] ?? 0),
+        'socios_pendientes' => (int) ($socios_stats['pendientes'] ?? 0),
+        'socios_suspendidos' => (int) ($socios_stats['suspendidos'] ?? 0),
+        'socios_baja_mes' => (int) ($socios_stats['bajas_mes'] ?? 0),
+        'altas_mes' => (int) ($socios_stats['altas_mes'] ?? 0),
+    ];
 
+    // Tipos de socio
+    $stats['tipos_socio'] = $wpdb->get_results(
+        "SELECT tipo_socio, COUNT(*) as total FROM {$tabla_socios}
+         WHERE estado = 'activo' GROUP BY tipo_socio ORDER BY total DESC LIMIT 6"
+    );
+
+    // Por estado
+    $stats['por_estado'] = $wpdb->get_results(
+        "SELECT estado, COUNT(*) as total FROM {$tabla_socios} GROUP BY estado ORDER BY total DESC"
+    );
+
+    // Evolución mensual
+    $stats['mensual_altas'] = $wpdb->get_results(
+        "SELECT DATE_FORMAT(fecha_alta, '%Y-%m') as periodo, COUNT(*) as total
+         FROM {$tabla_socios}
+         WHERE fecha_alta >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
+         GROUP BY DATE_FORMAT(fecha_alta, '%Y-%m')
+         ORDER BY periodo ASC"
+    );
+
+    // Cuotas (si existe la tabla)
+    if ($tabla_cuotas_existe) {
+        $cuotas_stats = $wpdb->get_row($wpdb->prepare("
+            SELECT
+                SUM(estado = 'pendiente') as pendientes,
+                SUM(estado = 'vencida') as vencidas,
+                COALESCE(SUM(CASE WHEN estado IN ('pendiente', 'vencida') THEN importe ELSE 0 END), 0) as importe_pendiente,
+                SUM(estado = 'pagada' AND fecha_pago >= %s) as pagadas_mes,
+                COALESCE(SUM(CASE WHEN estado = 'pagada' AND fecha_pago >= %s THEN importe ELSE 0 END), 0) as importe_pagado_mes
+            FROM {$tabla_cuotas}
+        ", $inicio_mes, $inicio_mes), ARRAY_A);
+
+        $stats['cuotas_pendientes'] = (int) ($cuotas_stats['pendientes'] ?? 0);
+        $stats['cuotas_vencidas'] = (int) ($cuotas_stats['vencidas'] ?? 0);
+        $stats['importe_pendiente'] = (float) ($cuotas_stats['importe_pendiente'] ?? 0);
+        $stats['cuotas_pagadas_mes'] = (int) ($cuotas_stats['pagadas_mes'] ?? 0);
+        $stats['importe_pagado_mes'] = (float) ($cuotas_stats['importe_pagado_mes'] ?? 0);
+    } else {
+        $stats['cuotas_pendientes'] = 0;
+        $stats['cuotas_vencidas'] = 0;
+        $stats['importe_pendiente'] = 0.0;
+        $stats['cuotas_pagadas_mes'] = 0;
+        $stats['importe_pagado_mes'] = 0.0;
+    }
+
+    return $stats;
+}, 300);
+
+// Extraer variables
+$total_socios = $stats['total_socios'];
+$socios_activos = $stats['socios_activos'];
+$socios_pendientes = $stats['socios_pendientes'];
+$socios_suspendidos = $stats['socios_suspendidos'];
+$socios_baja_mes = $stats['socios_baja_mes'];
+$altas_mes = $stats['altas_mes'];
+$tipos_socio = $stats['tipos_socio'];
+$por_estado = $stats['por_estado'];
+$mensual_altas = $stats['mensual_altas'];
+$cuotas_pendientes = $stats['cuotas_pendientes'];
+$cuotas_vencidas = $stats['cuotas_vencidas'];
+$importe_pendiente = $stats['importe_pendiente'];
+$cuotas_pagadas_mes = $stats['cuotas_pagadas_mes'];
+$importe_pagado_mes = $stats['importe_pagado_mes'];
+
+// ============================================================================
+// DATOS EN TIEMPO REAL (no cacheados) - Listados recientes
+// ============================================================================
 $nuevas_altas = $wpdb->get_results(
     "SELECT s.*, u.display_name, u.user_email
      FROM {$tabla_socios} s
@@ -67,35 +133,10 @@ $nuevas_altas = $wpdb->get_results(
      LIMIT 8"
 );
 
-$mensual_altas = $wpdb->get_results(
-    "SELECT DATE_FORMAT(fecha_alta, '%Y-%m') as periodo, COUNT(*) as total
-     FROM {$tabla_socios}
-     WHERE fecha_alta >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
-     GROUP BY DATE_FORMAT(fecha_alta, '%Y-%m')
-     ORDER BY periodo ASC"
-);
-
-$cuotas_pendientes = 0;
-$cuotas_vencidas = 0;
-$importe_pendiente = 0.0;
-$cuotas_pagadas_mes = 0;
-$importe_pagado_mes = 0.0;
 $cuotas_criticas = [];
 $actividad_cuotas = [];
 
 if ($tabla_cuotas_existe) {
-    $cuotas_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'pendiente'");
-    $cuotas_vencidas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'vencida'");
-    $importe_pendiente = (float) $wpdb->get_var("SELECT COALESCE(SUM(importe), 0) FROM {$tabla_cuotas} WHERE estado IN ('pendiente', 'vencida')");
-    $cuotas_pagadas_mes = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'pagada' AND fecha_pago >= %s",
-        $inicio_mes
-    ));
-    $importe_pagado_mes = (float) $wpdb->get_var($wpdb->prepare(
-        "SELECT COALESCE(SUM(importe), 0) FROM {$tabla_cuotas} WHERE estado = 'pagada' AND fecha_pago >= %s",
-        $inicio_mes
-    ));
-
     $cuotas_criticas = $wpdb->get_results(
         "SELECT c.*, s.numero_socio, s.estado as socio_estado, u.display_name, u.user_email
          FROM {$tabla_cuotas} c

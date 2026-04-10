@@ -4,8 +4,9 @@
  * Incluye widgets de datos en vivo de módulos relacionados
  *
  * Dashboard administrativo operativo para reservas y recursos.
+ * OPTIMIZADO: Usa caché de estadísticas (5 min) para reducir queries.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -25,71 +26,113 @@ if (!$tabla_reservas_existe) {
     return;
 }
 
+// Variables de tiempo (no cacheables)
 $hoy = current_time('Y-m-d');
 $ahora = current_time('mysql');
 $en_48h = gmdate('Y-m-d H:i:s', strtotime('+48 hours', current_time('timestamp', true)));
 $hace_7_dias = gmdate('Y-m-d H:i:s', strtotime('-7 days', current_time('timestamp', true)));
 $inicio_mes = gmdate('Y-m-01 00:00:00', current_time('timestamp', true));
 
-$total_reservas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_reservas}");
-$reservas_hoy = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE fecha_reserva = %s",
-    $hoy
-));
-$reservas_activas = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE fecha_inicio >= %s AND estado IN ('pendiente', 'confirmada')",
-    $ahora
-));
-$reservas_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'");
-$reservas_confirmadas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'confirmada' AND created_at >= %s",
-    $inicio_mes
-));
-$reservas_canceladas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'cancelada' AND created_at >= %s",
-    $inicio_mes
-));
-$reservas_completadas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'completada' AND created_at >= %s",
-    $inicio_mes
-));
+// ============================================================================
+// ESTADÍSTICAS CACHEADAS (5 minutos) - Reduce ~15 queries a 1
+// ============================================================================
+$stats = flavor_get_dashboard_stats('reservas', function() use ($wpdb, $tabla_reservas, $tabla_recursos, $tabla_recursos_existe, $hoy, $ahora, $en_48h, $inicio_mes) {
+    // Query combinada para todos los conteos principales
+    $counts = $wpdb->get_row($wpdb->prepare("
+        SELECT
+            COUNT(*) as total,
+            SUM(fecha_reserva = %s) as hoy,
+            SUM(fecha_inicio >= %s AND estado IN ('pendiente', 'confirmada')) as activas,
+            SUM(estado = 'pendiente') as pendientes,
+            SUM(estado = 'confirmada' AND created_at >= %s) as confirmadas_mes,
+            SUM(estado = 'cancelada' AND created_at >= %s) as canceladas_mes,
+            SUM(estado = 'completada' AND created_at >= %s) as completadas_mes,
+            SUM(estado = 'pendiente' AND fecha_inicio < %s) as pendientes_vencidas,
+            SUM((recurso_id IS NULL OR recurso_id = 0) AND estado IN ('pendiente', 'confirmada')) as sin_recurso,
+            SUM(fecha_inicio BETWEEN %s AND %s AND estado IN ('pendiente', 'confirmada')) as entradas_48h,
+            COALESCE(SUM(CASE WHEN created_at >= %s AND estado IN ('pendiente', 'confirmada', 'completada') THEN num_personas ELSE 0 END), 0) as personas_mes
+        FROM {$tabla_reservas}
+    ", $hoy, $ahora, $inicio_mes, $inicio_mes, $inicio_mes, $ahora, $ahora, $en_48h, $inicio_mes), ARRAY_A);
 
-$pendientes_vencidas = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas}
-     WHERE estado = 'pendiente'
-       AND fecha_inicio < %s",
-    $ahora
-));
+    $stats = [
+        'total_reservas' => (int) ($counts['total'] ?? 0),
+        'reservas_hoy' => (int) ($counts['hoy'] ?? 0),
+        'reservas_activas' => (int) ($counts['activas'] ?? 0),
+        'reservas_pendientes' => (int) ($counts['pendientes'] ?? 0),
+        'reservas_confirmadas_mes' => (int) ($counts['confirmadas_mes'] ?? 0),
+        'reservas_canceladas_mes' => (int) ($counts['canceladas_mes'] ?? 0),
+        'reservas_completadas_mes' => (int) ($counts['completadas_mes'] ?? 0),
+        'pendientes_vencidas' => (int) ($counts['pendientes_vencidas'] ?? 0),
+        'reservas_sin_recurso' => (int) ($counts['sin_recurso'] ?? 0),
+        'entradas_48h' => (int) ($counts['entradas_48h'] ?? 0),
+        'total_personas_mes' => (int) ($counts['personas_mes'] ?? 0),
+    ];
 
-$reservas_sin_recurso = (int) $wpdb->get_var(
-    "SELECT COUNT(*) FROM {$tabla_reservas}
-     WHERE (recurso_id IS NULL OR recurso_id = 0)
-       AND estado IN ('pendiente', 'confirmada')"
-);
+    // Recursos (si existe la tabla)
+    if ($tabla_recursos_existe) {
+        $recursos = $wpdb->get_row("
+            SELECT
+                COUNT(*) as total,
+                SUM(estado = 'activo' AND activo = 1) as activos
+            FROM {$tabla_recursos}
+        ", ARRAY_A);
+        $stats['total_recursos'] = (int) ($recursos['total'] ?? 0);
+        $stats['recursos_activos'] = (int) ($recursos['activos'] ?? 0);
+    } else {
+        $stats['total_recursos'] = 0;
+        $stats['recursos_activos'] = 0;
+    }
 
-$entradas_48h = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas}
-     WHERE fecha_inicio BETWEEN %s AND %s
-       AND estado IN ('pendiente', 'confirmada')",
-    $ahora,
-    $en_48h
-));
+    // Distribución por estado (1 query)
+    $stats['por_estado'] = $wpdb->get_results(
+        "SELECT estado, COUNT(*) as total FROM {$tabla_reservas} GROUP BY estado ORDER BY total DESC"
+    );
 
-$total_personas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COALESCE(SUM(num_personas), 0)
-     FROM {$tabla_reservas}
-     WHERE created_at >= %s
-       AND estado IN ('pendiente', 'confirmada', 'completada')",
-    $inicio_mes
-));
+    // Tipos de servicio (1 query)
+    $stats['por_tipo_servicio'] = $wpdb->get_results(
+        "SELECT tipo_servicio, COUNT(*) as total FROM {$tabla_reservas} GROUP BY tipo_servicio ORDER BY total DESC LIMIT 6"
+    );
 
-$total_recursos = 0;
-$recursos_activos = 0;
+    // Evolución mensual (1 query)
+    $stats['mensual'] = $wpdb->get_results(
+        "SELECT DATE_FORMAT(fecha_reserva, '%Y-%m') as periodo, COUNT(*) as total
+         FROM {$tabla_reservas}
+         WHERE fecha_reserva >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
+         GROUP BY DATE_FORMAT(fecha_reserva, '%Y-%m')
+         ORDER BY periodo ASC"
+    );
+
+    return $stats;
+}, 300); // 5 minutos de caché
+
+// Extraer variables del array cacheado
+$total_reservas = $stats['total_reservas'];
+$reservas_hoy = $stats['reservas_hoy'];
+$reservas_activas = $stats['reservas_activas'];
+$reservas_pendientes = $stats['reservas_pendientes'];
+$reservas_confirmadas_mes = $stats['reservas_confirmadas_mes'];
+$reservas_canceladas_mes = $stats['reservas_canceladas_mes'];
+$reservas_completadas_mes = $stats['reservas_completadas_mes'];
+$pendientes_vencidas = $stats['pendientes_vencidas'];
+$reservas_sin_recurso = $stats['reservas_sin_recurso'];
+$entradas_48h = $stats['entradas_48h'];
+$total_personas_mes = $stats['total_personas_mes'];
+$total_recursos = $stats['total_recursos'];
+$recursos_activos = $stats['recursos_activos'];
+$por_estado = $stats['por_estado'];
+$por_tipo_servicio = $stats['por_tipo_servicio'];
+$mensual = $stats['mensual'];
+
+$promedio_personas = $total_reservas > 0 ? round($total_personas_mes / max(1, ($reservas_confirmadas_mes + $reservas_pendientes + $reservas_completadas_mes)), 1) : 0;
+
+// ============================================================================
+// DATOS EN TIEMPO REAL (no cacheados) - Listados que cambian frecuentemente
+// ============================================================================
+$sql_recurso_select = $tabla_recursos_existe ? 'r.nombre as recurso_nombre, r.tipo as recurso_tipo' : "'' as recurso_nombre, '' as recurso_tipo";
+$sql_recurso_join = $tabla_recursos_existe ? "LEFT JOIN {$tabla_recursos} r ON r.id = rv.recurso_id" : '';
+
 $recursos_con_reservas = [];
-
 if ($tabla_recursos_existe) {
-    $total_recursos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_recursos}");
-    $recursos_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_recursos} WHERE estado = 'activo' AND activo = 1");
     $recursos_con_reservas = $wpdb->get_results(
         "SELECT r.id, r.nombre, r.tipo, COUNT(rv.id) as total
          FROM {$tabla_recursos} r
@@ -100,26 +143,6 @@ if ($tabla_recursos_existe) {
          LIMIT 6"
     );
 }
-
-$promedio_personas = $total_reservas > 0 ? round($total_personas_mes / max(1, ($reservas_confirmadas_mes + $reservas_pendientes + $reservas_completadas_mes)), 1) : 0;
-
-$por_estado = $wpdb->get_results(
-    "SELECT estado, COUNT(*) as total
-     FROM {$tabla_reservas}
-     GROUP BY estado
-     ORDER BY total DESC"
-);
-
-$por_tipo_servicio = $wpdb->get_results(
-    "SELECT tipo_servicio, COUNT(*) as total
-     FROM {$tabla_reservas}
-     GROUP BY tipo_servicio
-     ORDER BY total DESC
-     LIMIT 6"
-);
-
-$sql_recurso_select = $tabla_recursos_existe ? 'r.nombre as recurso_nombre, r.tipo as recurso_tipo' : "'' as recurso_nombre, '' as recurso_tipo";
-$sql_recurso_join = $tabla_recursos_existe ? "LEFT JOIN {$tabla_recursos} r ON r.id = rv.recurso_id" : '';
 
 $proximas_reservas = $wpdb->get_results($wpdb->prepare(
     "SELECT rv.*, {$sql_recurso_select}
@@ -153,14 +176,6 @@ $actividad_reciente = $wpdb->get_results($wpdb->prepare(
      LIMIT 8",
     $hace_7_dias
 ));
-
-$mensual = $wpdb->get_results(
-    "SELECT DATE_FORMAT(fecha_reserva, '%Y-%m') as periodo, COUNT(*) as total
-     FROM {$tabla_reservas}
-     WHERE fecha_reserva >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
-     GROUP BY DATE_FORMAT(fecha_reserva, '%Y-%m')
-     ORDER BY periodo ASC"
-);
 
 $estado_labels = [
     'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -469,7 +484,7 @@ if (in_array('parkings', $active_modules)) {
             <span class="dashicons dashicons-admin-settings"></span>
             <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('reservas', '')); ?>" class="dm-quick-links__item">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('reservas', '')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
             <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>

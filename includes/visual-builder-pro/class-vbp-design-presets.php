@@ -5,7 +5,7 @@
  * Permite aplicar esquemas de colores predefinidos y personalizados
  * a los diseños creados con el editor visual.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 1.0.0
  */

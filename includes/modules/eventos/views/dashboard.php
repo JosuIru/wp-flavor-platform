@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo operativo para programación, ocupación e inscripciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -24,83 +24,127 @@ if (!$tabla_eventos_existe) {
     return;
 }
 
-$ahora = current_time('mysql');
-$inicio_mes = gmdate('Y-m-01 00:00:00', current_time('timestamp', true));
-$en_7_dias = gmdate('Y-m-d H:i:s', strtotime('+7 days', current_time('timestamp', true)));
-$hace_7_dias = gmdate('Y-m-d H:i:s', strtotime('-7 days', current_time('timestamp', true)));
+// ============================================
+// DATOS CON CACHÉ (OPTIMIZADO)
+// ============================================
+$stats = flavor_get_dashboard_stats('eventos', function() use ($wpdb, $tabla_eventos, $tabla_inscripciones, $tabla_inscripciones_existe) {
+    $ahora = current_time('mysql');
+    $inicio_mes = gmdate('Y-m-01 00:00:00', current_time('timestamp', true));
+    $en_7_dias = gmdate('Y-m-d H:i:s', strtotime('+7 days', current_time('timestamp', true)));
+    $hace_7_dias = gmdate('Y-m-d H:i:s', strtotime('-7 days', current_time('timestamp', true)));
 
-$total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_eventos}");
-$proximos_publicados = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'publicado' AND fecha_inicio >= %s",
-    $ahora
-));
-$eventos_semana = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_eventos}
-     WHERE estado = 'publicado'
-       AND fecha_inicio BETWEEN %s AND %s",
-    $ahora,
-    $en_7_dias
-));
-$inscripcion_abierta = (int) $wpdb->get_var(
-    "SELECT COUNT(*) FROM {$tabla_eventos}
-     WHERE estado = 'publicado'
-       AND requiere_inscripcion = 1
-       AND inscripcion_abierta = 1"
-);
-$eventos_destacados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'publicado' AND es_destacado = 1");
-$eventos_borrador = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'borrador'");
-$eventos_cancelados_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'cancelado' AND updated_at >= %s",
-    $inicio_mes
-));
-$eventos_sin_ubicacion = (int) $wpdb->get_var(
-    "SELECT COUNT(*) FROM {$tabla_eventos}
-     WHERE estado = 'publicado'
-       AND ubicacion_tipo != 'online'
-       AND (ubicacion_nombre IS NULL OR ubicacion_nombre = '')"
-);
+    // Query combinada para todas las estadísticas de eventos
+    $eventos_stats = $wpdb->get_row($wpdb->prepare(
+        "SELECT
+            COUNT(*) as total,
+            SUM(estado = 'publicado' AND fecha_inicio >= %s) as proximos_publicados,
+            SUM(estado = 'publicado' AND fecha_inicio BETWEEN %s AND %s) as eventos_semana,
+            SUM(estado = 'publicado' AND requiere_inscripcion = 1 AND inscripcion_abierta = 1) as inscripcion_abierta,
+            SUM(estado = 'publicado' AND es_destacado = 1) as destacados,
+            SUM(estado = 'borrador') as borradores,
+            SUM(estado = 'cancelado' AND updated_at >= %s) as cancelados_mes,
+            SUM(estado = 'publicado' AND ubicacion_tipo != 'online' AND (ubicacion_nombre IS NULL OR ubicacion_nombre = '')) as sin_ubicacion
+         FROM {$tabla_eventos}",
+        $ahora,
+        $ahora,
+        $en_7_dias,
+        $inicio_mes
+    ), ARRAY_A);
 
-$ocupacion_total = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COALESCE(SUM(inscritos_count), 0)
-     FROM {$tabla_eventos}
-     WHERE estado = 'publicado' AND fecha_inicio >= %s",
-    $ahora
-));
+    // Query combinada para ocupación
+    $ocupacion_stats = $wpdb->get_row($wpdb->prepare(
+        "SELECT
+            COALESCE(SUM(inscritos_count), 0) as ocupacion_total,
+            COALESCE(SUM(CASE WHEN aforo_maximo > 0 THEN aforo_maximo ELSE 0 END), 0) as aforo_total
+         FROM {$tabla_eventos}
+         WHERE estado = 'publicado' AND fecha_inicio >= %s",
+        $ahora
+    ), ARRAY_A);
 
-$aforo_total = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COALESCE(SUM(aforo_maximo), 0)
-     FROM {$tabla_eventos}
-     WHERE estado = 'publicado' AND fecha_inicio >= %s AND aforo_maximo > 0",
-    $ahora
-));
+    // Estadísticas de inscripciones
+    $inscripciones_stats = ['pendientes' => 0, 'confirmadas_mes' => 0, 'ingresos_mes' => 0.0];
+    if ($tabla_inscripciones_existe) {
+        $inscripciones_stats = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                SUM(estado = 'pendiente') as pendientes,
+                SUM(estado = 'confirmada' AND created_at >= %s) as confirmadas_mes,
+                COALESCE(SUM(CASE WHEN estado = 'confirmada' AND created_at >= %s THEN precio_pagado ELSE 0 END), 0) as ingresos_mes
+             FROM {$tabla_inscripciones}",
+            $inicio_mes,
+            $inicio_mes
+        ), ARRAY_A);
+    }
 
+    // Distribuciones (ya agrupadas, se mantienen igual pero se cachean)
+    $por_categoria = $wpdb->get_results(
+        "SELECT categoria, COUNT(*) as total
+         FROM {$tabla_eventos}
+         GROUP BY categoria
+         ORDER BY total DESC
+         LIMIT 6",
+        ARRAY_A
+    );
+
+    $por_estado = $wpdb->get_results(
+        "SELECT estado, COUNT(*) as total
+         FROM {$tabla_eventos}
+         GROUP BY estado
+         ORDER BY total DESC",
+        ARRAY_A
+    );
+
+    $mensual = $wpdb->get_results(
+        "SELECT DATE_FORMAT(fecha_inicio, '%Y-%m') as periodo, COUNT(*) as total
+         FROM {$tabla_eventos}
+         WHERE fecha_inicio >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
+         GROUP BY DATE_FORMAT(fecha_inicio, '%Y-%m')
+         ORDER BY periodo ASC",
+        ARRAY_A
+    );
+
+    return [
+        'eventos_stats' => $eventos_stats,
+        'ocupacion_stats' => $ocupacion_stats,
+        'inscripciones_stats' => $inscripciones_stats,
+        'por_categoria' => $por_categoria,
+        'por_estado' => $por_estado,
+        'mensual' => $mensual,
+    ];
+}, 300);
+
+// Extraer datos del caché
+$eventos_stats = $stats['eventos_stats'] ?? [];
+$ocupacion_stats = $stats['ocupacion_stats'] ?? [];
+$inscripciones_stats = $stats['inscripciones_stats'] ?? [];
+
+$total_eventos = (int) ($eventos_stats['total'] ?? 0);
+$proximos_publicados = (int) ($eventos_stats['proximos_publicados'] ?? 0);
+$eventos_semana = (int) ($eventos_stats['eventos_semana'] ?? 0);
+$inscripcion_abierta = (int) ($eventos_stats['inscripcion_abierta'] ?? 0);
+$eventos_destacados = (int) ($eventos_stats['destacados'] ?? 0);
+$eventos_borrador = (int) ($eventos_stats['borradores'] ?? 0);
+$eventos_cancelados_mes = (int) ($eventos_stats['cancelados_mes'] ?? 0);
+$eventos_sin_ubicacion = (int) ($eventos_stats['sin_ubicacion'] ?? 0);
+
+$ocupacion_total = (int) ($ocupacion_stats['ocupacion_total'] ?? 0);
+$aforo_total = (int) ($ocupacion_stats['aforo_total'] ?? 0);
 $ocupacion_media = $aforo_total > 0 ? round(($ocupacion_total / $aforo_total) * 100, 1) : 0;
 
-$inscripciones_pendientes = 0;
-$inscripciones_confirmadas_mes = 0;
-$ingresos_mes = 0.0;
-$actividad_inscripciones = [];
+$inscripciones_pendientes = (int) ($inscripciones_stats['pendientes'] ?? 0);
+$inscripciones_confirmadas_mes = (int) ($inscripciones_stats['confirmadas_mes'] ?? 0);
+$ingresos_mes = (float) ($inscripciones_stats['ingresos_mes'] ?? 0);
 
-if ($tabla_inscripciones_existe) {
-    $inscripciones_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE estado = 'pendiente'");
-    $inscripciones_confirmadas_mes = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE estado = 'confirmada' AND created_at >= %s",
-        $inicio_mes
-    ));
-    $ingresos_mes = (float) $wpdb->get_var($wpdb->prepare(
-        "SELECT COALESCE(SUM(precio_pagado), 0) FROM {$tabla_inscripciones} WHERE estado = 'confirmada' AND created_at >= %s",
-        $inicio_mes
-    ));
-    $actividad_inscripciones = $wpdb->get_results($wpdb->prepare(
-        "SELECT i.*, e.titulo as evento_titulo, e.fecha_inicio, e.aforo_maximo, e.inscritos_count
-         FROM {$tabla_inscripciones} i
-         LEFT JOIN {$tabla_eventos} e ON e.id = i.evento_id
-         WHERE i.created_at >= %s
-         ORDER BY i.created_at DESC
-         LIMIT 8",
-        $hace_7_dias
-    ));
-}
+// Distribuciones desde caché (convertir a objetos para compatibilidad)
+$por_categoria = array_map(fn($row) => (object) $row, $stats['por_categoria'] ?? []);
+$por_estado = array_map(fn($row) => (object) $row, $stats['por_estado'] ?? []);
+$mensual = array_map(fn($row) => (object) $row, $stats['mensual'] ?? []);
+
+// ============================================
+// DATOS EN TIEMPO REAL (SIN CACHÉ)
+// ============================================
+$ahora = current_time('mysql');
+$en_7_dias = gmdate('Y-m-d H:i:s', strtotime('+7 days', current_time('timestamp', true)));
+$hace_7_dias = gmdate('Y-m-d H:i:s', strtotime('-7 days', current_time('timestamp', true)));
 
 $proximos_eventos = $wpdb->get_results($wpdb->prepare(
     "SELECT * FROM {$tabla_eventos}
@@ -125,28 +169,18 @@ $eventos_presion = $wpdb->get_results($wpdb->prepare(
     $en_7_dias
 ));
 
-$por_categoria = $wpdb->get_results(
-    "SELECT categoria, COUNT(*) as total
-     FROM {$tabla_eventos}
-     GROUP BY categoria
-     ORDER BY total DESC
-     LIMIT 6"
-);
-
-$por_estado = $wpdb->get_results(
-    "SELECT estado, COUNT(*) as total
-     FROM {$tabla_eventos}
-     GROUP BY estado
-     ORDER BY total DESC"
-);
-
-$mensual = $wpdb->get_results(
-    "SELECT DATE_FORMAT(fecha_inicio, '%Y-%m') as periodo, COUNT(*) as total
-     FROM {$tabla_eventos}
-     WHERE fecha_inicio >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH)
-     GROUP BY DATE_FORMAT(fecha_inicio, '%Y-%m')
-     ORDER BY periodo ASC"
-);
+$actividad_inscripciones = [];
+if ($tabla_inscripciones_existe) {
+    $actividad_inscripciones = $wpdb->get_results($wpdb->prepare(
+        "SELECT i.*, e.titulo as evento_titulo, e.fecha_inicio, e.aforo_maximo, e.inscritos_count
+         FROM {$tabla_inscripciones} i
+         LEFT JOIN {$tabla_eventos} e ON e.id = i.evento_id
+         WHERE i.created_at >= %s
+         ORDER BY i.created_at DESC
+         LIMIT 8",
+        $hace_7_dias
+    ));
+}
 
 $estado_labels = [
     'borrador' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),

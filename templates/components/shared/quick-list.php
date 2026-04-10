@@ -4,7 +4,7 @@
  *
  * Lista rápida de items para dashboards y sidebars.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items      Items: [['title' => '', 'subtitle' => '', 'icon' => '', 'badge' => '', 'url' => '', 'status' => '']]

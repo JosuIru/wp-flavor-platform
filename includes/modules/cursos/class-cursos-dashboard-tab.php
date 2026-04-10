@@ -4,7 +4,7 @@
  *
  * Compatible con el sistema de tabs de dashboard de cliente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Cursos
  */
 
@@ -301,7 +301,7 @@ class Flavor_Cursos_Dashboard_Tab {
         $cursos_destacados = [];
         $categorias = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_cursos)) {
             $total_cursos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$this->tabla_cursos} WHERE estado = 'publicado'"
             );
@@ -431,7 +431,7 @@ class Flavor_Cursos_Dashboard_Tab {
             'horas_totales' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Chat_Helpers::tabla_existe($this->tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Platform_Helpers::tabla_existe($this->tabla_cursos)) {
             $mis_cursos = $wpdb->get_results($wpdb->prepare(
                 "SELECT m.*, c.titulo, c.slug, c.imagen_destacada, c.duracion_horas, c.nivel, c.total_lecciones
                  FROM {$this->tabla_matriculas} m
@@ -543,7 +543,7 @@ class Flavor_Cursos_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('cursos', '')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('cursos', '')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver todos mis cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
@@ -570,7 +570,7 @@ class Flavor_Cursos_Dashboard_Tab {
             'canceladas' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Chat_Helpers::tabla_existe($this->tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Platform_Helpers::tabla_existe($this->tabla_cursos)) {
             $inscripciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT m.*, c.titulo, c.slug, c.imagen_destacada, c.precio, c.es_gratuito
                  FROM {$this->tabla_matriculas} m
@@ -701,7 +701,7 @@ class Flavor_Cursos_Dashboard_Tab {
         $certificados = [];
         $total_certificados = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Chat_Helpers::tabla_existe($this->tabla_cursos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_matriculas) && Flavor_Platform_Helpers::tabla_existe($this->tabla_cursos)) {
             $certificados = $wpdb->get_results($wpdb->prepare(
                 "SELECT m.*, c.titulo, c.slug, c.imagen_destacada, c.duracion_horas, c.nivel
                  FROM {$this->tabla_matriculas} m

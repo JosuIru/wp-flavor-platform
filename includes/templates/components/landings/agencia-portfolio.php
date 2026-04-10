@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Portfolio Agencia
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

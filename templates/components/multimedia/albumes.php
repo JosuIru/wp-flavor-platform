@@ -2,7 +2,7 @@
 /**
  * Template: Albumes de Fotos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

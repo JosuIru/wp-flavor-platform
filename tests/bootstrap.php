@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file for Flavor Chat IA tests
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 // Define test constants
@@ -18,8 +18,8 @@ if ( ! defined( 'FLAVOR_PLUGIN_DIR' ) ) {
     define( 'FLAVOR_PLUGIN_DIR', dirname( __DIR__ ) );
 }
 
-if ( ! defined( 'FLAVOR_CHAT_IA_PATH' ) ) {
-    define( 'FLAVOR_CHAT_IA_PATH', FLAVOR_PLUGIN_DIR . '/' );
+if ( ! defined( 'FLAVOR_PLATFORM_PATH' ) ) {
+    define( 'FLAVOR_PLATFORM_PATH', FLAVOR_PLUGIN_DIR . '/' );
 }
 
 // Definir ABSPATH antes de cargar archivos del plugin (requerido por WordPress security checks)

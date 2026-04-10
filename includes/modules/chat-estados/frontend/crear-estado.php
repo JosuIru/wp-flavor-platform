@@ -2,7 +2,7 @@
 /**
  * Vista para crear un nuevo estado
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules/Chat_Estados
  * @since 1.5.0
  */

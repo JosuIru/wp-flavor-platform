@@ -4,7 +4,7 @@
  *
  * Anuncio tipo tarjeta con múltiples estilos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $ad_id ID del anuncio
  * @var string $estilo Estilo: 'minimal', 'card', 'featured'
  * @var bool $mostrar_etiqueta Mostrar badge de "Contenido patrocinado"

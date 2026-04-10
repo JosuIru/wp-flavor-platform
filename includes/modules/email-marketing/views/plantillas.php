@@ -2,7 +2,7 @@
 /**
  * Vista: Plantillas de email
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

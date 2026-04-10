@@ -2,7 +2,7 @@
 /**
  * Controlador frontend: Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

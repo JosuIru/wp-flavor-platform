@@ -4,7 +4,7 @@
  *
  * Todas las pasarelas de pago deben extender esta clase.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */

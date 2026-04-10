@@ -5,7 +5,7 @@
  * Archivo centralizado con todos los temas disponibles para Flavor Platform.
  * Fácil de extender mediante addons usando el filtro `flavor_theme_presets`.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.0.0
  */
 
@@ -30,7 +30,7 @@ function flavor_get_theme_presets() {
             'category' => 'general',
             'category_label' => __('General', 'flavor-platform'),
             'ideal_for' => __('Cualquier proyecto, punto de partida personalizable', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/default.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/default.png',
             'font_family_headings' => 'Inter',
             'font_family_body' => 'Inter',
             'variables' => [
@@ -69,7 +69,7 @@ function flavor_get_theme_presets() {
             'category' => 'general',
             'category_label' => __('General', 'flavor-platform'),
             'ideal_for' => __('Apps, plataformas tech, uso nocturno', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/dark.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/dark.png',
             'font_family_headings' => 'Inter',
             'font_family_body' => 'Inter',
             'variables' => [
@@ -107,7 +107,7 @@ function flavor_get_theme_presets() {
             'category' => 'general',
             'category_label' => __('General', 'flavor-platform'),
             'ideal_for' => __('Portfolios, diseño editorial, marcas premium', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/minimal.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/minimal.png',
             'font_family_headings' => 'Inter',
             'font_family_body' => 'Inter',
             'variables' => [
@@ -150,7 +150,7 @@ function flavor_get_theme_presets() {
             'category' => 'salud',
             'category_label' => __('Salud y Bienestar', 'flavor-platform'),
             'ideal_for' => __('Clínicas, centros médicos, spas, wellness, farmacias', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/salud-vital.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/salud-vital.png',
             'font_family_headings' => 'Nunito Sans',
             'font_family_body' => 'Open Sans',
             'variables' => [
@@ -195,7 +195,7 @@ function flavor_get_theme_presets() {
             'category' => 'educacion',
             'category_label' => __('Educación', 'flavor-platform'),
             'ideal_for' => __('Escuelas, universidades, plataformas e-learning, academias', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/academia-moderna.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/academia-moderna.png',
             'font_family_headings' => 'Poppins',
             'font_family_body' => 'Inter',
             'variables' => [
@@ -240,7 +240,7 @@ function flavor_get_theme_presets() {
             'category' => 'deportes',
             'category_label' => __('Deportes y Fitness', 'flavor-platform'),
             'ideal_for' => __('Gimnasios, entrenadores personales, clubs deportivos, crossfit', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/fitness-energy.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/fitness-energy.png',
             'font_family_headings' => 'Oswald',
             'font_family_body' => 'Roboto',
             'variables' => [
@@ -285,7 +285,7 @@ function flavor_get_theme_presets() {
             'category' => 'cultura',
             'category_label' => __('Cultura y Arte', 'flavor-platform'),
             'ideal_for' => __('Museos, galerías de arte, teatros, centros culturales', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/galeria-arte.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/galeria-arte.png',
             'font_family_headings' => 'Playfair Display',
             'font_family_body' => 'Lato',
             'variables' => [
@@ -330,7 +330,7 @@ function flavor_get_theme_presets() {
             'category' => 'tecnologia',
             'category_label' => __('Tecnología', 'flavor-platform'),
             'ideal_for' => __('Startups, apps SaaS, empresas de software, agencias digitales', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/tech-startup.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/tech-startup.png',
             'font_family_headings' => 'Space Grotesk',
             'font_family_body' => 'Inter',
             'variables' => [
@@ -375,7 +375,7 @@ function flavor_get_theme_presets() {
             'category' => 'alimentacion',
             'category_label' => __('Alimentación', 'flavor-platform'),
             'ideal_for' => __('Tiendas eco, mercados orgánicos, granjas, huertos urbanos', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/organic-fresh.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/organic-fresh.png',
             'font_family_headings' => 'Nunito',
             'font_family_body' => 'Open Sans',
             'variables' => [
@@ -420,7 +420,7 @@ function flavor_get_theme_presets() {
             'category' => 'inmobiliaria',
             'category_label' => __('Inmobiliaria', 'flavor-platform'),
             'ideal_for' => __('Inmobiliarias, agencias, arquitectos, constructoras, interiorismo', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/real-estate-pro.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/real-estate-pro.png',
             'font_family_headings' => 'Montserrat',
             'font_family_body' => 'Source Sans Pro',
             'variables' => [
@@ -465,7 +465,7 @@ function flavor_get_theme_presets() {
             'category' => 'legal',
             'category_label' => __('Legal y Finanzas', 'flavor-platform'),
             'ideal_for' => __('Bufetes de abogados, consultoras, asesores financieros, bancos', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/corporate-trust.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/corporate-trust.png',
             'font_family_headings' => 'Merriweather',
             'font_family_body' => 'Open Sans',
             'variables' => [
@@ -510,7 +510,7 @@ function flavor_get_theme_presets() {
             'category' => 'hosteleria',
             'category_label' => __('Hostelería', 'flavor-platform'),
             'ideal_for' => __('Restaurantes gourmet, hoteles boutique, bodegas, catering', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/gastro-deluxe.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/gastro-deluxe.png',
             'font_family_headings' => 'Cormorant Garamond',
             'font_family_body' => 'Lato',
             'variables' => [
@@ -555,7 +555,7 @@ function flavor_get_theme_presets() {
             'category' => 'infantil',
             'category_label' => __('Infantil', 'flavor-platform'),
             'ideal_for' => __('Guarderías, ludotecas, jugueterías, actividades para niños', 'flavor-platform'),
-            'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/kids-fun.png',
+            'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/kids-fun.png',
             'font_family_headings' => 'Quicksand',
             'font_family_body' => 'Nunito',
             'variables' => [

@@ -2,7 +2,7 @@
 /**
  * Módulo de Presupuestos Participativos para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Presupuestos Participativos - Democracia económica directa
  */
-class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Presupuestos_Participativos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Consumer;
@@ -56,7 +56,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         global $wpdb;
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_proyectos);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_proyectos);
     }
 
     /**
@@ -1798,7 +1798,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         global $wpdb;
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
             return 0;
         }
 
@@ -2131,7 +2131,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         global $wpdb;
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
             $this->create_tables();
         }
     }
@@ -2363,7 +2363,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         }
 
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
             return null;
         }
 
@@ -3202,4 +3202,9 @@ KNOWLEDGE;
             Flavor_Presupuestos_Participativos_Dashboard_Tab::get_instance();
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Presupuestos_Participativos_Module', false)) {
+    class_alias('Flavor_Platform_Presupuestos_Participativos_Module', 'Flavor_Chat_Presupuestos_Participativos_Module');
 }

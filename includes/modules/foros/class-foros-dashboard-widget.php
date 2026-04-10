@@ -7,7 +7,7 @@
  * - Mis participaciones
  * - Respuestas sin leer
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Foros
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -178,7 +178,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_temas,
             'label' => __('Temas activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
+            'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Platform_Helpers::get_action_url('foros', ''),
         ];
 
         // Stat 2: Respuestas nuevas
@@ -188,7 +188,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $respuestas_nuevas,
                 'label' => __('Nuevas respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=suscritos') : Flavor_Chat_Helpers::get_action_url('foros', 'suscritos'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=suscritos') : Flavor_Platform_Helpers::get_action_url('foros', 'suscritos'),
             ];
         }
 
@@ -200,7 +200,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $participaciones,
                 'label' => __('Participaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $participaciones > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=mios') : Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=mios') : Flavor_Platform_Helpers::get_action_url('foros', 'mis-temas'),
             ];
         }
 
@@ -211,7 +211,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'label' => __('Crear tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&action=nuevo') : Flavor_Chat_Helpers::get_action_url('foros', 'nuevo'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&action=nuevo') : Flavor_Platform_Helpers::get_action_url('foros', 'nuevo'),
             ];
         }
 
@@ -225,7 +225,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos los temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Platform_Helpers::get_action_url('foros', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -271,7 +271,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-format-chat',
                 'title' => wp_trim_words($tema->titulo, 6, '...'),
                 'meta' => $tema->nombre_autor ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, Flavor_Chat_Helpers::get_action_url('foros', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, Flavor_Platform_Helpers::get_action_url('foros', '')),
                 'badge' => $total_respuestas > 0 ? $total_respuestas : null,
             ];
         }

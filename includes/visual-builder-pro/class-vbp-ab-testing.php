@@ -4,7 +4,7 @@
  *
  * Sistema de A/B testing para elementos del VBP.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */

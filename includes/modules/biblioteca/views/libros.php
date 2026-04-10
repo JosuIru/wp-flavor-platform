@@ -2,7 +2,7 @@
 /**
  * Vista Gestión de Libros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

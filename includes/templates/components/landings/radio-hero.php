@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Radio
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#ef4444';

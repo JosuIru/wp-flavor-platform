@@ -2,7 +2,7 @@
 /**
  * Helper para consultar relaciones entre módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -65,11 +65,11 @@ class Flavor_Module_Relations_Helper {
      * @return array
      */
     private static function get_modules_from_loader() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         if (method_exists($loader, 'get_all_modules')) {
             $modules = $loader->get_all_modules();
@@ -155,7 +155,7 @@ class Flavor_Module_Relations_Helper {
      * @return array
      */
     private static function get_fallback_relations($parent_module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             $defaults = self::get_default_relations_map();
             return $defaults[self::normalize_module_id($parent_module_id)] ?? [];
         }
@@ -189,7 +189,7 @@ class Flavor_Module_Relations_Helper {
      * @return array
      */
     public static function get_vertical_modules() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
@@ -235,7 +235,7 @@ class Flavor_Module_Relations_Helper {
      * @return array
      */
     public static function get_horizontal_modules() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
@@ -304,7 +304,7 @@ class Flavor_Module_Relations_Helper {
     public static function get_child_modules_with_metadata($parent_module_id, $context = 'global') {
         $child_ids = self::get_child_modules($parent_module_id, $context);
 
-        if (empty($child_ids) || !class_exists('Flavor_Chat_Module_Loader')) {
+        if (empty($child_ids) || !class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
@@ -328,7 +328,7 @@ class Flavor_Module_Relations_Helper {
                 'icon' => method_exists($module, 'get_icon')
                     ? $module->get_icon()
                     : 'dashicons-admin-plugins',
-                'url' => Flavor_Chat_Helpers::get_action_url($child_id),
+                'url' => Flavor_Platform_Helpers::get_action_url($child_id),
             ];
         }
 

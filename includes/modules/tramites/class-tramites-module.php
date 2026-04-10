@@ -2,7 +2,7 @@
 /**
  * Modulo de Tramites para Chat IA - Sistema Completo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Tramites - Gestion completa de tramites administrativos
  */
-class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Tramites_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -84,7 +84,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_tipos_tramite);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_tipos_tramite);
     }
 
     /**
@@ -390,7 +390,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -410,7 +410,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             return 0;
         }
         $fecha_hoy = date('Y-m-d');
@@ -1136,7 +1136,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             'activo' => "tinyint(1) DEFAULT 1",
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_estados)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_estados)) {
             foreach ($columnas_estados as $columna => $definicion) {
                 $existe = $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
@@ -1273,7 +1273,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
-        // Cargar también la clase API móvil (namespace flavor-chat-ia/v1)
+        // Cargar también la clase API móvil (namespace Flavor Platform)
         $api_file = dirname(__FILE__) . '/class-tramites-api.php';
         if (file_exists($api_file)) {
             require_once $api_file;
@@ -3381,4 +3381,8 @@ KNOWLEDGE;
             [$this, 'render_admin_config']
         );
     }
+}
+
+if (!class_exists('Flavor_Chat_Tramites_Module', false)) {
+    class_alias('Flavor_Platform_Tramites_Module', 'Flavor_Chat_Tramites_Module');
 }

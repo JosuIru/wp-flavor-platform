@@ -4,7 +4,7 @@
  *
  * Versión mejorada que usa los nuevos componentes estandarizados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -3,7 +3,7 @@
  * Template: Multimedia Upload Form
  * Formulario para subir contenido multimedia con drag & drop
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

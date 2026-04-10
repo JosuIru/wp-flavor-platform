@@ -4,7 +4,7 @@
  *
  * Tests de endpoints principales, autenticacion y respuestas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Tests
  */
 

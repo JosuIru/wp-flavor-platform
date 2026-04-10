@@ -11,7 +11,7 @@
  * - $total_items: Numero de items
  * - $ciclo_activo: Datos del ciclo activo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 
@@ -23,7 +23,7 @@ $items_carrito = $args['items_carrito'] ?? [];
 $total_carrito = $args['total_carrito'] ?? 0;
 $total_items = $args['total_items'] ?? 0;
 $ciclo_activo = $args['ciclo_activo'] ?? null;
-$url_carrito = $args['url_carrito'] ?? Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido');
+$url_carrito = $args['url_carrito'] ?? Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mi-pedido');
 $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
 $gastos_gestion = $total_carrito * ($porcentaje_gestion / 100);
 $total_final = $total_carrito + $gastos_gestion;

@@ -2,7 +2,7 @@
 /**
  * Vista: Dashboard de Email Marketing
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

@@ -2,7 +2,7 @@
 /**
  * Dashboard Manager - Sistema de Dashboard con Widgets
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -154,16 +154,16 @@ class Flavor_Dashboard_Manager {
 
         wp_enqueue_style(
             'flavor-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts/dashboard{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/layouts/dashboard{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . "assets/js/dashboard{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/dashboard{$sufijo_asset}.js",
             ['jquery', 'wp-util'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -190,8 +190,8 @@ class Flavor_Dashboard_Manager {
     public function render_dashboard_page() {
         $target_url = admin_url('admin.php?page=flavor-dashboard');
 
-        if (class_exists('Flavor_Chat_Helpers')) {
-            Flavor_Chat_Helpers::safe_redirect($target_url);
+        if (class_exists('Flavor_Platform_Helpers')) {
+            Flavor_Platform_Helpers::safe_redirect($target_url);
             exit;
         }
 
@@ -513,7 +513,7 @@ class Flavor_Dashboard_Manager {
      * Widget: Estado de Módulos
      */
     public function render_module_status_widget() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         $available_modules = [
@@ -577,7 +577,7 @@ class Flavor_Dashboard_Manager {
                 <span class="flavor-api-label">Llamadas API</span>
             </div>
         </div>
-        <?php $settings = get_option('flavor_chat_ia_settings', []); ?>
+        <?php $settings = flavor_get_main_settings(); ?>
         <div class="flavor-api-provider">
             <small>Proveedor activo: <?php echo esc_html(ucfirst($settings['active_provider'] ?? 'Claude')); ?></small>
         </div>

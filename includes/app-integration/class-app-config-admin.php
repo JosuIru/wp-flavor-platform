@@ -4,7 +4,7 @@
  *
  * Permite configurar el comportamiento y apariencia de las apps móviles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -225,9 +225,9 @@ class Flavor_App_Config_Admin {
 
         wp_enqueue_script(
             'flavor-platform-apps',
-            FLAVOR_CHAT_IA_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.js",
             ['jquery', 'wp-color-picker'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -258,9 +258,9 @@ class Flavor_App_Config_Admin {
 
         wp_enqueue_style(
             'flavor-platform-apps',
-            FLAVOR_CHAT_IA_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 
@@ -1228,8 +1228,8 @@ class Flavor_App_Config_Admin {
         <?php
         // Detectar si hay módulos nuevos no configurados para mostrar badge
         $active_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_modules = Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_modules = Flavor_Platform_Module_Loader::get_active_modules_cached();
         }
         $current_tabs = isset($config['tabs']) ? array_column($config['tabs'], 'id') : [];
         $module_tab_ids = ['eventos', 'grupos_consumo', 'banco_tiempo', 'marketplace', 'socios', 'carpooling',
@@ -1410,9 +1410,9 @@ class Flavor_App_Config_Admin {
                         // Obtener módulos ACTIVOS desde el Module Loader
                         $active_module_ids = [];
                         $registered_modules = [];
-                        if (class_exists('Flavor_Chat_Module_Loader')) {
-                            $active_module_ids = Flavor_Chat_Module_Loader::get_active_modules_cached();
-                            $loader = Flavor_Chat_Module_Loader::get_instance();
+                        if (class_exists('Flavor_Platform_Module_Loader')) {
+                            $active_module_ids = Flavor_Platform_Module_Loader::get_active_modules_cached();
+                            $loader = Flavor_Platform_Module_Loader::get_instance();
                             $registered_modules = $loader->get_registered_modules();
                         }
                         // Mostrar todos los módulos activos
@@ -1530,9 +1530,9 @@ class Flavor_App_Config_Admin {
         // Obtener módulos ACTIVOS desde el Module Loader
         $active_module_ids_drawer = [];
         $registered_modules_drawer = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_module_ids_drawer = Flavor_Chat_Module_Loader::get_active_modules_cached();
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_module_ids_drawer = Flavor_Platform_Module_Loader::get_active_modules_cached();
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $registered_modules_drawer = $loader->get_registered_modules();
         }
         ?>
@@ -1881,8 +1881,8 @@ class Flavor_App_Config_Admin {
             // Módulos activos desde PHP
             var activeModules = <?php
                 $active = [];
-                if (class_exists('Flavor_Chat_Module_Loader')) {
-                    $active = Flavor_Chat_Module_Loader::get_active_modules_cached();
+                if (class_exists('Flavor_Platform_Module_Loader')) {
+                    $active = Flavor_Platform_Module_Loader::get_active_modules_cached();
                 }
                 echo json_encode(array_values($active));
             ?>;
@@ -2568,7 +2568,7 @@ class Flavor_App_Config_Admin {
     private function render_modules_tab() {
         $config = get_option('flavor_apps_config', []);
         $enabled_modules = isset($config['modules']) ? $config['modules'] : [];
-        $plugin_settings = get_option('flavor_chat_ia_settings', []);
+        $plugin_settings = flavor_get_main_settings();
         $active_modules = $plugin_settings['active_modules'] ?? [];
 
         ?>
@@ -2629,28 +2629,28 @@ class Flavor_App_Config_Admin {
                 'facturas' => [
                     'name' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Gestión de facturas para administradores', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Facturas_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Facturas_Module'),
                     'icon' => 'receipt',
                     'color' => '#607D8B',
                 ],
                 'fichaje_empleados' => [
                     'name' => __('Fichaje de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Control de horarios y asistencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Fichaje_Empleados_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Fichaje_Empleados_Module'),
                     'icon' => 'work',
                     'color' => '#795548',
                 ],
                 'eventos' => [
                     'name' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Gestión de eventos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Eventos_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module'),
                     'icon' => 'event',
                     'color' => '#E91E63',
                 ],
                 'socios' => [
                     'name' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Control de miembros y cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Socios_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Socios_Module'),
                     'icon' => 'people',
                     'color' => '#3F51B5',
                 ],
@@ -2678,14 +2678,14 @@ class Flavor_App_Config_Admin {
                 'chat_grupos' => [
                     'name' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Canales y grupos temáticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Grupos_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Grupos_Module'),
                     'icon' => 'chat',
                     'color' => '#03A9F4',
                 ],
                 'chat_interno' => [
                     'name' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Mensajería privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Interno_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Interno_Module'),
                     'icon' => 'chat_bubble',
                     'color' => '#0288D1',
                 ],
@@ -2762,7 +2762,7 @@ class Flavor_App_Config_Admin {
                 'energia_comunitaria' => [
                     'name' => __('Energia Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'description' => __('Comunidades energéticas, instalaciones, reparto y liquidaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'api_class' => 'Flavor_Chat_Energia_Comunitaria_Module',
+                    'api_class' => flavor_get_runtime_class_name('Flavor_Chat_Energia_Comunitaria_Module'),
                     'icon' => 'bolt',
                     'color' => '#F59E0B',
                 ],
@@ -2874,8 +2874,8 @@ class Flavor_App_Config_Admin {
             ];
 
             $registered_modules = [];
-            if (class_exists('Flavor_Chat_Module_Loader')) {
-                $loader = Flavor_Chat_Module_Loader::get_instance();
+            if (class_exists('Flavor_Platform_Module_Loader')) {
+                $loader = Flavor_Platform_Module_Loader::get_instance();
                 $registered_modules = $loader->get_registered_modules();
             }
 
@@ -3604,8 +3604,8 @@ class Flavor_App_Config_Admin {
         }
 
         $registered_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $registered_modules = $loader->get_registered_modules();
         }
 
@@ -3613,7 +3613,7 @@ class Flavor_App_Config_Admin {
             wp_send_json_error(['message' => __('Módulo no instalado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = isset($settings['active_modules']) && is_array($settings['active_modules'])
             ? $settings['active_modules']
             : [];
@@ -3627,7 +3627,7 @@ class Flavor_App_Config_Admin {
         }
 
         $settings['active_modules'] = $active_modules;
-        update_option('flavor_chat_ia_settings', $settings);
+        flavor_update_main_settings($settings);
         // Eliminado: update_option('flavor_active_modules') - fuente única de verdad
 
         $apps_config = get_option('flavor_apps_config', []);
@@ -4214,7 +4214,7 @@ class Flavor_App_Config_Admin {
         }
 
         $config_data = [
-            'version' => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'version' => FLAVOR_PLATFORM_VERSION ?? '2.0.0',
             'exported_at' => current_time('mysql'),
             'site_url' => get_site_url(),
             'flavor_apps_config' => get_option('flavor_apps_config', []),
@@ -4533,8 +4533,8 @@ class Flavor_App_Config_Admin {
 
         // Obtener módulos activos
         $active_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $active_modules = Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $active_modules = Flavor_Platform_Module_Loader::get_active_modules_cached();
         }
 
         // Mapeo de módulos a tabs con iconos, descripciones y prioridad
@@ -4848,7 +4848,7 @@ class Flavor_App_Config_Admin {
         }
 
         // Obtener módulos activos del sistema web
-        $plugin_settings = get_option('flavor_chat_ia_settings', []);
+        $plugin_settings = flavor_get_main_settings();
         $active_web_modules = $plugin_settings['active_modules'] ?? [];
 
         // Obtener configuración actual de apps
@@ -5282,7 +5282,7 @@ class Flavor_App_Config_Admin {
                     <tr><td><strong>WordPress</strong></td><td><?php echo get_bloginfo('version'); ?></td></tr>
                     <tr><td><strong>PHP</strong></td><td><?php echo phpversion(); ?></td></tr>
                     <tr><td><strong>REST API</strong></td><td><?php echo rest_url(); ?></td></tr>
-                    <tr><td><strong>Plugin Version</strong></td><td><?php echo FLAVOR_CHAT_IA_VERSION ?? '2.0.0'; ?></td></tr>
+                    <tr><td><strong>Plugin Version</strong></td><td><?php echo FLAVOR_PLATFORM_VERSION ?? '2.0.0'; ?></td></tr>
                     <tr><td><strong>Timezone</strong></td><td><?php echo wp_timezone_string(); ?></td></tr>
                 </table>
             </div>

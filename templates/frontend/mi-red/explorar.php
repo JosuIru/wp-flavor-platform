@@ -4,7 +4,7 @@
  *
  * Vista de descubrimiento de contenido por categorías.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -43,7 +43,7 @@ $populares = $datos_vista['populares'] ?? [];
             <div class="mi-red-destacados-grid">
                 <?php
                 foreach ($destacados as $item) :
-                    include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
+                    include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
                 endforeach;
                 ?>
             </div>

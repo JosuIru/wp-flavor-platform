@@ -7,7 +7,7 @@
  * - Control de visibilidad y permisos
  * - Gestión de landings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Admin
  * @since 4.1.0
  */
@@ -55,18 +55,18 @@ class Flavor_Unified_Modules_View {
 
         wp_enqueue_style(
             'flavor-unified-modules',
-            FLAVOR_CHAT_IA_URL . 'admin/css/unified-modules.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/unified-modules.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Alpine ya se carga en class-app-profile-admin.php con handle 'alpinejs'
         // Solo necesitamos cargar nuestro script después de Alpine
         wp_enqueue_script(
             'flavor-unified-modules',
-            FLAVOR_CHAT_IA_URL . 'admin/js/unified-modules.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/unified-modules.js',
             ['jquery', 'alpinejs'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -97,9 +97,9 @@ class Flavor_Unified_Modules_View {
         // Encolar y imprimir CSS inmediatamente
         wp_enqueue_style(
             'flavor-unified-modules',
-            FLAVOR_CHAT_IA_URL . 'admin/css/unified-modules.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/unified-modules.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
         wp_print_styles(['flavor-unified-modules']);
 
@@ -364,7 +364,7 @@ class Flavor_Unified_Modules_View {
         // Forzar carga de scripts ya que admin_enqueue_scripts puede haber pasado
         $this->force_load_assets();
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
         $gestor_perfiles = Flavor_App_Profiles::get_instance();
         $categorias_modulos = $gestor_perfiles->obtener_categorias_modulos();
@@ -386,7 +386,7 @@ class Flavor_Unified_Modules_View {
         }
 
         // CRÍTICO: Limpiar caché y leer directamente de BD
-        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(flavor_get_primary_settings_option(), 'options');
         wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
@@ -394,7 +394,7 @@ class Flavor_Unified_Modules_View {
         $configuracion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                FLAVOR_CHAT_IA_SETTINGS_OPTION
+                flavor_get_primary_settings_option()
             )
         );
         $configuracion = $configuracion_raw ? maybe_unserialize($configuracion_raw) : [];
@@ -1590,7 +1590,7 @@ class Flavor_Unified_Modules_View {
         }
 
         $paginas = [];
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulo = $loader->get_module($modulo_id);
 
         if (!$modulo) {
@@ -1915,7 +1915,7 @@ class Flavor_Unified_Modules_View {
         }
 
         // CRÍTICO: Limpiar caché de opciones antes de leer
-        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(flavor_get_primary_settings_option(), 'options');
         wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
@@ -1924,7 +1924,7 @@ class Flavor_Unified_Modules_View {
         $configuracion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                FLAVOR_CHAT_IA_SETTINGS_OPTION
+                flavor_get_primary_settings_option()
             )
         );
         $configuracion = $configuracion_raw ? maybe_unserialize($configuracion_raw) : [];
@@ -1978,7 +1978,7 @@ class Flavor_Unified_Modules_View {
         $resultado_guardado = $wpdb->update(
             $wpdb->options,
             ['option_value' => $valor_serializado],
-            ['option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION],
+            ['option_name' => flavor_get_primary_settings_option()],
             ['%s'],
             ['%s']
         );
@@ -2001,7 +2001,7 @@ class Flavor_Unified_Modules_View {
         }
 
         // Limpiar caché después de guardar
-        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(flavor_get_primary_settings_option(), 'options');
         wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
@@ -2009,7 +2009,7 @@ class Flavor_Unified_Modules_View {
         $verificacion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                FLAVOR_CHAT_IA_SETTINGS_OPTION
+                flavor_get_primary_settings_option()
             )
         );
         $verificacion = maybe_unserialize($verificacion_raw);
@@ -2117,7 +2117,7 @@ class Flavor_Unified_Modules_View {
         }
 
         // Obtener información del módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
         $info_modulo = $modulos_registrados[$modulo_id] ?? null;
 

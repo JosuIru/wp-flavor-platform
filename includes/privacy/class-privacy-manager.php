@@ -2,7 +2,7 @@
 /**
  * Gestor principal de privacidad y RGPD
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.4.0
  */
 
@@ -1640,7 +1640,7 @@ class Flavor_Privacy_Manager {
         $solicitudes = $this->get_user_requests($usuario_id);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/privacy/views/privacy-panel.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/privacy/views/privacy-panel.php';
         return ob_get_clean();
     }
 
@@ -1675,7 +1675,7 @@ class Flavor_Privacy_Manager {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/privacy/views/consent-form.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/privacy/views/consent-form.php';
         return ob_get_clean();
     }
 
@@ -1689,16 +1689,16 @@ class Flavor_Privacy_Manager {
 
         wp_enqueue_style(
             'flavor-privacy',
-            FLAVOR_CHAT_IA_URL . 'includes/privacy/assets/privacy.css',
+            FLAVOR_PLATFORM_URL . 'includes/privacy/assets/privacy.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-privacy',
-            FLAVOR_CHAT_IA_URL . 'includes/privacy/assets/privacy.js',
+            FLAVOR_PLATFORM_URL . 'includes/privacy/assets/privacy.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1769,7 +1769,7 @@ class Flavor_Privacy_Manager {
             'eliminaciones' => $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE tipo = 'eliminar'")
         ];
 
-        include FLAVOR_CHAT_IA_PATH . 'includes/privacy/views/admin-privacy.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/privacy/views/admin-privacy.php';
     }
 
     // =========================================================================

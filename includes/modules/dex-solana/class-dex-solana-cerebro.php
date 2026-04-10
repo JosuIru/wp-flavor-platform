@@ -5,7 +5,7 @@
  * Proporciona analisis inteligente para operaciones de swap y gestion
  * de liquidez en pools AMM de Solana, usando el motor IA del plugin.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

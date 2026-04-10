@@ -4,7 +4,7 @@
  *
  * Muestra una rejilla de series de podcasts con información visual y acceso a episodios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Podcast
  */
 

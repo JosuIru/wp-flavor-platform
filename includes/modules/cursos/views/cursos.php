@@ -2,7 +2,7 @@
 /**
  * Vista Gestión de Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

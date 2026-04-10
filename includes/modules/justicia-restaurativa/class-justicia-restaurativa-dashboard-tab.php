@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Justicia Restaurativa
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\JusticiaRestaurativa
  */
 
@@ -86,7 +86,7 @@ class Flavor_Justicia_Restaurativa_Dashboard_Tab {
         $mediaciones_exitosas = 0;
         $facilitadores_activos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_circulos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_circulos)) {
             $circulos_comunidad = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_circulos} WHERE estado IN ('completado', 'activo')"
             );
@@ -96,13 +96,13 @@ class Flavor_Justicia_Restaurativa_Dashboard_Tab {
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_mediaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_mediaciones)) {
             $mediaciones_exitosas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_mediaciones} WHERE resultado = 'acuerdo'"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_facilitadores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_facilitadores)) {
             $facilitadores_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_facilitadores} WHERE estado = 'activo'"
             );
@@ -208,15 +208,15 @@ class Flavor_Justicia_Restaurativa_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-format-chat"></span>
                     <?php esc_html_e('Solicitar Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'formacion')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('justicia_restaurativa', 'formacion')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
                     <?php esc_html_e('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'facilitadores')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('justicia_restaurativa', 'facilitadores')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-businessman"></span>
                     <?php esc_html_e('Ser Facilitador/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>

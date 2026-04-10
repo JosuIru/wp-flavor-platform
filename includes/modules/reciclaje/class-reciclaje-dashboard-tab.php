@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab del cliente para el modulo de Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Reciclaje
  */
 
@@ -128,7 +128,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
             return;
         }
 
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         wp_enqueue_style(
             'flavor-reciclaje-dashboard',

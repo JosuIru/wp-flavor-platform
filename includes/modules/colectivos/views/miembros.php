@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Miembros de Colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

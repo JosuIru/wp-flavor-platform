@@ -2,7 +2,7 @@
 /**
  * Vista de Estadísticas - Módulo Campañas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Campanias
  */
 

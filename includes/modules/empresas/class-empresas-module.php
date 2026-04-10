@@ -5,7 +5,7 @@
  * Gestiona empresas dentro de comunidades con contabilidad,
  * facturación y miembros independientes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -78,7 +78,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
     }
 
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_empresas);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_empresas);
     }
 
     public function get_activation_error() {
@@ -159,7 +159,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
     }
 
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_empresas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_empresas)) {
             $this->create_tables();
         }
     }
@@ -936,7 +936,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
         // Integración con contabilidad (si existe)
         $tabla_movimientos = $wpdb->prefix . 'flavor_contabilidad_movimientos';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_movimientos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_movimientos)) {
             $mes_actual = current_time('Y-m');
 
             $stats['ingresos_mes'] = (float) $wpdb->get_var($wpdb->prepare(
@@ -1327,4 +1327,8 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
             $pendientes
         );
     }
+}
+
+if (!class_exists('Flavor_Chat_Empresas_Module', false)) {
+    class_alias('Flavor_Platform_Empresas_Module', 'Flavor_Chat_Empresas_Module');
 }

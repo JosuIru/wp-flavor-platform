@@ -5,7 +5,7 @@
  * Detecta módulos sin configurar y guía al usuario paso a paso.
  * Genera checklists de configuración y ofrece ayuda contextual.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

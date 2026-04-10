@@ -2,7 +2,7 @@
 /**
  * Template: Dashboard de Sostenibilidad del Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BancoTiempo
  * @since 4.2.0
  *

@@ -2,7 +2,7 @@
 /**
  * Vista: Listado de Socios (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -38,7 +38,7 @@ $registros_por_pagina = 20;
 $offset_consulta = ($pagina_actual - 1) * $registros_por_pagina;
 
 // Tipos de socio configurados
-$modulo_socios = Flavor_Chat_IA::get_instance()->get_module('socios');
+$modulo_socios = Flavor_Platform::get_instance()->get_module('socios');
 $tipos_socio = $modulo_socios ? $modulo_socios->get_setting('tipos_socio', []) : [];
 
 // Construir consulta

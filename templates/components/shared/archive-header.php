@@ -5,7 +5,7 @@
  * Header reutilizable para páginas de archivo con gradiente de color,
  * título, subtítulo, badge y CTA.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title       Título principal (requerido)

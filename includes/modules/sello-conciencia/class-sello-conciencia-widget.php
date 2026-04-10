@@ -4,7 +4,7 @@
  *
  * Muestra el nivel de conciencia de la aplicación en el dashboard unificado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\SelloConciencia
  * @since 4.2.0
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -27,16 +27,16 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
     /**
      * Referencia al módulo
      *
-     * @var Flavor_Chat_Sello_Conciencia_Module
+     * @var Flavor_Platform_Module_Interface
      */
     private $modulo;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Sello_Conciencia_Module $modulo Instancia del módulo
+     * @param Flavor_Platform_Module_Interface $modulo Instancia del módulo
      */
-    public function __construct(Flavor_Chat_Sello_Conciencia_Module $modulo) {
+    public function __construct(Flavor_Platform_Module_Interface $modulo) {
         $this->modulo = $modulo;
 
         parent::__construct([

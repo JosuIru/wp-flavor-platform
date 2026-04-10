@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Recursos para Reservas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

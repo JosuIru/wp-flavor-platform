@@ -5,7 +5,7 @@
  * Permite a Claude Code acceder y gestionar recursos visuales
  * para crear páginas de alta calidad.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */

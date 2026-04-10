@@ -119,8 +119,8 @@ final class Flavor_System_Initializer {
         $this->init_singleton('Flavor_Engine_Manager');
 
         // Core del Chat
-        $this->init_singleton('Flavor_Chat_Core');
-        $this->init_singleton('Flavor_Chat_Assets');
+        $this->init_singleton('Flavor_Platform_Core');
+        $this->init_singleton('Flavor_Platform_Assets');
 
         // Integración WPML
         $this->init_singleton('Flavor_WPML_Integration');
@@ -162,7 +162,11 @@ final class Flavor_System_Initializer {
         $this->init_singleton_admin('Flavor_Social_Analytics_Admin');
 
         // Chat Settings
-        $this->init_singleton_admin('Flavor_Chat_Settings');
+        $this->init_singleton_admin(
+            function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Settings')
+                : 'Flavor_Chat_Settings'
+        );
 
         // Admin de Addons
         $this->init_singleton_admin('Flavor_Addon_Admin');
@@ -217,13 +221,13 @@ final class Flavor_System_Initializer {
      */
     private function init_api_systems() {
         // Registrar AJAX handlers
-        if (class_exists('Flavor_Chat_Ajax')) {
-            Flavor_Chat_Ajax::register_hooks();
+        if (class_exists('Flavor_Platform_Ajax')) {
+            Flavor_Platform_Ajax::register_hooks();
         }
 
         // Registrar streaming SSE handlers
-        if (class_exists('Flavor_Chat_Stream')) {
-            Flavor_Chat_Stream::register_hooks();
+        if (class_exists('Flavor_Platform_Stream')) {
+            Flavor_Platform_Stream::register_hooks();
         }
 
         // Documentación API
@@ -422,7 +426,7 @@ final class Flavor_System_Initializer {
      */
     public function load_dashboard_for_rest() {
         if (!class_exists('Flavor_Dashboard')) {
-            $dashboard_file = FLAVOR_CHAT_IA_PATH . 'admin/class-dashboard.php';
+            $dashboard_file = FLAVOR_PLATFORM_PATH . 'admin/class-dashboard.php';
             if (file_exists($dashboard_file)) {
                 require_once $dashboard_file;
             }

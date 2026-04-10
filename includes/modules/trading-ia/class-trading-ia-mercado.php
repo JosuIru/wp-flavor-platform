@@ -2,7 +2,7 @@
 /**
  * Datos de mercado - Obtiene precios en tiempo real via CoinGecko
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -109,19 +109,19 @@ class Flavor_Trading_IA_Mercado {
         ));
 
         if (is_wp_error($respuesta)) {
-            flavor_chat_ia_log('Error CoinGecko: ' . $respuesta->get_error_message(), 'trading_ia');
+            flavor_platform_log('Error CoinGecko: ' . $respuesta->get_error_message(), 'trading_ia');
             return array();
         }
 
         $codigo_respuesta = wp_remote_retrieve_response_code($respuesta);
 
         if (429 === $codigo_respuesta) {
-            flavor_chat_ia_log('Rate limit de CoinGecko alcanzado', 'trading_ia');
+            flavor_platform_log('Rate limit de CoinGecko alcanzado', 'trading_ia');
             return array();
         }
 
         if (200 !== $codigo_respuesta) {
-            flavor_chat_ia_log('Error CoinGecko HTTP: ' . $codigo_respuesta, 'trading_ia');
+            flavor_platform_log('Error CoinGecko HTTP: ' . $codigo_respuesta, 'trading_ia');
             return array();
         }
 

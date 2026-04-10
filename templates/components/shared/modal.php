@@ -4,7 +4,7 @@
  *
  * Modal/diálogo genérico reutilizable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $id         ID único del modal (requerido)

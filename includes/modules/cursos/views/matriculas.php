@@ -2,7 +2,7 @@
 /**
  * Vista Gestión de Matrículas/Inscripciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

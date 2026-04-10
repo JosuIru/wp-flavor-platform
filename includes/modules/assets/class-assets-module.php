@@ -4,7 +4,7 @@
  *
  * Gestiona recursos CSS, JS y plantillas compartidas entre módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -110,7 +110,7 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_assets_admin() {
         $base_url = plugins_url('', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS común de admin
         wp_enqueue_style(
@@ -126,7 +126,7 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_assets_frontend() {
         $base_url = plugins_url('', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // Registrar (no encolar) CSS de utilidades
         wp_register_style(
@@ -266,7 +266,7 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
 
 // Inicializar
 add_action('plugins_loaded', function() {
-    if (class_exists('Flavor_Chat_Module_Base')) {
+    if (class_exists('Flavor_Platform_Module_Base')) {
         new Flavor_Assets_Module();
     }
 }, 20);

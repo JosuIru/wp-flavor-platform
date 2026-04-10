@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para seguimiento de huella de carbono.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

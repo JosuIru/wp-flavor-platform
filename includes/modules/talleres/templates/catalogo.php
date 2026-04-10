@@ -6,7 +6,7 @@
  * - $talleres: array de talleres publicados
  * - $atts: atributos del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

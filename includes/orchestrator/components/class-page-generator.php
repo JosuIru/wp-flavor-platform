@@ -4,7 +4,7 @@
  *
  * Gestiona la creacion de paginas WordPress para las plantillas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 

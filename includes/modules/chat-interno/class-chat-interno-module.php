@@ -4,7 +4,7 @@
  *
  * Sistema completo de mensajeria privada uno a uno entre usuarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Chat Interno - Mensajeria privada entre usuarios
  */
-class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Chat_Interno_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -105,24 +105,24 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // AJAX handlers
-        add_action('wp_ajax_flavor_chat_interno_conversaciones', [$this, 'ajax_obtener_conversaciones']);
-        add_action('wp_ajax_flavor_chat_interno_iniciar', [$this, 'ajax_iniciar_conversacion']);
-        add_action('wp_ajax_flavor_chat_interno_mensajes', [$this, 'ajax_obtener_mensajes']);
-        add_action('wp_ajax_flavor_chat_interno_enviar', [$this, 'ajax_enviar_mensaje']);
-        add_action('wp_ajax_flavor_chat_interno_marcar_leido', [$this, 'ajax_marcar_leido']);
-        add_action('wp_ajax_flavor_chat_interno_typing', [$this, 'ajax_typing']);
-        add_action('wp_ajax_flavor_chat_interno_buscar', [$this, 'ajax_buscar_mensajes']);
-        add_action('wp_ajax_flavor_chat_interno_archivar', [$this, 'ajax_archivar_conversacion']);
-        add_action('wp_ajax_flavor_chat_interno_silenciar', [$this, 'ajax_silenciar_conversacion']);
-        add_action('wp_ajax_flavor_chat_interno_eliminar_msg', [$this, 'ajax_eliminar_mensaje']);
-        add_action('wp_ajax_flavor_chat_interno_editar_msg', [$this, 'ajax_editar_mensaje']);
-        add_action('wp_ajax_flavor_chat_interno_bloquear', [$this, 'ajax_bloquear_usuario']);
-        add_action('wp_ajax_flavor_chat_interno_desbloquear', [$this, 'ajax_desbloquear_usuario']);
-        add_action('wp_ajax_flavor_chat_interno_upload', [$this, 'ajax_subir_archivo']);
-        add_action('wp_ajax_flavor_chat_interno_usuarios', [$this, 'ajax_buscar_usuarios']);
-        add_action('wp_ajax_flavor_chat_interno_poll', [$this, 'ajax_poll_nuevos_mensajes']);
-        add_action('wp_ajax_flavor_chat_interno_estado', [$this, 'ajax_actualizar_estado']);
-        add_action('wp_ajax_flavor_chat_interno_info_usuario', [$this, 'ajax_info_usuario']);
+        add_action('wp_ajax_flavor_platform_chat_interno_conversaciones', [$this, 'ajax_obtener_conversaciones']);
+        add_action('wp_ajax_flavor_platform_chat_interno_iniciar', [$this, 'ajax_iniciar_conversacion']);
+        add_action('wp_ajax_flavor_platform_chat_interno_mensajes', [$this, 'ajax_obtener_mensajes']);
+        add_action('wp_ajax_flavor_platform_chat_interno_enviar', [$this, 'ajax_enviar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_interno_marcar_leido', [$this, 'ajax_marcar_leido']);
+        add_action('wp_ajax_flavor_platform_chat_interno_typing', [$this, 'ajax_typing']);
+        add_action('wp_ajax_flavor_platform_chat_interno_buscar', [$this, 'ajax_buscar_mensajes']);
+        add_action('wp_ajax_flavor_platform_chat_interno_archivar', [$this, 'ajax_archivar_conversacion']);
+        add_action('wp_ajax_flavor_platform_chat_interno_silenciar', [$this, 'ajax_silenciar_conversacion']);
+        add_action('wp_ajax_flavor_platform_chat_interno_eliminar_msg', [$this, 'ajax_eliminar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_interno_editar_msg', [$this, 'ajax_editar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_interno_bloquear', [$this, 'ajax_bloquear_usuario']);
+        add_action('wp_ajax_flavor_platform_chat_interno_desbloquear', [$this, 'ajax_desbloquear_usuario']);
+        add_action('wp_ajax_flavor_platform_chat_interno_upload', [$this, 'ajax_subir_archivo']);
+        add_action('wp_ajax_flavor_platform_chat_interno_usuarios', [$this, 'ajax_buscar_usuarios']);
+        add_action('wp_ajax_flavor_platform_chat_interno_poll', [$this, 'ajax_poll_nuevos_mensajes']);
+        add_action('wp_ajax_flavor_platform_chat_interno_estado', [$this, 'ajax_actualizar_estado']);
+        add_action('wp_ajax_flavor_platform_chat_interno_info_usuario', [$this, 'ajax_info_usuario']);
 
         // Dashboard integration
         add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
@@ -131,9 +131,9 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
 
         // WP Cron para limpieza
-        add_action('flavor_chat_interno_limpieza', [$this, 'ejecutar_limpieza_mensajes']);
-        if (!wp_next_scheduled('flavor_chat_interno_limpieza')) {
-            wp_schedule_event(time(), 'daily', 'flavor_chat_interno_limpieza');
+        add_action('flavor_platform_chat_interno_limpieza', [$this, 'ejecutar_limpieza_mensajes']);
+        if (!wp_next_scheduled('flavor_platform_chat_interno_limpieza')) {
+            wp_schedule_event(time(), 'daily', 'flavor_platform_chat_interno_limpieza');
         }
 
         // Actualizar estado online
@@ -152,8 +152,11 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * @return void
      */
     private function cargar_frontend_controller() {
-        if (class_exists('Flavor_Chat_Interno_Frontend_Controller')) {
-            Flavor_Chat_Interno_Frontend_Controller::get_instance();
+        $controller_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Interno_Frontend_Controller')
+            : 'Flavor_Chat_Interno_Frontend_Controller';
+        if (class_exists($controller_class)) {
+            $controller_class::get_instance();
             return;
         }
 
@@ -161,8 +164,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if (file_exists($archivo_controller)) {
             require_once $archivo_controller;
 
-            if (class_exists('Flavor_Chat_Interno_Frontend_Controller')) {
-                Flavor_Chat_Interno_Frontend_Controller::get_instance();
+            if (class_exists($controller_class)) {
+                $controller_class::get_instance();
             }
         }
     }
@@ -719,16 +722,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-chat-interno',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/css/chat-interno.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-interno/assets/css/chat-interno.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-chat-interno',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/js/chat-interno.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-interno/assets/js/chat-interno.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -738,17 +741,17 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if ($configuracion_e2e) {
             wp_enqueue_script(
                 'flavor-key-store',
-                FLAVOR_CHAT_IA_URL . 'includes/crypto/js/flavor-key-store.js',
+                FLAVOR_PLATFORM_URL . 'includes/crypto/js/flavor-key-store.js',
                 [],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             wp_enqueue_script(
                 'flavor-signal-protocol',
-                FLAVOR_CHAT_IA_URL . 'includes/crypto/js/flavor-signal-protocol.js',
+                FLAVOR_PLATFORM_URL . 'includes/crypto/js/flavor-signal-protocol.js',
                 ['flavor-key-store'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -761,7 +764,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         wp_localize_script('flavor-chat-interno', 'flavorChatInterno', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'resturl' => rest_url('flavor/v1/chat-interno/'),
-            'nonce' => wp_create_nonce('flavor_chat_interno'),
+            'nonce' => wp_create_nonce('flavor_platform_chat_interno'),
             'user_id' => get_current_user_id(),
             'user_name' => wp_get_current_user()->display_name,
             'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
@@ -2085,7 +2088,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Obtener conversaciones
      */
     public function ajax_obtener_conversaciones() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_conversaciones([
             'incluir_archivadas' => !empty($_GET['archivadas']),
@@ -2098,7 +2101,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Iniciar conversacion
      */
     public function ajax_iniciar_conversacion() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_iniciar_chat([
             'usuario_id' => intval($_POST['usuario_id'] ?? 0),
@@ -2112,7 +2115,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Obtener mensajes
      */
     public function ajax_obtener_mensajes() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_mensajes([
             'conversacion_id' => intval($_GET['conversacion_id'] ?? 0),
@@ -2129,7 +2132,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Enviar mensaje
      */
     public function ajax_enviar_mensaje() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $adjuntos = null;
         if (!empty($_POST['adjunto_url'])) {
@@ -2170,7 +2173,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Marcar como leido
      */
     public function ajax_marcar_leido() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_marcar_leido([
             'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
@@ -2184,7 +2187,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Typing indicator
      */
     public function ajax_typing() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_typing_indicator([
             'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
@@ -2198,7 +2201,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Buscar mensajes
      */
     public function ajax_buscar_mensajes() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_buscar_mensajes([
             'query' => sanitize_text_field($_GET['query'] ?? ''),
@@ -2212,7 +2215,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Archivar conversacion
      */
     public function ajax_archivar_conversacion() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_archivar([
             'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
@@ -2226,7 +2229,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Silenciar conversacion
      */
     public function ajax_silenciar_conversacion() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_silenciar([
             'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
@@ -2240,7 +2243,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Eliminar mensaje
      */
     public function ajax_eliminar_mensaje() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_eliminar_mensaje([
             'mensaje_id' => intval($_POST['mensaje_id'] ?? 0),
@@ -2254,7 +2257,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Editar mensaje
      */
     public function ajax_editar_mensaje() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_editar_mensaje([
             'mensaje_id' => intval($_POST['mensaje_id'] ?? 0),
@@ -2268,7 +2271,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Bloquear usuario
      */
     public function ajax_bloquear_usuario() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_bloquear_usuario([
             'usuario_id' => intval($_POST['usuario_id'] ?? 0),
@@ -2282,7 +2285,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Desbloquear usuario
      */
     public function ajax_desbloquear_usuario() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $resultado = $this->action_desbloquear_usuario([
             'usuario_id' => intval($_POST['usuario_id'] ?? 0),
@@ -2295,7 +2298,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Subir archivo
      */
     public function ajax_subir_archivo() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json(['success' => false, 'error' => __('query', 'flavor-platform')]);
@@ -2355,7 +2358,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Buscar usuarios
      */
     public function ajax_buscar_usuarios() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
@@ -2393,7 +2396,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Poll nuevos mensajes
      */
     public function ajax_poll_nuevos_mensajes() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -2509,7 +2512,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Actualizar estado
      */
     public function ajax_actualizar_estado() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -2525,7 +2528,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * AJAX: Info usuario
      */
     public function ajax_info_usuario() {
-        check_ajax_referer('flavor_chat_interno', 'nonce');
+        check_ajax_referer('flavor_platform_chat_interno', 'nonce');
 
         $usuario_id = intval($_GET['usuario_id'] ?? 0);
         if (!$usuario_id) {
@@ -3584,7 +3587,7 @@ KNOWLEDGE;
         ?>
         <div class="wrap flavor-chat-interno-admin">
             <form method="post" action="">
-                <?php wp_nonce_field('flavor_chat_interno_config', 'config_nonce'); ?>
+                <?php wp_nonce_field('flavor_platform_chat_interno_config', 'config_nonce'); ?>
 
                 <table class="form-table">
                     <tr>
@@ -3896,8 +3899,11 @@ KNOWLEDGE;
         $archivo = dirname(__FILE__) . '/class-chat-interno-dashboard-tab.php';
         if (file_exists($archivo)) {
             require_once $archivo;
-            if (class_exists('Flavor_Chat_Interno_Dashboard_Tab')) {
-                Flavor_Chat_Interno_Dashboard_Tab::get_instance();
+            $dashboard_tab_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Interno_Dashboard_Tab')
+                : 'Flavor_Chat_Interno_Dashboard_Tab';
+            if (class_exists($dashboard_tab_class)) {
+                $dashboard_tab_class::get_instance();
             }
         }
     }
@@ -3915,9 +3921,9 @@ KNOWLEDGE;
         static $key_manager = null;
 
         if ($key_manager === null) {
-            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-key-manager.php';
+            $archivo = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-key-manager.php';
             if (file_exists($archivo)) {
-                require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+                require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
                 require_once $archivo;
                 $key_manager = new Flavor_Signal_Key_Manager();
             }
@@ -3935,7 +3941,7 @@ KNOWLEDGE;
         static $device_manager = null;
 
         if ($device_manager === null) {
-            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-device-manager.php';
+            $archivo = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-device-manager.php';
             if (file_exists($archivo)) {
                 require_once $archivo;
                 $device_manager = new Flavor_Device_Manager();
@@ -3954,9 +3960,9 @@ KNOWLEDGE;
         static $session_manager = null;
 
         if ($session_manager === null) {
-            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-session-manager.php';
+            $archivo = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-session-manager.php';
             if (file_exists($archivo)) {
-                require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+                require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
                 require_once $archivo;
                 $session_manager = new Flavor_Signal_Session_Manager();
             }
@@ -4412,4 +4418,8 @@ KNOWLEDGE;
             'backup' => $backup->encrypted_bundle,
         ]);
     }
+}
+
+if (!class_exists('Flavor_Chat_Chat_Interno_Module', false)) {
+    class_alias('Flavor_Platform_Chat_Interno_Module', 'Flavor_Chat_Chat_Interno_Module');
 }

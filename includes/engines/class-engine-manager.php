@@ -5,7 +5,7 @@
  * Maneja el registro y selección de proveedores de IA
  * Soporta configuración separada para frontend (chat público) y backend (admin assistant)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -83,7 +83,7 @@ class Flavor_Engine_Manager {
         }
 
         // Permitir registrar motores personalizados
-        do_action('flavor_chat_ia_register_engines', $this);
+        do_action('flavor_platform_register_engines', $this);
     }
 
     /**

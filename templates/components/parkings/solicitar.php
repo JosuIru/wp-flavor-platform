@@ -2,7 +2,7 @@
 /**
  * Template: Formulario para solicitar plaza de parking
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Parkings
  */
 

@@ -5,7 +5,7 @@
  * Permite que las apps descubran y se conecten a diferentes
  * negocios/comunidades que tengan los plugins instalados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -270,7 +270,7 @@ class Flavor_Business_Directory {
         // Obtener módulos activos
         $modules = [];
         if ($detector->is_flavor_chat_active()) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $active_modules = $loader->get_loaded_modules();
             foreach ($active_modules as $module_id => $module) {
                 $modules[] = $module_id;
@@ -464,7 +464,7 @@ class Flavor_Business_Directory {
 
 // Inicializar directorio
 add_action('plugins_loaded', function() {
-    if (class_exists('Flavor_Chat_IA')) {
+    if (class_exists('Flavor_Platform')) {
         Flavor_Business_Directory::get_instance();
     }
 }, 20);

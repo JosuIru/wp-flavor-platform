@@ -2,7 +2,7 @@
 /**
  * Vista del Dashboard Principal de Publicidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Advertising
  */
 

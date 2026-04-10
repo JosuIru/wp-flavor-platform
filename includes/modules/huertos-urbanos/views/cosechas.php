@@ -2,7 +2,7 @@
 /**
  * Vista Registro de Cosechas - Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

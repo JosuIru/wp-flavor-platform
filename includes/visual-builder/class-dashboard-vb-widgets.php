@@ -5,7 +5,7 @@
  * Registra componentes y secciones de dashboard para el Visual Builder.
  * Los widgets solo están disponibles si sus módulos/addons están activos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage VisualBuilder
  * @since 4.0.0
  */
@@ -43,7 +43,7 @@ class Flavor_Dashboard_VB_Widgets {
     /**
      * Instancia del módulo Themacle
      *
-     * @var Flavor_Chat_Themacle_Module|null
+     * @var Flavor_Platform_Module_Interface|null
      */
     private $themacle_module = null;
 
@@ -90,8 +90,9 @@ class Flavor_Dashboard_VB_Widgets {
      */
     private function init_themacle() {
         // Obtener módulo Themacle si está activo
-        if (class_exists('Flavor_Chat_Themacle_Module')) {
-            $this->themacle_module = new Flavor_Chat_Themacle_Module();
+        $module_class = flavor_get_runtime_class_name('Flavor_Chat_Themacle_Module');
+        if (class_exists($module_class)) {
+            $this->themacle_module = new $module_class();
             if ($this->themacle_module->is_active()) {
                 $this->themacle_components = $this->themacle_module->get_web_components();
             }
@@ -443,16 +444,16 @@ class Flavor_Dashboard_VB_Widgets {
     private function encolar_assets_dashboard() {
         wp_enqueue_style(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/js/dashboard-vb-widgets.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/dashboard-vb-widgets.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -471,7 +472,7 @@ class Flavor_Dashboard_VB_Widgets {
     /**
      * Verificar si un módulo está activo
      *
-     * Utiliza la función centralizada Flavor_Chat_Module_Loader::is_module_active()
+     * Utiliza la función centralizada Flavor_Platform_Module_Loader::is_module_active()
      * que verifica en flavor_chat_ia_settings['active_modules'] (preferido)
      * y flavor_active_modules (legacy), normalizando IDs automáticamente.
      *
@@ -487,12 +488,12 @@ class Flavor_Dashboard_VB_Widgets {
         }
 
         // Usar función centralizada que verifica ambas fuentes de módulos activos
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            return Flavor_Chat_Module_Loader::is_module_active($modulo_id);
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            return Flavor_Platform_Module_Loader::is_module_active($modulo_id);
         }
 
         // Fallback: verificar en ambas opciones (preferida + legacy)
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $configuracion_plugin = flavor_get_main_settings();
         $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
 
         $modulos_activos_legacy = get_option('flavor_active_modules', []);
@@ -1424,7 +1425,7 @@ class Flavor_Dashboard_VB_Widgets {
         $rutas = [
             get_stylesheet_directory() . '/flavor-templates/components/' . $template . '.php',
             get_template_directory() . '/flavor-templates/components/' . $template . '.php',
-            FLAVOR_CHAT_IA_PATH . 'templates/components/' . $template . '.php',
+            FLAVOR_PLATFORM_PATH . 'templates/components/' . $template . '.php',
         ];
 
         foreach ($rutas as $ruta) {
@@ -1563,11 +1564,11 @@ class Flavor_Dashboard_VB_Widgets {
         }
 
         // Obtener instancia del módulo
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $module = $loader->get_module($module_id);
 
         if (!$module) {
@@ -2053,17 +2054,17 @@ class Flavor_Dashboard_VB_Widgets {
         // CSS de widgets de dashboard
         wp_enqueue_style(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
             ['flavor-vb-frontend'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS de widgets de dashboard
         wp_enqueue_script(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/js/dashboard-vb-widgets.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/dashboard-vb-widgets.js',
             ['jquery', 'flavor-vb-frontend'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -2090,9 +2091,9 @@ class Flavor_Dashboard_VB_Widgets {
         // CSS para el panel del builder
         wp_enqueue_style(
             'fvb-dashboard-widgets-admin',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets-admin.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-vb-widgets-admin.css',
             ['flavor-visual-builder'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 
@@ -2199,7 +2200,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_espacios';
         $espacios = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2253,7 +2254,7 @@ class Flavor_Dashboard_VB_Widgets {
         $eventos = [];
         $cantidad = $data['cantidad'] ?? 5;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2320,7 +2321,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
         $cursos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos) && Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cursos) && Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             // Obtener columnas disponibles
             $columnas_cursos = $wpdb->get_col("SHOW COLUMNS FROM $tabla_cursos");
             $columnas_insc = $wpdb->get_col("SHOW COLUMNS FROM $tabla_inscripciones");
@@ -2389,7 +2390,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_talleres';
         $talleres = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2457,7 +2458,7 @@ class Flavor_Dashboard_VB_Widgets {
         $avisos = [];
         $cantidad = $data['cantidad'] ?? 5;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2527,7 +2528,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
         $grupos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_grupos) && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_grupos) && Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             // Obtener columnas disponibles
             $columnas_grupos = $wpdb->get_col("SHOW COLUMNS FROM $tabla_grupos");
             $columnas_miembros = $wpdb->get_col("SHOW COLUMNS FROM $tabla_miembros");
@@ -2585,7 +2586,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_foros_temas';
         $temas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2644,7 +2645,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_asignaciones = $wpdb->prefix . 'flavor_huertos_asignaciones';
         $parcela = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_parcelas) && Flavor_Chat_Helpers::tabla_existe($tabla_asignaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_parcelas) && Flavor_Platform_Helpers::tabla_existe($tabla_asignaciones)) {
             // Obtener columnas disponibles
             $columnas_parcelas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_parcelas");
             $columnas_asig = $wpdb->get_col("SHOW COLUMNS FROM $tabla_asignaciones");
@@ -2719,7 +2720,7 @@ class Flavor_Dashboard_VB_Widgets {
         $puntos_totales = 0;
         $kg_reciclados = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_puntos");
             $col_puntos = in_array('puntos', $columnas) ? 'puntos' :
@@ -2768,7 +2769,7 @@ class Flavor_Dashboard_VB_Widgets {
         $anuncios = [];
         $mis_anuncios = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -2839,7 +2840,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_saldo = $wpdb->prefix . 'flavor_banco_tiempo_saldo';
         $saldo = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_saldo)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_saldo)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_saldo");
             $col_horas = in_array('horas', $columnas) ? 'horas' :
@@ -2888,7 +2889,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
         $colectivos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_colectivos) && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_colectivos) && Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             // Obtener columnas disponibles
             $columnas_colectivos = $wpdb->get_col("SHOW COLUMNS FROM $tabla_colectivos");
             $columnas_miembros = $wpdb->get_col("SHOW COLUMNS FROM $tabla_miembros");
@@ -2947,7 +2948,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_socios';
         $socio = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = [];
@@ -3057,7 +3058,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
         $prestamos_activos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_prestamos");
             $col_usuario = in_array('user_id', $columnas) ? 'user_id' : (in_array('usuario_id', $columnas) ? 'usuario_id' : null);
@@ -3107,7 +3108,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_bares';
         $bares = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3185,7 +3186,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_recursos_compartidos';
         $recursos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3240,7 +3241,7 @@ class Flavor_Dashboard_VB_Widgets {
         $cantidad = $data['cantidad'] ?? 5;
         $solo_sin_leer = $data['solo_sin_leer'] ?? true;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $col_usuario = in_array('user_id', $columnas) ? 'user_id' : (in_array('usuario_id', $columnas) ? 'usuario_id' : null);
@@ -3295,7 +3296,7 @@ class Flavor_Dashboard_VB_Widgets {
         $puntos = 0;
         $nivel = 1;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             $puntos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(puntos), 0) FROM $tabla_puntos WHERE usuario_id = %d",
                 $id_usuario
@@ -3342,9 +3343,9 @@ class Flavor_Dashboard_VB_Widgets {
         $reservas = [];
         $cantidad = $data['cantidad'] ?? 5;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Verificar si la tabla de espacios existe para hacer JOIN
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
                 $reservas = $wpdb->get_results($wpdb->prepare(
                     "SELECT r.id, r.fecha_inicio, r.estado, e.nombre as espacio_nombre
                      FROM $tabla r
@@ -3401,11 +3402,11 @@ class Flavor_Dashboard_VB_Widgets {
         $disponibles = 0;
         $mis_alquileres = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'disponible'");
 
             // Verificar si existe la tabla de alquileres
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_alquileres)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_alquileres)) {
                 $mis_alquileres = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM $tabla_alquileres
                      WHERE usuario_id = %d AND estado = 'activo'",
@@ -3444,7 +3445,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_parkings';
         $plazas_libres = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Intentar obtener plazas libres - usar columnas que existan
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             if (in_array('plazas_disponibles', $columnas)) {
@@ -3478,7 +3479,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_carpooling_viajes';
         $viajes = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3562,7 +3563,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
         $inscripciones = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla) && Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla) && Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             // Verificar columnas de la tabla de inscripciones
             $columnas_insc = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $col_usuario = in_array('user_id', $columnas_insc) ? 'user_id' : (in_array('usuario_id', $columnas_insc) ? 'usuario_id' : null);
@@ -3611,7 +3612,7 @@ class Flavor_Dashboard_VB_Widgets {
         $mensajes = [];
         $sin_leer = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $col_destino = in_array('destinatario_id', $columnas) ? 'destinatario_id' :
@@ -3688,7 +3689,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_podcast_episodios';
         $episodios = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3785,7 +3786,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_compostaje_aportes';
         $total_kg = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $col_cantidad = in_array('cantidad_kg', $columnas) ? 'cantidad_kg' :
@@ -3823,7 +3824,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_tienda_productos';
         $productos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3871,7 +3872,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_tienda_pedidos';
         $pedidos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -3931,7 +3932,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla_miembros = $wpdb->prefix . 'flavor_grupos_consumo_miembros';
         $grupos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla) && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla) && Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $columnas_miembros = $wpdb->get_col("SHOW COLUMNS FROM $tabla_miembros");
@@ -3994,7 +3995,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_facturas';
         $facturas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4060,7 +4061,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_participacion_procesos';
         $procesos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4119,7 +4120,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_presupuestos_propuestas';
         $propuestas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4180,7 +4181,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_incidencias';
         $incidencias = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4248,7 +4249,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_tramites';
         $tramites = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4308,7 +4309,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_ayuda_vecinal';
         $solicitudes = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
             $select_cols = ['id'];
@@ -4414,7 +4415,7 @@ class Flavor_Dashboard_VB_Widgets {
         $tabla = $wpdb->prefix . 'flavor_fichajes';
         $fichaje_hoy = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Obtener columnas disponibles
             $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla");
 

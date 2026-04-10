@@ -6,7 +6,7 @@
  * mensuales, media diaria con barras de progreso
  * y mini calendario de dias trabajados.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

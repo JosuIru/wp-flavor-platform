@@ -4,7 +4,7 @@
  *
  * Gestiona la aplicacion de configuraciones predeterminadas para modulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 
@@ -62,10 +62,8 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
         foreach ($configuraciones as $modulo_id => $config_modulo) {
             $modulo_normalizado = str_replace('-', '_', $modulo_id);
-            $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_normalizado;
-
             // Guardar configuracion actual para snapshot
-            $config_actual = get_option($opcion_nombre, []);
+            $config_actual = flavor_get_module_settings($modulo_normalizado);
             $snapshot_config[$modulo_normalizado] = $config_actual;
 
             // Verificar si ya existe configuracion
@@ -150,15 +148,15 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
             if (!empty($snapshot_config)) {
                 foreach ($modulos_configurados as $modulo_id) {
-                    $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_id;
-
                     if (isset($snapshot_config[$modulo_id])) {
                         // Restaurar configuracion anterior
-                        update_option($opcion_nombre, $snapshot_config[$modulo_id]);
+                        flavor_update_module_settings($modulo_id, $snapshot_config[$modulo_id]);
                         $modulos_restaurados[] = $modulo_id;
                     } else {
                         // No habia configuracion anterior, eliminar la actual
-                        delete_option($opcion_nombre);
+                        $option_names = flavor_get_module_option_names($modulo_id);
+                        delete_option($option_names['legacy']);
+                        delete_option($option_names['platform']);
                         $modulos_limpiados[] = $modulo_id;
                     }
                 }
@@ -170,8 +168,9 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
                 // Sin snapshot, solo limpiar las configuraciones
                 foreach ($modulos_configurados as $modulo_id) {
-                    $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_id;
-                    delete_option($opcion_nombre);
+                    $option_names = flavor_get_module_option_names($modulo_id);
+                    delete_option($option_names['legacy']);
+                    delete_option($option_names['platform']);
                     $modulos_limpiados[] = $modulo_id;
                 }
             }
@@ -228,8 +227,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
         foreach ($configuraciones_esperadas as $modulo_id => $config_esperada) {
             $modulo_normalizado = str_replace('-', '_', $modulo_id);
-            $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_normalizado;
-            $config_actual = get_option($opcion_nombre, []);
+            $config_actual = flavor_get_module_settings($modulo_normalizado);
 
             if (empty($config_actual)) {
                 $modulos_sin_configurar[] = [
@@ -294,8 +292,6 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
      * @return array Resultado
      */
     private function aplicar_configuracion_modulo($modulo_id, $config_nueva, $config_actual, $sobrescribir = false) {
-        $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_id;
-
         try {
             if ($sobrescribir) {
                 // Sobrescribir completamente
@@ -314,7 +310,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             $config_final['_flavor_config_applied'] = current_time('mysql');
             $config_final['_flavor_config_source'] = 'template';
 
-            $resultado = update_option($opcion_nombre, $config_final);
+            $resultado = flavor_update_module_settings($modulo_id, $config_final);
 
             return [
                 'success' => true,
@@ -376,8 +372,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
      */
     public function obtener_configuracion_modulo($modulo_id) {
         $modulo_normalizado = str_replace('-', '_', $modulo_id);
-        $opcion_nombre = 'flavor_chat_ia_module_' . $modulo_normalizado;
-        return get_option($opcion_nombre, []);
+        return flavor_get_module_settings($modulo_normalizado);
     }
 
     /**

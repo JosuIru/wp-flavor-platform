@@ -68,6 +68,10 @@ class Business {
 
   /// Verifica si tiene un sistema específico
   bool hasSystem(String systemId) {
+    if (systemId == 'flavor-chat-ia' || systemId == 'flavor-platform') {
+      return systems.contains('flavor-chat-ia') || systems.contains('flavor-platform');
+    }
+
     return systems.contains(systemId);
   }
 
@@ -79,6 +83,11 @@ class Business {
   /// Verifica si tiene Flavor Chat IA
   bool get hasFlavorChatIA {
     return hasSystem('flavor-chat-ia');
+  }
+
+  /// Verifica si tiene Flavor Platform
+  bool get hasFlavorPlatform {
+    return hasSystem('flavor-platform');
   }
 
   /// Verifica si tiene wp-calendario-experiencias

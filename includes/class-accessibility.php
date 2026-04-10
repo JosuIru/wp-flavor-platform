@@ -5,7 +5,7 @@
  * Implementa skip links y otras mejoras de accesibilidad
  * siguiendo las directrices WCAG 2.4.1
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -98,22 +98,22 @@ class Flavor_Accessibility {
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
 
         // CSS de skip links
-        $ruta_css_skip_links = FLAVOR_CHAT_IA_PATH . 'assets/css/components/skip-links.css';
+        $ruta_css_skip_links = FLAVOR_PLATFORM_PATH . 'assets/css/components/skip-links.css';
         if (file_exists($ruta_css_skip_links)) {
             wp_enqueue_style(
                 'flavor-skip-links',
-                FLAVOR_CHAT_IA_URL . "assets/css/components/skip-links{$sufijo_asset}.css",
+                FLAVOR_PLATFORM_URL . "assets/css/components/skip-links{$sufijo_asset}.css",
                 [],
                 filemtime($ruta_css_skip_links)
             );
         }
 
         // JS de skip links
-        $ruta_js_skip_links = FLAVOR_CHAT_IA_PATH . 'assets/js/skip-links.js';
+        $ruta_js_skip_links = FLAVOR_PLATFORM_PATH . 'assets/js/skip-links.js';
         if (file_exists($ruta_js_skip_links)) {
             wp_enqueue_script(
                 'flavor-skip-links',
-                FLAVOR_CHAT_IA_URL . "assets/js/skip-links{$sufijo_asset}.js",
+                FLAVOR_PLATFORM_URL . "assets/js/skip-links{$sufijo_asset}.js",
                 [],
                 filemtime($ruta_js_skip_links),
                 false // Cargar en head para que sea el primer elemento focusable

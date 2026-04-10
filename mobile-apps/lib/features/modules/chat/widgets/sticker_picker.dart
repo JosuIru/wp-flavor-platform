@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Modelo de sticker
@@ -72,6 +74,10 @@ class StickerGifPicker extends ConsumerStatefulWidget {
 
 class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
     with SingleTickerProviderStateMixin {
+  static const String _recentStickersKey = 'chat_recent_stickers';
+  static const String _recentGifsKey = 'chat_recent_gifs';
+  static const int _maxRecentItems = 20;
+
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
@@ -178,33 +184,97 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
   }
 
   Future<void> _loadRecents() async {
-    // TODO: Cargar de SharedPreferences
-    setState(() {
-      _recentStickers = [];
-      _recentGifs = [];
-    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Cargar stickers recientes
+      final stickersJson = prefs.getStringList(_recentStickersKey);
+      if (stickersJson != null) {
+        _recentStickers = stickersJson.map((jsonStr) {
+          final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+          return Sticker(
+            id: map['id'] as String,
+            url: map['url'] as String,
+            packId: map['packId'] as String,
+            emoji: map['emoji'] as String?,
+          );
+        }).toList();
+      }
+
+      // Cargar GIFs recientes
+      final gifsJson = prefs.getStringList(_recentGifsKey);
+      if (gifsJson != null) {
+        _recentGifs = gifsJson.map((jsonStr) {
+          final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+          return GifItem(
+            id: map['id'] as String,
+            url: map['url'] as String,
+            previewUrl: map['previewUrl'] as String,
+            width: map['width'] as int,
+            height: map['height'] as int,
+          );
+        }).toList();
+      }
+
+      if (mounted) setState(() {});
+    } catch (e) {
+      // Si falla, usar listas vacías
+      if (mounted) {
+        setState(() {
+          _recentStickers = [];
+          _recentGifs = [];
+        });
+      }
+    }
   }
 
-  void _addToRecentStickers(Sticker sticker) {
+  Future<void> _addToRecentStickers(Sticker sticker) async {
     setState(() {
       _recentStickers.removeWhere((s) => s.id == sticker.id);
       _recentStickers.insert(0, sticker);
-      if (_recentStickers.length > 20) {
+      if (_recentStickers.length > _maxRecentItems) {
         _recentStickers.removeLast();
       }
     });
-    // TODO: Guardar en SharedPreferences
+
+    // Persistir en SharedPreferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonList = _recentStickers.map((s) => jsonEncode({
+        'id': s.id,
+        'url': s.url,
+        'packId': s.packId,
+        'emoji': s.emoji,
+      })).toList();
+      await prefs.setStringList(_recentStickersKey, jsonList);
+    } catch (e) {
+      // Ignorar error de persistencia
+    }
   }
 
-  void _addToRecentGifs(GifItem gif) {
+  Future<void> _addToRecentGifs(GifItem gif) async {
     setState(() {
       _recentGifs.removeWhere((g) => g.id == gif.id);
       _recentGifs.insert(0, gif);
-      if (_recentGifs.length > 20) {
+      if (_recentGifs.length > _maxRecentItems) {
         _recentGifs.removeLast();
       }
     });
-    // TODO: Guardar en SharedPreferences
+
+    // Persistir en SharedPreferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonList = _recentGifs.map((g) => jsonEncode({
+        'id': g.id,
+        'url': g.url,
+        'previewUrl': g.previewUrl,
+        'width': g.width,
+        'height': g.height,
+      })).toList();
+      await prefs.setStringList(_recentGifsKey, jsonList);
+    } catch (e) {
+      // Ignorar error de persistencia
+    }
   }
 
   @override

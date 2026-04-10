@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Trámites
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Tramites
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -84,7 +84,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $tramites_disponibles,
                 'label' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Chat_Helpers::get_action_url('tramites', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Platform_Helpers::get_action_url('tramites', ''),
             ],
         ];
 
@@ -95,7 +95,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $solicitudes_pendientes,
                     'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'warning',
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites-pendientes') : Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-pendientes') : Flavor_Platform_Helpers::get_action_url('tramites', 'mis-tramites'),
                 ];
             }
 
@@ -105,7 +105,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $mis_solicitudes,
                     'label' => __('Mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'info',
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites-historial') : Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-historial') : Flavor_Platform_Helpers::get_action_url('tramites', 'mis-tramites'),
                 ];
             }
         }
@@ -119,7 +119,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Iniciar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Chat_Helpers::get_action_url('tramites', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Platform_Helpers::get_action_url('tramites', ''),
                     'icon' => 'dashicons-plus-alt2',
                 ],
             ],
@@ -155,7 +155,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-media-text',
                 'title' => wp_trim_words($tramite->titulo, 4, '...'),
                 'meta' => $meta,
-                'url' => $es_admin ? admin_url('admin.php?page=tramites-tipos') : add_query_arg('tramite_id', $tramite->id, Flavor_Chat_Helpers::get_action_url('tramites', 'iniciar')),
+                'url' => $es_admin ? admin_url('admin.php?page=tramites-tipos') : add_query_arg('tramite_id', $tramite->id, Flavor_Platform_Helpers::get_action_url('tramites', 'iniciar')),
             ];
         }
 

@@ -4,7 +4,7 @@
  *
  * Coordina protestas, recogida de firmas, concentraciones y acciones ciudadanas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del modulo de Campanias
  */
-class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -36,7 +36,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias');
+        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias');
     }
 
     /**
@@ -82,7 +82,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      */
     public function maybe_create_tables() {
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
             $this->create_tables();
         }
     }
@@ -256,23 +256,23 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * @return string
      */
     private function render_view($view_file) {
-        $path = FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/' . ltrim((string) $view_file, '/');
+        $path = FLAVOR_PLATFORM_PATH . 'includes/modules/campanias/views/' . ltrim((string) $view_file, '/');
         if (!file_exists($path)) {
             $fallbacks = [
-                FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/dashboard.php',
-                FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/listado.php',
+                FLAVOR_PLATFORM_PATH . 'includes/modules/campanias/views/dashboard.php',
+                FLAVOR_PLATFORM_PATH . 'includes/modules/campanias/views/listado.php',
             ];
 
             foreach ($fallbacks as $fallback_path) {
                 if (file_exists($fallback_path)) {
-                    flavor_chat_ia_log('Vista no encontrada en campanias, usando fallback: ' . $path, 'warning');
+                    flavor_platform_log('Vista no encontrada en campanias, usando fallback: ' . $path, 'warning');
                     ob_start();
                     include $fallback_path;
                     return (string) ob_get_clean();
                 }
             }
 
-            flavor_chat_ia_log('Vista no encontrada en campanias sin fallback: ' . $path, 'warning');
+            flavor_platform_log('Vista no encontrada en campanias sin fallback: ' . $path, 'warning');
             return '<p class="flavor-info">' . esc_html__('No se pudo cargar la vista solicitada.', 'flavor-platform') . '</p>';
         }
 
@@ -886,16 +886,16 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-campanias',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/css/campanias.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/campanias/assets/css/campanias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-campanias',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/js/campanias.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/campanias/assets/js/campanias.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -929,9 +929,9 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-campanias-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/css/campanias.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/campanias/assets/css/campanias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 
@@ -2664,4 +2664,8 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             include $template_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Campanias_Module', false)) {
+    class_alias('Flavor_Platform_Campanias_Module', 'Flavor_Chat_Campanias_Module');
 }

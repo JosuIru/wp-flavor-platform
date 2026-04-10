@@ -2,7 +2,7 @@
 /**
  * Instalacion de tablas para el modulo de Reservas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -4,7 +4,7 @@
  *
  * Muestra los expedientes del usuario actual con seguimiento detallado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -30,7 +30,7 @@ $tabla_documentos = $wpdb->prefix . 'flavor_documentos_expediente';
 $usuario_id = get_current_user_id();
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_expedientes)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -109,7 +109,7 @@ $estados_iconos = [
     'cancelado' => 'dashicons-no',
 ];
 
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="mis-expedientes-wrapper">
@@ -156,7 +156,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
             <?php foreach ($expedientes as $expediente):
                 // Obtener ultimo movimiento
                 $ultimo_movimiento = null;
-                if (Flavor_Chat_Helpers::tabla_existe($tabla_historial)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla_historial)) {
                     $ultimo_movimiento = $wpdb->get_row($wpdb->prepare(
                         "SELECT * FROM $tabla_historial WHERE expediente_id = %d ORDER BY fecha_cambio DESC LIMIT 1",
                         $expediente->id
@@ -165,7 +165,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
                 // Contar documentos
                 $num_documentos = 0;
-                if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
                     $num_documentos = $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM $tabla_documentos WHERE expediente_id = %d",
                         $expediente->id

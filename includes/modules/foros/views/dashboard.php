@@ -4,7 +4,7 @@
  *
  * Panel principal con estadísticas de temas y actividad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

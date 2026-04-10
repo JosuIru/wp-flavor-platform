@@ -8,7 +8,7 @@
  * - Contenido compartido
  * - Alertas solidarias activas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Network
  * @since 4.1.0
  */
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 // Asegurar que la clase base exista
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**

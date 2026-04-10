@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Economía del Don
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EconomiaDon
  */
 
@@ -92,7 +92,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
         $dones_recibidos = 0;
         $intercambios_completados = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_dones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_dones)) {
             $dones_disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_dones} WHERE estado = 'disponible'");
             $mis_dones_ofrecidos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_dones} WHERE donante_id = %d",
@@ -100,7 +100,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_intercambios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_intercambios)) {
             $dones_recibidos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_intercambios} WHERE receptor_id = %d AND estado = 'completado'",
                 $user_id
@@ -151,11 +151,11 @@ class Flavor_Economia_Don_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-upload"></span>
                     <?php esc_html_e('Ofrecer un Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'explorar')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_don', 'explorar')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -178,7 +178,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
         $tabla_dones = $wpdb->prefix . 'flavor_dones';
 
         $mis_dones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_dones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_dones)) {
             $mis_dones = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_dones} WHERE donante_id = %d ORDER BY fecha_creacion DESC LIMIT 20",
                 $user_id
@@ -189,7 +189,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
         <div class="flavor-panel flavor-mis-dones-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Mis Dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Ofrecer Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -200,7 +200,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
                     <span class="dashicons dashicons-heart"></span>
                     <p><?php esc_html_e('Aún no has ofrecido ningún don a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('La economía del don se basa en dar libremente sin esperar algo a cambio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Ofrecer mi primer don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>

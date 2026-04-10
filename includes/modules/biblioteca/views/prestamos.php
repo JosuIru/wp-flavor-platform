@@ -3,7 +3,7 @@
  * Vista Gestión de Préstamos - Biblioteca
  * Panel de administración de préstamos de libros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

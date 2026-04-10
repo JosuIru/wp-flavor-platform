@@ -3,7 +3,7 @@
  * Módulo de Huertos Urbanos para Chat IA
  * Sistema completo de huertos comunitarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage HuertosUrbanos
  */
 
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Huertos Urbanos - Gestión completa de huertos comunitarios
  */
-class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Huertos_Urbanos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -73,7 +73,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_huertos);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_huertos);
     }
 
     /**
@@ -258,7 +258,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_parcelas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_parcelas)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -278,7 +278,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_asignaciones)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -296,7 +296,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $estadisticas = [];
 
         // Parcelas ocupadas
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_parcelas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_parcelas)) {
             $parcelas_ocupadas = $this->contar_parcelas_ocupadas();
             $total_parcelas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_parcelas}");
             $estadisticas[] = [
@@ -309,7 +309,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         }
 
         // Lista de espera
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_asignaciones)) {
             $en_lista_espera = $this->contar_lista_espera();
             $estadisticas[] = [
                 'icon' => 'dashicons-clock',
@@ -340,13 +340,13 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $total_hortelanos = 0;
         $en_lista_espera = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_parcelas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_parcelas)) {
             $total_parcelas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_parcelas}");
             $parcelas_ocupadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_parcelas} WHERE estado = 'ocupada'");
             $parcelas_disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_parcelas} WHERE estado = 'disponible'");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_asignaciones)) {
             $total_hortelanos = (int) $wpdb->get_var("SELECT COUNT(DISTINCT user_id) FROM {$this->tabla_asignaciones} WHERE estado = 'activa'");
             $en_lista_espera = $this->contar_lista_espera();
         }
@@ -373,7 +373,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_parcelas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_parcelas)) {
             echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -465,7 +465,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $this->render_page_header(__('Gestión de Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_asignaciones)) {
             echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -516,7 +516,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $this->render_page_header(__('Lista de Espera', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_asignaciones)) {
             echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -769,7 +769,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_huertos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_huertos)) {
             $this->create_tables();
         }
     }
@@ -3398,4 +3398,8 @@ KNOWLEDGE;
         $result = $this->action_red_social_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
+}
+
+if (!class_exists('Flavor_Chat_Huertos_Urbanos_Module', false)) {
+    class_alias('Flavor_Platform_Huertos_Urbanos_Module', 'Flavor_Chat_Huertos_Urbanos_Module');
 }

@@ -4,7 +4,7 @@
  *
  * Maneja todas las operaciones de automatizaciones de email.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

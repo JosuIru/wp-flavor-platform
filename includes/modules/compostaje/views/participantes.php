@@ -2,7 +2,7 @@
 /**
  * Vista Participantes - Módulo Compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

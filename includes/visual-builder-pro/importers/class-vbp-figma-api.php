@@ -4,7 +4,7 @@
  *
  * Cliente para comunicarse con la API de Figma.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Visual_Builder_Pro
  * @since 2.1.0
  */

@@ -2,7 +2,7 @@
 /**
  * Generador de datos de demostración - Legacy Admin UI
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  * @deprecated 2.3.0 Use Flavor_Demo_Data_Manager instead
  *
@@ -447,7 +447,7 @@ class Flavor_Demo_Data_Admin {
         // Guardar log
         update_option('flavor_demo_data_log', $results);
 
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&generated=1'));
+        Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&generated=1'));
         exit;
     }
 
@@ -710,12 +710,12 @@ class Flavor_Demo_Data_Admin {
         delete_option('flavor_demo_grupo_consumo');
         delete_option('flavor_demo_data_log');
 
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&cleaned=1'));
+        Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&cleaned=1'));
         exit;
     }
 
     public function redirect_old_page() {
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG));
+        Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG));
         exit;
     }
 }

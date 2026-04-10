@@ -2,14 +2,14 @@
 /**
  * Clase principal del Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Core {
+class Flavor_Platform_Core {
 
     /**
      * Instancia singleton
@@ -24,7 +24,7 @@ class Flavor_Chat_Core {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Core
+     * @return Flavor_Platform_Core
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -339,4 +339,8 @@ class Flavor_Chat_Core {
 
         return $has_key;
     }
+}
+
+if (!class_exists('Flavor_Chat_Core', false)) {
+    class_alias('Flavor_Platform_Core', 'Flavor_Chat_Core');
 }

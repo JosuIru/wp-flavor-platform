@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Programa de Radio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

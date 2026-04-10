@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Publicidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

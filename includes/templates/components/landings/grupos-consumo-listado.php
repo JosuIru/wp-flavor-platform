@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Listado Grupos de Consumo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $columnas = $columnas ?? 3;

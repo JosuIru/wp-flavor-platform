@@ -5,7 +5,7 @@
  * Orquesta las 3 vistas principales (Espacio, Artista, Comunidad)
  * integrando módulos existentes del ecosistema Flavor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  * @since 3.3.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del módulo Kulturaka
  */
-class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -48,9 +48,18 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         // Kulturaka requiere que eventos y espacios-comunes estén activos
-        $eventos_activo = class_exists('Flavor_Chat_Eventos_Module');
-        $espacios_activo = class_exists('Flavor_Chat_Espacios_Comunes_Module');
-        $socios_activo = class_exists('Flavor_Chat_Socios_Module');
+        $eventos_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module')
+            : 'Flavor_Chat_Eventos_Module';
+        $espacios_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Espacios_Comunes_Module')
+            : 'Flavor_Chat_Espacios_Comunes_Module';
+        $socios_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Socios_Module')
+            : 'Flavor_Chat_Socios_Module';
+        $eventos_activo = class_exists($eventos_module_class);
+        $espacios_activo = class_exists($espacios_module_class);
+        $socios_activo = class_exists($socios_module_class);
 
         return $eventos_activo && $espacios_activo && $socios_activo;
     }
@@ -293,7 +302,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      */
     public function get_vista_artista_data($artista_id) {
         // Usar el sistema de perfiles de artista de socios
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-artista-profile.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-artista-profile.php';
         $artista_manager = Flavor_Socios_Artista_Profile::get_instance();
 
         $artista = $artista_manager->get_artista($artista_id);
@@ -366,7 +375,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_crowdfunding_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
             return [];
         }
 
@@ -446,7 +455,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_crowdfunding_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
             return [];
         }
 
@@ -470,7 +479,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
             return [];
         }
 
@@ -498,7 +507,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_nodos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_nodos')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_nodos')) {
             // Devolver nodos por defecto
             return $this->get_setting('nodos_default', []);
         }
@@ -554,7 +563,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         $espacio_id = absint($datos['espacio_id']);
 
         // Verificar que el artista tiene perfil
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-artista-profile.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-artista-profile.php';
         $artista_manager = Flavor_Socios_Artista_Profile::get_instance();
         $artista = $artista_manager->get_artista_by_usuario($artista_id);
 
@@ -730,7 +739,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
             return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', 'flavor-platform'));
         }
 
@@ -860,7 +869,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_artistas_seguidores';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_artistas_seguidores')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_artistas_seguidores')) {
             return [];
         }
 
@@ -1080,13 +1089,86 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      * Registra rutas REST
      */
     public function register_rest_routes() {
-        register_rest_route('flavor/v1', '/kulturaka/nodos', [
+        $namespace = 'flavor/v1';
+
+        // === Nodos ===
+        register_rest_route($namespace, '/kulturaka/nodos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_nodos'],
             'permission_callback' => '__return_true',
         ]);
 
-        register_rest_route('flavor/v1', '/kulturaka/propuestas', [
+        // === Espacios Culturales ===
+        register_rest_route($namespace, '/kulturaka/espacios', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_espacios'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/kulturaka/espacios/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_espacio'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'validate_callback' => function($param) {
+                        return is_numeric($param);
+                    }
+                ],
+            ],
+        ]);
+
+        // === Artistas ===
+        register_rest_route($namespace, '/kulturaka/artistas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_artistas'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/kulturaka/artistas/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_artista'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'validate_callback' => function($param) {
+                        return is_numeric($param);
+                    }
+                ],
+            ],
+        ]);
+
+        // === Eventos Culturales ===
+        register_rest_route($namespace, '/kulturaka/eventos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_eventos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // === Vista Comunidad ===
+        register_rest_route($namespace, '/kulturaka/comunidad', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_comunidad'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/kulturaka/agradecimientos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_agradecimientos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // === Crowdfunding Cultural ===
+        register_rest_route($namespace, '/kulturaka/crowdfunding', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_crowdfunding'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // === Acciones (POST) ===
+        register_rest_route($namespace, '/kulturaka/propuestas', [
             'methods' => 'POST',
             'callback' => [$this, 'api_crear_propuesta'],
             'permission_callback' => function() {
@@ -1094,12 +1176,28 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
             },
         ]);
 
-        register_rest_route('flavor/v1', '/kulturaka/agradecimientos', [
+        register_rest_route($namespace, '/kulturaka/agradecimientos', [
             'methods' => 'POST',
             'callback' => [$this, 'api_enviar_agradecimiento'],
             'permission_callback' => function() {
                 return is_user_logged_in();
             },
+        ]);
+
+        // === Seguir artista ===
+        register_rest_route($namespace, '/kulturaka/artistas/(?P<id>\d+)/seguir', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_seguir_artista'],
+            'permission_callback' => function() {
+                return is_user_logged_in();
+            },
+        ]);
+
+        // === Métricas ===
+        register_rest_route($namespace, '/kulturaka/metricas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_metricas'],
+            'permission_callback' => '__return_true',
         ]);
     }
 
@@ -1143,6 +1241,327 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         ]);
     }
 
+    /**
+     * API: Obtener espacios culturales
+     */
+    public function api_get_espacios($request) {
+        global $wpdb;
+
+        $tipo = $request->get_param('tipo');
+        $nodo = $request->get_param('nodo');
+        $limite = min($request->get_param('limite') ?: 20, 50);
+        $pagina = max($request->get_param('pagina') ?: 1, 1);
+        $offset = ($pagina - 1) * $limite;
+
+        $where_conditions = ["e.estado = 'activo'"];
+        $where_values = [];
+
+        if ($tipo) {
+            $where_conditions[] = "e.tipo = %s";
+            $where_values[] = $tipo;
+        }
+
+        if ($nodo) {
+            $where_conditions[] = "e.nodo_id = %d";
+            $where_values[] = intval($nodo);
+        }
+
+        $where_clause = implode(' AND ', $where_conditions);
+
+        $query = $wpdb->prepare(
+            "SELECT e.*,
+                    (SELECT COUNT(*) FROM {$wpdb->prefix}flavor_eventos WHERE espacio_id = e.id AND estado = 'publicado') as total_eventos,
+                    (SELECT COALESCE(AVG(rating), 0) FROM {$wpdb->prefix}flavor_kulturaka_ratings WHERE espacio_id = e.id) as rating
+             FROM {$wpdb->prefix}flavor_espacios_comunes e
+             WHERE $where_clause
+             ORDER BY e.nombre ASC
+             LIMIT %d OFFSET %d",
+            array_merge($where_values, [$limite, $offset])
+        );
+
+        $espacios = $wpdb->get_results($query);
+        $total = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_espacios_comunes e WHERE $where_clause");
+
+        // Añadir tipos disponibles
+        $tipos = $this->get_setting('tipos_espacio', []);
+
+        return rest_ensure_response([
+            'espacios' => $espacios ?: [],
+            'total' => intval($total),
+            'pagina' => $pagina,
+            'limite' => $limite,
+            'tipos_disponibles' => $tipos,
+        ]);
+    }
+
+    /**
+     * API: Obtener espacio individual con datos completos
+     */
+    public function api_get_espacio($request) {
+        $espacio_id = intval($request['id']);
+
+        $data = $this->get_vista_espacio_data($espacio_id);
+
+        if (!$data || !$data['espacio']) {
+            return new WP_Error('not_found', __('Espacio no encontrado', 'flavor-platform'), ['status' => 404]);
+        }
+
+        return rest_ensure_response($data);
+    }
+
+    /**
+     * API: Obtener artistas
+     */
+    public function api_get_artistas($request) {
+        global $wpdb;
+
+        $categoria = $request->get_param('categoria');
+        $nodo = $request->get_param('nodo');
+        $limite = min($request->get_param('limite') ?: 20, 50);
+        $pagina = max($request->get_param('pagina') ?: 1, 1);
+        $offset = ($pagina - 1) * $limite;
+
+        $where_conditions = ["a.estado = 'activo'"];
+        $where_values = [];
+
+        if ($categoria) {
+            $where_conditions[] = "a.categorias LIKE %s";
+            $where_values[] = '%' . $wpdb->esc_like($categoria) . '%';
+        }
+
+        if ($nodo) {
+            $where_conditions[] = "a.nodo_id = %d";
+            $where_values[] = intval($nodo);
+        }
+
+        $where_clause = implode(' AND ', $where_conditions);
+
+        $query = $wpdb->prepare(
+            "SELECT a.*,
+                    u.display_name,
+                    (SELECT COUNT(*) FROM {$wpdb->prefix}flavor_eventos WHERE organizador_id = a.usuario_id AND estado = 'publicado') as total_eventos
+             FROM {$wpdb->prefix}flavor_socios_artistas a
+             LEFT JOIN {$wpdb->users} u ON a.usuario_id = u.ID
+             WHERE $where_clause
+             ORDER BY a.rating DESC, a.nombre_artistico ASC
+             LIMIT %d OFFSET %d",
+            array_merge($where_values, [$limite, $offset])
+        );
+
+        $artistas = $wpdb->get_results($query);
+        $total = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_socios_artistas a WHERE $where_clause");
+
+        return rest_ensure_response([
+            'artistas' => $artistas ?: [],
+            'total' => intval($total),
+            'pagina' => $pagina,
+            'limite' => $limite,
+        ]);
+    }
+
+    /**
+     * API: Obtener artista individual con datos completos
+     */
+    public function api_get_artista($request) {
+        $artista_id = intval($request['id']);
+
+        $data = $this->get_vista_artista_data($artista_id);
+
+        if (!$data || !$data['artista']) {
+            return new WP_Error('not_found', __('Artista no encontrado', 'flavor-platform'), ['status' => 404]);
+        }
+
+        // Añadir si el usuario actual sigue al artista
+        $user_id = get_current_user_id();
+        if ($user_id && $data['artista']) {
+            $data['siguiendo'] = $this->is_siguiendo_artista($user_id, $artista_id);
+        }
+
+        return rest_ensure_response($data);
+    }
+
+    /**
+     * API: Obtener eventos culturales
+     */
+    public function api_get_eventos($request) {
+        global $wpdb;
+
+        $tipo = $request->get_param('tipo');
+        $espacio_id = $request->get_param('espacio_id');
+        $nodo = $request->get_param('nodo');
+        $desde = $request->get_param('desde') ?: date('Y-m-d');
+        $limite = min($request->get_param('limite') ?: 20, 50);
+        $pagina = max($request->get_param('pagina') ?: 1, 1);
+        $offset = ($pagina - 1) * $limite;
+
+        $where_conditions = [
+            "e.estado = 'publicado'",
+            "e.fecha_inicio >= %s"
+        ];
+        $where_values = [$desde];
+
+        if ($tipo) {
+            $where_conditions[] = "e.tipo = %s";
+            $where_values[] = $tipo;
+        }
+
+        if ($espacio_id) {
+            $where_conditions[] = "e.espacio_id = %d";
+            $where_values[] = intval($espacio_id);
+        }
+
+        $where_clause = implode(' AND ', $where_conditions);
+
+        $query = $wpdb->prepare(
+            "SELECT e.*,
+                    ec.nombre as espacio_nombre, ec.direccion as espacio_direccion,
+                    a.nombre_artistico, a.slug as artista_slug
+             FROM {$wpdb->prefix}flavor_eventos e
+             LEFT JOIN {$wpdb->prefix}flavor_espacios_comunes ec ON e.espacio_id = ec.id
+             LEFT JOIN {$wpdb->prefix}flavor_socios_artistas a ON e.organizador_id = a.usuario_id
+             WHERE $where_clause
+             ORDER BY e.fecha_inicio ASC
+             LIMIT %d OFFSET %d",
+            array_merge($where_values, [$limite, $offset])
+        );
+
+        $eventos = $wpdb->get_results($query);
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_eventos e WHERE $where_clause",
+            $where_values
+        ));
+
+        // Tipos de evento disponibles
+        $tipos = $this->get_setting('tipos_evento', []);
+
+        return rest_ensure_response([
+            'eventos' => $eventos ?: [],
+            'total' => intval($total),
+            'pagina' => $pagina,
+            'limite' => $limite,
+            'tipos_disponibles' => $tipos,
+        ]);
+    }
+
+    /**
+     * API: Obtener vista comunidad
+     */
+    public function api_get_comunidad($request) {
+        $comunidad_id = $request->get_param('comunidad_id');
+        $usuario_id = get_current_user_id();
+
+        $data = $this->get_vista_comunidad_data($comunidad_id, $usuario_id);
+
+        return rest_ensure_response($data);
+    }
+
+    /**
+     * API: Obtener agradecimientos
+     */
+    public function api_get_agradecimientos($request) {
+        $comunidad_id = $request->get_param('comunidad_id');
+        $limite = min($request->get_param('limite') ?: 20, 50);
+
+        $agradecimientos = $this->get_muro_agradecimientos($comunidad_id, $limite);
+
+        return rest_ensure_response([
+            'agradecimientos' => $agradecimientos,
+        ]);
+    }
+
+    /**
+     * API: Obtener proyectos de crowdfunding
+     */
+    public function api_get_crowdfunding($request) {
+        $comunidad_id = $request->get_param('comunidad_id');
+        $limite = min($request->get_param('limite') ?: 20, 50);
+
+        $proyectos = $this->get_crowdfunding_activos($comunidad_id, $limite);
+
+        return rest_ensure_response([
+            'proyectos' => $proyectos,
+        ]);
+    }
+
+    /**
+     * API: Seguir/dejar de seguir artista
+     */
+    public function api_seguir_artista($request) {
+        global $wpdb;
+
+        $artista_id = intval($request['id']);
+        $usuario_id = get_current_user_id();
+        $accion = $request->get_param('accion') ?: 'toggle';
+
+        $tabla = $wpdb->prefix . 'flavor_kulturaka_seguimientos';
+
+        // Verificar si ya sigue
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND artista_id = %d",
+            $usuario_id, $artista_id
+        ));
+
+        if ($accion === 'toggle') {
+            $accion = $existe ? 'dejar' : 'seguir';
+        }
+
+        if ($accion === 'seguir' && !$existe) {
+            $wpdb->insert($tabla, [
+                'usuario_id' => $usuario_id,
+                'artista_id' => $artista_id,
+                'created_at' => current_time('mysql'),
+            ]);
+            $siguiendo = true;
+        } elseif ($accion === 'dejar' && $existe) {
+            $wpdb->delete($tabla, [
+                'usuario_id' => $usuario_id,
+                'artista_id' => $artista_id,
+            ]);
+            $siguiendo = false;
+        } else {
+            $siguiendo = (bool) $existe;
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'siguiendo' => $siguiendo,
+        ]);
+    }
+
+    /**
+     * API: Obtener métricas globales
+     */
+    public function api_get_metricas($request) {
+        global $wpdb;
+
+        $tabla_nodos = $wpdb->prefix . 'flavor_kulturaka_nodos';
+
+        $metricas = [
+            'total_nodos' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla_nodos WHERE activo = 1") ?: 0,
+            'total_eventos' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_eventos WHERE estado IN ('publicado', 'finalizado')") ?: 0,
+            'total_artistas' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_socios_artistas WHERE estado = 'activo'") ?: 0,
+            'total_espacios' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_espacios_comunes WHERE estado = 'activo'") ?: 0,
+            'fondos_recaudados' => floatval($wpdb->get_var("SELECT SUM(fondos_recaudados) FROM $tabla_nodos") ?: 0),
+            'audiencia_total' => intval($wpdb->get_var("SELECT COALESCE(SUM(inscritos_count), 0) FROM {$wpdb->prefix}flavor_eventos") ?: 0),
+        ];
+
+        return rest_ensure_response($metricas);
+    }
+
+    /**
+     * Verifica si un usuario sigue a un artista
+     */
+    private function is_siguiendo_artista($usuario_id, $artista_id) {
+        global $wpdb;
+
+        $tabla = $wpdb->prefix . 'flavor_kulturaka_seguimientos';
+
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND artista_id = %d",
+            $usuario_id, $artista_id
+        ));
+    }
+
     // =========================================================
     // Assets
     // =========================================================
@@ -1157,16 +1576,16 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-kulturaka',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/kulturaka/assets/kulturaka.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/kulturaka/assets/kulturaka.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-kulturaka',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/kulturaka/assets/kulturaka.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/kulturaka/assets/kulturaka.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1193,4 +1612,9 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         return false;
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Kulturaka_Module', false)) {
+    class_alias('Flavor_Platform_Kulturaka_Module', 'Flavor_Chat_Kulturaka_Module');
 }

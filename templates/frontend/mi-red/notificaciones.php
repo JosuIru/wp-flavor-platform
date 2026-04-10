@@ -4,7 +4,7 @@
  *
  * Centro de notificaciones unificado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

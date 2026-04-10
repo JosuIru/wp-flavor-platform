@@ -4,7 +4,7 @@
  *
  * Muestra las actas de reuniones con opciones de descarga.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -21,7 +21,7 @@ $tablas_actas_candidatas = [
     $prefijo_tabla . 'actas_reuniones',
 ];
 foreach ($tablas_actas_candidatas as $tabla_candidata) {
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_candidata)) {
         $tabla_actas = $tabla_candidata;
         break;
     }

@@ -9,7 +9,7 @@ Plataforma comunitaria para publicar anuncios de **regalo, venta, cambio y alqui
 ## Base URL
 
 ```
-https://tu-sitio.com/wp-json/flavor-chat-ia/v1/marketplace
+https://tu-sitio.com/wp-json/flavor-platform/v1/marketplace
 ```
 
 ## Autenticación
@@ -74,7 +74,7 @@ GET /marketplace/anuncios
 
 **cURL**:
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/marketplace/anuncios?tipo=venta&categoria=deportes"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/marketplace/anuncios?tipo=venta&categoria=deportes"
 ```
 
 ---
@@ -143,7 +143,7 @@ POST /marketplace/anuncios
 
 **cURL**:
 ```bash
-curl -X POST "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/marketplace/anuncios" \
+curl -X POST "https://tu-sitio.com/wp-json/flavor-platform/v1/marketplace/anuncios" \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -487,7 +487,7 @@ Usuario A → POST /anuncios/42/marcar-vendido
 ```dart
 class MarketplaceService {
   final Dio _dio;
-  final String baseUrl = 'https://tu-sitio.com/wp-json/flavor-chat-ia/v1/marketplace';
+  final String baseUrl = 'https://tu-sitio.com/wp-json/flavor-platform/v1/marketplace';
 
   // Listar anuncios
   Future<PaginatedAnuncios> getAnuncios({

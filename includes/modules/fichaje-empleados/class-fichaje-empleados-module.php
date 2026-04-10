@@ -2,7 +2,7 @@
 /**
  * Módulo de Fichaje de Empleados para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Fichaje de Empleados - Control de horarios y asistencia
  */
-class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Fichaje_Empleados_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -39,7 +39,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_fichajes);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_fichajes);
     }
 
     /**
@@ -642,7 +642,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             return 0;
         }
 
@@ -661,7 +661,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             return $estadisticas;
         }
 
@@ -1051,7 +1051,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             $this->create_tables();
         }
     }
@@ -1143,8 +1143,11 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $user_id = $user_id ?: get_current_user_id();
 
         // Intentar obtener del módulo Empresas si está activo
-        if (class_exists('Flavor_Chat_Empresas_Module')) {
-            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+        $empresas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Empresas_Module')
+            : 'Flavor_Chat_Empresas_Module';
+        if (class_exists($empresas_module_class)) {
+            $empresas_module = Flavor_Platform_Module_Loader::get_instance()->get_module('empresas');
             if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
                 return $empresas_module->get_empresa_actual_usuario($user_id);
             }
@@ -1962,4 +1965,8 @@ KNOWLEDGE;
             Flavor_Fichaje_Empleados_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Fichaje_Empleados_Module', false)) {
+    class_alias('Flavor_Platform_Fichaje_Empleados_Module', 'Flavor_Chat_Fichaje_Empleados_Module');
 }

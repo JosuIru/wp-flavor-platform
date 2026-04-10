@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Banco de Tiempo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#8b5cf6';

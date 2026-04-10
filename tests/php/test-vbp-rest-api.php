@@ -8,7 +8,7 @@
  * - Con WP CLI: wp eval-file tests/php/test-vbp-rest-api.php
  * - O incluir en un contexto WordPress con acceso a las clases VBP
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 2.0.0
  */
 

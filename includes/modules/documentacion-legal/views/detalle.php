@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $documento: objeto con datos del documento
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

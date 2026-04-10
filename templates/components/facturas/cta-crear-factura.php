@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Facturas CTA Crear Factura
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -114,6 +114,9 @@ dependencies:
   video_player: ^2.8.2
   chewie: ^1.7.4
 
+  # WebRTC for voice/video calls
+  flutter_webrtc: ^0.10.4
+
   # App Reviews
   in_app_review: ^2.0.8
 

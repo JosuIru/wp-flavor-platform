@@ -684,7 +684,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           TileLayer(
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: const ['a', 'b', 'c'],
-            userAgentPackageName: 'flavor-chat-ia',
+            userAgentPackageName: 'flavor-platform',
           ),
           if (_userLocation != null)
             MarkerLayer(

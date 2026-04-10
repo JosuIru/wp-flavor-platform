@@ -4,7 +4,7 @@
  *
  * Proporciona shortcodes para el portal de servicios y dashboard personalizado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -59,31 +59,31 @@ class Flavor_Portal_Shortcodes {
         // Design tokens base
         wp_enqueue_style(
             'fl-design-tokens',
-            FLAVOR_CHAT_IA_URL . 'assets/css/core/design-tokens.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/core/design-tokens.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_style(
             'flavor-portal',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/portal' . $suffix . '.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/portal' . $suffix . '.css',
             ['fl-design-tokens'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // CSS unificado para mejoras visuales
         wp_enqueue_style(
             'flavor-portal-unified',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/client-dashboard-unified.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/client-dashboard-unified.css',
             ['flavor-portal'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-portal-tools',
-            FLAVOR_CHAT_IA_URL . 'assets/js/portal-tools.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/portal-tools.js',
             [],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -273,7 +273,7 @@ class Flavor_Portal_Shortcodes {
                             <?php _e('Una vista rápida de tu actividad y participación reciente en el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
-                    <a href="<?php echo Flavor_Chat_Helpers::get_action_url('servicios', ''); ?>" class="flavor-link-all">
+                    <a href="<?php echo Flavor_Platform_Helpers::get_action_url('servicios', ''); ?>" class="flavor-link-all">
                         <?php _e('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                     </a>
                 </div>
@@ -438,7 +438,7 @@ class Flavor_Portal_Shortcodes {
         ob_start();
         ?>
         <div class="flavor-header-actions">
-            <a href="<?php echo Flavor_Chat_Helpers::get_action_url('', ''); ?>" class="flavor-header-action">
+            <a href="<?php echo Flavor_Platform_Helpers::get_action_url('', ''); ?>" class="flavor-header-action">
                 <span class="flavor-header-action__icon">🧭</span>
                 <span class="flavor-header-action__text"><?php _e('Ver ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
@@ -806,11 +806,11 @@ class Flavor_Portal_Shortcodes {
      * @return array
      */
     private function get_portal_ecosystem_overview() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $loaded_modules = $loader->get_loaded_modules();
 
         if (empty($loaded_modules) || !is_array($loaded_modules)) {
@@ -837,7 +837,7 @@ class Flavor_Portal_Shortcodes {
                 'description' => method_exists($module, 'get_description') ? $module->get_description() : '',
                 'icon' => method_exists($module, 'get_icon') ? $module->get_icon() : 'dashicons-admin-plugins',
                 'color' => method_exists($module, 'get_color') ? $module->get_color() : '#3b82f6',
-                'url' => Flavor_Chat_Helpers::get_action_url($module_id, ''),
+                'url' => Flavor_Platform_Helpers::get_action_url($module_id, ''),
                 'role' => $ecosystem['module_role'] ?? 'vertical',
                 'ecosystem' => $ecosystem,
                 'dashboard' => $dashboard,
@@ -1008,7 +1008,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '📅',
                 'title' => __('Activar encuentro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Convoca un evento y mueve la agenda compartida del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'crear'),
+                'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'crear'),
                 'kind' => 'coordinar',
                 'contexts' => ['eventos', 'agenda', 'comunidad'],
                 'favorite_weight' => 82,
@@ -1017,7 +1017,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '🎓',
                 'title' => __('Proponer taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Abre un espacio de aprendizaje y circulación de saberes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('talleres', 'crear'),
+                'url' => Flavor_Platform_Helpers::get_action_url('talleres', 'crear'),
                 'kind' => 'coordinar',
                 'contexts' => ['aprendizaje', 'saberes', 'comunidad'],
                 'favorite_weight' => 68,
@@ -1026,7 +1026,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '🤝',
                 'title' => __('Pedir ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Activa la red de cuidados cercana cuando hace falta apoyo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'solicitar'),
+                'url' => Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'solicitar'),
                 'kind' => 'operar',
                 'contexts' => ['cuidados', 'solidaridad', 'comunidad'],
                 'favorite_weight' => 88,
@@ -1035,7 +1035,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '⏰',
                 'title' => __('Ofrecer tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Comparte una capacidad concreta dentro de la red de intercambio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer'),
+                'url' => Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'ofrecer'),
                 'kind' => 'operar',
                 'contexts' => ['comunidad', 'intercambio', 'cuidados'],
                 'favorite_weight' => 80,
@@ -1044,7 +1044,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '🥬',
                 'title' => __('Explorar catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Revisa consumo local y ciclos activos de compra compartida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
+                'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
                 'kind' => 'entender',
                 'contexts' => ['consumo', 'comunidad', 'sostenibilidad'],
                 'favorite_weight' => 76,
@@ -1053,7 +1053,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '🔧',
                 'title' => __('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Lanza una señal útil para resolver un problema del entorno.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'crear'),
+                'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'crear'),
                 'kind' => 'operar',
                 'contexts' => ['comunidad', 'actividad'],
                 'favorite_weight' => 66,
@@ -1062,7 +1062,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '⚡',
                 'title' => __('Registrar producción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Actualiza lecturas y sigue el pulso energético de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
+                'url' => Flavor_Platform_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
                 'kind' => 'operar',
                 'contexts' => ['energia', 'sostenibilidad', 'comunidad'],
                 'favorite_weight' => 90,
@@ -1071,7 +1071,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '🗳️',
                 'title' => __('Entrar en decisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Revisa propuestas y votaciones activas del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                'url' => Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
                 'kind' => 'coordinar',
                 'contexts' => ['participacion', 'gobernanza', 'comunidad'],
                 'favorite_weight' => 84,
@@ -1080,7 +1080,7 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '📘',
                 'title' => __('Abrir recursos comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => __('Consulta memoria, actas e indicadores clave del ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('transparencia', 'presupuesto'),
+                'url' => Flavor_Platform_Helpers::get_action_url('transparencia', 'presupuesto'),
                 'kind' => 'entender',
                 'contexts' => ['transparencia', 'gobernanza', 'impacto'],
                 'favorite_weight' => 72,
@@ -1124,7 +1124,7 @@ class Flavor_Portal_Shortcodes {
                 __('Accede a las funcionalidades de %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_modulo
             ),
-            'url' => Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module_slug), ''),
+            'url' => Flavor_Platform_Helpers::get_action_url(str_replace('-', '_', $module_slug), ''),
             'kind' => 'operar',
             'contexts' => ['comunidad'],
             'favorite_weight' => 50,
@@ -1141,7 +1141,7 @@ class Flavor_Portal_Shortcodes {
         ]);
 
         $accesos = [];
-        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
 
         if (!$loader) {
             return $accesos;
@@ -1320,7 +1320,7 @@ class Flavor_Portal_Shortcodes {
      * @return array<string,int>
      */
     private function get_portal_user_context_scores() {
-        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
 
         if (!$loader) {
             return [];
@@ -1427,8 +1427,8 @@ class Flavor_Portal_Shortcodes {
         $module_id = sanitize_key(str_replace('-', '_', (string) $module_id));
         $class_name = (string) $class_name;
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             if ($loader && method_exists($loader, 'get_loaded_modules')) {
                 $loaded_modules = (array) $loader->get_loaded_modules();
 
@@ -1695,7 +1695,7 @@ class Flavor_Portal_Shortcodes {
         $acciones = [];
 
         // Obtener eventos próximos si el módulo existe
-        $eventos_module = $this->resolve_portal_module_instance('eventos', 'Flavor_Chat_Eventos_Module');
+        $eventos_module = $this->resolve_portal_module_instance('eventos', flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module'));
         if ($eventos_module && method_exists($eventos_module, 'get_proximos_eventos_usuario')) {
                 $eventos = $eventos_module->get_proximos_eventos_usuario($user_id, 3);
                 foreach ($eventos as $evento) {
@@ -1713,7 +1713,7 @@ class Flavor_Portal_Shortcodes {
         }
 
         // Obtener reservas próximas si el módulo existe
-        $reservas_module = $this->resolve_portal_module_instance('reservas', 'Flavor_Chat_Reservas_Module');
+        $reservas_module = $this->resolve_portal_module_instance('reservas', flavor_get_runtime_class_name('Flavor_Chat_Reservas_Module'));
         if ($reservas_module && method_exists($reservas_module, 'get_proximas_reservas_usuario')) {
                 $reservas = $reservas_module->get_proximas_reservas_usuario($user_id, 3);
                 foreach ($reservas as $reserva) {
@@ -1901,7 +1901,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d aviso urgente', '%d avisos urgentes', $urgentes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $urgentes
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
+                'link' => Flavor_Platform_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => $reason,
@@ -1924,7 +1924,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d aviso activo', '%d avisos activos', $activos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $activos
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
+                'link' => Flavor_Platform_Helpers::get_action_url('avisos_municipales', ''),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
                 'severity_reason' => __('Hay avisos activos que conviene revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1973,7 +1973,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d anuncio prioritario', '%d anuncios prioritarios', $prioridad_alta, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prioridad_alta
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('comunidades', 'anuncios'),
+                'link' => Flavor_Platform_Helpers::get_action_url('comunidades', 'anuncios'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => !empty($ultimo['titulo'])
@@ -2000,7 +2000,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d anuncio activo en el tablón', '%d anuncios activos en el tablón', $anuncios_activos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $anuncios_activos
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('comunidades', 'anuncios'),
+                'link' => Flavor_Platform_Helpers::get_action_url('comunidades', 'anuncios'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
                 'severity_reason' => __('Hay publicaciones activas en el tablón de red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2065,7 +2065,7 @@ class Flavor_Portal_Shortcodes {
                 _n('%d notificación pendiente', '%d notificaciones pendientes', $unread_count, FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $unread_count
             ),
-            'link' => !empty($latest['enlace']) ? $latest['enlace'] : Flavor_Chat_Helpers::get_action_url('notificaciones', ''),
+            'link' => !empty($latest['enlace']) ? $latest['enlace'] : Flavor_Platform_Helpers::get_action_url('notificaciones', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => !empty($latest['titulo'])
@@ -2077,7 +2077,7 @@ class Flavor_Portal_Shortcodes {
     }
 
     private function get_portal_event_notifications($user_id) {
-        $eventos_module = $this->resolve_portal_module_instance('eventos', 'Flavor_Chat_Eventos_Module');
+        $eventos_module = $this->resolve_portal_module_instance('eventos', flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module'));
         if (!$eventos_module || !method_exists($eventos_module, 'get_proximos_eventos_usuario')) {
             return [];
         }
@@ -2100,7 +2100,7 @@ class Flavor_Portal_Shortcodes {
             'type' => $severity_slug === 'attention' ? 'warning' : 'info',
             'icon' => '📅',
             'text' => __('Tienes un evento cercano', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            'link' => $evento['url'] ?? Flavor_Chat_Helpers::get_action_url('eventos', ''),
+            'link' => $evento['url'] ?? Flavor_Platform_Helpers::get_action_url('eventos', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => sprintf(
@@ -2112,7 +2112,7 @@ class Flavor_Portal_Shortcodes {
     }
 
     private function get_portal_reserva_notifications($user_id) {
-        $reservas_module = $this->resolve_portal_module_instance('reservas', 'Flavor_Chat_Reservas_Module');
+        $reservas_module = $this->resolve_portal_module_instance('reservas', flavor_get_runtime_class_name('Flavor_Chat_Reservas_Module'));
         if (!$reservas_module || !method_exists($reservas_module, 'get_proximas_reservas_usuario')) {
             return [];
         }
@@ -2135,7 +2135,7 @@ class Flavor_Portal_Shortcodes {
             'type' => $severity_slug === 'attention' ? 'warning' : 'info',
             'icon' => '🏠',
             'text' => __('Tienes una reserva próxima', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            'link' => $reserva['url'] ?? Flavor_Chat_Helpers::get_action_url('reservas', ''),
+            'link' => $reserva['url'] ?? Flavor_Platform_Helpers::get_action_url('reservas', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => sprintf(
@@ -2172,7 +2172,7 @@ class Flavor_Portal_Shortcodes {
                     'type' => $severity_slug === 'attention' ? 'warning' : 'info',
                     'icon' => '🗳️',
                     'text' => __('Hay decisiones activas en marcha', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'link' => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
                     'severity_reason' => sprintf(
@@ -2201,7 +2201,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $propuestas_abiertas
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('participacion', 'propuestas'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('participacion', 'propuestas'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Hay actividad participativa que conviene revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2263,7 +2263,7 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '⚠️',
                 'text' => __('Hay incidencias que requieren atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'link' => Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
+                'link' => Flavor_Platform_Helpers::get_action_url('incidencias', 'mis-incidencias'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => implode(' · ', $reason_parts),
@@ -2286,7 +2286,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $total_abiertas
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('incidencias', ''),
+                'link' => Flavor_Platform_Helpers::get_action_url('incidencias', ''),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
                 'severity_reason' => __('Hay actividad comunitaria de seguimiento en incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2335,7 +2335,7 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '🪪',
                 'text' => __('Tu vínculo de socio requiere atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'link' => Flavor_Chat_Helpers::get_action_url('socios', 'cuotas'),
+                'link' => Flavor_Platform_Helpers::get_action_url('socios', 'cuotas'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => $cuotas_pendientes > 0
@@ -2352,7 +2352,7 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '🪪',
                 'text' => __('Tu membresía sigue pendiente de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'link' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil'),
+                'link' => Flavor_Platform_Helpers::get_action_url('socios', 'mi-perfil'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
                 'severity_reason' => __('Conviene revisar tu estado y completar lo que falte.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2386,7 +2386,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d incidencia energética abierta', '%d incidencias energéticas abiertas', $incidencias_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $incidencias_abiertas
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'mantenimiento'),
+                'link' => Flavor_Platform_Helpers::get_action_url('energia_comunitaria', 'mantenimiento'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2410,7 +2410,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d liquidación pendiente', '%d liquidaciones pendientes', $liquidaciones_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $liquidaciones_pendientes
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Hay liquidaciones energéticas pendientes de revisión o aceptación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2452,7 +2452,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d préstamo vencido', '%d préstamos vencidos', $prestamos_vencidos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prestamos_vencidos
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
+                'link' => Flavor_Platform_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => __('Tienes préstamos que deberías devolver.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2477,7 +2477,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d préstamo por vencer', '%d préstamos por vencer', $prestamos_por_vencer, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prestamos_por_vencer
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
+                'link' => Flavor_Platform_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
                 'severity_reason' => __('Conviene revisar tus préstamos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2501,7 +2501,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d libro nuevo disponible', '%d libros nuevos disponibles', $nuevos_libros, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $nuevos_libros
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'catalogo'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('biblioteca', 'catalogo'),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
                     'severity_reason' => __('Hay novedades en la biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2548,7 +2548,7 @@ class Flavor_Portal_Shortcodes {
                 'text' => $horas_restantes <= 2
                     ? sprintf(__('Bici a devolver en %d hora(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas_restantes)
                     : __('Tienes una bicicleta reservada', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'link' => Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', 'mis-reservas'),
+                'link' => Flavor_Platform_Helpers::get_action_url('bicicletas_compartidas', 'mis-reservas'),
                 'severity_slug' => $horas_restantes <= 2 ? 'attention' : 'followup',
                 'severity_label' => $this->get_tool_severity_label($horas_restantes <= 2 ? 'attention' : 'followup'),
                 'severity_reason' => sprintf(__('Devolver antes de las %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2572,7 +2572,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d bicicleta disponible', '%d bicicletas disponibles', $bicis_disponibles, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $bicis_disponibles
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
+                    'link' => Flavor_Platform_Helpers::get_action_url('bicicletas_compartidas', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
                     'severity_reason' => __('Puedes reservar una bici cuando quieras.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2618,7 +2618,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d respuesta nueva en tus temas', '%d respuestas nuevas en tus temas', $respuestas_nuevas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $respuestas_nuevas
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('foros', 'mis-temas'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Han respondido a tus publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2640,7 +2640,7 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '📢',
                 'text' => sprintf(__('%d hilos nuevos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN), $hilos_nuevos),
-                'link' => Flavor_Chat_Helpers::get_action_url('foros', ''),
+                'link' => Flavor_Platform_Helpers::get_action_url('foros', ''),
                 'severity_slug' => 'stable',
                 'severity_label' => $this->get_tool_severity_label('stable'),
                 'severity_reason' => __('Hay debate activo en los foros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2685,7 +2685,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d episodio nuevo', '%d episodios nuevos', $episodios_nuevos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $episodios_nuevos
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('podcast', ''),
+                    'link' => Flavor_Platform_Helpers::get_action_url('podcast', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
                     'severity_reason' => !empty($ultimo['titulo'])
@@ -2719,7 +2719,7 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '📻',
                     'text' => sprintf(__('En directo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $programa_hoy['nombre']),
-                    'link' => Flavor_Chat_Helpers::get_action_url('radio', ''),
+                    'link' => Flavor_Platform_Helpers::get_action_url('radio', ''),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Hay programación en vivo ahora.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2760,7 +2760,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d mención nueva', '%d menciones nuevas', $menciones, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $menciones
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('red_social', 'menciones'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('red_social', 'menciones'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Te han mencionado en publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2791,7 +2791,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d publicación nueva de tus seguidos', '%d publicaciones nuevas de tus seguidos', $posts_seguidos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $posts_seguidos
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('red_social', ''),
+                    'link' => Flavor_Platform_Helpers::get_action_url('red_social', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
                     'severity_reason' => __('Hay actividad reciente en tu red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2838,7 +2838,7 @@ class Flavor_Portal_Shortcodes {
                     _n('%d mensaje sin leer', '%d mensajes sin leer', $mensajes_sin_leer, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $mensajes_sin_leer
                 ),
-                'link' => Flavor_Chat_Helpers::get_action_url('chat_grupos', ''),
+                'link' => Flavor_Platform_Helpers::get_action_url('chat_grupos', ''),
                 'severity_slug' => $mensajes_sin_leer >= 10 ? 'attention' : 'followup',
                 'severity_label' => $this->get_tool_severity_label($mensajes_sin_leer >= 10 ? 'attention' : 'followup'),
                 'severity_reason' => __('Tienes conversaciones pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2908,7 +2908,7 @@ class Flavor_Portal_Shortcodes {
                     'text' => $dias_restantes <= 2
                         ? sprintf(__('Ciclo cierra en %d día(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes)
                         : sprintf(__('%s abierto para pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo_ciclo),
-                    'link' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'hacer-pedido'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'hacer-pedido'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
                     'severity_reason' => sprintf(__('Cierra el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2951,7 +2951,7 @@ class Flavor_Portal_Shortcodes {
                         _n('%d mensaje en tus anuncios', '%d mensajes en tus anuncios', $mensajes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $mensajes
                     ),
-                    'link' => Flavor_Chat_Helpers::get_action_url('marketplace', 'mis-anuncios'),
+                    'link' => Flavor_Platform_Helpers::get_action_url('marketplace', 'mis-anuncios'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
                     'severity_reason' => __('Personas interesadas en lo que ofreces.', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -2992,7 +2992,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '🗳️',
                 'titulo' => $votacion['titulo'] ?? __('Decisión activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
-                'url'    => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3031,7 +3031,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '📋',
                 'titulo' => $tramite['titulo'] ?? __('Trámite pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $tramite['created_at'] ?? '',
-                'url'    => Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('tramites', 'mis-tramites'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3105,7 +3105,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => $candidata['icono'],
                 'titulo' => $candidata['titulo'],
                 'fecha'  => $candidata['fecha'],
-                'url'    => Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''),
+                'url'    => Flavor_Platform_Helpers::get_action_url('grupos_consumo', ''),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3141,7 +3141,7 @@ class Flavor_Portal_Shortcodes {
                     'icono'  => '📈',
                     'titulo' => __('Registrar lectura energética', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => current_time('mysql'),
-                    'url'    => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
+                    'url'    => Flavor_Platform_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
                     'severity_slug' => 'attention',
                     'severity_label' => $this->get_tool_severity_label('attention'),
                 ];
@@ -3166,7 +3166,7 @@ class Flavor_Portal_Shortcodes {
                     'icono'  => '💶',
                     'titulo' => $liquidacion['referencia'] ?: __('Liquidación energética', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => $fecha_base,
-                    'url'    => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
+                    'url'    => Flavor_Platform_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
                 ];
@@ -3214,7 +3214,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '🎨',
                 'titulo' => $inscripcion['titulo'] ?? __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
-                'url'    => Flavor_Chat_Helpers::get_action_url('talleres', 'mis-inscripciones'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('talleres', 'mis-inscripciones'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3258,7 +3258,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '📚',
                 'titulo' => sprintf(__('Devolver: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamo['titulo'] ?? __('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 'fecha'  => $fecha,
-                'url'    => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3307,7 +3307,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '📖',
                 'titulo' => $sesion['titulo'] ?? $sesion['curso_nombre'] ?? __('Clase', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
-                'url'    => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('cursos', 'mis-cursos'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3359,7 +3359,7 @@ class Flavor_Portal_Shortcodes {
                     'icono'  => '💳',
                     'titulo' => $cuota['concepto'] ?? __('Cuota pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => $fecha,
-                    'url'    => Flavor_Chat_Helpers::get_action_url('socios', 'cuotas'),
+                    'url'    => Flavor_Platform_Helpers::get_action_url('socios', 'cuotas'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
                 ];
@@ -3401,7 +3401,7 @@ class Flavor_Portal_Shortcodes {
                 'icono'  => '🤝',
                 'titulo' => $solicitud['titulo'] ?? __('Ayuda comprometida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
-                'url'    => Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'mis-compromisos'),
+                'url'    => Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'mis-compromisos'),
                 'severity_slug' => $severity_slug,
                 'severity_label' => $this->get_tool_severity_label($severity_slug),
             ];
@@ -3416,7 +3416,7 @@ class Flavor_Portal_Shortcodes {
     private function render_useful_links() {
         $links = [
             ['url' => home_url('/servicios/'), 'text' => __('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍'],
-            ['url' => Flavor_Chat_Helpers::get_action_url('', ''), 'text' => __('Volver al portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🧭'],
+            ['url' => Flavor_Platform_Helpers::get_action_url('', ''), 'text' => __('Volver al portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🧭'],
             ['url' => admin_url('profile.php'), 'text' => __('Abrir perfil', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👤'],
         ];
 
@@ -3454,7 +3454,7 @@ class Flavor_Portal_Shortcodes {
         ], $atts);
 
         // Obtener configuración de diseño
-        $design_settings = get_option('flavor_chat_ia_settings', []);
+        $design_settings = flavor_get_main_settings();
 
         $modulos = $this->get_modulos_con_stats();
 
@@ -3539,11 +3539,11 @@ class Flavor_Portal_Shortcodes {
      * Obtiene módulos con sus estadísticas formateadas para tarjetas
      */
     private function get_modulos_con_stats() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_activos = $loader->get_loaded_modules();
         $modulos_con_stats = [];
         $user_id = get_current_user_id();
@@ -4012,11 +4012,11 @@ class Flavor_Portal_Shortcodes {
      * Obtiene módulos disponibles según contexto
      */
     private function get_modulos_disponibles($tipo = 'servicios') {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_activos = $loader->get_loaded_modules();
         $modulos_disponibles = [];
 
@@ -4529,7 +4529,7 @@ class Flavor_Portal_Shortcodes {
         $accesos = [];
 
         // Accesos según módulos activos y permisos
-        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
         if (!$loader) {
             return $accesos;
         }
@@ -4617,8 +4617,8 @@ class Flavor_Portal_Shortcodes {
      */
     private function get_tool_data_for_favorite($tool_id) {
         // Intentar obtener desde módulo cargado
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $modules = $loader->get_loaded_modules();
 
             if (isset($modules[$tool_id])) {
@@ -4627,7 +4627,7 @@ class Flavor_Portal_Shortcodes {
                 return [
                     'title' => $config['title'] ?? $instance->name ?? ucfirst(str_replace('_', ' ', $tool_id)),
                     'icon' => $config['icon'] ?? $this->get_modulo_icon($tool_id),
-                    'url' => $config['url'] ?? Flavor_Chat_Helpers::get_action_url($tool_id, ''),
+                    'url' => $config['url'] ?? Flavor_Platform_Helpers::get_action_url($tool_id, ''),
                 ];
             }
         }
@@ -4636,7 +4636,7 @@ class Flavor_Portal_Shortcodes {
         return [
             'title' => ucfirst(str_replace('_', ' ', $tool_id)),
             'icon' => $this->get_modulo_icon($tool_id),
-            'url' => Flavor_Chat_Helpers::get_action_url($tool_id, ''),
+            'url' => Flavor_Platform_Helpers::get_action_url($tool_id, ''),
         ];
     }
 }

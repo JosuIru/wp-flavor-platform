@@ -2,11 +2,11 @@
 /**
  * Exportador de Reportes de Analytics
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.8.0
  */
 
-namespace Flavor_Chat_IA;
+namespace Flavor_Platform;
 
 if (!defined('ABSPATH')) {
     exit;

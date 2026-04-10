@@ -5,7 +5,7 @@
  * Sistema de medición y reducción del impacto ambiental colectivo.
  * Permite calcular, registrar y compensar la huella ecológica.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del módulo Huella Ecológica Comunitaria
  */
-class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -476,14 +476,14 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             'flavor-huella-ecologica',
             $this->get_module_url() . 'assets/css/huella-ecologica.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-huella-ecologica',
             $this->get_module_url() . 'assets/js/huella-ecologica.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1932,4 +1932,9 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Huella_Ecologica_Module', false)) {
+    class_alias('Flavor_Platform_Huella_Ecologica_Module', 'Flavor_Chat_Huella_Ecologica_Module');
 }

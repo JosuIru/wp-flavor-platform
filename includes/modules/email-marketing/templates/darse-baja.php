@@ -2,7 +2,7 @@
 /**
  * Template: Darse de baja
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

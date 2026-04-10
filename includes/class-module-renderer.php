@@ -5,7 +5,7 @@
  * Renderiza cualquier vista de cualquier módulo usando configuración dinámica.
  * Elimina la duplicación de código entre módulos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 
@@ -49,8 +49,8 @@ class Flavor_Module_Renderer {
      * Constructor
      */
     private function __construct() {
-        $this->templates_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/';
-        $this->components_path = FLAVOR_CHAT_IA_PATH . 'templates/components/shared/';
+        $this->templates_path = FLAVOR_PLATFORM_PATH . 'templates/frontend/';
+        $this->components_path = FLAVOR_PLATFORM_PATH . 'templates/components/shared/';
 
         // Cargar funciones helper
         if (!function_exists('flavor_render_component')) {
@@ -180,7 +180,7 @@ class Flavor_Module_Renderer {
 
         // Usar Archive Renderer existente
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -234,7 +234,7 @@ class Flavor_Module_Renderer {
         <div class="flavor-module-single flavor-<?php echo esc_attr($module); ?>-single">
             <!-- Breadcrumb -->
             <nav class="mb-4 text-sm">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
                    class="text-gray-500 hover:text-gray-700">
                     <?php echo esc_html($config['title'] ?? ucfirst($module)); ?>
                 </a>
@@ -395,7 +395,7 @@ class Flavor_Module_Renderer {
 
                     <!-- Botones -->
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
                            class="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors">
                             <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -423,7 +423,7 @@ class Flavor_Module_Renderer {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = data.data.redirect || '<?php echo esc_js(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>';
+                    window.location.href = data.data.redirect || '<?php echo esc_js(Flavor_Platform_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>';
                 } else {
                     alert(data.data.message || 'Error al guardar');
                 }
@@ -501,7 +501,7 @@ class Flavor_Module_Renderer {
         $table = $wpdb->prefix . $db_config['table'];
 
         // Verificar tabla
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             return ['items' => [], 'stats' => [], 'total' => 0];
         }
 
@@ -609,7 +609,7 @@ class Flavor_Module_Renderer {
 
             // URL
             if (!isset($item['url']) && $module) {
-                $item['url'] = Flavor_Chat_Helpers::get_item_url(str_replace('-', '_', $module), $item['id'], '');
+                $item['url'] = Flavor_Platform_Helpers::get_item_url(str_replace('-', '_', $module), $item['id'], '');
             }
 
             // Fecha formateada
@@ -1107,10 +1107,10 @@ class Flavor_Module_Renderer {
      */
     private function get_module_instance(string $module): ?object {
         // Intentar obtener del manager global
-        if (class_exists('Flavor_Chat_Module_Manager')) {
-            $manager = Flavor_Chat_Module_Manager::get_instance();
-            if ($manager && method_exists($manager, 'get_module')) {
-                $instance = $manager->get_module($module);
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
+            if ($loader && method_exists($loader, 'get_module')) {
+                $instance = $loader->get_module($module);
                 if ($instance) {
                     return $instance;
                 }

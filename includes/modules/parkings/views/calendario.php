@@ -2,7 +2,7 @@
 /**
  * Vista de Calendario de Disponibilidad - Parkings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Parkings
  */
 

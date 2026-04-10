@@ -4,7 +4,7 @@
  *
  * Caja de donación con opciones predefinidas y progreso.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title       Título de la campaña

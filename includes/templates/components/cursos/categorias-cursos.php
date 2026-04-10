@@ -4,7 +4,7 @@
  *
  * Muestra las categorías de cursos disponibles con navegación visual
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Cursos
  */
 

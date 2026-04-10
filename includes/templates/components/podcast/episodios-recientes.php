@@ -4,7 +4,7 @@
  *
  * Muestra los episodios más recientes con reproductor de audio integrado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Podcast
  */
 

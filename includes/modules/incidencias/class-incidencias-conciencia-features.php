@@ -4,7 +4,7 @@
  * +13 puntos: Monitoreo ambiental, alertas comunitarias, voluntariado resolución,
  * gamificación y dashboard de impacto urbano
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Incidencias
  * @since 4.2.0
  */

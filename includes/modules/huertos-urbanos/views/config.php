@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage HuertosUrbanos
  */
 

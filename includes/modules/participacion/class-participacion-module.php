@@ -2,7 +2,7 @@
 /**
  * Modulo de Participacion Ciudadana para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Participacion Ciudadana - Votaciones, encuestas, propuestas y presupuestos participativos
  */
-class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -84,7 +84,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_propuestas);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_propuestas);
     }
 
     /**
@@ -382,7 +382,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             $this->create_tables();
         }
     }
@@ -407,7 +407,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             return;
         }
 
@@ -425,7 +425,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         // Recalcular total_apoyos desde la tabla de apoyos
         $tabla_apoyos = $wpdb->prefix . 'flavor_apoyos';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_apoyos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_apoyos)) {
             $wpdb->query("
                 UPDATE $tabla_propuestas p
                 SET p.total_apoyos = (
@@ -2795,7 +2795,7 @@ KNOWLEDGE;
 
         global $wpdb;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -2816,7 +2816,7 @@ KNOWLEDGE;
 
         global $wpdb;
         $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_votaciones)) {
             return 0;
         }
         return (int) $wpdb->get_var($wpdb->prepare(
@@ -2837,7 +2837,7 @@ KNOWLEDGE;
         $estadisticas = [];
 
         // Propuestas activas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             $propuestas_activas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_propuestas WHERE estado = 'activa'"
             );
@@ -2851,7 +2851,7 @@ KNOWLEDGE;
         }
 
         // Votaciones abiertas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_votaciones)) {
             $votaciones_abiertas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_votaciones WHERE estado = 'abierta' AND fecha_fin > %s",
                 current_time('mysql')
@@ -2886,12 +2886,12 @@ KNOWLEDGE;
         $propuestas_activas = 0;
         $votaciones_abiertas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             $total_propuestas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_propuestas");
             $propuestas_activas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_propuestas WHERE estado = 'activa'");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_votaciones)) {
             $votaciones_abiertas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_votaciones WHERE estado = 'abierta' AND fecha_fin > %s",
                 current_time('mysql')
@@ -2921,7 +2921,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
@@ -2978,7 +2978,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_votaciones)) {
             echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
@@ -3033,7 +3033,7 @@ KNOWLEDGE;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
         $tabla_comentarios = $wpdb->prefix . 'flavor_participacion_comentarios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
@@ -3312,4 +3312,8 @@ KNOWLEDGE;
             Flavor_Participacion_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Participacion_Module', false)) {
+    class_alias('Flavor_Platform_Participacion_Module', 'Flavor_Chat_Participacion_Module');
 }

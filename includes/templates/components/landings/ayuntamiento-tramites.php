@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Trámites Ayuntamiento
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $limite = $limite ?? 6;

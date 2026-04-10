@@ -2,7 +2,7 @@
 /**
  * Vista completa de calendario de acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

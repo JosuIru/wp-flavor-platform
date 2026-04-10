@@ -2,14 +2,17 @@
 /**
  * Template: Calculadora de Huella Ecológica
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$categorias = Flavor_Chat_Huella_Ecologica_Module::CATEGORIAS_HUELLA;
+$huella_ecologica_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Huella_Ecologica_Module')
+    : 'Flavor_Chat_Huella_Ecologica_Module';
+$categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
 ?>
 
 <div class="he-container">
@@ -267,11 +270,11 @@ $categorias = Flavor_Chat_Huella_Ecologica_Module::CATEGORIAS_HUELLA;
 
             <?php if (is_user_logged_in()) : ?>
             <div style="margin-top: 2rem;">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'mis-registros')); ?>" class="he-btn he-btn--secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'mis-registros')); ?>" class="he-btn he-btn--secondary">
                     <span class="dashicons dashicons-chart-line"></span>
                     <?php esc_html_e('Ver mi historial', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
                     <span class="dashicons dashicons-yes-alt"></span>
                     <?php esc_html_e('Empezar a reducir', 'flavor-platform'); ?>
                 </a>

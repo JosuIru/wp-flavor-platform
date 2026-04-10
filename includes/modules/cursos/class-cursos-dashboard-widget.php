@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Cursos
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -80,7 +80,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $cursos_activos,
                 'label' => __('Cursos disponibles', 'flavor-platform'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Platform_Helpers::get_action_url('cursos', ''),
             ],
         ];
 
@@ -90,7 +90,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_cursos,
                 'label' => __('Mis cursos', 'flavor-platform'),
                 'color' => $mis_cursos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=cursos&tab=mis-cursos') : Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'),
+                'url' => $es_admin ? admin_url('admin.php?page=cursos&tab=mis-cursos') : Flavor_Platform_Helpers::get_action_url('cursos', 'mis-cursos'),
             ];
         }
 
@@ -103,7 +103,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver catálogo', 'flavor-platform'),
-                    'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Platform_Helpers::get_action_url('cursos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

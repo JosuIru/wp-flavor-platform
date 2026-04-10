@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Marketplace CTA Vender
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -2,7 +2,7 @@
 /**
  * Template: Publicar Oferta
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -13,9 +13,9 @@ if (!defined('ABSPATH')) {
 if (!wp_style_is('flavor-trabajo-digno', 'registered')) {
     wp_register_style(
         'flavor-trabajo-digno',
-        FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/css/trabajo-digno.css',
+        FLAVOR_PLATFORM_URL . 'includes/modules/trabajo-digno/assets/css/trabajo-digno.css',
         [],
-        FLAVOR_CHAT_IA_VERSION
+        FLAVOR_PLATFORM_VERSION
     );
 }
 if (!wp_style_is('flavor-trabajo-digno', 'enqueued')) {
@@ -24,9 +24,9 @@ if (!wp_style_is('flavor-trabajo-digno', 'enqueued')) {
 if (!wp_script_is('flavor-trabajo-digno', 'registered')) {
     wp_register_script(
         'flavor-trabajo-digno',
-        FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
+        FLAVOR_PLATFORM_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
         ['jquery'],
-        FLAVOR_CHAT_IA_VERSION,
+        FLAVOR_PLATFORM_VERSION,
         true
     );
 }
@@ -47,10 +47,13 @@ if (!is_user_logged_in()) {
     return;
 }
 
-$tipos = Flavor_Chat_Trabajo_Digno_Module::TIPOS_OFERTA;
-$sectores = Flavor_Chat_Trabajo_Digno_Module::SECTORES;
-$jornadas = Flavor_Chat_Trabajo_Digno_Module::JORNADAS;
-$criterios = Flavor_Chat_Trabajo_Digno_Module::CRITERIOS_DIGNIDAD;
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$tipos = $trabajo_digno_module_class::TIPOS_OFERTA;
+$sectores = $trabajo_digno_module_class::SECTORES;
+$jornadas = $trabajo_digno_module_class::JORNADAS;
+$criterios = $trabajo_digno_module_class::CRITERIOS_DIGNIDAD;
 ?>
 
 <div class="td-container">

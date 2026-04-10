@@ -5,7 +5,7 @@
  * Carga automáticamente los archivos de dashboard tabs de los módulos activos
  * para integrarlos con el sistema de tabs del dashboard del cliente.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -55,11 +55,11 @@ class Flavor_Dashboard_Tabs_Loader {
      */
     public function cargar_dashboard_tabs() {
         // Usar caché centralizada para evitar múltiples get_option
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $modulos_activos = Flavor_Chat_Module_Loader::get_active_modules_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $modulos_activos = Flavor_Platform_Module_Loader::get_active_modules_cached();
         } else {
             // Fallback si el loader no está disponible
-            $configuracion = get_option('flavor_chat_ia_settings', []);
+            $configuracion = flavor_get_main_settings();
             $modulos_activos = $configuracion['active_modules'] ?? [];
             $modulos_activos_legacy = get_option('flavor_active_modules', []);
             if (!empty($modulos_activos_legacy)) {
@@ -71,7 +71,7 @@ class Flavor_Dashboard_Tabs_Loader {
             return;
         }
 
-        $ruta_modulos = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
+        $ruta_modulos = FLAVOR_PLATFORM_PATH . 'includes/modules/';
 
         // Lista de archivos de dashboard tab por módulo (sin duplicados)
         $mapeo_dashboard_tabs = [
@@ -262,15 +262,15 @@ class Flavor_Dashboard_Tabs_Loader {
             ],
             'chat_grupos' => [
                 'archivo' => 'class-chat-grupos-dashboard-tab.php',
-                'clase' => 'Flavor_Chat_Grupos_Dashboard_Tab',
+                'clase' => flavor_get_runtime_class_name('Flavor_Chat_Grupos_Dashboard_Tab'),
             ],
             'chat_interno' => [
                 'archivo' => 'class-chat-interno-dashboard-tab.php',
-                'clase' => 'Flavor_Chat_Interno_Dashboard_Tab',
+                'clase' => flavor_get_runtime_class_name('Flavor_Chat_Interno_Dashboard_Tab'),
             ],
             'chat_estados' => [
                 'archivo' => 'class-chat-estados-dashboard-tab.php',
-                'clase' => 'Flavor_Chat_Estados_Dashboard_Tab',
+                'clase' => flavor_get_runtime_class_name('Flavor_Chat_Estados_Dashboard_Tab'),
             ],
             'empresarial' => [
                 'archivo' => 'class-empresarial-dashboard-tab.php',

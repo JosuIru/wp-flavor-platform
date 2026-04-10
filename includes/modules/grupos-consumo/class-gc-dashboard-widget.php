@@ -8,7 +8,7 @@
  * - Items en cesta
  * - Pedidos del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo
  * @since 4.1.0
  */
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 // Asegurar que la clase base exista
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -195,7 +195,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $ciclo_activo['titulo'],
                 'label' => __('Ciclo activo', 'flavor-platform'),
                 'color' => 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
+                'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
             ];
 
             // Stat 2: Tiempo restante
@@ -221,7 +221,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => number_format($gasto_mes, 2, ',', '.') . ' €',
             'label' => __('Este mes', 'flavor-platform'),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
+            'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
 
         // Stat 4: Items en cesta
@@ -230,7 +230,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $items_cesta,
             'label' => __('En cesta', 'flavor-platform'),
             'color' => $items_cesta > 0 ? 'warning' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
+            'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
         ];
 
         // Items: últimos productos añadidos a cesta
@@ -243,7 +243,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $es_admin ? __('Ver panel', 'flavor-platform') : __('Ver productos', 'flavor-platform'),
-                    'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
+                    'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -410,7 +410,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         ));
 
         $es_admin_items = is_admin() && !wp_doing_ajax();
-        $url_cesta = $es_admin_items ? admin_url('admin.php?page=gc-pedidos') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido');
+        $url_cesta = $es_admin_items ? admin_url('admin.php?page=gc-pedidos') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido');
 
         $items = [];
         foreach ($items_db as $item) {

@@ -2,7 +2,7 @@
 /**
  * Template: Single Ciclo de Compra
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

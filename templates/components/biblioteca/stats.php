@@ -5,7 +5,7 @@
  * Muestra estadísticas generales, gráficos de actividad y datos sobre
  * la colección de la biblioteca.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Variables pasadas al template
  */
 

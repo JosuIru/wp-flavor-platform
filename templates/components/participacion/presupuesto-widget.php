@@ -5,7 +5,7 @@
  * Muestra la información del presupuesto disponible para participación ciudadana,
  * desglose por categorías y progreso de distribución.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Variables pasadas al template
  */
 

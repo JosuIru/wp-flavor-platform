@@ -2,7 +2,7 @@
 /**
  * Exportador de datos de usuario para RGPD
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.4.0
  */
 

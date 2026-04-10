@@ -2,7 +2,7 @@
 /**
  * Modulo de Carpooling para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Carpooling - Sistema de viajes compartidos
  */
-class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -72,7 +72,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_viajes);
     }
 
     /**
@@ -385,7 +385,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_viajes)) {
             $this->create_tables();
         }
     }
@@ -2789,7 +2789,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_viajes)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -2812,7 +2812,7 @@ KNOWLEDGE;
             'viajes_completados_mes' => 0,
         ];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_viajes)) {
             return $estadisticas;
         }
 
@@ -2820,7 +2820,7 @@ KNOWLEDGE;
             "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()"
         );
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_reservas)) {
             $estadisticas['reservas_pendientes'] = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'pendiente'"
             );
@@ -3155,4 +3155,8 @@ KNOWLEDGE;
             echo '<div class="wrap"><h1>' . esc_html__('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Carpooling_Module', false)) {
+    class_alias('Flavor_Platform_Carpooling_Module', 'Flavor_Chat_Carpooling_Module');
 }

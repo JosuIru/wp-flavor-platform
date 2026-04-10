@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para redes de apoyo mutuo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

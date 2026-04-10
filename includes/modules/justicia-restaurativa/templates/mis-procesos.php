@@ -2,7 +2,7 @@
 /**
  * Template: Mis Procesos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,8 +10,11 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$tipos = Flavor_Chat_Justicia_Restaurativa_Module::TIPOS_PROCESO;
-$estados = Flavor_Chat_Justicia_Restaurativa_Module::ESTADOS_PROCESO;
+$justicia_restaurativa_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Justicia_Restaurativa_Module')
+    : 'Flavor_Chat_Justicia_Restaurativa_Module';
+$tipos = $justicia_restaurativa_module_class::TIPOS_PROCESO;
+$estados = $justicia_restaurativa_module_class::ESTADOS_PROCESO;
 
 // Procesos donde soy solicitante
 global $wpdb;
@@ -149,7 +152,7 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
     </section>
 
     <div style="text-align: center; margin-top: 2rem;">
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="jr-btn jr-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="jr-btn jr-btn--primary">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Iniciar nuevo proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>

@@ -4,7 +4,7 @@
  *
  * Galería de imágenes con lightbox y múltiples layouts.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $images     Array de imágenes: [['src' => '', 'thumb' => '', 'alt' => '', 'caption' => '']]

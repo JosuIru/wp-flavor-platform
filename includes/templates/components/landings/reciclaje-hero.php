@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Reciclaje
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#10b981';

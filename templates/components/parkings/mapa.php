@@ -2,7 +2,7 @@
 /**
  * Template: Mapa interactivo de parkings comunitarios
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Parkings
  */
 

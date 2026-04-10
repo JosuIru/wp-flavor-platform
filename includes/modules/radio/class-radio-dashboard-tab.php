@@ -7,7 +7,7 @@
  * - Dedicatorias enviadas
  * - Propuestas de contenido
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Radio
  */
 
@@ -568,7 +568,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla = $wpdb->prefix . 'flavor_radio_dedicatorias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -595,7 +595,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla = $wpdb->prefix . 'flavor_radio_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -620,7 +620,7 @@ class Flavor_Radio_Dashboard_Tab {
         $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_emision)) {
             return null;
         }
 
@@ -652,7 +652,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_emision)) {
             return false;
         }
 
@@ -701,7 +701,7 @@ class Flavor_Radio_Dashboard_Tab {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_radio_dedicatorias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -722,7 +722,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla = $wpdb->prefix . 'flavor_radio_dedicatorias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -748,7 +748,7 @@ class Flavor_Radio_Dashboard_Tab {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_radio_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -769,7 +769,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla = $wpdb->prefix . 'flavor_radio_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return false;
         }
 
@@ -792,7 +792,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         $tabla = $wpdb->prefix . 'flavor_radio_propuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -895,7 +895,7 @@ class Flavor_Radio_Dashboard_Tab {
      * @return array
      */
     private function get_radio_settings() {
-        $modulo = Flavor_Chat_Module_Manager::get_instance()->get_module('radio');
+        $modulo = Flavor_Platform_Module_Loader::get_instance()->get_module('radio');
 
         if ($modulo && method_exists($modulo, 'get_settings')) {
             return $modulo->get_settings();
@@ -994,14 +994,14 @@ class Flavor_Radio_Dashboard_Tab {
             'flavor-radio-dashboard-tab',
             plugins_url('assets/css/radio-dashboard-tab.css', __FILE__),
             [],
-            FLAVOR_CHAT_IA_VERSION ?? '1.0.0'
+            FLAVOR_PLATFORM_VERSION ?? '1.0.0'
         );
 
         wp_enqueue_script(
             'flavor-radio-dashboard-tab',
             plugins_url('assets/js/radio-dashboard-tab.js', __FILE__),
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION ?? '1.0.0',
+            FLAVOR_PLATFORM_VERSION ?? '1.0.0',
             true
         );
 

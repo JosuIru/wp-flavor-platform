@@ -2,15 +2,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
 import '../../../../core/widgets/flavor_state_widgets.dart';
+import '../chat_main_screen.dart';
+import 'group_info_screen.dart';
 
 /// Pantalla de búsqueda global de mensajes, usuarios y grupos
 class SearchScreen extends ConsumerStatefulWidget {
   final String? conversationId;
+  final bool showOnlyStarred;
 
-  const SearchScreen({super.key, this.conversationId});
+  const SearchScreen({
+    super.key,
+    this.conversationId,
+    this.showOnlyStarred = false,
+  });
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
@@ -18,6 +26,9 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen>
     with SingleTickerProviderStateMixin {
+  static const String _recentSearchesKey = 'chat_recent_searches';
+  static const int _maxRecentSearches = 10;
+
   final ChatService _chatService = ChatService();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -58,10 +69,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
   }
 
   Future<void> _loadRecentSearches() async {
-    // TODO: Cargar de SharedPreferences
-    setState(() {
-      _recentSearches = ['compras', 'reunión', 'foto', 'evento'];
-    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final searches = prefs.getStringList(_recentSearchesKey);
+      if (mounted) {
+        setState(() {
+          _recentSearches = searches ?? [];
+        });
+      }
+    } catch (e) {
+      // Si falla, usar lista vacía
+      if (mounted) {
+        setState(() {
+          _recentSearches = [];
+        });
+      }
+    }
   }
 
   void _onSearchChanged(String value) {
@@ -122,15 +145,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
     }
   }
 
-  void _saveRecentSearch(String query) {
-    if (!_recentSearches.contains(query)) {
-      setState(() {
-        _recentSearches.insert(0, query);
-        if (_recentSearches.length > 10) {
-          _recentSearches.removeLast();
-        }
-      });
-      // TODO: Guardar en SharedPreferences
+  Future<void> _saveRecentSearch(String query) async {
+    // Evitar duplicados - mover al principio si ya existe
+    _recentSearches.remove(query);
+    _recentSearches.insert(0, query);
+
+    // Limitar cantidad
+    if (_recentSearches.length > _maxRecentSearches) {
+      _recentSearches = _recentSearches.sublist(0, _maxRecentSearches);
+    }
+
+    setState(() {});
+
+    // Persistir en SharedPreferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_recentSearchesKey, _recentSearches);
+    } catch (e) {
+      // Ignorar error de persistencia
     }
   }
 
@@ -259,9 +291,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
               ),
               const Spacer(),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   setState(() => _recentSearches.clear());
-                  // TODO: Limpiar SharedPreferences
+                  try {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove(_recentSearchesKey);
+                  } catch (e) {
+                    // Ignorar error
+                  }
                 },
                 child: const Text('Limpiar'),
               ),
@@ -375,20 +412,53 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
 
   void _navigateToMessage(ChatMessage message) {
     _saveRecentSearch(_query);
-    // TODO: Navegar al chat y saltar al mensaje específico
-    Navigator.pop(context, message);
+
+    // Navegar al chat con el mensaje específico
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatMainScreen(
+          conversationId: message.conversationId ?? message.id,
+          name: message.senderName,
+          avatarUrl: message.senderAvatar,
+          isGroup: false,
+        ),
+      ),
+    );
   }
 
   void _navigateToUser(ChatUser user) {
     _saveRecentSearch(_query);
-    // TODO: Navegar al perfil o chat
-    Navigator.pop(context, user);
+
+    // Navegar a chat directo con el usuario
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatMainScreen(
+          conversationId: 'user_${user.id}',
+          name: user.name,
+          avatarUrl: user.avatarUrl,
+          isGroup: false,
+        ),
+      ),
+    );
   }
 
   void _navigateToGroup(ChatGroup group) {
     _saveRecentSearch(_query);
-    // TODO: Navegar al grupo
-    Navigator.pop(context, group);
+
+    // Navegar al chat del grupo
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatMainScreen(
+          conversationId: group.id,
+          name: group.name,
+          avatarUrl: group.avatarUrl,
+          isGroup: true,
+        ),
+      ),
+    );
   }
 }
 
@@ -626,8 +696,19 @@ class _GroupSearchResult extends StatelessWidget {
       ),
       trailing: group.privacy == GroupPrivacy.public
           ? FilledButton.tonal(
-              onPressed: () {
-                // TODO: Unirse al grupo
+              onPressed: () async {
+                // Navegar al grupo (se unirá automáticamente al entrar)
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatMainScreen(
+                      conversationId: group.id,
+                      name: group.name,
+                      avatarUrl: group.avatarUrl,
+                      isGroup: true,
+                    ),
+                  ),
+                );
               },
               child: const Text('Unirse'),
             )
@@ -737,7 +818,7 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
               _buildFilterChip('Videos', MessageType.video),
               _buildFilterChip('Archivos', MessageType.file),
               _buildFilterChip('Audio', MessageType.audio),
-              _buildFilterChip('Enlaces', MessageType.text), // TODO: Tipo link
+              _buildFilterChip('Enlaces', MessageType.link),
             ],
           ),
           const SizedBox(height: 16),

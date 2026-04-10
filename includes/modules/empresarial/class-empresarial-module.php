@@ -2,14 +2,14 @@
 /**
  * Módulo de Sector Empresarial
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Empresarial_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -1194,7 +1194,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_contactos = $wpdb->prefix . 'flavor_empresarial_contactos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_contactos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_contactos)) {
             return 0;
         }
 
@@ -1328,7 +1328,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_contactos = $wpdb->prefix . 'flavor_empresarial_contactos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_contactos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_contactos)) {
             $this->create_tables();
         }
     }
@@ -2387,7 +2387,7 @@ KNOWLEDGE;
 
         $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
             return $estadisticas;
         }
 
@@ -2611,5 +2611,8 @@ KNOWLEDGE;
             Flavor_Empresarial_Frontend_Controller::get_instance();
         }
     }
+}
 
+if (!class_exists('Flavor_Chat_Empresarial_Module', false)) {
+    class_alias('Flavor_Platform_Empresarial_Module', 'Flavor_Chat_Empresarial_Module');
 }

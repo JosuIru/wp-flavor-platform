@@ -11,7 +11,7 @@ global $wpdb;
 $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
     echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -78,7 +78,7 @@ $estados_colors = [
 ];
 
 // URL base para incidencias
-$incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
+$incidencias_base_url = Flavor_Platform_Helpers::get_action_url('incidencias', '');
 
 // Preparar datos para JS
 $incidencias_json = [];

@@ -2,7 +2,7 @@
 /**
  * Canal de Notificaciones Telegram Bot API
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -400,7 +400,7 @@ class Flavor_GC_Telegram_Channel {
      */
     public function configurar_webhook($url = null) {
         if (!$url) {
-            $url = rest_url('flavor-chat-ia/v1/gc/telegram/webhook');
+            $url = rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/telegram/webhook');
         }
 
         $params = [
@@ -436,7 +436,7 @@ class Flavor_GC_Telegram_Channel {
      * Registrar endpoint webhook
      */
     public function registrar_webhook_endpoint() {
-        register_rest_route('flavor-chat-ia/v1', '/gc/telegram/webhook', [
+        flavor_register_rest_route(FLAVOR_PLATFORM_REST_NAMESPACE, '/gc/telegram/webhook', [
             'methods' => 'POST',
             'callback' => [$this, 'procesar_webhook'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -668,7 +668,7 @@ class Flavor_GC_Telegram_Channel {
         $mensaje .= "Fecha de entrega: " . date_i18n('j M Y', strtotime($fecha_entrega)) . "\n";
 
         $this->enviar_con_botones_inline($chat_id, $mensaje, [
-            [['texto' => 'Ver productos', 'url' => add_query_arg('ciclo', intval($ciclo->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo'))]],
+            [['texto' => 'Ver productos', 'url' => add_query_arg('ciclo', intval($ciclo->ID), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'ciclo'))]],
         ]);
     }
 

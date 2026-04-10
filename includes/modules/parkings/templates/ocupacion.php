@@ -4,7 +4,7 @@
  *
  * Muestra la ocupación actual de cada parking con porcentaje y barra de progreso.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_parkings)) {
     echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -57,7 +57,7 @@ $porcentaje_general = $total_plazas_general > 0
     ? round(($total_ocupadas_general / $total_plazas_general) * 100)
     : 0;
 
-$parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
+$parkings_base_url = Flavor_Platform_Helpers::get_action_url('parkings', '');
 
 /**
  * Determina el color según el porcentaje de ocupación

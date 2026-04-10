@@ -4,7 +4,7 @@
  *
  * Enlace de descarga de archivo con información y preview.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $url        URL del archivo

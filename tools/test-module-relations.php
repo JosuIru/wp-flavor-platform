@@ -8,7 +8,7 @@
  * O desde navegador (solo para admins):
  * /wp-content/plugins/flavor-chat-ia/tools/test-module-relations.php?key=flavor-test-2024
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 // Verificar ejecución desde WP-CLI o con clave de seguridad
@@ -152,8 +152,8 @@ if (count($horizontales) > 5) {
 // Test 7: Verificar integración con interface-chat-module
 echo "\n7. Verificando integración con módulos...\n";
 
-if (class_exists('Flavor_Chat_Module_Loader')) {
-    $loader = Flavor_Chat_Module_Loader::get_instance();
+if (class_exists('Flavor_Platform_Module_Loader')) {
+    $loader = Flavor_Platform_Module_Loader::get_instance();
     $all_modules = $loader->get_all_modules();
 
     if (!empty($all_modules)) {
@@ -181,14 +181,14 @@ if (class_exists('Flavor_Chat_Module_Loader')) {
         echo "   ⚠ No hay módulos cargados\n";
     }
 } else {
-    echo "   ✗ ERROR: Flavor_Chat_Module_Loader no disponible\n";
+    echo "   ✗ ERROR: Flavor_Platform_Module_Loader no disponible\n";
 }
 
 // Test 8: Verificar archivos de assets
 echo "\n8. Verificando archivos de assets...\n";
 
-$css_file = FLAVOR_CHAT_IA_PATH . 'admin/css/module-relations.css';
-$js_file = FLAVOR_CHAT_IA_PATH . 'admin/js/module-relations.js';
+$css_file = FLAVOR_PLATFORM_PATH . 'admin/css/module-relations.css';
+$js_file = FLAVOR_PLATFORM_PATH . 'admin/js/module-relations.js';
 
 if (file_exists($css_file)) {
     $size = filesize($css_file);
@@ -207,7 +207,7 @@ if (file_exists($js_file)) {
 // Test 9: Verificar documentación
 echo "\n9. Verificando documentación...\n";
 
-$doc_file = FLAVOR_CHAT_IA_PATH . 'docs/SISTEMA-RELACIONES-MODULOS.md';
+$doc_file = FLAVOR_PLATFORM_PATH . 'docs/SISTEMA-RELACIONES-MODULOS.md';
 if (file_exists($doc_file)) {
     $size = filesize($doc_file);
     echo "   ✓ Documentación existe: " . round($size / 1024, 2) . " KB\n";

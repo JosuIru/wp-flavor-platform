@@ -2,7 +2,7 @@
 /**
  * Dashboard de Crowdfunding - Vista Admin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

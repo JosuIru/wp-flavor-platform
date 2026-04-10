@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Tienda Local
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#f59e0b';

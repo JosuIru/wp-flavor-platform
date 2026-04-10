@@ -7,7 +7,7 @@
  * - Integración Solidaria: donación de horas, fondo comunitario
  * - Dashboard de Sostenibilidad: métricas de equidad, ciclos, alertas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BancoTiempo
  * @since 4.2.0
  */

@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Socios
  */
 

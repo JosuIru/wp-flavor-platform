@@ -2,7 +2,7 @@
 /**
  * Template: CTA para Crear tu Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -12,7 +12,7 @@
  * @var array  $beneficios_unirse
  * @var string $component_classes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

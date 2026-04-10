@@ -2,7 +2,7 @@
 /**
  * Template: Formulario para Donar Horas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BancoTiempo
  * @since 4.2.0
  *

@@ -2,7 +2,7 @@
 /**
  * Template: Feed de Publicaciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales del template
  */
 

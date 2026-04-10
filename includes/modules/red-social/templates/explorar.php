@@ -4,7 +4,7 @@
  *
  * Pagina de exploracion con tendencias, hashtags y usuarios sugeridos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage RedSocial/Templates
  */
 
@@ -181,7 +181,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                          src="<?php echo esc_url(get_avatar_url($publicacion->autor_id, ['size' => 50])); ?>"
                                          alt="">
                                     <div class="rs-post-autor-info">
-                                        <h4><a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>">
+                                        <h4><a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), Flavor_Platform_Helpers::get_action_url('red_social', 'perfil'))); ?>">
                                             <?php echo esc_html($autor ? $autor->display_name : 'Usuario'); ?>
                                         </a></h4>
                                         <span class="rs-post-tiempo"><?php echo human_time_diff(strtotime($publicacion->fecha_publicacion), current_time('timestamp')); ?></span>
@@ -241,7 +241,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 }
                                 ?>
                                 <div class="rs-resultado-usuario">
-                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($usuario_encontrado->ID), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-resultado-usuario-link">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($usuario_encontrado->ID), Flavor_Platform_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-resultado-usuario-link">
                                         <img class="rs-resultado-avatar"
                                              src="<?php echo esc_url(get_avatar_url($usuario_encontrado->ID, ['size' => 56])); ?>"
                                              alt="">
@@ -318,7 +318,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                         </h3>
                         <div class="rs-tendencias-lista">
                             <?php foreach ($hashtags_trending as $indice => $hashtag): ?>
-                                <a href="<?php echo esc_url(add_query_arg('hashtag', rawurlencode($hashtag->hashtag), Flavor_Chat_Helpers::get_action_url('red_social', 'explorar'))); ?>" class="rs-tendencia-item">
+                                <a href="<?php echo esc_url(add_query_arg('hashtag', rawurlencode($hashtag->hashtag), Flavor_Platform_Helpers::get_action_url('red_social', 'explorar'))); ?>" class="rs-tendencia-item">
                                     <span class="rs-tendencia-numero"><?php echo $indice + 1; ?></span>
                                     <div class="rs-tendencia-info">
                                         <span class="rs-tendencia-hashtag">#<?php echo esc_html($hashtag->hashtag); ?></span>
@@ -356,7 +356,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 }
                                 ?>
                                 <div class="rs-popular-item">
-                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($popular->usuario_id), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-popular-link">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($popular->usuario_id), Flavor_Platform_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-popular-link">
                                         <img class="rs-popular-avatar"
                                              src="<?php echo esc_url(get_avatar_url($popular->usuario_id, ['size' => 48])); ?>"
                                              alt="">

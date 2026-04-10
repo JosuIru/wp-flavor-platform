@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Presupuestos Participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  */
 
@@ -56,7 +56,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
         $mis_votos = 0;
         $propuestas_destacadas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_procesos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_procesos)) {
             $proceso_activo = $wpdb->get_row(
                 "SELECT * FROM {$tabla_procesos}
                  WHERE estado = 'votacion' OR estado = 'propuestas'
@@ -66,7 +66,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
             if ($proceso_activo) {
                 $presupuesto_total = $proceso_activo->presupuesto_total;
 
-                if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
                     $total_propuestas = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_propuestas}
                          WHERE proceso_id = %d AND estado NOT IN ('borrador', 'rechazada')",
@@ -81,7 +81,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                     ));
                 }
 
-                if ($user_id && Flavor_Chat_Helpers::tabla_existe($tabla_votos)) {
+                if ($user_id && Flavor_Platform_Helpers::tabla_existe($tabla_votos)) {
                     $mis_votos = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_votos}
                          WHERE proceso_id = %d AND usuario_id = %d",
@@ -195,7 +195,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
         $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
 
         $propuestas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas) && Flavor_Chat_Helpers::tabla_existe($tabla_procesos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas) && Flavor_Platform_Helpers::tabla_existe($tabla_procesos)) {
             $propuestas = $wpdb->get_results($wpdb->prepare(
                 "SELECT p.*, pr.titulo as proceso_titulo, pr.slug as proceso_slug
                  FROM {$tabla_propuestas} p

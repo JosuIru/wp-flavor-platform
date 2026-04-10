@@ -2,7 +2,7 @@
 /**
  * Vista Hortelanos - Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

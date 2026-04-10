@@ -2,7 +2,7 @@
 /**
  * Template: Mis Registros de Huella Ecológica
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,10 +10,13 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$modulo = new Flavor_Chat_Huella_Ecologica_Module();
+$huella_ecologica_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Huella_Ecologica_Module')
+    : 'Flavor_Chat_Huella_Ecologica_Module';
+$modulo = new $huella_ecologica_module_class();
 $stats = $modulo->get_estadisticas_usuario($user_id, 'mes');
-$categorias = Flavor_Chat_Huella_Ecologica_Module::CATEGORIAS_HUELLA;
-$acciones = Flavor_Chat_Huella_Ecologica_Module::TIPOS_ACCION;
+$categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
+$acciones = $huella_ecologica_module_class::TIPOS_ACCION;
 
 // Obtener últimos registros
 global $wpdb;
@@ -215,11 +218,11 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
 
     <!-- Acciones rápidas -->
     <div style="text-align: center; margin-top: 2rem;">
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn he-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn he-btn--primary">
             <span class="dashicons dashicons-yes-alt"></span>
             <?php esc_html_e('Registrar acción reductora', 'flavor-platform'); ?>
         </a>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'logros')); ?>" class="he-btn he-btn--secondary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'logros')); ?>" class="he-btn he-btn--secondary">
             <span class="dashicons dashicons-awards"></span>
             <?php esc_html_e('Ver mis logros', 'flavor-platform'); ?>
         </a>

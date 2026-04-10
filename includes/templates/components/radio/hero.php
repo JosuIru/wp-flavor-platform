@@ -4,7 +4,7 @@
  *
  * Hero section for community radio module
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Radio
  */
 

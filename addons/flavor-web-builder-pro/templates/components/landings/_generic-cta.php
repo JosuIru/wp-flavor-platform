@@ -12,7 +12,7 @@
  * - $icono (string): Icono dashicons
  * - $estilo (string): simple, destacado, banner
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -3,7 +3,7 @@
  * Template: Estadísticas de Incidencias
  * Cards con métricas de incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -4,7 +4,7 @@
  *
  * Muestra las reservas del usuario logueado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Reservas
  */
 

@@ -5,7 +5,7 @@
  * Singleton que gestiona el registro, obtencion y filtrado de widgets
  * provenientes de los distintos modulos del sistema.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Dashboard
  * @since 4.0.0
  */

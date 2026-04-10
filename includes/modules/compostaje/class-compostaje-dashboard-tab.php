@@ -11,7 +11,7 @@
  * - compostaje-turnos: Turnos asignados al usuario
  * - compostaje-ranking: Posicion en el ranking comunitario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Compostaje
  * @since 3.2.0
  */
@@ -1286,7 +1286,7 @@ class Flavor_Compostaje_Dashboard_Tab {
         $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return [];
         }
 
@@ -1313,7 +1313,7 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return [
                 'pendientes' => 0,
                 'aprobadas' => 0,
@@ -1545,7 +1545,7 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         $tabla_logros = $wpdb->prefix . 'flavor_logros_compostaje';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_logros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_logros)) {
             return [];
         }
 

@@ -2,7 +2,7 @@
 /**
  * Template: Preferencias de suscriptor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

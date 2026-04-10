@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Parkings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

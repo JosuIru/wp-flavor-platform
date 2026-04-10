@@ -10,7 +10,7 @@
  * - columnas: Número de columnas (2, 3, 4)
  * - items_por_pagina: Número de items por página
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -5,7 +5,7 @@
  * Registra tabs en el dashboard de usuario frontend "Mi Cuenta"
  * para mostrar historial de viajes, cuenta y estadísticas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules/BicicletasCompartidas
  */
 
@@ -148,7 +148,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
      */
     private function modulo_esta_activo() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($this->tablas['bicicletas']);
+        return Flavor_Platform_Helpers::tabla_existe($this->tablas['bicicletas']);
     }
 
     /**

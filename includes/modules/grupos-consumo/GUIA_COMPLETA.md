@@ -241,7 +241,7 @@ Ver documentación completa en: [API_MOBILE.md](./API_MOBILE.md)
 ### Base URL
 
 ```
-https://tu-dominio.com/wp-json/flavor-chat-ia/v1
+https://tu-dominio.com/wp-json/flavor-platform/v1
 ```
 
 ### Endpoints Principales

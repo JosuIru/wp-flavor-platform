@@ -2,7 +2,7 @@
 /**
  * Cerebro IA - Toma decisiones de trading usando el motor IA del plugin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

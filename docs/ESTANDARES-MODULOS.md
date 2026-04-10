@@ -126,8 +126,8 @@ class Flavor_Chat_MiModulo_Module extends Flavor_Chat_Module_Base {
     public function __construct() {
         // Propiedades obligatorias
         $this->id = 'mi_modulo';
-        $this->name = __('Mi Módulo', 'flavor-chat-ia');
-        $this->description = __('Descripción del módulo.', 'flavor-chat-ia');
+        $this->name = __('Mi Módulo', 'flavor-platform');
+        $this->description = __('Descripción del módulo.', 'flavor-platform');
 
         // Propiedades opcionales con valores por defecto
         $this->module_icon = 'dashicons-admin-plugins';  // Icono
@@ -202,7 +202,7 @@ El dashboard del módulo debe incluir:
         <h2><?php echo esc_html($module_name); ?></h2>
         <div class="flavor-module-actions">
             <a href="<?php echo $crear_url; ?>" class="flavor-btn flavor-btn-primary">
-                <?php _e('Nuevo', 'flavor-chat-ia'); ?>
+                <?php _e('Nuevo', 'flavor-platform'); ?>
             </a>
         </div>
     </header>
@@ -211,7 +211,7 @@ El dashboard del módulo debe incluir:
     <div class="flavor-stats-grid">
         <div class="flavor-stat-card">
             <span class="stat-value"><?php echo $total_items; ?></span>
-            <span class="stat-label"><?php _e('Total', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php _e('Total', 'flavor-platform'); ?></span>
         </div>
         <!-- Más stats... -->
     </div>
@@ -223,7 +223,7 @@ El dashboard del módulo debe incluir:
 
     <!-- Acciones secundarias -->
     <footer class="flavor-module-footer">
-        <a href="<?php echo $ver_todos_url; ?>"><?php _e('Ver todos', 'flavor-chat-ia'); ?></a>
+        <a href="<?php echo $ver_todos_url; ?>"><?php _e('Ver todos', 'flavor-platform'); ?></a>
     </footer>
 </div>
 ```
@@ -273,9 +273,9 @@ El dashboard del módulo debe incluir:
 ```html
 <div class="flavor-empty-state">
     <div class="flavor-empty-icon">📦</div>
-    <p class="flavor-empty-text"><?php _e('No hay elementos', 'flavor-chat-ia'); ?></p>
+    <p class="flavor-empty-text"><?php _e('No hay elementos', 'flavor-platform'); ?></p>
     <a href="<?php echo $crear_url; ?>" class="flavor-btn flavor-btn-primary">
-        <?php _e('Crear primero', 'flavor-chat-ia'); ?>
+        <?php _e('Crear primero', 'flavor-platform'); ?>
     </a>
 </div>
 ```
@@ -444,7 +444,7 @@ class Mi_Modulo extends Flavor_Chat_Module_Base {
     protected function get_integration_content_type() {
         return [
             'id'         => 'mi_contenido',
-            'label'      => __('Mi Contenido', 'flavor-chat-ia'),
+            'label'      => __('Mi Contenido', 'flavor-platform'),
             'icon'       => 'dashicons-admin-post',
             'post_type'  => 'mi_cpt',  // O 'table' => 'mi_tabla'
             'capability' => 'edit_posts',
@@ -757,7 +757,7 @@ public function check_read_permission() {
 
 public function check_write_permission() {
     if (!is_user_logged_in()) {
-        return new WP_Error('rest_forbidden', __('Acceso denegado', 'flavor-chat-ia'), ['status' => 401]);
+        return new WP_Error('rest_forbidden', __('Acceso denegado', 'flavor-platform'), ['status' => 401]);
     }
 
     return current_user_can('edit_posts');
@@ -781,7 +781,7 @@ return rest_ensure_response([
 // Error
 return new WP_REST_Response([
     'success' => false,
-    'error' => __('Mensaje de error', 'flavor-chat-ia'),
+    'error' => __('Mensaje de error', 'flavor-platform'),
     'code' => 'error_code',
 ], 400);
 ```
@@ -806,7 +806,7 @@ public function ajax_guardar() {
     check_ajax_referer('mi_modulo_nonce', 'nonce');
 
     if (!current_user_can('edit_posts')) {
-        wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
     }
 
     $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -814,7 +814,7 @@ public function ajax_guardar() {
 
     // Procesar...
 
-    wp_send_json_success(['message' => __('Guardado', 'flavor-chat-ia')]);
+    wp_send_json_success(['message' => __('Guardado', 'flavor-platform')]);
 }
 ```
 

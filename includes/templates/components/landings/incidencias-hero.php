@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Incidencias
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#e11d48';

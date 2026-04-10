@@ -4,7 +4,7 @@
  * 
  * Gestiona reportes de errores y crashes de las apps Flutter.
  * 
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 3.1.0
  */

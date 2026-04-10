@@ -5,7 +5,7 @@
  * Panel completo con estadísticas, filtros avanzados, paginación
  * y visualización moderna de talleres.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

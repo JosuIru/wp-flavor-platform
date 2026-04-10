@@ -4,7 +4,7 @@
  *
  * Endpoints REST para el editor visual.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -780,7 +780,7 @@ class Flavor_VBP_REST_API {
         $libreria   = Flavor_VBP_Block_Library::get_instance();
         $categorias = $libreria->get_categorias_con_bloques();
         $schema     = array(
-            'version'    => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'version'    => FLAVOR_PLATFORM_VERSION ?? '2.0.0',
             'generated'  => gmdate( 'c' ),
             'categories' => array(),
             'blocks'     => array(),
@@ -1004,7 +1004,7 @@ class Flavor_VBP_REST_API {
             array(
                 'id'          => 'starter-landing',
                 'title'       => 'Landing Page Starter',
-                'thumbnail'   => FLAVOR_CHAT_IA_URL . 'assets/vbp/images/templates/landing-starter.svg',
+                'thumbnail'   => FLAVOR_PLATFORM_URL . 'assets/vbp/images/templates/landing-starter.svg',
                 'category'    => 'landing',
                 'description' => 'Landing page minimalista con hero, features y CTA',
                 'preview_url' => '',
@@ -1017,7 +1017,7 @@ class Flavor_VBP_REST_API {
             array(
                 'id'          => 'saas-pricing',
                 'title'       => 'SaaS Pricing',
-                'thumbnail'   => FLAVOR_CHAT_IA_URL . 'assets/vbp/images/templates/saas-pricing.svg',
+                'thumbnail'   => FLAVOR_PLATFORM_URL . 'assets/vbp/images/templates/saas-pricing.svg',
                 'category'    => 'business',
                 'description' => 'Página de precios para productos SaaS',
                 'preview_url' => '',
@@ -1031,7 +1031,7 @@ class Flavor_VBP_REST_API {
             array(
                 'id'          => 'portfolio',
                 'title'       => 'Portfolio Creativo',
-                'thumbnail'   => FLAVOR_CHAT_IA_URL . 'assets/vbp/images/templates/portfolio.svg',
+                'thumbnail'   => FLAVOR_PLATFORM_URL . 'assets/vbp/images/templates/portfolio.svg',
                 'category'    => 'portfolio',
                 'description' => 'Portfolio para mostrar tus proyectos',
                 'preview_url' => '',
@@ -1045,7 +1045,7 @@ class Flavor_VBP_REST_API {
             array(
                 'id'          => 'startup',
                 'title'       => 'Startup Launch',
-                'thumbnail'   => FLAVOR_CHAT_IA_URL . 'assets/vbp/images/templates/startup.svg',
+                'thumbnail'   => FLAVOR_PLATFORM_URL . 'assets/vbp/images/templates/startup.svg',
                 'category'    => 'business',
                 'description' => 'Landing para lanzamiento de startup',
                 'preview_url' => '',
@@ -1060,7 +1060,7 @@ class Flavor_VBP_REST_API {
             array(
                 'id'          => 'ecommerce',
                 'title'       => 'E-commerce Promo',
-                'thumbnail'   => FLAVOR_CHAT_IA_URL . 'assets/vbp/images/templates/ecommerce.svg',
+                'thumbnail'   => FLAVOR_PLATFORM_URL . 'assets/vbp/images/templates/ecommerce.svg',
                 'category'    => 'ecommerce',
                 'description' => 'Landing promocional para tienda online',
                 'preview_url' => '',

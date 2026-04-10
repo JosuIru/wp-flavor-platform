@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Noticias Ayuntamiento
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $limite = $limite ?? 4;

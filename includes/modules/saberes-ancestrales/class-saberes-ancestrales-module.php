@@ -5,7 +5,7 @@
  * Preservación y transmisión del conocimiento tradicional comunitario.
  * Conecta generaciones y honra la sabiduría de los mayores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del módulo Saberes Ancestrales
  */
-class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Consumer;
@@ -873,14 +873,14 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'flavor-saberes-ancestrales',
             $this->get_module_url() . 'assets/css/saberes-ancestrales.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-saberes-ancestrales',
             $this->get_module_url() . 'assets/js/saberes-ancestrales.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1591,4 +1591,8 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Saberes_Ancestrales_Module', false)) {
+    class_alias('Flavor_Platform_Saberes_Ancestrales_Module', 'Flavor_Chat_Saberes_Ancestrales_Module');
 }

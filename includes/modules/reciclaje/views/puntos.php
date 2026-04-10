@@ -3,7 +3,7 @@
  * Vista Puntos de Reciclaje - Módulo Reciclaje
  * Gestión de puntos de recogida
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

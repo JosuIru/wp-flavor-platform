@@ -7,7 +7,7 @@
  * - Seguimiento: Estado de solicitudes pendientes con timeline
  * - Documentos Guardados: Documentos que el usuario ha guardado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Transparencia
  * @since 3.1.1
  */
@@ -208,7 +208,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                         <?php esc_html_e('Historial de solicitudes de acceso a informacion publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                    class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -256,7 +256,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                         <p class="flavor-text-muted">
                             <?php esc_html_e('Puedes solicitar acceso a informacion publica como presupuestos, contratos, actas y mas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <?php esc_html_e('Crear mi primera solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -285,7 +285,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
+                                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
                                                class="flavor-link-primary">
                                                 <?php echo esc_html(wp_trim_words($solicitud->titulo, 8)); ?>
                                             </a>
@@ -320,7 +320,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
+                                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
                                                class="flavor-btn flavor-btn-sm flavor-btn-outline"
                                                title="<?php esc_attr_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-visibility"></span>
@@ -399,7 +399,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                         <?php esc_html_e('No tienes solicitudes en tramite actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <?php esc_html_e('Nueva solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
@@ -489,7 +489,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                             </div>
 
                             <div class="flavor-seguimiento-actions">
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <span class="dashicons dashicons-visibility"></span>
                                     <?php esc_html_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -635,7 +635,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                     <p class="flavor-text-muted">
                         <?php esc_html_e('Explora el portal de transparencia y guarda los documentos que te interesen para acceder a ellos rapidamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', '')); ?>"
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', '')); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-visibility"></span>
                         <?php esc_html_e('Explorar portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -707,7 +707,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                     ); ?>
                                 </span>
                                 <div class="flavor-card-actions">
-                                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/'); ?>"
+                                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/'); ?>"
                                        class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                         <span class="dashicons dashicons-visibility"></span>
                                         <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>

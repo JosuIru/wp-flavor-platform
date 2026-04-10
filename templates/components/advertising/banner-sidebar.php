@@ -4,7 +4,7 @@
  *
  * Banner publicitario vertical para sidebar
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $ad_id ID del anuncio
  * @var bool $mostrar_etiqueta Mostrar badge de "Anuncio"
  * @var bool $sticky Habilitar sticky positioning

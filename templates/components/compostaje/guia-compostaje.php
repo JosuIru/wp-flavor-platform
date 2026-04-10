@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Guía de Compostaje
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo
  * @var string $descripcion

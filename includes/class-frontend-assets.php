@@ -4,7 +4,7 @@
  *
  * Encola CSS y JavaScript necesarios para formularios y componentes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -95,9 +95,9 @@ class Flavor_Frontend_Assets {
         // Encolar JS de módulos
         wp_enqueue_script(
             'flavor-modules',
-            FLAVOR_CHAT_IA_URL . "assets/js/flavor-modules{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/flavor-modules{$sufijo_asset}.js",
             ['alpine'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -119,9 +119,9 @@ class Flavor_Frontend_Assets {
         // Encolar CSS de módulos
         wp_enqueue_style(
             'flavor-modules',
-            FLAVOR_CHAT_IA_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Permitir extender con assets adicionales
@@ -152,9 +152,9 @@ class Flavor_Frontend_Assets {
 
         wp_enqueue_script(
             'flavor-modules-admin',
-            FLAVOR_CHAT_IA_URL . "assets/js/flavor-modules{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/flavor-modules{$sufijo_asset}.js",
             ['alpine-admin'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -174,9 +174,9 @@ class Flavor_Frontend_Assets {
 
         wp_enqueue_style(
             'flavor-modules-admin',
-            FLAVOR_CHAT_IA_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 

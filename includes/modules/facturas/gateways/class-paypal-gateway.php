@@ -3,7 +3,7 @@
  * Gateway de pago PayPal
  * Implementación de PayPal para pagos online (Smart Payment Buttons)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Facturas
  */
 
@@ -264,8 +264,8 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
      * Obtener instancia del módulo de facturas
      */
     private function get_facturas_module() {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             return $loader->get_module('facturas');
         }
         return null;

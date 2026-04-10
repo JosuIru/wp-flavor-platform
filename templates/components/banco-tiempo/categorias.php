@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Categorías del Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 

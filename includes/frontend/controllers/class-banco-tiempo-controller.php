@@ -2,7 +2,7 @@
 /**
  * Controlador Frontend: Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -30,7 +30,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
             'intercambios_mes' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             $servicios = $wpdb->get_results("SELECT * FROM $tabla_servicios WHERE estado = 'activo' ORDER BY fecha_creacion DESC LIMIT 20", ARRAY_A);
             $estadisticas['servicios_activos'] = count($servicios);
 
@@ -111,7 +111,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
         $usuario = null;
         $valoraciones = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             $servicio = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_servicios WHERE id = %d", $item_id), ARRAY_A);
         }
 
@@ -162,7 +162,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $resultados = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             $resultados = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM $tabla_servicios WHERE (titulo LIKE %s OR descripcion LIKE %s) AND estado = 'activo'",
                 '%' . $wpdb->esc_like($query) . '%',

@@ -2,17 +2,20 @@
 /**
  * Template: Ofertas de Trabajo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$tipos = Flavor_Chat_Trabajo_Digno_Module::TIPOS_OFERTA;
-$sectores = Flavor_Chat_Trabajo_Digno_Module::SECTORES;
-$jornadas = Flavor_Chat_Trabajo_Digno_Module::JORNADAS;
-$criterios = Flavor_Chat_Trabajo_Digno_Module::CRITERIOS_DIGNIDAD;
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$tipos = $trabajo_digno_module_class::TIPOS_OFERTA;
+$sectores = $trabajo_digno_module_class::SECTORES;
+$jornadas = $trabajo_digno_module_class::JORNADAS;
+$criterios = $trabajo_digno_module_class::CRITERIOS_DIGNIDAD;
 
 $user_id = get_current_user_id();
 
@@ -37,7 +40,10 @@ foreach ($ofertas as $oferta) {
 }
 
 // Instancia del módulo para calcular dignidad
-$modulo = new Flavor_Chat_Trabajo_Digno_Module();
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$modulo = new $trabajo_digno_module_class();
 ?>
 
 <div class="td-container">

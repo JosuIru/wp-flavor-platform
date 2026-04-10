@@ -4,7 +4,7 @@
  *
  * Página de administración mejorada para gestionar páginas con nuevos componentes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -31,7 +31,7 @@ class Flavor_Pages_Admin_V2 {
             return;
         }
 
-        wp_enqueue_style('flavor-pages-admin', FLAVOR_CHAT_IA_URL . 'admin/css/pages-admin.css', [], FLAVOR_CHAT_IA_VERSION);
+        wp_enqueue_style('flavor-pages-admin', FLAVOR_PLATFORM_URL . 'admin/css/pages-admin.css', [], FLAVOR_PLATFORM_VERSION);
     }
 
     /**
@@ -437,7 +437,7 @@ class Flavor_Pages_Admin_V2 {
 
         $result = Flavor_Page_Creator_V2::create_or_update_pages();
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'created_v2' => count($result['created']),
             'updated_v2' => count($result['updated']),
@@ -457,7 +457,7 @@ class Flavor_Pages_Admin_V2 {
 
         $result = Flavor_Page_Migrator::migrate_all_pages();
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'migrated' => count($result['migrated']),
             'skipped' => count($result['skipped']),

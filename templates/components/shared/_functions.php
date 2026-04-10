@@ -2,7 +2,7 @@
 /**
  * Funciones Helper para Componentes Shared
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 
@@ -256,7 +256,7 @@ function flavor_get_color_classes(string $color): array {
  * @return void
  */
 function flavor_render_component(string $component, array $args = []): void {
-    $file = FLAVOR_CHAT_IA_PATH . "templates/components/shared/{$component}.php";
+    $file = FLAVOR_PLATFORM_PATH . "templates/components/shared/{$component}.php";
 
     if (!file_exists($file)) {
         if (defined('WP_DEBUG') && WP_DEBUG) {

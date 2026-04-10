@@ -5,7 +5,7 @@
  * Este archivo es un wrapper de compatibilidad.
  * La implementación principal está en includes/class-demo-data-generator.php
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Core
  * @deprecated Use includes/class-demo-data-generator.php directamente
  */

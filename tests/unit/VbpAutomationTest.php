@@ -2,7 +2,7 @@
 /**
  * Tests para las funciones de automatización VBP
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';

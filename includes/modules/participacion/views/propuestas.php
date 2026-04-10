@@ -2,7 +2,7 @@
 /**
  * Vista Gestión de Propuestas - Módulo Participación Ciudadana (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

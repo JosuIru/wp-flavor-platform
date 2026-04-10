@@ -5,7 +5,7 @@
  * Interfaz drag-drop para configurar la navegación
  * de la aplicación móvil (tabs, drawer, etc.)
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  */
 
@@ -367,16 +367,16 @@ class Flavor_App_Menu_Configurator {
 
         wp_enqueue_style(
             'flavor-app-menu',
-            FLAVOR_CHAT_IA_URL . 'admin/css/app-menu-configurator.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/app-menu-configurator.css',
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-app-menu',
-            FLAVOR_CHAT_IA_URL . 'admin/js/app-menu-configurator.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/app-menu-configurator.js',
             array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-droppable', 'wp-util' ),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

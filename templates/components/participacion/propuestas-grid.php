@@ -5,7 +5,7 @@
  * Muestra un grid de tarjetas de propuestas con filtros,
  * estado, votos, autor y progreso.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -2,7 +2,7 @@
 /**
  * Template: Crear Anuncio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

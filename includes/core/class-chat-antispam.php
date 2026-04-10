@@ -4,14 +4,14 @@
  *
  * Protección contra bots, spam y uso indebido del chat
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Antispam {
+class Flavor_Platform_Antispam {
 
     /**
      * Instancia singleton
@@ -124,7 +124,7 @@ class Flavor_Chat_Antispam {
         }
 
         // 2. Cooldown
-        $last_message_time = get_transient('flavor_chat_last_msg_' . md5($ip . $session_id));
+        $last_message_time = get_transient('flavor_platform_last_msg_' . md5($ip . $session_id));
         if ($last_message_time) {
             $elapsed = time() - $last_message_time;
             if ($elapsed < $this->config['cooldown_seconds']) {
@@ -135,7 +135,7 @@ class Flavor_Chat_Antispam {
                 }
             }
         }
-        set_transient('flavor_chat_last_msg_' . md5($ip . $session_id), time(), 60);
+        set_transient('flavor_platform_last_msg_' . md5($ip . $session_id), time(), 60);
 
         // 3. IP bloqueada
         if ($this->is_ip_blocked($ip)) {
@@ -391,7 +391,7 @@ class Flavor_Chat_Antispam {
         ];
 
         update_option('flavor_chat_blocked_ips', $blocked);
-        flavor_chat_ia_log("IP bloqueada: {$this->mask_ip($ip)} - Razón: {$reason}", 'warning');
+        flavor_platform_log("IP bloqueada: {$this->mask_ip($ip)} - Razón: {$reason}", 'warning');
     }
 
     public function unblock_ip($ip_hash) {
@@ -422,7 +422,7 @@ class Flavor_Chat_Antispam {
     }
 
     private function increment_violations($ip) {
-        $key = 'flavor_chat_violations_' . md5($ip);
+        $key = 'flavor_platform_violations_' . md5($ip);
         $count = (int) get_transient($key);
         set_transient($key, $count + 1, 3600);
 
@@ -438,7 +438,7 @@ class Flavor_Chat_Antispam {
 
         $table = $wpdb->prefix . 'flavor_chat_violations';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             $this->create_violations_table();
         }
 
@@ -488,7 +488,7 @@ class Flavor_Chat_Antispam {
             return;
         }
 
-        $violations = (int) get_transient('flavor_chat_violations_' . md5($ip));
+        $violations = (int) get_transient('flavor_platform_violations_' . md5($ip));
 
         if ($violations >= $this->config['notify_admin_threshold']) {
             $this->send_admin_notification($ip, $session_id, $reasons, $score, $violations);
@@ -535,7 +535,7 @@ class Flavor_Chat_Antispam {
         $table = $wpdb->prefix . 'flavor_chat_violations';
         $stats = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             return [
                 'total_violations' => 0,
                 'today_violations' => 0,
@@ -633,7 +633,7 @@ PROMPT;
 
         $table = $wpdb->prefix . 'flavor_chat_violations';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             return 0;
         }
 
@@ -644,4 +644,8 @@ PROMPT;
 
         return $deleted;
     }
+}
+
+if (!class_exists('Flavor_Chat_Antispam', false)) {
+    class_alias('Flavor_Platform_Antispam', 'Flavor_Chat_Antispam');
 }

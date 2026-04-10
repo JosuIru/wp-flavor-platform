@@ -5,7 +5,7 @@
  * Promueve un modelo económico basado en "suficiente" vs "máximo".
  * Enfocado en necesidades reales, bienestar y límites conscientes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del módulo Economía de Suficiencia
  */
-class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -477,14 +477,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'flavor-economia-suficiencia',
             $this->get_module_url() . 'assets/css/economia-suficiencia.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-economia-suficiencia',
             $this->get_module_url() . 'assets/js/economia-suficiencia.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -2660,4 +2660,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Economia_Suficiencia_Module', false)) {
+    class_alias('Flavor_Platform_Economia_Suficiencia_Module', 'Flavor_Chat_Economia_Suficiencia_Module');
 }

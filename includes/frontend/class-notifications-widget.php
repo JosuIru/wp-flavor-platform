@@ -5,7 +5,7 @@
  * Usa el Flavor_Notification_Manager existente para mostrar
  * notificaciones in-app al usuario en el frontend.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -72,7 +72,7 @@ class Flavor_Notifications_Widget {
             return;
         }
 
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
         $plugin_url = plugin_dir_url(dirname(dirname(__FILE__)));
 
         wp_enqueue_style(

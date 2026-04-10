@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Libro
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

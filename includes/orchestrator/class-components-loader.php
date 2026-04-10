@@ -4,7 +4,7 @@
  *
  * Registra automaticamente todos los componentes disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator
  */
 
@@ -149,8 +149,8 @@ class Flavor_Components_Loader {
         $ruta_archivo = $this->directorio_componentes . $datos['archivo'];
 
         if (!file_exists($ruta_archivo)) {
-            if (function_exists('flavor_chat_ia_log')) {
-                flavor_chat_ia_log(
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log(
                     sprintf('Componente no encontrado: %s en %s', $nombre, $ruta_archivo),
                     'warning'
                 );
@@ -161,8 +161,8 @@ class Flavor_Components_Loader {
         require_once $ruta_archivo;
 
         if (!class_exists($datos['clase'])) {
-            if (function_exists('flavor_chat_ia_log')) {
-                flavor_chat_ia_log(
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log(
                     sprintf('Clase de componente no encontrada: %s', $datos['clase']),
                     'warning'
                 );

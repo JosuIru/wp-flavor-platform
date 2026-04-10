@@ -4,7 +4,7 @@
  *
  * Maneja la activación, verificación y gestión de licencias del plugin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Licensing
  * @since 3.2.0
  */
@@ -177,7 +177,7 @@ class Flavor_License_Manager {
             'admin_email' => get_option('admin_email'),
             'wp_version'  => get_bloginfo('version'),
             'php_version' => PHP_VERSION,
-            'plugin_version' => FLAVOR_CHAT_IA_VERSION,
+            'plugin_version' => FLAVOR_PLATFORM_VERSION,
         ];
 
         // Verificar con servidor remoto
@@ -206,8 +206,8 @@ class Flavor_License_Manager {
         $this->clear_cache();
 
         // Log
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("Licencia activada: Plan {$this->license_data['plan']}");
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("Licencia activada: Plan {$this->license_data['plan']}");
         }
 
         do_action('flavor_platform_license_activated', $this->license_data);
@@ -235,8 +235,8 @@ class Flavor_License_Manager {
 
         // Incluso si falla el servidor, eliminar localmente
         if (is_wp_error($response)) {
-            if (function_exists('flavor_chat_ia_log')) {
-                flavor_chat_ia_log("Error desactivando licencia en servidor: " . $response->get_error_message(), 'warning');
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log("Error desactivando licencia en servidor: " . $response->get_error_message(), 'warning');
             }
         }
 
@@ -246,8 +246,8 @@ class Flavor_License_Manager {
         delete_option(self::LICENSE_OPTION);
         $this->clear_cache();
 
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("Licencia desactivada (era plan: {$old_plan})");
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("Licencia desactivada (era plan: {$old_plan})");
         }
 
         do_action('flavor_platform_license_deactivated');
@@ -329,7 +329,7 @@ class Flavor_License_Manager {
             'body'    => wp_json_encode($data),
             'headers' => [
                 'Content-Type' => 'application/json',
-                'User-Agent'   => 'FlavorPlatform/' . FLAVOR_CHAT_IA_VERSION,
+                'User-Agent'   => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
                 'X-Flavor-Site' => $this->get_site_url(),
             ],
             'timeout' => 30,

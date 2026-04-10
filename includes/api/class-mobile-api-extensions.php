@@ -4,7 +4,7 @@
  *
  * Endpoints adicionales para notificaciones y actividad reciente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

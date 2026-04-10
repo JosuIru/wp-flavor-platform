@@ -8,7 +8,7 @@
  * - JavaScript/TypeScript
  * - Tailwind Config
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.1.0
  */
 

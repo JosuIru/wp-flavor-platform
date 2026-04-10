@@ -370,7 +370,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
 
                     <?php
                     $starter_theme = wp_get_theme('flavor-starter');
-                    $starter_bundled = file_exists(FLAVOR_CHAT_IA_PATH . 'assets/companion-theme/flavor-starter/style.css');
+                    $starter_bundled = file_exists(FLAVOR_PLATFORM_PATH . 'assets/companion-theme/flavor-starter/style.css');
                     if (get_stylesheet() !== 'flavor-starter' && ($starter_theme->exists() || $starter_bundled)) :
                         $starter_action = $starter_theme->exists() ? 'flavor_activate_starter_theme' : 'flavor_install_starter_theme';
                         $starter_url = wp_nonce_url(admin_url('admin-post.php?action=' . $starter_action), $starter_action);
@@ -657,7 +657,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <p><?php echo esc_html__('Haz clic en "Finalizar" para aplicar la configuración e ir al panel de control.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php
                     $starter_theme = wp_get_theme('flavor-starter');
-                    $starter_bundled = file_exists(FLAVOR_CHAT_IA_PATH . 'assets/companion-theme/flavor-starter/style.css');
+                    $starter_bundled = file_exists(FLAVOR_PLATFORM_PATH . 'assets/companion-theme/flavor-starter/style.css');
                     if (get_stylesheet() !== 'flavor-starter' && ($starter_theme->exists() || $starter_bundled)) :
                         $starter_action = $starter_theme->exists() ? 'flavor_activate_starter_theme' : 'flavor_install_starter_theme';
                         $starter_url = wp_nonce_url(admin_url('admin-post.php?action=' . $starter_action), $starter_action);

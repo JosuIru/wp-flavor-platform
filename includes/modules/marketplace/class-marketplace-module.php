@@ -4,7 +4,7 @@
  *
  * Marketplace comunitario: Regalo, Venta, Cambio, Alquiler
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Marketplace - Anuncios de regalo, venta, cambio y alquiler
  */
-class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Marketplace_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -154,8 +154,8 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
         $tabla_transacciones = $wpdb->prefix . 'flavor_marketplace_transacciones';
 
-        $faltan_tablas = !Flavor_Chat_Helpers::tabla_existe($tabla_anuncios)
-            || !Flavor_Chat_Helpers::tabla_existe($tabla_transacciones);
+        $faltan_tablas = !Flavor_Platform_Helpers::tabla_existe($tabla_anuncios)
+            || !Flavor_Platform_Helpers::tabla_existe($tabla_transacciones);
 
         if ($faltan_tablas && function_exists('flavor_marketplace_crear_tablas')) {
             flavor_marketplace_crear_tablas();
@@ -972,7 +972,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_anuncios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_anuncios)) {
             return null;
         }
 
@@ -2502,4 +2502,8 @@ KNOWLEDGE;
             include $template_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Marketplace_Module', false)) {
+    class_alias('Flavor_Platform_Marketplace_Module', 'Flavor_Chat_Marketplace_Module');
 }

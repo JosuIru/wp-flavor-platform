@@ -2,7 +2,7 @@
 /**
  * Sistema de Breadcrumbs para Flavor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -46,7 +46,7 @@ class Flavor_Breadcrumbs {
     public static function render($args = []) {
         $defaults = [
             'home_text' => __('Mi Portal', 'flavor-platform'),
-            'home_url' => Flavor_Chat_Helpers::get_action_url('', ''),
+            'home_url' => Flavor_Platform_Helpers::get_action_url('', ''),
             'separator' => '›',
             'show_current' => true,
             'class' => 'flavor-breadcrumbs',
@@ -152,7 +152,7 @@ class Flavor_Breadcrumbs {
     public static function render_module($module_label, $module_url, $current_title, $extra_items = []) {
         $args = [
             'home_text' => __('Mi Portal', 'flavor-platform'),
-            'home_url' => Flavor_Chat_Helpers::get_action_url('', ''),
+            'home_url' => Flavor_Platform_Helpers::get_action_url('', ''),
             'separator' => '›',
             'class' => 'flavor-breadcrumbs',
         ];

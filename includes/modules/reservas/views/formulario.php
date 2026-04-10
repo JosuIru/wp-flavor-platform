@@ -2,7 +2,7 @@
 /**
  * Formulario para hacer una reserva
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Reservas
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Obtener configuración del módulo
-$module = Flavor_Chat_Module_Loader::get_instance()->get_module('reservas');
+$module = Flavor_Platform_Module_Loader::get_instance()->get_module('reservas');
 $settings = $module ? $module->get_settings() : [];
 
 $hora_apertura = $settings['hora_apertura'] ?? '09:00';
@@ -171,7 +171,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <?php _e('Solicitar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('reservas', '')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('reservas', '')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
                 <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

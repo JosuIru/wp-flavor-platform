@@ -3,7 +3,7 @@
  * Gateway de pago Stripe
  * Implementación de Stripe Payment Gateway para pagos online
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Facturas
  */
 
@@ -400,11 +400,11 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
     /**
      * Obtener instancia del módulo de facturas
      *
-     * @return Flavor_Chat_Facturas_Module|null
+     * @return Flavor_Platform_Module_Interface|null
      */
     private function get_facturas_module() {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             return $loader->get_module('facturas');
         }
         return null;

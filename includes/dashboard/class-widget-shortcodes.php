@@ -5,7 +5,7 @@
  * Permite usar los widgets del Dashboard Unificado en cualquier página
  * mediante shortcodes, integrándose con el Visual Builder Pro.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Dashboard
  * @since 4.2.0
  */
@@ -82,16 +82,16 @@ class Flavor_Widget_Shortcodes {
     public function register_assets(): void {
         wp_register_style(
             'flavor-widget-shortcodes',
-            FLAVOR_CHAT_IA_URL . 'assets/css/modules/widget-shortcodes.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/modules/widget-shortcodes.css',
             ['flavor-base-css'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-widget-shortcodes',
-            FLAVOR_CHAT_IA_URL . 'assets/js/widget-shortcodes.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/widget-shortcodes.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -121,12 +121,12 @@ class Flavor_Widget_Shortcodes {
         wp_enqueue_script('flavor-widget-shortcodes');
 
         // También encolar estilos del dashboard unificado
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/layouts/unified-dashboard.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/css/layouts/unified-dashboard.css')) {
             wp_enqueue_style(
                 'flavor-unified-dashboard',
-                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/unified-dashboard.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/layouts/unified-dashboard.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 

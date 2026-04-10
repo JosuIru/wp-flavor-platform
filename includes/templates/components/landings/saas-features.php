@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Features SaaS
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

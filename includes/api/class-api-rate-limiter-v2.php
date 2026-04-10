@@ -11,7 +11,7 @@
  * - Soporte para tokens de API con límites personalizados
  * - Penalización exponencial para abuso
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage API
  * @since 3.2.0
  */
@@ -392,8 +392,8 @@ class Flavor_API_Rate_Limiter_V2 {
         }
 
         // Log
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log(
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log(
                 sprintf('Rate limit violation #%d from IP: %s', $violations, $ip),
                 'warning'
             );
@@ -407,8 +407,8 @@ class Flavor_API_Rate_Limiter_V2 {
         $key = self::TRANSIENT_PREFIX . 'banned_' . md5($ip);
         set_transient($key, true, self::BAN_DURATION);
 
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log(
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log(
                 sprintf('IP banned for %d seconds: %s', self::BAN_DURATION, $ip),
                 'warning'
             );

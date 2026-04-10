@@ -5,7 +5,7 @@
  * Este trait permite que cualquier módulo exponga sus datos
  * de forma estructurada para el consumo de apps nativas.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage App_Integration
  */
 

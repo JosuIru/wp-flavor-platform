@@ -6,7 +6,7 @@
  * basándose en los módulos activos y su alineación con las 5 premisas
  * fundamentales de una economía consciente.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\SelloConciencia
  * @since 4.2.0
  */
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
  *
  * @since 4.2.0
  */
-class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Sello_Conciencia_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -1444,7 +1444,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      */
     public function get_modulos_activos(): array {
         // Obtener módulos activos desde la configuración del plugin
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $modulos_activos = $settings['active_modules'] ?? [];
 
         // Filtrar este módulo y normalizar IDs
@@ -1483,8 +1483,8 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      * @return array|null
      */
     private function get_valoracion_desde_modulo(string $modulo_id): ?array {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $modulo = $loader->get_module($modulo_id);
 
             if ($modulo && method_exists($modulo, 'get_consciousness_valuation')) {
@@ -1683,7 +1683,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
     public function enqueue_frontend_assets(): void {
         wp_enqueue_style(
             'flavor-sello-conciencia',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/sello-conciencia/assets/css/sello-conciencia.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/sello-conciencia/assets/css/sello-conciencia.css',
             [],
             self::VERSION
         );
@@ -1699,7 +1699,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-sello-conciencia-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/sello-conciencia/assets/css/sello-conciencia.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/sello-conciencia/assets/css/sello-conciencia.css',
             [],
             self::VERSION
         );
@@ -1919,4 +1919,8 @@ KNOWLEDGE;
             Flavor_Sello_Conciencia_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Sello_Conciencia_Module', false)) {
+    class_alias('Flavor_Platform_Sello_Conciencia_Module', 'Flavor_Chat_Sello_Conciencia_Module');
 }

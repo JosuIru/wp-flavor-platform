@@ -3,7 +3,7 @@
  * Vista: Dashboard de Energía Comunitaria
  * Migrado al sistema dm-* centralizado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -20,11 +20,11 @@ $tabla_participantes = $wpdb->prefix . 'flavor_energia_participantes';
 $tabla_incidencias = $wpdb->prefix . 'flavor_energia_incidencias';
 
 // Verificar existencia de tablas
-$tabla_comunidades_existe = Flavor_Chat_Helpers::tabla_existe($tabla_comunidades);
-$tabla_instalaciones_existe = Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones);
-$tabla_lecturas_existe = Flavor_Chat_Helpers::tabla_existe($tabla_lecturas);
-$tabla_participantes_existe = Flavor_Chat_Helpers::tabla_existe($tabla_participantes);
-$tabla_incidencias_existe = Flavor_Chat_Helpers::tabla_existe($tabla_incidencias);
+$tabla_comunidades_existe = Flavor_Platform_Helpers::tabla_existe($tabla_comunidades);
+$tabla_instalaciones_existe = Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones);
+$tabla_lecturas_existe = Flavor_Platform_Helpers::tabla_existe($tabla_lecturas);
+$tabla_participantes_existe = Flavor_Platform_Helpers::tabla_existe($tabla_participantes);
+$tabla_incidencias_existe = Flavor_Platform_Helpers::tabla_existe($tabla_incidencias);
 $tablas_disponibles = $tabla_comunidades_existe;
 
 // Inicializar estadísticas

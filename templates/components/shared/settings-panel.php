@@ -4,7 +4,7 @@
  *
  * Panel de configuración con secciones y campos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $sections   Secciones: [['id' => '', 'title' => '', 'icon' => '', 'fields' => [...]]]

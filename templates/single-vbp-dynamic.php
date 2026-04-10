@@ -4,7 +4,7 @@
  *
  * Plantilla para renderizar singles de CPTs usando Visual Builder Pro.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.4.0
  */
 

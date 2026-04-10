@@ -4,7 +4,7 @@
  *
  * Endpoints para crear y gestionar páginas VBP desde herramientas externas.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */
@@ -109,7 +109,7 @@ class Flavor_VBP_Claude_API {
         }
 
         // Intentar cargar VBP manualmente
-        $loader_path = FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+        $loader_path = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
         if ( file_exists( $loader_path ) ) {
             require_once $loader_path;
             if ( class_exists( 'Flavor_VBP_Loader' ) ) {
@@ -10325,7 +10325,7 @@ class Flavor_VBP_Claude_API {
 
         // Cargar VBP Canvas si no está disponible
         if ( ! class_exists( 'Flavor_VBP_Canvas' ) ) {
-            $canvas_path = FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-canvas.php';
+            $canvas_path = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-canvas.php';
             if ( file_exists( $canvas_path ) ) {
                 require_once $canvas_path;
             } else {
@@ -10895,7 +10895,7 @@ class Flavor_VBP_Claude_API {
 
         // Cargar VBP Canvas si está disponible
         if ( ! class_exists( 'Flavor_VBP_Canvas' ) ) {
-            $canvas_path = FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-canvas.php';
+            $canvas_path = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-canvas.php';
             if ( file_exists( $canvas_path ) ) {
                 require_once $canvas_path;
             }

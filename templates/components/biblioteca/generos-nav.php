@@ -3,7 +3,7 @@
  * Template: Navegacion de Generos Literarios
  * Navegacion sticky con filtros por genero literario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

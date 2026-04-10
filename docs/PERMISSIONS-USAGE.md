@@ -184,7 +184,7 @@ public function ajax_crear_ciclo() {
     // Verificar permiso granular
     if (!Flavor_Permission_Helper::can('gc_gestionar_ciclos')) {
         wp_send_json_error([
-            'mensaje' => __('No tienes permisos para esta accion.', 'flavor-chat-ia'),
+            'mensaje' => __('No tienes permisos para esta accion.', 'flavor-platform'),
             'code' => 'permission_denied',
         ], 403);
     }

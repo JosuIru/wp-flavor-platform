@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Reservas - Parkings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Parkings
  */
 

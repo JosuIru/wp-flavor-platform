@@ -5,7 +5,7 @@
  * Expone los layouts del Page Builder via REST API para que
  * las aplicaciones móviles puedan renderizarlos nativamente.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage App_Integration
  */
 

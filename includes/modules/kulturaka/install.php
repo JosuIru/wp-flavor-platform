@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo Kulturaka
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

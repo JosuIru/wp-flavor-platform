@@ -14,7 +14,7 @@
  * @var string $url_suscribirse
  * @var string $component_classes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -4,7 +4,7 @@
  *
  * Muestra las diferentes categorías de ayuda disponibles en la red vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

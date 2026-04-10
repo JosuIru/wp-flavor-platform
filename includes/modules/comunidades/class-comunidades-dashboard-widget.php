@@ -7,7 +7,7 @@
  * - Actividad reciente
  * - Comunidades sugeridas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Comunidades
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -178,7 +178,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_comunidades,
                 'label' => __('Mis comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_comunidades > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades-dashboard') : Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-dashboard') : Flavor_Platform_Helpers::get_action_url('comunidades', 'mis-comunidades'),
             ];
         }
 
@@ -189,7 +189,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $publicaciones_nuevas,
                 'label' => __('Nuevas publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros&estado=pendiente') : Flavor_Chat_Helpers::get_action_url('comunidades', 'actividad'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros&estado=pendiente') : Flavor_Platform_Helpers::get_action_url('comunidades', 'actividad'),
             ];
         }
 
@@ -200,7 +200,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $soy_admin,
                 'label' => __('Administro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros') : Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros') : Flavor_Platform_Helpers::get_action_url('comunidades', 'mis-comunidades'),
             ];
         }
 
@@ -210,7 +210,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_comunidades,
             'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'info',
-            'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Chat_Helpers::get_action_url('comunidades', 'explorar'),
+            'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Platform_Helpers::get_action_url('comunidades', 'explorar'),
         ];
 
         // Items: mis comunidades recientes
@@ -223,7 +223,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $user_id ? __('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Chat_Helpers::get_action_url('comunidades', 'explorar'),
+                    'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Platform_Helpers::get_action_url('comunidades', 'explorar'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -277,7 +277,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $comunidad->icono ?: 'dashicons-groups',
                 'title' => $comunidad->nombre,
                 'meta' => $rol_texto ?: __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado&accion=ver&id=' . $comunidad->id) : add_query_arg('comunidad_id', $comunidad->id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle')),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado&accion=ver&id=' . $comunidad->id) : add_query_arg('comunidad_id', $comunidad->id, Flavor_Platform_Helpers::get_action_url('comunidades', 'detalle')),
                 'badge' => $rol_texto,
             ];
         }

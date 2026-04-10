@@ -5,7 +5,7 @@
  * Utiliza el motor de IA existente para ayudar a los usuarios
  * a crear plantillas personalizadas según sus necesidades.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Web_Builder
  */
 
@@ -83,7 +83,7 @@ class Flavor_AI_Template_Assistant {
 
         // CSS del asistente (assets en directorio principal del plugin)
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
-        $url_base_plugin = FLAVOR_CHAT_IA_URL;
+        $url_base_plugin = FLAVOR_PLATFORM_URL;
 
         wp_enqueue_style(
             'flavor-ai-template-assistant',

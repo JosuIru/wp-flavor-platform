@@ -4,7 +4,7 @@
  *
  * Calendario interactivo con eventos/citas usando FullCalendar o vista simple.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $events     Array de eventos: [['id' => x, 'title' => '', 'start' => '', 'end' => '', 'color' => '', 'url' => '']]

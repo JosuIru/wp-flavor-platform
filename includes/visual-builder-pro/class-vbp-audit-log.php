@@ -4,7 +4,7 @@
  *
  * Sistema de registro de auditoría para tracking de acciones.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.3.0
  */

@@ -5,7 +5,7 @@
  * Proporciona endpoints públicos (sin autenticación) para previsualizar
  * y validar landing pages VBP. Diseñado para integración con Claude Code.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */

@@ -3,7 +3,7 @@
  * Dashboard mejorado de WooCommerce con Widgets de Datos en Vivo
  * Vista del Dashboard con integración a módulos relacionados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage WooCommerce
  */
 

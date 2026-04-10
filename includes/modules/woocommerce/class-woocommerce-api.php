@@ -5,7 +5,7 @@
  * Adaptadores simplificados sobre la API nativa de WooCommerce
  * para facilitar integración en apps móviles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -20,7 +20,7 @@ class Flavor_WooCommerce_API {
     /**
      * Namespace de la API
      */
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     /**
      * Instancia singleton
@@ -49,7 +49,7 @@ class Flavor_WooCommerce_API {
      */
     public function register_routes() {
         // GET /woocommerce/productos - Lista simplificada de productos
-        register_rest_route(self::NAMESPACE, '/woocommerce/productos', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/productos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_productos'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -84,21 +84,21 @@ class Flavor_WooCommerce_API {
         ]);
 
         // GET /woocommerce/productos/{id} - Detalle de producto
-        register_rest_route(self::NAMESPACE, '/woocommerce/productos/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/productos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_producto'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /woocommerce/carrito - Ver carrito
-        register_rest_route(self::NAMESPACE, '/woocommerce/carrito', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/carrito', [
             'methods' => 'GET',
             'callback' => [$this, 'get_carrito'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /woocommerce/carrito/agregar - Agregar al carrito
-        register_rest_route(self::NAMESPACE, '/woocommerce/carrito/agregar', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/carrito/agregar', [
             'methods' => 'POST',
             'callback' => [$this, 'agregar_al_carrito'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -118,7 +118,7 @@ class Flavor_WooCommerce_API {
         ]);
 
         // PUT /woocommerce/carrito/actualizar - Actualizar cantidad
-        register_rest_route(self::NAMESPACE, '/woocommerce/carrito/actualizar', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/carrito/actualizar', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_carrito'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -135,7 +135,7 @@ class Flavor_WooCommerce_API {
         ]);
 
         // DELETE /woocommerce/carrito/eliminar - Eliminar del carrito
-        register_rest_route(self::NAMESPACE, '/woocommerce/carrito/eliminar', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/carrito/eliminar', [
             'methods' => 'DELETE',
             'callback' => [$this, 'eliminar_del_carrito'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -148,14 +148,14 @@ class Flavor_WooCommerce_API {
         ]);
 
         // DELETE /woocommerce/carrito/vaciar - Vaciar carrito
-        register_rest_route(self::NAMESPACE, '/woocommerce/carrito/vaciar', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/carrito/vaciar', [
             'methods' => 'DELETE',
             'callback' => [$this, 'vaciar_carrito'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /woocommerce/pedidos - Mis pedidos
-        register_rest_route(self::NAMESPACE, '/woocommerce/pedidos', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/pedidos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedidos'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -172,21 +172,21 @@ class Flavor_WooCommerce_API {
         ]);
 
         // GET /woocommerce/pedidos/{id} - Detalle de pedido
-        register_rest_route(self::NAMESPACE, '/woocommerce/pedidos/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/pedidos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedido'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /woocommerce/categorias - Categorías de productos
-        register_rest_route(self::NAMESPACE, '/woocommerce/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /woocommerce/checkout-url - URL de checkout
-        register_rest_route(self::NAMESPACE, '/woocommerce/checkout-url', [
+        flavor_register_rest_route(self::NAMESPACE, '/woocommerce/checkout-url', [
             'methods' => 'GET',
             'callback' => [$this, 'get_checkout_url'],
             'permission_callback' => [$this, 'check_authentication'],

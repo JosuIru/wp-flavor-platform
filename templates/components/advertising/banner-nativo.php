@@ -4,7 +4,7 @@
  *
  * Anuncio nativo integrado que se mimetiza con el contenido
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $ad_id ID del anuncio
  * @var string $titulo_personalizado Título personalizado (opcional)
  * @var bool $mostrar_etiqueta Mostrar badge de "Patrocinado por"

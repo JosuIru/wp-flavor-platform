@@ -2,7 +2,7 @@
 /**
  * Dashboard del módulo Assets - Gestión de recursos compartidos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

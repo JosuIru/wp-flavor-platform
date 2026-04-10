@@ -2,7 +2,7 @@
 /**
  * API REST para Avisos Municipales (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Avisos_Municipales_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,7 +28,7 @@ class Flavor_Avisos_Municipales_API {
 
     public function register_routes() {
         // GET /avisos-municipales
-        register_rest_route(self::NAMESPACE, '/avisos-municipales', [
+        flavor_register_rest_route(self::NAMESPACE, '/avisos-municipales', [
             'methods' => 'GET',
             'callback' => [$this, 'get_avisos'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -41,14 +41,14 @@ class Flavor_Avisos_Municipales_API {
         ]);
 
         // POST /avisos-municipales/{id}/leer
-        register_rest_route(self::NAMESPACE, '/avisos-municipales/(?P<id>\d+)/leer', [
+        flavor_register_rest_route(self::NAMESPACE, '/avisos-municipales/(?P<id>\d+)/leer', [
             'methods' => 'POST',
             'callback' => [$this, 'marcar_leido'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /avisos-municipales/suscripciones
-        register_rest_route(self::NAMESPACE, '/avisos-municipales/suscripciones', [
+        flavor_register_rest_route(self::NAMESPACE, '/avisos-municipales/suscripciones', [
             'methods' => 'POST',
             'callback' => [$this, 'actualizar_suscripciones'],
             'permission_callback' => [$this, 'check_authentication'],

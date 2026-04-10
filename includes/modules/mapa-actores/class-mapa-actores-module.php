@@ -4,7 +4,7 @@
  *
  * Directorio de actores del territorio: administraciones, empresas, instituciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del modulo de Mapa de Actores
  */
-class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -38,7 +38,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores');
+        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores');
     }
 
     /**
@@ -72,7 +72,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     public function maybe_create_tables() {
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores')) {
             $this->create_tables();
         }
     }
@@ -232,7 +232,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/listado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/listado.php';
         return ob_get_clean();
     }
 
@@ -254,7 +254,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/detalle.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/detalle.php';
         return ob_get_clean();
     }
 
@@ -267,7 +267,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/crear.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/crear.php';
         return ob_get_clean();
     }
 
@@ -276,7 +276,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mapa($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/mapa.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/mapa.php';
         return ob_get_clean();
     }
 
@@ -285,7 +285,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_grafo($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/grafo.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/grafo.php';
         return ob_get_clean();
     }
 
@@ -294,7 +294,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_buscar($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/buscar.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/buscar.php';
         return ob_get_clean();
     }
 
@@ -620,24 +620,279 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      */
     private function register_rest_routes() {
         add_action('rest_api_init', function() {
+            // Listar actores
             register_rest_route('flavor/v1', '/actores', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
                 'permission_callback' => '__return_true',
             ]);
 
+            // Obtener actor con detalles
             register_rest_route('flavor/v1', '/actores/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
                 'permission_callback' => '__return_true',
             ]);
 
+            // Grafo de relaciones
             register_rest_route('flavor/v1', '/actores/grafo', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_grafo'],
                 'permission_callback' => '__return_true',
             ]);
+
+            // Buscar actores
+            register_rest_route('flavor/v1', '/actores/buscar', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_buscar'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Estadísticas
+            register_rest_route('flavor/v1', '/actores/estadisticas', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_estadisticas'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Tipos de actor
+            register_rest_route('flavor/v1', '/actores/tipos', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_tipos'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Crear actor (requiere login)
+            register_rest_route('flavor/v1', '/actores', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_crear'],
+                'permission_callback' => function() { return is_user_logged_in(); },
+            ]);
+
+            // Relaciones de un actor
+            register_rest_route('flavor/v1', '/actores/(?P<id>\d+)/relaciones', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_relaciones'],
+                'permission_callback' => '__return_true',
+            ]);
+
+            // Interacciones de un actor
+            register_rest_route('flavor/v1', '/actores/(?P<id>\d+)/interacciones', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_interacciones'],
+                'permission_callback' => '__return_true',
+            ]);
         });
+    }
+
+    /**
+     * API: Buscar actores
+     */
+    public function api_buscar($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_mapa_actores';
+
+        $busqueda = sanitize_text_field($request->get_param('q'));
+        $limite = intval($request->get_param('limite')) ?: 20;
+
+        if (empty($busqueda)) {
+            return rest_ensure_response(['actores' => []]);
+        }
+
+        $like = '%' . $wpdb->esc_like($busqueda) . '%';
+        $actores = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, nombre, nombre_corto, tipo, ambito, posicion_general, nivel_influencia, municipio, logo
+             FROM {$tabla}
+             WHERE activo = 1 AND (nombre LIKE %s OR descripcion LIKE %s OR competencias LIKE %s)
+             ORDER BY nivel_influencia DESC
+             LIMIT %d",
+            $like, $like, $like, $limite
+        ));
+
+        return rest_ensure_response([
+            'actores' => $actores,
+            'total' => count($actores),
+        ]);
+    }
+
+    /**
+     * API: Estadísticas
+     */
+    public function api_estadisticas($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_mapa_actores';
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+        $tabla_interacciones = $wpdb->prefix . 'flavor_mapa_actores_interacciones';
+
+        $estadisticas = $wpdb->get_row(
+            "SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN posicion_general = 'aliado' THEN 1 ELSE 0 END) AS aliados,
+                SUM(CASE WHEN posicion_general = 'neutro' THEN 1 ELSE 0 END) AS neutros,
+                SUM(CASE WHEN posicion_general = 'opositor' THEN 1 ELSE 0 END) AS opositores,
+                SUM(CASE WHEN nivel_influencia = 'muy_alto' THEN 1 ELSE 0 END) AS muy_alta_influencia,
+                SUM(CASE WHEN nivel_influencia = 'alto' THEN 1 ELSE 0 END) AS alta_influencia,
+                SUM(CASE WHEN verificado = 1 THEN 1 ELSE 0 END) AS verificados
+            FROM {$tabla}
+            WHERE activo = 1"
+        );
+
+        $por_tipo = $wpdb->get_results(
+            "SELECT tipo, COUNT(*) as total
+             FROM {$tabla}
+             WHERE activo = 1
+             GROUP BY tipo
+             ORDER BY total DESC"
+        );
+
+        $por_ambito = $wpdb->get_results(
+            "SELECT ambito, COUNT(*) as total
+             FROM {$tabla}
+             WHERE activo = 1
+             GROUP BY ambito
+             ORDER BY total DESC"
+        );
+
+        $total_relaciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_relaciones}");
+        $total_interacciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_interacciones}");
+
+        return rest_ensure_response([
+            'estadisticas' => $estadisticas,
+            'por_tipo' => $por_tipo,
+            'por_ambito' => $por_ambito,
+            'total_relaciones' => intval($total_relaciones),
+            'total_interacciones' => intval($total_interacciones),
+        ]);
+    }
+
+    /**
+     * API: Tipos de actor
+     */
+    public function api_tipos($request) {
+        return rest_ensure_response([
+            'tipos' => $this->get_tipos_actor(),
+            'ambitos' => [
+                'local' => 'Local',
+                'comarcal' => 'Comarcal',
+                'provincial' => 'Provincial',
+                'autonomico' => 'Autonómico',
+                'estatal' => 'Estatal',
+                'internacional' => 'Internacional',
+            ],
+            'posiciones' => [
+                'aliado' => 'Aliado',
+                'neutro' => 'Neutro',
+                'opositor' => 'Opositor',
+                'desconocido' => 'Desconocido',
+            ],
+            'niveles_influencia' => [
+                'bajo' => 'Bajo',
+                'medio' => 'Medio',
+                'alto' => 'Alto',
+                'muy_alto' => 'Muy Alto',
+            ],
+        ]);
+    }
+
+    /**
+     * API: Crear actor
+     */
+    public function api_crear($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_mapa_actores';
+
+        $datos = [
+            'nombre' => sanitize_text_field($request->get_param('nombre')),
+            'nombre_corto' => sanitize_text_field($request->get_param('nombre_corto')),
+            'descripcion' => wp_kses_post($request->get_param('descripcion')),
+            'tipo' => sanitize_text_field($request->get_param('tipo') ?? 'otro'),
+            'subtipo' => sanitize_text_field($request->get_param('subtipo')),
+            'ambito' => sanitize_text_field($request->get_param('ambito') ?? 'local'),
+            'posicion_general' => sanitize_text_field($request->get_param('posicion_general') ?? 'desconocido'),
+            'nivel_influencia' => sanitize_text_field($request->get_param('nivel_influencia') ?? 'medio'),
+            'direccion' => sanitize_textarea_field($request->get_param('direccion')),
+            'municipio' => sanitize_text_field($request->get_param('municipio')),
+            'telefono' => sanitize_text_field($request->get_param('telefono')),
+            'email' => sanitize_email($request->get_param('email')),
+            'web' => esc_url_raw($request->get_param('web')),
+            'competencias' => sanitize_textarea_field($request->get_param('competencias')),
+            'temas_relacionados' => sanitize_text_field($request->get_param('temas_relacionados')),
+            'creador_id' => get_current_user_id(),
+        ];
+
+        if (empty($datos['nombre'])) {
+            return new WP_Error('missing_name', 'El nombre es obligatorio.', ['status' => 400]);
+        }
+
+        $tipos_validos = array_keys($this->get_tipos_actor());
+        if (!in_array($datos['tipo'], $tipos_validos)) {
+            $datos['tipo'] = 'otro';
+        }
+
+        $resultado = $wpdb->insert($tabla, $datos);
+
+        if ($resultado === false) {
+            return new WP_Error('db_error', 'Error al crear el actor.', ['status' => 500]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'actor_id' => $wpdb->insert_id,
+            'mensaje' => 'Actor creado correctamente.',
+        ]);
+    }
+
+    /**
+     * API: Relaciones de un actor
+     */
+    public function api_relaciones($request) {
+        global $wpdb;
+        $actor_id = intval($request['id']);
+        $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+
+        // Relaciones donde es origen
+        $como_origen = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.*, a.nombre as actor_nombre, a.tipo as actor_tipo
+             FROM {$tabla_relaciones} r
+             JOIN {$tabla_actores} a ON r.actor_destino_id = a.id
+             WHERE r.actor_origen_id = %d",
+            $actor_id
+        ));
+
+        // Relaciones donde es destino
+        $como_destino = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.*, a.nombre as actor_nombre, a.tipo as actor_tipo
+             FROM {$tabla_relaciones} r
+             JOIN {$tabla_actores} a ON r.actor_origen_id = a.id
+             WHERE r.actor_destino_id = %d",
+            $actor_id
+        ));
+
+        return rest_ensure_response([
+            'como_origen' => $como_origen,
+            'como_destino' => $como_destino,
+        ]);
+    }
+
+    /**
+     * API: Interacciones de un actor
+     */
+    public function api_interacciones($request) {
+        global $wpdb;
+        $actor_id = intval($request['id']);
+        $tabla = $wpdb->prefix . 'flavor_mapa_actores_interacciones';
+        $limite = intval($request->get_param('limite')) ?: 20;
+
+        $interacciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$tabla}
+             WHERE actor_id = %d
+             ORDER BY fecha DESC
+             LIMIT %d",
+            $actor_id, $limite
+        ));
+
+        return rest_ensure_response(['interacciones' => $interacciones]);
     }
 
     /**
@@ -699,16 +954,16 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-mapa-actores',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/mapa-actores/assets/css/mapa-actores.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/mapa-actores/assets/css/mapa-actores.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-mapa-actores',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/mapa-actores/assets/js/mapa-actores.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/mapa-actores/assets/js/mapa-actores.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -736,9 +991,9 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-mapa-actores-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/mapa-actores/assets/css/mapa-actores.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/mapa-actores/assets/css/mapa-actores.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 
@@ -877,7 +1132,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
             'opositores' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE activo = 1 AND posicion_general = 'opositor'"),
         ];
 
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/mapa-actores/views/dashboard.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/mapa-actores/views/dashboard.php';
     }
 
     /**
@@ -2028,4 +2283,9 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Relaciones entre Actores', 'flavor-platform') . '</h1></div>'; }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Mapa_Actores_Module', false)) {
+    class_alias('Flavor_Platform_Mapa_Actores_Module', 'Flavor_Chat_Mapa_Actores_Module');
 }

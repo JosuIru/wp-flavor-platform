@@ -17,7 +17,7 @@
  * @var string $url_boton_secundario    Secondary button URL
  * @var string $posicion                Layout position hint
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

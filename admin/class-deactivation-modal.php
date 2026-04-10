@@ -59,16 +59,16 @@ class Flavor_Deactivation_Modal {
 
         wp_enqueue_script(
             'flavor-deactivation-modal',
-            FLAVOR_CHAT_IA_URL . 'assets/js/deactivation-modal.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/deactivation-modal.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
         wp_localize_script('flavor-deactivation-modal', 'flavorDeactivation', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_deactivation_nonce'),
-            'pluginSlug' => 'flavor-chat-ia/flavor-chat-ia.php',
+            'pluginSlug' => flavor_get_runtime_plugin_basename(),
             'i18n' => [
                 'title' => __('Desactivar Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'subtitle' => __('¿Qué deseas hacer con los datos del plugin?', FLAVOR_PLATFORM_TEXT_DOMAIN),

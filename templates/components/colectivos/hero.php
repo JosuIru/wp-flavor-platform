@@ -5,7 +5,7 @@
  * @var string $titulo
  * @var string $subtitulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ if (function_exists('is_plugin_active')) {
     $tabla_colectivos_miembros  = $wpdb->prefix . 'flavor_colectivos_miembros';
     $tabla_colectivos_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
 
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_colectivos)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_colectivos)) {
         $total_colectivos_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos WHERE estado = 'activo'");
         $total_miembros_activos   = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_miembros WHERE estado = 'activo'");
         $total_proyectos_activos  = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_proyectos WHERE estado IN ('planificado','en_curso')");

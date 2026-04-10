@@ -2,7 +2,7 @@
 /**
  * Clase para manejar el emparejamiento de apps mediante QR
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.0.0
  */
 

@@ -2,7 +2,7 @@
 /**
  * Gestion de yield farming y staking de LP tokens
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage DexSolana
  */
 

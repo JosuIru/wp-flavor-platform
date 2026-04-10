@@ -4,7 +4,7 @@
  *
  * Slot de reserva individual con información y acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $date        Fecha (YYYY-MM-DD)

@@ -14,7 +14,7 @@
  *       }
  *   }
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -34,7 +34,7 @@ trait Flavor_Encuestas_Features {
     /**
      * Instancia del módulo de encuestas
      *
-     * @var Flavor_Chat_Encuestas_Module|null
+     * @var Flavor_Platform_Module_Interface|null
      */
     protected $encuestas_module = null;
 
@@ -64,20 +64,20 @@ trait Flavor_Encuestas_Features {
      * @return bool
      */
     protected function is_encuestas_module_active() {
-        return Flavor_Chat_Module_Loader::is_module_active('encuestas');
+        return Flavor_Platform_Module_Loader::is_module_active('encuestas');
     }
 
     /**
      * Obtiene la instancia del módulo de encuestas
      *
-     * @return Flavor_Chat_Encuestas_Module|null
+     * @return Flavor_Platform_Module_Interface|null
      */
     protected function get_encuestas_module() {
         if ($this->encuestas_module !== null) {
             return $this->encuestas_module;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $this->encuestas_module = $loader->get_module('encuestas');
 
         return $this->encuestas_module;

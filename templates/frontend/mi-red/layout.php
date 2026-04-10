@@ -14,7 +14,7 @@
  * - $base_url: URL base de mi-red
  * - $datos_vista: array con datos específicos de la vista
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -209,7 +209,7 @@ if (!$in_dynamic_pages) {
             <!-- Enlaces rápidos -->
             <div class="mi-red-widget mi-red-widget--links">
                 <ul class="mi-red-quick-links">
-                    <li><a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>"><?php esc_html_e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
+                    <li><a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('', '')); ?>"><?php esc_html_e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/red-social/')); ?>"><?php esc_html_e('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/comunidades/')); ?>"><?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/foros/')); ?>"><?php esc_html_e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>

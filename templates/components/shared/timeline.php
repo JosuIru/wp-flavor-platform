@@ -4,7 +4,7 @@
  *
  * Línea de tiempo/historial de actividad.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items       Items: [['title' => '', 'description' => '', 'date' => '', 'icon' => '', 'color' => '', 'user' => []]]

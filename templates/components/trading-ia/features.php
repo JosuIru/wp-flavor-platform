@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Trading IA Features
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -2,7 +2,7 @@
 /**
  * Clase principal del módulo Bug Tracker
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Bug_Tracker
  */
 
@@ -114,7 +114,7 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_bugs);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_bugs);
     }
 
     /**
@@ -240,7 +240,7 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
              * @return int|false ID del bug creado o false si falla
              */
             function flavor_report_bug($titulo, $descripcion, $contexto = []) {
-                $modulo = Flavor_Chat_Module_Loader::get_instance()->get_module('bug-tracker');
+                $modulo = Flavor_Platform_Module_Loader::get_instance()->get_module('bug-tracker');
                 if (!$modulo) {
                     return false;
                 }

@@ -2,7 +2,7 @@
 /**
  * Clase helper para guardar app_profile de forma confiable
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -51,7 +51,7 @@ class Flavor_Profile_Saver {
         );
 
         // Limpiar todos los caches posibles
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete('flavor_platform_settings', 'options');
         wp_cache_delete('alloptions', 'options');
         wp_cache_flush();
 

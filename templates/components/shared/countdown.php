@@ -4,7 +4,7 @@
  *
  * Temporizador de cuenta regresiva para eventos, ofertas, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $target_date  Fecha objetivo (YYYY-MM-DD HH:MM:SS o timestamp)

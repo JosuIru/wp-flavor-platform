@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Series de Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

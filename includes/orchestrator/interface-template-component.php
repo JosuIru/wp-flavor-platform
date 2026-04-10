@@ -5,7 +5,7 @@
  * Define el contrato que deben cumplir todos los componentes
  * que participan en la activacion/desactivacion de plantillas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator
  */
 
@@ -127,8 +127,8 @@ abstract class Flavor_Template_Component_Base implements Flavor_Template_Compone
             'tiempo'   => current_time('mysql'),
         ];
 
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("[{$this->componente_id}] Error: {$mensaje}", 'error', $contexto);
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("[{$this->componente_id}] Error: {$mensaje}", 'error', $contexto);
         }
     }
 
@@ -148,8 +148,8 @@ abstract class Flavor_Template_Component_Base implements Flavor_Template_Compone
             'tiempo'   => current_time('mysql'),
         ];
 
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("[{$this->componente_id}] Advertencia: {$mensaje}", 'warning', $contexto);
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("[{$this->componente_id}] Advertencia: {$mensaje}", 'warning', $contexto);
         }
     }
 

@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Clientes (CRM)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -689,13 +689,13 @@ class Flavor_Clientes_Dashboard_Tab {
             }
         }
 
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             $this->flash_type = 'error';
             $this->flash_message = 'El cargador de módulos no está disponible.';
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $module = $loader ? $loader->get_module('clientes') : null;
 
         if (!$module || !method_exists($module, 'execute_action')) {

@@ -4,7 +4,7 @@
  *
  * Sistema centralizado para gestionar notificaciones de todos los módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -607,7 +607,7 @@ class Flavor_Notification_Center {
         $unread_count = $this->get_unread_count($user_id);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'templates/notifications/widget.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/notifications/widget.php';
         return ob_get_clean();
     }
 
@@ -621,16 +621,16 @@ class Flavor_Notification_Center {
 
         wp_enqueue_style(
             'flavor-notifications',
-            FLAVOR_CHAT_IA_URL . 'assets/css/modules/notifications.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/modules/notifications.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-notifications',
-            FLAVOR_CHAT_IA_URL . 'assets/js/notifications.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/notifications.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -640,10 +640,10 @@ class Flavor_Notification_Center {
             'nonce' => wp_create_nonce('flavor_notifications'),
             'userId' => get_current_user_id(),
             'preferencesUrl' => admin_url('admin.php?page=flavor-platform-settings&tab=notifications'),
-            'allNotificationsUrl' => Flavor_Chat_Helpers::get_action_url('', '') . '#notifications',
+            'allNotificationsUrl' => Flavor_Platform_Helpers::get_action_url('', '') . '#notifications',
             'enablePolling' => true,
             'soundEnabled' => get_user_meta(get_current_user_id(), 'flavor_notification_sound', true) !== 'off',
-            'iconUrl' => FLAVOR_CHAT_IA_URL . 'assets/images/icon-notification.png',
+            'iconUrl' => FLAVOR_PLATFORM_URL . 'assets/images/icon-notification.png',
             'i18n' => [
                 'confirmDelete' => __('¿Eliminar esta notificación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'noNotifications' => __('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),

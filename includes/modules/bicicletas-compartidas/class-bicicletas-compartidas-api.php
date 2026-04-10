@@ -2,7 +2,7 @@
 /**
  * API REST para Bicicletas Compartidas (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Bicicletas_Compartidas_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,14 +28,14 @@ class Flavor_Bicicletas_Compartidas_API {
 
     public function register_routes() {
         // GET /bicicletas-compartidas
-        register_rest_route(self::NAMESPACE, '/bicicletas-compartidas', [
+        flavor_register_rest_route(self::NAMESPACE, '/bicicletas-compartidas', [
             'methods' => 'GET',
             'callback' => [$this, 'get_sistema'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /bicicletas-compartidas/alquilar
-        register_rest_route(self::NAMESPACE, '/bicicletas-compartidas/alquilar', [
+        flavor_register_rest_route(self::NAMESPACE, '/bicicletas-compartidas/alquilar', [
             'methods' => 'POST',
             'callback' => [$this, 'alquilar_bicicleta'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -48,7 +48,7 @@ class Flavor_Bicicletas_Compartidas_API {
         ]);
 
         // POST /bicicletas-compartidas/finalizar
-        register_rest_route(self::NAMESPACE, '/bicicletas-compartidas/finalizar', [
+        flavor_register_rest_route(self::NAMESPACE, '/bicicletas-compartidas/finalizar', [
             'methods' => 'POST',
             'callback' => [$this, 'finalizar_alquiler'],
             'permission_callback' => [$this, 'check_authentication'],

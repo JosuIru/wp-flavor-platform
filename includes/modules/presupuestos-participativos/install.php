@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Presupuestos Participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  */
 

@@ -5,7 +5,7 @@
  * Permite diseñar visualmente las páginas single de cualquier CPT
  * usando el Visual Builder Pro.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 3.4.0
  */
@@ -768,7 +768,7 @@ class Flavor_VBP_Single_Templates {
         }
 
         // Usar nuestra plantilla
-        return FLAVOR_CHAT_IA_PATH . 'templates/single-vbp-dynamic.php';
+        return FLAVOR_PLATFORM_PATH . 'templates/single-vbp-dynamic.php';
     }
 
     /**

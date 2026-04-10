@@ -4,7 +4,7 @@
  *
  * Gestiona todos los tipos de notificaciones: email, push, in-app, SMS
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Notifications
  */
 

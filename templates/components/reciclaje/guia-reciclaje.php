@@ -2,7 +2,7 @@
 /**
  * Template: Guia de Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

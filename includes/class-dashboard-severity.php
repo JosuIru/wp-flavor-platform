@@ -2,7 +2,7 @@
 /**
  * Utilidades comunes de severidad para dashboards y herramientas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Proporciona ayuda contextual, tooltips y secciones informativas
  * para los dashboards de módulos de forma sistemática.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 
@@ -355,16 +355,16 @@ class Flavor_Dashboard_Help {
 
         wp_enqueue_style(
             'flavor-dashboard-help',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-help.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-help.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-dashboard-help',
-            FLAVOR_CHAT_IA_URL . 'assets/js/dashboard-help.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/dashboard-help.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

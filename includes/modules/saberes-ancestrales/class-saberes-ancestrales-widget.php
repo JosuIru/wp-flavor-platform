@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Saberes Ancestrales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

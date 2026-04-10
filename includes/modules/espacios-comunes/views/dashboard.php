@@ -3,7 +3,7 @@
  * Dashboard de Espacios Comunes
  * Vista general de uso y estado de espacios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

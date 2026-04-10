@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Participación Ciudadana
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Participacion
  */
 
@@ -58,7 +58,7 @@ class Flavor_Participacion_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-participacion',
@@ -196,7 +196,7 @@ class Flavor_Participacion_Frontend_Controller {
         global $wpdb;
         $tabla_encuestas = $wpdb->prefix . 'flavor_participacion_encuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -411,7 +411,7 @@ class Flavor_Participacion_Frontend_Controller {
         global $wpdb;
         $tabla_peticiones = $wpdb->prefix . 'flavor_participacion_peticiones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_peticiones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_peticiones)) {
             return '';
         }
 
@@ -761,7 +761,7 @@ class Flavor_Participacion_Frontend_Controller {
         global $wpdb;
         $tabla_debates = $wpdb->prefix . 'flavor_participacion_debates';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_debates)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_debates)) {
             return '';
         }
 
@@ -845,7 +845,7 @@ class Flavor_Participacion_Frontend_Controller {
         }
 
         $comentarios = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
             $comentarios = $wpdb->get_results($wpdb->prepare(
                 "SELECT c.*, u.display_name as autor_nombre
                  FROM {$tabla_comentarios} c
@@ -929,17 +929,17 @@ class Flavor_Participacion_Frontend_Controller {
         ];
 
         $tabla_encuestas = $wpdb->prefix . 'flavor_participacion_encuestas';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             $stats['encuestas'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_encuestas} WHERE estado = 'activa'");
         }
 
         $tabla_peticiones = $wpdb->prefix . 'flavor_participacion_peticiones';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_peticiones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_peticiones)) {
             $stats['peticiones'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_peticiones} WHERE estado = 'activa'");
         }
 
         $tabla_debates = $wpdb->prefix . 'flavor_participacion_debates';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_debates)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_debates)) {
             $stats['debates'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_debates} WHERE estado = 'activo'");
         }
 

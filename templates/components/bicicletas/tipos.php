@@ -2,7 +2,7 @@
 /**
  * Tipos de Bicicletas - Grid de Opciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Bicicletas
  */
 

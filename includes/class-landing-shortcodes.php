@@ -4,7 +4,7 @@
  *
  * Registra y procesa los shortcodes para renderizar templates de landing pages
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -389,8 +389,8 @@ class Flavor_Landing_Shortcodes {
     private function load_template($template_name, $vars = []) {
         // Buscar en múltiples ubicaciones
         $posibles_rutas = [
-            FLAVOR_CHAT_IA_PATH . 'templates/components/landings/' . $template_name . '.php',
-            FLAVOR_CHAT_IA_PATH . 'templates/frontend/landing/' . $template_name . '.php',
+            FLAVOR_PLATFORM_PATH . 'templates/components/landings/' . $template_name . '.php',
+            FLAVOR_PLATFORM_PATH . 'templates/frontend/landing/' . $template_name . '.php',
             get_stylesheet_directory() . '/flavor/landing/' . $template_name . '.php',
         ];
 
@@ -487,7 +487,7 @@ class Flavor_Landing_Shortcodes {
      */
     private function get_module_from_active_profile() {
         // Obtener el perfil activo desde la configuración
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $perfil_activo = $configuracion['app_profile'] ?? 'personalizado';
 
         // Buscar en el mapeo

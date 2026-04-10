@@ -9,7 +9,7 @@
  * - Crashes y errores
  * - Tendencias temporales
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  * @since 1.0.0
  */
@@ -104,17 +104,17 @@ class Flavor_App_Analytics_Dashboard {
         // CSS del dashboard
         wp_enqueue_style(
             'flavor-app-analytics',
-            FLAVOR_CHAT_IA_URL . 'admin/css/app-analytics.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/app-analytics.css',
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS del dashboard
         wp_enqueue_script(
             'flavor-app-analytics',
-            FLAVOR_CHAT_IA_URL . 'admin/js/app-analytics.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/app-analytics.js',
             array('jquery', 'chartjs'),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

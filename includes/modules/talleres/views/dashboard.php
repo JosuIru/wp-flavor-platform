@@ -2,7 +2,7 @@
 /**
  * Vista Dashboard - Talleres
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

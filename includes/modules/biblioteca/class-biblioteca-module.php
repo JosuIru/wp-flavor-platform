@@ -2,7 +2,7 @@
 /**
  * Módulo de Biblioteca Comunitaria para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Biblioteca - Sistema de préstamo de libros entre vecinos
  */
-class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -52,7 +52,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_libros);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_libros);
     }
 
     /**
@@ -212,7 +212,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         $assets_url = plugin_dir_url(__FILE__) . 'assets/';
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'biblioteca-frontend',
@@ -371,7 +371,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             $this->create_tables();
         }
     }
@@ -424,7 +424,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
 
         // Columnas para prestamos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $columnas_prestamos = [
                 'prestatario_id' => "bigint(20) unsigned NOT NULL AFTER libro_id",
                 'prestamista_id' => "bigint(20) unsigned NOT NULL AFTER prestatario_id",
@@ -443,7 +443,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         // Columnas para reservas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_reservas LIKE %s", 'fecha_solicitud'));
             if (empty($existe)) {
                 $wpdb->query("ALTER TABLE $tabla_reservas ADD COLUMN fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP AFTER usuario_id");
@@ -1355,7 +1355,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             return null;
         }
 
@@ -2091,7 +2091,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version_modulo = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
         wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
@@ -2122,7 +2122,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version_modulo = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
         wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
@@ -2147,7 +2147,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version_modulo = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
         wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
@@ -2172,7 +2172,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version_modulo = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
         wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
@@ -2197,7 +2197,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version_modulo = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
         wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
@@ -2789,7 +2789,7 @@ KNOWLEDGE;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             return $estadisticas;
         }
 
@@ -2806,7 +2806,7 @@ KNOWLEDGE;
         ];
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             // Préstamos activos del usuario
             $prestamos_activos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_prestamos}
@@ -3104,7 +3104,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             return 0;
         }
 
@@ -3131,14 +3131,14 @@ KNOWLEDGE;
         $usuarios_activos = 0;
         $prestamos_retrasados = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             $total_libros = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_libros}");
             $libros_disponibles = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_libros} WHERE disponibilidad = 'disponible'"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'activo'"
             );
@@ -3154,7 +3154,7 @@ KNOWLEDGE;
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             $reservas_pendientes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'"
             );
@@ -3162,7 +3162,7 @@ KNOWLEDGE;
 
         // Últimos préstamos
         $ultimos_prestamos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $ultimos_prestamos = $wpdb->get_results(
                 "SELECT p.*, l.titulo, l.autor,
                         prestatario.display_name as prestatario_nombre,
@@ -3178,7 +3178,7 @@ KNOWLEDGE;
 
         // Libros más prestados
         $libros_populares = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             $libros_populares = $wpdb->get_results(
                 "SELECT titulo, autor, veces_prestado, valoracion_media
                  FROM {$tabla_libros}
@@ -3190,7 +3190,7 @@ KNOWLEDGE;
 
         // Géneros más populares
         $generos_populares = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
             $generos_populares = $wpdb->get_results(
                 "SELECT genero, COUNT(*) as cantidad
                  FROM {$tabla_libros}
@@ -4225,4 +4225,8 @@ KNOWLEDGE;
             echo '<div class="wrap"><h1>' . esc_html__('Usuarios de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Biblioteca_Module', false)) {
+    class_alias('Flavor_Platform_Biblioteca_Module', 'Flavor_Chat_Biblioteca_Module');
 }

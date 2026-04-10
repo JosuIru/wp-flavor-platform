@@ -5,7 +5,7 @@
  * Genera datos ficticios para todos los módulos.
  * Los nombres de columnas coinciden con class-database-installer.php
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

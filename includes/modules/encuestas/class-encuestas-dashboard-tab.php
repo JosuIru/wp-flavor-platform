@@ -4,7 +4,7 @@
  *
  * Compatible con el sistema de tabs de dashboard de cliente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Encuestas
  * @since 3.1.1
  */
@@ -110,7 +110,7 @@ class Flavor_Encuestas_Dashboard_Tab {
      * @return bool
      */
     private function tablas_existen() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_encuestas);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_encuestas);
     }
 
     /**

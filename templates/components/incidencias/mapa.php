@@ -3,7 +3,7 @@
  * Template: Mapa de Incidencias
  * Muestra las incidencias geolocalizadas con Leaflet/OSM
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

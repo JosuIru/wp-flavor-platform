@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Radio Comunitaria
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -31,7 +31,7 @@ class Flavor_Radio_Frontend_Controller {
      * Constructor privado
      */
     private function __construct() {
-        $this->config = get_option('flavor_chat_ia_settings', []);
+        $this->config = flavor_get_main_settings();
         $this->init();
     }
 
@@ -90,7 +90,7 @@ class Flavor_Radio_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugin_dir_url(dirname(__FILE__));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-radio-frontend',
@@ -132,7 +132,7 @@ class Flavor_Radio_Frontend_Controller {
      * Obtiene configuración del módulo radio
      */
     private function obtener_config_radio() {
-        $config = get_option('flavor_chat_ia_settings', []);
+        $config = flavor_get_main_settings();
         return $config['radio'] ?? [];
     }
 
@@ -171,7 +171,7 @@ class Flavor_Radio_Frontend_Controller {
 
         // Mis dedicatorias
         $mis_dedicatorias = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_dedicatorias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_dedicatorias)) {
             $mis_dedicatorias = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM $tabla_dedicatorias WHERE usuario_id = %d ORDER BY fecha_creacion DESC LIMIT 10",
                 $usuario_id
@@ -180,7 +180,7 @@ class Flavor_Radio_Frontend_Controller {
 
         // Programa actual
         $programa_actual = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $ahora = current_time('H:i');
             $dia = strtolower(date('l'));
             $programa_actual = $wpdb->get_row($wpdb->prepare(
@@ -409,7 +409,7 @@ class Flavor_Radio_Frontend_Controller {
         global $wpdb;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             return '<p class="flavor-aviso">' . __('Programación no disponible', 'flavor-platform') . '</p>';
         }
 
@@ -584,7 +584,7 @@ class Flavor_Radio_Frontend_Controller {
         global $wpdb;
         $tabla_grabaciones = $wpdb->prefix . 'flavor_radio_grabaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grabaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grabaciones)) {
             return '';
         }
 
@@ -646,13 +646,13 @@ class Flavor_Radio_Frontend_Controller {
             'oyentes_unicos' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $stats->programas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_programas WHERE estado = 'activo'");
         }
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_dedicatorias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_dedicatorias)) {
             $stats->dedicatorias = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_dedicatorias WHERE estado = 'emitida'");
         }
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_oyentes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_oyentes)) {
             $stats->oyentes_unicos = $wpdb->get_var("SELECT COUNT(DISTINCT ip) FROM $tabla_oyentes");
         }
 
@@ -694,7 +694,7 @@ class Flavor_Radio_Frontend_Controller {
         global $wpdb;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             return '';
         }
 
@@ -827,7 +827,7 @@ class Flavor_Radio_Frontend_Controller {
             wp_send_json_error(['message' => __('El nombre es obligatorio', 'flavor-platform')]);
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
             $wpdb->insert($tabla_propuestas, [
                 'usuario_id' => get_current_user_id(),
                 'nombre' => $nombre,
@@ -863,7 +863,7 @@ class Flavor_Radio_Frontend_Controller {
             wp_send_json_error(['message' => __('Mensaje vacío', 'flavor-platform')]);
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_chat)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_chat)) {
             $wpdb->insert($tabla_chat, [
                 'usuario_id' => get_current_user_id(),
                 'mensaje' => $mensaje,
@@ -943,7 +943,7 @@ class Flavor_Radio_Frontend_Controller {
 
         // Obtener programas
         $programas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $programas = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, nombre, descripcion, imagen_url, categoria, oyentes_promedio, total_episodios
                  FROM $tabla_programas
@@ -1077,7 +1077,7 @@ class Flavor_Radio_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         $favoritos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_favoritos)) {
             $favoritos = $wpdb->get_results($wpdb->prepare(
                 "SELECT f.programa_id, f.notificaciones, p.nombre, p.imagen_url, p.categoria, p.hora_inicio
                  FROM $tabla_favoritos f
@@ -1142,7 +1142,7 @@ class Flavor_Radio_Frontend_Controller {
 
         $canales = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_canales)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_canales)) {
             $canales = $wpdb->get_results(
                 "SELECT id, nombre, descripcion, url_stream, url_stream_hd, logo_url
                  FROM $tabla_canales

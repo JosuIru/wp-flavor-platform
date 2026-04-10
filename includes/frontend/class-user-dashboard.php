@@ -5,7 +5,7 @@
  * Renderiza el area de usuario logueado con tabs dinamicos
  * y permite a modulos registrar sus propias secciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  */
 
@@ -78,16 +78,16 @@ class Flavor_User_Dashboard {
 
         wp_enqueue_style(
             'flavor-user-dashboard',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts/user-dashboard{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/layouts/user-dashboard{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-user-dashboard',
-            FLAVOR_CHAT_IA_URL . "assets/js/user-dashboard{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/user-dashboard{$sufijo_asset}.js",
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -221,7 +221,7 @@ class Flavor_User_Dashboard {
             'dashboard_instance'      => $this,
         ];
 
-        $ruta_template_dashboard = FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-cuenta/dashboard.php';
+        $ruta_template_dashboard = FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-cuenta/dashboard.php';
         if (file_exists($ruta_template_dashboard)) {
             extract($datos_template);
             include $ruta_template_dashboard;
@@ -325,7 +325,7 @@ class Flavor_User_Dashboard {
             'nombre_mostrar' => $usuario_actual->display_name,
         ];
 
-        $ruta_template_perfil = FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-cuenta/perfil.php';
+        $ruta_template_perfil = FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-cuenta/perfil.php';
         if (file_exists($ruta_template_perfil)) {
             extract($datos_perfil);
             include $ruta_template_perfil;
@@ -355,7 +355,7 @@ class Flavor_User_Dashboard {
             'usuario'        => $usuario_actual,
         ];
 
-        $ruta_template_notificaciones = FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-cuenta/notificaciones.php';
+        $ruta_template_notificaciones = FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-cuenta/notificaciones.php';
         if (file_exists($ruta_template_notificaciones)) {
             extract($datos_notificaciones);
             include $ruta_template_notificaciones;

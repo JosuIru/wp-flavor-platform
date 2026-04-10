@@ -5,7 +5,7 @@
  * Registra todos los bloques disponibles incluyendo secciones,
  * componentes básicos y widgets de módulos.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -4294,8 +4294,8 @@ class Flavor_VBP_Block_Library {
         }
 
         // En el frontend, usar la función centralizada que verifica ambas fuentes
-        if ( class_exists( 'Flavor_Chat_Module_Loader' ) ) {
-            return Flavor_Chat_Module_Loader::is_module_active( $modulo_id );
+        if ( class_exists( 'Flavor_Platform_Module_Loader' ) ) {
+            return Flavor_Platform_Module_Loader::is_module_active( $modulo_id );
         }
 
         // Fallback: verificar en el array proporcionado (legacy)

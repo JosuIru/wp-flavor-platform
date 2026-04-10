@@ -2,7 +2,7 @@
 /**
  * Frontend Controller del módulo Assets
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -50,7 +50,7 @@ class Flavor_Assets_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(__FILE__));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS público de assets
         wp_register_style(

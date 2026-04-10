@@ -2,7 +2,7 @@
 /**
  * Controlador Frontend: Ayuntamiento
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -26,7 +26,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
         $tramites_destacados = [];
         $estadisticas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_noticias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_noticias)) {
             $noticias = $wpdb->get_results("SELECT * FROM $tabla_noticias WHERE estado = 'publicado' ORDER BY fecha DESC LIMIT 10", ARRAY_A);
             foreach ($noticias as &$noticia) {
                 $noticia['url'] = home_url("/{$this->module_slug}/noticia/{$noticia['id']}/");
@@ -64,7 +64,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
             ];
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tramites)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tramites)) {
             $tramites_destacados = $wpdb->get_results("SELECT * FROM $tabla_tramites WHERE destacado = 1 ORDER BY nombre LIMIT 5", ARRAY_A);
             foreach ($tramites_destacados as &$tramite) {
                 $tramite['url'] = home_url("/{$this->module_slug}/tramite/{$tramite['id']}/");
@@ -182,7 +182,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
 
         // Buscar en trámites
         $tabla_tramites = $wpdb->prefix . 'flavor_ayto_tramites';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tramites)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tramites)) {
             $tramites = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, nombre as titulo, descripcion as extracto, 'tramite' as tipo, departamento FROM $tabla_tramites WHERE nombre LIKE %s OR descripcion LIKE %s",
                 '%' . $wpdb->esc_like($query) . '%',
@@ -197,7 +197,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
 
         // Buscar en noticias
         $tabla_noticias = $wpdb->prefix . 'flavor_ayto_noticias';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_noticias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_noticias)) {
             $noticias = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, titulo, extracto, 'noticia' as tipo FROM $tabla_noticias WHERE titulo LIKE %s OR contenido LIKE %s",
                 '%' . $wpdb->esc_like($query) . '%',

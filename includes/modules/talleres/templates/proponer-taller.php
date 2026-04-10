@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $settings: configuracion del modulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

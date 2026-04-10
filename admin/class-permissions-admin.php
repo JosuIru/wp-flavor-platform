@@ -64,13 +64,13 @@ class Flavor_Permissions_Admin {
     public function render_pagina() {
         // Cargar las clases necesarias
         if (!class_exists('Flavor_Role_Manager')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-role-manager.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-role-manager.php';
         }
         if (!class_exists('Flavor_Permission_Helper')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-permission-helper.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-permission-helper.php';
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/permissions.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/permissions.php';
     }
 
     /**

@@ -10,7 +10,7 @@
  * - Signed PreKey: Clave firmada que rota periódicamente
  * - One-Time PreKeys: Claves de un solo uso para forward secrecy
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Crypto
  */
 

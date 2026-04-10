@@ -5,7 +5,7 @@
  * Sincroniza eventos de activación/desactivación de módulos
  * y crea páginas automáticamente cuando corresponda.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -16,6 +16,7 @@ class Flavor_Module_Lifecycle {
 
     public function __construct() {
         add_action('update_option_flavor_chat_ia_settings', [$this, 'on_settings_update'], 10, 3);
+        add_action('update_option_flavor_platform_settings', [$this, 'on_settings_update'], 10, 3);
         add_action('flavor_module_activated', [$this, 'handle_module_activated']);
     }
 

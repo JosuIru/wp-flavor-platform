@@ -4,7 +4,7 @@
  *
  * Permite a los usuarios guardar entidades como favoritos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Features
  */
 

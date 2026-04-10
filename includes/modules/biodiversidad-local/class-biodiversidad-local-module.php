@@ -5,7 +5,7 @@
  * Catalogación comunitaria de especies, proyectos de conservación,
  * avistamientos y protección de ecosistemas locales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\BiodiversidadLocal
  * @since 4.2.0
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Integration_Consumer;
@@ -212,16 +212,16 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         // Registrar CSS
         wp_register_style(
             'flavor-biodiversidad-local',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_style(
             'flavor-biodiversidad-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
             ['flavor-biodiversidad-local'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Encolar en páginas del módulo
@@ -788,7 +788,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
      * Encola scripts y estilos
      */
     public function enqueue_assets() {
-        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/';
+        $base_url = FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/';
 
         wp_enqueue_style(
             'flavor-biodiversidad',
@@ -1510,4 +1510,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Biodiversidad_Local_Module', false)) {
+    class_alias('Flavor_Platform_Biodiversidad_Local_Module', 'Flavor_Chat_Biodiversidad_Local_Module');
 }

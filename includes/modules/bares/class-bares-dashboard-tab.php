@@ -5,7 +5,7 @@
  * Proporciona tabs en el dashboard del cliente para gestionar
  * reservas, valoraciones y favoritos del usuario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Bares
  * @since 4.3.0
  */
@@ -143,7 +143,7 @@ class Flavor_Bares_Dashboard_Tab {
         global $wpdb;
 
         // Verificar que las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_bares)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_bares)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El módulo de bares no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -156,7 +156,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         $total_reservas_usuario = 0;
         $reservas_proximas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_reservas)) {
             $total_reservas_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE user_id = %d",
                 $identificador_usuario
@@ -171,7 +171,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         $total_valoraciones_usuario = 0;
         $bares_valorados = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_valoraciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_valoraciones)) {
             $total_valoraciones_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_valoraciones} WHERE user_id = %d",
                 $identificador_usuario
@@ -180,7 +180,7 @@ class Flavor_Bares_Dashboard_Tab {
         }
 
         $total_favoritos = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_favoritos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_favoritos)) {
             $total_favoritos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->tabla_favoritos} WHERE user_id = %d",
                 $identificador_usuario
@@ -247,11 +247,11 @@ class Flavor_Bares_Dashboard_Tab {
 
             <!-- Acciones rápidas -->
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', 'mapa')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('bares', 'mapa')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
                     <?php esc_html_e('Ver en Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -339,7 +339,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_reservas)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El sistema de reservas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -400,7 +400,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <?php esc_html_e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -435,7 +435,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <h3><?php esc_html_e('No tienes reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p><?php esc_html_e('Explora los bares y restaurantes disponibles para hacer tu primera reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -463,7 +463,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_valoraciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_valoraciones)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El sistema de valoraciones no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -527,7 +527,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-star-empty"></span>
                     <h3><?php esc_html_e('Aún no has valorado ningún local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p><?php esc_html_e('Visita bares y restaurantes y comparte tu experiencia con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -550,7 +550,7 @@ class Flavor_Bares_Dashboard_Tab {
     private function render_card_bar_mini($bar) {
         $imagen_url = !empty($bar->imagen) ? esc_url($bar->imagen) : '';
         $tipo_etiqueta = $this->etiquetas_tipos[$bar->tipo] ?? ucfirst($bar->tipo);
-        $url_bar = add_query_arg('bar_id', $bar->id, Flavor_Chat_Helpers::get_action_url('bares', ''));
+        $url_bar = add_query_arg('bar_id', $bar->id, Flavor_Platform_Helpers::get_action_url('bares', ''));
 
         ?>
         <div class="flavor-card flavor-bar-card-mini">
@@ -657,7 +657,7 @@ class Flavor_Bares_Dashboard_Tab {
         $imagen_url = !empty($valoracion->bar_imagen) ? esc_url($valoracion->bar_imagen) : '';
         $tipo_etiqueta = $this->etiquetas_tipos[$valoracion->bar_tipo] ?? ucfirst($valoracion->bar_tipo ?? '');
         $fecha_formateada = date_i18n('d \d\e F \d\e Y', strtotime($valoracion->created_at));
-        $url_bar = add_query_arg('bar_id', $valoracion->bar_id, Flavor_Chat_Helpers::get_action_url('bares', ''));
+        $url_bar = add_query_arg('bar_id', $valoracion->bar_id, Flavor_Platform_Helpers::get_action_url('bares', ''));
 
         ?>
         <div class="flavor-card flavor-valoracion-card">
@@ -713,7 +713,7 @@ class Flavor_Bares_Dashboard_Tab {
         global $wpdb;
 
         // Verificar si existe la tabla de favoritos
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_favoritos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_favoritos)) {
             // Si no hay tabla de favoritos, devolver bares valorados por el usuario como alternativa
             return $wpdb->get_results($wpdb->prepare(
                 "SELECT b.*, v.puntuacion as mi_puntuacion
@@ -749,7 +749,7 @@ class Flavor_Bares_Dashboard_Tab {
     private function obtener_proximas_reservas($user_id, $limite = 5) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_reservas)) {
             return [];
         }
 
@@ -814,7 +814,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_favoritos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_favoritos)) {
             wp_send_json_error(['mensaje' => __('Sistema de favoritos no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 

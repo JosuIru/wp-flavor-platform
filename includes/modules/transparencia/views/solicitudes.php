@@ -4,7 +4,7 @@
  *
  * Gestión de solicitudes de acceso a información pública.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

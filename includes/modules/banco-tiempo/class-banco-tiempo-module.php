@@ -2,7 +2,7 @@
 /**
  * Módulo Banco de Tiempo para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Banco de Tiempo - Intercambio de servicios por horas
  */
-class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Banco_Tiempo_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -46,7 +46,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_servicios);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_servicios);
     }
 
     /**
@@ -389,7 +389,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             return;
         }
 
@@ -425,7 +425,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      */
     public function on_servicio_completado($intercambio_id, $horas) {
         // Lógica adicional al completar servicio
-        do_action('flavor_chat_ia_log_event', 'banco_tiempo_servicio_completado', [
+        do_action('flavor_platform_log_event', 'banco_tiempo_servicio_completado', [
             'intercambio_id' => $intercambio_id,
             'horas' => $horas,
         ]);
@@ -527,7 +527,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             return null;
         }
 
@@ -610,7 +610,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         $tabla_reputacion = $wpdb->prefix . 'flavor_banco_tiempo_reputacion';
         $reputacion = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reputacion)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reputacion)) {
             $reputacion = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT id, usuario_id, nombre, total_intercambios_completados, total_horas_dadas, total_horas_recibidas, rating_promedio, rating_puntualidad, rating_calidad, rating_comunicacion, puntos_confianza, nivel, badges, estado_verificacion, fecha_primer_intercambio
@@ -1316,7 +1316,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             return 0;
         }
 
@@ -1337,7 +1337,7 @@ KNOWLEDGE;
         $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             return $estadisticas;
         }
 
@@ -1392,15 +1392,15 @@ KNOWLEDGE;
         }
 
         // Estadísticas generales
-        $total_servicios = Flavor_Chat_Helpers::tabla_existe($tabla_servicios)
+        $total_servicios = Flavor_Platform_Helpers::tabla_existe($tabla_servicios)
             ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_servicios WHERE estado = 'activo'")
             : 0;
 
-        $total_intercambios = Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)
+        $total_intercambios = Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)
             ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_transacciones WHERE estado = 'completado'")
             : 0;
 
-        $horas_intercambiadas = Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)
+        $horas_intercambiadas = Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)
             ? (float) $wpdb->get_var("SELECT COALESCE(SUM(horas), 0) FROM $tabla_transacciones WHERE estado = 'completado'")
             : 0;
 
@@ -1440,7 +1440,7 @@ KNOWLEDGE;
             echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los intercambios pueden revisarse, pero su gestión operativa sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -1560,7 +1560,7 @@ KNOWLEDGE;
             echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles detallados de usuario siguen reservados a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -1686,7 +1686,7 @@ KNOWLEDGE;
                 ]
         );
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
@@ -1845,7 +1845,7 @@ KNOWLEDGE;
      * Renderiza la configuración del módulo
      */
     public function render_admin_config() {
-        $option_name = 'flavor_chat_ia_module_' . $this->id;
+        $option_name = 'flavor_platform_module_' . $this->id;
         $configuracion_actual = wp_parse_args(
             get_option($option_name, []),
             $this->get_default_settings()
@@ -2218,6 +2218,10 @@ KNOWLEDGE;
 
         return $sincronizados;
     }
+}
+
+if (!class_exists('Flavor_Chat_Banco_Tiempo_Module', false)) {
+    class_alias('Flavor_Platform_Banco_Tiempo_Module', 'Flavor_Chat_Banco_Tiempo_Module');
 }
 
 // Registrar handlers AJAX para banco de tiempo

@@ -5,7 +5,7 @@
  * Proporciona endpoints para verificar el estado del sistema VBP,
  * diagnosticar problemas de permalinks y templates.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */
@@ -207,7 +207,7 @@ class Flavor_VBP_Diagnostics {
      * @return array
      */
     private function get_templates_status() {
-        $plugin_path = FLAVOR_CHAT_IA_PATH;
+        $plugin_path = FLAVOR_PLATFORM_PATH;
         $theme_path = get_template_directory();
 
         $templates = array(
@@ -253,7 +253,7 @@ class Flavor_VBP_Diagnostics {
      * @return array
      */
     private function get_assets_status() {
-        $plugin_path = FLAVOR_CHAT_IA_PATH;
+        $plugin_path = FLAVOR_PLATFORM_PATH;
 
         $assets = array(
             'animations_css' => 'includes/visual-builder-pro/assets/css/animations.css',

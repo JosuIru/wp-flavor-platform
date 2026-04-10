@@ -2,7 +2,7 @@
 /**
  * Gestor de pagos del módulo Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -452,7 +452,7 @@ class Flavor_Socios_Payment_Manager {
         global $wpdb;
         $tabla_transacciones = $wpdb->prefix . 'flavor_socios_transacciones';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             return;
         }
 

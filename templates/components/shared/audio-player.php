@@ -4,7 +4,7 @@
  *
  * Reproductor de audio personalizado con controles avanzados.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $src        URL del archivo de audio

@@ -3,7 +3,7 @@
  * Vista Vendedores - Marketplace
  * Panel de administración de vendedores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

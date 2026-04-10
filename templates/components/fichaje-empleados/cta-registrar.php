@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Fichaje Empleados CTA Registrar
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

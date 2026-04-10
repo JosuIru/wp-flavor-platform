@@ -2,7 +2,7 @@
 /**
  * Template: Dashboard de Estadisticas de Biblioteca
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -5,7 +5,7 @@
  * Seccion de llamada a la accion para iniciar tramites.
  * Fondo con gradiente, lista de beneficios y boton principal.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

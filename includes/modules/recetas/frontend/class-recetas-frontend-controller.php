@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Recetas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Recetas
  */
 
@@ -107,14 +107,14 @@ class Flavor_Recetas_Frontend_Controller {
             'flavor-recetas-frontend',
             plugin_dir_url(__FILE__) . '../assets/css/recetas-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-recetas-frontend',
             plugin_dir_url(__FILE__) . '../assets/js/recetas-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
     }
@@ -194,7 +194,7 @@ class Flavor_Recetas_Frontend_Controller {
         $total_valoraciones = 0;
         $promedio_valoracion = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_valoraciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_valoraciones)) {
             $total_valoraciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_valoraciones}
                  WHERE receta_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'flavor_receta')",
@@ -920,7 +920,7 @@ class Flavor_Recetas_Frontend_Controller {
         $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
 
         // Verificar que la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
             return;
         }
 
@@ -1204,7 +1204,7 @@ class Flavor_Recetas_Frontend_Controller {
             $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
             $videos = array_map('absint', $_POST['videos']);
             // Verificar que los videos existen
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
                 $videos = array_filter($videos, function($id) use ($wpdb, $tabla_multimedia) {
                     return (bool) $wpdb->get_var($wpdb->prepare(
                         "SELECT id FROM {$tabla_multimedia} WHERE id = %d AND tipo = 'video'",
@@ -1285,7 +1285,7 @@ class Flavor_Recetas_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_recetas_valoraciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             // Guardar en post meta como fallback
             $valoraciones = get_post_meta($receta_id, '_receta_valoraciones', true) ?: [];
             $valoraciones[] = $valoracion;

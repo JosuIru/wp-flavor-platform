@@ -5,7 +5,7 @@
  * @var string $titulo
  * @var string $subtitulo
  * @var string $imagen_fondo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -27,7 +27,7 @@ $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 $tabla_miembros    = $wpdb->prefix . 'flavor_comunidades_miembros';
 $tabla_actividad   = $wpdb->prefix . 'flavor_comunidades_actividad';
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
     $estadisticas_comunidades['total_comunidades'] = (int) $wpdb->get_var(
         "SELECT COUNT(*) FROM $tabla_comunidades WHERE estado = 'activa'"
     );

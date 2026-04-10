@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Chat Interno CTA Empezar
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

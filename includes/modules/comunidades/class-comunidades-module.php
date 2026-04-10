@@ -4,7 +4,7 @@
  *
  * Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Comunidades - Gestion de comunidades tematicas
  */
-class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -62,7 +62,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_comunidades);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_comunidades);
     }
 
     /**
@@ -1251,8 +1251,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return null;
         }
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             if ($loader && method_exists($loader, 'get_module_instance')) {
                 $modulo = $loader->get_module_instance('grupos_consumo');
                 if ($modulo && method_exists($modulo, 'obtener_grupo_principal_comunidad')) {
@@ -1679,7 +1679,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Obtener grupo de chat de la comunidad (solo si es miembro)
         $grupo_chat_id = $es_miembro ? $this->obtener_grupo_chat_comunidad($comunidad_id) : null;
-        $chat_grupos_activo = class_exists('Flavor_Chat_Chat_Grupos_Module') && $grupo_chat_id;
+        $chat_grupos_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Chat_Grupos_Module')
+            : 'Flavor_Chat_Chat_Grupos_Module';
+        $chat_grupos_activo = class_exists($chat_grupos_module_class) && $grupo_chat_id;
 
         ob_start();
         include dirname(__FILE__) . '/views/detalle-comunidad.php';
@@ -1978,7 +1981,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         // Verificar si el módulo de eventos está activo
-        if (!class_exists('Flavor_Chat_Eventos_Module')) {
+        $eventos_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module')
+            : 'Flavor_Chat_Eventos_Module';
+        if (!class_exists($eventos_module_class)) {
             return [];
         }
 
@@ -3025,7 +3031,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -3046,7 +3052,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -3065,7 +3071,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             return $estadisticas;
         }
 
@@ -3082,7 +3088,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Total miembros activos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             $miembros_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'activo'"
             );
@@ -4010,7 +4016,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             $this->create_tables();
         }
     }
@@ -4827,7 +4833,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         // Verificar si el módulo de chat grupos está activo
-        $chat_grupos_activo = class_exists('Flavor_Chat_Chat_Grupos_Module');
+        $chat_grupos_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Chat_Grupos_Module')
+            : 'Flavor_Chat_Chat_Grupos_Module';
+        $chat_grupos_activo = class_exists($chat_grupos_module_class);
         if (!$chat_grupos_activo) {
             return false;
         }
@@ -4835,7 +4844,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return false;
         }
 
@@ -4869,7 +4878,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Añadir al creador como admin del grupo
         $tabla_miembros_grupo = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros_grupo)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros_grupo)) {
             $wpdb->insert(
                 $tabla_miembros_grupo,
                 [
@@ -4906,7 +4915,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Si no hay meta, buscar por comunidad_id en tabla de grupos
         $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return null;
         }
 
@@ -4928,7 +4937,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      */
     private function sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_id, $accion) {
         // Verificar que el módulo de chat-grupos está activo
-        if (!class_exists('Flavor_Chat_Chat_Grupos_Module')) {
+        $chat_grupos_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Chat_Grupos_Module')
+            : 'Flavor_Chat_Chat_Grupos_Module';
+        if (!class_exists($chat_grupos_module_class)) {
             return false;
         }
 
@@ -4939,7 +4951,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         }
 
         // Obtener instancia del módulo de chat-grupos
-        $modulo_chat_grupos = Flavor_Chat_Module_Loader::get_instance()->get_module('chat_grupos');
+        $modulo_chat_grupos = Flavor_Platform_Module_Loader::get_instance()->get_module('chat_grupos');
         if (!$modulo_chat_grupos) {
             return false;
         }
@@ -4968,7 +4980,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return false;
         }
 
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
         if (!$module_loader) {
             return false;
         }
@@ -8070,4 +8082,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Comunidades_Module', false)) {
+    class_alias('Flavor_Platform_Comunidades_Module', 'Flavor_Chat_Comunidades_Module');
 }

@@ -370,7 +370,7 @@ class Flavor_App_CPT_Settings {
         wp_add_inline_style('wp-admin', $css);
 
         // JavaScript
-        wp_enqueue_script('flavor-cpt-settings', '', ['jquery'], FLAVOR_CHAT_IA_VERSION, true);
+        wp_enqueue_script('flavor-cpt-settings', '', ['jquery'], FLAVOR_PLATFORM_VERSION, true);
 
         $js = "
             (function($) {

@@ -4,7 +4,7 @@
  *
  * Bandeja unificada de mensajes (chat privado y grupos).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

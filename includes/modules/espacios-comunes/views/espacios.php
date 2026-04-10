@@ -3,7 +3,7 @@
  * Gestión de Espacios Comunes
  * CRUD de espacios disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

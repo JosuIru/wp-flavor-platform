@@ -4,7 +4,7 @@
  *
  * Leyenda para mapas, gráficos o cualquier contenido con códigos de color.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items      Array de items: [['label' => '', 'color' => '', 'icon' => '', 'value' => '', 'description' => '']]

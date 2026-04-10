@@ -4,7 +4,7 @@
  * Panel principal con estadísticas de reciclaje
  * Migrado al sistema dm-* centralizado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

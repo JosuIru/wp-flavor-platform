@@ -4,7 +4,7 @@
  *
  * Analytics y métricas de resolución de incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

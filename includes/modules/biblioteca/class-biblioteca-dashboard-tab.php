@@ -5,7 +5,7 @@
  * Proporciona tabs en el panel de usuario para gestión de préstamos,
  * reservas, historial y libros favoritos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Biblioteca
  */
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Fichaje Empleados Hero
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

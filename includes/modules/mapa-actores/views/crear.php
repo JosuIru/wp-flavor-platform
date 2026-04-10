@@ -2,7 +2,7 @@
 /**
  * Vista completa para crear actor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

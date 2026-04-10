@@ -6,7 +6,7 @@
  * widgets modulares, actividad reciente y accesos rapidos.
  * Los modulos pueden registrar sus propios widgets.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  */
 
@@ -131,8 +131,8 @@ class Flavor_Client_Dashboard {
         }
 
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
-        $version = FLAVOR_CHAT_IA_VERSION;
-        $plugin_url = FLAVOR_CHAT_IA_URL;
+        $version = FLAVOR_PLATFORM_VERSION;
+        $plugin_url = FLAVOR_PLATFORM_URL;
 
         // =====================================================================
         // CSS - Sistema de Diseno Unificado (v4.1.0)
@@ -229,9 +229,9 @@ class Flavor_Client_Dashboard {
         // Scripts
         wp_enqueue_script(
             'flavor-client-dashboard',
-            FLAVOR_CHAT_IA_URL . "assets/js/client-dashboard{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/client-dashboard{$sufijo_asset}.js",
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -413,11 +413,11 @@ class Flavor_Client_Dashboard {
      */
     public function inicializar_widgets_modulos($dashboard) {
         // Obtener el Module Loader
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_cargados = $loader->get_loaded_modules();
 
         // Iconos por modulo
@@ -580,11 +580,11 @@ class Flavor_Client_Dashboard {
 
         $base_parent_map = [];
 
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return '';
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         if (!$loader) {
             return '';
         }
@@ -745,11 +745,11 @@ class Flavor_Client_Dashboard {
     }
 
     private function obtener_jerarquia_ecosistema_dashboard($widgets, $atajos, $dashboard_contexts = []) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader->get_registered_modules();
         $nodes = [];
         $active_module_ids = [];
@@ -1185,8 +1185,9 @@ class Flavor_Client_Dashboard {
         $acciones = [];
         $eventos = [];
 
-        if (class_exists('Flavor_Chat_Eventos_Module')) {
-            $eventos_module = Flavor_Chat_Eventos_Module::get_instance();
+        $eventos_module_class = flavor_get_runtime_class_name('Flavor_Chat_Eventos_Module');
+        if (class_exists($eventos_module_class)) {
+            $eventos_module = $eventos_module_class::get_instance();
             if ($eventos_module && method_exists($eventos_module, 'get_proximos_eventos_usuario')) {
                 $eventos = (array) $eventos_module->get_proximos_eventos_usuario($id_usuario, 3);
             }
@@ -1250,8 +1251,9 @@ class Flavor_Client_Dashboard {
         $acciones = [];
         $reservas = [];
 
-        if (class_exists('Flavor_Chat_Reservas_Module')) {
-            $reservas_module = Flavor_Chat_Reservas_Module::get_instance();
+        $reservas_module_class = flavor_get_runtime_class_name('Flavor_Chat_Reservas_Module');
+        if (class_exists($reservas_module_class)) {
+            $reservas_module = $reservas_module_class::get_instance();
             if ($reservas_module && method_exists($reservas_module, 'get_proximas_reservas_usuario')) {
                 $reservas = (array) $reservas_module->get_proximas_reservas_usuario($id_usuario, 3);
             }
@@ -1935,7 +1937,7 @@ class Flavor_Client_Dashboard {
             ],
         ];
 
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'templates/frontend/dashboard/client-dashboard.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'templates/frontend/dashboard/client-dashboard.php';
         if (file_exists($ruta_template)) {
             extract($datos_template);
             include $ruta_template;
@@ -3094,17 +3096,17 @@ class Flavor_Client_Dashboard {
         // CSS del mapa del dashboard
         wp_enqueue_style(
             'flavor-dashboard-map',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts/dashboard-map{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/layouts/dashboard-map{$sufijo_asset}.css",
             ['leaflet', 'leaflet-markercluster'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS del mapa del dashboard
         wp_enqueue_script(
             'flavor-dashboard-map',
-            FLAVOR_CHAT_IA_URL . "assets/js/dashboard-map{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/dashboard-map{$sufijo_asset}.js",
             ['jquery', 'leaflet', 'leaflet-markercluster'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

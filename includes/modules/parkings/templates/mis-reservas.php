@@ -4,7 +4,7 @@
  *
  * Lista de reservas del usuario actual con filtros por estado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 $tabla_parkings = $wpdb->prefix . 'flavor_parkings';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
     echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -95,7 +95,7 @@ $estados_colores = [
     'expirada' => '#9ca3af',
 ];
 
-$parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
+$parkings_base_url = Flavor_Platform_Helpers::get_action_url('parkings', '');
 ?>
 
 <div class="parkings-mis-reservas">

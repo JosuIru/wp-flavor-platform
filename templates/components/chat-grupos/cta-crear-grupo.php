@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Chat Grupos CTA Crear Grupo
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

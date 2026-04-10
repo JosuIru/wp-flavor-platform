@@ -3,7 +3,7 @@
  * Modulo de Facturas para Chat IA
  * Sistema completo de facturacion para servicios comunitarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Facturas - Gestion de facturacion completa
  */
-class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Facturas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -53,7 +53,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas']);
+        return Flavor_Platform_Helpers::tabla_existe($this->tablas['facturas']);
     }
 
     /**
@@ -194,7 +194,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['facturas'])) {
             return 0;
         }
 
@@ -215,7 +215,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $stats = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['facturas'])) {
             return $stats;
         }
 
@@ -376,7 +376,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
             return;
         }
 
@@ -579,7 +579,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
             return [];
         }
 
@@ -1099,8 +1099,11 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
     public function get_empresa_usuario($user_id = null) {
         $user_id = $user_id ?: get_current_user_id();
 
-        if (class_exists('Flavor_Chat_Empresas_Module')) {
-            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+        $empresas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Empresas_Module')
+            : 'Flavor_Chat_Empresas_Module';
+        if (class_exists($empresas_module_class)) {
+            $empresas_module = Flavor_Platform_Module_Loader::get_instance()->get_module('empresas');
             if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
                 return $empresas_module->get_empresa_actual_usuario($user_id);
             }
@@ -3532,4 +3535,8 @@ KNOWLEDGE;
             Flavor_Facturas_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Facturas_Module', false)) {
+    class_alias('Flavor_Platform_Facturas_Module', 'Flavor_Chat_Facturas_Module');
 }

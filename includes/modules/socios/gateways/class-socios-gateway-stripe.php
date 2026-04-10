@@ -2,7 +2,7 @@
 /**
  * Gateway de pago Stripe para módulo Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -171,10 +171,10 @@ class Flavor_Socios_Gateway_Stripe {
                 'socios_pago'    => 'exitoso',
                 'transaccion_id' => $transaccion_id,
                 'session_id'     => '{CHECKOUT_SESSION_ID}',
-            ], Flavor_Chat_Helpers::get_action_url('socios', 'pagar-cuota')),
+            ], Flavor_Platform_Helpers::get_action_url('socios', 'pagar-cuota')),
             'cancel_url' => add_query_arg([
                 'socios_pago' => 'cancelado',
-            ], Flavor_Chat_Helpers::get_action_url('socios', 'pagar-cuota')),
+            ], Flavor_Platform_Helpers::get_action_url('socios', 'pagar-cuota')),
             'metadata[transaccion_id]' => $transaccion_id,
             'metadata[cuota_id]' => $cuota->id,
             'metadata[socio_id]' => $cuota->socio_id,

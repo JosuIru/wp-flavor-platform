@@ -2,7 +2,7 @@
 /**
  * Gestión de Normas y Políticas de Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

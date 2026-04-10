@@ -5,7 +5,7 @@
  * Se mantiene para compatibilidad con includes existentes, delegando
  * toda la renderizacion al dashboard administrativo del modulo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

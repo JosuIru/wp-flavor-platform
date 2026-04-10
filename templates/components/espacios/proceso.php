@@ -4,7 +4,7 @@
  *
  * Muestra los pasos del proceso de reserva: seleccionar, confirmar, pagar
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

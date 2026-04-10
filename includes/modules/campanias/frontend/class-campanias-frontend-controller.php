@@ -4,7 +4,7 @@
  *
  * Gestiona el dashboard tab y funcionalidades frontend de campañas ciudadanas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -158,14 +158,14 @@ class Flavor_Campanias_Frontend_Controller {
             'flavor-campanias-frontend',
             $modulo_url . '/assets/css/campanias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-campanias-frontend',
             $modulo_url . '/assets/js/campanias.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -204,7 +204,7 @@ class Flavor_Campanias_Frontend_Controller {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
             return $tabs;
         }
 
@@ -506,7 +506,7 @@ class Flavor_Campanias_Frontend_Controller {
 
         // Participando
         $participando = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_participantes)) {
             $participando = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(DISTINCT campania_id) FROM $tabla_participantes WHERE user_id = %d",
                 $user_id
@@ -515,7 +515,7 @@ class Flavor_Campanias_Frontend_Controller {
 
         // Firmas
         $firmas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_firmas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_firmas)) {
             $firmas = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_firmas WHERE user_id = %d",
                 $user_id
@@ -524,7 +524,7 @@ class Flavor_Campanias_Frontend_Controller {
 
         // Creadas
         $creadas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             $creadas = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_campanias WHERE creador_id = %d",
                 $user_id
@@ -533,7 +533,7 @@ class Flavor_Campanias_Frontend_Controller {
 
         // Completadas
         $completadas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             $completadas = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_campanias WHERE creador_id = %d AND estado = 'completada'",
                 $user_id
@@ -562,7 +562,7 @@ class Flavor_Campanias_Frontend_Controller {
         $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
         $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_participantes)) {
             return 0;
         }
 
@@ -583,7 +583,7 @@ class Flavor_Campanias_Frontend_Controller {
         $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
         $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             return [];
         }
 
@@ -609,7 +609,7 @@ class Flavor_Campanias_Frontend_Controller {
         $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
         $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             return [];
         }
 
@@ -633,7 +633,7 @@ class Flavor_Campanias_Frontend_Controller {
         $tabla_acciones = $wpdb->prefix . 'flavor_campanias_acciones';
         $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_acciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_acciones)) {
             return [];
         }
 
@@ -657,7 +657,7 @@ class Flavor_Campanias_Frontend_Controller {
         $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
         $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_campanias)) {
             return [];
         }
 

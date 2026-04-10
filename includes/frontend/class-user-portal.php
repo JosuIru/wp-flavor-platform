@@ -5,7 +5,7 @@
  * Vista centralizada donde el usuario accede a TODO su contenido
  * de todos los módulos activos con interconexión y acciones rápidas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  * @since 4.2.0
  */
@@ -57,7 +57,7 @@ class Flavor_User_Portal {
      */
     private function __construct() {
         // Cargar perfiles de portal
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-portal-profiles.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/frontend/class-portal-profiles.php';
 
         // Shortcode principal
         add_shortcode('flavor_my_portal', [$this, 'render_portal']);
@@ -98,8 +98,8 @@ class Flavor_User_Portal {
             return;
         }
 
-        $plugin_url = FLAVOR_CHAT_IA_URL;
-        $version = FLAVOR_CHAT_IA_VERSION;
+        $plugin_url = FLAVOR_PLATFORM_URL;
+        $version = FLAVOR_PLATFORM_VERSION;
 
         // CSS del portal
         wp_enqueue_style(
@@ -154,7 +154,7 @@ class Flavor_User_Portal {
      */
     public function register_personal_modules() {
         // Módulos con contenido personal del usuario
-        // NOTA: Todas las URLs ahora usan Flavor_Chat_Helpers::get_action_url() para mantener
+        // NOTA: Todas las URLs ahora usan Flavor_Platform_Helpers::get_action_url() para mantener
         // el patrón canónico /mi-portal/MODULO/ACCION/
         $this->personal_modules = apply_filters('flavor_portal_personal_modules', [
             'socios' => [
@@ -163,8 +163,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_socios_stats'],
                 'widget_callback' => [$this, 'get_socios_widget'],
                 'actions' => [
-                    ['label' => __('Mi Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-cuota')],
-                    ['label' => __('Renovar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'renovar')],
+                    ['label' => __('Mi Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('socios', 'mi-cuota')],
+                    ['label' => __('Renovar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('socios', 'renovar')],
                 ],
             ],
             'eventos' => [
@@ -173,8 +173,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_eventos_stats'],
                 'widget_callback' => [$this, 'get_eventos_widget'],
                 'actions' => [
-                    ['label' => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'mis-inscripciones')],
-                    ['label' => __('Explorar Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado')],
+                    ['label' => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'mis-inscripciones')],
+                    ['label' => __('Explorar Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'listado')],
                 ],
             ],
             'grupos-consumo' => [
@@ -183,8 +183,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_grupos_consumo_stats'],
                 'widget_callback' => [$this, 'get_grupos_consumo_widget'],
                 'actions' => [
-                    ['label' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
-                    ['label' => __('Hacer Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido')],
+                    ['label' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
+                    ['label' => __('Hacer Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido')],
                 ],
             ],
             'marketplace' => [
@@ -193,8 +193,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_marketplace_stats'],
                 'widget_callback' => [$this, 'get_marketplace_widget'],
                 'actions' => [
-                    ['label' => __('Mis Compras', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'mis-compras')],
-                    ['label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'favoritos')],
+                    ['label' => __('Mis Compras', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'mis-compras')],
+                    ['label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'favoritos')],
                 ],
             ],
             'reservas' => [
@@ -203,8 +203,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_reservas_stats'],
                 'widget_callback' => [$this, 'get_reservas_widget'],
                 'actions' => [
-                    ['label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'mis-reservas')],
-                    ['label' => __('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'nueva')],
+                    ['label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('reservas', 'mis-reservas')],
+                    ['label' => __('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('reservas', 'nueva')],
                 ],
             ],
             'cursos' => [
@@ -213,8 +213,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_cursos_stats'],
                 'widget_callback' => [$this, 'get_cursos_widget'],
                 'actions' => [
-                    ['label' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos')],
-                    ['label' => __('Certificados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'certificados')],
+                    ['label' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'mis-cursos')],
+                    ['label' => __('Certificados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'certificados')],
                 ],
             ],
             'biblioteca' => [
@@ -223,8 +223,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_biblioteca_stats'],
                 'widget_callback' => [$this, 'get_biblioteca_widget'],
                 'actions' => [
-                    ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos')],
-                    ['label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-reservas')],
+                    ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('biblioteca', 'mis-prestamos')],
+                    ['label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('biblioteca', 'mis-reservas')],
                 ],
             ],
             'banco-tiempo' => [
@@ -233,8 +233,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_banco_tiempo_stats'],
                 'widget_callback' => [$this, 'get_banco_tiempo_widget'],
                 'actions' => [
-                    ['label' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mi-saldo')],
-                    ['label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mis-intercambios')],
+                    ['label' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('banco-tiempo', 'mi-saldo')],
+                    ['label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('banco-tiempo', 'mis-intercambios')],
                 ],
             ],
             'incidencias' => [
@@ -243,8 +243,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_incidencias_stats'],
                 'widget_callback' => [$this, 'get_incidencias_widget'],
                 'actions' => [
-                    ['label' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias')],
-                    ['label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')],
+                    ['label' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'mis-incidencias')],
+                    ['label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'nueva')],
                 ],
             ],
             'foros' => [
@@ -253,8 +253,8 @@ class Flavor_User_Portal {
                 'stats_callback' => [$this, 'get_foros_stats'],
                 'widget_callback' => [$this, 'get_foros_widget'],
                 'actions' => [
-                    ['label' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas')],
-                    ['label' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'nuevo')],
+                    ['label' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('foros', 'mis-temas')],
+                    ['label' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Platform_Helpers::get_action_url('foros', 'nuevo')],
                 ],
             ],
         ]);
@@ -294,7 +294,7 @@ class Flavor_User_Portal {
         ], $atts);
 
         // Cargar componentes mejorados
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         ob_start();
@@ -399,7 +399,7 @@ class Flavor_User_Portal {
             return '';
         }
 
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $html = '<div class="portal-notifications-list">';
@@ -849,7 +849,7 @@ class Flavor_User_Portal {
             return '<p>' . __('No has realizado pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $html = '<ul class="portal-widget-list">';
@@ -986,7 +986,7 @@ class Flavor_User_Portal {
             return '<p>' . __('No tienes anuncios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $html = '<ul class="portal-widget-list">';
@@ -1072,7 +1072,7 @@ class Flavor_User_Portal {
             return '<p>' . __('No estás matriculado en ningún curso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $html = '<div class="portal-widget-content">';
@@ -1157,7 +1157,7 @@ class Flavor_User_Portal {
             return '<p>' . __('No has reportado incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $estado_labels = [

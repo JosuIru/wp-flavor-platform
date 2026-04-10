@@ -4,7 +4,7 @@
  *
  * Panel para gestionar notificaciones cross-comunidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

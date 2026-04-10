@@ -2,7 +2,7 @@
 /**
  * Clase de utilidades y helpers del plugin
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase con métodos de utilidad para el plugin
  */
-class Flavor_Chat_Helpers {
+class Flavor_Platform_Helpers {
 
     /**
      * Verifica si una tabla existe en la base de datos
@@ -186,11 +186,11 @@ class Flavor_Chat_Helpers {
      */
     public static function render_integration_tabs($modulo_id, $entity_id = 0, $opciones = []) {
         // Verificar que el loader de módulos existe
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulo = $loader->get_module($modulo_id);
 
         if (!$modulo || !method_exists($modulo, 'get_dashboard_tabs')) {
@@ -532,6 +532,10 @@ class Flavor_Chat_Helpers {
     }
 }
 
+if (!class_exists('Flavor_Chat_Helpers', false)) {
+    class_alias('Flavor_Platform_Helpers', 'Flavor_Chat_Helpers');
+}
+
 if (!function_exists('flavor_current_request_url')) {
     /**
      * Devuelve la URL actual para redirects de login en rutas dinámicas.
@@ -551,7 +555,7 @@ if (!function_exists('flavor_get_site_logo')) {
      * @return string URL del logo o vacío si no hay logo
      */
     function flavor_get_site_logo(): string {
-        return Flavor_Chat_Helpers::get_site_logo();
+        return Flavor_Platform_Helpers::get_site_logo();
     }
 }
 
@@ -563,7 +567,7 @@ if (!function_exists('flavor_get_site_logo_html')) {
      * @return string HTML de la imagen del logo
      */
     function flavor_get_site_logo_html(array $atributos = []): string {
-        return Flavor_Chat_Helpers::get_site_logo_html($atributos);
+        return Flavor_Platform_Helpers::get_site_logo_html($atributos);
     }
 }
 
@@ -571,7 +575,7 @@ if (!function_exists('flavor_is_module_active')) {
     /**
      * Verifica si un módulo está activo.
      *
-     * Utiliza la función centralizada Flavor_Chat_Module_Loader::is_module_active()
+     * Utiliza la función centralizada Flavor_Platform_Module_Loader::is_module_active()
      * que verifica en flavor_chat_ia_settings['active_modules'] (preferido)
      * y flavor_active_modules (legacy), normalizando IDs automáticamente.
      * Incluye caché por request para evitar múltiples consultas get_option.
@@ -581,15 +585,15 @@ if (!function_exists('flavor_is_module_active')) {
      */
     function flavor_is_module_active(string $module_id): bool {
         // Usar el método centralizado con caché
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            return Flavor_Chat_Module_Loader::is_module_active($module_id);
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            return Flavor_Platform_Module_Loader::is_module_active($module_id);
         }
 
         // Fallback con caché estática si el loader no está disponible
         static $modulos_activos_cache = null;
 
         if ($modulos_activos_cache === null) {
-            $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+            $configuracion_plugin = flavor_get_main_settings();
             $modulos_activos_cache = $configuracion_plugin['active_modules'] ?? [];
 
             $modulos_activos_legacy = get_option('flavor_active_modules', []);
@@ -617,7 +621,7 @@ if (!function_exists('flavor_normalize_module_id')) {
      * @return string ID normalizado
      */
     function flavor_normalize_module_id(string $module_id): string {
-        return Flavor_Chat_Helpers::normalize_module_id($module_id);
+        return Flavor_Platform_Helpers::normalize_module_id($module_id);
     }
 }
 
@@ -629,6 +633,6 @@ if (!function_exists('flavor_module_id_to_slug')) {
      * @return string Slug del módulo
      */
     function flavor_module_id_to_slug(string $module_id): string {
-        return Flavor_Chat_Helpers::module_id_to_slug($module_id);
+        return Flavor_Platform_Helpers::module_id_to_slug($module_id);
     }
 }

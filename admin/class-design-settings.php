@@ -4,7 +4,7 @@
  *
  * Configuración global de estilos para componentes del Page Builder
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -60,8 +60,8 @@ class Flavor_Design_Settings {
         $modulos_con_colores = [];
 
         // Intentar obtener desde Module Loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $metadata_cache = $loader->rebuild_metadata_cache();
 
             foreach ($metadata_cache as $module_id => $meta) {

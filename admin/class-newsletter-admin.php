@@ -4,7 +4,7 @@
  *
  * Paginas admin para listar, editar y ver estadisticas de campanas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Newsletter
  * @since 3.1.0
  */
@@ -33,8 +33,8 @@ class Flavor_Newsletter_Admin {
             return;
         }
         wp_enqueue_editor();
-        wp_enqueue_style('flavor-newsletter-admin', FLAVOR_CHAT_IA_URL . 'admin/css/admin.css', [], FLAVOR_CHAT_IA_VERSION);
-        wp_enqueue_script('flavor-newsletter-admin', FLAVOR_CHAT_IA_URL . 'admin/js/newsletter-admin.js', ['jquery'], FLAVOR_CHAT_IA_VERSION, true);
+        wp_enqueue_style('flavor-newsletter-admin', FLAVOR_PLATFORM_URL . 'admin/css/admin.css', [], FLAVOR_PLATFORM_VERSION);
+        wp_enqueue_script('flavor-newsletter-admin', FLAVOR_PLATFORM_URL . 'admin/js/newsletter-admin.js', ['jquery'], FLAVOR_PLATFORM_VERSION, true);
         wp_localize_script('flavor-newsletter-admin', 'flavorNewsletter', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_newsletter_nonce'),
@@ -114,7 +114,7 @@ class Flavor_Newsletter_Admin {
             $gestor_newsletter = Flavor_Newsletter_Manager::get_instance();
             $datos_campana = $gestor_newsletter->obtener_campana($identificador_campana);
         }
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/newsletter-editor.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/newsletter-editor.php';
     }
 
     /**

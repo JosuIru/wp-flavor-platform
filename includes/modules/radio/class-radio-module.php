@@ -2,7 +2,7 @@
 /**
  * Módulo de Radio Comunitaria para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Radio - Emisora de radio comunitaria en streaming
  */
-class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -34,7 +34,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_programas);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_programas);
     }
 
     /**
@@ -211,7 +211,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $this->create_tables();
         }
     }
@@ -2188,7 +2188,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla = $wpdb->prefix . 'flavor_radio_programas';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -2393,7 +2393,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Render admin page
      */
     public function render_admin_page() {
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/admin-dashboard.php';
+        $template = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/admin-dashboard.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -2449,7 +2449,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de dashboard del panel unificado
      */
     public function render_pagina_dashboard() {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/dashboard.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/dashboard.php';
         if (file_exists($template_path)) {
             include $template_path;
         }
@@ -2459,7 +2459,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de programas del panel unificado
      */
     public function render_pagina_programas() {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/programas.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/programas.php';
         if (file_exists($template_path)) {
             include $template_path;
         }
@@ -2469,7 +2469,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de emisiones del panel unificado
      */
     public function render_pagina_emisiones() {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/emisiones.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/emisiones.php';
         if (file_exists($template_path)) {
             include $template_path;
         }
@@ -2479,7 +2479,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de locutores del panel unificado
      */
     public function render_pagina_locutores() {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/locutores.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/locutores.php';
         if (file_exists($template_path)) {
             include $template_path;
         } else {
@@ -2492,7 +2492,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de configuración del panel unificado
      */
     public function render_pagina_configuracion() {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/config.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/views/config.php';
         if (file_exists($template_path)) {
             include $template_path;
         } else {
@@ -2515,7 +2515,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_emisiones = $wpdb->prefix . 'flavor_radio_emisiones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_emisiones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_emisiones)) {
             return 0;
         }
 
@@ -2569,7 +2569,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-radio-css',
@@ -2610,7 +2610,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style('flavor-radio-admin-css', $base_url . 'css/radio-admin.css', [], $version);
         wp_enqueue_script('flavor-radio-admin-js', $base_url . 'js/radio-admin.js', ['jquery'], $version, true);
@@ -2867,7 +2867,7 @@ KNOWLEDGE;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
         $tabla_programacion = $wpdb->prefix . 'flavor_radio_programacion';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             return $estadisticas;
         }
 
@@ -2884,7 +2884,7 @@ KNOWLEDGE;
         ];
 
         // Programa en vivo (si existe programación)
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programacion)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programacion)) {
             $en_vivo = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_programacion}
                  WHERE estado = 'en_emision'
@@ -3080,7 +3080,7 @@ KNOWLEDGE;
      * @return void
      */
     private function init_dashboard_tabs() {
-        $dashboard_tab_file = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/class-radio-dashboard-tab.php';
+        $dashboard_tab_file = FLAVOR_PLATFORM_PATH . 'includes/modules/radio/class-radio-dashboard-tab.php';
 
         if (file_exists($dashboard_tab_file)) {
             require_once $dashboard_tab_file;
@@ -3374,9 +3374,9 @@ KNOWLEDGE;
         $sanitized['server_mount'] = sanitize_text_field($input['server_mount'] ?? '/live');
 
         // Guardar en las opciones del módulo
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $settings['radio'] = $sanitized;
-        update_option('flavor_chat_ia_settings', $settings);
+        flavor_update_main_settings($settings);
 
         return $sanitized;
     }
@@ -3617,7 +3617,7 @@ KNOWLEDGE;
         }
 
         // Crear tabla si no existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $this->create_additional_tables();
         }
 
@@ -3653,7 +3653,7 @@ KNOWLEDGE;
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
         $usuario_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_favoritos)) {
             wp_send_json_success(['favoritos' => []]);
         }
 
@@ -3729,7 +3729,7 @@ KNOWLEDGE;
         }
 
         // Crear tabla si no existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $this->create_additional_tables();
         }
 
@@ -3788,7 +3788,7 @@ KNOWLEDGE;
         $eventos = [];
 
         // Eventos especiales
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $especiales = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, titulo, DATE(fecha) as fecha, hora_inicio, hora_fin, tipo, programa_id
                  FROM $tabla_eventos
@@ -3811,7 +3811,7 @@ KNOWLEDGE;
         }
 
         // Emisiones programadas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_emision)) {
             $emisiones = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, titulo, DATE(fecha_hora_inicio) as fecha,
                         TIME(fecha_hora_inicio) as hora_inicio,
@@ -3858,7 +3858,7 @@ KNOWLEDGE;
         $eventos = [];
 
         // Eventos especiales
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $especiales = $wpdb->get_results($wpdb->prepare(
                 "SELECT e.*, p.nombre as programa
                  FROM $tabla_eventos e
@@ -3883,7 +3883,7 @@ KNOWLEDGE;
         }
 
         // Emisiones del día
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_emision)) {
             $emisiones = $wpdb->get_results($wpdb->prepare(
                 "SELECT e.*, p.nombre as programa
                  FROM $tabla_emision e
@@ -3928,7 +3928,7 @@ KNOWLEDGE;
             wp_send_json_error(['message' => 'Podcast no válido']);
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_success(['transcripcion' => null]);
         }
 
@@ -3972,7 +3972,7 @@ KNOWLEDGE;
 
         // Obtener programas del locutor
         $programas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $programas = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, nombre, descripcion, imagen_url, categoria, frecuencia, oyentes_promedio, total_episodios
                  FROM $tabla_programas
@@ -4019,7 +4019,7 @@ KNOWLEDGE;
         $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_favoritos)) {
             return;
         }
 
@@ -4080,7 +4080,7 @@ KNOWLEDGE;
 
         $canales = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $canales = $wpdb->get_results(
                 "SELECT id, nombre, descripcion, url_stream, url_stream_hd, logo_url, color
                  FROM $tabla
@@ -4122,7 +4122,7 @@ KNOWLEDGE;
 
         $favoritos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_favoritos)) {
             $favoritos = $wpdb->get_results($wpdb->prepare(
                 "SELECT f.programa_id, f.notificaciones, p.nombre, p.imagen_url, p.categoria
                  FROM $tabla_favoritos f
@@ -4148,7 +4148,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
         $programa_id = $request['programa_id'];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $this->create_additional_tables();
         }
 
@@ -4186,7 +4186,7 @@ KNOWLEDGE;
 
         $eventos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             $especiales = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, titulo, DATE(fecha) as fecha, hora_inicio, hora_fin, tipo, descripcion
                  FROM $tabla_eventos
@@ -4231,7 +4231,7 @@ KNOWLEDGE;
         }
 
         $programas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $programas = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, nombre, descripcion, imagen_url, categoria, frecuencia, oyentes_promedio
                  FROM $tabla_programas
@@ -4267,7 +4267,7 @@ KNOWLEDGE;
         $tabla = $wpdb->prefix . 'flavor_radio_transcripciones';
         $podcast_id = $request['id'];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return new WP_REST_Response(['success' => true, 'transcripcion' => null], 200);
         }
 
@@ -4300,7 +4300,7 @@ KNOWLEDGE;
             return new WP_REST_Response(['success' => false, 'message' => 'Emoji requerido'], 400);
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $this->create_additional_tables();
         }
 
@@ -4368,7 +4368,7 @@ KNOWLEDGE;
         ];
 
         // Oyentes únicos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_oyentes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_oyentes)) {
             $stats['oyentes_unicos'] = (int)$wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(DISTINCT session_id) FROM $tabla_oyentes WHERE inicio >= %s",
                 $desde
@@ -4382,7 +4382,7 @@ KNOWLEDGE;
         }
 
         // Dedicatorias
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_dedicatorias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_dedicatorias)) {
             $stats['dedicatorias'] = (int)$wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_dedicatorias WHERE fecha_solicitud >= %s",
                 $desde
@@ -4390,14 +4390,14 @@ KNOWLEDGE;
         }
 
         // Programas activos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $stats['programas_activos'] = (int)$wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_programas WHERE estado = 'activo'"
             );
         }
 
         // Emisiones
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_emision)) {
             $stats['emisiones'] = (int)$wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_emision WHERE fecha_hora_inicio >= %s",
                 $desde
@@ -4406,7 +4406,7 @@ KNOWLEDGE;
 
         // Audiencia por hora (últimas 24h)
         $audiencia_por_hora = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_oyentes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_oyentes)) {
             $audiencia_por_hora = $wpdb->get_results(
                 "SELECT HOUR(inicio) as hora, COUNT(DISTINCT session_id) as oyentes
                  FROM $tabla_oyentes
@@ -4418,7 +4418,7 @@ KNOWLEDGE;
 
         // Programas más escuchados
         $top_programas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
             $top_programas = $wpdb->get_results(
                 "SELECT id, nombre, oyentes_promedio, total_episodios
                  FROM $tabla_programas
@@ -4437,4 +4437,8 @@ KNOWLEDGE;
         ], 200);
     }
 
+}
+
+if (!class_exists('Flavor_Chat_Radio_Module', false)) {
+    class_alias('Flavor_Platform_Radio_Module', 'Flavor_Chat_Radio_Module');
 }

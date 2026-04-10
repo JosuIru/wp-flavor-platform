@@ -2,7 +2,7 @@
 /**
  * Vista Usuarios Biblioteca - Panel de administración
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

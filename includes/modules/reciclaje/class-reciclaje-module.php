@@ -2,7 +2,7 @@
 /**
  * Módulo de Reciclaje para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Reciclaje - Gestión de reciclaje comunitario
  */
-class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -45,7 +45,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_puntos_reciclaje);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_puntos_reciclaje);
     }
 
     /**
@@ -196,13 +196,13 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
         $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos_reciclaje)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos_reciclaje)) {
             $this->create_tables();
             return;
         }
 
         // Migración segura: sitios ya activos antes de añadir campañas.
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_campanas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_campanas)) {
             $this->maybe_create_campaigns_table();
         }
     }
@@ -409,7 +409,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_campanas)) {
             return;
         }
 
@@ -625,7 +625,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             return 0;
         }
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'");
@@ -641,7 +641,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
             return $estadisticas;
         }
 
@@ -692,7 +692,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
         // Estadísticas resumen
         $estadisticas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
             $primer_dia_mes = date('Y-m-01 00:00:00');
             $estadisticas['kg_mes'] = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(cantidad_kg), 0) FROM $tabla_depositos WHERE verificado = 1 AND fecha_deposito >= %s",
@@ -701,7 +701,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             $estadisticas['total_depositos'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos WHERE verificado = 1");
             $estadisticas['usuarios_activos'] = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_depositos WHERE verificado = 1");
         }
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             $estadisticas['puntos_activos'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'");
         }
 
@@ -1158,7 +1158,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/css/', __FILE__);
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         wp_enqueue_style('flavor-reciclaje', $base_url . 'reciclaje.css', [], $version);
         wp_enqueue_script('flavor-reciclaje', plugins_url('assets/js/reciclaje.js', __FILE__), ['jquery'], $version, true);
@@ -1183,7 +1183,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         wp_enqueue_style('flavor-reciclaje-admin', $base_url . 'reciclaje-admin.css', [], $version);
         wp_enqueue_script('flavor-reciclaje-admin', $base_url . 'reciclaje-admin.js', ['jquery'], $version, true);
@@ -2194,4 +2194,8 @@ KNOWLEDGE;
             echo '<p>' . esc_html__('Gestión de puntos de reciclaje comunitarios.', 'flavor-platform') . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Reciclaje_Module', false)) {
+    class_alias('Flavor_Platform_Reciclaje_Module', 'Flavor_Chat_Reciclaje_Module');
 }

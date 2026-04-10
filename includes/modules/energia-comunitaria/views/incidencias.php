@@ -2,7 +2,7 @@
 /**
  * Vista: Incidencias y Mantenimiento
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -29,7 +29,7 @@ if ($filtro_prioridad) {
 
 // Obtener incidencias
 $incidencias = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
     $incidencias = $wpdb->get_results(
         "SELECT i.*, inst.nombre as instalacion_nombre, c.nombre as comunidad_nombre,
                 u.display_name as reportado_por_nombre
@@ -52,7 +52,7 @@ $stats = [
     'criticas' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
     $stats['abiertas'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado = 'abierta'");
     $stats['en_progreso'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado = 'en_progreso'");
     $stats['resueltas_mes'] = $wpdb->get_var($wpdb->prepare(

@@ -5,7 +5,7 @@
  * Endpoints optimizados para carga bajo demanda de recursos.
  * Soporta campos específicos, paginación y caché.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 3.2.0
  */

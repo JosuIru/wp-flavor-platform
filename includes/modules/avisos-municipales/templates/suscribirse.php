@@ -4,7 +4,7 @@
  *
  * Permite a los usuarios suscribirse para recibir notificaciones de avisos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 $tabla_suscripciones = $wpdb->prefix . 'flavor_avisos_suscripciones';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_avisos)) {
     echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }

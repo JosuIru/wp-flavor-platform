@@ -5,7 +5,7 @@
  * Proporciona tabs en el dashboard del cliente para gestionar colectivos,
  * proyectos y asambleas del usuario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Colectivos
  * @since 4.3.0
  */
@@ -141,7 +141,7 @@ class Flavor_Colectivos_Dashboard_Tab {
         global $wpdb;
 
         // Verificar que las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_colectivos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_colectivos)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El módulo de colectivos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -220,11 +220,11 @@ class Flavor_Colectivos_Dashboard_Tab {
 
             <!-- Acciones rápidas -->
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -236,7 +236,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="dashicons dashicons-groups"></span>
                     <h3><?php esc_html_e('No perteneces a ningún colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p><?php esc_html_e('Únete a un colectivo existente o crea uno nuevo para empezar a participar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -264,7 +264,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_proyectos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_proyectos)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El sistema de proyectos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -388,7 +388,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asambleas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_asambleas)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
                  esc_html__('El sistema de asambleas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
@@ -537,7 +537,7 @@ class Flavor_Colectivos_Dashboard_Tab {
     private function render_card_colectivo($colectivo) {
         global $wpdb;
 
-        $url_detalle = Flavor_Chat_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id;
+        $url_detalle = Flavor_Platform_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id;
         $etiqueta_tipo = $this->etiquetas_tipos[$colectivo->tipo] ?? $colectivo->tipo;
         $etiqueta_rol = $this->etiquetas_roles[$colectivo->rol] ?? ucfirst($colectivo->rol);
 
@@ -629,7 +629,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <?php esc_html_e('Ver Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (in_array($colectivo->rol, ['presidente', 'secretario', 'admin'])): ?>
-                    <a href="<?php echo esc_url(add_query_arg(['colectivo' => $colectivo->id, 'accion' => 'gestionar'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
+                    <a href="<?php echo esc_url(add_query_arg(['colectivo' => $colectivo->id, 'accion' => 'gestionar'], Flavor_Platform_Helpers::get_action_url('colectivos', ''))); ?>"
                        class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <span class="dashicons dashicons-admin-generic"></span>
                         <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>

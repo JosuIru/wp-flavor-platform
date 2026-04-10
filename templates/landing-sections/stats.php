@@ -2,7 +2,7 @@
 /**
  * Template de sección Stats (Estadísticas)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $data Datos de la sección
  * @var string $variant Variante de la sección
  * @var string $section_id ID de la sección

@@ -5,7 +5,7 @@
  * Two-column layout combining text content with an image.
  * Supports reversed order and overlay style.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo            Section heading text.
  * @var string $contenido         Rich-text body content.

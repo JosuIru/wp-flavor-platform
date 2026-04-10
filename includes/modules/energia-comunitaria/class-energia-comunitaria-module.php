@@ -6,14 +6,14 @@
  * Gestion comunitaria de generacion, consumo, reparto y mantenimiento
  * de infraestructuras energeticas locales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
+class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_Base
 {
 
     use Flavor_Module_Admin_Pages_Trait;
@@ -309,22 +309,22 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_comunidades')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_comunidades')) {
             $this->create_tables();
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_participantes')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_participantes')) {
             $this->create_tables();
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_repartos_cierre')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_repartos_cierre')) {
             $this->create_tables();
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_liquidaciones')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_liquidaciones')) {
             $this->create_tables();
             return;
         }
@@ -700,7 +700,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         }
 
         $total_generado = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_lecturas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_lecturas)) {
             $total_generado = $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(kwh_generados), 0) FROM $tabla_lecturas WHERE fecha_lectura BETWEEN %s AND %s $where",
                 $fecha_inicio,
@@ -747,7 +747,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         }
 
         $total_consumido = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_lecturas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_lecturas)) {
             $total_consumido = $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(kwh_consumidos), 0) FROM $tabla_lecturas WHERE fecha_lectura BETWEEN %s AND %s $where",
                 $fecha_inicio,
@@ -780,7 +780,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla_comunidades = $wpdb->prefix . 'flavor_energia_comunidades';
 
         $proyectos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones)) {
             $proyectos = $wpdb->get_results(
                 "SELECT i.*, c.nombre as comunidad_nombre
                  FROM $tabla_instalaciones i
@@ -849,7 +849,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         global $wpdb;
 
         $tabla = $wpdb->prefix . 'flavor_energia_comunidades';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -861,7 +861,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         global $wpdb;
 
         $tabla = $wpdb->prefix . 'flavor_energia_instalaciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -902,9 +902,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
     public function enqueue_assets()
     {
-        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/energia-comunitaria/assets/';
-        $base_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/energia-comunitaria/assets/';
-        $version = FLAVOR_CHAT_IA_VERSION;
+        $base_url = FLAVOR_PLATFORM_URL . 'includes/modules/energia-comunitaria/assets/';
+        $base_path = FLAVOR_PLATFORM_PATH . 'includes/modules/energia-comunitaria/assets/';
+        $version = FLAVOR_PLATFORM_VERSION;
 
         if (file_exists($base_path . 'css/energia-comunitaria.css')) {
             wp_register_style('flavor-energia-comunitaria', $base_url . 'css/energia-comunitaria.css', [], $version);
@@ -1010,7 +1010,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla = $wpdb->prefix . 'flavor_energia_instalaciones';
         $items = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $items = $wpdb->get_results("SELECT * FROM {$tabla} ORDER BY created_at DESC LIMIT 20", ARRAY_A);
         }
 
@@ -1173,16 +1173,16 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             'ahorro_estimado_mes' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             $data['comunidades_activas'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_comunidades} WHERE estado = 'activa'");
             $data['comunidades_vinculadas'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_comunidades} WHERE comunidad_id IS NOT NULL");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones)) {
             $data['instalaciones_activas'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_instalaciones} WHERE estado = 'activa'");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_lecturas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_lecturas)) {
             $totales = $wpdb->get_row(
                 "SELECT
                     COALESCE(SUM(energia_generada_kwh), 0) AS generada,
@@ -1204,7 +1204,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             $data['incidencias_abiertas'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_incidencias} WHERE estado IN ('abierta', 'en_progreso')");
         }
 
@@ -1229,7 +1229,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             'participantes' => [],
         ];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones) || !Flavor_Chat_Helpers::tabla_existe($tabla_lecturas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones) || !Flavor_Platform_Helpers::tabla_existe($tabla_lecturas)) {
             return $data;
         }
 
@@ -1283,11 +1283,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla_energia = $wpdb->prefix . 'flavor_energia_comunidades';
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_energia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_energia)) {
             return [];
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             return $wpdb->get_results(
                 "SELECT ec.*, c.nombre AS comunidad_nombre
                  FROM {$tabla_energia} ec
@@ -1310,7 +1310,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_comunidades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1329,7 +1329,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_comunidades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1348,7 +1348,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
             return [];
         }
 
@@ -1368,7 +1368,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_repartos_cierre';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
             return [];
         }
 
@@ -1388,7 +1388,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_repartos_detalle';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $cierre_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $cierre_id <= 0) {
             return [];
         }
 
@@ -1414,7 +1414,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_liquidaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $energia_comunidad_id <= 0) {
             return [
                 'items' => [],
                 'total' => 0,
@@ -1489,7 +1489,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_liquidaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $liquidacion_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $liquidacion_id <= 0) {
             return null;
         }
 
@@ -1505,7 +1505,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $tabla = $wpdb->prefix . 'flavor_energia_liquidaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla) || $cierre_id <= 0) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla) || $cierre_id <= 0) {
             return [];
         }
 
@@ -1719,9 +1719,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla_liquidaciones = $wpdb->prefix . 'flavor_energia_liquidaciones';
 
         if (
-            !Flavor_Chat_Helpers::tabla_existe($tabla_cierres) ||
-            !Flavor_Chat_Helpers::tabla_existe($tabla_detalle) ||
-            !Flavor_Chat_Helpers::tabla_existe($tabla_liquidaciones)
+            !Flavor_Platform_Helpers::tabla_existe($tabla_cierres) ||
+            !Flavor_Platform_Helpers::tabla_existe($tabla_detalle) ||
+            !Flavor_Platform_Helpers::tabla_existe($tabla_liquidaciones)
         ) {
             return new WP_Error('energia_missing_tables', __('No existen las tablas de cierres energéticos.', 'flavor-platform'));
         }
@@ -2144,7 +2144,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla_energia = $wpdb->prefix . 'flavor_energia_comunidades';
         $instalaciones = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $instalaciones = $wpdb->get_results(
                 "SELECT i.*, ec.nombre AS comunidad_energetica
                  FROM {$tabla} i
@@ -2258,7 +2258,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $tabla = $wpdb->prefix . 'flavor_energia_incidencias';
         $incidencias = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $incidencias = $wpdb->get_results("SELECT * FROM {$tabla} ORDER BY fecha_reporte DESC LIMIT 10");
         }
 
@@ -2873,7 +2873,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_energia_instalaciones';
-        $instalaciones = Flavor_Chat_Helpers::tabla_existe($tabla)
+        $instalaciones = Flavor_Platform_Helpers::tabla_existe($tabla)
             ? $wpdb->get_results("SELECT id, nombre FROM {$tabla} WHERE estado = 'activa' ORDER BY nombre ASC LIMIT 100")
             : [];
 
@@ -2932,7 +2932,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_energia_instalaciones';
-        $instalaciones = Flavor_Chat_Helpers::tabla_existe($tabla)
+        $instalaciones = Flavor_Platform_Helpers::tabla_existe($tabla)
             ? $wpdb->get_results("SELECT id, nombre FROM {$tabla} ORDER BY nombre ASC LIMIT 100")
             : [];
 
@@ -3311,7 +3311,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $estado = sanitize_text_field($params['estado'] ?? '');
         $items = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             if ($estado !== '') {
                 $items = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla} WHERE estado = %s ORDER BY created_at DESC LIMIT 20",
@@ -3714,4 +3714,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Energia_Comunitaria_Module', false)) {
+    class_alias('Flavor_Platform_Energia_Comunitaria_Module', 'Flavor_Chat_Energia_Comunitaria_Module');
 }

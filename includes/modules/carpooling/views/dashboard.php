@@ -2,7 +2,7 @@
 /**
  * Vista del Dashboard de Carpooling
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Carpooling
  */
 

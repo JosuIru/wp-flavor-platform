@@ -2,7 +2,7 @@
 /**
  * Pantalla admin para bundles del ecosistema.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

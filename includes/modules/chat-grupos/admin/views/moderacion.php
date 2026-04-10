@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Moderacion de Chat de Grupos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

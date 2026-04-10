@@ -5,7 +5,7 @@
  * Responsive image grid with dynamic columns, hover effects,
  * and lightbox-ready data attributes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo            Section heading text.
  * @var int    $columnas          Number of grid columns: 2, 3, or 4.

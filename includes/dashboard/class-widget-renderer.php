@@ -5,7 +5,7 @@
  * Encapsula la logica de renderizado de widgets con estructura
  * HTML estandarizada, soportando diferentes tamanos y layouts.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Dashboard
  * @since 4.0.0
  */
@@ -254,11 +254,11 @@ class Flavor_Widget_Renderer {
      * @return array<string,string>
      */
     private function get_widget_semantics(string $module_id): array {
-        if ($module_id === '' || !class_exists('Flavor_Chat_Module_Loader')) {
+        if ($module_id === '' || !class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader ? $loader->get_registered_modules() : [];
         $module_data = $registered_modules[$module_id] ?? null;
 

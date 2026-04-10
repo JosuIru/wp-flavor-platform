@@ -8,7 +8,7 @@
  * - Análisis IA de tendencias
  * - Recomendaciones automáticas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

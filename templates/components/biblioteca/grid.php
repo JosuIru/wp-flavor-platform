@@ -5,7 +5,7 @@
  * Muestra una cuadrícula de libros disponibles en la biblioteca
  * con opciones de filtrado y búsqueda.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Variables pasadas al template
  */
 

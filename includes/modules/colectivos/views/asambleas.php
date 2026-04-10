@@ -2,7 +2,7 @@
 /**
  * Vista: Asambleas de colectivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array  $asambleas             Lista de asambleas
  * @var int    $colectivo_id          ID del colectivo
  * @var int    $identificador_usuario ID del usuario actual

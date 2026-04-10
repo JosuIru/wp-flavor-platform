@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -67,7 +67,7 @@ class Flavor_Incidencias_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -280,7 +280,7 @@ class Flavor_Incidencias_Frontend_Controller {
 
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             return '';
         }
 
@@ -364,7 +364,7 @@ class Flavor_Incidencias_Frontend_Controller {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             echo '<p class="flavor-error">' . __('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
@@ -437,7 +437,7 @@ class Flavor_Incidencias_Frontend_Controller {
         $estadisticas = $this->calcular_estadisticas_listado($tabla_incidencias);
 
         // Cargar el template estándar con Archive Renderer
-        $template = FLAVOR_CHAT_IA_PATH . 'templates/frontend/incidencias/archive.php';
+        $template = FLAVOR_PLATFORM_PATH . 'templates/frontend/incidencias/archive.php';
         if (file_exists($template)) {
             include $template;
         }

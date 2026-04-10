@@ -5,7 +5,7 @@
  * Formulario completo para que los conductores publiquen
  * nuevos viajes compartidos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules/Carpooling
  */
 

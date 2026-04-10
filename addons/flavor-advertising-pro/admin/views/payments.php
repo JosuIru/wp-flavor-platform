@@ -2,7 +2,7 @@
 /**
  * Vista de Sistema de Pagos y Distribución de Beneficios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Advertising
  */
 

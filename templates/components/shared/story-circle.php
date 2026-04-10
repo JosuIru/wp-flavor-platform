@@ -4,7 +4,7 @@
  *
  * Círculo de historia/estado estilo Instagram/WhatsApp.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $stories    Array de historias: [['id' => x, 'image' => '', 'user' => '', 'avatar' => '', 'seen' => false, 'url' => '']]

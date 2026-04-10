@@ -4,7 +4,7 @@
  *
  * Renderiza contenido HTML con variables dinamicas y wrapper responsive.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Newsletter
  * @since 3.1.0
  */
@@ -103,7 +103,7 @@ class Flavor_Newsletter_Template {
         if (!empty($opciones_diseno['primary_color'])) {
             return sanitize_hex_color($opciones_diseno['primary_color']) ?: '#0073aa';
         }
-        $opciones_chat = get_option('flavor_chat_ia_settings', []);
+        $opciones_chat = flavor_get_main_settings();
         if (!empty($opciones_chat['widget_color'])) {
             return sanitize_hex_color($opciones_chat['widget_color']) ?: '#0073aa';
         }

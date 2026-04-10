@@ -4,7 +4,7 @@
  *
  * Crea automáticamente todas las páginas necesarias para los módulos con formularios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

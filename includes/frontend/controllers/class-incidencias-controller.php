@@ -2,7 +2,7 @@
 /**
  * Controlador frontend: Incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_data();
         }
 
@@ -70,7 +70,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_single($item_id);
         }
 
@@ -106,7 +106,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['resultados' => [], 'total_resultados' => 0, 'sugerencias' => []];
         }
 
@@ -270,7 +270,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['pendientes' => 0, 'en_proceso' => 0, 'resueltas' => 0, 'tiempo_medio' => '—'];
         }
 

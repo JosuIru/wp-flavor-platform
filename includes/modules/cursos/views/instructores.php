@@ -2,7 +2,7 @@
 /**
  * Vista Gestión de Instructores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

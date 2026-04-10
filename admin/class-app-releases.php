@@ -4,7 +4,7 @@
  *
  * Panel para gestionar versiones de APKs, changelogs y distribución.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  * @since 1.0.0
  */
@@ -46,8 +46,8 @@ class Flavor_App_Releases {
     private function __construct() {
         global $wpdb;
         $this->table_name = $wpdb->prefix . 'flavor_app_releases';
-        $this->releases_dir = FLAVOR_CHAT_IA_PATH . 'releases/';
-        $this->releases_url = FLAVOR_CHAT_IA_URL . 'releases/';
+        $this->releases_dir = FLAVOR_PLATFORM_PATH . 'releases/';
+        $this->releases_url = FLAVOR_PLATFORM_URL . 'releases/';
 
         add_action('admin_menu', array($this, 'add_menu_page'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
@@ -142,16 +142,16 @@ class Flavor_App_Releases {
 
         wp_enqueue_style(
             'flavor-app-releases',
-            FLAVOR_CHAT_IA_URL . 'admin/css/app-releases.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/app-releases.css',
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-app-releases',
-            FLAVOR_CHAT_IA_URL . 'admin/js/app-releases.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/app-releases.js',
             array('jquery'),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

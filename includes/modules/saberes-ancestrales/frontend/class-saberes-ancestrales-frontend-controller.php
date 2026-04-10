@@ -5,7 +5,7 @@
  * Gestiona la preservación y transmisión de conocimientos tradicionales,
  * oficios artesanales y patrimonio cultural inmaterial de la comunidad.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -734,7 +734,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_ancestrales';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-platform')]);
         }
 
@@ -792,7 +792,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_aprendices';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-platform')]);
         }
 
@@ -864,7 +864,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_ancestrales';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_saberes();
         }
 
@@ -875,7 +875,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_ancestrales';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $demos = $this->get_demo_saberes();
             foreach ($demos as $s) {
                 if ($s['id'] == $saber_id) return $s;

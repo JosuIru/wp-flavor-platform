@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -45,7 +45,7 @@ class Flavor_Reciclaje_Frontend_Controller {
      * Constructor privado
      */
     private function __construct() {
-        $this->config = get_option('flavor_chat_ia_settings', []);
+        $this->config = flavor_get_main_settings();
         $this->init();
     }
 
@@ -100,7 +100,7 @@ class Flavor_Reciclaje_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugin_dir_url(dirname(__FILE__));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-reciclaje-frontend',
@@ -168,7 +168,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         // Puntos acumulados
         $puntos_info = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos_usuario)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos_usuario)) {
             $puntos_info = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM $tabla_puntos_usuario WHERE usuario_id = %d",
                 $usuario_id
@@ -180,7 +180,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         // Estadísticas por categoría
         $estadisticas_categoria = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_registros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_registros)) {
             $estadisticas_categoria = $wpdb->get_results($wpdb->prepare(
                 "SELECT categoria, SUM(cantidad_kg) as total_kg, COUNT(*) as registros
                  FROM $tabla_registros
@@ -195,7 +195,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         // Registros recientes
         $registros_recientes = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_registros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_registros)) {
             $registros_recientes = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM $tabla_registros WHERE usuario_id = %d ORDER BY fecha_registro DESC LIMIT 10",
                 $usuario_id
@@ -365,7 +365,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         global $wpdb;
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             return '<p class="flavor-aviso">' . __('Mapa no disponible', 'flavor-platform') . '</p>';
         }
 
@@ -416,7 +416,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         global $wpdb;
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             return '';
         }
 
@@ -493,11 +493,11 @@ class Flavor_Reciclaje_Frontend_Controller {
             'puntos_reciclaje' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_registros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_registros)) {
             $stats->total_kg = $wpdb->get_var("SELECT SUM(cantidad_kg) FROM $tabla_registros") ?? 0;
             $stats->usuarios = $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_registros") ?? 0;
         }
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             $stats->puntos_reciclaje = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'") ?? 0;
         }
 
@@ -611,7 +611,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         }
 
         // Actualizar puntos del usuario
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos_usuario)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos_usuario)) {
             $existe = $wpdb->get_var($wpdb->prepare(
                 "SELECT id FROM $tabla_puntos_usuario WHERE usuario_id = %d",
                 $usuario_id
@@ -720,7 +720,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         $tabla_reportes = $wpdb->prefix . 'flavor_reciclaje_reportes';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reportes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reportes)) {
             $wpdb->insert($tabla_reportes, [
                 'punto_id' => $punto_id,
                 'usuario_id' => get_current_user_id(),
@@ -801,7 +801,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         // Obtener puntos del usuario
         $puntos_usuario = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             $puntos_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(puntos), 0) FROM $tabla_puntos WHERE usuario_id = %d",
                 $usuario_id
@@ -810,7 +810,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         // Obtener recompensas disponibles
         $recompensas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_recompensas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_recompensas)) {
             $recompensas = $wpdb->get_results(
                 "SELECT * FROM $tabla_recompensas WHERE activa = 1 AND stock > 0 ORDER BY puntos_necesarios ASC"
             );

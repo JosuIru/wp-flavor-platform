@@ -5,7 +5,7 @@
  * Grid de tarjetas de tramites con icono, nombre, descripcion,
  * tiempo estimado, requisitos y modalidad (online/presencial).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

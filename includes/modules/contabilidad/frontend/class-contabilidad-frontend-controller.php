@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Contabilidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -55,7 +55,7 @@ class Flavor_Contabilidad_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(

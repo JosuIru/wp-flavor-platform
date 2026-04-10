@@ -5,7 +5,7 @@
  * Genera cuotas mensuales automaticas, envia avisos de vencimiento
  * y marca cuotas vencidas mediante WP Cron.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since   3.1.0
  */
 
@@ -51,11 +51,11 @@ class Flavor_Socios_Subscriptions {
     }
 
     public function ejecutar_tareas_diarias() {
-        flavor_chat_ia_log( 'Socios Subscriptions: Iniciando tareas diarias de cuotas.', 'info' );
+        flavor_platform_log( 'Socios Subscriptions: Iniciando tareas diarias de cuotas.', 'info' );
         $this->generar_cuotas_mensuales();
         $this->enviar_avisos_vencimiento();
         $this->marcar_cuotas_vencidas();
-        flavor_chat_ia_log( 'Socios Subscriptions: Tareas diarias finalizadas.', 'info' );
+        flavor_platform_log( 'Socios Subscriptions: Tareas diarias finalizadas.', 'info' );
     }
 
     public function generar_cuotas_mensuales() {
@@ -149,7 +149,7 @@ class Flavor_Socios_Subscriptions {
         ) );
 
         if ( $total_actualizadas > 0 ) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf( 'Socios Subscriptions: %d cuota(s) marcada(s) como vencida(s).', $total_actualizadas ),
                 'info'
             );
@@ -206,7 +206,7 @@ class Flavor_Socios_Subscriptions {
         );
 
         if ( false === $resultado_insercion ) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf( 'Socios Subscriptions: Error al crear cuota para socio #%d: %s', $socio_id, $wpdb->last_error ),
                 'error'
             );
@@ -215,7 +215,7 @@ class Flavor_Socios_Subscriptions {
 
         $identificador_cuota_nueva = $wpdb->insert_id;
 
-        flavor_chat_ia_log(
+        flavor_platform_log(
             sprintf(
                 'Socios Subscriptions: Cuota #%d creada para socio #%d - Periodo: %s - Importe: %.2f',
                 $identificador_cuota_nueva,
@@ -376,7 +376,7 @@ class Flavor_Socios_Subscriptions {
         $resultado_envio = wp_mail( $direccion_destino, $asunto_email, $contenido_html, $cabeceras_email );
 
         if ( ! $resultado_envio ) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf( 'Socios Subscriptions: Error al enviar email a %s - Asunto: %s', $direccion_destino, $asunto_email ),
                 'error'
             );
@@ -385,4 +385,3 @@ class Flavor_Socios_Subscriptions {
         return $resultado_envio;
     }
 }
-

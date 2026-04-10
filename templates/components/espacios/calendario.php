@@ -4,7 +4,7 @@
  *
  * Muestra un calendario interactivo con la disponibilidad de un espacio
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

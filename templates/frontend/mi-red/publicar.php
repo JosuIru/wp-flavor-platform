@@ -4,7 +4,7 @@
  *
  * Formulario de creación de publicaciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

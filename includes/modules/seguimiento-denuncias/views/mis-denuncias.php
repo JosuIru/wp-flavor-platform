@@ -2,7 +2,7 @@
 /**
  * Vista completa de denuncias propias.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

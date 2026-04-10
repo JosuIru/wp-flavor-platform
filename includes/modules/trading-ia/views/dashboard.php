@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para herramientas de trading con IA.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

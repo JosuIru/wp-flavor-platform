@@ -2,7 +2,7 @@
 /**
  * Vista: Cierres y Liquidaciones de Reparto
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ $tabla_comunidades = $wpdb->prefix . 'flavor_energia_comunidades';
 
 // Obtener cierres
 $cierres = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_cierres)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_cierres)) {
     $cierres = $wpdb->get_results(
         "SELECT c.*, ec.nombre as comunidad_nombre,
                 (SELECT COUNT(*) FROM $tabla_detalle d WHERE d.cierre_id = c.id) as num_participantes,
@@ -38,7 +38,7 @@ $stats = [
     'ahorro_total_ano' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_cierres)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_cierres)) {
     $stats['pendientes_liquidar'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cierres WHERE estado = 'pendiente'");
     $stats['kwh_repartidos_ano'] = $wpdb->get_var($wpdb->prepare(
         "SELECT COALESCE(SUM(kwh_total_periodo), 0) FROM $tabla_cierres WHERE YEAR(periodo) = %d",

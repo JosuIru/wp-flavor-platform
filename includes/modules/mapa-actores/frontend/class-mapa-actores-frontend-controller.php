@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Mapa de Actores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\MapaActores
  */
 
@@ -109,14 +109,14 @@ class Flavor_Mapa_Actores_Frontend_Controller {
             'flavor-mapa-actores-frontend',
             plugin_dir_url(__FILE__) . '../assets/css/mapa-actores-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-mapa-actores-frontend',
             plugin_dir_url(__FILE__) . '../assets/js/mapa-actores-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -183,7 +183,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         $por_tipo = [];
         $recientes = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_actores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_actores)) {
             $total_actores = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_actores} WHERE activo = 1");
 
             $por_tipo = $wpdb->get_results(
@@ -197,7 +197,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         }
 
         $total_relaciones = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_relaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($this->tabla_relaciones)) {
             $total_relaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_relaciones}");
         }
 
@@ -332,7 +332,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
 
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_actores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_actores)) {
             return '<p class="flavor-notice">' . esc_html__('Directorio no disponible.', 'flavor-platform') . '</p>';
         }
 

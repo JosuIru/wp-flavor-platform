@@ -5,7 +5,7 @@
  * Seccion hero para el modulo de transparencia.
  * Titulo, subtitulo y estadisticas de datos publicos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

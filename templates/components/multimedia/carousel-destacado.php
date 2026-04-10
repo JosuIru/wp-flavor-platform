@@ -2,7 +2,7 @@
 /**
  * Template: Carousel de Contenido Destacado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

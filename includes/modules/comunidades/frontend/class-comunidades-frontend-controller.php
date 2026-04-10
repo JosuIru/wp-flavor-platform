@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Comunidades
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Comunidades
  */
 
@@ -63,7 +63,7 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-comunidades',
@@ -242,7 +242,7 @@ class Flavor_Comunidades_Frontend_Controller {
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -499,7 +499,7 @@ class Flavor_Comunidades_Frontend_Controller {
         // Obtener últimas publicaciones
         $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_actividad';
         $publicaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             $publicaciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT p.*, p.user_id AS autor_id, p.reacciones_count AS likes_count, u.display_name as autor_nombre
                  FROM {$tabla_publicaciones} p
@@ -514,7 +514,7 @@ class Flavor_Comunidades_Frontend_Controller {
         // Obtener miembros destacados
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
         $miembros_destacados = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             $miembros_destacados = $wpdb->get_results($wpdb->prepare(
                 "SELECT m.*, m.user_id AS usuario_id, m.joined_at AS created_at, u.display_name, u.user_email
                  FROM {$tabla_miembros} m
@@ -810,7 +810,7 @@ class Flavor_Comunidades_Frontend_Controller {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
         $comunidades = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             $comunidades = $wpdb->get_results($wpdb->prepare(
                 "SELECT " . $this->get_comunidad_select_sql('c') . ", m.rol, m.joined_at as fecha_union
                  FROM {$tabla_miembros} m
@@ -894,7 +894,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         // Obtener publicaciones de comunidades del usuario
         $publicaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             $publicaciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT p.*, p.user_id AS autor_id, c.nombre as comunidad_nombre, c.slug as comunidad_slug, u.display_name as autor_nombre
                  FROM {$tabla_publicaciones} p
@@ -1446,7 +1446,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         global $wpdb;
         $tabla_comentarios = $wpdb->prefix . 'flavor_comunidades_comentarios';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
             wp_send_json_error(__('Los comentarios no están disponibles en este flujo legacy.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 

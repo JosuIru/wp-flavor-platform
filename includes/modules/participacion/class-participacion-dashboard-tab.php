@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Participación Ciudadana
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Participacion
  */
 
@@ -26,7 +26,7 @@ class Flavor_Participacion_Dashboard_Tab {
     }
 
     private function get_portal_url($action, array $args = []) {
-        $url = Flavor_Chat_Helpers::get_action_url('participacion', trim($action, '/'));
+        $url = Flavor_Platform_Helpers::get_action_url('participacion', trim($action, '/'));
         if (!empty($args)) {
             $url = add_query_arg($args, $url);
         }
@@ -65,7 +65,7 @@ class Flavor_Participacion_Dashboard_Tab {
         $encuestas_activas = 0;
         $propuestas_destacadas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $total_propuestas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla} WHERE estado NOT IN ('borrador', 'rechazada')"
             );
@@ -81,14 +81,14 @@ class Flavor_Participacion_Dashboard_Tab {
             );
         }
 
-        if ($user_id && Flavor_Chat_Helpers::tabla_existe($tabla_votos)) {
+        if ($user_id && Flavor_Platform_Helpers::tabla_existe($tabla_votos)) {
             $mis_votos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_votos} WHERE usuario_id = %d",
                 $user_id
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_encuestas)) {
             $encuestas_activas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_encuestas}
                  WHERE estado = 'activa' AND fecha_fin >= %s",
@@ -186,7 +186,7 @@ class Flavor_Participacion_Dashboard_Tab {
         $tabla = $wpdb->prefix . 'flavor_participacion_propuestas';
 
         $propuestas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $propuestas = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla} WHERE usuario_id = %d ORDER BY created_at DESC LIMIT 10",
                 $user_id

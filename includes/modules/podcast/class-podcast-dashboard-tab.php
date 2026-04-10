@@ -5,7 +5,7 @@
  * Proporciona tabs de usuario para gestionar suscripciones, historial,
  * favoritos y descargas de podcasts.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -158,7 +158,7 @@ class Flavor_Podcast_Dashboard_Tab {
      */
     public function registrar_assets() {
         $modulo_url = plugin_dir_url(__FILE__);
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         wp_register_style(
             'flavor-podcast-dashboard',

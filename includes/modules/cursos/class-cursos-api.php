@@ -2,7 +2,7 @@
 /**
  * API REST para Cursos (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Cursos_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,63 +28,63 @@ class Flavor_Cursos_API {
 
     public function register_routes() {
         // GET /cursos/dashboard
-        register_rest_route(self::NAMESPACE, '/cursos/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /cursos
-        register_rest_route(self::NAMESPACE, '/cursos', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_cursos'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /cursos/mis-cursos
-        register_rest_route(self::NAMESPACE, '/cursos/mis-cursos', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/mis-cursos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_cursos'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /cursos/{id}
-        register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_curso'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /cursos/{id}/inscribir
-        register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/inscribir', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/inscribir', [
             'methods' => 'POST',
             'callback' => [$this, 'inscribirse'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /cursos/{id}/cancelar
-        register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/cancelar', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/cancelar', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_inscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /cursos/{id}/lecciones
-        register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/lecciones', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/(?P<id>\d+)/lecciones', [
             'methods' => 'GET',
             'callback' => [$this, 'get_lecciones'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /cursos/lecciones/{id}/completar
-        register_rest_route(self::NAMESPACE, '/cursos/lecciones/(?P<id>\d+)/completar', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/lecciones/(?P<id>\d+)/completar', [
             'methods' => 'POST',
             'callback' => [$this, 'completar_leccion'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /cursos/categorias
-        register_rest_route(self::NAMESPACE, '/cursos/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/cursos/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'check_authentication'],

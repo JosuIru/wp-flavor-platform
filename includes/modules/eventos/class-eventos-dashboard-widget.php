@@ -7,7 +7,7 @@
  * - Mis inscripciones
  * - Eventos populares
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Eventos
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -184,7 +184,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_proximos,
             'label' => __('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Chat_Helpers::get_action_url('eventos', ''),
+            'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Platform_Helpers::get_action_url('eventos', ''),
         ];
 
         // Stat 2: Mis inscripciones
@@ -194,7 +194,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_inscripciones,
                 'label' => __('Mis inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_inscripciones > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=eventos-asistentes') : Flavor_Chat_Helpers::get_action_url('eventos', 'mis-inscripciones'),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-asistentes') : Flavor_Platform_Helpers::get_action_url('eventos', 'mis-inscripciones'),
             ];
         }
 
@@ -206,7 +206,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha_formateada,
                 'label' => wp_trim_words($evento_proximo->titulo, 3, '...'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento_proximo->id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento_proximo->id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle')),
             ];
         }
 
@@ -225,7 +225,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $es_admin ? __('Gestionar eventos', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Chat_Helpers::get_action_url('eventos', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Platform_Helpers::get_action_url('eventos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -272,7 +272,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-calendar-alt',
                 'title' => $evento->titulo,
                 'meta' => $fecha . ($evento->lugar ? ' · ' . $evento->lugar : ''),
-                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento->id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento->id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle')),
                 'badge' => $plazas,
             ];
         }

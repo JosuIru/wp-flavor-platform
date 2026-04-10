@@ -5,7 +5,7 @@
  * Card específica para mostrar incidencias con estado,
  * prioridad, imagen y acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array $item  Datos de la incidencia (o usar $card_item si viene de items-grid)

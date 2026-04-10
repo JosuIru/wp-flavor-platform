@@ -2,7 +2,7 @@
 /**
  * Template: Testimonios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

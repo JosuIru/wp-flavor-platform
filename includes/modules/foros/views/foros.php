@@ -4,7 +4,7 @@
  *
  * Listado y administracion de categorias de foros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

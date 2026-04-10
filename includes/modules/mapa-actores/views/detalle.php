@@ -2,7 +2,7 @@
 /**
  * Vista completa de detalle de actor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

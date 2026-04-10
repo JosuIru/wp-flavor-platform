@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Huella Ecológica
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,14 +17,14 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
     /**
      * Referencia al módulo
      *
-     * @var Flavor_Chat_Huella_Ecologica_Module
+     * @var Flavor_Platform_Module_Interface
      */
     protected $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Huella_Ecologica_Module $module
+     * @param Flavor_Platform_Module_Interface $module
      */
     public function __construct($module) {
         $this->module = $module;

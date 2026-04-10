@@ -2,7 +2,7 @@
 /**
  * Template: Hero Foros de Discusion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

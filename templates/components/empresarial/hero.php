@@ -2,7 +2,7 @@
 /**
  * Template: Hero Corporativo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

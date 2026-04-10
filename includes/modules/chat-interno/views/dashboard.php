@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para gestión de mensajería interna.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

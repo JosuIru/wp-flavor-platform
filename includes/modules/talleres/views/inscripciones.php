@@ -5,7 +5,7 @@
  * Gestión completa de inscripciones a talleres con estadísticas,
  * filtros avanzados, paginación y acciones masivas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Talleres
  */
 

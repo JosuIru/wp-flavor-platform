@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Red Global de Anuncios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Advertising
  */
 

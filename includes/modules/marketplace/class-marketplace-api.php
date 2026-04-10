@@ -4,7 +4,7 @@
  *
  * Endpoints optimizados para aplicaciones móviles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ class Flavor_Marketplace_API {
     /**
      * Namespace de la API
      */
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     /**
      * Instancia singleton
@@ -48,7 +48,7 @@ class Flavor_Marketplace_API {
      */
     public function register_routes() {
         // GET /marketplace/anuncios - Lista anuncios
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_anuncios'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -84,7 +84,7 @@ class Flavor_Marketplace_API {
         ]);
 
         // POST /marketplace/anuncios - Crear anuncio
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_anuncio'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -135,7 +135,7 @@ class Flavor_Marketplace_API {
         ]);
 
         // GET /marketplace/mis-anuncios - Anuncios del usuario
-        register_rest_route(self::NAMESPACE, '/marketplace/mis-anuncios', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/mis-anuncios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_anuncios'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -148,49 +148,49 @@ class Flavor_Marketplace_API {
         ]);
 
         // GET /marketplace/anuncios/{id} - Detalle de anuncio
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_anuncio'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // PUT /marketplace/anuncios/{id} - Actualizar anuncio
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_anuncio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /marketplace/anuncios/{id} - Eliminar anuncio
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'eliminar_anuncio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /marketplace/anuncio - Crear anuncio (singular, alias para apps)
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncio', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncio', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_anuncio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // PUT /marketplace/anuncio/{id} - Actualizar anuncio (singular, para apps)
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncio/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncio/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_anuncio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /marketplace/categorias - Lista de categorías
-        register_rest_route(self::NAMESPACE, '/marketplace/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // POST /marketplace/anuncios/{id}/contactar - Contactar con vendedor
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)/contactar', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)/contactar', [
             'methods' => 'POST',
             'callback' => [$this, 'contactar_vendedor'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -204,7 +204,7 @@ class Flavor_Marketplace_API {
         ]);
 
         // POST /marketplace/anuncios/{id}/marcar-vendido - Marcar como vendido
-        register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)/marcar-vendido', [
+        flavor_register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)/marcar-vendido', [
             'methods' => 'POST',
             'callback' => [$this, 'marcar_vendido'],
             'permission_callback' => [$this, 'check_authentication'],

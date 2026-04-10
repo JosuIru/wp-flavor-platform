@@ -4,7 +4,7 @@
  *
  * Renderiza formularios, listados y dashboards para módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

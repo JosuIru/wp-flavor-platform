@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Talleres
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo, 'full') : '';

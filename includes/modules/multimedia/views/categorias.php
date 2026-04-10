@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Categorías Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

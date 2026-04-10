@@ -174,7 +174,7 @@ final class Flavor_Cron_Manager {
      * @return void
      */
     private function schedule_socios_cron() {
-        $ruta_subscriptions = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
+        $ruta_subscriptions = FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
         if (file_exists($ruta_subscriptions)) {
             require_once $ruta_subscriptions;
             if (class_exists('Flavor_Socios_Subscriptions')) {
@@ -229,7 +229,7 @@ final class Flavor_Cron_Manager {
      * @return void
      */
     private function unschedule_socios_cron() {
-        $ruta_subscriptions = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
+        $ruta_subscriptions = FLAVOR_PLATFORM_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
         if (file_exists($ruta_subscriptions)) {
             require_once $ruta_subscriptions;
             if (class_exists('Flavor_Socios_Subscriptions')) {
@@ -279,7 +279,7 @@ final class Flavor_Cron_Manager {
      * @return void
      */
     public function cron_rotar_signed_prekeys() {
-        $key_manager_path = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-key-manager.php';
+        $key_manager_path = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-key-manager.php';
         if (!file_exists($key_manager_path)) {
             return;
         }
@@ -294,7 +294,7 @@ final class Flavor_Cron_Manager {
         $rotadas = $key_manager->rotar_signed_prekeys_expiradas();
 
         if ($rotadas > 0) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Cron E2E: Rotadas %d signed prekeys expiradas', $rotadas),
                 'info',
                 'e2e'
@@ -310,7 +310,7 @@ final class Flavor_Cron_Manager {
      * @return void
      */
     public function cron_limpiar_prekeys_usadas() {
-        $key_manager_path = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-key-manager.php';
+        $key_manager_path = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-key-manager.php';
         if (!file_exists($key_manager_path)) {
             return;
         }
@@ -325,7 +325,7 @@ final class Flavor_Cron_Manager {
         $eliminadas = $key_manager->limpiar_prekeys_antiguas();
 
         if ($eliminadas > 0) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Cron E2E: Eliminadas %d one-time prekeys usadas', $eliminadas),
                 'info',
                 'e2e'
@@ -341,7 +341,7 @@ final class Flavor_Cron_Manager {
      * @return void
      */
     public function cron_limpiar_dispositivos_inactivos() {
-        $device_manager_path = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-device-manager.php';
+        $device_manager_path = FLAVOR_PLATFORM_PATH . 'includes/crypto/class-device-manager.php';
         if (!file_exists($device_manager_path)) {
             return;
         }
@@ -356,7 +356,7 @@ final class Flavor_Cron_Manager {
         $revocados = $device_manager->limpiar_dispositivos_inactivos();
 
         if ($revocados > 0) {
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf('Cron E2E: Revocados %d dispositivos inactivos (+90 días)', $revocados),
                 'info',
                 'e2e'

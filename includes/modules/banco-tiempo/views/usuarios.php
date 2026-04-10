@@ -4,7 +4,7 @@
  *
  * Dashboard de usuarios con créditos, servicios y rankings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

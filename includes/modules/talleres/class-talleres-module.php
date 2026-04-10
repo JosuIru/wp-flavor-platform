@@ -2,7 +2,7 @@
 /**
  * Módulo de Talleres para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Talleres - Talleres prácticos comunitarios
  */
-class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -45,7 +45,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_talleres);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_talleres);
     }
 
     /**
@@ -314,7 +314,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             $this->create_tables();
         }
     }
@@ -625,7 +625,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             return null;
         }
 
@@ -2979,7 +2979,7 @@ KNOWLEDGE;
 
         global $wpdb;
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -3000,7 +3000,7 @@ KNOWLEDGE;
 
         global $wpdb;
         $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -3020,7 +3020,7 @@ KNOWLEDGE;
         $estadisticas = [];
 
         // Talleres activos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             $talleres_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_talleres WHERE estado = 'activo'"
             );
@@ -3034,7 +3034,7 @@ KNOWLEDGE;
         }
 
         // Inscripciones pendientes
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones)) {
             $inscripciones_pendientes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'pendiente'"
             );
@@ -3686,4 +3686,8 @@ KNOWLEDGE;
             Flavor_Talleres_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Talleres_Module', false)) {
+    class_alias('Flavor_Platform_Talleres_Module', 'Flavor_Chat_Talleres_Module');
 }

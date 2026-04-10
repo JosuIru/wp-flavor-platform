@@ -11,7 +11,7 @@
  * 6. Registra el módulo en class-module-loader.php
  * 7. Añádelo a un perfil en class-app-profiles.php
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
  * Módulo: Mi Módulo
  * Descripción: [Describe aquí qué hace tu módulo]
  */
-class Flavor_Chat_MiModulo_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
 
     /**
      * Constructor
@@ -494,6 +494,12 @@ KNOWLEDGE;
             'mensaje' => __('Operación realizada.', 'flavor-platform'),
         ]);
     }
+}
+
+// Legacy alias for backward compatibility
+// NOTA: Cambia "MiModulo" por el nombre real de tu módulo
+if (!class_exists('Flavor_Chat_MiModulo_Module', false)) {
+    class_alias('Flavor_Platform_MiModulo_Module', 'Flavor_Chat_MiModulo_Module');
 }
 
 /**

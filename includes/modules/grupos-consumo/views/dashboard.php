@@ -4,7 +4,7 @@
  *
  * Panel principal con estadísticas de pedidos y productos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

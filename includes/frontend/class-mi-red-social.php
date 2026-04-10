@@ -6,7 +6,7 @@
  * Combina contenido de: Red Social, Podcast, Multimedia, Radio, Comunidades, Foros,
  * Colectivos, Círculos de Cuidados, Ayuda Vecinal, Chat Grupos y Chat Interno.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -390,7 +390,7 @@ class Flavor_Mi_Red_Social {
      * Encola assets CSS y JS
      */
     public function enqueue_assets() {
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : self::VERSION;
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : self::VERSION;
         $base_url = plugin_dir_url(dirname(dirname(__FILE__)));
 
         // Precarga de CSS crítico
@@ -461,14 +461,14 @@ class Flavor_Mi_Red_Social {
                 'id' => $usuario_id,
                 'nombre' => $usuario->display_name,
                 'avatar' => get_avatar_url($usuario_id, ['size' => 96]),
-                'perfil_url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil'),
+                'perfil_url' => Flavor_Platform_Helpers::get_action_url('mi_red', 'perfil'),
             ],
             'vista_actual' => $this->current_view,
             'vistas' => $this->views,
             'content_types' => $this->content_types,
             'notificaciones_no_leidas' => $this->get_unread_notifications_count($usuario_id),
             'mensajes_no_leidos' => $this->get_unread_messages_count($usuario_id),
-            'base_url' => Flavor_Chat_Helpers::get_action_url('mi_red', ''),
+            'base_url' => Flavor_Platform_Helpers::get_action_url('mi_red', ''),
         ];
     }
 
@@ -491,7 +491,7 @@ class Flavor_Mi_Red_Social {
         $datos_vista = $this->get_view_data($vista_actual);
 
         // Ruta del template
-        $template_dir = FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/';
+        $template_dir = FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/';
         $template_file = $this->views[$vista_actual]['template'] ?? 'feed.php';
         $template_path = $template_dir . $template_file;
 
@@ -501,7 +501,7 @@ class Flavor_Mi_Red_Social {
         }
 
         // Incluir el layout base con el contenido
-        include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/layout.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/layout.php';
     }
 
     /**
@@ -585,7 +585,7 @@ class Flavor_Mi_Red_Social {
         $cache_key = "mi_red_feed_{$usuario_id}_{$tipo_filtro}_{$offset}_{$limite}";
         $cached = get_transient($cache_key);
 
-        if ($cached !== false && !defined('FLAVOR_CHAT_IA_DEBUG')) {
+        if ($cached !== false && !defined('FLAVOR_PLATFORM_DEBUG')) {
             return $cached;
         }
 
@@ -1491,7 +1491,7 @@ class Flavor_Mi_Red_Social {
                     'inscritos' => (int) ($evento->inscritos_count ?? 0),
                 ],
                 'fecha' => $evento->fecha_inicio,
-                'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'ver') . '/' . $evento->id . '/',
+                'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'ver') . '/' . $evento->id . '/',
             ]);
         }
 
@@ -1535,7 +1535,7 @@ class Flavor_Mi_Red_Social {
                         'estado' => $inscripcion->estado ?? 'confirmado',
                     ],
                     'fecha' => $inscripcion->fecha_inicio,
-                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'ver') . '/' . $inscripcion->evento_id . '/',
+                    'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'ver') . '/' . $inscripcion->evento_id . '/',
                 ]);
             }
         }
@@ -1615,7 +1615,7 @@ class Flavor_Mi_Red_Social {
                     'pedidos' => $total_pedidos,
                 ],
                 'fecha' => $membresia->fecha_alta ?? $grupo->post_date,
-                'url' => add_query_arg('grupo_id', $grupo_id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')),
+                'url' => add_query_arg('grupo_id', $grupo_id, Flavor_Platform_Helpers::get_action_url('grupos_consumo', '')),
             ]);
         }
 
@@ -1769,7 +1769,7 @@ class Flavor_Mi_Red_Social {
 
         foreach ($sugerencias as &$sug) {
             $sug['avatar'] = get_avatar_url($sug['ID'], ['size' => 48]);
-            $sug['url'] = Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil') . '?id=' . $sug['ID'];
+            $sug['url'] = Flavor_Platform_Helpers::get_action_url('mi_red', 'perfil') . '?id=' . $sug['ID'];
         }
 
         return $sugerencias;
@@ -1835,8 +1835,8 @@ class Flavor_Mi_Red_Social {
      */
     public function obtener_conversaciones($usuario_id) {
         // Delegar al módulo de chat interno si existe
-        if (class_exists('Flavor_Chat_Interno_Module')) {
-            $chat = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('chat_interno');
+        if (class_exists(flavor_get_runtime_class_name('Flavor_Chat_Interno_Module'))) {
+            $chat = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('chat_interno');
             if ($chat && method_exists($chat, 'get_conversaciones_usuario')) {
                 return $chat->get_conversaciones_usuario($usuario_id);
             }
@@ -1852,8 +1852,8 @@ class Flavor_Mi_Red_Social {
      */
     public function obtener_grupos_chat($usuario_id) {
         // Delegar al módulo de chat grupos si existe
-        if (class_exists('Flavor_Chat_Grupos_Module')) {
-            $chat = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('chat_grupos');
+        if (class_exists(flavor_get_runtime_class_name('Flavor_Chat_Grupos_Module'))) {
+            $chat = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('chat_grupos');
             if ($chat && method_exists($chat, 'get_grupos_usuario')) {
                 return $chat->get_grupos_usuario($usuario_id);
             }
@@ -2174,7 +2174,7 @@ class Flavor_Mi_Red_Social {
 
         foreach ($resultados['usuarios'] as &$usuario) {
             $usuario['avatar'] = get_avatar_url($usuario['ID'], ['size' => 48]);
-            $usuario['url'] = Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil') . '/' . $usuario['ID'] . '/';
+            $usuario['url'] = Flavor_Platform_Helpers::get_action_url('mi_red', 'perfil') . '/' . $usuario['ID'] . '/';
         }
 
         // 2. Buscar publicaciones
@@ -2408,7 +2408,7 @@ class Flavor_Mi_Red_Social {
      * Renderiza pantalla de login requerido
      */
     private function render_login_required() {
-        include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/login-required.php';
+        include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/login-required.php';
     }
 
     // =========================================================================
@@ -2431,7 +2431,7 @@ class Flavor_Mi_Red_Social {
         // Renderizar HTML de los items
         ob_start();
         foreach ($items as $item) {
-            include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
+            include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
         }
         $html = ob_get_clean();
 
@@ -2458,8 +2458,8 @@ class Flavor_Mi_Red_Social {
         }
 
         // Delegar al módulo de Red Social
-        if (class_exists('Flavor_Chat_Red_Social_Module')) {
-            $red_social = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('red_social');
+        if (class_exists(flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'))) {
+            $red_social = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('red_social');
             if ($red_social && method_exists($red_social, 'crear_publicacion')) {
                 $resultado = $red_social->crear_publicacion([
                     'autor_id' => $usuario_id,
@@ -2499,8 +2499,8 @@ class Flavor_Mi_Red_Social {
 
         // Delegar según tipo
         $resultado = false;
-        if ($tipo_item === 'publicacion' && class_exists('Flavor_Chat_Red_Social_Module')) {
-            $red_social = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('red_social');
+        if ($tipo_item === 'publicacion' && class_exists(flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'))) {
+            $red_social = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('red_social');
             if ($red_social && method_exists($red_social, 'toggle_like')) {
                 $resultado = $red_social->toggle_like($item_id, $usuario_id);
             }
@@ -2532,8 +2532,8 @@ class Flavor_Mi_Red_Social {
         }
 
         // Delegar según tipo
-        if ($tipo_item === 'publicacion' && class_exists('Flavor_Chat_Red_Social_Module')) {
-            $red_social = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('red_social');
+        if ($tipo_item === 'publicacion' && class_exists(flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'))) {
+            $red_social = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('red_social');
             if ($red_social && method_exists($red_social, 'crear_comentario')) {
                 $comentario_id = $red_social->crear_comentario([
                     'publicacion_id' => $item_id,
@@ -2757,8 +2757,8 @@ class Flavor_Mi_Red_Social {
         }
 
         // Delegar al módulo de Red Social
-        if (class_exists('Flavor_Chat_Red_Social_Module')) {
-            $red_social = Flavor_Chat_Module_Loader::get_instance()->get_module_instance('red_social');
+        if (class_exists(flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'))) {
+            $red_social = Flavor_Platform_Module_Loader::get_instance()->get_module_instance('red_social');
             if ($red_social && method_exists($red_social, 'crear_publicacion')) {
                 $resultado = $red_social->crear_publicacion([
                     'autor_id' => $usuario_id,

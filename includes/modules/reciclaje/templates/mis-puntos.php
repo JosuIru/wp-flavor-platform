@@ -22,7 +22,7 @@ $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
 
 // Verificar tablas
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
     // Si no hay tabla específica, usar sistema de puntos genérico
     $tabla_puntos = $wpdb->prefix . 'flavor_puntos_usuario';
 }
@@ -46,7 +46,7 @@ $stats = [
     'depositos' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
     $stats_row = $wpdb->get_row($wpdb->prepare(
         "SELECT COUNT(*) as depositos, COALESCE(SUM(cantidad_kg), 0) as kg_total
          FROM $tabla_depositos WHERE usuario_id = %d AND estado = 'validado'",

@@ -5,7 +5,7 @@
  * Menús y footers adicionales, componentes extra como
  * announcement bar, breadcrumbs, dark mode, etc.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -236,16 +236,16 @@ class Flavor_Layout_Extras {
 
         wp_enqueue_style(
             'flavor-layout-extras',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts/layout-extras{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/layouts/layout-extras{$sufijo_asset}.css",
             ['flavor-layouts'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-layout-extras',
-            FLAVOR_CHAT_IA_URL . "assets/js/layout-extras{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/layout-extras{$sufijo_asset}.js",
             ['jquery', 'flavor-layouts'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

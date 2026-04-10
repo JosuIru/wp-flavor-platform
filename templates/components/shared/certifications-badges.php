@@ -4,7 +4,7 @@
  *
  * Badges de certificaciones, logros o reconocimientos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $badges      Array de badges: [['id' => x, 'name' => '', 'icon' => '', 'color' => '', 'description' => '', 'date' => '', 'verified' => false]]

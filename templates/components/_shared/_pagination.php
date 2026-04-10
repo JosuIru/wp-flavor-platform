@@ -2,7 +2,7 @@
 /**
  * Componente Compartido: Paginación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int $pagina_actual
  * @var int $total_paginas
  * @var string $base_url

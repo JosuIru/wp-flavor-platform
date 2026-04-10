@@ -2,7 +2,7 @@
 /**
  * Instalador de tablas de la base de datos
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {

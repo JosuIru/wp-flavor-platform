@@ -2,7 +2,7 @@
 /**
  * Vista: Crear colectivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var int   $identificador_usuario  ID del usuario actual
  * @var array $tipos_disponibles      Tipos de colectivos
  * @var array $sectores_disponibles   Sectores disponibles

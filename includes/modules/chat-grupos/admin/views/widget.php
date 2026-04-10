@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $estadisticas: array con totales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

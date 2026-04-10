@@ -4,7 +4,7 @@
  *
  * Panel del usuario para gestionar sus propuestas ciudadanas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -34,7 +34,7 @@ $estadisticas_usuario = [
     'comentarios_recibidos' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
     $estadisticas_usuario['total_propuestas'] = (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proponente_id = %d",
         $usuario_actual_id
@@ -64,7 +64,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
     ));
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
     $estadisticas_usuario['comentarios_recibidos'] = (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(c.id)
          FROM {$tabla_comentarios} c
@@ -132,7 +132,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             <p class="flavor-subtitle"><?php esc_html_e('Gestiona las propuestas que has presentado a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div class="flavor-header-actions">
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
@@ -213,7 +213,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <h3><?php esc_html_e('No tienes propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php esc_html_e('Comparte tus ideas para mejorar la comunidad creando tu primera propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                 <?php esc_html_e('Crear mi primera propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
@@ -241,7 +241,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                         </div>
 
                         <h3 class="flavor-propuesta-titulo">
-                            <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Chat_Helpers::get_action_url('participacion', 'detalle'))); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Platform_Helpers::get_action_url('participacion', 'detalle'))); ?>">
                                 <?php echo esc_html($propuesta->titulo); ?>
                             </a>
                         </h3>
@@ -289,7 +289,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                     </div>
 
                     <div class="flavor-propuesta-actions">
-                        <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Chat_Helpers::get_action_url('participacion', 'detalle'))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Platform_Helpers::get_action_url('participacion', 'detalle'))); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline"
                            title="<?php esc_attr_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-visibility"></span>

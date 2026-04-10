@@ -4,7 +4,7 @@
  *
  * Informes y estadísticas detalladas del portal de transparencia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

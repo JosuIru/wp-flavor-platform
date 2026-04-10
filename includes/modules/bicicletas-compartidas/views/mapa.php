@@ -11,7 +11,7 @@ $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
 // Obtener estaciones activas
 $estaciones_db = [];
-if (class_exists('Flavor_Chat_Helpers') && Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+if (class_exists('Flavor_Platform_Helpers') && Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
     $estaciones_db = $wpdb->get_results(
         "SELECT * FROM $tabla_estaciones WHERE estado = 'activa' ORDER BY nombre ASC",
         ARRAY_A
@@ -58,7 +58,7 @@ $etiquetas = [
 ];
 
 // Incluir el template unificado
-$template_path = FLAVOR_CHAT_IA_PATH . 'templates/components/unified/mapa-leaflet.php';
+$template_path = FLAVOR_PLATFORM_PATH . 'templates/components/unified/mapa-leaflet.php';
 if (file_exists($template_path)) {
     include $template_path;
 } else {

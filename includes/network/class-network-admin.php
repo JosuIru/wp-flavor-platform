@@ -5,7 +5,7 @@
  * Interfaz de administración para gestionar el nodo local,
  * conexiones, contenido compartido, colaboraciones y configuración.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {
@@ -64,7 +64,7 @@ class Flavor_Network_Admin {
 
         wp_enqueue_style(
             'flavor-network-admin',
-            FLAVOR_CHAT_IA_URL . "assets/css/admin/network-admin{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/admin/network-admin{$sufijo_asset}.css",
             [],
             Flavor_Network_Manager::VERSION
         );
@@ -75,7 +75,7 @@ class Flavor_Network_Admin {
 
         wp_enqueue_script(
             'flavor-network-admin',
-            FLAVOR_CHAT_IA_URL . "assets/js/network-admin{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/network-admin{$sufijo_asset}.js",
             ['jquery', 'wp-color-picker', 'leaflet'],
             Flavor_Network_Manager::VERSION,
             true

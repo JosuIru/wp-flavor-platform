@@ -4,7 +4,7 @@
  *
  * Pills/chips de categorías con iconos y contadores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $categories  Array de categorías: [['id' => '', 'name' => '', 'icon' => '', 'count' => 0, 'color' => '', 'active' => false]]

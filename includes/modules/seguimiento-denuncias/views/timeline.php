@@ -2,7 +2,7 @@
 /**
  * Vista timeline dedicada.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

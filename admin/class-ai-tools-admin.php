@@ -13,7 +13,7 @@
  * - Content Translator (inline)
  * - Demo Data Generator (solo WP_DEBUG)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 
@@ -125,9 +125,9 @@ class Flavor_AI_Tools_Admin {
         if ($is_flavor_page) {
             wp_enqueue_style(
                 'flavor-ai-tools',
-                FLAVOR_CHAT_IA_URL . 'admin/css/ai-tools.css',
+                FLAVOR_PLATFORM_URL . 'admin/css/ai-tools.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
@@ -135,36 +135,36 @@ class Flavor_AI_Tools_Admin {
         if ($is_flavor_page) {
             wp_enqueue_script(
                 'flavor-ai-tools',
-                FLAVOR_CHAT_IA_URL . 'admin/js/ai-tools.js',
+                FLAVOR_PLATFORM_URL . 'admin/js/ai-tools.js',
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             // Chatbot flotante
             wp_enqueue_script(
                 'flavor-module-chatbot',
-                FLAVOR_CHAT_IA_URL . 'admin/js/module-chatbot.js',
+                FLAVOR_PLATFORM_URL . 'admin/js/module-chatbot.js',
                 ['jquery', 'flavor-ai-tools'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             // Generador de contenido inline
             wp_enqueue_script(
                 'flavor-ai-content-generator',
-                FLAVOR_CHAT_IA_URL . 'admin/js/ai-content-generator.js',
+                FLAVOR_PLATFORM_URL . 'admin/js/ai-content-generator.js',
                 ['jquery', 'flavor-ai-tools'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             // Traductor inline
             wp_enqueue_script(
                 'flavor-ai-translator',
-                FLAVOR_CHAT_IA_URL . 'admin/js/ai-translator.js',
+                FLAVOR_PLATFORM_URL . 'admin/js/ai-translator.js',
                 ['jquery', 'flavor-ai-tools'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -176,9 +176,9 @@ class Flavor_AI_Tools_Admin {
         if ($this->is_incidencias_detail_page()) {
             wp_enqueue_script(
                 'flavor-ai-reply-suggester',
-                FLAVOR_CHAT_IA_URL . 'admin/js/ai-reply-suggester.js',
+                FLAVOR_PLATFORM_URL . 'admin/js/ai-reply-suggester.js',
                 ['jquery', 'flavor-ai-tools'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
         }
@@ -370,7 +370,7 @@ class Flavor_AI_Tools_Admin {
         $module_context = $this->get_module_context();
         $is_configured = $this->is_ai_configured();
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/chatbot-widget.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/chatbot-widget.php';
     }
 
     /**
@@ -381,7 +381,7 @@ class Flavor_AI_Tools_Admin {
             return;
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/content-generator-modal.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/content-generator-modal.php';
     }
 
     /**
@@ -392,7 +392,7 @@ class Flavor_AI_Tools_Admin {
             wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/ai-tools-hub.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/ai-tools-hub.php';
     }
 
     /**
@@ -403,7 +403,7 @@ class Flavor_AI_Tools_Admin {
             wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/weekly-reports.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/weekly-reports.php';
     }
 
     /**
@@ -414,7 +414,7 @@ class Flavor_AI_Tools_Admin {
             wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/data-analyzer.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/data-analyzer.php';
     }
 
     /**
@@ -425,7 +425,7 @@ class Flavor_AI_Tools_Admin {
             wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/demo-generator.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/ai-tools/demo-generator.php';
     }
 
     /**

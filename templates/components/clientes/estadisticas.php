@@ -2,7 +2,7 @@
 /**
  * Template: Estadisticas CRM / Dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -31,7 +31,7 @@ if (class_exists('wpdb')) {
     $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
     $tabla_notas = $wpdb->prefix . 'flavor_clientes_notas';
 
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
         $datos_reales_disponibles = true;
 
         $total_clientes_crm = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_clientes");
@@ -65,7 +65,7 @@ if (class_exists('wpdb')) {
         }
 
         // Interacciones este mes
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_notas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_notas)) {
             $interacciones_recientes_crm = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_notas WHERE created_at >= DATE_FORMAT(NOW(), '%Y-%m-01')"
             );

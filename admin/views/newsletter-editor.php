@@ -2,7 +2,7 @@
 /**
  * Vista del editor de campanas de Newsletter
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Newsletter
  * @since 3.1.0
  *

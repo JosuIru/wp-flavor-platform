@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Transparencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Transparencia
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -77,14 +77,14 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $total_documentos,
                 'label' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Platform_Helpers::get_action_url('transparencia', ''),
             ],
             [
                 'icon' => 'dashicons-category',
                 'valor' => $total_categorias,
                 'label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia&tab=categorias') : Flavor_Chat_Helpers::get_action_url('transparencia', 'categorias'),
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia&tab=categorias') : Flavor_Platform_Helpers::get_action_url('transparencia', 'categorias'),
             ],
         ];
 
@@ -97,7 +97,7 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             'footer' => [
                 [
                     'label' => __('Portal transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Platform_Helpers::get_action_url('transparencia', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -128,7 +128,7 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'icon' => 'dashicons-media-document',
                 'title' => wp_trim_words($documento->titulo, 4, '...'),
                 'meta' => $documento->categoria ?: date_i18n('j M Y', strtotime($documento->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia&documento=' . $documento->id) : Flavor_Chat_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia&documento=' . $documento->id) : Flavor_Platform_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/',
             ];
         }
 

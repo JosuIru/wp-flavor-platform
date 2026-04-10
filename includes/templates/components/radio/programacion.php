@@ -4,7 +4,7 @@
  *
  * Weekly programming schedule for community radio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Radio
  */
 

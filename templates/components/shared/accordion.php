@@ -4,7 +4,7 @@
  *
  * Acordeón/colapsable genérico para FAQs, menús, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items       Items: [['title' => 'Pregunta', 'content' => 'Respuesta', 'icon' => '❓', 'open' => false]]

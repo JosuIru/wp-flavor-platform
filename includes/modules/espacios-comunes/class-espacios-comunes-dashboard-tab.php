@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EspaciosComunes
  */
 
@@ -50,7 +50,7 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
         $total_espacios = 0;
         $espacios = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $total_espacios = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'activo'"
             );
@@ -143,7 +143,7 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
         $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
 
         $reservas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas) && Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas) && Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
             $reservas = $wpdb->get_results($wpdb->prepare(
                 "SELECT r.*, e.nombre as espacio_nombre, e.slug as espacio_slug
                  FROM {$tabla_reservas} r

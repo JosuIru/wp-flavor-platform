@@ -5,7 +5,7 @@
  * Botones de filtro tipo pill reutilizables con soporte para
  * filtrado por atributos data-*.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $filters       Array de filtros, cada uno con: id, label, icon (opcional), active (bool)

@@ -4,7 +4,7 @@
  *
  * Genera resúmenes ejecutivos semanales con métricas, tendencias y recomendaciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

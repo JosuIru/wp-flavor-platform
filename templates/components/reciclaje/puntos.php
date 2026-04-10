@@ -3,7 +3,7 @@
  * Template: Puntos de Reciclaje
  * Mapa/grid de puntos de reciclaje con filtros por tipo de residuo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

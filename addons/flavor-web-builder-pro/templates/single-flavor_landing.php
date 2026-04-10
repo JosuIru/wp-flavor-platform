@@ -2,7 +2,7 @@
 /**
  * Template para flavor_landing - Full width sin meta del tema
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 get_header();

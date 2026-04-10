@@ -2,7 +2,7 @@
 /**
  * Template: Single Grupo de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

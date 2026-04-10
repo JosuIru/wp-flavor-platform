@@ -2,7 +2,7 @@
 /**
  * Vista: Gestión de Empresas/Contactos (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

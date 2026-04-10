@@ -5,7 +5,7 @@
  * Sistema similar a Firebase Dynamic Links para configurar apps
  * con diferentes empresas/organizaciones usando enlaces.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -439,21 +439,21 @@ class Flavor_Deep_Link_Manager {
         wp_enqueue_script('wp-color-picker');
         wp_enqueue_media();
 
-        $style_path = FLAVOR_CHAT_IA_PATH . 'includes/app-integration/assets/deep-links-admin.css';
-        $script_path = FLAVOR_CHAT_IA_PATH . 'includes/app-integration/assets/deep-links-admin.js';
-        $style_version = file_exists($style_path) ? (string) filemtime($style_path) : FLAVOR_CHAT_IA_VERSION;
-        $script_version = file_exists($script_path) ? (string) filemtime($script_path) : FLAVOR_CHAT_IA_VERSION;
+        $style_path = FLAVOR_PLATFORM_PATH . 'includes/app-integration/assets/deep-links-admin.css';
+        $script_path = FLAVOR_PLATFORM_PATH . 'includes/app-integration/assets/deep-links-admin.js';
+        $style_version = file_exists($style_path) ? (string) filemtime($style_path) : FLAVOR_PLATFORM_VERSION;
+        $script_version = file_exists($script_path) ? (string) filemtime($script_path) : FLAVOR_PLATFORM_VERSION;
 
         wp_enqueue_style(
             'flavor-deep-links-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/app-integration/assets/deep-links-admin.css',
+            FLAVOR_PLATFORM_URL . 'includes/app-integration/assets/deep-links-admin.css',
             [],
             $style_version
         );
 
         wp_enqueue_script(
             'flavor-deep-links-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/app-integration/assets/deep-links-admin.js',
+            FLAVOR_PLATFORM_URL . 'includes/app-integration/assets/deep-links-admin.js',
             ['jquery', 'wp-color-picker'],
             $script_version,
             true

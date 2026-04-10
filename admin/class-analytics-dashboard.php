@@ -4,7 +4,7 @@
  *
  * Panel unificado con KPIs, gráficos y métricas de la plataforma
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -86,17 +86,17 @@ class Flavor_Analytics_Dashboard {
         // Estilos del dashboard
         wp_enqueue_style(
             'flavor-analytics-dashboard',
-            FLAVOR_CHAT_IA_URL . 'admin/css/analytics-dashboard.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/analytics-dashboard.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Script del dashboard
         wp_enqueue_script(
             'flavor-analytics-dashboard',
-            FLAVOR_CHAT_IA_URL . 'admin/js/analytics-dashboard.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/analytics-dashboard.js',
             ['jquery', 'chartjs'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

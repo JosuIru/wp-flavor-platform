@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Parcelas Disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/HuertosUrbanos
  */
 

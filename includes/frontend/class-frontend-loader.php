@@ -2,7 +2,7 @@
 /**
  * Cargador de controladores frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -78,7 +78,7 @@ class Flavor_Frontend_Loader {
      * Carga las dependencias (clase base y controladores)
      */
     private function load_dependencies() {
-        $base_path = FLAVOR_CHAT_IA_PATH . 'includes/frontend/';
+        $base_path = FLAVOR_PLATFORM_PATH . 'includes/frontend/';
         $controllers_path = $base_path . 'controllers/';
 
         // Cargar clase base
@@ -126,7 +126,7 @@ class Flavor_Frontend_Loader {
         }
 
         // Obtener módulos activos desde la configuración
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $modulos_activos = $settings['active_modules'] ?? [];
 
         // Si no hay módulos configurados, cargar todos para desarrollo

@@ -4,7 +4,7 @@
  *
  * Sistema completo de foros comunitarios con categorias, hilos y respuestas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @version 1.0.1
  */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Foros - Sistema de foros comunitarios
  */
-class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Foros_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -47,7 +47,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_foros = $wpdb->prefix . 'flavor_foros';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_foros);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_foros);
     }
 
     /**
@@ -406,7 +406,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_hilos)) {
             return 0;
         }
 
@@ -725,7 +725,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla_foros = $wpdb->prefix . 'flavor_foros';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
             return 0;
         }
 
@@ -841,7 +841,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla_foros = $wpdb->prefix . 'flavor_foros';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
             return 0;
         }
 
@@ -905,7 +905,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         switch ($entidad_tipo) {
             case 'comunidad':
                 $tabla = $wpdb->prefix . 'flavor_comunidades';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -919,7 +919,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'evento':
                 $tabla = $wpdb->prefix . 'flavor_eventos';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -933,7 +933,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'incidencia':
                 $tabla = $wpdb->prefix . 'flavor_incidencias';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -947,7 +947,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'documento_legal':
                 $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -961,7 +961,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'pp_proyecto':
                 $tabla = $wpdb->prefix . 'flavor_pp_proyectos';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -983,7 +983,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'documento_transparencia':
                 $tabla = $wpdb->prefix . 'flavor_transparencia_documentos_publicos';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -997,7 +997,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'aviso_municipal':
                 $tabla = $wpdb->prefix . 'flavor_avisos_municipales';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, contenido AS descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1011,7 +1011,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'economia_don':
                 $tabla = $wpdb->prefix . 'flavor_economia_dones';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1025,7 +1025,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'energia_comunidad':
                 $tabla = $wpdb->prefix . 'flavor_energia_comunidades';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1047,7 +1047,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'podcast_serie':
                 $tabla = $wpdb->prefix . 'flavor_podcast_series';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1061,7 +1061,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'libro_biblioteca':
                 $tabla = $wpdb->prefix . 'flavor_biblioteca_libros';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1075,7 +1075,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'taller':
                 $tabla = $wpdb->prefix . 'flavor_talleres';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1089,7 +1089,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'marketplace_anuncio':
                 $tabla = $wpdb->prefix . 'flavor_marketplace_anuncios';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1111,7 +1111,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'radio_programa':
                 $tabla = $wpdb->prefix . 'flavor_radio_programas';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT nombre AS titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1133,7 +1133,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'huerto':
                 $tabla = $wpdb->prefix . 'flavor_huertos';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1147,7 +1147,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             case 'participacion_propuesta':
                 $tabla = $wpdb->prefix . 'flavor_propuestas';
-                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
                         $entidad_id
@@ -1257,7 +1257,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_foros = $wpdb->prefix . 'flavor_foros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
             $this->create_tables();
             $this->crear_categorias_ejemplo();
         }
@@ -3573,7 +3573,7 @@ KNOWLEDGE;
         $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
         $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
             return $estadisticas;
         }
 
@@ -3589,7 +3589,7 @@ KNOWLEDGE;
             'color' => 'purple',
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_hilos)) {
             // Hilos activos
             $hilos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_hilos}
@@ -3608,7 +3608,7 @@ KNOWLEDGE;
         }
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_hilos)) {
             // Mis hilos
             $mis_hilos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_hilos} WHERE autor_id = %d",
@@ -4496,4 +4496,8 @@ KNOWLEDGE;
             include $template_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Foros_Module', false)) {
+    class_alias('Flavor_Platform_Foros_Module', 'Flavor_Chat_Foros_Module');
 }

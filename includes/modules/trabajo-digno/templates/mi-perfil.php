@@ -2,7 +2,7 @@
 /**
  * Template: Mi Perfil Profesional
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -16,8 +16,11 @@ if (!is_user_logged_in()) {
 
 $user_id = get_current_user_id();
 $user = wp_get_current_user();
-$sectores = Flavor_Chat_Trabajo_Digno_Module::SECTORES;
-$jornadas = Flavor_Chat_Trabajo_Digno_Module::JORNADAS;
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$sectores = $trabajo_digno_module_class::SECTORES;
+$jornadas = $trabajo_digno_module_class::JORNADAS;
 
 // Obtener perfil existente
 $perfil = get_posts([

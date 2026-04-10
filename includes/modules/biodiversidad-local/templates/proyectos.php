@@ -2,7 +2,7 @@
 /**
  * Template: Proyectos de Conservación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,30 +12,33 @@ if (!defined('ABSPATH')) {
 // Encolar estilos del módulo
 wp_enqueue_style(
     'flavor-biodiversidad-local',
-    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+    FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
     [],
-    FLAVOR_CHAT_IA_VERSION
+    FLAVOR_PLATFORM_VERSION
 );
 
 // Fallback: asegurar JS del módulo cuando este template se renderiza fuera del shortcode principal.
 if (!wp_script_is('flavor-biodiversidad', 'registered')) {
     wp_register_script(
         'flavor-biodiversidad',
-        FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
+        FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
         ['jquery'],
-        FLAVOR_CHAT_IA_VERSION,
+        FLAVOR_PLATFORM_VERSION,
         true
     );
 }
 if (!wp_script_is('flavor-biodiversidad', 'enqueued')) {
     wp_enqueue_script('flavor-biodiversidad');
 }
+$biodiversidad_local_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Biodiversidad_Local_Module')
+    : 'Flavor_Chat_Biodiversidad_Local_Module';
 wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
     'ajaxurl' => admin_url('admin-ajax.php'),
     'nonce' => wp_create_nonce('biodiversidad_nonce'),
-    'categorias' => Flavor_Chat_Biodiversidad_Local_Module::CATEGORIAS_ESPECIES,
-    'estados' => Flavor_Chat_Biodiversidad_Local_Module::ESTADOS_CONSERVACION,
-    'habitats' => Flavor_Chat_Biodiversidad_Local_Module::TIPOS_HABITAT,
+    'categorias' => $biodiversidad_local_module_class::CATEGORIAS_ESPECIES,
+    'estados' => $biodiversidad_local_module_class::ESTADOS_CONSERVACION,
+    'habitats' => $biodiversidad_local_module_class::TIPOS_HABITAT,
     'i18n' => [
         'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'success' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -43,7 +46,7 @@ wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
     ],
 ]);
 
-$tipos_proyecto = Flavor_Chat_Biodiversidad_Local_Module::TIPOS_PROYECTO;
+$tipos_proyecto = $biodiversidad_local_module_class::TIPOS_PROYECTO;
 $user_id = get_current_user_id();
 
 $proyectos = get_posts([

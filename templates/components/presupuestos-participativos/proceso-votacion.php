@@ -6,7 +6,7 @@
  * presupuestos participativos: Propuestas, Evaluacion,
  * Votacion y Ejecucion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

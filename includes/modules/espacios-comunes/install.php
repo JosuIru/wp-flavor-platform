@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EspaciosComunes
  */
 

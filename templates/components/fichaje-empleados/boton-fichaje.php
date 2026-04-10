@@ -5,7 +5,7 @@
  * Seccion prominente con boton grande para fichar entrada/salida,
  * reloj con hora actual, botones secundarios y estado del empleado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

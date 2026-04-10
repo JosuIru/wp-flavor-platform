@@ -5,7 +5,7 @@
  * Integra App Generator, App Profiles, Page Creator y Template Definitions
  * para crear sitios completos desde Claude Code.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */
@@ -1672,10 +1672,10 @@ class Flavor_Site_Builder_API {
         if ( ! empty( $config['modules'] ) && is_array( $config['modules'] ) ) {
             $available_modules = $this->get_modules_list();
             foreach ( $config['modules'] as $module_id ) {
-                $normalized_id = Flavor_Chat_Helpers::normalize_module_id( $module_id );
+                $normalized_id = Flavor_Platform_Helpers::normalize_module_id( $module_id );
                 $found = false;
                 foreach ( array_keys( $available_modules ) as $available_id ) {
-                    if ( Flavor_Chat_Helpers::module_ids_match( $module_id, $available_id ) ) {
+                    if ( Flavor_Platform_Helpers::module_ids_match( $module_id, $available_id ) ) {
                         $found = true;
                         break;
                     }
@@ -1726,7 +1726,7 @@ class Flavor_Site_Builder_API {
         $active_theme = get_option( 'flavor_active_theme', '' );
 
         $export = array(
-            'version'   => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'version'   => FLAVOR_PLATFORM_VERSION ?? '2.0.0',
             'exported'  => current_time( 'c' ),
             'site_url'  => home_url(),
             'profile'   => $active_profile,
@@ -1923,7 +1923,7 @@ class Flavor_Site_Builder_API {
         return new WP_REST_Response( array(
             'status'    => $overall_status,
             'timestamp' => current_time( 'c' ),
-            'version'   => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'version'   => FLAVOR_PLATFORM_VERSION ?? '2.0.0',
             'php'       => PHP_VERSION,
             'wp'        => get_bloginfo( 'version' ),
             'checks'    => $checks,

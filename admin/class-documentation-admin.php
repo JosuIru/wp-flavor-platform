@@ -82,7 +82,7 @@ class Flavor_Documentation_Admin {
                         <?php _e('Documentación de Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-docs-version">
-                        <?php printf(__('Versión %s', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_CHAT_IA_VERSION); ?>
+                        <?php printf(__('Versión %s', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_PLATFORM_VERSION); ?>
                     </p>
                 </div>
                 <div class="flavor-docs-search">
@@ -1562,7 +1562,7 @@ add_action('flavor_chat_escalated', function($conversation_id, $reason) {
                 <div class="flavor-docs-code-block">
                     <button class="flavor-docs-code-copy">Copiar</button>
                     <pre><code><?php
-                    echo "Flavor Platform: " . FLAVOR_CHAT_IA_VERSION . "\n";
+                    echo "Flavor Platform: " . FLAVOR_PLATFORM_VERSION . "\n";
                     echo "WordPress: " . get_bloginfo('version') . "\n";
                     echo "PHP: " . phpversion() . "\n";
                     echo "Tema: " . wp_get_theme()->get('Name') . " " . wp_get_theme()->get('Version') . "\n";

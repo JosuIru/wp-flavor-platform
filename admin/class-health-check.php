@@ -2,7 +2,7 @@
 /**
  * Health Check / Diagnostic admin page for Flavor Platform
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -39,14 +39,14 @@ class Flavor_Health_Check {
 
 	private function check_modules() {
 		$module_check_results = array();
-		$module_loader      = Flavor_Chat_Module_Loader::get_instance();
+		$module_loader      = Flavor_Platform_Module_Loader::get_instance();
 		$loaded_modules     = $module_loader->get_loaded_modules();
 		$plugin_settings    = flavor_get_main_settings();
 		$active_module_ids  = isset( $plugin_settings['active_modules'] )
 			? $plugin_settings['active_modules']
 			: array( 'woocommerce' );
 		$registered_module_map = $this->build_registered_module_map(
-			FLAVOR_CHAT_IA_PATH . 'includes/modules/'
+			FLAVOR_PLATFORM_PATH . 'includes/modules/'
 		);
 
 		foreach ( $registered_module_map as $module_identifier => $module_definition ) {
@@ -111,44 +111,44 @@ class Flavor_Health_Check {
 
 	private function build_registered_module_map( $modules_base_path ) {
 		return array(
-			'woocommerce'                 => array( 'file' => $modules_base_path . 'woocommerce/class-woocommerce-module.php', 'class' => 'Flavor_Chat_WooCommerce_Module' ),
-			'banco_tiempo'                => array( 'file' => $modules_base_path . 'banco-tiempo/class-banco-tiempo-module.php', 'class' => 'Flavor_Chat_Banco_Tiempo_Module' ),
-			'marketplace'                 => array( 'file' => $modules_base_path . 'marketplace/class-marketplace-module.php', 'class' => 'Flavor_Chat_Marketplace_Module' ),
-			'grupos_consumo'              => array( 'file' => $modules_base_path . 'grupos-consumo/class-grupos-consumo-module.php', 'class' => 'Flavor_Chat_Grupos_Consumo_Module' ),
-			'facturas'                    => array( 'file' => $modules_base_path . 'facturas/class-facturas-module.php', 'class' => 'Flavor_Chat_Facturas_Module' ),
-			'fichaje_empleados'           => array( 'file' => $modules_base_path . 'fichaje-empleados/class-fichaje-empleados-module.php', 'class' => 'Flavor_Chat_Fichaje_Empleados_Module' ),
-			'eventos'                     => array( 'file' => $modules_base_path . 'eventos/class-eventos-module.php', 'class' => 'Flavor_Chat_Eventos_Module' ),
-			'socios'                      => array( 'file' => $modules_base_path . 'socios/class-socios-module.php', 'class' => 'Flavor_Chat_Socios_Module' ),
-			'incidencias'                 => array( 'file' => $modules_base_path . 'incidencias/class-incidencias-module.php', 'class' => 'Flavor_Chat_Incidencias_Module' ),
-			'participacion'               => array( 'file' => $modules_base_path . 'participacion/class-participacion-module.php', 'class' => 'Flavor_Chat_Participacion_Module' ),
-			'presupuestos_participativos' => array( 'file' => $modules_base_path . 'presupuestos-participativos/class-presupuestos-participativos-module.php', 'class' => 'Flavor_Chat_Presupuestos_Participativos_Module' ),
-			'avisos_municipales'          => array( 'file' => $modules_base_path . 'avisos-municipales/class-avisos-municipales-module.php', 'class' => 'Flavor_Chat_Avisos_Municipales_Module' ),
-			'advertising'                 => array( 'file' => $modules_base_path . 'advertising/class-advertising-module.php', 'class' => 'Flavor_Chat_Advertising_Module' ),
-			'ayuda_vecinal'               => array( 'file' => $modules_base_path . 'ayuda-vecinal/class-ayuda-vecinal-module.php', 'class' => 'Flavor_Chat_Ayuda_Vecinal_Module' ),
-			'biblioteca'                  => array( 'file' => $modules_base_path . 'biblioteca/class-biblioteca-module.php', 'class' => 'Flavor_Chat_Biblioteca_Module' ),
-			'bicicletas_compartidas'      => array( 'file' => $modules_base_path . 'bicicletas-compartidas/class-bicicletas-compartidas-module.php', 'class' => 'Flavor_Chat_Bicicletas_Compartidas_Module' ),
-			'carpooling'                  => array( 'file' => $modules_base_path . 'carpooling/class-carpooling-module.php', 'class' => 'Flavor_Chat_Carpooling_Module' ),
-			'chat_grupos'                 => array( 'file' => $modules_base_path . 'chat-grupos/class-chat-grupos-module.php', 'class' => 'Flavor_Chat_Chat_Grupos_Module' ),
-			'chat_interno'                => array( 'file' => $modules_base_path . 'chat-interno/class-chat-interno-module.php', 'class' => 'Flavor_Chat_Chat_Interno_Module' ),
-			'compostaje'                  => array( 'file' => $modules_base_path . 'compostaje/class-compostaje-module.php', 'class' => 'Flavor_Chat_Compostaje_Module' ),
-			'cursos'                      => array( 'file' => $modules_base_path . 'cursos/class-cursos-module.php', 'class' => 'Flavor_Chat_Cursos_Module' ),
-			'empresarial'                 => array( 'file' => $modules_base_path . 'empresarial/class-empresarial-module.php', 'class' => 'Flavor_Chat_Empresarial_Module' ),
-			'espacios_comunes'            => array( 'file' => $modules_base_path . 'espacios-comunes/class-espacios-comunes-module.php', 'class' => 'Flavor_Chat_Espacios_Comunes_Module' ),
-			'huertos_urbanos'             => array( 'file' => $modules_base_path . 'huertos-urbanos/class-huertos-urbanos-module.php', 'class' => 'Flavor_Chat_Huertos_Urbanos_Module' ),
-			'multimedia'                  => array( 'file' => $modules_base_path . 'multimedia/class-multimedia-module.php', 'class' => 'Flavor_Chat_Multimedia_Module' ),
-			'parkings'                    => array( 'file' => $modules_base_path . 'parkings/class-parkings-module.php', 'class' => 'Flavor_Chat_Parkings_Module' ),
-			'podcast'                     => array( 'file' => $modules_base_path . 'podcast/class-podcast-module.php', 'class' => 'Flavor_Chat_Podcast_Module' ),
-			'radio'                       => array( 'file' => $modules_base_path . 'radio/class-radio-module.php', 'class' => 'Flavor_Chat_Radio_Module' ),
-			'reciclaje'                   => array( 'file' => $modules_base_path . 'reciclaje/class-reciclaje-module.php', 'class' => 'Flavor_Chat_Reciclaje_Module' ),
-			'red_social'                  => array( 'file' => $modules_base_path . 'red-social/class-red-social-module.php', 'class' => 'Flavor_Chat_Red_Social_Module' ),
-			'talleres'                    => array( 'file' => $modules_base_path . 'talleres/class-talleres-module.php', 'class' => 'Flavor_Chat_Talleres_Module' ),
-			'tramites'                    => array( 'file' => $modules_base_path . 'tramites/class-tramites-module.php', 'class' => 'Flavor_Chat_Tramites_Module' ),
-			'transparencia'               => array( 'file' => $modules_base_path . 'transparencia/class-transparencia-module.php', 'class' => 'Flavor_Chat_Transparencia_Module' ),
-			'colectivos'                  => array( 'file' => $modules_base_path . 'colectivos/class-colectivos-module.php', 'class' => 'Flavor_Chat_Colectivos_Module' ),
-			'foros'                       => array( 'file' => $modules_base_path . 'foros/class-foros-module.php', 'class' => 'Flavor_Chat_Foros_Module' ),
-			'clientes'                    => array( 'file' => $modules_base_path . 'clientes/class-clientes-module.php', 'class' => 'Flavor_Chat_Clientes_Module' ),
-			'comunidades'                 => array( 'file' => $modules_base_path . 'comunidades/class-comunidades-module.php', 'class' => 'Flavor_Chat_Comunidades_Module' ),
-			'bares'                       => array( 'file' => $modules_base_path . 'bares/class-bares-module.php', 'class' => 'Flavor_Chat_Bares_Module' ),
+			'woocommerce'                 => array( 'file' => $modules_base_path . 'woocommerce/class-woocommerce-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_WooCommerce_Module' ) ),
+			'banco_tiempo'                => array( 'file' => $modules_base_path . 'banco-tiempo/class-banco-tiempo-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Banco_Tiempo_Module' ) ),
+			'marketplace'                 => array( 'file' => $modules_base_path . 'marketplace/class-marketplace-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Marketplace_Module' ) ),
+			'grupos_consumo'              => array( 'file' => $modules_base_path . 'grupos-consumo/class-grupos-consumo-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Grupos_Consumo_Module' ) ),
+			'facturas'                    => array( 'file' => $modules_base_path . 'facturas/class-facturas-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Facturas_Module' ) ),
+			'fichaje_empleados'           => array( 'file' => $modules_base_path . 'fichaje-empleados/class-fichaje-empleados-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Fichaje_Empleados_Module' ) ),
+			'eventos'                     => array( 'file' => $modules_base_path . 'eventos/class-eventos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Eventos_Module' ) ),
+			'socios'                      => array( 'file' => $modules_base_path . 'socios/class-socios-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Socios_Module' ) ),
+			'incidencias'                 => array( 'file' => $modules_base_path . 'incidencias/class-incidencias-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Incidencias_Module' ) ),
+			'participacion'               => array( 'file' => $modules_base_path . 'participacion/class-participacion-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Participacion_Module' ) ),
+			'presupuestos_participativos' => array( 'file' => $modules_base_path . 'presupuestos-participativos/class-presupuestos-participativos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Presupuestos_Participativos_Module' ) ),
+			'avisos_municipales'          => array( 'file' => $modules_base_path . 'avisos-municipales/class-avisos-municipales-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Avisos_Municipales_Module' ) ),
+			'advertising'                 => array( 'file' => $modules_base_path . 'advertising/class-advertising-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Advertising_Module' ) ),
+			'ayuda_vecinal'               => array( 'file' => $modules_base_path . 'ayuda-vecinal/class-ayuda-vecinal-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Ayuda_Vecinal_Module' ) ),
+			'biblioteca'                  => array( 'file' => $modules_base_path . 'biblioteca/class-biblioteca-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Biblioteca_Module' ) ),
+			'bicicletas_compartidas'      => array( 'file' => $modules_base_path . 'bicicletas-compartidas/class-bicicletas-compartidas-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Bicicletas_Compartidas_Module' ) ),
+			'carpooling'                  => array( 'file' => $modules_base_path . 'carpooling/class-carpooling-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Carpooling_Module' ) ),
+			'chat_grupos'                 => array( 'file' => $modules_base_path . 'chat-grupos/class-chat-grupos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Chat_Grupos_Module' ) ),
+			'chat_interno'                => array( 'file' => $modules_base_path . 'chat-interno/class-chat-interno-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Chat_Interno_Module' ) ),
+			'compostaje'                  => array( 'file' => $modules_base_path . 'compostaje/class-compostaje-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Compostaje_Module' ) ),
+			'cursos'                      => array( 'file' => $modules_base_path . 'cursos/class-cursos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Cursos_Module' ) ),
+			'empresarial'                 => array( 'file' => $modules_base_path . 'empresarial/class-empresarial-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Empresarial_Module' ) ),
+			'espacios_comunes'            => array( 'file' => $modules_base_path . 'espacios-comunes/class-espacios-comunes-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Espacios_Comunes_Module' ) ),
+			'huertos_urbanos'             => array( 'file' => $modules_base_path . 'huertos-urbanos/class-huertos-urbanos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Huertos_Urbanos_Module' ) ),
+			'multimedia'                  => array( 'file' => $modules_base_path . 'multimedia/class-multimedia-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Multimedia_Module' ) ),
+			'parkings'                    => array( 'file' => $modules_base_path . 'parkings/class-parkings-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Parkings_Module' ) ),
+			'podcast'                     => array( 'file' => $modules_base_path . 'podcast/class-podcast-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Podcast_Module' ) ),
+			'radio'                       => array( 'file' => $modules_base_path . 'radio/class-radio-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Radio_Module' ) ),
+			'reciclaje'                   => array( 'file' => $modules_base_path . 'reciclaje/class-reciclaje-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Reciclaje_Module' ) ),
+			'red_social'                  => array( 'file' => $modules_base_path . 'red-social/class-red-social-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Red_Social_Module' ) ),
+			'talleres'                    => array( 'file' => $modules_base_path . 'talleres/class-talleres-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Talleres_Module' ) ),
+			'tramites'                    => array( 'file' => $modules_base_path . 'tramites/class-tramites-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Tramites_Module' ) ),
+			'transparencia'               => array( 'file' => $modules_base_path . 'transparencia/class-transparencia-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Transparencia_Module' ) ),
+			'colectivos'                  => array( 'file' => $modules_base_path . 'colectivos/class-colectivos-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Colectivos_Module' ) ),
+			'foros'                       => array( 'file' => $modules_base_path . 'foros/class-foros-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Foros_Module' ) ),
+			'clientes'                    => array( 'file' => $modules_base_path . 'clientes/class-clientes-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Clientes_Module' ) ),
+			'comunidades'                 => array( 'file' => $modules_base_path . 'comunidades/class-comunidades-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Comunidades_Module' ) ),
+			'bares'                       => array( 'file' => $modules_base_path . 'bares/class-bares-module.php', 'class' => flavor_get_runtime_class_name( 'Flavor_Chat_Bares_Module' ) ),
 		);
 	}
 
@@ -174,8 +174,8 @@ class Flavor_Health_Check {
 
 	private function check_template_files( $module_check_results ) {
 		$template_check_results = array();
-		$templates_base_path    = FLAVOR_CHAT_IA_PATH . 'templates/components/';
-		$registered_module_map  = $this->build_registered_module_map( FLAVOR_CHAT_IA_PATH . 'includes/modules/' );
+		$templates_base_path    = FLAVOR_PLATFORM_PATH . 'templates/components/';
+		$registered_module_map  = $this->build_registered_module_map( FLAVOR_PLATFORM_PATH . 'includes/modules/' );
 
 		foreach ( $module_check_results as $module_identifier => $module_data ) {
 			if ( ! $module_data['has_web_components'] || ! $module_data['class_loadable'] ) {
@@ -233,7 +233,7 @@ class Flavor_Health_Check {
 		return array(
 			array( 'label' => 'PHP Version',           'value' => phpversion() ),
 			array( 'label' => 'WordPress Version',     'value' => get_bloginfo( 'version' ) ),
-			array( 'label' => 'Plugin Version',        'value' => defined( 'FLAVOR_CHAT_IA_VERSION' ) ? FLAVOR_CHAT_IA_VERSION : 'Unknown' ),
+			array( 'label' => 'Plugin Version',        'value' => defined( 'FLAVOR_PLATFORM_VERSION' ) ? FLAVOR_PLATFORM_VERSION : 'Unknown' ),
 			array( 'label' => 'PHP Memory Limit',      'value' => ini_get( 'memory_limit' ) ),
 			array( 'label' => 'Max Execution Time',    'value' => ini_get( 'max_execution_time' ) . 's' ),
 			array( 'label' => 'Active Modules',        'value' => $active_module_count ),
@@ -243,7 +243,7 @@ class Flavor_Health_Check {
 
 	private function check_api_endpoints() {
 		$api_check_results = [];
-		$modules_base_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
+		$modules_base_path = FLAVOR_PLATFORM_PATH . 'includes/modules/';
 		$registered_module_map = $this->build_registered_module_map($modules_base_path);
 
 		foreach ($registered_module_map as $module_identifier => $module_definition) {

@@ -7,7 +7,7 @@
  * - Historial
  * - Recursos disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Reservas
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -183,7 +183,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $proximas_reservas,
                 'label' => __('Próximas reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $proximas_reservas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=reservas') : add_query_arg('tab', 'mis-reservas', Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=reservas') : add_query_arg('tab', 'mis-reservas', Flavor_Platform_Helpers::get_action_url('reservas', '')),
             ];
         }
 
@@ -195,7 +195,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha_formateada,
                 'label' => wp_trim_words($proxima_reserva->recurso_nombre, 2, '...'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=reservas&id=' . $proxima_reserva->id) : add_query_arg(['tab' => 'mis-reservas', 'reserva_id' => $proxima_reserva->id], Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=reservas&id=' . $proxima_reserva->id) : add_query_arg(['tab' => 'mis-reservas', 'reserva_id' => $proxima_reserva->id], Flavor_Platform_Helpers::get_action_url('reservas', '')),
             ];
         }
 
@@ -206,7 +206,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $pendientes_confirmacion,
                 'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=reservas&filter=pendientes') : add_query_arg(['tab' => 'mis-reservas', 'estado' => 'pendiente'], Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=reservas&filter=pendientes') : add_query_arg(['tab' => 'mis-reservas', 'estado' => 'pendiente'], Flavor_Platform_Helpers::get_action_url('reservas', '')),
             ];
         }
 
@@ -216,7 +216,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_recursos,
             'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=reservas&tab=recursos') : add_query_arg('tab', 'recursos', Flavor_Chat_Helpers::get_action_url('reservas', '')),
+            'url' => $es_admin ? admin_url('admin.php?page=reservas&tab=recursos') : add_query_arg('tab', 'recursos', Flavor_Platform_Helpers::get_action_url('reservas', '')),
         ];
 
         // Items: mis próximas reservas
@@ -229,7 +229,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=reservas&action=nueva') : add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                    'url' => $es_admin ? admin_url('admin.php?page=reservas&action=nueva') : add_query_arg('tab', 'nueva-reserva', Flavor_Platform_Helpers::get_action_url('reservas', '')),
                     'icon' => 'dashicons-plus-alt2',
                 ],
             ],
@@ -282,7 +282,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => $reserva->recurso_nombre ?: __('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'meta' => $fecha . ' · ' . $hora,
-                'url' => $es_admin ? admin_url('admin.php?page=reservas&id=' . $reserva->id) : add_query_arg(['tab' => 'mis-reservas', 'reserva_id' => $reserva->id], Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=reservas&id=' . $reserva->id) : add_query_arg(['tab' => 'mis-reservas', 'reserva_id' => $reserva->id], Flavor_Platform_Helpers::get_action_url('reservas', '')),
                 'badge' => $reserva->estado === 'pendiente' ? __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN) : null,
             ];
         }
@@ -339,7 +339,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => $recurso->nombre,
                 'meta' => $capacidad_texto ?: ucfirst($recurso->tipo),
-                'url' => $es_admin ? admin_url('admin.php?page=reservas&recurso=' . $recurso->id) : add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], Flavor_Chat_Helpers::get_action_url('reservas', '')),
+                'url' => $es_admin ? admin_url('admin.php?page=reservas&recurso=' . $recurso->id) : add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], Flavor_Platform_Helpers::get_action_url('reservas', '')),
             ];
         }
 

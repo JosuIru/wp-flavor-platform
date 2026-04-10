@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Foros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Foros
  */
 

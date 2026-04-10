@@ -4,7 +4,7 @@
  *
  * Panel de administración con métricas de uso de la red social.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -96,17 +96,17 @@ class Flavor_Social_Analytics_Admin {
         // Estilos propios
         wp_enqueue_style(
             'flavor-social-analytics',
-            FLAVOR_CHAT_IA_URL . 'includes/admin/css/social-analytics.css',
+            FLAVOR_PLATFORM_URL . 'includes/admin/css/social-analytics.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // Scripts propios
         wp_enqueue_script(
             'flavor-social-analytics',
-            FLAVOR_CHAT_IA_URL . 'includes/admin/js/social-analytics.js',
+            FLAVOR_PLATFORM_URL . 'includes/admin/js/social-analytics.js',
             ['jquery', 'chartjs'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -165,7 +165,7 @@ class Flavor_Social_Analytics_Admin {
 
         // Usuarios activos
         $tabla_perfiles = $this->prefix . 'social_perfiles';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $stats['usuarios_activos'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_perfiles}
                  WHERE ultima_actividad >= %s",
@@ -187,7 +187,7 @@ class Flavor_Social_Analytics_Admin {
 
         // Publicaciones
         $tabla_publicaciones = $this->prefix . 'social_publicaciones';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             $stats['publicaciones'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_publicaciones}
                  WHERE fecha_creacion >= %s",
@@ -203,7 +203,7 @@ class Flavor_Social_Analytics_Admin {
 
         // Likes
         $tabla_likes = $this->prefix . 'social_likes';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_likes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_likes)) {
             $stats['likes'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_likes}
                  WHERE fecha >= %s",
@@ -213,7 +213,7 @@ class Flavor_Social_Analytics_Admin {
 
         // Comentarios
         $tabla_comentarios = $this->prefix . 'social_comentarios';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
             $stats['comentarios'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_comentarios}
                  WHERE fecha_creacion >= %s",
@@ -274,7 +274,7 @@ class Flavor_Social_Analytics_Admin {
             $datos['labels'][] = date_i18n('d M', strtotime($fecha));
 
             // Publicaciones
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
                 $datos['publicaciones'][] = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_publicaciones}
                      WHERE DATE(fecha_creacion) = %s",
@@ -285,7 +285,7 @@ class Flavor_Social_Analytics_Admin {
             }
 
             // Comentarios
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
                 $datos['comentarios'][] = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_comentarios}
                      WHERE DATE(fecha_creacion) = %s",
@@ -296,7 +296,7 @@ class Flavor_Social_Analytics_Admin {
             }
 
             // Likes
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_likes)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_likes)) {
                 $datos['likes'][] = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_likes}
                      WHERE DATE(fecha) = %s",
@@ -319,7 +319,7 @@ class Flavor_Social_Analytics_Admin {
         $tabla_hashtags = $this->prefix . 'social_hashtags';
         $tabla_publicaciones_hashtags = $this->prefix . 'social_publicaciones_hashtags';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_hashtags)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_hashtags)) {
             return [];
         }
 
@@ -348,7 +348,7 @@ class Flavor_Social_Analytics_Admin {
 
         $tabla_perfiles = $this->prefix . 'social_perfiles';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             return [];
         }
 
@@ -377,7 +377,7 @@ class Flavor_Social_Analytics_Admin {
 
         $tabla_publicaciones = $this->prefix . 'social_publicaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             return [];
         }
 
@@ -412,7 +412,7 @@ class Flavor_Social_Analytics_Admin {
         $tabla_comunidades = $this->prefix . 'comunidades';
         $tabla_miembros = $this->prefix . 'comunidades_miembros';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             return [];
         }
 
@@ -450,7 +450,7 @@ class Flavor_Social_Analytics_Admin {
 
         $tabla_estados = $this->prefix . 'chat_estados';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_estados)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_estados)) {
             return [];
         }
 
@@ -472,7 +472,7 @@ class Flavor_Social_Analytics_Admin {
 
         // Vistas totales
         $tabla_vistas = $this->prefix . 'chat_estados_vistas';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_vistas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_vistas)) {
             $stats['vistas_24h'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_vistas}
                  WHERE fecha_visto >= %s",

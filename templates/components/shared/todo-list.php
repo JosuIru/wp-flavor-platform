@@ -4,7 +4,7 @@
  *
  * Lista de tareas pendientes para dashboards.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items      Tareas: [['id' => 1, 'title' => 'Tarea', 'completed' => false, 'priority' => 'high', 'due_date' => '']]

@@ -140,7 +140,7 @@ class Flavor_Addon_License {
 
         $this->save_licenses();
 
-        flavor_chat_ia_log("Licencia activada para addon: {$addon_slug}");
+        flavor_platform_log("Licencia activada para addon: {$addon_slug}");
 
         do_action('flavor_license_activated', $addon_slug, $license_key);
 
@@ -169,14 +169,14 @@ class Flavor_Addon_License {
 
         if (is_wp_error($response)) {
             // Aún así eliminar localmente
-            flavor_chat_ia_log("Error desactivando licencia en servidor: " . $response->get_error_message(), 'warning');
+            flavor_platform_log("Error desactivando licencia en servidor: " . $response->get_error_message(), 'warning');
         }
 
         // Eliminar licencia local
         unset($this->licencias_activas[$addon_slug]);
         $this->save_licenses();
 
-        flavor_chat_ia_log("Licencia desactivada para addon: {$addon_slug}");
+        flavor_platform_log("Licencia desactivada para addon: {$addon_slug}");
 
         do_action('flavor_license_deactivated', $addon_slug);
 
@@ -227,7 +227,7 @@ class Flavor_Addon_License {
             $this->verify_license($addon_slug);
         }
 
-        flavor_chat_ia_log('Verificación de licencias completada');
+        flavor_platform_log('Verificación de licencias completada');
     }
 
     /**
@@ -244,13 +244,13 @@ class Flavor_Addon_License {
             'body' => json_encode($data),
             'headers' => [
                 'Content-Type' => 'application/json',
-                'User-Agent' => 'FlavorPlatform/' . FLAVOR_CHAT_IA_VERSION,
+                'User-Agent' => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
             ],
             'timeout' => 15,
         ]);
 
         if (is_wp_error($response)) {
-            flavor_chat_ia_log('Error en request de licencia: ' . $response->get_error_message(), 'error');
+            flavor_platform_log('Error en request de licencia: ' . $response->get_error_message(), 'error');
             return $response;
         }
 

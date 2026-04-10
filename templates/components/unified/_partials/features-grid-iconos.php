@@ -11,7 +11,7 @@
  * @var int    $columnas        Number of columns (2, 3, or 4)
  * @var array  $items           Array of features, each with: titulo, descripcion, icono
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

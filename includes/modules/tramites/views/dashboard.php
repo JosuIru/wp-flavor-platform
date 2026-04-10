@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo operativo para seguimiento de solicitudes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

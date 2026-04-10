@@ -2,7 +2,7 @@
 /**
  * Controlador Frontend: Comunidades
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -30,7 +30,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
             'publicaciones_semana' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             $comunidades = $wpdb->get_results("SELECT * FROM $tabla_comunidades WHERE estado = 'activa' ORDER BY miembros DESC", ARRAY_A);
             $estadisticas['total_comunidades'] = count($comunidades);
 
@@ -139,7 +139,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
         $publicaciones = [];
         $eventos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             $comunidad = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_comunidades WHERE id = %d", $item_id), ARRAY_A);
         }
 
@@ -238,7 +238,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
         $resultados = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
             $resultados = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM $tabla_comunidades WHERE (nombre LIKE %s OR descripcion LIKE %s) AND estado = 'activa'",
                 '%' . $wpdb->esc_like($query) . '%',
@@ -279,7 +279,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             return (bool) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_miembros WHERE comunidad_id = %d AND usuario_id = %d AND estado = 'activo'",
                 $comunidad_id, $usuario_id
@@ -296,7 +296,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             return (bool) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_miembros WHERE comunidad_id = %d AND usuario_id = %d AND rol = 'admin'",
                 $comunidad_id, $usuario_id

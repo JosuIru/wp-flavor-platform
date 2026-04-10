@@ -2,7 +2,7 @@
 /**
  * Vista: Configuración del módulo Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Multimedia
  */
 

@@ -4,7 +4,7 @@
  *
  * Muestra contenido de la red en el frontend.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

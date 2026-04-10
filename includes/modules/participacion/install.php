@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Participación Ciudadana
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Participacion
  */
 

@@ -135,7 +135,7 @@ class Flavor_Addon_Admin {
         }
 
         // Redirigir para evitar reenvío de formulario
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-addons'));
+        Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=flavor-addons'));
         exit;
     }
 
@@ -299,7 +299,7 @@ class Flavor_Addon_Admin {
                         <?php echo esc_html__('Los addons son extensiones integradas que amplían las funcionalidades de Flavor Platform. Coloca los addons en la carpeta addons/ del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <p>
-                        <code><?php echo esc_html(FLAVOR_CHAT_IA_PATH . 'addons/'); ?></code>
+                        <code><?php echo esc_html(FLAVOR_PLATFORM_PATH . 'addons/'); ?></code>
                     </p>
                 </div>
 

@@ -22,7 +22,7 @@
  *       }
  *   }
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules
  * @since 4.2.0
  */

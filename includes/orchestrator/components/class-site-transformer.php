@@ -7,7 +7,7 @@
  * - Crea el menú de navegación
  * - Configura opciones del frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 

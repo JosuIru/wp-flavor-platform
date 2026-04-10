@@ -2,7 +2,7 @@
 /**
  * Módulo de Podcast para Chat IA - Sistema Completo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Podcast - Plataforma de podcasting comunitario completa
  */
-class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Podcast_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -65,7 +65,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe($this->tabla_series);
+        return Flavor_Platform_Helpers::tabla_existe($this->tabla_series);
     }
 
     /**
@@ -260,7 +260,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_series)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_series)) {
             $this->create_tables();
         }
     }
@@ -2940,7 +2940,7 @@ KNOWLEDGE;
         $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
         $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_series)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_series)) {
             return $estadisticas;
         }
 
@@ -2957,7 +2957,7 @@ KNOWLEDGE;
         ];
 
         // Episodios disponibles
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_episodios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_episodios)) {
             $total_episodios = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_episodios} WHERE estado = 'publicado'"
             );
@@ -2971,7 +2971,7 @@ KNOWLEDGE;
         }
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_suscripciones)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_suscripciones)) {
             // Mis suscripciones (todas las suscripciones activas, no hay columna estado)
             $mis_suscripciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_suscripciones}
@@ -3832,4 +3832,8 @@ KNOWLEDGE;
             include $views_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Podcast_Module', false)) {
+    class_alias('Flavor_Platform_Podcast_Module', 'Flavor_Chat_Podcast_Module');
 }

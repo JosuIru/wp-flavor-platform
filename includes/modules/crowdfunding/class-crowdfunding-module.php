@@ -5,7 +5,7 @@
  * Módulo reutilizable para financiación colectiva que puede ser usado
  * por cualquier otro módulo (artistas, eventos, colectivos, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Crowdfunding
  * @since 3.3.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del módulo de Crowdfunding
  */
-class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Crowdfunding_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -47,7 +47,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos');
+        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos');
     }
 
     /**
@@ -946,4 +946,8 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         include dirname(__FILE__) . '/templates/destacados.php';
         return ob_get_clean();
     }
+}
+
+if (!class_exists('Flavor_Chat_Crowdfunding_Module', false)) {
+    class_alias('Flavor_Platform_Crowdfunding_Module', 'Flavor_Chat_Crowdfunding_Module');
 }

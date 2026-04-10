@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Grupo de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

@@ -4,7 +4,7 @@
  *
  * Sección explicativa del proceso del marketplace.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array $steps Pasos personalizados (opcional)

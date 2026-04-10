@@ -5,7 +5,7 @@
  * Permite compartir posts de WP en la red social del plugin,
  * con opción de federación a nodos públicos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.2.0
  */
 
@@ -569,9 +569,9 @@ class Flavor_WP_Social_Share {
 
         wp_enqueue_script(
             'flavor-social-share-admin',
-            FLAVOR_CHAT_IA_URL . 'assets/js/wp-social-share-admin.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/wp-social-share-admin.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -602,9 +602,9 @@ class Flavor_WP_Social_Share {
 
         wp_enqueue_script(
             'flavor-social-share-frontend',
-            FLAVOR_CHAT_IA_URL . 'assets/js/wp-social-share-frontend.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/wp-social-share-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

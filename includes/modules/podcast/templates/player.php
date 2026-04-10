@@ -10,7 +10,7 @@
  * @var bool   $mostrar_portada - Si mostrar la portada
  * @var bool   $mostrar_titulo - Si mostrar el titulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

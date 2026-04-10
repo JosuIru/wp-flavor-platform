@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Chat Grupos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Grupos_Dashboard_Tab {
+class Flavor_Platform_Grupos_Dashboard_Tab {
 
     private static $instance = null;
 
@@ -151,7 +151,7 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
                             </div>
                         </div>
                         <div class="grupo-acciones">
-                            <a href="<?php echo Flavor_Chat_Helpers::get_action_url('chat_grupos', 'mensajes') . '?grupo_id=' . $grupo->id; ?>"
+                            <a href="<?php echo Flavor_Platform_Helpers::get_action_url('chat_grupos', 'mensajes') . '?grupo_id=' . $grupo->id; ?>"
                                class="flavor-btn flavor-btn-primary flavor-btn-sm">
                                 Abrir Chat
                             </a>
@@ -415,4 +415,8 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
     }
 }
 
-Flavor_Chat_Grupos_Dashboard_Tab::get_instance();
+$dashboard_tab_class = 'Flavor_Platform_Grupos_Dashboard_Tab';
+if (!class_exists('Flavor_Chat_Grupos_Dashboard_Tab', false)) {
+    class_alias('Flavor_Platform_Grupos_Dashboard_Tab', 'Flavor_Chat_Grupos_Dashboard_Tab');
+}
+$dashboard_tab_class::get_instance();

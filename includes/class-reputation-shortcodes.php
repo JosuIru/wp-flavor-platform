@@ -2,7 +2,7 @@
 /**
  * Shortcodes del sistema de reputación
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -56,9 +56,9 @@ class Flavor_Reputation_Shortcodes {
 
         wp_enqueue_style(
             'flavor-reputation',
-            FLAVOR_CHAT_IA_URL . 'assets/css/modules/reputation.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/modules/reputation.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 

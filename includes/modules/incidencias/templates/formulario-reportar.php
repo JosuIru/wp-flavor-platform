@@ -2,7 +2,7 @@
 /**
  * Template: Formulario de Reporte de Incidencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

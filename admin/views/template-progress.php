@@ -4,7 +4,7 @@
  *
  * Muestra el progreso durante la activacion de una plantilla.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

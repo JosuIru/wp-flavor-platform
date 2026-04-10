@@ -11,7 +11,7 @@
  * - texto_boton: Texto del botón de envío
  * - clase_adicional: Clases CSS adicionales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

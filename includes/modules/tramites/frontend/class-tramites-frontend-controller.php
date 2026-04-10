@@ -5,7 +5,7 @@
  * Gestiona la interfaz pública del módulo de trámites administrativos,
  * incluyendo solicitudes, seguimiento, documentación y citas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -1224,7 +1224,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible temporalmente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -1330,7 +1330,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_citas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -1438,7 +1438,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_mensajes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -1490,7 +1490,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_tramites();
         }
 
@@ -1526,7 +1526,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $demos = $this->get_demo_tramites();
             foreach ($demos as $t) {
                 if ($t['id'] == $tramite_id) return $t;
@@ -1573,7 +1573,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1592,7 +1592,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -1609,7 +1609,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_historial';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [
                 ['fecha' => current_time('mysql'), 'titulo' => 'Solicitud registrada', 'descripcion' => 'Tu solicitud ha sido recibida', 'icono' => 'dashicons-yes', 'actual' => true],
             ];
@@ -1625,7 +1625,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_documentos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1645,7 +1645,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_mensajes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1665,7 +1665,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_citas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -1690,7 +1690,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['total' => 0, 'en_proceso' => 0, 'finalizados' => 0, 'pendiente_doc' => 0];
         }
 
@@ -1730,7 +1730,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $demos = $this->get_demo_tramites();
             return array_filter($demos, function($t) use ($termino) {
                 return stripos($t['nombre'], $termino) !== false || stripos($t['descripcion'], $termino) !== false;
@@ -1793,7 +1793,7 @@ class Flavor_Tramites_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_historial';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) return;
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) return;
 
         $titulos = [
             'solicitud_iniciada' => 'Solicitud registrada',

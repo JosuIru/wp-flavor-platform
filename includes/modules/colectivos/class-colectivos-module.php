@@ -5,7 +5,7 @@
  * Gestion de colectivos, asociaciones, cooperativas, ONGs
  * con proyectos, asambleas y miembros.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Colectivos y Asociaciones
  */
-class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Colectivos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -56,7 +56,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_colectivos);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_colectivos);
     }
 
     /**
@@ -835,14 +835,14 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'flavor-colectivos',
             $directorio_plugin . 'modules/colectivos/assets/css/colectivos.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-colectivos',
             $directorio_plugin . 'modules/colectivos/assets/js/colectivos.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1005,6 +1005,143 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                     'type'              => 'string',
                     'enum'              => ['activo', 'pendiente'],
                     'default'           => 'activo',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/colectivos - Crear nuevo colectivo
+        register_rest_route($namespace, '/colectivos', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'api_crear_colectivo'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'nombre' => [
+                    'required'          => true,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'descripcion' => [
+                    'required'          => true,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'tipo' => [
+                    'type'              => 'string',
+                    'enum'              => ['asociacion', 'cooperativa', 'ong', 'colectivo', 'plataforma', 'fundacion', 'sindicato', 'vecinal'],
+                    'default'           => 'colectivo',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'sector' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'email_contacto' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_email',
+                ],
+                'telefono' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'direccion' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'web' => [
+                    'type'              => 'string',
+                    'format'            => 'uri',
+                    'sanitize_callback' => 'esc_url_raw',
+                ],
+            ],
+        ]);
+
+        // PUT /flavor/v1/colectivos/{id} - Actualizar colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)', [
+            'methods'             => \WP_REST_Server::EDITABLE,
+            'callback'            => [$this, 'api_actualizar_colectivo'],
+            'permission_callback' => [$this, 'api_verificar_admin_colectivo'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+                'nombre' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'descripcion' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'email_contacto' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_email',
+                ],
+                'telefono' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'direccion' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'web' => [
+                    'type'              => 'string',
+                    'format'            => 'uri',
+                    'sanitize_callback' => 'esc_url_raw',
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/colectivos/{id}/abandonar - Abandonar colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)/abandonar', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'api_abandonar_colectivo'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/colectivos/{id}/proyectos - Proyectos del colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)/proyectos', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_proyectos'],
+            'permission_callback' => [$this, 'api_verificar_lectura_publica'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+                'estado' => [
+                    'type'              => 'string',
+                    'enum'              => ['activo', 'completado', 'archivado'],
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/colectivos/{id}/asambleas - Asambleas del colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)/asambleas', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_asambleas'],
+            'permission_callback' => [$this, 'api_verificar_lectura_miembros'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+                'tipo' => [
+                    'type'              => 'string',
+                    'enum'              => ['ordinaria', 'extraordinaria'],
                     'sanitize_callback' => 'sanitize_text_field',
                 ],
             ],
@@ -1210,6 +1347,230 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * API REST: Crear colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_crear_colectivo($request) {
+        $parametros = [
+            'nombre'         => $request->get_param('nombre'),
+            'descripcion'    => $request->get_param('descripcion'),
+            'tipo'           => $request->get_param('tipo') ?: 'colectivo',
+            'sector'         => $request->get_param('sector'),
+            'email_contacto' => $request->get_param('email_contacto'),
+            'telefono'       => $request->get_param('telefono'),
+            'direccion'      => $request->get_param('direccion'),
+            'web'            => $request->get_param('web'),
+        ];
+
+        $resultado = $this->action_crear_colectivo($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'crear_colectivo_error',
+                $resultado['error'] ?? __('Error al crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                ['status' => 400]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API REST: Actualizar colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_actualizar_colectivo($request) {
+        global $wpdb;
+
+        $colectivo_id = absint($request['id']);
+        $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+
+        // Verificar que el colectivo existe
+        $colectivo = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_colectivos WHERE id = %d AND estado != 'eliminado'",
+            $colectivo_id
+        ));
+
+        if (!$colectivo) {
+            return new \WP_Error('not_found', __('Colectivo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
+        }
+
+        // Construir datos a actualizar
+        $datos_actualizar = [];
+        $formatos = [];
+
+        $campos_permitidos = ['nombre', 'descripcion', 'email_contacto', 'telefono', 'direccion', 'web'];
+
+        foreach ($campos_permitidos as $campo) {
+            $valor = $request->get_param($campo);
+            if ($valor !== null) {
+                $datos_actualizar[$campo] = $valor;
+                $formatos[] = '%s';
+            }
+        }
+
+        if (empty($datos_actualizar)) {
+            return new \WP_Error('no_data', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        $datos_actualizar['updated_at'] = current_time('mysql');
+        $formatos[] = '%s';
+
+        $wpdb->update($tabla_colectivos, $datos_actualizar, ['id' => $colectivo_id], $formatos, ['%d']);
+
+        return rest_ensure_response([
+            'success'      => true,
+            'colectivo_id' => $colectivo_id,
+            'message'      => __('Colectivo actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * API REST: Abandonar colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_abandonar_colectivo($request) {
+        global $wpdb;
+
+        $colectivo_id = absint($request['id']);
+        $identificador_usuario = get_current_user_id();
+        $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        // Verificar membresía
+        $miembro = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_miembros WHERE colectivo_id = %d AND usuario_id = %d AND estado = 'activo'",
+            $colectivo_id, $identificador_usuario
+        ));
+
+        if (!$miembro) {
+            return new \WP_Error('not_member', __('No eres miembro de este colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        // No permitir que el presidente abandone si es el único
+        if ($miembro->rol === 'presidente') {
+            $otros_presidentes = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_miembros WHERE colectivo_id = %d AND rol = 'presidente' AND estado = 'activo' AND usuario_id != %d",
+                $colectivo_id, $identificador_usuario
+            ));
+
+            if ($otros_presidentes == 0) {
+                return new \WP_Error(
+                    'sole_president',
+                    __('No puedes abandonar el colectivo siendo el único presidente. Nombra a otro presidente primero.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+        }
+
+        $wpdb->update(
+            $tabla_miembros,
+            ['estado' => 'inactivo', 'fecha_baja' => current_time('mysql')],
+            ['colectivo_id' => $colectivo_id, 'usuario_id' => $identificador_usuario],
+            ['%s', '%s'],
+            ['%d', '%d']
+        );
+
+        return rest_ensure_response([
+            'success' => true,
+            'message' => __('Has abandonado el colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * API REST: Obtener proyectos del colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_proyectos($request) {
+        global $wpdb;
+
+        $colectivo_id = absint($request['id']);
+        $estado = $request->get_param('estado');
+        $tabla_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
+
+        $where = $wpdb->prepare("colectivo_id = %d", $colectivo_id);
+        if ($estado) {
+            $where .= $wpdb->prepare(" AND estado = %s", $estado);
+        }
+
+        $proyectos = $wpdb->get_results("SELECT * FROM $tabla_proyectos WHERE $where ORDER BY created_at DESC");
+
+        return rest_ensure_response([
+            'success'   => true,
+            'proyectos' => $proyectos ?: [],
+            'total'     => count($proyectos ?: []),
+        ]);
+    }
+
+    /**
+     * API REST: Obtener asambleas del colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_asambleas($request) {
+        global $wpdb;
+
+        $colectivo_id = absint($request['id']);
+        $tipo = $request->get_param('tipo');
+        $tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
+
+        $where = $wpdb->prepare("colectivo_id = %d", $colectivo_id);
+        if ($tipo) {
+            $where .= $wpdb->prepare(" AND tipo = %s", $tipo);
+        }
+
+        $asambleas = $wpdb->get_results("SELECT * FROM $tabla_asambleas WHERE $where ORDER BY fecha DESC");
+
+        return rest_ensure_response([
+            'success'   => true,
+            'asambleas' => $asambleas ?: [],
+            'total'     => count($asambleas ?: []),
+        ]);
+    }
+
+    /**
+     * Verificar si el usuario es admin del colectivo
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function api_verificar_admin_colectivo($request) {
+        if (!is_user_logged_in()) {
+            return new \WP_Error('rest_not_logged_in', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
+        }
+
+        $colectivo_id = absint($request['id']);
+        $identificador_usuario = get_current_user_id();
+
+        // Admin de WP siempre puede editar
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        $es_admin = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_miembros WHERE colectivo_id = %d AND usuario_id = %d AND rol IN ('presidente', 'secretario') AND estado = 'activo'",
+            $colectivo_id, $identificador_usuario
+        ));
+
+        if (!$es_admin) {
+            return new \WP_Error('no_permission', __('No tienes permisos para editar este colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 403]);
+        }
+
+        return true;
+    }
+
+    /**
      * Configuracion de paginas de administracion para el panel unificado
      *
      * @return array
@@ -1409,7 +1770,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_colectivos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_colectivos)) {
             $this->create_tables();
         }
     }
@@ -2772,7 +3133,7 @@ KNOWLEDGE;
         $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
         $tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_colectivos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_colectivos)) {
             return $estadisticas;
         }
 
@@ -2789,7 +3150,7 @@ KNOWLEDGE;
         ];
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             // Mis colectivos
             $mis_colectivos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_miembros}
@@ -2806,7 +3167,7 @@ KNOWLEDGE;
         }
 
         // Próximas asambleas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_asambleas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_asambleas)) {
             $proximas_asambleas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_asambleas}
                  WHERE fecha >= NOW() AND estado = 'programada'"
@@ -3315,4 +3676,8 @@ KNOWLEDGE;
             include $template_path;
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Colectivos_Module', false)) {
+    class_alias('Flavor_Platform_Colectivos_Module', 'Flavor_Chat_Colectivos_Module');
 }

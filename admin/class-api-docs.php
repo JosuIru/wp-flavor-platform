@@ -5,7 +5,7 @@
  * Proporciona una interfaz tipo Swagger UI para explorar y probar
  * los endpoints de la API de Flavor Platform.
  *
- * @package FlavorChatIA\Admin
+ * @package FlavorPlatform\Admin
  * @since 1.0.0
  */
 
@@ -101,7 +101,7 @@ class Flavor_API_Docs {
      * @return WP_REST_Response
      */
     public function obtener_openapi_spec() {
-        $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'docs/api/openapi.yaml';
+        $ruta_archivo = FLAVOR_PLATFORM_PATH . 'docs/api/openapi.yaml';
 
         if (!file_exists($ruta_archivo)) {
             return new WP_Error('not_found', 'OpenAPI spec not found', ['status' => 404]);
@@ -706,14 +706,14 @@ curl -X POST "<?php echo esc_url(home_url('/wp-json/jwt-auth/v1/token')); ?>" \
   }'
 
 <span class="comment"># Usar token en peticiones</span>
-curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/mis-pedidos')); ?>" \
+curl "<?php echo esc_url(home_url('/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE . '/mis-pedidos')); ?>" \
   -H "Authorization: Bearer <span class="keyword">TU_TOKEN_JWT</span>"</pre>
 
                         <h3><?php _e('Listar Pedidos Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                        <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/pedidos?estado=abierto&per_page=20')); ?>"</pre>
+                        <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE . '/pedidos?estado=abierto&per_page=20')); ?>"</pre>
 
                         <h3><?php _e('Unirse a un Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                        <pre class="flavor-code-example">curl -X POST "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/pedidos/123/unirse')); ?>" \
+                        <pre class="flavor-code-example">curl -X POST "<?php echo esc_url(home_url('/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE . '/pedidos/123/unirse')); ?>" \
   -H "Authorization: Bearer <span class="keyword">TU_TOKEN</span>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -721,13 +721,13 @@ curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/mis-pedidos')); ?>
   }'</pre>
 
                         <h3><?php _e('Buscar Productores Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                        <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/gc/productores-cercanos')); ?>?lat=40.4168&lng=-3.7038&limite=10"</pre>
+                        <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/productores-cercanos')); ?>?lat=40.4168&lng=-3.7038&limite=10"</pre>
 
                         <h3><?php _e('Directorio de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-network/v1/directory')); ?>?tipo=cooperativa&verificado=true"</pre>
 
                         <h3><?php _e('JavaScript/Fetch', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
-                        <pre class="flavor-code-example"><span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">'<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/gc/productos')); ?>'</span>, {
+                        <pre class="flavor-code-example"><span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">'<?php echo esc_url(home_url('/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/productos')); ?>'</span>, {
     headers: {
         <span class="string">'X-WP-Nonce'</span>: wpApiSettings.nonce
     }
@@ -738,7 +738,7 @@ console.log(data);</pre>
 
                         <h3><?php _e('PHP/WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example"><span class="keyword">$response</span> = wp_remote_get(
-    rest_url(<span class="string">'flavor-chat-ia/v1/pedidos'</span>),
+    rest_url(<span class="string">FLAVOR_PLATFORM_REST_NAMESPACE . '/pedidos'</span>),
     [
         <span class="string">'headers'</span> => [
             <span class="string">'Authorization'</span> => <span class="string">'Bearer '</span> . <span class="keyword">$token</span>

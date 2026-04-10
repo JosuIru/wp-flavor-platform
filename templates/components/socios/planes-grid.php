@@ -5,7 +5,7 @@
  * Tarjetas de precios con 3 planes: Basico, Premium y Pro.
  * Cada plan muestra precio, caracteristicas y boton de accion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

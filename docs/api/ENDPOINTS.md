@@ -4,13 +4,13 @@
 
 | Namespace | Base URL | Descripcion |
 |-----------|----------|-------------|
-| `flavor-chat-ia/v1` | `/wp-json/flavor-chat-ia/v1/` | Grupos de consumo, pedidos, suscripciones |
+| `flavor-platform/v1` | `/wp-json/flavor-platform/v1/` | Grupos de consumo, pedidos, suscripciones |
 | `flavor-network/v1` | `/wp-json/flavor-network/v1/` | Red de comunidades, directorio, mapa |
 | `flavor/v1` | `/wp-json/flavor/v1/` | PWA, temas, utilidades |
 
 ---
 
-## GRUPOS DE CONSUMO (flavor-chat-ia/v1)
+## GRUPOS DE CONSUMO (flavor-platform/v1)
 
 ### Pedidos Colectivos
 

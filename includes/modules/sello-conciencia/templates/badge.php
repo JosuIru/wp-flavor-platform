@@ -6,7 +6,7 @@
  * - $evaluacion: array con la evaluación completa
  * - $atts: atributos del shortcode (size, show_details)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -47,7 +47,11 @@ $size_class = $size_classes[$size] ?? $size_classes['medium'];
     <div class="fsc-badge__details">
         <h4><?php esc_html_e('Contribución por premisa', 'flavor-platform'); ?></h4>
         <ul class="fsc-badge__premisas">
-            <?php foreach (Flavor_Chat_Sello_Conciencia_Module::PREMISAS as $premisa_id => $premisa) :
+            <?php
+            $sello_conciencia_module_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Sello_Conciencia_Module')
+                : 'Flavor_Chat_Sello_Conciencia_Module';
+            foreach ($sello_conciencia_module_class::PREMISAS as $premisa_id => $premisa) :
                 $premisa_puntuacion = $evaluacion['puntuaciones_premisas'][$premisa_id] ?? 0;
             ?>
             <li class="fsc-badge__premisa">

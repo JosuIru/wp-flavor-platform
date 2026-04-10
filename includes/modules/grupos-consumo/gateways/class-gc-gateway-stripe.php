@@ -4,7 +4,7 @@
  *
  * Integración con Stripe Payment Intents API.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */

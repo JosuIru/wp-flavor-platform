@@ -2,7 +2,7 @@
 /**
  * Template: Talleres de Saberes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

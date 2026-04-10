@@ -8,7 +8,7 @@
  * - $valoraciones: array de valoraciones
  * - $inscripcion: datos de inscripción del usuario actual (o null)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

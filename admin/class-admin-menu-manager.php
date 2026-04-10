@@ -647,8 +647,8 @@ class Flavor_Admin_Menu_Manager {
             $inferred_module_id = str_replace('-', '_', $matches[1]);
 
             // Solo devolver si existe en el Module Loader
-            if (class_exists('Flavor_Chat_Module_Loader')) {
-                $loader = Flavor_Chat_Module_Loader::get_instance();
+            if (class_exists('Flavor_Platform_Module_Loader')) {
+                $loader = Flavor_Platform_Module_Loader::get_instance();
                 $registered_modules = $loader->get_registered_modules();
 
                 if (isset($registered_modules[$inferred_module_id])) {
@@ -1797,7 +1797,7 @@ class Flavor_Admin_Menu_Manager {
 
         // Cargar el Dashboard Unificado
         if (!class_exists('Flavor_Unified_Dashboard')) {
-            $dashboard_path = FLAVOR_CHAT_IA_PATH . 'includes/dashboard/';
+            $dashboard_path = FLAVOR_PLATFORM_PATH . 'includes/dashboard/';
             if (file_exists($dashboard_path . 'class-unified-dashboard.php')) {
                 require_once $dashboard_path . 'interface-dashboard-widget.php';
                 require_once $dashboard_path . 'class-widget-registry.php';
@@ -1820,8 +1820,8 @@ class Flavor_Admin_Menu_Manager {
      * Sistema de Diseño Unificado v4.1.0
      */
     private function enqueue_unified_dashboard_assets() {
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
-        $plugin_url = FLAVOR_CHAT_IA_URL;
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_PLATFORM_URL;
 
         // =====================================================================
         // CSS - Sistema de Diseño Unificado (v4.1.0)
@@ -1908,7 +1908,7 @@ class Flavor_Admin_Menu_Manager {
         );
 
         // 11. CSS Unificado (admin)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/unified-dashboard.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/css/unified-dashboard.css')) {
             wp_enqueue_style(
                 'fud-unified-dashboard',
                 $plugin_url . 'admin/css/unified-dashboard.css',
@@ -1931,7 +1931,7 @@ class Flavor_Admin_Menu_Manager {
         );
 
         // Dashboard Sortable (nuevo sistema)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/js/dashboard-sortable.js')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/js/dashboard-sortable.js')) {
             wp_enqueue_script(
                 'fl-dashboard-sortable',
                 $plugin_url . 'assets/js/dashboard-sortable.js',
@@ -1946,7 +1946,7 @@ class Flavor_Admin_Menu_Manager {
         wp_enqueue_script('jquery-ui-draggable');
 
         // JS del dashboard (legacy)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/js/unified-dashboard.js')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/js/unified-dashboard.js')) {
             wp_enqueue_script(
                 'fud-unified-dashboard',
                 $plugin_url . 'admin/js/unified-dashboard.js',
@@ -2005,8 +2005,8 @@ class Flavor_Admin_Menu_Manager {
             return;
         }
 
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
-        $plugin_url = FLAVOR_CHAT_IA_URL;
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_PLATFORM_URL;
 
         // =====================================================================
         // CSS - Sistema de Diseño Unificado (v4.1.0)
@@ -2085,7 +2085,7 @@ class Flavor_Admin_Menu_Manager {
         );
 
         // 10. Estilos adicionales para dashboards de modulos
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/module-dashboard.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/css/module-dashboard.css')) {
             wp_enqueue_style(
                 'flavor-module-dashboard',
                 $plugin_url . 'admin/css/module-dashboard.css',
@@ -2135,8 +2135,12 @@ class Flavor_Admin_Menu_Manager {
     }
 
     public function callback_chat_settings() {
-        if (class_exists('Flavor_Chat_Settings')) {
-            Flavor_Chat_Settings::get_instance()->render_settings_page();
+        $settings_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Settings')
+            : 'Flavor_Chat_Settings';
+
+        if (class_exists($settings_class)) {
+            $settings_class::get_instance()->render_settings_page();
         }
     }
 
@@ -2146,8 +2150,12 @@ class Flavor_Admin_Menu_Manager {
     }
 
     public function callback_escalations() {
-        if (class_exists('Flavor_Chat_Settings')) {
-            Flavor_Chat_Settings::get_instance()->render_escalations_page();
+        $settings_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Settings')
+            : 'Flavor_Chat_Settings';
+
+        if (class_exists($settings_class)) {
+            $settings_class::get_instance()->render_escalations_page();
         }
     }
 
@@ -2181,8 +2189,8 @@ class Flavor_Admin_Menu_Manager {
     public function callback_network() {
         if (class_exists('Flavor_Network_Admin')) {
             Flavor_Network_Admin::get_instance()->render_main_page();
-        } elseif (file_exists(FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-admin.php')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-admin.php';
+        } elseif (file_exists(FLAVOR_PLATFORM_PATH . 'includes/network/class-network-admin.php')) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-admin.php';
             if (class_exists('Flavor_Network_Admin')) {
                 Flavor_Network_Admin::get_instance()->render_main_page();
             }
@@ -2207,7 +2215,7 @@ class Flavor_Admin_Menu_Manager {
 
     public function callback_demo_data() {
         if (!class_exists('Flavor_Demo_Data_Admin')) {
-            $path = FLAVOR_CHAT_IA_PATH . 'includes/admin/class-demo-data-generator.php';
+            $path = FLAVOR_PLATFORM_PATH . 'includes/admin/class-demo-data-generator.php';
             if (file_exists($path)) {
                 require_once $path;
             }
@@ -2284,7 +2292,7 @@ class Flavor_Admin_Menu_Manager {
             Flavor_Analytics_Dashboard::get_instance()->render_page();
         } else {
             // Intentar cargar la clase
-            $dashboard_path = FLAVOR_CHAT_IA_PATH . 'admin/class-analytics-dashboard.php';
+            $dashboard_path = FLAVOR_PLATFORM_PATH . 'admin/class-analytics-dashboard.php';
             if (file_exists($dashboard_path)) {
                 require_once $dashboard_path;
                 if (class_exists('Flavor_Analytics_Dashboard')) {
@@ -2308,7 +2316,7 @@ class Flavor_Admin_Menu_Manager {
             Flavor_Systems_Admin_Panel::get_instance()->render_admin_page();
         } else {
             // Intentar cargar la clase
-            $panel_path = FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-systems-admin-panel.php';
+            $panel_path = FLAVOR_PLATFORM_PATH . 'admin/class-flavor-systems-admin-panel.php';
             if (file_exists($panel_path)) {
                 require_once $panel_path;
                 if (class_exists('Flavor_Systems_Admin_Panel')) {
@@ -2324,7 +2332,7 @@ class Flavor_Admin_Menu_Manager {
     public function callback_documentation() {
         // Intentar cargar la clase si no existe
         if (!class_exists('Flavor_Documentation_Page')) {
-            $doc_path = FLAVOR_CHAT_IA_PATH . 'includes/admin/class-documentation-page.php';
+            $doc_path = FLAVOR_PLATFORM_PATH . 'includes/admin/class-documentation-page.php';
             if (file_exists($doc_path)) {
                 require_once $doc_path;
             }
@@ -2378,7 +2386,7 @@ class Flavor_Admin_Menu_Manager {
 
     public function callback_sello_conciencia() {
         // Verificar si el módulo está activo
-        $esta_activo = Flavor_Chat_Module_Loader::is_module_active('sello_conciencia');
+        $esta_activo = Flavor_Platform_Module_Loader::is_module_active('sello_conciencia');
 
         if (!$esta_activo) {
             echo '<div class="wrap">';
@@ -2391,16 +2399,17 @@ class Flavor_Admin_Menu_Manager {
         }
 
         // Obtener el módulo del loader
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulo = $loader->get_module('sello_conciencia');
 
         // Si no está cargado, intentar cargar manualmente
         if (!$modulo) {
-            $archivo_modulo = FLAVOR_CHAT_IA_PATH . 'includes/modules/sello-conciencia/class-sello-conciencia-module.php';
+            $archivo_modulo = FLAVOR_PLATFORM_PATH . 'includes/modules/sello-conciencia/class-sello-conciencia-module.php';
             if (file_exists($archivo_modulo)) {
                 require_once $archivo_modulo;
-                if (class_exists('Flavor_Chat_Sello_Conciencia_Module')) {
-                    $modulo = new Flavor_Chat_Sello_Conciencia_Module();
+                $module_class = flavor_get_runtime_class_name('Flavor_Chat_Sello_Conciencia_Module');
+                if (class_exists($module_class)) {
+                    $modulo = new $module_class();
                     $modulo->init();
                 }
             }
@@ -2836,6 +2845,11 @@ Flavor_Admin_Menu_Manager::get_instance();
 
 // Invalidar caché de módulos activos cuando se actualizan las opciones del plugin
 add_action('update_option_flavor_chat_ia_settings', function() {
+    if (class_exists('Flavor_Admin_Menu_Manager')) {
+        Flavor_Admin_Menu_Manager::get_instance()->invalidate_modules_cache();
+    }
+});
+add_action('update_option_flavor_platform_settings', function() {
     if (class_exists('Flavor_Admin_Menu_Manager')) {
         Flavor_Admin_Menu_Manager::get_instance()->invalidate_modules_cache();
     }

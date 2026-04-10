@@ -7,7 +7,7 @@
  *   - simple:    Previous / Next links only.
  *   - load-more: A "Load more" button for AJAX-driven loading.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $estilo            Pagination style: 'numbers', 'simple', or 'load-more'.
  * @var string $component_classes Additional CSS classes for the wrapper.

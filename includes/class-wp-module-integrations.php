@@ -11,7 +11,7 @@
  * - Campañas
  * - Biblioteca
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.3.0
  */
 
@@ -271,7 +271,7 @@ class Flavor_WP_Module_Integrations {
      * Detecta qué módulos están activos
      */
     private function detectar_modulos_activos() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         // Mapeo de módulos y sus integraciones
@@ -1385,9 +1385,9 @@ class Flavor_WP_Module_Integrations {
 
         wp_enqueue_script(
             'flavor-module-integrations-admin',
-            FLAVOR_CHAT_IA_URL . 'assets/js/wp-module-integrations.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/wp-module-integrations.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1426,9 +1426,9 @@ class Flavor_WP_Module_Integrations {
         // JavaScript extendido
         wp_enqueue_script(
             'flavor-module-integrations-frontend',
-            FLAVOR_CHAT_IA_URL . 'assets/js/wp-module-integrations-frontend.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/wp-module-integrations-frontend.js',
             ['jquery', 'flavor-social-share-frontend'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

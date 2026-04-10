@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Chat Interno
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Interno_Dashboard_Tab {
+class Flavor_Platform_Interno_Dashboard_Tab {
 
     private static $instance = null;
 
@@ -247,4 +247,8 @@ class Flavor_Chat_Interno_Dashboard_Tab {
     }
 }
 
-Flavor_Chat_Interno_Dashboard_Tab::get_instance();
+$dashboard_tab_class = 'Flavor_Platform_Interno_Dashboard_Tab';
+if (!class_exists('Flavor_Chat_Interno_Dashboard_Tab', false)) {
+    class_alias('Flavor_Platform_Interno_Dashboard_Tab', 'Flavor_Chat_Interno_Dashboard_Tab');
+}
+$dashboard_tab_class::get_instance();

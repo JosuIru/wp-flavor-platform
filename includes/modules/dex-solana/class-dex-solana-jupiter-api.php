@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
  * Proporciona acceso a cotizaciones, swaps, precios y lista de tokens
  * a traves del agregador Jupiter para intercambios de tokens SPL.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 class Flavor_Dex_Solana_Jupiter_API {
 
@@ -92,7 +92,7 @@ class Flavor_Dex_Solana_Jupiter_API {
 
         if (is_wp_error($respuesta_http)) {
             $mensaje_error = $respuesta_http->get_error_message();
-            flavor_chat_ia_log('Error Jupiter Quote API: ' . $mensaje_error, 'dex_solana');
+            flavor_platform_log('Error Jupiter Quote API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $mensaje_error,
@@ -102,7 +102,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $codigo_respuesta = wp_remote_retrieve_response_code($respuesta_http);
 
         if (200 !== $codigo_respuesta) {
-            flavor_chat_ia_log('Error Jupiter Quote HTTP ' . $codigo_respuesta, 'dex_solana');
+            flavor_platform_log('Error Jupiter Quote HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $codigo_respuesta,
@@ -113,7 +113,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $datos_cotizacion = json_decode($cuerpo_respuesta, true);
 
         if (!is_array($datos_cotizacion)) {
-            flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Quote API', 'dex_solana');
+            flavor_platform_log('Error al decodificar respuesta de Jupiter Quote API', 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform'),
@@ -121,7 +121,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         }
 
         if (isset($datos_cotizacion['error'])) {
-            flavor_chat_ia_log('Jupiter Quote API error: ' . $datos_cotizacion['error'], 'dex_solana');
+            flavor_platform_log('Jupiter Quote API error: ' . $datos_cotizacion['error'], 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $datos_cotizacion['error'],
@@ -171,7 +171,7 @@ class Flavor_Dex_Solana_Jupiter_API {
 
         if (is_wp_error($respuesta_http)) {
             $mensaje_error = $respuesta_http->get_error_message();
-            flavor_chat_ia_log('Error Jupiter Swap API: ' . $mensaje_error, 'dex_solana');
+            flavor_platform_log('Error Jupiter Swap API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $mensaje_error,
@@ -181,7 +181,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $codigo_respuesta = wp_remote_retrieve_response_code($respuesta_http);
 
         if (200 !== $codigo_respuesta) {
-            flavor_chat_ia_log('Error Jupiter Swap HTTP ' . $codigo_respuesta, 'dex_solana');
+            flavor_platform_log('Error Jupiter Swap HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $codigo_respuesta,
@@ -192,7 +192,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $datos_swap = json_decode($cuerpo_respuesta, true);
 
         if (!is_array($datos_swap)) {
-            flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Swap API', 'dex_solana');
+            flavor_platform_log('Error al decodificar respuesta de Jupiter Swap API', 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform'),
@@ -200,7 +200,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         }
 
         if (isset($datos_swap['error'])) {
-            flavor_chat_ia_log('Jupiter Swap API error: ' . $datos_swap['error'], 'dex_solana');
+            flavor_platform_log('Jupiter Swap API error: ' . $datos_swap['error'], 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $datos_swap['error'],
@@ -211,7 +211,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $ultimo_bloque_valido    = isset($datos_swap['lastValidBlockHeight']) ? $datos_swap['lastValidBlockHeight'] : 0;
 
         if (empty($transaccion_serializada)) {
-            flavor_chat_ia_log('Jupiter Swap API no devolvio transaccion serializada', 'dex_solana');
+            flavor_platform_log('Jupiter Swap API no devolvio transaccion serializada', 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform'),
@@ -268,7 +268,7 @@ class Flavor_Dex_Solana_Jupiter_API {
 
         if (is_wp_error($respuesta_http)) {
             $mensaje_error = $respuesta_http->get_error_message();
-            flavor_chat_ia_log('Error Jupiter Price API: ' . $mensaje_error, 'dex_solana');
+            flavor_platform_log('Error Jupiter Price API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $mensaje_error,
@@ -278,7 +278,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $codigo_respuesta = wp_remote_retrieve_response_code($respuesta_http);
 
         if (200 !== $codigo_respuesta) {
-            flavor_chat_ia_log('Error Jupiter Price HTTP ' . $codigo_respuesta, 'dex_solana');
+            flavor_platform_log('Error Jupiter Price HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $codigo_respuesta,
@@ -289,7 +289,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $datos_precios = json_decode($cuerpo_respuesta, true);
 
         if (!is_array($datos_precios) || !isset($datos_precios['data'])) {
-            flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Price API', 'dex_solana');
+            flavor_platform_log('Error al decodificar respuesta de Jupiter Price API', 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform'),
@@ -333,7 +333,7 @@ class Flavor_Dex_Solana_Jupiter_API {
 
         if (is_wp_error($respuesta_http)) {
             $mensaje_error = $respuesta_http->get_error_message();
-            flavor_chat_ia_log('Error Jupiter Token List API: ' . $mensaje_error, 'dex_solana');
+            flavor_platform_log('Error Jupiter Token List API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $mensaje_error,
@@ -343,7 +343,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $codigo_respuesta = wp_remote_retrieve_response_code($respuesta_http);
 
         if (200 !== $codigo_respuesta) {
-            flavor_chat_ia_log('Error Jupiter Token List HTTP ' . $codigo_respuesta, 'dex_solana');
+            flavor_platform_log('Error Jupiter Token List HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform') . $codigo_respuesta,
@@ -354,7 +354,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         $lista_tokens = json_decode($cuerpo_respuesta, true);
 
         if (!is_array($lista_tokens)) {
-            flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Token List', 'dex_solana');
+            flavor_platform_log('Error al decodificar respuesta de Jupiter Token List', 'dex_solana');
             return array(
                 'success' => false,
                 'error' => __('', 'flavor-platform'),

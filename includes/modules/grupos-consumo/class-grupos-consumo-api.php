@@ -4,7 +4,7 @@
  *
  * Endpoints para aplicaciones móviles (Flutter)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ class Flavor_Grupos_Consumo_API {
     /**
      * Namespace de la API
      */
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     /**
      * Instancia singleton
@@ -48,7 +48,7 @@ class Flavor_Grupos_Consumo_API {
      */
     public function register_routes() {
         // GET /pedidos - Lista todos los pedidos
-        register_rest_route(self::NAMESPACE, '/pedidos', [
+        flavor_register_rest_route(self::NAMESPACE, '/pedidos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedidos'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -69,7 +69,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /pedidos/{id} - Obtiene un pedido específico
-        register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedido'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -83,7 +83,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // POST /pedidos/{id}/unirse - Unirse a un pedido
-        register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/unirse', [
+        flavor_register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/unirse', [
             'methods' => 'POST',
             'callback' => [$this, 'unirse_pedido'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -103,14 +103,14 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /mis-pedidos - Pedidos del usuario autenticado
-        register_rest_route(self::NAMESPACE, '/mis-pedidos', [
+        flavor_register_rest_route(self::NAMESPACE, '/mis-pedidos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_pedidos'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /pedidos/{id}/marcar-pagado - Marcar como pagado
-        register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/marcar-pagado', [
+        flavor_register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/marcar-pagado', [
             'methods' => 'POST',
             'callback' => [$this, 'marcar_pagado'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -124,7 +124,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // POST /pedidos/{id}/marcar-recogido - Marcar como recogido
-        register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/marcar-recogido', [
+        flavor_register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)/marcar-recogido', [
             'methods' => 'POST',
             'callback' => [$this, 'marcar_recogido'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -142,14 +142,14 @@ class Flavor_Grupos_Consumo_API {
         // ========================================
 
         // GET /gc/perfil - Perfil del consumidor
-        register_rest_route(self::NAMESPACE, '/gc/perfil', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/perfil', [
             'methods' => 'GET',
             'callback' => [$this, 'get_perfil_consumidor'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // PUT /gc/preferencias - Actualizar preferencias
-        register_rest_route(self::NAMESPACE, '/gc/preferencias', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/preferencias', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_preferencias'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -164,14 +164,14 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/lista-compra - Obtener lista de compra
-        register_rest_route(self::NAMESPACE, '/gc/lista-compra', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/lista-compra', [
             'methods' => 'GET',
             'callback' => [$this, 'get_lista_compra'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /gc/lista-compra/agregar - Agregar producto
-        register_rest_route(self::NAMESPACE, '/gc/lista-compra/agregar', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/lista-compra/agregar', [
             'methods' => 'POST',
             'callback' => [$this, 'agregar_lista_compra'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -190,7 +190,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // DELETE /gc/lista-compra/{id} - Quitar producto
-        register_rest_route(self::NAMESPACE, '/gc/lista-compra/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/lista-compra/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'quitar_lista_compra'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -204,14 +204,14 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/suscripciones - Mis suscripciones
-        register_rest_route(self::NAMESPACE, '/gc/suscripciones', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/suscripciones', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_suscripciones'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /gc/suscripciones - Crear suscripción
-        register_rest_route(self::NAMESPACE, '/gc/suscripciones', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/suscripciones', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_suscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -230,7 +230,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // POST /gc/suscripciones/{id}/pausar - Pausar
-        register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/pausar', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/pausar', [
             'methods' => 'POST',
             'callback' => [$this, 'pausar_suscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -244,7 +244,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // POST /gc/suscripciones/{id}/reanudar - Reanudar
-        register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/reanudar', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/reanudar', [
             'methods' => 'POST',
             'callback' => [$this, 'reanudar_suscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -258,7 +258,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // POST /gc/suscripciones/{id}/cancelar - Cancelar
-        register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/cancelar', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/cancelar', [
             'methods' => 'POST',
             'callback' => [$this, 'cancelar_suscripcion'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -275,7 +275,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/productos - Catálogo con filtros
-        register_rest_route(self::NAMESPACE, '/gc/productos', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/productos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_catalogo_productos'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -303,7 +303,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/ciclos/calendario - Calendario de ciclos
-        register_rest_route(self::NAMESPACE, '/gc/ciclos/calendario', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/ciclos/calendario', [
             'methods' => 'GET',
             'callback' => [$this, 'get_calendario_ciclos'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -316,7 +316,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/pedidos/historial - Historial de pedidos
-        register_rest_route(self::NAMESPACE, '/gc/pedidos/historial', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/pedidos/historial', [
             'methods' => 'GET',
             'callback' => [$this, 'get_historial_pedidos'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -329,14 +329,14 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/cestas-tipo - Tipos de cestas disponibles
-        register_rest_route(self::NAMESPACE, '/gc/cestas-tipo', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/cestas-tipo', [
             'methods' => 'GET',
             'callback' => [$this, 'get_tipos_cestas'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /gc/productores-cercanos - Productores que entregan en ubicación del usuario
-        register_rest_route(self::NAMESPACE, '/gc/productores-cercanos', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/productores-cercanos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_productores_cercanos'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -363,7 +363,7 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         // GET /gc/productores - Lista de todos los productores
-        register_rest_route(self::NAMESPACE, '/gc/productores', [
+        flavor_register_rest_route(self::NAMESPACE, '/gc/productores', [
             'methods' => 'GET',
             'callback' => [$this, 'get_productores'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -1248,7 +1248,7 @@ class Flavor_Grupos_Consumo_API {
         global $wpdb;
 
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             return null;
         }
 
@@ -1367,7 +1367,7 @@ class Flavor_Grupos_Consumo_API {
                 ],
                 'imagen' => $imagen_url ?: null,
                 'cantidad_productos' => (int) $cantidad_productos,
-                'url' => add_query_arg('productor', intval($productor->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
+                'url' => add_query_arg('productor', intval($productor->ID), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
                 'entrega_disponible' => true, // Siempre true porque solo devolvemos los que pueden entregar
             ];
         }
@@ -1451,7 +1451,7 @@ class Flavor_Grupos_Consumo_API {
                     'email' => get_post_meta($post->ID, '_gc_contacto_email', true),
                 ],
                 'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
-                'url' => add_query_arg('productor', intval($post->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
+                'url' => add_query_arg('productor', intval($post->ID), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
             ];
         }
 

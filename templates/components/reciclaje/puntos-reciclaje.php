@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Puntos de Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

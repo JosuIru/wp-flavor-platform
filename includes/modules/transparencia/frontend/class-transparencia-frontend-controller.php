@@ -4,7 +4,7 @@
  *
  * Gestiona el dashboard tab y funcionalidades frontend del portal de transparencia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -166,7 +166,7 @@ class Flavor_Transparencia_Frontend_Controller {
     public function register_assets() {
         $modulo_url = plugins_url('', dirname(dirname(__FILE__)));
         $css_file = dirname(dirname(__FILE__)) . '/assets/css/transparencia.css';
-        $css_version = file_exists($css_file) ? (string) filemtime($css_file) : FLAVOR_CHAT_IA_VERSION;
+        $css_version = file_exists($css_file) ? (string) filemtime($css_file) : FLAVOR_PLATFORM_VERSION;
 
         wp_register_style(
             'flavor-transparencia-frontend',
@@ -179,7 +179,7 @@ class Flavor_Transparencia_Frontend_Controller {
             'flavor-transparencia-frontend',
             $modulo_url . '/assets/js/transparencia.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -216,7 +216,7 @@ class Flavor_Transparencia_Frontend_Controller {
         }
 
         $tabla_solicitudes = $this->prefijo_tabla . 'solicitudes_info';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return $tabs;
         }
 
@@ -525,25 +525,25 @@ class Flavor_Transparencia_Frontend_Controller {
 
         // Documentos públicos
         $documentos = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
             $documentos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_documentos WHERE estado = 'publicado'");
         }
 
         // Presupuestos
         $presupuestos = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_presupuestos)) {
             $presupuestos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_presupuestos");
         }
 
         // Actas
         $actas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_actas)) {
             $actas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actas WHERE estado = 'aprobada'");
         }
 
         // Tasa de respuesta
         $tasa_respuesta = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             $total_solicitudes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes");
             $resueltas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta'");
             if ($total_solicitudes > 0) {
@@ -567,7 +567,7 @@ class Flavor_Transparencia_Frontend_Controller {
         $tabla = $this->prefijo_tabla . 'solicitudes_info';
         $user_id = get_current_user_id();
 
-        if (!$user_id || !Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!$user_id || !Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -584,7 +584,7 @@ class Flavor_Transparencia_Frontend_Controller {
         global $wpdb;
         $tabla = $this->prefijo_tabla . 'solicitudes_info';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -614,7 +614,7 @@ class Flavor_Transparencia_Frontend_Controller {
         global $wpdb;
         $tabla = $this->prefijo_tabla . 'documentos_publicos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 

@@ -4,7 +4,7 @@
  *
  * Template para mostrar los servicios disponibles y del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

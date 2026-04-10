@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Encuestas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Encuestas
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -80,7 +80,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $encuestas_activas,
                 'label' => __('Activas', 'flavor-platform'),
                 'color' => $encuestas_activas > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', ''),
             ],
         ];
 
@@ -90,7 +90,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_respuestas,
                 'label' => __('Respondidas', 'flavor-platform'),
                 'color' => $mis_respuestas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas&tab=mis-respuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', 'mis-respuestas'),
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas&tab=mis-respuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', 'mis-respuestas'),
             ];
         }
 
@@ -103,7 +103,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver encuestas', 'flavor-platform'),
-                    'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -139,7 +139,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-clipboard',
                 'title' => wp_trim_words($encuesta->titulo, 5, '...'),
                 'meta' => $meta,
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas&encuesta=' . $encuesta->id) : Flavor_Chat_Helpers::get_action_url('encuestas', 'responder') . '/' . $encuesta->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas&encuesta=' . $encuesta->id) : Flavor_Platform_Helpers::get_action_url('encuestas', 'responder') . '/' . $encuesta->id . '/',
                 'badge' => isset($encuesta->total_respuestas) && $encuesta->total_respuestas > 0 ? $encuesta->total_respuestas . ' resp.' : null,
             ];
         }

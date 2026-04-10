@@ -11,7 +11,7 @@
  * - $color_primario (string): Color primario
  * - $estilo (string): texto, pasos, lista, proceso
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

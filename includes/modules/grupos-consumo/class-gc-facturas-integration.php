@@ -4,7 +4,7 @@
  *
  * Añade funcionalidades de facturacion a productores y consumidores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -64,12 +64,15 @@ class Flavor_GC_Facturas_Integration {
      */
     private function is_facturas_active() {
         // Verificar que la clase del modulo existe (significa que esta cargado)
-        if (class_exists('Flavor_Chat_Facturas_Module')) {
+        $facturas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Facturas_Module')
+            : 'Flavor_Chat_Facturas_Module';
+        if (class_exists($facturas_module_class)) {
             return true;
         }
 
         // Verificar en la configuracion
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         if (in_array('facturas', $active_modules)) {

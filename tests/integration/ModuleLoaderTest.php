@@ -4,7 +4,7 @@
  *
  * Tests de carga de multiples modulos, dependencias y ciclo de vida
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Tests
  */
 

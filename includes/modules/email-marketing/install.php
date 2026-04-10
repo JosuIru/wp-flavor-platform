@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para Email Marketing
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

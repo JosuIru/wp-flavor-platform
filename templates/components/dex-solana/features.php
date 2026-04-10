@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: DEX Solana Features
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

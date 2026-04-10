@@ -8,7 +8,7 @@
  * - $module_slug: Slug del módulo al que se intenta acceder
  * - $visibilidad: Tipo de visibilidad del módulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Puntos de Compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales
  */
 

@@ -8,7 +8,7 @@
  * - Calendario: calendario de cultivos y tareas
  * - Mapa: mapa interactivo de huertos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\HuertosUrbanos
  */
 
@@ -108,7 +108,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         $parcelas_disponibles = 0;
         $huertos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
             $total_huertos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_huertos} WHERE estado = 'activo'"
             );
@@ -124,7 +124,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_parcelas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_parcelas)) {
             $parcelas_disponibles = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_parcelas} WHERE estado = 'disponible'"
             );
@@ -246,9 +246,9 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         $actividades_recientes = [];
 
         // Obtener parcelas asignadas al usuario
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_asignaciones) &&
-            Flavor_Chat_Helpers::tabla_existe($tabla_parcelas) &&
-            Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_asignaciones) &&
+            Flavor_Platform_Helpers::tabla_existe($tabla_parcelas) &&
+            Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
 
             $mis_parcelas = $wpdb->get_results($wpdb->prepare(
                 "SELECT a.*,
@@ -263,7 +263,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             ));
 
             // Obtener cultivos activos
-            if (!empty($mis_parcelas) && Flavor_Chat_Helpers::tabla_existe($tabla_cultivos)) {
+            if (!empty($mis_parcelas) && Flavor_Platform_Helpers::tabla_existe($tabla_cultivos)) {
                 $parcela_ids = wp_list_pluck($mis_parcelas, 'parcela_id');
                 $placeholders = implode(',', array_fill(0, count($parcela_ids), '%d'));
 
@@ -280,7 +280,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             }
 
             // Obtener actividades recientes
-            if (!empty($mis_parcelas) && Flavor_Chat_Helpers::tabla_existe($tabla_actividades)) {
+            if (!empty($mis_parcelas) && Flavor_Platform_Helpers::tabla_existe($tabla_actividades)) {
                 $actividades_recientes = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla_actividades}
                      WHERE usuario_id = %d
@@ -478,7 +478,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         $cosechas_proximas = [];
 
         // Obtener tareas proximas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tareas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tareas)) {
             $tareas_proximas = $wpdb->get_results($wpdb->prepare(
                 "SELECT t.*, h.nombre as huerto_nombre,
                         (SELECT COUNT(*) FROM {$tabla_participantes} pt WHERE pt.tarea_id = t.id) as inscritos,
@@ -496,7 +496,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         }
 
         // Obtener turnos de riego del usuario
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_turnos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_turnos)) {
             $mis_turnos_riego = $wpdb->get_results($wpdb->prepare(
                 "SELECT tr.*, h.nombre as huerto_nombre
                  FROM {$tabla_turnos} tr
@@ -511,7 +511,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         }
 
         // Obtener cosechas proximas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cultivos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cultivos)) {
             $cosechas_proximas = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_cultivos}
                  WHERE usuario_id = %d
@@ -705,7 +705,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         $centro_lat = 40.4168;
         $centro_lng = -3.7038;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
             $huertos = $wpdb->get_results(
                 "SELECT id, nombre, direccion, latitud, longitud, superficie_m2, estado,
                         (SELECT COUNT(*) FROM {$this->prefijo_tablas}_parcelas p WHERE p.huerto_id = {$tabla_huertos}.id AND p.estado = 'disponible') as parcelas_disponibles,

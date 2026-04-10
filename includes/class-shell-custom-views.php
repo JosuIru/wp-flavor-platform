@@ -5,7 +5,7 @@
  * Permite crear y gestionar vistas personalizadas del menú
  * más allá de las vistas predefinidas Admin/Gestor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

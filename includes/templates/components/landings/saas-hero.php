@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero SaaS
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color_primario = $color_primario ?? '#7c3aed';

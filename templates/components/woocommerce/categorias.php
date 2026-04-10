@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: WooCommerce Categorias
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

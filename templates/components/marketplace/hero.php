@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Marketplace Hero
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

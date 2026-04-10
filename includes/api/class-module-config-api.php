@@ -2,7 +2,7 @@
 /**
  * API REST para configuración dinámica de módulos móviles
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -1591,7 +1591,7 @@ class Flavor_Module_Config_API {
      */
     private function is_module_active($module_id) {
         // Obtener configuración del plugin
-        $settings = get_option('flavor_chat_ia_settings', array());
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? array();
 
         // Si no hay lista de módulos activos, todos están activos por defecto
@@ -1692,11 +1692,11 @@ class Flavor_Module_Config_API {
      * @return array|null
      */
     private function build_dynamic_module_docs(string $module_id): ?array {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return null;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader->get_registered_modules();
         $resolved_id = $module_id;
 
@@ -1736,7 +1736,7 @@ class Flavor_Module_Config_API {
         return array(
             'id' => $resolved_id,
             'titulo' => $module_name,
-            'version' => defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0',
+            'version' => defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0',
             'descripcion' => $module_description !== ''
                 ? $module_description
                 : 'Documentación generada automáticamente para este módulo.',

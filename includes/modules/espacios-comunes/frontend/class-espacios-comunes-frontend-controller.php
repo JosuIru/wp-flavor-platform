@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Espacios Comunes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EspaciosComunes
  */
 
@@ -93,7 +93,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         }
 
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-espacios-comunes',
@@ -166,7 +166,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
         $user_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             return '';
         }
 
@@ -221,7 +221,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         global $wpdb;
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-platform') . '</p>';
         }
 
@@ -630,7 +630,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
         $reservas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             $reservas = $wpdb->get_results($wpdb->prepare(
                 "SELECT r.*, e.nombre as espacio_nombre, e.slug as espacio_slug, e.imagen_destacada
                  FROM {$tabla_reservas} r

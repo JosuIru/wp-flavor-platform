@@ -4,7 +4,7 @@
  *
  * Sistema de trading automatizado con inteligencia artificial.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

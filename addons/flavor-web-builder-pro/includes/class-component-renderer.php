@@ -4,7 +4,7 @@
  *
  * Renderiza componentes del Page Builder en el frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -269,8 +269,8 @@ class Flavor_Component_Renderer {
         }
 
         // Template del plugin principal (flavor-chat-ia)
-        if (defined('FLAVOR_CHAT_IA_PATH')) {
-            $main_plugin_template = FLAVOR_CHAT_IA_PATH . 'templates/components/' . $template . '.php';
+        if (defined('FLAVOR_PLATFORM_PATH')) {
+            $main_plugin_template = FLAVOR_PLATFORM_PATH . 'templates/components/' . $template . '.php';
             if (file_exists($main_plugin_template)) {
                 return $main_plugin_template;
             }

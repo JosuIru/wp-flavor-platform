@@ -2,7 +2,7 @@
 /**
  * Admin UI para el Generador de Apps
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.2.0
  */
 
@@ -59,16 +59,16 @@ class Flavor_App_Generator_Admin {
 
         wp_enqueue_style(
             'flavor-app-generator',
-            FLAVOR_CHAT_IA_URL . 'includes/app-generator/css/app-generator.css',
+            FLAVOR_PLATFORM_URL . 'includes/app-generator/css/app-generator.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-app-generator',
-            FLAVOR_CHAT_IA_URL . 'includes/app-generator/js/app-generator.js',
+            FLAVOR_PLATFORM_URL . 'includes/app-generator/js/app-generator.js',
             [ 'jquery' ],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

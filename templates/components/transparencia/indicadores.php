@@ -5,7 +5,7 @@
  * Dashboard con tarjetas de indicadores economicos,
  * sociales y medioambientales con tendencia y comparacion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

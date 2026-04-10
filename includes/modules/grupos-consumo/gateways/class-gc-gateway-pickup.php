@@ -4,7 +4,7 @@
  *
  * Permite confirmar el pago al momento de recoger el pedido.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */
@@ -116,7 +116,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             'success' => true,
             'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', 'flavor-platform'),
             'transaction_id' => $transaction_id,
-            'redirect_url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
+            'redirect_url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
     }
 

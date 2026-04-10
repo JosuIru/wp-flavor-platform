@@ -2,7 +2,7 @@
 /**
  * Template: Grid de parcelas disponibles para solicitar
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Huertos_Urbanos
  */
 

@@ -5,7 +5,7 @@
  * Procesa formularios de newsletter, contacto y otros
  * integrados en los layouts del plugin.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.6.0
  */
 

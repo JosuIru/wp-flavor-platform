@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Tiendas Locales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -301,7 +301,7 @@ Historial completo de acciones.
 | GET | `/expedientes/consulta/{numero}` | Consulta publica |
 | GET | `/estados` | Listar estados disponibles |
 
-### Namespace: `flavor-chat-ia/v1` (API Movil)
+### Namespace: `flavor-platform/v1` (API Movil)
 
 | Metodo | Endpoint | Descripcion |
 |--------|----------|-------------|

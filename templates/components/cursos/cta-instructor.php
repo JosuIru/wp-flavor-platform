@@ -2,7 +2,7 @@
 /**
  * Template: CTA para Hacerse Instructor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

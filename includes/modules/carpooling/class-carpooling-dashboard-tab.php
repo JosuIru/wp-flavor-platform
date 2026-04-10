@@ -5,7 +5,7 @@
  * Proporciona tabs de usuario para gestionar viajes compartidos,
  * reservas y estadisticas de impacto ambiental.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Carpooling
  */
 

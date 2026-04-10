@@ -2,7 +2,7 @@
 /**
  * Vista: Categorias de Documentos Legales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

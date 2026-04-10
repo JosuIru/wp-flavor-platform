@@ -2,14 +2,14 @@
 /**
  * Motor de integración con Claude API
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Claude_Engine {
+class Flavor_Platform_Claude_Engine {
 
     /**
      * Instancia singleton
@@ -38,7 +38,7 @@ class Flavor_Chat_Claude_Engine {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Claude_Engine
+     * @return Flavor_Platform_Claude_Engine
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -67,7 +67,7 @@ class Flavor_Chat_Claude_Engine {
     /**
      * Envía un mensaje a la IA activa y obtiene la respuesta
      *
-     * @param Flavor_Chat_Session $session Sesión actual
+     * @param Flavor_Platform_Session $session Sesión actual
      * @param string $user_message Mensaje del usuario
      * @return array
      */
@@ -146,7 +146,7 @@ class Flavor_Chat_Claude_Engine {
     /**
      * Procesa respuesta unificada de cualquier motor de IA
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param array $response
      * @param array $messages
      * @return array
@@ -211,8 +211,8 @@ class Flavor_Chat_Claude_Engine {
     private function get_tools_from_modules() {
         $tools = [];
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $tools = $loader->get_all_tool_definitions();
         }
 
@@ -222,7 +222,7 @@ class Flavor_Chat_Claude_Engine {
     /**
      * Construye el system prompt
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @return string
      */
     private function build_system_prompt($session) {
@@ -238,15 +238,18 @@ class Flavor_Chat_Claude_Engine {
 
         // Conocimiento base de los módulos
         $modules_knowledge = '';
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $modules_knowledge = $loader->get_combined_knowledge_base();
         }
 
         // Conocimiento personalizado
         $custom_knowledge = '';
-        if (class_exists('Flavor_Chat_Knowledge_Base')) {
-            $kb = Flavor_Chat_Knowledge_Base::get_instance();
+        $kb_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Knowledge_Base')
+            : 'Flavor_Chat_Knowledge_Base';
+        if (class_exists($kb_class)) {
+            $kb = $kb_class::get_instance();
             $custom_knowledge = $kb->get_full_context($language);
         }
 
@@ -289,8 +292,11 @@ class Flavor_Chat_Claude_Engine {
         );
 
         // Añadir protecciones antispam (anti-jailbreak y on-topic)
-        if (class_exists('Flavor_Chat_Antispam')) {
-            $antispam = Flavor_Chat_Antispam::get_instance();
+        $antispam_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Antispam')
+            : 'Flavor_Chat_Antispam';
+        if (class_exists($antispam_class)) {
+            $antispam = $antispam_class::get_instance();
             $site_name = get_bloginfo('name');
             $business_topics = $settings['business_topics'] ?? [];
 
@@ -506,7 +512,7 @@ PROMPT,
     /**
      * Construye el array de mensajes para la API
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param string $user_message
      * @return array
      */
@@ -556,7 +562,7 @@ PROMPT,
         $response = wp_remote_post(self::API_URL, $args);
 
         if (is_wp_error($response)) {
-            flavor_chat_ia_log('Error API: ' . $response->get_error_message(), 'error');
+            flavor_platform_log('Error API: ' . $response->get_error_message(), 'error');
             return [
                 'success' => false,
                 'error' => __('Error de conexión con la API', 'flavor-platform'),
@@ -572,7 +578,7 @@ PROMPT,
 
             // Intentar con modelo fallback si es error de modelo
             if ($status_code === 400 && strpos($error_message, 'model') !== false) {
-                flavor_chat_ia_log('Intentando con modelo fallback', 'warning');
+                flavor_platform_log('Intentando con modelo fallback', 'warning');
                 $body_array = json_decode($args['body'], true);
                 $body_array['model'] = self::MODEL_FALLBACK;
                 $args['body'] = json_encode($body_array);
@@ -592,7 +598,7 @@ PROMPT,
                 }
             }
 
-            flavor_chat_ia_log("Error API [{$status_code}]: {$error_message}", 'error');
+            flavor_platform_log("Error API [{$status_code}]: {$error_message}", 'error');
 
             return [
                 'success' => false,
@@ -611,7 +617,7 @@ PROMPT,
     /**
      * Procesa la respuesta de Claude
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param array $data
      * @param array $messages
      * @return array
@@ -674,10 +680,10 @@ PROMPT,
      * @return array
      */
     private function execute_tool($tool_name, $params) {
-        flavor_chat_ia_log("Ejecutando tool: {$tool_name}", 'info');
+        flavor_platform_log("Ejecutando tool: {$tool_name}", 'info');
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             return $loader->execute_action($tool_name, $params);
         }
 
@@ -690,7 +696,7 @@ PROMPT,
     /**
      * Continúa la conversación después de ejecutar tools (Engine Manager)
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param array $original_response
      * @param array $messages
      * @param array $tool_results
@@ -775,7 +781,7 @@ PROMPT,
     /**
      * Continúa la conversación después de ejecutar tools (Legacy)
      *
-     * @param Flavor_Chat_Session $session
+     * @param Flavor_Platform_Session $session
      * @param array $original_response
      * @param array $messages
      * @param array $tool_results
@@ -842,4 +848,8 @@ PROMPT,
 
         return $result;
     }
+}
+
+if (!class_exists('Flavor_Chat_Claude_Engine', false)) {
+    class_alias('Flavor_Platform_Claude_Engine', 'Flavor_Chat_Claude_Engine');
 }

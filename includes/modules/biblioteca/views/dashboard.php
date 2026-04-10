@@ -2,7 +2,7 @@
 /**
  * Vista Dashboard - Biblioteca
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

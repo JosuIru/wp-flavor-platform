@@ -2,14 +2,17 @@
 /**
  * Template: Compartir Saber
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$categorias = Flavor_Chat_Saberes_Ancestrales_Module::CATEGORIAS_SABER;
+$saberes_ancestrales_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Saberes_Ancestrales_Module')
+    : 'Flavor_Chat_Saberes_Ancestrales_Module';
+$categorias = $saberes_ancestrales_module_class::CATEGORIAS_SABER;
 ?>
 
 <div class="sa-container">

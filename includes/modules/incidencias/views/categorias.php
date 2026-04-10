@@ -4,7 +4,7 @@
  *
  * Gestión de categorías de incidencias urbanas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

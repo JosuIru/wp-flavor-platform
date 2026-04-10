@@ -33,8 +33,8 @@ class Flavor_GC_Shortcodes_Fallback {
     }
 
     private function ensure_gc_module_loaded() {
-        if (class_exists('Flavor_Chat_IA')) {
-            $plugin = Flavor_Chat_IA::get_instance();
+        if (class_exists('Flavor_Platform')) {
+            $plugin = Flavor_Platform::get_instance();
             if (method_exists($plugin, 'get_modules')) {
                 $modules = $plugin->get_modules();
                 if (isset($modules['grupos_consumo'])) {
@@ -44,15 +44,18 @@ class Flavor_GC_Shortcodes_Fallback {
             }
         }
 
-        if (!class_exists('Flavor_Chat_Grupos_Consumo_Module')) {
-            $file = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/class-grupos-consumo-module.php';
+        $grupos_consumo_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Grupos_Consumo_Module')
+            : 'Flavor_Chat_Grupos_Consumo_Module';
+        if (!class_exists($grupos_consumo_module_class)) {
+            $file = FLAVOR_PLATFORM_PATH . 'includes/modules/grupos-consumo/class-grupos-consumo-module.php';
             if (file_exists($file)) {
                 require_once $file;
             }
         }
 
-        if (class_exists('Flavor_Chat_Grupos_Consumo_Module') && $this->module_instance === null) {
-            $this->module_instance = new Flavor_Chat_Grupos_Consumo_Module();
+        if (class_exists($grupos_consumo_module_class) && $this->module_instance === null) {
+            $this->module_instance = new $grupos_consumo_module_class();
         }
     }
 
@@ -62,7 +65,7 @@ class Flavor_GC_Shortcodes_Fallback {
             return;
         }
 
-        $file = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/class-gc-membership.php';
+        $file = FLAVOR_PLATFORM_PATH . 'includes/modules/grupos-consumo/class-gc-membership.php';
         if (file_exists($file)) {
             require_once $file;
         }

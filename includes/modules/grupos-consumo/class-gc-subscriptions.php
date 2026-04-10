@@ -4,7 +4,7 @@
  *
  * Gestiona suscripciones a cestas de productos con frecuencia configurable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -139,7 +139,7 @@ class Flavor_GC_Subscriptions {
         global $wpdb;
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             return null;
         }
 

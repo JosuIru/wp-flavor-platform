@@ -2,7 +2,7 @@
 /**
  * Manejadores AJAX para el chat
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 // Incluir clase de sesión
 require_once __DIR__ . '/class-chat-session.php';
 
-class Flavor_Chat_Ajax {
+class Flavor_Platform_Ajax {
 
     /**
      * Flag para evitar doble registro
@@ -57,7 +57,7 @@ class Flavor_Chat_Ajax {
      */
     public static function remove_conflicting_handlers() {
         // Si Chat_IA_Ajax existe (de wp-calendario-experiencias), remover su handler
-        if (class_exists('Chat_IA_Ajax') && !is_a('Chat_IA_Ajax', 'Flavor_Chat_Ajax')) {
+        if (class_exists('Chat_IA_Ajax') && !is_a('Chat_IA_Ajax', 'Flavor_Platform_Ajax')) {
             remove_action('wp_ajax_chat_ia_send_message', ['Chat_IA_Ajax', 'handle_send_message']);
             remove_action('wp_ajax_nopriv_chat_ia_send_message', ['Chat_IA_Ajax', 'handle_send_message']);
         }
@@ -68,7 +68,7 @@ class Flavor_Chat_Ajax {
      */
     public static function handle_send_message() {
         // Verificar nonce - acepta ambos tipos para compatibilidad
-        $nonce_valid = check_ajax_referer('flavor_chat_nonce', 'nonce', false) ||
+        $nonce_valid = check_ajax_referer('flavor_platform_nonce', 'nonce', false) ||
                        check_ajax_referer('chat_ia_nonce', 'nonce', false);
         if (!$nonce_valid) {
             wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
@@ -101,8 +101,11 @@ class Flavor_Chat_Ajax {
         }
 
         // Sistema Antispam
-        if (class_exists('Flavor_Chat_Antispam')) {
-            $antispam = Flavor_Chat_Antispam::get_instance();
+        $antispam_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Antispam')
+            : 'Flavor_Chat_Antispam';
+        if (class_exists($antispam_class)) {
+            $antispam = $antispam_class::get_instance();
             $validation = $antispam->validate_message($message, $session_id, $ip, [
                 'honeypot' => $honeypot,
             ]);
@@ -116,7 +119,10 @@ class Flavor_Chat_Ajax {
         }
 
         // Obtener o crear sesión
-        $session = new Flavor_Chat_Session($session_id);
+        $session_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Session')
+            : 'Flavor_Chat_Session';
+        $session = new $session_class($session_id);
 
         if (!$session->get_conversation_id()) {
             $session->start_conversation($language);
@@ -187,13 +193,16 @@ class Flavor_Chat_Ajax {
      */
     public static function handle_start_session() {
         // Verificar nonce
-        if (!check_ajax_referer('flavor_chat_nonce', 'nonce', false)) {
+        if (!check_ajax_referer('flavor_platform_nonce', 'nonce', false)) {
             wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
         }
 
         $language = sanitize_text_field($_POST['language'] ?? 'es');
 
-        $session = new Flavor_Chat_Session();
+        $session_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Session')
+            : 'Flavor_Chat_Session';
+        $session = new $session_class();
         $session->start_conversation($language);
 
         wp_send_json_success([
@@ -208,7 +217,7 @@ class Flavor_Chat_Ajax {
      */
     public static function handle_init_session() {
         // Verificar nonce - acepta ambos nombres
-        $nonce_valid = check_ajax_referer('flavor_chat_nonce', 'nonce', false);
+        $nonce_valid = check_ajax_referer('flavor_platform_nonce', 'nonce', false);
 
         if (!$nonce_valid) {
             wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
@@ -222,7 +231,10 @@ class Flavor_Chat_Ajax {
             $language = 'es';
         }
 
-        $session = new Flavor_Chat_Session();
+        $session_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Session')
+            : 'Flavor_Chat_Session';
+        $session = new $session_class();
         $session->start_conversation($language);
 
         // Obtener mensaje de bienvenida
@@ -478,7 +490,7 @@ modules/mi-modulo/
 
     /**
      * Handler para el modal de ayuda admin con knowledge base completa
-     * Usa nonce chat_ia_nonce en lugar de flavor_chat_nonce
+     * Usa nonce chat_ia_nonce en lugar de flavor_platform_nonce
      */
     public static function handle_send_message_admin() {
         // Verificar nonce (diferente al del frontend)
@@ -588,4 +600,8 @@ INSTRUCCIONES:
 
         return $prompt;
     }
+}
+
+if (!class_exists('Flavor_Chat_Ajax', false)) {
+    class_alias('Flavor_Platform_Ajax', 'Flavor_Chat_Ajax');
 }

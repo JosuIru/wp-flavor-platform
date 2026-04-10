@@ -4,7 +4,7 @@
  *
  * Sistema de donaciones y regalos sin expectativa de retorno
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EconomiaDon
  * @since 4.2.0
  */
@@ -137,16 +137,16 @@ class Flavor_Economia_Don_Frontend_Controller {
     public function registrar_assets() {
         wp_register_style(
             'flavor-economia-don-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/css/economia-don-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/css/economia-don-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-economia-don-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/js/economia-don-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -184,7 +184,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
         $this->enqueue_assets();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_dones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_dones)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
                    __('El sistema no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
@@ -251,7 +251,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
             <?php if (is_user_logged_in()): ?>
                 <div class="flavor-don-cta-ofrecer">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -506,7 +506,7 @@ class Flavor_Economia_Don_Frontend_Controller {
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Ofrecer Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('economia-don')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('economia-don')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -544,7 +544,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             <?php if (empty($dones)): ?>
                 <div class="flavor-alert flavor-alert-info">
                     <?php _e('No has ofrecido ningún don todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <?php _e('Ofrecer mi primer don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -845,7 +845,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             </div>
 
             <div class="flavor-acciones-rapidas">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-heart"></span>
                     <?php _e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -906,7 +906,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('¡Gracias por tu generosidad! Tu don está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'don_id' => $wpdb->insert_id,
-                'redirect' => Flavor_Chat_Helpers::get_item_url('economia-don', $wpdb->insert_id),
+                'redirect' => Flavor_Platform_Helpers::get_item_url('economia-don', $wpdb->insert_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

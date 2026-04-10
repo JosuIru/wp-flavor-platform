@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Gestión de Suscripciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

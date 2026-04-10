@@ -2,7 +2,7 @@
 /**
  * Template: Mapa Interactivo de Huertos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/HuertosUrbanos
  */
 

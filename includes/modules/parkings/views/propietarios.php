@@ -5,7 +5,7 @@
  * Gestión completa de propietarios de plazas de parking con estadísticas,
  * filtros avanzados, paginación y acciones de administración.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Parkings
  */
 

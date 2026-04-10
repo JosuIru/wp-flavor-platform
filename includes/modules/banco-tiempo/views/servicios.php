@@ -4,7 +4,7 @@
  *
  * Gestión completa de servicios ofrecidos en el banco de tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

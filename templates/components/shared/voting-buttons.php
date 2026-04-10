@@ -4,7 +4,7 @@
  *
  * Botones de votación (up/down, like, apoyo, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param int    $item_id    ID del item a votar

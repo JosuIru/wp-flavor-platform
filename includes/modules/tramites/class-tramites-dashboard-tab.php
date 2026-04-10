@@ -5,7 +5,7 @@
  * Gestiona los tabs del dashboard de usuario para el modulo de tramites,
  * mostrando expedientes, tramites pendientes e historial.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Tramites
  * @since 2.0.0
  */
@@ -120,8 +120,8 @@ class Flavor_Tramites_Dashboard_Tab {
      * Registra assets necesarios
      */
     public function registrar_assets() {
-        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/tramites/assets/';
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $base_url = FLAVOR_PLATFORM_URL . 'includes/modules/tramites/assets/';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         wp_register_style(
             'flavor-tramites-dashboard',
@@ -193,7 +193,7 @@ class Flavor_Tramites_Dashboard_Tab {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             return 0;
         }
 
@@ -220,7 +220,7 @@ class Flavor_Tramites_Dashboard_Tab {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             return 0;
         }
 
@@ -250,7 +250,7 @@ class Flavor_Tramites_Dashboard_Tab {
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             $this->render_mensaje_no_disponible();
             return;
         }
@@ -310,7 +310,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <?php _e('Expedientes en curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($expedientes_activos)) : ?>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                             <?php _e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
@@ -321,7 +321,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-portfolio"></span>
                             <p><?php _e('No tienes expedientes activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('tramites', '')); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php _e('Iniciar un tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
@@ -345,15 +345,15 @@ class Flavor_Tramites_Dashboard_Tab {
                 </div>
                 <div class="flavor-panel-body">
                     <div class="flavor-acciones-grid">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('tramites', '')); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-plus-alt2"></span>
                             <span><?php _e('Nuevo tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-warning"></span>
                             <span><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-historial'); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('tramites', '') . '?tab=tramites-historial'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-backup"></span>
                             <span><?php _e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
@@ -380,7 +380,7 @@ class Flavor_Tramites_Dashboard_Tab {
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             $this->render_mensaje_no_disponible();
             return;
         }
@@ -440,7 +440,7 @@ class Flavor_Tramites_Dashboard_Tab {
             return;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_expedientes)) {
             $this->render_mensaje_no_disponible();
             return;
         }
@@ -800,7 +800,7 @@ class Flavor_Tramites_Dashboard_Tab {
     private function contar_documentos_expediente($expediente_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_documentos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_documentos)) {
             return 0;
         }
 
@@ -820,7 +820,7 @@ class Flavor_Tramites_Dashboard_Tab {
     private function obtener_timeline_expediente($expediente_id, $limite = 5) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_historial_estados)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_historial_estados)) {
             return [];
         }
 

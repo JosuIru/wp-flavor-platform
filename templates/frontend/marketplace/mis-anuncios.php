@@ -2,7 +2,7 @@
 /**
  * Frontend: Mis Anuncios de Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 
@@ -54,7 +54,7 @@ if ($query->have_posts()) {
             'descripcion'     => wp_trim_words(get_the_excerpt(), 15),
             'precio'          => get_post_meta($post_id, '_marketplace_precio', true) ?: get_post_meta($post_id, '_precio', true) ?: '0',
             'imagen'          => get_the_post_thumbnail_url($post_id, 'medium') ?: '',
-            'url'             => Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $post_id,
+            'url'             => Flavor_Platform_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $post_id,
             'edit_url'        => get_edit_post_link($post_id),
             'estado'          => get_post_status($post_id),
             'fecha'           => get_the_date(),
@@ -81,7 +81,7 @@ $total_anuncios = $query->found_posts;
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
                     <?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>"
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'publicar')); ?>"
                    class="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-all shadow-md">
                     <?php echo esc_html__('+ Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -95,7 +95,7 @@ $total_anuncios = $query->found_posts;
         <div class="text-6xl mb-4">📦</div>
         <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No tienes anuncios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Publica tu primer producto y empieza a vender!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>"
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('marketplace', 'publicar')); ?>"
            class="inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-600 transition-colors">
             <?php echo esc_html__('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
@@ -148,7 +148,7 @@ $total_anuncios = $query->found_posts;
                                 <?php echo esc_html($estado_label); ?>
                             </span>
                             <?php if (!empty($anuncio['comunidad_nombre'])): ?>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', '') . '/' . $anuncio['comunidad_id'] . '/'); ?>"
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('comunidades', '') . '/' . $anuncio['comunidad_id'] . '/'); ?>"
                                class="px-2 py-1 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors">
                                 👥 <?php echo esc_html($anuncio['comunidad_nombre']); ?>
                             </a>
@@ -163,7 +163,7 @@ $total_anuncios = $query->found_posts;
                                class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
                                 <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('marketplace', $anuncio['id'], 'editar')); ?>"
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('marketplace', $anuncio['id'], 'editar')); ?>"
                                class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition-colors">
                                 <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>

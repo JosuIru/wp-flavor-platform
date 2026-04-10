@@ -2,7 +2,7 @@
 /**
  * Template: Single Productor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

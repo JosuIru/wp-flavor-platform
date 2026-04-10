@@ -7,7 +7,7 @@
  * - Preferencias de frecuencia y tipo de emails
  * - Historial de emails recibidos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  * @version 1.0.0
  */
@@ -136,14 +136,14 @@ class Flavor_EM_Dashboard_Tab {
             'flavor-em-dashboard',
             plugins_url('assets/css/em-dashboard.css', __FILE__),
             [],
-            defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0'
+            defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0'
         );
 
         wp_enqueue_script(
             'flavor-em-dashboard',
             plugins_url('assets/js/em-dashboard.js', __FILE__),
             ['jquery'],
-            defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0',
+            defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0',
             true
         );
 

@@ -4,7 +4,7 @@
  *
  * Analiza datos de módulos y genera insights con IA.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

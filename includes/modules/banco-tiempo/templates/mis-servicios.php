@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $servicios: array de servicios del usuario actual
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

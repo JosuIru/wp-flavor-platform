@@ -5,7 +5,7 @@
  * Controlador frontend con shortcodes, AJAX handlers y tabs para el dashboard
  * Sistema de ciencia ciudadana para catalogar especies locales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\BiodiversidadLocal
  * @since 4.2.0
  */
@@ -143,23 +143,23 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
     public function registrar_assets() {
         wp_register_style(
             'flavor-biodiversidad-local',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_style(
             'flavor-biodiversidad-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
             ['flavor-biodiversidad-local'],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-biodiversidad-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -199,7 +199,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
 
         $this->enqueue_assets();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_especies)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_especies)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
                    __('El catálogo de biodiversidad no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
@@ -303,7 +303,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
 
             <?php if (is_user_logged_in()): ?>
                 <div class="flavor-biodiversidad-cta">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Reportar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -458,7 +458,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                     </div>
 
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar', ['especie_id' => $especie_id])); ?>"
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad-local', 'reportar', ['especie_id' => $especie_id])); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Reportar avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -734,7 +734,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                         <span class="dashicons dashicons-upload"></span>
                         <?php _e('Enviar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('biodiversidad-local')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('biodiversidad-local')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -772,7 +772,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
             <?php if (empty($avistamientos)): ?>
                 <div class="flavor-alert flavor-alert-info">
                     <?php _e('No has registrado ningún avistamiento todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <?php _e('Reportar tu primer avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -1160,7 +1160,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                 <?php if (empty($ultimos)): ?>
                     <p class="flavor-no-datos">
                         <?php _e('No has registrado avistamientos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>"><?php _e('Reportar uno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>"><?php _e('Reportar uno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     </p>
                 <?php else: ?>
                     <ul class="flavor-lista-simple">
@@ -1178,7 +1178,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
             </div>
 
             <div class="flavor-acciones-rapidas">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus"></span>
                     <?php _e('Reportar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>

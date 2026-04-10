@@ -4,7 +4,7 @@
  *
  * Aplica los estilos de diseño del plugin al panel de administración de WP
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 
@@ -134,7 +134,7 @@ class Flavor_Admin_Customizer {
                     'flavor-admin-fonts',
                     'https://fonts.googleapis.com/css2?family=' . $fonts_string . '&display=swap',
                     [],
-                    FLAVOR_CHAT_IA_VERSION
+                    FLAVOR_PLATFORM_VERSION
                 );
             }
         }

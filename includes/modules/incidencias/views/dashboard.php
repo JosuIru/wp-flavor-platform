@@ -4,7 +4,7 @@
  *
  * Panel de control con estadísticas y métricas de incidencias urbanas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

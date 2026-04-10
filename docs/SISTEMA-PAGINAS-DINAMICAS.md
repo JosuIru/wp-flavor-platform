@@ -80,7 +80,7 @@ public static function get_renderer_config(): array {
 
         'tabs' => [
             'mi-accion' => [
-                'label'   => __('Mi Acción', 'flavor-chat-ia'),
+                'label'   => __('Mi Acción', 'flavor-platform'),
                 'icon'    => 'dashicons-admin-generic',
                 'content' => '[mi_shortcode]',  // O cualquier tipo de content
                 'requires_login' => true,       // Opcional
@@ -108,7 +108,7 @@ public static function get_renderer_config(): array {
     // ... otros tabs ...
 
     'unirme' => [
-        'label'         => __('Unirme', 'flavor-chat-ia'),
+        'label'         => __('Unirme', 'flavor-platform'),
         'icon'          => 'dashicons-plus-alt',
         'content'       => '[gc_formulario_union]',
         'requires_login' => true,
@@ -143,7 +143,7 @@ Para mostrar contenido de otro módulo (ej: foros dentro de grupos-consumo):
 ```php
 'tabs' => [
     'foro' => [
-        'label'          => __('Foro', 'flavor-chat-ia'),
+        'label'          => __('Foro', 'flavor-platform'),
         'icon'           => 'dashicons-admin-comments',
         'is_integration' => true,
         'source_module'  => 'foros',  // Módulo fuente
@@ -195,7 +195,7 @@ $shortcodes_especificos = [
 // En class-grupos-consumo-module.php -> get_renderer_config()
 'tabs' => [
     'unirme' => [
-        'label'   => __('Unirme', 'flavor-chat-ia'),
+        'label'   => __('Unirme', 'flavor-platform'),
         'icon'    => 'dashicons-plus-alt',
         'content' => '[gc_formulario_union]',
     ],

@@ -7,7 +7,7 @@
  * Funciona para cualquier perfil: restaurantes, ayuntamientos,
  * comunidades, grupos de consumo, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -375,7 +375,7 @@ class Flavor_Unified_Admin_Panel {
      * @return void
      */
     private function preload_module_for_current_admin_page() {
-        if (!is_admin() || !class_exists('Flavor_Chat_Module_Loader')) {
+        if (!is_admin() || !class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
@@ -384,7 +384,7 @@ class Flavor_Unified_Admin_Panel {
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader->get_registered_modules();
         if (empty($registered_modules)) {
             return;
@@ -849,16 +849,16 @@ class Flavor_Unified_Admin_Panel {
 
         wp_enqueue_style(
             'flavor-gestion-panel',
-            FLAVOR_CHAT_IA_URL . 'includes/admin/assets/css/unified-admin-panel.css',
+            FLAVOR_PLATFORM_URL . 'includes/admin/assets/css/unified-admin-panel.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-gestion-panel',
-            FLAVOR_CHAT_IA_URL . 'includes/admin/assets/js/unified-admin-panel.js',
+            FLAVOR_PLATFORM_URL . 'includes/admin/assets/js/unified-admin-panel.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

@@ -2,7 +2,7 @@
 /**
  * Gestión de Canales de Notificación para Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -498,7 +498,7 @@ class Flavor_GC_Notification_Channels {
                 $ciclo->post_title,
                 date_i18n(get_option('date_format'), strtotime(get_post_meta($ciclo_id, '_gc_fecha_cierre', true)))
             ),
-            'enlace' => add_query_arg('ciclo', intval($ciclo_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo')),
+            'enlace' => add_query_arg('ciclo', intval($ciclo_id), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'ciclo')),
             'enlace_texto' => 'Ver ciclo y hacer pedido',
         ];
 
@@ -527,7 +527,7 @@ class Flavor_GC_Notification_Channels {
                 $pedido_id,
                 number_format($pedido->total, 2) . '€'
             ),
-            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
+            'enlace' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver mis pedidos',
         ];
 
@@ -542,7 +542,7 @@ class Flavor_GC_Notification_Channels {
             'pedido_id' => $pedido_id,
             'titulo' => 'Pedido modificado',
             'mensaje' => sprintf('Tu pedido #%d ha sido actualizado.', $pedido_id),
-            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
+            'enlace' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver detalles',
         ];
 
@@ -570,7 +570,7 @@ class Flavor_GC_Notification_Channels {
             'ciclo_nombre' => $entrega->ciclo_nombre,
             'titulo' => 'Tu entrega está lista',
             'mensaje' => __('Tu pedido está preparado y listo para recoger.', 'flavor-platform'),
-            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
+            'enlace' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver detalles de entrega',
         ];
 
@@ -603,7 +603,7 @@ class Flavor_GC_Notification_Channels {
                 $suscripcion->cesta_nombre,
                 number_format($suscripcion->importe, 2) . '€'
             ),
-            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
+            'enlace' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
             'enlace_texto' => 'Ver mi suscripción',
         ];
 
@@ -632,7 +632,7 @@ class Flavor_GC_Notification_Channels {
                 'Hay un nuevo producto disponible: %s',
                 $producto->post_title
             ),
-            'enlace' => add_query_arg('product', intval($producto_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')),
+            'enlace' => add_query_arg('product', intval($producto_id), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')),
             'enlace_texto' => 'Ver producto',
         ];
 
@@ -697,7 +697,7 @@ class Flavor_GC_Notification_Channels {
                     'El ciclo "%s" cierra mañana. Si aún no has hecho tu pedido, hazlo antes del cierre.',
                     $ciclo->post_title
                 ),
-                'enlace' => add_query_arg('ciclo', intval($ciclo->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo')),
+                'enlace' => add_query_arg('ciclo', intval($ciclo->ID), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'ciclo')),
                 'enlace_texto' => 'Hacer pedido ahora',
             ];
 
@@ -747,7 +747,7 @@ class Flavor_GC_Notification_Channels {
                     $suscripcion->cesta_nombre,
                     number_format($suscripcion->importe, 2) . '€'
                 ),
-                'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
+                'enlace' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
                 'enlace_texto' => 'Gestionar suscripción',
             ];
 

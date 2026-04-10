@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Solicitud Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

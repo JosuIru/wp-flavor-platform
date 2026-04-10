@@ -4,7 +4,7 @@
  *
  * Muestra mensaje cuando el usuario no está autenticado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -22,7 +22,7 @@ get_header();
             <?php esc_html_e('Necesitas iniciar sesión para acceder a Mi Red Social y conectar con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <div class="mi-red-login-required__actions">
-            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('mi_red', ''))); ?>" class="mi-red-btn mi-red-btn--primary">
+            <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('mi_red', ''))); ?>" class="mi-red-btn mi-red-btn--primary">
                 <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php if (get_option('users_can_register')) : ?>

@@ -5,7 +5,7 @@
  * Seccion hero para el modulo de presupuestos participativos.
  * Titulo, subtitulo, estadisticas de presupuesto y proyectos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

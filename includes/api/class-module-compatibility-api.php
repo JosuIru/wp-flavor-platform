@@ -5,7 +5,7 @@
  * Endpoint de diagnóstico que devuelve la matriz de compatibilidad
  * de módulos en los 3 niveles (WordPress, Flutter, API)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.5.0
  */
 
@@ -301,7 +301,7 @@ class Flavor_Module_Compatibility_API {
             'platform' => array(
                 'wordpress_version' => get_bloginfo('version'),
                 'php_version' => phpversion(),
-                'plugin_version' => defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : 'unknown',
+                'plugin_version' => defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : 'unknown',
                 'site_url' => get_site_url(),
                 'is_multisite' => is_multisite(),
             ),

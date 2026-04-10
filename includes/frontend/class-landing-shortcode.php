@@ -5,7 +5,7 @@
  * Proporciona el shortcode [flavor_landing] para renderizar
  * las landing pages definidas en las plantillas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  */
 
@@ -205,8 +205,8 @@ class Flavor_Landing_Shortcode {
             get_template_directory() . "/flavor/landing/{$tipo}-{$variante}.php",
             get_template_directory() . "/flavor/landing/{$tipo}.php",
             // Plugin
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/landing/{$tipo}-{$variante}.php",
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/landing/{$tipo}.php",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/landing/{$tipo}-{$variante}.php",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/landing/{$tipo}.php",
         ];
 
         foreach ($paths as $path) {

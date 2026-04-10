@@ -5,7 +5,7 @@
  * Importa noticias de fuentes RSS externas y gestiona videos de YouTube
  * relacionados con la comunidad.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules/Agregador_Contenido
  * @since 3.5.0
  */
@@ -507,15 +507,15 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
              has_shortcode( get_post()->post_content ?? '', 'agregador_' ) ) {
             wp_enqueue_style(
                 'flavor-agregador',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/agregador-contenido/assets/css/agregador.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/agregador-contenido/assets/css/agregador.css',
                 array(),
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
             wp_enqueue_script(
                 'flavor-agregador',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/agregador-contenido/assets/js/agregador.js',
+                FLAVOR_PLATFORM_URL . 'includes/modules/agregador-contenido/assets/js/agregador.js',
                 array( 'jquery' ),
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
         }

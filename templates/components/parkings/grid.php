@@ -2,7 +2,7 @@
 /**
  * Template: Grid de parkings disponibles
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Parkings
  */
 

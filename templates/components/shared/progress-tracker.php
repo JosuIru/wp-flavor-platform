@@ -4,7 +4,7 @@
  *
  * Tracker de progreso con pasos o barras.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $type       Tipo: 'bar', 'steps', 'circular'

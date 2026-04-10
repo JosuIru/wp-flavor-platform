@@ -4,7 +4,7 @@
  *
  * Permite activar/desactivar funcionalidades en las apps desde el admin.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.4.0
  */
 
@@ -147,16 +147,16 @@ class Flavor_Feature_Flags {
 
         wp_enqueue_style(
             'flavor-feature-flags',
-            FLAVOR_CHAT_IA_URL . 'admin/css/feature-flags.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/feature-flags.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-feature-flags',
-            FLAVOR_CHAT_IA_URL . 'admin/js/feature-flags.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/feature-flags.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

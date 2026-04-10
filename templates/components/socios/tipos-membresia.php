@@ -6,7 +6,7 @@
  * Basico, Premium y Familiar. Cada una con nombre,
  * precio, lista de caracteristicas y boton de accion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

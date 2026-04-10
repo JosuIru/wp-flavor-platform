@@ -4,7 +4,7 @@
  *
  * Muestra indicadores clave de rendimiento y gestion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -33,7 +33,7 @@ $indicadores = [
 ];
 
 // Indicadores economicos
-if (Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_presupuestos)) {
     // Presupuesto total del ejercicio actual
     $presupuesto_ingresos = $wpdb->get_var($wpdb->prepare(
         "SELECT SUM(credito_definitivo) FROM $tabla_presupuestos WHERE ejercicio = %d AND tipo = 'ingresos'",
@@ -80,7 +80,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
 }
 
 // Indicadores de gastos
-if (Flavor_Chat_Helpers::tabla_existe($tabla_gastos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_gastos)) {
     $total_gastos = $wpdb->get_var($wpdb->prepare(
         "SELECT SUM(importe_total) FROM $tabla_gastos WHERE ejercicio = %d AND estado_pago != 'anulado'",
         $ejercicio_actual
@@ -112,7 +112,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_gastos)) {
 }
 
 // Indicadores de transparencia
-if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
     $total_documentos = $wpdb->get_var(
         "SELECT COUNT(*) FROM $tabla_documentos WHERE estado = 'publicado'"
     );
@@ -139,7 +139,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
     ];
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_actas)) {
     $total_actas = $wpdb->get_var(
         "SELECT COUNT(*) FROM $tabla_actas WHERE estado IN ('aprobada', 'publicada')"
     );
@@ -166,7 +166,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
 }
 
 // Indicadores de participacion
-if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
     $total_solicitudes = $wpdb->get_var(
         "SELECT COUNT(*) FROM $tabla_solicitudes"
     );

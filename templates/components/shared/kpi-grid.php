@@ -4,7 +4,7 @@
  *
  * Grid de indicadores KPI para dashboards.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $kpis     Array de KPIs: [['value' => '123', 'label' => 'Total', 'icon' => '📊', 'color' => 'blue', 'trend' => 'up', 'trend_value' => '+5%']]

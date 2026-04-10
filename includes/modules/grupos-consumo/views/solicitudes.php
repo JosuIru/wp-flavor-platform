@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Gestion de Solicitudes de Union
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

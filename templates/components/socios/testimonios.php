@@ -5,7 +5,7 @@
  * Tarjetas de testimonios de miembros de la comunidad.
  * Muestra nombre, texto, tipo de socio y avatar.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -2,7 +2,7 @@
 /**
  * Gestor de Auto-Ajuste de Parametros por la IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

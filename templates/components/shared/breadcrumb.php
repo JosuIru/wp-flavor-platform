@@ -4,7 +4,7 @@
  *
  * Navegación de migas de pan reutilizable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items      Array de items: [['label' => 'Inicio', 'url' => '/'], ['label' => 'Actual']]

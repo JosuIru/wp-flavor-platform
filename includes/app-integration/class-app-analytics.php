@@ -4,7 +4,7 @@
  *
  * Rastrea eventos, conexiones y uso de módulos desde la app móvil.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.0.0
  */
 

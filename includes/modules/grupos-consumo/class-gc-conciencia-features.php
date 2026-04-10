@@ -8,7 +8,7 @@
  * - Precio Justo Visible: desglose transparente de costes
  * - Cestas de Trueque: intercambios entre consumidores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  * @since 4.2.0
  */

@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Reportes y Estadísticas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

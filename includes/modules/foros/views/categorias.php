@@ -2,7 +2,7 @@
 /**
  * Vista de Categorías - Módulo Foros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Foros
  */
 

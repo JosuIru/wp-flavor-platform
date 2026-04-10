@@ -2,7 +2,7 @@
 /**
  * Formulario de consentimientos
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {

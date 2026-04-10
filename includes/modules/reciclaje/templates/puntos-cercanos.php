@@ -28,7 +28,7 @@ $tipos_contenedores = [
 
 // Obtener puntos de reciclaje
 $puntos_reciclaje = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
     $where = "estado = 'activo'";
     if ($tipo_filtro) {
         $where .= $wpdb->prepare(" AND tipo = %s", $tipo_filtro);

@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Ayuda Vecinal
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#f97316';

@@ -4,7 +4,7 @@
  *
  * Conecta con el servidor de licencias para verificar y descargar actualizaciones
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Licensing
  * @since 3.2.0
  */
@@ -78,7 +78,9 @@ class Flavor_Plugin_Updater {
      * Constructor privado
      */
     private function __construct() {
-        $this->plugin_file = FLAVOR_CHAT_IA_BASENAME;
+        $this->plugin_file = function_exists('flavor_get_runtime_plugin_basename')
+            ? flavor_get_runtime_plugin_basename()
+            : FLAVOR_PLATFORM_BASENAME;
         $this->api_url = $this->get_api_url();
 
         $this->init_hooks();
@@ -136,7 +138,7 @@ class Flavor_Plugin_Updater {
         }
 
         // Obtener versión actual
-        $current_version = $transient->checked[$this->plugin_file] ?? FLAVOR_CHAT_IA_VERSION;
+        $current_version = $transient->checked[$this->plugin_file] ?? FLAVOR_PLATFORM_VERSION;
 
         // Verificar caché
         $cached = get_transient(self::CACHE_KEY);
@@ -159,12 +161,12 @@ class Flavor_Plugin_Updater {
                 'url'           => 'https://gailu.net/flavor-platform/',
                 'package'       => $update_info['download_url'] ?? '',
                 'icons'         => [
-                    '1x' => FLAVOR_CHAT_IA_URL . 'assets/images/icon-128.png',
-                    '2x' => FLAVOR_CHAT_IA_URL . 'assets/images/icon-256.png',
+                    '1x' => FLAVOR_PLATFORM_URL . 'assets/images/icon-128.png',
+                    '2x' => FLAVOR_PLATFORM_URL . 'assets/images/icon-256.png',
                 ],
                 'banners'       => [
-                    'low'  => FLAVOR_CHAT_IA_URL . 'assets/images/banner-772x250.png',
-                    'high' => FLAVOR_CHAT_IA_URL . 'assets/images/banner-1544x500.png',
+                    'low'  => FLAVOR_PLATFORM_URL . 'assets/images/banner-772x250.png',
+                    'high' => FLAVOR_PLATFORM_URL . 'assets/images/banner-1544x500.png',
                 ],
                 'tested'        => $update_info['tested_wp'] ?? '',
                 'requires_php'  => $update_info['requires_php'] ?? '7.4',
@@ -215,7 +217,7 @@ class Flavor_Plugin_Updater {
         $update_info = $cached['info'] ?? null;
 
         if (!$update_info) {
-            $update_info = $this->fetch_update_info(FLAVOR_CHAT_IA_VERSION);
+            $update_info = $this->fetch_update_info(FLAVOR_PLATFORM_VERSION);
         }
 
         if (!$update_info) {
@@ -225,7 +227,7 @@ class Flavor_Plugin_Updater {
         $plugin_info = [
             'name'              => 'Flavor Platform',
             'slug'              => $this->plugin_slug,
-            'version'           => $update_info['latest_version'] ?? FLAVOR_CHAT_IA_VERSION,
+            'version'           => $update_info['latest_version'] ?? FLAVOR_PLATFORM_VERSION,
             'author'            => '<a href="https://gailu.net">Gailu Labs</a>',
             'author_profile'    => 'https://gailu.net',
             'homepage'          => 'https://gailu.net/flavor-platform/',
@@ -240,8 +242,8 @@ class Flavor_Plugin_Updater {
             'requires_php'      => $update_info['requires_php'] ?? '7.4',
             'last_updated'      => $update_info['release_date'] ?? '',
             'banners'           => [
-                'low'  => FLAVOR_CHAT_IA_URL . 'assets/images/banner-772x250.png',
-                'high' => FLAVOR_CHAT_IA_URL . 'assets/images/banner-1544x500.png',
+                'low'  => FLAVOR_PLATFORM_URL . 'assets/images/banner-772x250.png',
+                'high' => FLAVOR_PLATFORM_URL . 'assets/images/banner-1544x500.png',
             ],
         ];
 
@@ -274,15 +276,15 @@ class Flavor_Plugin_Updater {
                 'body'    => wp_json_encode($body),
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'User-Agent'   => 'FlavorPlatform/' . FLAVOR_CHAT_IA_VERSION,
+                    'User-Agent'   => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
                 ],
                 'timeout' => 15,
             ]
         );
 
         if (is_wp_error($response)) {
-            if (function_exists('flavor_chat_ia_log')) {
-                flavor_chat_ia_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'warning');
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'warning');
             }
             return null;
         }
@@ -450,7 +452,7 @@ class Flavor_Plugin_Updater {
      */
     public function force_check() {
         delete_transient(self::CACHE_KEY);
-        return $this->fetch_update_info(FLAVOR_CHAT_IA_VERSION);
+        return $this->fetch_update_info(FLAVOR_PLATFORM_VERSION);
     }
 }
 

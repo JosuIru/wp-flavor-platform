@@ -4,7 +4,7 @@
  *
  * Template principal del editor visual fullscreen tipo Photoshop/Figma.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -1091,7 +1091,7 @@ $datos_json = wp_json_encode( $datos );
                         <template x-for="template in filteredTemplates" :key="template.id">
                             <div class="vbp-template-card" @click="selectTemplate(template)">
                                 <div class="vbp-template-preview">
-                                    <img :src="template.thumbnail || '<?php echo esc_url( FLAVOR_CHAT_IA_URL . 'assets/vbp/images/template-placeholder.svg' ); ?>'" :alt="template.title">
+                                    <img :src="template.thumbnail || '<?php echo esc_url( FLAVOR_PLATFORM_URL . 'assets/vbp/images/template-placeholder.svg' ); ?>'" :alt="template.title">
                                     <div class="vbp-template-overlay">
                                         <button type="button" class="vbp-btn vbp-btn-primary"><?php esc_html_e( 'Usar template', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                                         <button type="button" @click.stop="previewTemplate(template)" class="vbp-btn vbp-btn-secondary"><?php esc_html_e( 'Preview', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
@@ -1124,7 +1124,7 @@ $datos_json = wp_json_encode( $datos );
                         <template x-for="template in userTemplates" :key="template.id">
                             <div class="vbp-template-card">
                                 <div class="vbp-template-preview">
-                                    <img :src="template.thumbnail || '<?php echo esc_url( FLAVOR_CHAT_IA_URL . 'assets/vbp/images/template-placeholder.svg' ); ?>'" :alt="template.title">
+                                    <img :src="template.thumbnail || '<?php echo esc_url( FLAVOR_PLATFORM_URL . 'assets/vbp/images/template-placeholder.svg' ); ?>'" :alt="template.title">
                                     <div class="vbp-template-overlay">
                                         <button type="button" @click="applyTemplate(template)" class="vbp-btn vbp-btn-primary"><?php esc_html_e( 'Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                                         <button type="button" @click.stop="deleteTemplate(template)" class="vbp-btn vbp-btn-danger"><?php esc_html_e( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>

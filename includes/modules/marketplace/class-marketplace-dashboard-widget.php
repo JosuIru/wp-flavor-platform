@@ -7,7 +7,7 @@
  * - Mensajes pendientes
  * - Anuncios destacados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Marketplace
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -174,7 +174,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_anuncios,
                 'label' => __('Mis anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_anuncios > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Chat_Helpers::get_action_url('marketplace', '') . '?tab=mis-anuncios',
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Platform_Helpers::get_action_url('marketplace', '') . '?tab=mis-anuncios',
             ];
         }
 
@@ -185,7 +185,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mensajes_sin_leer,
                 'label' => __('Mensajes nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mensajes_sin_leer > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace-moderacion') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-moderacion') : Flavor_Platform_Helpers::get_action_url('marketplace', ''),
             ];
         }
 
@@ -195,7 +195,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_anuncios,
             'label' => __('Anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=marketplace-dashboard') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
+            'url' => $es_admin ? admin_url('admin.php?page=marketplace-dashboard') : Flavor_Platform_Helpers::get_action_url('marketplace', ''),
         ];
 
         // Stat 4: Favoritos
@@ -205,7 +205,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_favoritos,
                 'label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_favoritos > 0 ? 'danger' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Platform_Helpers::get_action_url('marketplace', ''),
             ];
         }
 
@@ -219,7 +219,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $user_id ? __('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('post-new.php?post_type=marketplace_item') : Flavor_Chat_Helpers::get_action_url('marketplace', $user_id ? 'publicar' : ''),
+                    'url' => $es_admin ? admin_url('post-new.php?post_type=marketplace_item') : Flavor_Platform_Helpers::get_action_url('marketplace', $user_id ? 'publicar' : ''),
                     'icon' => $user_id ? 'dashicons-plus-alt' : 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -274,7 +274,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => wp_trim_words($anuncio->titulo, 6, '...'),
                 'meta' => $precio_texto,
-                'url' => $es_admin ? admin_url('edit.php?post_type=marketplace_item') : Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id,
+                'url' => $es_admin ? admin_url('edit.php?post_type=marketplace_item') : Flavor_Platform_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id,
             ];
         }
 

@@ -4,7 +4,7 @@
  *
  * Sistema completo de notificaciones para usuarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -402,7 +402,7 @@ class Flavor_Notifications_System {
             'info',
             __('Pedido Listo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             __('Tu pedido está listo para recoger', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            ['link' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '🛒']
+            ['link' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '🛒']
         );
     }
 }

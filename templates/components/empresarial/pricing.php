@@ -2,7 +2,7 @@
 /**
  * Template: Tabla de Precios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

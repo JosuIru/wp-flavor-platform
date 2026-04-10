@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Bicicletas - Dashboard Mejorado
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BicicletasCompartidas
  * @since 3.0.0
  */

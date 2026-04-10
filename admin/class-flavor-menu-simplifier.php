@@ -5,7 +5,7 @@
  * Elimina el menú "Gestión" gigante y menús duplicados
  * Deja solo: Flavor Systems + Flavor Platform
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  */
 

@@ -17,7 +17,7 @@
  * @var string $url_boton_secundario    Secondary button URL
  * @var string $posicion                Image position: 'izquierda' or 'derecha'
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

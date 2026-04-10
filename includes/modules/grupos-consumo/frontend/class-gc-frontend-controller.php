@@ -2,7 +2,7 @@
 /**
  * Controller Frontend para Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -136,12 +136,12 @@ class Flavor_GC_Frontend_Controller {
         // Configuracion global para JavaScript
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
+            'restUrl' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'),
             'nonce' => wp_create_nonce('gc_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(home_url('/mi-portal/grupos-consumo/productos/')),
-            'carritoUrl' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
+            'carritoUrl' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
             'i18n' => [
                 'agregado' => __('Producto agregado al pedido', 'flavor-platform'),
                 'eliminado' => __('Producto eliminado del pedido', 'flavor-platform'),
@@ -1270,7 +1270,7 @@ class Flavor_GC_Frontend_Controller {
      * Cargar templates personalizados
      */
     public function cargar_templates($template) {
-        $plugin_templates_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/grupos-consumo/';
+        $plugin_templates_path = FLAVOR_PLATFORM_PATH . 'templates/frontend/grupos-consumo/';
 
         // Template para single gc_grupo
         if (is_singular('gc_grupo')) {
@@ -1456,7 +1456,7 @@ class Flavor_GC_Frontend_Controller {
                 'total_items' => intval($total_items),
                 'ciclo_activo' => $ciclo_activo,
                 'porcentaje_gestion' => $porcentaje_gestion,
-                'url_carrito' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
+                'url_carrito' => Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
             ];
             include $ruta_template;
         }

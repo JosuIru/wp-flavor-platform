@@ -4,7 +4,7 @@
  *
  * Gestiona altas, bajas, roles y estado de los miembros del grupo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -4,7 +4,7 @@
  *
  * Call-to-action section for radio presenters recruitment
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Radio
  */
 

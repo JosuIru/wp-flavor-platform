@@ -2,7 +2,7 @@
 /**
  * Módulo de Chat de Grupos para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Chat de Grupos - Grupos de conversación temáticos
  */
-class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Chat_Grupos_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -35,8 +35,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_grupos);
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        return Flavor_Platform_Helpers::tabla_existe($tabla_grupos);
     }
 
     /**
@@ -366,12 +366,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             return 0;
         }
 
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_leidos = $wpdb->prefix . 'flavor_chat_grupos_leidos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_leidos = $wpdb->prefix . 'flavor_platform_chat_grupos_leidos';
 
         // Verificar si las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return 0;
         }
 
@@ -420,25 +420,25 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'register_shortcodes']);
         $this->cargar_frontend_controller();
         add_action('rest_api_init', [$this, 'register_rest_routes']);
-        add_action('wp_ajax_flavor_chat_grupos_send', [$this, 'ajax_enviar_mensaje']);
-        add_action('wp_ajax_flavor_chat_grupos_messages', [$this, 'ajax_obtener_mensajes']);
-        add_action('wp_ajax_flavor_chat_grupos_mark_read', [$this, 'ajax_marcar_leido']);
-        add_action('wp_ajax_flavor_chat_grupos_typing', [$this, 'ajax_typing']);
-        add_action('wp_ajax_flavor_chat_grupos_react', [$this, 'ajax_reaccionar']);
-        add_action('wp_ajax_flavor_chat_grupos_search', [$this, 'ajax_buscar_mensajes']);
-        add_action('wp_ajax_flavor_chat_grupos_upload', [$this, 'ajax_subir_archivo']);
-        add_action('wp_ajax_flavor_chat_grupos_create', [$this, 'ajax_crear_grupo']);
-        add_action('wp_ajax_flavor_chat_grupos_join', [$this, 'ajax_unirse_grupo']);
-        add_action('wp_ajax_flavor_chat_grupos_leave', [$this, 'ajax_salir_grupo']);
-        add_action('wp_ajax_flavor_chat_grupos_invite', [$this, 'ajax_invitar']);
-        add_action('wp_ajax_flavor_chat_grupos_kick', [$this, 'ajax_expulsar']);
-        add_action('wp_ajax_flavor_chat_grupos_role', [$this, 'ajax_cambiar_rol']);
-        add_action('wp_ajax_flavor_chat_grupos_settings', [$this, 'ajax_actualizar_config']);
-        add_action('wp_ajax_flavor_chat_grupos_poll_create', [$this, 'ajax_crear_encuesta']);
-        add_action('wp_ajax_flavor_chat_grupos_poll_vote', [$this, 'ajax_votar_encuesta']);
-        add_action('wp_ajax_flavor_chat_grupos_delete_msg', [$this, 'ajax_eliminar_mensaje']);
-        add_action('wp_ajax_flavor_chat_grupos_edit_msg', [$this, 'ajax_editar_mensaje']);
-        add_action('wp_ajax_flavor_chat_grupos_pin', [$this, 'ajax_fijar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_send', [$this, 'ajax_enviar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_messages', [$this, 'ajax_obtener_mensajes']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_mark_read', [$this, 'ajax_marcar_leido']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_typing', [$this, 'ajax_typing']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_react', [$this, 'ajax_reaccionar']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_search', [$this, 'ajax_buscar_mensajes']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_upload', [$this, 'ajax_subir_archivo']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_create', [$this, 'ajax_crear_grupo']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_join', [$this, 'ajax_unirse_grupo']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_leave', [$this, 'ajax_salir_grupo']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_invite', [$this, 'ajax_invitar']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_kick', [$this, 'ajax_expulsar']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_role', [$this, 'ajax_cambiar_rol']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_settings', [$this, 'ajax_actualizar_config']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_poll_create', [$this, 'ajax_crear_encuesta']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_poll_vote', [$this, 'ajax_votar_encuesta']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_delete_msg', [$this, 'ajax_eliminar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_edit_msg', [$this, 'ajax_editar_mensaje']);
+        add_action('wp_ajax_flavor_platform_chat_grupos_pin', [$this, 'ajax_fijar_mensaje']);
 
         // Dashboard integration
         add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
@@ -464,8 +464,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      * @return void
      */
     private function cargar_frontend_controller() {
-        if (class_exists('Flavor_Chat_Grupos_Frontend_Controller')) {
-            Flavor_Chat_Grupos_Frontend_Controller::get_instance();
+        $controller_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Grupos_Frontend_Controller')
+            : 'Flavor_Chat_Grupos_Frontend_Controller';
+        if (class_exists($controller_class)) {
+            $controller_class::get_instance();
             return;
         }
 
@@ -473,8 +476,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (file_exists($archivo_controller)) {
             require_once $archivo_controller;
 
-            if (class_exists('Flavor_Chat_Grupos_Frontend_Controller')) {
-                Flavor_Chat_Grupos_Frontend_Controller::get_instance();
+            if (class_exists($controller_class)) {
+                $controller_class::get_instance();
             }
         }
     }
@@ -487,7 +490,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     protected function get_mensajes_table() {
         global $wpdb;
-        return $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        return $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
     }
 
     /**
@@ -495,9 +498,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     public function maybe_create_tables() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             $this->create_tables();
         }
     }
@@ -506,21 +509,21 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      * Verifica y aplica migraciones de base de datos
      */
     public function maybe_migrate_tables() {
-        $version_actual = get_option('flavor_chat_grupos_db_version', '1.0.0');
+        $version_actual = get_option('flavor_platform_chat_grupos_db_version', '1.0.0');
 
         if (version_compare($version_actual, '1.1.0', '<')) {
             $this->migrate_to_1_1_0();
-            update_option('flavor_chat_grupos_db_version', '1.1.0');
+            update_option('flavor_platform_chat_grupos_db_version', '1.1.0');
         }
 
         if (version_compare($version_actual, '1.2.0', '<')) {
             $this->migrate_to_1_2_0();
-            update_option('flavor_chat_grupos_db_version', '1.2.0');
+            update_option('flavor_platform_chat_grupos_db_version', '1.2.0');
         }
 
         if (version_compare($version_actual, '1.3.0', '<')) {
             $this->migrate_to_1_3_0();
-            update_option('flavor_chat_grupos_db_version', '1.3.0');
+            update_option('flavor_platform_chat_grupos_db_version', '1.3.0');
         }
     }
 
@@ -529,9 +532,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function migrate_to_1_2_0() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return;
         }
 
@@ -551,9 +554,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function migrate_to_1_3_0() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return;
         }
 
@@ -574,9 +577,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function migrate_to_1_1_0() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return;
         }
 
@@ -617,14 +620,14 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_invitaciones = $wpdb->prefix . 'flavor_chat_grupos_invitaciones';
-        $tabla_reacciones = $wpdb->prefix . 'flavor_chat_grupos_reacciones';
-        $tabla_encuestas = $wpdb->prefix . 'flavor_chat_grupos_encuestas';
-        $tabla_votos = $wpdb->prefix . 'flavor_chat_grupos_votos';
-        $tabla_fijados = $wpdb->prefix . 'flavor_chat_grupos_fijados';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_invitaciones = $wpdb->prefix . 'flavor_platform_chat_grupos_invitaciones';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_platform_chat_grupos_reacciones';
+        $tabla_encuestas = $wpdb->prefix . 'flavor_platform_chat_grupos_encuestas';
+        $tabla_votos = $wpdb->prefix . 'flavor_platform_chat_grupos_votos';
+        $tabla_fijados = $wpdb->prefix . 'flavor_platform_chat_grupos_fijados';
 
         $sql_grupos = "CREATE TABLE IF NOT EXISTS $tabla_grupos (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -777,7 +780,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      * Registrar shortcodes
      */
     public function register_shortcodes() {
-        add_shortcode('flavor_chat_grupos', [$this, 'shortcode_chat_grupos']);
+        add_shortcode('flavor_platform_chat_grupos', [$this, 'shortcode_chat_grupos']);
         add_shortcode('flavor_chat_grupo', [$this, 'shortcode_chat_grupo']);
         add_shortcode('flavor_grupos_lista', [$this, 'shortcode_grupos_lista']);
         add_shortcode('flavor_grupos_explorar', [$this, 'shortcode_grupos_explorar']);
@@ -803,23 +806,23 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-chat-grupos',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/css/chat-grupos.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-grupos/assets/css/chat-grupos.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-chat-grupos',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/js/chat-grupos.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-grupos/assets/js/chat-grupos.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
         wp_localize_script('flavor-chat-grupos', 'flavorChatGrupos', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'resturl' => rest_url('flavor/v1/chat-grupos/'),
-            'nonce' => wp_create_nonce('flavor_chat_grupos_nonce'),
+            'nonce' => wp_create_nonce('flavor_platform_chat_grupos_nonce'),
             'user_id' => get_current_user_id(),
             'user_name' => wp_get_current_user()->display_name,
             'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
@@ -890,7 +893,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar shortcodes en el contenido del post
         if ($post) {
-            $shortcodes = ['flavor_chat_grupos', 'flavor_chat_grupo', 'flavor_grupos_lista', 'flavor_grupos_explorar', 'flavor_grupos_crear', 'flavor_chat_grupo_integrado', 'chat_grupos_activos', 'chat_grupos_crear'];
+            $shortcodes = ['flavor_platform_chat_grupos', 'flavor_chat_grupo', 'flavor_grupos_lista', 'flavor_grupos_explorar', 'flavor_grupos_crear', 'flavor_chat_grupo_integrado', 'chat_grupos_activos', 'chat_grupos_crear'];
             foreach ($shortcodes as $shortcode) {
                 if (has_shortcode($post->post_content, $shortcode)) {
                     return true;
@@ -1070,9 +1073,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         $grupos = $wpdb->get_results($wpdb->prepare(
             "SELECT g.*, m.rol, m.notificaciones, m.ultimo_mensaje_leido, m.silenciado_hasta
@@ -1148,7 +1151,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_grupos_publicos($params) {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         $where = ["g.tipo = 'publico'", "g.estado = 'activo'"];
         $where_values = [];
@@ -1189,7 +1192,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         );
 
         $usuario_id = get_current_user_id();
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $resultado = [];
         foreach ($grupos as $g) {
@@ -1249,8 +1252,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $slug = sanitize_title($nombre);
         $slug_base = $slug;
@@ -1315,9 +1318,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_invitaciones = $wpdb->prefix . 'flavor_chat_grupos_invitaciones';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_invitaciones = $wpdb->prefix . 'flavor_platform_chat_grupos_invitaciones';
 
         $grupo = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_grupos WHERE id = %d AND estado = 'activo'",
@@ -1406,8 +1409,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $miembro = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
@@ -1458,8 +1461,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_reacciones = $wpdb->prefix . 'flavor_chat_grupos_reacciones';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_platform_chat_grupos_reacciones';
 
         $limite = min(100, max(10, intval($params['limite'] ?? 50)));
         $antes_de = intval($params['antes_de'] ?? 0);
@@ -1529,7 +1532,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Marcar como leídos
         if ($usuario_id && !empty($resultado)) {
-            $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+            $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
             $ultimo_id = end($resultado)['id'];
             $wpdb->update(
                 $tabla_miembros,
@@ -1570,9 +1573,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Detectar menciones
         $menciones = [];
@@ -1683,10 +1686,10 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_fijados = $wpdb->prefix . 'flavor_chat_grupos_fijados';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_fijados = $wpdb->prefix . 'flavor_platform_chat_grupos_fijados';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         $grupo = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_grupos WHERE id = %d",
@@ -1789,7 +1792,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $miembros = $wpdb->get_results($wpdb->prepare(
             "SELECT m.*, u.display_name, u.user_email
@@ -1832,8 +1835,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_invitaciones = $wpdb->prefix . 'flavor_chat_grupos_invitaciones';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_invitaciones = $wpdb->prefix . 'flavor_platform_chat_grupos_invitaciones';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $invitado_id = intval($params['usuario_id'] ?? 0);
         $email = sanitize_email($params['email'] ?? '');
@@ -1901,8 +1904,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         // No permitir expulsar admins si no eres admin
         $mi_rol = $this->obtener_rol_usuario($usuario_id, $grupo_id);
@@ -1952,7 +1955,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $wpdb->update(
             $tabla_miembros,
@@ -1976,7 +1979,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $horas = intval($params['duracion_horas'] ?? 8);
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $silenciado_hasta = $horas > 0 ? date('Y-m-d H:i:s', strtotime("+{$horas} hours")) : null;
 
@@ -2010,7 +2013,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         $resultados = $wpdb->get_results($wpdb->prepare(
             "SELECT m.*, u.display_name as autor_nombre
@@ -2055,7 +2058,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         $grupo = $wpdb->get_row($wpdb->prepare(
             "SELECT permite_encuestas FROM $tabla_grupos WHERE id = %d",
@@ -2079,8 +2082,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         $opciones = array_map('sanitize_text_field', array_slice($opciones, 0, 10));
 
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_encuestas = $wpdb->prefix . 'flavor_chat_grupos_encuestas';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_encuestas = $wpdb->prefix . 'flavor_platform_chat_grupos_encuestas';
 
         // Crear mensaje de encuesta
         $wpdb->insert($tabla_mensajes, [
@@ -2130,8 +2133,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $opcion = intval($params['opcion'] ?? -1);
 
         global $wpdb;
-        $tabla_encuestas = $wpdb->prefix . 'flavor_chat_grupos_encuestas';
-        $tabla_votos = $wpdb->prefix . 'flavor_chat_grupos_votos';
+        $tabla_encuestas = $wpdb->prefix . 'flavor_platform_chat_grupos_encuestas';
+        $tabla_votos = $wpdb->prefix . 'flavor_platform_chat_grupos_votos';
 
         $encuesta = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_encuestas WHERE id = %d",
@@ -2220,8 +2223,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_reacciones = $wpdb->prefix . 'flavor_chat_grupos_reacciones';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_platform_chat_grupos_reacciones';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         // Verificar que existe el mensaje
         $mensaje = $wpdb->get_row($wpdb->prepare(
@@ -2283,8 +2286,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $mensaje_id = intval($params['mensaje_id'] ?? 0);
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_fijados = $wpdb->prefix . 'flavor_chat_grupos_fijados';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_fijados = $wpdb->prefix . 'flavor_platform_chat_grupos_fijados';
 
         $mensaje = $wpdb->get_row($wpdb->prepare(
             "SELECT grupo_id FROM $tabla_mensajes WHERE id = %d",
@@ -2473,7 +2476,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = $request->get_param('id');
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $wpdb->update($tabla_miembros, [
             'escribiendo' => 1,
@@ -2670,7 +2673,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (!$grupo_id && $atts['slug']) {
             global $wpdb;
             $grupo_id = $wpdb->get_var($wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}flavor_chat_grupos WHERE slug = %s",
+                "SELECT id FROM {$wpdb->prefix}flavor_platform_chat_grupos WHERE slug = %s",
                 sanitize_title($atts['slug'])
             ));
         }
@@ -2720,7 +2723,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         // Buscar grupo existente para esta entidad
         $grupo_id = $wpdb->get_var($wpdb->prepare(
@@ -2765,7 +2768,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             return false;
         }
 
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         $resultado = $wpdb->insert($tabla_grupos, [
             'nombre'        => sprintf(__('Chat: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_grupo),
@@ -2841,7 +2844,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function asegurar_membresia_entidad($grupo_id, $usuario_id, $entidad_tipo, $entidad_id) {
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Verificar si ya es miembro
         $existe = $wpdb->get_var($wpdb->prepare(
@@ -2922,8 +2925,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     private function render_chat_embebido($grupo_id, $altura) {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $grupo = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_grupos WHERE id = %d AND estado = 'activo'",
@@ -3060,9 +3063,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Obtener grupos con actividad reciente (últimos 7 días)
         $limite = intval($atts['limit']);
@@ -3097,7 +3100,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         $usuario_id = get_current_user_id();
-        $tabla_miembros_check = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros_check = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         ob_start();
         ?>
@@ -3253,12 +3256,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
         $usuario_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return '';
         }
 
@@ -3326,12 +3329,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
         $usuario_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_mensajes)) {
             return '';
         }
 
@@ -3378,15 +3381,15 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function render_dashboard_tab() {
-        echo do_shortcode('[flavor_chat_grupos]');
+        echo do_shortcode('[flavor_platform_chat_grupos]');
     }
 
     // ==================== Helper Methods ====================
 
     private function usuario_puede_ver_grupo($usuario_id, $grupo_id) {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $grupo = $wpdb->get_row($wpdb->prepare(
             "SELECT tipo FROM $tabla_grupos WHERE id = %d AND estado = 'activo'",
@@ -3411,8 +3414,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) return false;
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $miembro = $wpdb->get_row($wpdb->prepare(
             "SELECT m.rol, g.solo_admins_publican
@@ -3444,7 +3447,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function obtener_rol_usuario($usuario_id, $grupo_id) {
         global $wpdb;
         return $wpdb->get_var($wpdb->prepare(
-            "SELECT rol FROM {$wpdb->prefix}flavor_chat_grupos_miembros WHERE grupo_id = %d AND usuario_id = %d",
+            "SELECT rol FROM {$wpdb->prefix}flavor_platform_chat_grupos_miembros WHERE grupo_id = %d AND usuario_id = %d",
             $grupo_id, $usuario_id
         ));
     }
@@ -3678,14 +3681,14 @@ KNOWLEDGE;
      * Renderiza la gestión de grupos
      */
     public function render_admin_grupos() {
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/grupos.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-grupos/admin/views/grupos.php';
     }
 
     /**
      * Renderiza la página de moderación
      */
     public function render_admin_moderacion() {
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/moderacion.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-grupos/admin/views/moderacion.php';
     }
 
     /**
@@ -3693,7 +3696,7 @@ KNOWLEDGE;
      */
     public function render_dashboard_widget() {
         $estadisticas = $this->get_estadisticas_admin();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/widget.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-grupos/admin/views/widget.php';
     }
 
     /**
@@ -3703,9 +3706,9 @@ KNOWLEDGE;
      */
     public function get_estadisticas_admin() {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $total_grupos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_grupos WHERE estado = 'activo'");
         $total_mensajes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_mensajes");
@@ -3735,7 +3738,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_grupos WHERE estado = 'pendiente'");
     }
 
@@ -3751,9 +3754,9 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_reportes = $wpdb->prefix . 'flavor_chat_grupos_reportes';
+        $tabla_reportes = $wpdb->prefix . 'flavor_platform_chat_grupos_reportes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reportes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reportes)) {
             return 0;
         }
 
@@ -3782,9 +3785,9 @@ KNOWLEDGE;
 
         // En frontend: crear páginas si no existen
         $pagina = get_page_by_path('chat-grupos');
-        if (!$pagina && !get_option('flavor_chat_grupos_pages_created')) {
+        if (!$pagina && !get_option('flavor_platform_chat_grupos_pages_created')) {
             Flavor_Page_Creator::create_pages_for_modules(['chat_grupos']);
-            update_option('flavor_chat_grupos_pages_created', 1, false);
+            update_option('flavor_platform_chat_grupos_pages_created', 1, false);
         }
     }
 
@@ -3800,8 +3803,8 @@ KNOWLEDGE;
      */
     public function agregar_miembro_programatico($grupo_id, $usuario_id, $rol = 'miembro') {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Verificar que el grupo existe
         $grupo = $wpdb->get_row($wpdb->prepare(
@@ -3868,8 +3871,8 @@ KNOWLEDGE;
      */
     public function quitar_miembro_programatico($grupo_id, $usuario_id) {
         global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Verificar si es miembro
         $miembro = $wpdb->get_row($wpdb->prepare(
@@ -3918,16 +3921,16 @@ KNOWLEDGE;
         global $wpdb;
         $estadisticas = [];
 
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
             return $estadisticas;
         }
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             // Mis grupos (todos los registros en miembros son activos)
             $mis_grupos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_miembros}
@@ -3943,7 +3946,7 @@ KNOWLEDGE;
             ];
 
             // Mensajes sin leer (comparando IDs de mensaje)
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_mensajes)) {
                 $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_mensajes} m
                      INNER JOIN {$tabla_miembros} mb ON m.grupo_id = mb.grupo_id
@@ -4019,7 +4022,7 @@ KNOWLEDGE;
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
             'database' => [
-                'table'       => 'flavor_chat_grupos',
+                'table'       => 'flavor_platform_chat_grupos',
                 'primary_key' => 'id',
             ],
 
@@ -4116,8 +4119,11 @@ KNOWLEDGE;
         $archivo = dirname(__FILE__) . '/class-chat-grupos-dashboard-tab.php';
         if (file_exists($archivo)) {
             require_once $archivo;
-            if (class_exists('Flavor_Chat_Grupos_Dashboard_Tab')) {
-                Flavor_Chat_Grupos_Dashboard_Tab::get_instance();
+            $dashboard_tab_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Grupos_Dashboard_Tab')
+                : 'Flavor_Chat_Grupos_Dashboard_Tab';
+            if (class_exists($dashboard_tab_class)) {
+                $dashboard_tab_class::get_instance();
             }
         }
     }
@@ -4132,7 +4138,7 @@ KNOWLEDGE;
      */
     private function crear_mensaje_sistema($grupo_id, $tipo, $datos = []) {
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         $mensajes = [
             'grupo_creado'  => sprintf(__('%s ha creado el grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)),
@@ -4162,7 +4168,7 @@ KNOWLEDGE;
      * AJAX: Crear grupo
      */
     public function ajax_crear_grupo() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         // Mapear tipos del frontend a tipos del backend
         $tipo_frontend = sanitize_text_field($_POST['tipo'] ?? 'abierto');
@@ -4191,7 +4197,7 @@ KNOWLEDGE;
      * AJAX: Unirse a grupo
      */
     public function ajax_unirse_grupo() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $resultado = $this->action_unirse_grupo([
             'grupo_id'          => intval($_POST['grupo_id'] ?? 0),
@@ -4205,7 +4211,7 @@ KNOWLEDGE;
      * AJAX: Salir de grupo
      */
     public function ajax_salir_grupo() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
         $usuario_id = get_current_user_id();
@@ -4216,8 +4222,8 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         // Verificar que es miembro
         $miembro = $wpdb->get_row($wpdb->prepare(
@@ -4265,7 +4271,7 @@ KNOWLEDGE;
      * AJAX: Enviar mensaje
      */
     public function ajax_enviar_mensaje() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
         $mensaje_texto = sanitize_textarea_field($_POST['mensaje'] ?? $_POST['contenido'] ?? '');
@@ -4300,7 +4306,7 @@ KNOWLEDGE;
 
         // Verificar que es miembro
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
         $es_miembro = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
             $grupo_id, $usuario_id
@@ -4336,7 +4342,7 @@ KNOWLEDGE;
         }
 
         // Crear mensaje
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
         $mensaje_procesado = $this->procesar_contenido_mensaje($mensaje_texto);
         $adjuntos_json = !empty($adjuntos) ? wp_json_encode($adjuntos) : null;
 
@@ -4359,7 +4365,7 @@ KNOWLEDGE;
         $usuario = wp_get_current_user();
 
         // Actualizar último mensaje del grupo
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
         $wpdb->update($tabla_grupos, ['ultimo_mensaje_at' => current_time('mysql')], ['id' => $grupo_id]);
 
         $mensaje_data = [
@@ -4397,9 +4403,9 @@ KNOWLEDGE;
 
         $usuario_id = get_current_user_id();
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
-        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
+        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
 
         // Obtener info del grupo para verificar tipo de acceso
         $grupo = $wpdb->get_row($wpdb->prepare(
@@ -4492,7 +4498,7 @@ KNOWLEDGE;
      * AJAX: Marcar como leído
      */
     public function ajax_marcar_leido() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
         $mensaje_id = intval($_POST['mensaje_id'] ?? 0);
@@ -4504,7 +4510,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_leidos = $wpdb->prefix . 'flavor_chat_grupos_leidos';
+        $tabla_leidos = $wpdb->prefix . 'flavor_platform_chat_grupos_leidos';
 
         $wpdb->replace($tabla_leidos, [
             'grupo_id'          => $grupo_id,
@@ -4520,7 +4526,7 @@ KNOWLEDGE;
      * AJAX: Indicador de escritura
      */
     public function ajax_typing() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
         $usuario_id = get_current_user_id();
@@ -4561,7 +4567,7 @@ KNOWLEDGE;
      * AJAX: Reaccionar a mensaje
      */
     public function ajax_reaccionar() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $mensaje_id = intval($_POST['mensaje_id'] ?? 0);
         $emoji = sanitize_text_field($_POST['emoji'] ?? '');
@@ -4573,7 +4579,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_reacciones = $wpdb->prefix . 'flavor_chat_grupos_reacciones';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_platform_chat_grupos_reacciones';
 
         // Verificar si ya existe la reacción
         $existente = $wpdb->get_var($wpdb->prepare(
@@ -4602,7 +4608,7 @@ KNOWLEDGE;
      * AJAX: Eliminar mensaje
      */
     public function ajax_eliminar_mensaje() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $mensaje_id = intval($_POST['mensaje_id'] ?? 0);
         $usuario_id = get_current_user_id();
@@ -4613,7 +4619,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         // Verificar que el mensaje pertenece al usuario
         $mensaje = $wpdb->get_row($wpdb->prepare(
@@ -4646,7 +4652,7 @@ KNOWLEDGE;
      */
     private function es_admin_grupo($grupo_id, $usuario_id) {
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         $rol = $wpdb->get_var($wpdb->prepare(
             "SELECT rol FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
@@ -4661,9 +4667,9 @@ KNOWLEDGE;
      */
     private function obtener_reacciones_mensaje($mensaje_id, $usuario_id = 0) {
         global $wpdb;
-        $tabla_reacciones = $wpdb->prefix . 'flavor_chat_grupos_reacciones';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_platform_chat_grupos_reacciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reacciones)) {
             return [];
         }
 
@@ -4746,8 +4752,8 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         // Verificar que es miembro del grupo
         $es_miembro = $wpdb->get_var($wpdb->prepare(
@@ -4787,7 +4793,7 @@ KNOWLEDGE;
      * AJAX: Subir archivo
      */
     public function ajax_subir_archivo() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         if (empty($_FILES['archivo'])) {
             wp_send_json(['success' => false, 'data' => __('No se recibió ningún archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4804,7 +4810,7 @@ KNOWLEDGE;
 
         // Verificar que es miembro
         global $wpdb;
-        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_miembros = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
         $es_miembro = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
             $grupo_id, $usuario_id
@@ -4858,7 +4864,7 @@ KNOWLEDGE;
      * AJAX: Invitar usuario
      */
     public function ajax_invitar() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4866,7 +4872,7 @@ KNOWLEDGE;
      * AJAX: Expulsar usuario
      */
     public function ajax_expulsar() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4874,7 +4880,7 @@ KNOWLEDGE;
      * AJAX: Cambiar rol de usuario
      */
     public function ajax_cambiar_rol() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4882,7 +4888,7 @@ KNOWLEDGE;
      * AJAX: Actualizar configuración del grupo
      */
     public function ajax_actualizar_config() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4890,7 +4896,7 @@ KNOWLEDGE;
      * AJAX: Crear encuesta
      */
     public function ajax_crear_encuesta() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4898,7 +4904,7 @@ KNOWLEDGE;
      * AJAX: Votar en encuesta
      */
     public function ajax_votar_encuesta() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
@@ -4906,7 +4912,7 @@ KNOWLEDGE;
      * AJAX: Editar mensaje
      */
     public function ajax_editar_mensaje() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
 
         $mensaje_id = intval($_POST['mensaje_id'] ?? 0);
         $nuevo_texto = sanitize_textarea_field($_POST['mensaje'] ?? '');
@@ -4918,7 +4924,7 @@ KNOWLEDGE;
         }
 
         global $wpdb;
-        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         // Verificar que el mensaje pertenece al usuario
         $mensaje = $wpdb->get_row($wpdb->prepare(
@@ -4947,7 +4953,11 @@ KNOWLEDGE;
      * AJAX: Fijar mensaje
      */
     public function ajax_fijar_mensaje() {
-        check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_chat_grupos_nonce', 'nonce');
         wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
+}
+
+if (!class_exists('Flavor_Chat_Chat_Grupos_Module', false)) {
+    class_alias('Flavor_Platform_Chat_Grupos_Module', 'Flavor_Chat_Chat_Grupos_Module');
 }

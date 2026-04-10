@@ -2,7 +2,7 @@
 /**
  * Template: Portfolio / Casos de Éxito
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $atts Atributos del shortcode
  */
 

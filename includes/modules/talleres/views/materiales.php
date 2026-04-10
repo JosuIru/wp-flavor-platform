@@ -5,7 +5,7 @@
  * Gestión completa de materiales necesarios para talleres con estadísticas,
  * filtros avanzados y seguimiento de inventario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Talleres
  */
 

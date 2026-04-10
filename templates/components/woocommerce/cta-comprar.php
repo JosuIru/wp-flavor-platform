@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: WooCommerce CTA Comprar
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

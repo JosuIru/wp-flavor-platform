@@ -2,14 +2,14 @@
 /**
  * Página de configuración del Asistente IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Settings {
+class Flavor_Platform_Settings {
 
     /**
      * Instancia singleton
@@ -24,7 +24,7 @@ class Flavor_Chat_Settings {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Settings
+     * @return Flavor_Platform_Settings
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -58,7 +58,12 @@ class Flavor_Chat_Settings {
             return;
         }
 
-        if (!wp_verify_nonce($_POST['flavor_chat_ia_nonce'] ?? '', 'flavor_chat_ia_settings_save')) {
+        $legacy_nonce   = $_POST['flavor_platform_nonce'] ?? '';
+        $platform_nonce = $_POST['flavor_platform_nonce'] ?? '';
+        $valid_nonce    = wp_verify_nonce($legacy_nonce, 'flavor_platform_settings_save')
+            || wp_verify_nonce($platform_nonce, 'flavor_platform_settings_save');
+
+        if (!$valid_nonce) {
             wp_die(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
@@ -146,7 +151,7 @@ class Flavor_Chat_Settings {
         flavor_update_main_settings($sanitized);
 
         // Limpiar caché de opciones antes de verificar
-        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(flavor_get_primary_settings_option(), 'options');
         wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
@@ -161,7 +166,7 @@ class Flavor_Chat_Settings {
         $wpdb->update(
             $wpdb->options,
             ['option_value' => $serialized],
-            ['option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION],
+            ['option_name' => flavor_get_primary_settings_option()],
             ['%s'],
             ['%s']
         );
@@ -176,7 +181,7 @@ class Flavor_Chat_Settings {
             ['%s', '%s', '%s']
         );
 
-        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(flavor_get_primary_settings_option(), 'options');
         wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
     }
@@ -399,8 +404,8 @@ class Flavor_Chat_Settings {
             ));
 
             // Invalidar cache
-            if (class_exists('Flavor_Chat_Knowledge_Base')) {
-                Flavor_Chat_Knowledge_Base::get_instance()->invalidate_cache();
+            if (class_exists('Flavor_Platform_Knowledge_Base')) {
+                Flavor_Platform_Knowledge_Base::get_instance()->invalidate_cache();
             }
         }
 
@@ -423,6 +428,21 @@ class Flavor_Chat_Settings {
         }
 
         if ($current_tab === 'modules') {
+            $get_module_post = static function ($module_id) {
+                $platform_key = 'flavor_platform_module_' . $module_id;
+                $legacy_key = 'flavor_chat_ia_module_' . $module_id;
+
+                if (isset($_POST[$platform_key]) && is_array($_POST[$platform_key])) {
+                    return $_POST[$platform_key];
+                }
+
+                if (isset($_POST[$legacy_key]) && is_array($_POST[$legacy_key])) {
+                    return $_POST[$legacy_key];
+                }
+
+                return null;
+            };
+
             $valid_modules = ['woocommerce', 'banco_tiempo', 'grupos_consumo', 'marketplace', 'facturas', 'fichaje_empleados', 'eventos', 'socios', 'incidencias', 'participacion', 'presupuestos_participativos', 'avisos_municipales', 'advertising', 'ayuda_vecinal', 'biblioteca', 'bicicletas_compartidas', 'carpooling', 'chat_grupos', 'chat_interno', 'compostaje', 'energia_comunitaria', 'cursos', 'empresarial', 'espacios_comunes', 'huertos_urbanos', 'multimedia', 'parkings', 'podcast', 'radio', 'reciclaje', 'red_social', 'talleres', 'tramites', 'transparencia', 'colectivos', 'foros', 'clientes', 'comunidades', 'bares', 'trading_ia', 'dex_solana', 'themacle'];
             $sanitized['active_modules'] = isset($input['active_modules']) && is_array($input['active_modules'])
                 ? array_values(array_intersect($input['active_modules'], $valid_modules))
@@ -444,135 +464,147 @@ class Flavor_Chat_Settings {
             }
 
             // Guardar configuraciones específicas de cada módulo
-            if (isset($_POST['flavor_chat_ia_module_banco_tiempo'])) {
+            $banco_tiempo_post = $get_module_post('banco_tiempo');
+            if ($banco_tiempo_post !== null) {
                 $banco_tiempo_config = [
-                    'hora_minima_intercambio' => max(0.5, floatval($_POST['flavor_chat_ia_module_banco_tiempo']['hora_minima_intercambio'] ?? 0.5)),
-                    'hora_maxima_intercambio' => max(1, floatval($_POST['flavor_chat_ia_module_banco_tiempo']['hora_maxima_intercambio'] ?? 8)),
-                    'requiere_validacion' => !empty($_POST['flavor_chat_ia_module_banco_tiempo']['requiere_validacion']),
-                    'saldo_inicial_horas' => max(0, absint($_POST['flavor_chat_ia_module_banco_tiempo']['saldo_inicial_horas'] ?? 5)),
-                    'permite_saldo_negativo' => !empty($_POST['flavor_chat_ia_module_banco_tiempo']['permite_saldo_negativo']),
-                    'limite_saldo_negativo' => min(0, intval($_POST['flavor_chat_ia_module_banco_tiempo']['limite_saldo_negativo'] ?? -10)),
-                    'notificar_saldo_bajo' => !empty($_POST['flavor_chat_ia_module_banco_tiempo']['notificar_saldo_bajo']),
-                    'umbral_notificacion_saldo' => max(0, absint($_POST['flavor_chat_ia_module_banco_tiempo']['umbral_notificacion_saldo'] ?? 2)),
+                    'hora_minima_intercambio' => max(0.5, floatval($banco_tiempo_post['hora_minima_intercambio'] ?? 0.5)),
+                    'hora_maxima_intercambio' => max(1, floatval($banco_tiempo_post['hora_maxima_intercambio'] ?? 8)),
+                    'requiere_validacion' => !empty($banco_tiempo_post['requiere_validacion']),
+                    'saldo_inicial_horas' => max(0, absint($banco_tiempo_post['saldo_inicial_horas'] ?? 5)),
+                    'permite_saldo_negativo' => !empty($banco_tiempo_post['permite_saldo_negativo']),
+                    'limite_saldo_negativo' => min(0, intval($banco_tiempo_post['limite_saldo_negativo'] ?? -10)),
+                    'notificar_saldo_bajo' => !empty($banco_tiempo_post['notificar_saldo_bajo']),
+                    'umbral_notificacion_saldo' => max(0, absint($banco_tiempo_post['umbral_notificacion_saldo'] ?? 2)),
                 ];
-                update_option('flavor_chat_ia_module_banco_tiempo', $banco_tiempo_config);
+                flavor_update_module_settings('banco_tiempo', $banco_tiempo_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_grupos_consumo'])) {
+            $grupos_consumo_post = $get_module_post('grupos_consumo');
+            if ($grupos_consumo_post !== null) {
                 $grupos_config = [
-                    'dias_para_pedido' => max(1, absint($_POST['flavor_chat_ia_module_grupos_consumo']['dias_para_pedido'] ?? 7)),
-                    'pedido_minimo' => max(0, floatval($_POST['flavor_chat_ia_module_grupos_consumo']['pedido_minimo'] ?? 0)),
-                    'participantes_minimos' => max(2, absint($_POST['flavor_chat_ia_module_grupos_consumo']['participantes_minimos'] ?? 5)),
-                    'permite_multiples_pedidos' => !empty($_POST['flavor_chat_ia_module_grupos_consumo']['permite_multiples_pedidos']),
-                    'coordina_reparto' => !empty($_POST['flavor_chat_ia_module_grupos_consumo']['coordina_reparto']),
-                    'requiere_pago_anticipado' => !empty($_POST['flavor_chat_ia_module_grupos_consumo']['requiere_pago_anticipado']),
-                    'porcentaje_gastos_gestion' => max(0, min(20, floatval($_POST['flavor_chat_ia_module_grupos_consumo']['porcentaje_gastos_gestion'] ?? 0))),
+                    'dias_para_pedido' => max(1, absint($grupos_consumo_post['dias_para_pedido'] ?? 7)),
+                    'pedido_minimo' => max(0, floatval($grupos_consumo_post['pedido_minimo'] ?? 0)),
+                    'participantes_minimos' => max(2, absint($grupos_consumo_post['participantes_minimos'] ?? 5)),
+                    'permite_multiples_pedidos' => !empty($grupos_consumo_post['permite_multiples_pedidos']),
+                    'coordina_reparto' => !empty($grupos_consumo_post['coordina_reparto']),
+                    'requiere_pago_anticipado' => !empty($grupos_consumo_post['requiere_pago_anticipado']),
+                    'porcentaje_gastos_gestion' => max(0, min(20, floatval($grupos_consumo_post['porcentaje_gastos_gestion'] ?? 0))),
                 ];
-                update_option('flavor_chat_ia_module_grupos_consumo', $grupos_config);
+                flavor_update_module_settings('grupos_consumo', $grupos_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_marketplace'])) {
+            $marketplace_post = $get_module_post('marketplace');
+            if ($marketplace_post !== null) {
                 $marketplace_config = [
-                    'permite_venta' => !empty($_POST['flavor_chat_ia_module_marketplace']['permite_venta']),
-                    'permite_intercambio' => !empty($_POST['flavor_chat_ia_module_marketplace']['permite_intercambio']),
-                    'permite_regalo' => !empty($_POST['flavor_chat_ia_module_marketplace']['permite_regalo']),
-                    'requiere_moderacion' => !empty($_POST['flavor_chat_ia_module_marketplace']['requiere_moderacion']),
-                    'dias_vigencia_anuncio' => max(7, min(90, absint($_POST['flavor_chat_ia_module_marketplace']['dias_vigencia_anuncio'] ?? 30))),
-                    'max_fotos_por_anuncio' => max(1, min(10, absint($_POST['flavor_chat_ia_module_marketplace']['max_fotos_por_anuncio'] ?? 5))),
-                    'permite_reservas' => !empty($_POST['flavor_chat_ia_module_marketplace']['permite_reservas']),
+                    'permite_venta' => !empty($marketplace_post['permite_venta']),
+                    'permite_intercambio' => !empty($marketplace_post['permite_intercambio']),
+                    'permite_regalo' => !empty($marketplace_post['permite_regalo']),
+                    'requiere_moderacion' => !empty($marketplace_post['requiere_moderacion']),
+                    'dias_vigencia_anuncio' => max(7, min(90, absint($marketplace_post['dias_vigencia_anuncio'] ?? 30))),
+                    'max_fotos_por_anuncio' => max(1, min(10, absint($marketplace_post['max_fotos_por_anuncio'] ?? 5))),
+                    'permite_reservas' => !empty($marketplace_post['permite_reservas']),
                 ];
-                update_option('flavor_chat_ia_module_marketplace', $marketplace_config);
+                flavor_update_module_settings('marketplace', $marketplace_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_woocommerce'])) {
+            $woocommerce_post = $get_module_post('woocommerce');
+            if ($woocommerce_post !== null) {
                 $woocommerce_config = [
-                    'mostrar_stock' => !empty($_POST['flavor_chat_ia_module_woocommerce']['mostrar_stock']),
-                    'limite_productos_busqueda' => max(5, min(50, absint($_POST['flavor_chat_ia_module_woocommerce']['limite_productos_busqueda'] ?? 10))),
+                    'mostrar_stock' => !empty($woocommerce_post['mostrar_stock']),
+                    'limite_productos_busqueda' => max(5, min(50, absint($woocommerce_post['limite_productos_busqueda'] ?? 10))),
                 ];
-                update_option('flavor_chat_ia_module_woocommerce', $woocommerce_config);
+                flavor_update_module_settings('woocommerce', $woocommerce_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_facturas'])) {
+            $facturas_post = $get_module_post('facturas');
+            if ($facturas_post !== null) {
                 $facturas_config = [
-                    'serie_predeterminada' => strtoupper(sanitize_text_field($_POST['flavor_chat_ia_module_facturas']['serie_predeterminada'] ?? 'F')),
-                    'iva_predeterminado' => max(0, min(100, absint($_POST['flavor_chat_ia_module_facturas']['iva_predeterminado'] ?? 21))),
-                    'enviar_email_automatico' => !empty($_POST['flavor_chat_ia_module_facturas']['enviar_email_automatico']),
-                    'formato_numero_factura' => sanitize_text_field($_POST['flavor_chat_ia_module_facturas']['formato_numero_factura'] ?? 'SERIE-YYYY-NNNN'),
-                    'prefijo_rectificativa' => strtoupper(sanitize_text_field($_POST['flavor_chat_ia_module_facturas']['prefijo_rectificativa'] ?? 'R')),
-                    'dias_vencimiento_predeterminado' => max(0, min(180, absint($_POST['flavor_chat_ia_module_facturas']['dias_vencimiento_predeterminado'] ?? 30))),
-                    'texto_pie_factura' => sanitize_textarea_field($_POST['flavor_chat_ia_module_facturas']['texto_pie_factura'] ?? ''),
+                    'serie_predeterminada' => strtoupper(sanitize_text_field($facturas_post['serie_predeterminada'] ?? 'F')),
+                    'iva_predeterminado' => max(0, min(100, absint($facturas_post['iva_predeterminado'] ?? 21))),
+                    'enviar_email_automatico' => !empty($facturas_post['enviar_email_automatico']),
+                    'formato_numero_factura' => sanitize_text_field($facturas_post['formato_numero_factura'] ?? 'SERIE-YYYY-NNNN'),
+                    'prefijo_rectificativa' => strtoupper(sanitize_text_field($facturas_post['prefijo_rectificativa'] ?? 'R')),
+                    'dias_vencimiento_predeterminado' => max(0, min(180, absint($facturas_post['dias_vencimiento_predeterminado'] ?? 30))),
+                    'texto_pie_factura' => sanitize_textarea_field($facturas_post['texto_pie_factura'] ?? ''),
                 ];
-                update_option('flavor_chat_ia_module_facturas', $facturas_config);
+                flavor_update_module_settings('facturas', $facturas_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_fichaje_empleados'])) {
+            $fichaje_post = $get_module_post('fichaje_empleados');
+            if ($fichaje_post !== null) {
                 $fichaje_config = [
-                    'horario_entrada' => sanitize_text_field($_POST['flavor_chat_ia_module_fichaje_empleados']['horario_entrada'] ?? '09:00'),
-                    'horario_salida' => sanitize_text_field($_POST['flavor_chat_ia_module_fichaje_empleados']['horario_salida'] ?? '18:00'),
-                    'tiempo_gracia' => max(0, min(60, absint($_POST['flavor_chat_ia_module_fichaje_empleados']['tiempo_gracia'] ?? 15))),
-                    'requiere_geolocalizacion' => !empty($_POST['flavor_chat_ia_module_fichaje_empleados']['requiere_geolocalizacion']),
-                    'radio_geolocalizacion_metros' => max(10, min(1000, absint($_POST['flavor_chat_ia_module_fichaje_empleados']['radio_geolocalizacion_metros'] ?? 100))),
-                    'permite_multiples_entradas' => !empty($_POST['flavor_chat_ia_module_fichaje_empleados']['permite_multiples_entradas']),
-                    'genera_informes_mensuales' => !empty($_POST['flavor_chat_ia_module_fichaje_empleados']['genera_informes_mensuales']),
+                    'horario_entrada' => sanitize_text_field($fichaje_post['horario_entrada'] ?? '09:00'),
+                    'horario_salida' => sanitize_text_field($fichaje_post['horario_salida'] ?? '18:00'),
+                    'tiempo_gracia' => max(0, min(60, absint($fichaje_post['tiempo_gracia'] ?? 15))),
+                    'requiere_geolocalizacion' => !empty($fichaje_post['requiere_geolocalizacion']),
+                    'radio_geolocalizacion_metros' => max(10, min(1000, absint($fichaje_post['radio_geolocalizacion_metros'] ?? 100))),
+                    'permite_multiples_entradas' => !empty($fichaje_post['permite_multiples_entradas']),
+                    'genera_informes_mensuales' => !empty($fichaje_post['genera_informes_mensuales']),
                 ];
-                update_option('flavor_chat_ia_module_fichaje_empleados', $fichaje_config);
+                flavor_update_module_settings('fichaje_empleados', $fichaje_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_eventos'])) {
+            $eventos_post = $get_module_post('eventos');
+            if ($eventos_post !== null) {
                 $eventos_config = [
-                    'requiere_aprobacion' => !empty($_POST['flavor_chat_ia_module_eventos']['requiere_aprobacion']),
-                    'permite_invitados' => !empty($_POST['flavor_chat_ia_module_eventos']['permite_invitados']),
-                    'dias_recordatorio' => max(0, min(7, absint($_POST['flavor_chat_ia_module_eventos']['dias_recordatorio'] ?? 1))),
+                    'requiere_aprobacion' => !empty($eventos_post['requiere_aprobacion']),
+                    'permite_invitados' => !empty($eventos_post['permite_invitados']),
+                    'dias_recordatorio' => max(0, min(7, absint($eventos_post['dias_recordatorio'] ?? 1))),
                 ];
-                update_option('flavor_chat_ia_module_eventos', $eventos_config);
+                flavor_update_module_settings('eventos', $eventos_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_socios'])) {
+            $socios_post = $get_module_post('socios');
+            if ($socios_post !== null) {
                 $socios_config = [
-                    'cuota_mensual' => max(0, floatval($_POST['flavor_chat_ia_module_socios']['cuota_mensual'] ?? 30.00)),
-                    'cuota_anual' => max(0, floatval($_POST['flavor_chat_ia_module_socios']['cuota_anual'] ?? 300.00)),
-                    'dia_cargo' => max(1, min(28, absint($_POST['flavor_chat_ia_module_socios']['dia_cargo'] ?? 1))),
-                    'permite_cuota_reducida' => !empty($_POST['flavor_chat_ia_module_socios']['permite_cuota_reducida']),
+                    'cuota_mensual' => max(0, floatval($socios_post['cuota_mensual'] ?? 30.00)),
+                    'cuota_anual' => max(0, floatval($socios_post['cuota_anual'] ?? 300.00)),
+                    'dia_cargo' => max(1, min(28, absint($socios_post['dia_cargo'] ?? 1))),
+                    'permite_cuota_reducida' => !empty($socios_post['permite_cuota_reducida']),
                 ];
-                update_option('flavor_chat_ia_module_socios', $socios_config);
+                flavor_update_module_settings('socios', $socios_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_incidencias'])) {
+            $incidencias_post = $get_module_post('incidencias');
+            if ($incidencias_post !== null) {
                 $incidencias_config = [
-                    'requiere_ubicacion_gps' => !empty($_POST['flavor_chat_ia_module_incidencias']['requiere_ubicacion_gps']),
-                    'requiere_foto' => !empty($_POST['flavor_chat_ia_module_incidencias']['requiere_foto']),
-                    'visibilidad_publica' => !empty($_POST['flavor_chat_ia_module_incidencias']['visibilidad_publica']),
-                    'votos_para_urgencia' => max(1, min(50, absint($_POST['flavor_chat_ia_module_incidencias']['votos_para_urgencia'] ?? 5))),
+                    'requiere_ubicacion_gps' => !empty($incidencias_post['requiere_ubicacion_gps']),
+                    'requiere_foto' => !empty($incidencias_post['requiere_foto']),
+                    'visibilidad_publica' => !empty($incidencias_post['visibilidad_publica']),
+                    'votos_para_urgencia' => max(1, min(50, absint($incidencias_post['votos_para_urgencia'] ?? 5))),
                 ];
-                update_option('flavor_chat_ia_module_incidencias', $incidencias_config);
+                flavor_update_module_settings('incidencias', $incidencias_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_participacion'])) {
+            $participacion_post = $get_module_post('participacion');
+            if ($participacion_post !== null) {
                 $participacion_config = [
-                    'requiere_verificacion' => !empty($_POST['flavor_chat_ia_module_participacion']['requiere_verificacion']),
-                    'moderacion_propuestas' => !empty($_POST['flavor_chat_ia_module_participacion']['moderacion_propuestas']),
-                    'votos_necesarios_propuesta' => max(5, min(500, absint($_POST['flavor_chat_ia_module_participacion']['votos_necesarios_propuesta'] ?? 10))),
-                    'duracion_votacion_dias' => max(1, min(30, absint($_POST['flavor_chat_ia_module_participacion']['duracion_votacion_dias'] ?? 7))),
+                    'requiere_verificacion' => !empty($participacion_post['requiere_verificacion']),
+                    'moderacion_propuestas' => !empty($participacion_post['moderacion_propuestas']),
+                    'votos_necesarios_propuesta' => max(5, min(500, absint($participacion_post['votos_necesarios_propuesta'] ?? 10))),
+                    'duracion_votacion_dias' => max(1, min(30, absint($participacion_post['duracion_votacion_dias'] ?? 7))),
                 ];
-                update_option('flavor_chat_ia_module_participacion', $participacion_config);
+                flavor_update_module_settings('participacion', $participacion_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_presupuestos_participativos'])) {
+            $presupuestos_post = $get_module_post('presupuestos_participativos');
+            if ($presupuestos_post !== null) {
                 $presupuestos_config = [
-                    'presupuesto_anual' => max(0, floatval($_POST['flavor_chat_ia_module_presupuestos_participativos']['presupuesto_anual'] ?? 50000.00)),
-                    'votos_maximos_por_persona' => max(1, min(10, absint($_POST['flavor_chat_ia_module_presupuestos_participativos']['votos_maximos_por_persona'] ?? 3))),
-                    'proyecto_monto_minimo' => max(0, floatval($_POST['flavor_chat_ia_module_presupuestos_participativos']['proyecto_monto_minimo'] ?? 1000.00)),
-                    'proyecto_monto_maximo' => max(0, floatval($_POST['flavor_chat_ia_module_presupuestos_participativos']['proyecto_monto_maximo'] ?? 15000.00)),
+                    'presupuesto_anual' => max(0, floatval($presupuestos_post['presupuesto_anual'] ?? 50000.00)),
+                    'votos_maximos_por_persona' => max(1, min(10, absint($presupuestos_post['votos_maximos_por_persona'] ?? 3))),
+                    'proyecto_monto_minimo' => max(0, floatval($presupuestos_post['proyecto_monto_minimo'] ?? 1000.00)),
+                    'proyecto_monto_maximo' => max(0, floatval($presupuestos_post['proyecto_monto_maximo'] ?? 15000.00)),
                 ];
-                update_option('flavor_chat_ia_module_presupuestos_participativos', $presupuestos_config);
+                flavor_update_module_settings('presupuestos_participativos', $presupuestos_config);
             }
 
-            if (isset($_POST['flavor_chat_ia_module_avisos_municipales'])) {
+            $avisos_post = $get_module_post('avisos_municipales');
+            if ($avisos_post !== null) {
                 $avisos_config = [
-                    'enviar_push_notifications' => !empty($_POST['flavor_chat_ia_module_avisos_municipales']['enviar_push_notifications']),
-                    'requiere_confirmacion_lectura' => !empty($_POST['flavor_chat_ia_module_avisos_municipales']['requiere_confirmacion_lectura']),
+                    'enviar_push_notifications' => !empty($avisos_post['enviar_push_notifications']),
+                    'requiere_confirmacion_lectura' => !empty($avisos_post['requiere_confirmacion_lectura']),
                 ];
-                update_option('flavor_chat_ia_module_avisos_municipales', $avisos_config);
+                flavor_update_module_settings('avisos_municipales', $avisos_config);
             }
 
             // Guardado genérico para módulos sin handler específico
@@ -580,10 +612,10 @@ class Flavor_Chat_Settings {
             $modulos_restantes = array_diff($valid_modules, $modulos_con_handler);
 
             foreach ($modulos_restantes as $modulo_id_generico) {
-                $clave_post = 'flavor_chat_ia_module_' . $modulo_id_generico;
-                if (isset($_POST[$clave_post]) && is_array($_POST[$clave_post])) {
+                $configuracion_post = $get_module_post($modulo_id_generico);
+                if ($configuracion_post !== null) {
                     $configuracion_modulo = [];
-                    foreach ($_POST[$clave_post] as $clave_config => $valor_config) {
+                    foreach ($configuracion_post as $clave_config => $valor_config) {
                         $clave_limpia = sanitize_key($clave_config);
                         if (is_array($valor_config)) {
                             $configuracion_modulo[$clave_limpia] = array_map('sanitize_text_field', $valor_config);
@@ -594,7 +626,7 @@ class Flavor_Chat_Settings {
                         }
                     }
                     // Merge con settings existentes para no perder checkboxes desmarcados
-                    $existentes = get_option($clave_post, []);
+                    $existentes = flavor_get_module_settings($modulo_id_generico);
                     // Checkboxes no marcados no envían POST, así que los dejamos en false
                     foreach ($existentes as $clave_existente => $valor_existente) {
                         if (is_bool($valor_existente) || ($valor_existente === 1 || $valor_existente === 0)) {
@@ -605,7 +637,7 @@ class Flavor_Chat_Settings {
                             }
                         }
                     }
-                    update_option($clave_post, $configuracion_modulo);
+                    flavor_update_module_settings($modulo_id_generico, $configuracion_modulo);
                 }
             }
         }
@@ -643,22 +675,22 @@ class Flavor_Chat_Settings {
 
         wp_enqueue_style(
             'flavor-chat-ia-admin',
-            FLAVOR_CHAT_IA_URL . "admin/css/admin{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/admin{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-chat-ia-admin',
-            FLAVOR_CHAT_IA_URL . "admin/js/admin{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "admin/js/admin{$sufijo_asset}.js",
             ['jquery', 'wp-color-picker'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
         wp_localize_script('flavor-chat-ia-admin', 'flavorChatAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('flavor_chat_admin_nonce'),
+            'nonce' => wp_create_nonce('flavor_platform_admin_nonce'),
             'strings' => [
                 'confirmDelete' => __('¿Eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'analyzing' => __('Analizando sitio...', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -676,11 +708,12 @@ class Flavor_Chat_Settings {
         $active_tab = $_GET['tab'] ?? 'general';
         // Usar el slug de página actual para que las pestañas funcionen correctamente
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'flavor-platform-settings';
+        ob_start();
         ?>
         <div class="wrap flavor-chat-settings">
             <h1><?php esc_html_e('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
-            <?php settings_errors('flavor_chat_ia_settings'); ?>
+            <?php settings_errors('flavor_platform_settings'); ?>
 
             <nav class="nav-tab-wrapper">
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=general"
@@ -726,8 +759,10 @@ class Flavor_Chat_Settings {
             </nav>
 
             <form method="post" action="" id="flavor-chat-settings-form">
-                <?php wp_nonce_field('flavor_chat_ia_settings_save', 'flavor_chat_ia_nonce'); ?>
+                <?php wp_nonce_field('flavor_platform_settings_save', 'flavor_platform_nonce'); ?>
+                <?php wp_nonce_field('flavor_platform_settings_save', 'flavor_platform_nonce'); ?>
                 <input type="hidden" name="flavor_chat_ia_action" value="save_settings">
+                <input type="hidden" name="flavor_platform_action" value="save_settings">
                 <input type="hidden" name="current_tab" value="<?php echo esc_attr($active_tab); ?>">
 
                 <?php
@@ -771,6 +806,13 @@ class Flavor_Chat_Settings {
             </form>
         </div>
         <?php
+        $output = ob_get_clean();
+        $output = str_replace(
+            ['flavor_chat_ia_settings[', 'flavor_chat_ia_module_'],
+            ['flavor_platform_settings[', 'flavor_platform_module_'],
+            $output
+        );
+        echo $output;
     }
 
     /**
@@ -1973,8 +2015,8 @@ class Flavor_Chat_Settings {
 
         // Obtener información de módulos disponibles
         $available_modules = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $available_modules = $loader->get_registered_modules();
         }
 
@@ -2347,7 +2389,7 @@ class Flavor_Chat_Settings {
                 ?>
                 <tr>
                     <td><?php echo esc_html($module_data['name']); ?></td>
-                    <td><code><?php echo esc_url(rest_url("flavor-chat-ia/v1/{$module_id}/")); ?></code></td>
+                    <td><code><?php echo esc_url(rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . "/{$module_id}/")); ?></code></td>
                 </tr>
                 <?php
                     endif;
@@ -2362,7 +2404,7 @@ class Flavor_Chat_Settings {
      * Renderiza la configuración específica de un módulo
      */
     private function render_module_config($module_id, $module_data) {
-        $module_settings = get_option("flavor_chat_ia_module_{$module_id}", []);
+        $module_settings = flavor_get_module_settings($module_id);
 
         ?>
         <div style="background: white; border: 1px solid #ddd; border-radius: 4px; padding: 15px;">
@@ -3289,18 +3331,17 @@ class Flavor_Chat_Settings {
      */
     private function render_generic_module_config($module_id, $saved_settings) {
         // Intentar cargar el módulo para obtener sus settings por defecto
-        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
         $modulos_registrados = $loader ? $loader->get_registered_modules() : [];
         $default_settings = [];
 
         if (isset($modulos_registrados[$module_id])) {
-            $module_file = FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/class-' . str_replace('_', '-', $module_id) . '-module.php';
+            $module_file = FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/class-' . str_replace('_', '-', $module_id) . '-module.php';
             if (file_exists($module_file)) {
                 require_once $module_file;
                 $class_name = $modulos_registrados[$module_id]['name'] ?? '';
                 // Obtener las claves de settings desde la opción guardada o los defaults del módulo
-                $option_key = 'flavor_chat_ia_module_' . $module_id;
-                $default_settings = get_option($option_key, []);
+                $default_settings = flavor_get_module_settings($module_id);
             }
         }
 
@@ -3678,7 +3719,7 @@ class Flavor_Chat_Settings {
     public function render_escalations_page() {
         if (!current_user_can('manage_options')) return;
 
-        $escalation = Flavor_Chat_Escalation::get_instance();
+        $escalation = Flavor_Platform_Escalation::get_instance();
         $escalations = $escalation->get_pending_escalations();
         ?>
         <div class="wrap">
@@ -3722,7 +3763,7 @@ class Flavor_Chat_Settings {
      * AJAX: Autoconfiguración con IA
      */
     public function ajax_autoconfig() {
-        check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3887,6 +3928,10 @@ Genera un JSON con:
   \"escalation_hours\": \"horario de atención si lo encuentras\"
 }
 
+if (!class_exists('Flavor_Chat_Settings', false)) {
+    class_alias('Flavor_Platform_Settings', 'Flavor_Chat_Settings');
+}
+
 Si no encuentras algún dato, deja el campo vacío.",
 
             'appearance' => "Basándote en el tipo de negocio, sugiere colores apropiados:
@@ -3918,7 +3963,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
      * AJAX: Enviar notificacion push de prueba al usuario actual
      */
     public function ajax_test_push_notification() {
-        check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3955,7 +4000,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
      */
     public function ajax_test_ia_connection() {
         try {
-            check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
+            check_ajax_referer('flavor_platform_admin_nonce', 'nonce');
 
             if (!current_user_can('manage_options')) {
                 wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4061,7 +4106,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
     }
 
     public function ajax_get_analytics() {
-        check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_platform_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

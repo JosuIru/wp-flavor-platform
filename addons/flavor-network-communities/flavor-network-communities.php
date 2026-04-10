@@ -118,7 +118,7 @@ function flavor_network_communities_init() {
     }
 
     // Log de inicialización en modo debug
-    if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
+    if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
         flavor_log_debug( 'Addon Network Communities inicializado v' . FLAVOR_NETWORK_VERSION, 'NetworkCommunities' );
     }
 }

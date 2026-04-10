@@ -4,7 +4,7 @@
  *
  * Muestra las historias de los usuarios seguidos y permite crear nuevas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage RedSocial/Templates
  */
 

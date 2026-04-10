@@ -55,8 +55,8 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
     public function __construct() {
         $this->id = 'incidencias';
-        $this->name = __('Incidencias', 'flavor-chat-ia');
-        $this->description = __('Reportar problemas', 'flavor-chat-ia');
+        $this->name = __('Incidencias', 'flavor-platform');
+        $this->description = __('Reportar problemas', 'flavor-platform');
         parent::__construct();
     }
 
@@ -87,8 +87,8 @@ $renderer = new Flavor_Archive_Renderer();
 
 echo $renderer->render([
     'module'       => 'incidencias',
-    'title'        => __('Incidencias', 'flavor-chat-ia'),
-    'subtitle'     => __('Reporta problemas', 'flavor-chat-ia'),
+    'title'        => __('Incidencias', 'flavor-platform'),
+    'subtitle'     => __('Reporta problemas', 'flavor-platform'),
     'icon'         => '⚠️',
     'color'        => 'red',
     'items'        => $incidencias,          // Array de datos
@@ -103,11 +103,11 @@ echo $renderer->render([
         ['id' => 'todos', 'label' => 'Todas', 'active' => true],
         ['id' => 'pendiente', 'label' => 'Pendientes'],
     ],
-    'cta_text'     => __('Nueva incidencia', 'flavor-chat-ia'),
+    'cta_text'     => __('Nueva incidencia', 'flavor-platform'),
     'cta_action'   => 'flavorIncidencias.nueva()',
     'empty_state'  => [
         'icon'  => '✅',
-        'title' => __('No hay incidencias', 'flavor-chat-ia'),
+        'title' => __('No hay incidencias', 'flavor-platform'),
     ],
 ]);
 ```

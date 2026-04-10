@@ -235,7 +235,7 @@ public function register_widgets() {
 
     $registry->register_widget(array(
         'id'          => 'mi_modulo_widget_custom',
-        'title'       => __('Mi Widget Personalizado', 'flavor-chat-ia'),
+        'title'       => __('Mi Widget Personalizado', 'flavor-platform'),
         'category'    => 'mi_modulo',
         'description' => 'Descripción del widget',
         'icon'        => '🎯',

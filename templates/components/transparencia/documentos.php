@@ -5,7 +5,7 @@
  * Seccion con buscador, filtros por categoria y listado
  * de documentos con tipo, titulo, fecha, tamano y descarga.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -11,7 +11,7 @@
  *   $avatar_url     - URL del avatar del usuario (128px)
  *   $nombre_mostrar - display_name del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

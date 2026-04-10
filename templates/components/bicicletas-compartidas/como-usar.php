@@ -2,7 +2,7 @@
 /**
  * Template: Cómo Usar - Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales
  */
 

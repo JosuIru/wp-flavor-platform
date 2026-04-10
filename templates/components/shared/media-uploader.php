@@ -4,7 +4,7 @@
  *
  * Subidor de archivos con preview, drag & drop y validación.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $name        Nombre del campo

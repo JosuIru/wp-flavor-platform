@@ -2,7 +2,7 @@
 /**
  * Template: Ofrecer Don
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -13,9 +13,9 @@ if (!defined('ABSPATH')) {
 if (!wp_style_is('flavor-economia-don', 'registered')) {
     wp_register_style(
         'flavor-economia-don',
-        FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/css/economia-don-frontend.css',
+        FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/css/economia-don-frontend.css',
         [],
-        FLAVOR_CHAT_IA_VERSION
+        FLAVOR_PLATFORM_VERSION
     );
 }
 if (!wp_style_is('flavor-economia-don', 'enqueued')) {
@@ -24,9 +24,9 @@ if (!wp_style_is('flavor-economia-don', 'enqueued')) {
 if (!wp_script_is('flavor-economia-don', 'registered')) {
     wp_register_script(
         'flavor-economia-don',
-        FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
+        FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
         ['jquery'],
-        FLAVOR_CHAT_IA_VERSION,
+        FLAVOR_PLATFORM_VERSION,
         true
     );
 }
@@ -43,7 +43,10 @@ wp_localize_script('flavor-economia-don', 'edData', [
     ],
 ]);
 
-$categorias = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
+$economia_don_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Don_Module')
+    : 'Flavor_Chat_Economia_Don_Module';
+$categorias = $economia_don_module_class::CATEGORIAS_DON;
 ?>
 
 <div class="ed-ofrecer-form">

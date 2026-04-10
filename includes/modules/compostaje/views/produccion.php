@@ -2,7 +2,7 @@
 /**
  * Vista Producción de Compost
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

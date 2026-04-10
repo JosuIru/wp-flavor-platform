@@ -5,7 +5,7 @@
  * Renderiza páginas de archivo de módulos usando los componentes shared,
  * eliminando la duplicación de código entre módulos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 
@@ -83,7 +83,7 @@ class Flavor_Archive_Renderer {
      * Constructor
      */
     public function __construct() {
-        $this->components_path = FLAVOR_CHAT_IA_PATH . 'templates/components/shared/';
+        $this->components_path = FLAVOR_PLATFORM_PATH . 'templates/components/shared/';
 
         // Cargar funciones helper
         if (!function_exists('flavor_render_component')) {
@@ -2550,7 +2550,7 @@ class Flavor_Archive_Renderer {
         $table = $wpdb->prefix . $tables_config['table'];
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             return ['items' => [], 'stats' => [], 'total' => 0];
         }
 
@@ -3029,7 +3029,7 @@ class Flavor_Archive_Renderer {
         $table = $wpdb->prefix . $tables_config['table'];
         $pk = $tables_config['primary_key'] ?? 'id';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($table)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($table)) {
             return null;
         }
 

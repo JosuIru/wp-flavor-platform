@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Bicicletas
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#a3e635';

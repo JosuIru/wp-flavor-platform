@@ -2,7 +2,7 @@
 /**
  * API REST para el módulo de Encuestas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -28,14 +28,14 @@ class Flavor_Encuestas_API {
     /**
      * Referencia al módulo principal
      *
-     * @var Flavor_Chat_Encuestas_Module
+     * @var Flavor_Platform_Module_Interface
      */
     private $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Encuestas_Module $module Módulo principal
+     * @param Flavor_Platform_Module_Interface $module Módulo principal
      */
     public function __construct($module) {
         $this->module = $module;
@@ -690,11 +690,14 @@ class Flavor_Encuestas_API {
      * Argumentos para campo
      */
     private function get_campo_args() {
+        $encuestas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Encuestas_Module')
+            : 'Flavor_Chat_Encuestas_Module';
         return [
             'tipo' => [
                 'required' => true,
                 'type'     => 'string',
-                'enum'     => array_keys(Flavor_Chat_Encuestas_Module::TIPOS_CAMPO),
+                'enum'     => array_keys($encuestas_module_class::TIPOS_CAMPO),
             ],
             'etiqueta' => [
                 'required'          => true,

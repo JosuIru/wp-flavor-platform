@@ -4,7 +4,7 @@
  *
  * Muestra los gastos mas recientes con opciones de filtrado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -21,7 +21,7 @@ $tablas_gastos_candidatas = [
     $prefijo_tabla . 'movimientos',
 ];
 foreach ($tablas_gastos_candidatas as $tabla_candidata) {
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_candidata)) {
         $tabla_gastos = $tabla_candidata;
         break;
     }

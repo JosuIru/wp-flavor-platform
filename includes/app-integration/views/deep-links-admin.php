@@ -2,7 +2,7 @@
 /**
  * Vista de administración de Deep Links
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

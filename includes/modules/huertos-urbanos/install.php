@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\HuertosUrbanos
  */
 

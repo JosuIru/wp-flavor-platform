@@ -5,7 +5,7 @@
  * Muestra las fases del proceso de presupuestos participativos
  * (propuesta, debate, votación, ejecución)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

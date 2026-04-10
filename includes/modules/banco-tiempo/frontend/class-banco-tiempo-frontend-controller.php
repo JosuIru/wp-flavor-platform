@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -84,8 +84,8 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function registrar_assets() {
         // Usar constante global del plugin para ruta confiable
-        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/banco-tiempo';
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $base_url = FLAVOR_PLATFORM_URL . 'includes/modules/banco-tiempo';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -251,7 +251,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         global $wpdb;
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             return '<p class="flavor-empty">' . __('El historial de intercambios aún no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -311,7 +311,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_transacciones)) {
             return '<p class="flavor-empty">' . __('Aún no hay intercambios disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -580,7 +580,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p class="flavor-error">' . __('El módulo de banco de tiempo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }

@@ -3,7 +3,7 @@
  * Vista Comunidad - Kulturaka
  * Perspectiva del ciudadano/asistente: eventos cercanos, crowdfundings activos, muro de agradecimientos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

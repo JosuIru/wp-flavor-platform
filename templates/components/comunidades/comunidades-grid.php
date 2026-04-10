@@ -6,7 +6,7 @@
  * @var string $columnas
  * @var string $tipo_filtro
  * @var bool   $mostrar_miembros
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +23,7 @@ $comunidades_listado = [];
 global $wpdb;
 $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
     $condiciones_where   = ["estado = 'activa'", "tipo != 'secreta'"];
     $valores_preparacion = [];
 

@@ -6,7 +6,7 @@
  * The form is integration-agnostic (action="#") so it can be hooked
  * into any mailing service via JavaScript or a custom handler.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo            Section heading text.
  * @var string $subtitulo         Section description text.

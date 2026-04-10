@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Comunidades
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#f43f5e';

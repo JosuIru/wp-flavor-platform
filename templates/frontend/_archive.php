@@ -9,9 +9,9 @@
  *   'listado' => ['label' => 'Todos', 'icon' => '...', 'content' => 'template:_archive.php']
  *
  * O desde un template específico del módulo:
- *   include FLAVOR_CHAT_IA_PATH . 'templates/frontend/_archive.php';
+ *   include FLAVOR_PLATFORM_PATH . 'templates/frontend/_archive.php';
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 
 // Cargar el Archive Renderer
 if (!class_exists('Flavor_Archive_Renderer')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
 }
 
 // Detectar el módulo desde variables de Dynamic Pages o parámetro directo

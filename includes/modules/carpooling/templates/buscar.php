@@ -5,7 +5,7 @@
  * Formulario completo para buscar viajes compartidos con filtros de
  * origen, destino, fecha y numero de plazas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules/Carpooling
  */
 

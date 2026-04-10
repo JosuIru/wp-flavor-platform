@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Podcast
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -77,7 +77,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_episodios,
                 'label' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Platform_Helpers::get_action_url('podcast', ''),
             ],
         ];
 
@@ -87,7 +87,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'label' => wp_trim_words($ultimo_episodio->titulo, 3, '...'),
                 'color' => 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $ultimo_episodio->id) : Flavor_Chat_Helpers::get_action_url('podcast', 'episodio') . '/' . $ultimo_episodio->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $ultimo_episodio->id) : Flavor_Platform_Helpers::get_action_url('podcast', 'episodio') . '/' . $ultimo_episodio->id . '/',
             ];
         }
 
@@ -100,7 +100,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Platform_Helpers::get_action_url('podcast', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -137,7 +137,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-controls-play',
                 'title' => wp_trim_words($episodio->titulo, 5, '...'),
                 'meta' => $duracion ?: date_i18n('j M', strtotime($episodio->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $episodio->id) : Flavor_Chat_Helpers::get_action_url('podcast', 'episodio') . '/' . $episodio->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $episodio->id) : Flavor_Platform_Helpers::get_action_url('podcast', 'episodio') . '/' . $episodio->id . '/',
             ];
         }
 

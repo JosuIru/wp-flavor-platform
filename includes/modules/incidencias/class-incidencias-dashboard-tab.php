@@ -4,7 +4,7 @@
  *
  * Compatible con el sistema de tabs de dashboard de cliente
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Incidencias
  */
 
@@ -92,7 +92,7 @@ class Flavor_Incidencias_Dashboard_Tab {
         $pendientes = 0;
         $resueltas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $total_incidencias = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla} WHERE es_publica = 1"
             );
@@ -177,7 +177,7 @@ class Flavor_Incidencias_Dashboard_Tab {
         $tabla = $wpdb->prefix . 'flavor_incidencias';
 
         $mis_incidencias = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $mis_incidencias = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla} WHERE usuario_id = %d ORDER BY created_at DESC LIMIT 10",
                 $user_id

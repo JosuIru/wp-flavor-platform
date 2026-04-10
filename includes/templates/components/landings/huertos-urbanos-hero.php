@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Huertos Urbanos
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#22c55e';

@@ -70,12 +70,15 @@ function flavor_advertising_pro_init() {
     require_once FLAVOR_ADVERTISING_PATH . 'includes/class-advertising-system.php';
 
     // Cargar módulo de publicidad (integración con IA)
-    if (class_exists('Flavor_Chat_Module_Loader')) {
+    if (class_exists('Flavor_Platform_Module_Loader')) {
         require_once FLAVOR_ADVERTISING_PATH . 'includes/class-advertising-module.php';
 
         add_filter('flavor_register_modules', function($modules) {
-            if (class_exists('Flavor_Chat_Module_Advertising')) {
-                $modules['advertising'] = new Flavor_Chat_Module_Advertising();
+            $advertising_module_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Module_Advertising')
+                : 'Flavor_Chat_Module_Advertising';
+            if (class_exists($advertising_module_class)) {
+                $modules['advertising'] = new $advertising_module_class();
             }
             return $modules;
         });
@@ -87,7 +90,7 @@ function flavor_advertising_pro_init() {
     }
 
     // Log de inicialización en modo debug
-    if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
+    if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
         flavor_log_debug( 'Addon inicializado correctamente v' . FLAVOR_ADVERTISING_VERSION, 'AdvertisingPro' );
     }
 }

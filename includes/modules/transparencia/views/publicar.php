@@ -4,7 +4,7 @@
  *
  * Formulario para crear/editar documentos públicos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

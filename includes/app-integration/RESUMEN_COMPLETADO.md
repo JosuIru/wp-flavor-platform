@@ -259,13 +259,13 @@ curl "http://basaberenueva.local/wp-json/app-discovery/v1/info"
 curl "http://basaberenueva.local/wp-json/app-discovery/v1/modules"
 
 # Banco de Tiempo - Servicios
-curl "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios"
+curl "http://basaberenueva.local/wp-json/flavor-platform/v1/banco-tiempo/servicios"
 
 # Marketplace - Anuncios
-curl "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/marketplace/anuncios"
+curl "http://basaberenueva.local/wp-json/flavor-platform/v1/marketplace/anuncios"
 
 # WooCommerce - Productos
-curl "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/woocommerce/productos"
+curl "http://basaberenueva.local/wp-json/flavor-platform/v1/woocommerce/productos"
 ```
 
 ### 2. Testing con Autenticación
@@ -276,15 +276,15 @@ TOKEN="tu-token-aqui"
 
 # Banco de Tiempo - Ver saldo
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/banco-tiempo/saldo"
+  "http://basaberenueva.local/wp-json/flavor-platform/v1/banco-tiempo/saldo"
 
 # Marketplace - Mis anuncios
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/marketplace/mis-anuncios"
+  "http://basaberenueva.local/wp-json/flavor-platform/v1/marketplace/mis-anuncios"
 
 # WooCommerce - Mi carrito
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://basaberenueva.local/wp-json/flavor-chat-ia/v1/woocommerce/carrito"
+  "http://basaberenueva.local/wp-json/flavor-platform/v1/woocommerce/carrito"
 ```
 
 ---

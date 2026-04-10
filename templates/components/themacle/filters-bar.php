@@ -10,7 +10,7 @@
  * Each filter element carries a data-term-slug attribute so JavaScript
  * can bind filtering behaviour independently.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $taxonomia         Taxonomy slug to pull terms from.
  * @var string $estilo            Display style: 'underline', 'pills', or 'dropdown'.

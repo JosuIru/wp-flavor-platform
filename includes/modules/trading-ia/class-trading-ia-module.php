@@ -4,7 +4,7 @@
  *
  * Bot de trading simulado (paper trading) con IA para criptomonedas Solana.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Trading IA - Paper trading con indicadores tecnicos, gestion de riesgo y ciclo automatico
  */
-class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -51,7 +51,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_trades);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_trades);
     }
 
     /**
@@ -264,7 +264,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * @return bool
      */
     private function is_experimental_enabled() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $global_enabled = !empty($settings['enable_experimental_modules']);
         $module_enabled = !empty($settings['experimental_modules'])
             && is_array($settings['experimental_modules'])
@@ -438,7 +438,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * Carga las clases auxiliares del modulo
      */
     private function cargar_clases_auxiliares() {
-        $directorio_modulo = FLAVOR_CHAT_IA_PATH . 'includes/modules/trading-ia/';
+        $directorio_modulo = FLAVOR_PLATFORM_PATH . 'includes/modules/trading-ia/';
 
         $archivos_clases = array(
             'class-trading-ia-mercado.php',
@@ -541,7 +541,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $usuario_id = $this->obtener_usuario_trading();
 
         if (!$usuario_id) {
-            flavor_chat_ia_log('Trading IA: No se encontro usuario para el ciclo cron', 'trading_ia');
+            flavor_platform_log('Trading IA: No se encontro usuario para el ciclo cron', 'trading_ia');
             return;
         }
 
@@ -551,11 +551,11 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
             if (!empty($resultado_ciclo['errores'])) {
                 foreach ($resultado_ciclo['errores'] as $error) {
-                    flavor_chat_ia_log('Trading IA Ciclo Error: ' . $error, 'trading_ia');
+                    flavor_platform_log('Trading IA Ciclo Error: ' . $error, 'trading_ia');
                 }
             }
         } catch (\Exception $excepcion) {
-            flavor_chat_ia_log('Trading IA Cron Exception: ' . $excepcion->getMessage(), 'trading_ia');
+            flavor_platform_log('Trading IA Cron Exception: ' . $excepcion->getMessage(), 'trading_ia');
         }
     }
 
@@ -2410,7 +2410,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                 'prioridad' => 'normal',
             ));
 
-            flavor_chat_ia_log('Trading IA Reporte Diario: ' . $mensaje_reporte, 'trading_ia');
+            flavor_platform_log('Trading IA Reporte Diario: ' . $mensaje_reporte, 'trading_ia');
         }
     }
 
@@ -2422,7 +2422,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
 
         // Verificar si existe la tabla
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_alertas)) {
             return;
         }
 
@@ -2747,7 +2747,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_alertas)) {
             return array();
         }
 
@@ -3448,7 +3448,7 @@ KNOWLEDGE;
         );
 
         foreach ($tablas_columnas as $tabla => $columnas) {
-            if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
                 continue;
             }
 
@@ -3543,7 +3543,7 @@ KNOWLEDGE;
         }
 
         // Verificar si la tabla portfolio existe y tiene la estructura esperada
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_portfolio)) {
             // Suprimir errores SQL en caso de columnas faltantes
             $wpdb->suppress_errors(true);
             $portfolio = $wpdb->get_row($wpdb->prepare(
@@ -3630,4 +3630,9 @@ KNOWLEDGE;
             Flavor_Trading_Ia_Dashboard_Tab::get_instance();
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Trading_IA_Module', false)) {
+    class_alias('Flavor_Platform_Trading_IA_Module', 'Flavor_Chat_Trading_IA_Module');
 }

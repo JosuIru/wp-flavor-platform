@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Servicio Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

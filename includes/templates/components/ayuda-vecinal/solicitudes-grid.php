@@ -4,7 +4,7 @@
  *
  * Muestra las solicitudes activas de ayuda vecinal en formato grid
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

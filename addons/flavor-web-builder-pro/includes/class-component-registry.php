@@ -2,7 +2,7 @@
 /**
  * Component Registry - Sistema central de componentes web
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -252,7 +252,7 @@ class Flavor_Component_Registry {
             return;
         }
 
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
 
         // Primero intentar con módulos cargados (activos)
         $active_modules = $module_loader->get_loaded_modules();
@@ -3491,25 +3491,25 @@ class Flavor_Component_Registry {
 
         // Lista de módulos con componentes web
         $modules_with_components = [
-            'carpooling' => 'Flavor_Chat_Carpooling_Module',
-            'cursos' => 'Flavor_Chat_Cursos_Module',
-            'biblioteca' => 'Flavor_Chat_Biblioteca_Module',
-            'talleres' => 'Flavor_Chat_Talleres_Module',
-            'huertos-urbanos' => 'Flavor_Chat_Huertos_Urbanos_Module',
-            'espacios-comunes' => 'Flavor_Chat_Espacios_Comunes_Module',
-            'bicicletas-compartidas' => 'Flavor_Chat_Bicicletas_Compartidas_Module',
-            'parkings' => 'Flavor_Chat_Parkings_Module',
-            'reciclaje' => 'Flavor_Chat_Reciclaje_Module',
-            'compostaje' => 'Flavor_Chat_Compostaje_Module',
-            'ayuda-vecinal' => 'Flavor_Chat_Ayuda_Vecinal_Module',
-            'podcast' => 'Flavor_Chat_Podcast_Module',
-            'radio' => 'Flavor_Chat_Radio_Module',
-            'red-social' => 'Flavor_Chat_Red_Social_Module',
-            'multimedia' => 'Flavor_Chat_Multimedia_Module',
-            'chat-grupos' => 'Flavor_Chat_Chat_Grupos_Module',
-            'chat-interno' => 'Flavor_Chat_Chat_Interno_Module',
-            'empresarial' => 'Flavor_Chat_Empresarial_Module',
-            'themacle' => 'Flavor_Chat_Themacle_Module',
+            'carpooling' => flavor_get_runtime_class_name('Flavor_Chat_Carpooling_Module'),
+            'cursos' => flavor_get_runtime_class_name('Flavor_Chat_Cursos_Module'),
+            'biblioteca' => flavor_get_runtime_class_name('Flavor_Chat_Biblioteca_Module'),
+            'talleres' => flavor_get_runtime_class_name('Flavor_Chat_Talleres_Module'),
+            'huertos-urbanos' => flavor_get_runtime_class_name('Flavor_Chat_Huertos_Urbanos_Module'),
+            'espacios-comunes' => flavor_get_runtime_class_name('Flavor_Chat_Espacios_Comunes_Module'),
+            'bicicletas-compartidas' => flavor_get_runtime_class_name('Flavor_Chat_Bicicletas_Compartidas_Module'),
+            'parkings' => flavor_get_runtime_class_name('Flavor_Chat_Parkings_Module'),
+            'reciclaje' => flavor_get_runtime_class_name('Flavor_Chat_Reciclaje_Module'),
+            'compostaje' => flavor_get_runtime_class_name('Flavor_Chat_Compostaje_Module'),
+            'ayuda-vecinal' => flavor_get_runtime_class_name('Flavor_Chat_Ayuda_Vecinal_Module'),
+            'podcast' => flavor_get_runtime_class_name('Flavor_Chat_Podcast_Module'),
+            'radio' => flavor_get_runtime_class_name('Flavor_Chat_Radio_Module'),
+            'red-social' => flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module'),
+            'multimedia' => flavor_get_runtime_class_name('Flavor_Chat_Multimedia_Module'),
+            'chat-grupos' => flavor_get_runtime_class_name('Flavor_Chat_Chat_Grupos_Module'),
+            'chat-interno' => flavor_get_runtime_class_name('Flavor_Chat_Chat_Interno_Module'),
+            'empresarial' => flavor_get_runtime_class_name('Flavor_Chat_Empresarial_Module'),
+            'themacle' => flavor_get_runtime_class_name('Flavor_Chat_Themacle_Module'),
         ];
 
         foreach ($modules_with_components as $module_id => $class_name) {

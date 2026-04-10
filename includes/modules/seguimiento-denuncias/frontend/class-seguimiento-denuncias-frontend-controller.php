@@ -4,7 +4,7 @@
  *
  * Gestiona shortcodes, AJAX handlers y dashboard tabs del módulo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -176,14 +176,14 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
             'flavor-seguimiento-denuncias',
             $modulo_url . '/assets/css/seguimiento-denuncias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-seguimiento-denuncias',
             $modulo_url . '/assets/js/seguimiento-denuncias.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -224,7 +224,7 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
         }
 
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
             return $tabs;
         }
 

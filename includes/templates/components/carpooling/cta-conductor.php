@@ -4,7 +4,7 @@
  *
  * Llamada a la acción para publicar viajes como conductor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -4,7 +4,7 @@
  *
  * Hero section destacada para la página principal de cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Cursos
  */
 

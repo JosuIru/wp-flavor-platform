@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: DEX Solana CTA Conectar Wallet
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

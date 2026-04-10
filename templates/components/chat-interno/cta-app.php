@@ -3,7 +3,7 @@
  * Template: CTA App Móvil
  * Call to action para descargar la aplicación móvil con badges de App Store y Google Play
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

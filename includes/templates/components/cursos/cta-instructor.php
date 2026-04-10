@@ -4,7 +4,7 @@
  *
  * Call-to-action para invitar a usuarios a convertirse en instructores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Cursos
  */
 

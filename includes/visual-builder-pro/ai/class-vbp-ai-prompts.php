@@ -4,7 +4,7 @@
  *
  * Biblioteca de prompts optimizados para generación de contenido.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Visual_Builder_Pro
  * @since 2.1.0
  */

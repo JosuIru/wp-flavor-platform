@@ -16,7 +16,7 @@
  * - $variante (string): centrado, izquierda, dividido
  * - $altura (string): pequeño, mediano, grande, completo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -8,7 +8,7 @@
  * - Textos de bienvenida
  * - Emails de notificación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

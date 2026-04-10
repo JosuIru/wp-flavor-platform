@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Podcast
  */
 

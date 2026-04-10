@@ -2,7 +2,7 @@
 /**
  * Módulo WooCommerce para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de integración con WooCommerce
  */
-class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_WooCommerce_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -1640,5 +1640,8 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             Flavor_Woocommerce_Frontend_Controller::get_instance();
         }
     }
+}
 
+if (!class_exists('Flavor_Chat_WooCommerce_Module', false)) {
+    class_alias('Flavor_Platform_WooCommerce_Module', 'Flavor_Chat_WooCommerce_Module');
 }

@@ -4,7 +4,7 @@
  *
  * Maneja todas las operaciones CRUD de campañas de email.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

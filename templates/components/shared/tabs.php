@@ -4,7 +4,7 @@
  *
  * Navegación por pestañas reutilizable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $tabs       Pestañas: [['id' => 'tab1', 'label' => 'Pestaña 1', 'icon' => '📋', 'badge' => 5, 'content' => '']]

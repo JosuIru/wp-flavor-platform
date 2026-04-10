@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Economía de Suficiencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,14 +17,14 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
     /**
      * Referencia al módulo
      *
-     * @var Flavor_Chat_Economia_Suficiencia_Module
+     * @var Flavor_Platform_Module_Interface
      */
     protected $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Economia_Suficiencia_Module $module
+     * @param Flavor_Platform_Module_Interface $module
      */
     public function __construct($module) {
         $this->module = $module;

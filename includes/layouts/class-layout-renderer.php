@@ -4,7 +4,7 @@
  *
  * Genera el HTML de los layouts predefinidos.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -119,7 +119,7 @@ class Flavor_Layout_Renderer {
         $menu_type = $active_layout['menu'];
         $settings = $this->registry->get_menu_settings($menu_type);
 
-        $template_file = FLAVOR_CHAT_IA_PATH . "templates/layouts/menus/{$menu_type}.php";
+        $template_file = FLAVOR_PLATFORM_PATH . "templates/layouts/menus/{$menu_type}.php";
 
         if (file_exists($template_file)) {
             include $template_file;
@@ -139,7 +139,7 @@ class Flavor_Layout_Renderer {
         $footer_type = $active_layout['footer'];
         $settings = $this->registry->get_footer_settings($footer_type);
 
-        $template_file = FLAVOR_CHAT_IA_PATH . "templates/layouts/footers/{$footer_type}.php";
+        $template_file = FLAVOR_PLATFORM_PATH . "templates/layouts/footers/{$footer_type}.php";
 
         if (file_exists($template_file)) {
             include $template_file;
@@ -859,8 +859,8 @@ class Flavor_Layout_Renderer {
     private function render_logo($size = 'default') {
         // Usar función helper centralizada que prioriza flavor_logo_url
         $logo_url = '';
-        if (class_exists('Flavor_Chat_Helpers')) {
-            $logo_url = Flavor_Chat_Helpers::get_site_logo();
+        if (class_exists('Flavor_Platform_Helpers')) {
+            $logo_url = Flavor_Platform_Helpers::get_site_logo();
         }
 
         // Fallback al custom logo del tema si no hay logo de Flavor
@@ -952,7 +952,7 @@ class Flavor_Layout_Renderer {
     private function render_user_menu() {
         if (is_user_logged_in()) {
             $current_user = wp_get_current_user();
-            $settings = get_option('flavor_chat_ia_settings', []);
+            $settings = flavor_get_main_settings();
             $active_modules = $settings['active_modules'] ?? [];
 
             // Fusionar con opción legacy para compatibilidad
@@ -1013,7 +1013,7 @@ class Flavor_Layout_Renderer {
 
         // Mi Portal (siempre visible)
         $links[] = [
-            'url'   => Flavor_Chat_Helpers::get_action_url('', ''),
+            'url'   => Flavor_Platform_Helpers::get_action_url('', ''),
             'label' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-dashboard',
         ];
@@ -1023,7 +1023,7 @@ class Flavor_Layout_Renderer {
         $tiene_social = !empty(array_intersect($modulos_sociales, $active_modules));
         if ($tiene_social) {
             $links[] = [
-                'url'   => Flavor_Chat_Helpers::get_action_url('mi_red', ''),
+                'url'   => Flavor_Platform_Helpers::get_action_url('mi_red', ''),
                 'label' => __('Mi Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-share',
             ];
@@ -1033,7 +1033,7 @@ class Flavor_Layout_Renderer {
         if (in_array('chat_interno', $active_modules, true) || in_array('chat_grupos', $active_modules, true)) {
             $mensajes_no_leidos = $this->contar_mensajes_no_leidos($user->ID);
             $links[] = [
-                'url'   => Flavor_Chat_Helpers::get_action_url('mensajes', ''),
+                'url'   => Flavor_Platform_Helpers::get_action_url('mensajes', ''),
                 'label' => __('Mis Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-email',
                 'badge' => $mensajes_no_leidos > 0 ? $mensajes_no_leidos : null,
@@ -1043,7 +1043,7 @@ class Flavor_Layout_Renderer {
         // Notificaciones
         $notificaciones_no_leidas = $this->contar_notificaciones_no_leidas($user->ID);
         $links[] = [
-            'url'   => Flavor_Chat_Helpers::get_action_url('notificaciones', ''),
+            'url'   => Flavor_Platform_Helpers::get_action_url('notificaciones', ''),
             'label' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-bell',
             'badge' => $notificaciones_no_leidas > 0 ? $notificaciones_no_leidas : null,
@@ -1083,14 +1083,14 @@ class Flavor_Layout_Renderer {
 
         // Mi Perfil
         $links[] = [
-            'url'   => Flavor_Chat_Helpers::get_action_url('perfil', ''),
+            'url'   => Flavor_Platform_Helpers::get_action_url('perfil', ''),
             'label' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-admin-users',
         ];
 
         // Configuración
         $links[] = [
-            'url'   => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
+            'url'   => Flavor_Platform_Helpers::get_action_url('configuracion', ''),
             'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-admin-generic',
         ];
@@ -1194,8 +1194,8 @@ class Flavor_Layout_Renderer {
         $tabla_participantes = $wpdb->prefix . 'flavor_chat_interno_participantes';
 
         // Verificar que existan ambas tablas
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes) &&
-            Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_mensajes) &&
+            Flavor_Platform_Helpers::tabla_existe($tabla_participantes)) {
             // Contar mensajes no leídos en todas las conversaciones donde participa el usuario
             $total_no_leidos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(no_leidos), 0) FROM (
@@ -1228,7 +1228,7 @@ class Flavor_Layout_Renderer {
         global $wpdb;
 
         $tabla = $wpdb->prefix . 'flavor_notificaciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 

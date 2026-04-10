@@ -5,7 +5,7 @@
  * Define la interfaz común para todas las features del sistema
  * (ratings, favorites, comments, follow, share, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Features
  */
 

@@ -10,7 +10,7 @@
  *   $avisos_urgentes - Array de avisos urgentes
  *   $categorias - Array de categorías
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 
@@ -485,7 +485,7 @@ if (in_array('comunidades', $active_modules)) {
                         <span class="dashicons dashicons-admin-generic"></span>
                         <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </a>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')); ?>" class="dm-quick-action" target="_blank">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('avisos_municipales', '')); ?>" class="dm-quick-action" target="_blank">
                         <span class="dashicons dashicons-external"></span>
                         <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </a>

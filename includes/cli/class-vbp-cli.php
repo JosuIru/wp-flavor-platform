@@ -5,7 +5,7 @@
  * Comandos CLI para interactuar con VBP desde terminal.
  * Permite a Claude Code crear páginas aprovechando los bloques y widgets de módulos.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage CLI
  * @since 2.1.0
  */

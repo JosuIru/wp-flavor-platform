@@ -4,7 +4,7 @@
  *
  * Permite buscar contenido en comunidades locales y en la red federada
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

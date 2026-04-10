@@ -5,7 +5,7 @@
  * Componente de card adaptable a cualquier módulo mediante configuración.
  * Elimina la necesidad de crear archivos de card separados para cada módulo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * Uso:

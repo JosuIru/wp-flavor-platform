@@ -3,7 +3,7 @@
  * Vista Composteras - Módulo Compostaje
  * Gestión de composteras comunitarias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

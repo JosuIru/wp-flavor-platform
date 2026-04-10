@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Podcast
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -31,7 +31,7 @@ class Flavor_Podcast_Frontend_Controller {
      * Constructor privado
      */
     private function __construct() {
-        $this->config = get_option('flavor_chat_ia_settings', []);
+        $this->config = flavor_get_main_settings();
         $this->init();
     }
 
@@ -90,7 +90,7 @@ class Flavor_Podcast_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugin_dir_url(dirname(__FILE__));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-podcast-frontend',
@@ -1038,7 +1038,7 @@ class Flavor_Podcast_Frontend_Controller {
         $tabla_likes = $wpdb->prefix . 'flavor_podcast_likes';
         $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_likes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_likes)) {
             $existente = $wpdb->get_var($wpdb->prepare(
                 "SELECT id FROM $tabla_likes WHERE episodio_id = %d AND usuario_id = %d",
                 $episodio_id, get_current_user_id()
@@ -1104,7 +1104,7 @@ class Flavor_Podcast_Frontend_Controller {
         $tabla_series = $wpdb->prefix . 'flavor_podcast_series';
 
         $suscripciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_suscripciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_suscripciones)) {
             $suscripciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT s.*, ps.nombre, ps.descripcion, ps.imagen, ps.autor
                  FROM $tabla_suscripciones s
@@ -1237,7 +1237,7 @@ class Flavor_Podcast_Frontend_Controller {
         $tabla_series = $wpdb->prefix . 'flavor_podcast_series';
         $mis_series = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_series)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_series)) {
             $mis_series = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, nombre FROM $tabla_series WHERE usuario_id = %d ORDER BY nombre ASC",
                 $usuario_id
@@ -1252,7 +1252,7 @@ class Flavor_Podcast_Frontend_Controller {
             <?php if (empty($mis_series)): ?>
                 <div class="flavor-aviso">
                     <p><?php _e('Primero debes crear una serie para poder subir episodios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', 'crear-serie')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('podcast', 'crear-serie')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php _e('Crear serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>

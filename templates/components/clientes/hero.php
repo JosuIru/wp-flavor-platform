@@ -2,7 +2,7 @@
 /**
  * Template: Hero Clientes / CRM
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +23,7 @@ if (class_exists('wpdb')) {
     global $wpdb;
     $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
 
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
         $total_clientes_stat = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_clientes");
         $clientes_activos_stat = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_clientes WHERE estado = 'activo'");
         $nuevos_mes_stat = (int) $wpdb->get_var(

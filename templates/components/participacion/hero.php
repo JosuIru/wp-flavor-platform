@@ -5,7 +5,7 @@
  * Seccion hero para el modulo de participacion civica.
  * Muestra titulo, subtitulo, estadisticas y CTA principal.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

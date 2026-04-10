@@ -2,7 +2,7 @@
 /**
  * API REST para Espacios Comunes (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Espacios_Comunes_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,42 +28,42 @@ class Flavor_Espacios_Comunes_API {
 
     public function register_routes() {
         // GET /espacios-comunes/dashboard
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /espacios-comunes
-        register_rest_route(self::NAMESPACE, '/espacios-comunes', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes', [
             'methods' => 'GET',
             'callback' => [$this, 'get_espacios'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /espacios-comunes/{id}
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_espacio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /espacios-comunes/{id}/disponibilidad
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)/disponibilidad', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)/disponibilidad', [
             'methods' => 'GET',
             'callback' => [$this, 'get_disponibilidad'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /espacios-comunes/mis-reservas
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/mis-reservas', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/mis-reservas', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_reservas'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /espacios-comunes/{id}/reservar
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)/reservar', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/(?P<id>\d+)/reservar', [
             'methods' => 'POST',
             'callback' => [$this, 'reservar'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -95,14 +95,14 @@ class Flavor_Espacios_Comunes_API {
         ]);
 
         // DELETE /espacios-comunes/reservas/{id}
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/reservas/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/reservas/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_reserva'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /espacios-comunes/tipos
-        register_rest_route(self::NAMESPACE, '/espacios-comunes/tipos', [
+        flavor_register_rest_route(self::NAMESPACE, '/espacios-comunes/tipos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_tipos'],
             'permission_callback' => [$this, 'check_authentication'],

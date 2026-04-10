@@ -9,7 +9,7 @@
  * - $comunidades_usuario: Comunidades del usuario para filtrar
  * - $atributos: Atributos del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

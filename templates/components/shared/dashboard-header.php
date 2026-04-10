@@ -5,7 +5,7 @@
  * Header reutilizable para dashboards de módulos con título, subtítulo,
  * icono, y acciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title    Título principal

@@ -2,7 +2,7 @@
 /**
  * API REST para exponer el estado de los módulos según la matriz de auditoría.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {
@@ -110,8 +110,8 @@ class Flavor_Module_Gap_Status_API {
      */
     private function resolve_matrix_path() {
         $candidates = [
-            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz_actual_2026-03-01.csv',
-            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv',
+            FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz_actual_2026-03-01.csv',
+            FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz.csv',
         ];
 
         foreach ($candidates as $candidate) {
@@ -121,7 +121,7 @@ class Flavor_Module_Gap_Status_API {
             return $candidate;
         }
 
-        return FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv';
+        return FLAVOR_PLATFORM_PATH . 'reports/modulos_matriz.csv';
     }
 
     /**

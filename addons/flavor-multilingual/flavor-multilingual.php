@@ -228,7 +228,7 @@ class Flavor_Multilingual {
      * Verifica dependencias del addon
      */
     public function check_dependencies() {
-        $this->flavor_active = defined('FLAVOR_CHAT_IA_VERSION');
+        $this->flavor_active = defined('FLAVOR_PLATFORM_VERSION');
 
         if (!$this->flavor_active) {
             add_action('admin_notices', array($this, 'missing_flavor_notice'));
@@ -910,7 +910,7 @@ add_action('flavor_register_addons', function() {
 
 // Fallback: Inicializar directamente si el addon manager no existe
 add_action('plugins_loaded', function() {
-    if (!class_exists('Flavor_Addon_Manager') && defined('FLAVOR_CHAT_IA_VERSION')) {
+    if (!class_exists('Flavor_Addon_Manager') && defined('FLAVOR_PLATFORM_VERSION')) {
         Flavor_Multilingual::get_instance();
     }
 }, 25);

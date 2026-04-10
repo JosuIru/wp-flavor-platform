@@ -10,6 +10,8 @@ import 'chat_main_screen.dart';
 import 'screens/create_group_screen.dart';
 import 'screens/search_messages_screen.dart';
 import 'screens/status_screen.dart';
+import 'screens/calls_history_screen.dart';
+import 'screens/chat_settings_screen.dart';
 
 /// Pantalla principal de conversaciones (lista de chats)
 class ChatConversationsScreen extends ConsumerStatefulWidget {
@@ -524,14 +526,8 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
   }
 
   Widget _buildCallsTab() {
-    // TODO: Implementar historial de llamadas
-    return _buildEmptyState(
-      icon: Icons.call_outlined,
-      title: 'No hay llamadas recientes',
-      subtitle: 'Tus llamadas aparecerán aquí',
-      action: 'Nueva llamada',
-      onAction: () {},
-    );
+    // Usar el widget de historial de llamadas
+    return const CallsHistoryWidget();
   }
 
   Widget _buildEmptyState({
@@ -582,10 +578,20 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
         _showArchivedChats();
         break;
       case 'starred':
-        // TODO: Mostrar mensajes destacados
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SearchScreen(showOnlyStarred: true),
+          ),
+        );
         break;
       case 'settings':
-        // TODO: Abrir configuración
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ChatSettingsScreen(),
+          ),
+        );
         break;
     }
   }
@@ -620,7 +626,7 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
             subtitle: const Text('Añade contactos escaneando su código'),
             onTap: () {
               Navigator.pop(context);
-              // TODO: Escanear QR
+              _scanQRCode();
             },
           ),
           const SizedBox(height: 16),
@@ -871,8 +877,34 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
         return Icons.gif;
       case MessageType.poll:
         return Icons.poll;
+      case MessageType.link:
+        return Icons.link;
       default:
         return Icons.message;
     }
+  }
+
+  void _openChatWithUser(ChatUser user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatMainScreen(
+          conversationId: 'user_${user.id}',
+          name: user.name,
+          avatarUrl: user.avatarUrl,
+          isGroup: false,
+        ),
+      ),
+    );
+  }
+
+  void _scanQRCode() {
+    // Mostrar mensaje informativo mientras se implementa el scanner
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Escáner de código QR próximamente'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

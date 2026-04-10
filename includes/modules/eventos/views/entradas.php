@@ -1,5 +1,5 @@
 <?php
-/** Gestión de Entradas/Tickets * @package FlavorChatIA */
+/** Gestión de Entradas/Tickets * @package FlavorPlatform */
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-entradas-management">

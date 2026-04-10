@@ -5,7 +5,7 @@
  * Muestra una tabla filtrable con toda la actividad registrada
  * por los modulos del sistema.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.1.0
  */
 

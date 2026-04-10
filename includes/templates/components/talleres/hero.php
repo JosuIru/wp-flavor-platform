@@ -4,7 +4,7 @@
  *
  * Displays the hero section for the workshops page
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Talleres
  */
 

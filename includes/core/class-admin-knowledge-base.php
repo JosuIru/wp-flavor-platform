@@ -5,7 +5,7 @@
  * Proporciona contexto completo sobre módulos, addons, configuración
  * y documentación para que el asistente IA sea un experto.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.1
  */
 
@@ -578,7 +578,7 @@ ESTRUCTURA DEL PLUGIN:
     private function get_addons_context() {
         $output = ["=== ADDONS INSTALADOS ==="];
 
-        $addons_dir = FLAVOR_CHAT_IA_PATH . 'addons/';
+        $addons_dir = FLAVOR_PLATFORM_PATH . 'addons/';
         if (!is_dir($addons_dir)) {
             return "";
         }

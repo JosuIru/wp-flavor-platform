@@ -2,7 +2,7 @@
 /**
  * Vista: Subir Documento Legal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Círculos de Cuidados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\CirculosCuidados
  */
 
@@ -93,20 +93,20 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         $necesidades_pendientes = 0;
         $cuidados_ofrecidos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_circulos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_circulos)) {
             $circulos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_circulos} WHERE estado = 'activo'"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros)) {
             $mis_circulos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_miembros} WHERE usuario_id = %d AND estado = 'activo'",
                 $user_id
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_necesidades)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_necesidades)) {
             $necesidades_pendientes = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_necesidades} WHERE estado = 'pendiente'"
             );
@@ -185,15 +185,15 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'necesidades')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'necesidades')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Ver Necesidades', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'solicitar')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'solicitar')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-megaphone"></span>
                     <?php esc_html_e('Solicitar Cuidado', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Unirse a Círculo', 'flavor-platform'); ?>
                 </a>
@@ -217,7 +217,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         $tabla_miembros = $wpdb->prefix . 'flavor_circulos_miembros';
 
         $mis_circulos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros) && Flavor_Chat_Helpers::tabla_existe($tabla_circulos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_miembros) && Flavor_Platform_Helpers::tabla_existe($tabla_circulos)) {
             $mis_circulos = $wpdb->get_results($wpdb->prepare(
                 "SELECT c.*, m.rol, m.fecha_union
                  FROM {$tabla_circulos} c
@@ -232,7 +232,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         <div class="flavor-panel flavor-mis-circulos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Mis Círculos', 'flavor-platform'); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Círculo', 'flavor-platform'); ?>
                 </a>
@@ -244,10 +244,10 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                     <p><?php esc_html_e('Aún no perteneces a ningún círculo de cuidados.', 'flavor-platform'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Los círculos de cuidados son redes de apoyo mutuo entre vecinos.', 'flavor-platform'); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
                             <?php esc_html_e('Unirse a un círculo', 'flavor-platform'); ?>
                         </a>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php esc_html_e('Crear un círculo', 'flavor-platform'); ?>
                         </a>
                     </div>
@@ -280,7 +280,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                                         date_i18n(get_option('date_format'), strtotime($circulo->fecha_union))
                                     ); ?>
                                 </span>
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'circulo') . '/' . $circulo->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos_cuidados', 'circulo') . '/' . $circulo->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-platform'); ?>
                                 </a>
                             </div>

@@ -4,7 +4,7 @@
  *
  * Gestiona la carga y limpieza de datos de demostracion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 

@@ -4,7 +4,7 @@
  *
  * Página de administración para crear/gestionar páginas de módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -254,11 +254,11 @@ class Flavor_Pages_Admin {
             'pending_preview' => [],
         ];
 
-        if (!class_exists('Flavor_Page_Creator_V3') || !class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Page_Creator_V3') || !class_exists('Flavor_Platform_Module_Loader')) {
             return $empty;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         if (!$loader || !method_exists($loader, 'get_loaded_modules')) {
             return $empty;
         }
@@ -346,7 +346,7 @@ class Flavor_Pages_Admin {
 
         $resultado = Flavor_Page_Creator::create_all_pages();
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'created' => $resultado['total'],
         ], admin_url('admin.php')));
@@ -365,7 +365,7 @@ class Flavor_Pages_Admin {
 
         $paginas_eliminadas = Flavor_Page_Creator::delete_all_pages();
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'deleted' => count($paginas_eliminadas),
         ], admin_url('admin.php')));

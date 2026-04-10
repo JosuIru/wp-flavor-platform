@@ -35,7 +35,10 @@ class PluginDetectorService {
     final info = await detectPlugins();
     if (info == null) return false;
 
-    return info.activeSystems.any((s) => s['id'] == 'flavor-chat-ia');
+    return info.activeSystems.any((s) {
+      final id = s['id']?.toString();
+      return id == 'flavor-chat-ia' || id == 'flavor-platform';
+    });
   }
 
   /// Verifica si el sitio tiene wp-calendario-experiencias activo

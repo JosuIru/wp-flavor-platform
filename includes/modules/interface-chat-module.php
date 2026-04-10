@@ -2,7 +2,7 @@
 /**
  * Interface para módulos de Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Interface que deben implementar todos los módulos
  */
-interface Flavor_Chat_Module_Interface {
+interface Flavor_Platform_Module_Interface {
 
     /**
      * Obtiene el ID único del módulo
@@ -136,10 +136,14 @@ interface Flavor_Chat_Module_Interface {
     public function get_dashboard_metadata();
 }
 
+if (!interface_exists('Flavor_Chat_Module_Interface', false)) {
+    class_alias('Flavor_Platform_Module_Interface', 'Flavor_Chat_Module_Interface');
+}
+
 /**
  * Clase base abstracta para módulos
  */
-abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
+abstract class Flavor_Platform_Module_Base implements Flavor_Platform_Module_Interface {
 
     /**
      * ID del módulo
@@ -275,7 +279,7 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     protected function load_settings() {
         $module_id = $this->id ?: $this->module_id;
-        $all_settings = $module_id ? get_option('flavor_chat_ia_module_' . $module_id, []) : [];
+        $all_settings = $module_id ? flavor_get_module_settings($module_id) : [];
         $this->settings = wp_parse_args($all_settings, $this->get_default_settings());
     }
 
@@ -403,7 +407,7 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     protected function update_setting($key, $value) {
         $this->settings[$key] = $value;
-        return update_option('flavor_chat_ia_module_' . $this->id, $this->settings);
+        return flavor_update_module_settings($this->id, $this->settings);
     }
 
     /**
@@ -411,8 +415,8 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     public function get_visibility() {
         // Usar caché centralizada del Module Loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $visibilidades_configuradas = Flavor_Chat_Module_Loader::get_visibility_settings_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $visibilidades_configuradas = Flavor_Platform_Module_Loader::get_visibility_settings_cached();
         } else {
             $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
         }
@@ -430,8 +434,8 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     public function get_required_capability() {
         // Usar caché centralizada del Module Loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $capacidades_configuradas = Flavor_Chat_Module_Loader::get_capabilities_settings_cached();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $capacidades_configuradas = Flavor_Platform_Module_Loader::get_capabilities_settings_cached();
         } else {
             $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
         }
@@ -650,4 +654,8 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
             'admin_contexts' => array_values(array_unique(array_filter((array) $this->dashboard_admin_contexts))),
         ];
     }
+}
+
+if (!class_exists('Flavor_Chat_Module_Base', false)) {
+    class_alias('Flavor_Platform_Module_Base', 'Flavor_Chat_Module_Base');
 }

@@ -4,7 +4,7 @@
  *
  * Feed de actividad reciente para dashboards.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $items      Actividades: [['type' => 'comment', 'user' => [], 'action' => 'comentó en', 'target' => 'Publicación X', 'time' => '2 min', 'url' => '#']]

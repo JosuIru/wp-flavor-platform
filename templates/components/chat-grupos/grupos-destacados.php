@@ -3,7 +3,7 @@
  * Template: Grupos Destacados
  * Grid de grupos de chat destacados con avatar, nombre, miembros y botón unirse
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

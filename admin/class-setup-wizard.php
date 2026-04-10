@@ -454,7 +454,7 @@ class Flavor_Setup_Wizard {
 
         set_transient('flavor_setup_redirect', true, 60);
 
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-setup-wizard'));
+        Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=flavor-setup-wizard'));
         exit;
     }
 
@@ -1322,7 +1322,7 @@ class Flavor_Setup_Wizard {
         }
 
         // Cargar la vista
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/setup-wizard.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/setup-wizard.php';
     }
 
     /**
@@ -1445,17 +1445,17 @@ class Flavor_Setup_Wizard {
         // CSS del wizard
         wp_enqueue_style(
             'flavor-setup-wizard',
-            FLAVOR_CHAT_IA_URL . 'admin/css/setup-wizard.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/setup-wizard.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS del wizard
         wp_enqueue_script(
             'flavor-setup-wizard',
-            FLAVOR_CHAT_IA_URL . 'admin/js/setup-wizard.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/setup-wizard.js',
             ['jquery', 'wp-color-picker'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

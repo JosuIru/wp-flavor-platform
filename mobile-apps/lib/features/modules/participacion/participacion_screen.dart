@@ -14,42 +14,98 @@ class ParticipacionScreen extends ConsumerStatefulWidget {
       _ParticipacionScreenState();
 }
 
-class _ParticipacionScreenState extends ConsumerState<ParticipacionScreen> {
-  List<dynamic> _procesosVotacion = [];
-  bool _cargando = true;
-  String? _mensajeError;
+class _ParticipacionScreenState extends ConsumerState<ParticipacionScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  List<dynamic> _votaciones = [];
+  List<dynamic> _propuestas = [];
+  bool _cargandoVotaciones = true;
+  bool _cargandoPropuestas = true;
+  String? _errorVotaciones;
+  String? _errorPropuestas;
+  String _filtroPropuestas = '';
+
+  final List<Map<String, String>> _filtrosPropuestas = [
+    {'id': '', 'label': 'Todas'},
+    {'id': 'pendiente', 'label': 'Pendientes'},
+    {'id': 'aprobada', 'label': 'Aprobadas'},
+    {'id': 'en_debate', 'label': 'En debate'},
+    {'id': 'rechazada', 'label': 'Rechazadas'},
+  ];
 
   @override
   void initState() {
     super.initState();
-    _cargarDatos();
+    _tabController = TabController(length: 2, vsync: this);
+    _cargarVotaciones();
+    _cargarPropuestas();
   }
 
-  Future<void> _cargarDatos() async {
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _cargarVotaciones() async {
     setState(() {
-      _cargando = true;
-      _mensajeError = null;
+      _cargandoVotaciones = true;
+      _errorVotaciones = null;
     });
     try {
       final clienteApi = ref.read(apiClientProvider);
       final respuesta = await clienteApi.get('/participacion/procesos');
       if (respuesta.success && respuesta.data != null) {
         setState(() {
-          _procesosVotacion =
+          _votaciones =
               respuesta.data!['items'] ?? respuesta.data!['data'] ?? [];
-          _cargando = false;
+          _cargandoVotaciones = false;
         });
       } else {
         setState(() {
-          _mensajeError =
-              respuesta.error ?? 'Error al cargar los procesos de votación';
-          _cargando = false;
+          _errorVotaciones =
+              respuesta.error ?? 'Error al cargar las votaciones';
+          _cargandoVotaciones = false;
         });
       }
     } catch (excepcion) {
       setState(() {
-        _mensajeError = excepcion.toString();
-        _cargando = false;
+        _errorVotaciones = excepcion.toString();
+        _cargandoVotaciones = false;
+      });
+    }
+  }
+
+  Future<void> _cargarPropuestas() async {
+    setState(() {
+      _cargandoPropuestas = true;
+      _errorPropuestas = null;
+    });
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final queryParams = <String, dynamic>{
+        'limite': 50,
+        if (_filtroPropuestas.isNotEmpty) 'estado': _filtroPropuestas,
+      };
+      final respuesta = await clienteApi.get('/participacion/propuestas',
+          queryParameters: queryParams);
+      if (respuesta.success && respuesta.data != null) {
+        setState(() {
+          _propuestas =
+              respuesta.data!['propuestas'] ?? respuesta.data!['data'] ?? [];
+          _cargandoPropuestas = false;
+        });
+      } else {
+        setState(() {
+          _errorPropuestas =
+              respuesta.error ?? 'Error al cargar las propuestas';
+          _cargandoPropuestas = false;
+        });
+      }
+    } catch (excepcion) {
+      setState(() {
+        _errorPropuestas = excepcion.toString();
+        _cargandoPropuestas = false;
       });
     }
   }
@@ -58,187 +114,175 @@ class _ParticipacionScreenState extends ConsumerState<ParticipacionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Votaciones'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _cargarDatos,
-          ),
+        title: const Text('Participación Ciudadana'),
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+          tabs: const [
+            Tab(icon: Icon(Icons.how_to_vote), text: 'Votaciones'),
+            Tab(icon: Icon(Icons.lightbulb_outline), text: 'Propuestas'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildVotacionesTab(),
+          _buildPropuestasTab(),
         ],
       ),
-      body: _cargando
-          ? const FlavorLoadingState()
-          : _mensajeError != null
-              ? FlavorErrorState(
-                  message: _mensajeError!,
-                  onRetry: _cargarDatos,
-                  icon: Icons.how_to_vote,
-                )
-              : _procesosVotacion.isEmpty
-                  ? const FlavorEmptyState(
-                      icon: Icons.how_to_vote,
-                      title: 'No hay votaciones activas',
-                    )
-                  : RefreshIndicator(
-                      onRefresh: _cargarDatos,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _procesosVotacion.length,
-                        itemBuilder: (context, indice) =>
-                            _construirTarjetaVotacion(
-                                _procesosVotacion[indice]),
-                      ),
-                    ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _crearPropuesta,
+        icon: const Icon(Icons.add),
+        label: const Text('Nueva propuesta'),
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+      ),
     );
   }
 
-  Widget _construirTarjetaVotacion(dynamic elemento) {
-    final mapa = elemento as Map<String, dynamic>;
-    final titulo =
-        mapa['titulo'] ?? mapa['nombre'] ?? mapa['title'] ?? 'Sin título';
-    final descripcion = mapa['descripcion'] ?? mapa['description'] ?? '';
-    final estadoVotacion = mapa['estado'] ?? mapa['status'] ?? 'activo';
-    final fechaLimite =
-        mapa['fecha_limite'] ?? mapa['deadline'] ?? mapa['fecha_fin'] ?? '';
-    final totalVotos = mapa['total_votos'] ?? mapa['votes'] ?? 0;
-    final yaVotado = mapa['votado'] ?? mapa['voted'] ?? false;
-
-    Color colorEstado;
-    String textoEstado;
-    switch (estadoVotacion.toString().toLowerCase()) {
-      case 'activo':
-      case 'abierto':
-      case 'active':
-        colorEstado = Colors.green;
-        textoEstado = 'Activa';
-        break;
-      case 'cerrado':
-      case 'closed':
-      case 'finalizado':
-        colorEstado = Colors.red;
-        textoEstado = 'Cerrada';
-        break;
-      case 'pendiente':
-      case 'pending':
-        colorEstado = Colors.orange;
-        textoEstado = 'Pendiente';
-        break;
-      default:
-        colorEstado = Colors.grey;
-        textoEstado = estadoVotacion.toString();
+  Widget _buildVotacionesTab() {
+    if (_cargandoVotaciones) {
+      return const FlavorLoadingState();
     }
 
-    final procesoId = mapa['id'];
+    if (_errorVotaciones != null) {
+      return FlavorErrorState(
+        message: _errorVotaciones!,
+        onRetry: _cargarVotaciones,
+        icon: Icons.how_to_vote,
+      );
+    }
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: procesoId != null
-            ? () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => VotacionDetalleScreen(procesoId: procesoId),
-                  ),
-                ).then((_) => _cargarDatos())
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.blue.shade100,
-                  child: Icon(Icons.how_to_vote, color: Colors.blue.shade700),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        titulo,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colorEstado.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              textoEstado,
-                              style: TextStyle(
-                                color: colorEstado,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          if (yaVotado) ...[
-                            const SizedBox(width: 8),
-                            const Icon(Icons.check_circle,
-                                size: 16, color: Colors.green),
-                            const SizedBox(width: 4),
-                            const Text(
-                              'Votado',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(Icons.chevron_right),
-              ],
+    if (_votaciones.isEmpty) {
+      return const FlavorEmptyState(
+        icon: Icons.how_to_vote,
+        title: 'No hay votaciones activas',
+        message: 'Las votaciones aparecerán aquí cuando estén disponibles',
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _cargarVotaciones,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _votaciones.length,
+        itemBuilder: (context, indice) =>
+            _VotacionCard(
+              votacion: _votaciones[indice],
+              onTap: () => _abrirVotacion(_votaciones[indice]),
             ),
-            if (descripcion.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                descripcion,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-            ],
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.people, size: 16, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(
-                  '$totalVotos votos',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                ),
-                if (fechaLimite.isNotEmpty) ...[
-                  const SizedBox(width: 16),
-                  const Icon(Icons.schedule, size: 16, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Hasta: $fechaLimite',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-        ),
       ),
     );
+  }
+
+  Widget _buildPropuestasTab() {
+    return Column(
+      children: [
+        // Filtros
+        Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: _filtrosPropuestas.length,
+            itemBuilder: (context, index) {
+              final filtro = _filtrosPropuestas[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(filtro['label']!),
+                  selected: _filtroPropuestas == filtro['id'],
+                  selectedColor: Colors.indigo.shade100,
+                  onSelected: (_) {
+                    setState(() => _filtroPropuestas = filtro['id']!);
+                    _cargarPropuestas();
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+
+        // Lista
+        Expanded(
+          child: _cargandoPropuestas
+              ? const FlavorLoadingState()
+              : _errorPropuestas != null
+                  ? FlavorErrorState(
+                      message: _errorPropuestas!,
+                      onRetry: _cargarPropuestas,
+                      icon: Icons.lightbulb_outline,
+                    )
+                  : _propuestas.isEmpty
+                      ? FlavorEmptyState(
+                          icon: Icons.lightbulb_outline,
+                          title: 'No hay propuestas',
+                          message: _filtroPropuestas.isNotEmpty
+                              ? 'Prueba con otro filtro'
+                              : 'Sé el primero en crear una propuesta',
+                          action: TextButton.icon(
+                            onPressed: _crearPropuesta,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Crear propuesta'),
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: _cargarPropuestas,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: _propuestas.length,
+                            itemBuilder: (context, index) => _PropuestaCard(
+                              propuesta: _propuestas[index],
+                              onTap: () =>
+                                  _abrirPropuesta(_propuestas[index]),
+                            ),
+                          ),
+                        ),
+        ),
+      ],
+    );
+  }
+
+  void _abrirVotacion(dynamic votacion) {
+    final mapa = votacion as Map<String, dynamic>;
+    final procesoId = mapa['id'];
+    if (procesoId != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => _VotacionDetalleScreen(procesoId: procesoId),
+        ),
+      ).then((_) => _cargarVotaciones());
+    }
+  }
+
+  void _abrirPropuesta(dynamic propuesta) {
+    final mapa = propuesta as Map<String, dynamic>;
+    final propuestaId = mapa['id'];
+    if (propuestaId != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => _PropuestaDetalleScreen(propuestaId: propuestaId),
+        ),
+      ).then((_) => _cargarPropuestas());
+    }
+  }
+
+  void _crearPropuesta() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const _CrearPropuestaScreen(),
+      ),
+    ).then((creada) {
+      if (creada == true) {
+        _cargarPropuestas();
+        _tabController.animateTo(1); // Ir a tab de propuestas
+      }
+    });
   }
 }

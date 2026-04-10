@@ -2,7 +2,7 @@
 /**
  * Template: Servicios Empresariales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $atts Atributos del shortcode
  */
 

@@ -8,7 +8,7 @@
  * - Anomalías y alertas
  * - Insights automáticos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

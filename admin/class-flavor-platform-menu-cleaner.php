@@ -5,7 +5,7 @@
  * Remueve módulos de negocio del menú Flavor Platform
  * y los deja en sus categorías correctas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  */
 

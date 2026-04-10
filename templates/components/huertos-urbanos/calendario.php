@@ -2,7 +2,7 @@
 /**
  * Template: Calendario de cultivos (qué plantar en cada época)
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Huertos_Urbanos
  */
 

@@ -4,7 +4,7 @@
  *
  * Etiqueta de precio con formato, descuentos y moneda.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param float  $price        Precio actual

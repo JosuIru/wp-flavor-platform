@@ -5,7 +5,7 @@
  * Endpoints públicos y autenticados para comunicación entre nodos,
  * directorio, mapa, tablón, contenido compartido y colaboraciones.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

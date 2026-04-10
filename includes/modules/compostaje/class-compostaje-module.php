@@ -3,7 +3,7 @@
  * Modulo de Compostaje Comunitario para Chat IA
  * Sistema completo de gestion de compostaje comunitario con gamificacion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Compostaje - Gestion de compostaje comunitario
  */
-class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -81,7 +81,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_puntos);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_puntos);
     }
 
     /**
@@ -199,7 +199,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_composteras';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return '';
         }
 
@@ -242,7 +242,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $tabla_aportaciones = $wpdb->prefix . 'flavor_compostaje_aportaciones';
         $user_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_aportaciones)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_aportaciones)) {
             return '';
         }
 
@@ -335,7 +335,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             $this->create_tables();
         }
     }
@@ -2706,7 +2706,7 @@ KNOWLEDGE;
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
         $tabla_aportaciones = $wpdb->prefix . 'flavor_aportaciones_compost';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
             return $estadisticas;
         }
 
@@ -2723,7 +2723,7 @@ KNOWLEDGE;
         ];
 
         $usuario_id = get_current_user_id();
-        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_aportaciones)) {
+        if ($usuario_id && Flavor_Platform_Helpers::tabla_existe($tabla_aportaciones)) {
             // Mis aportaciones este mes
             $mis_aportaciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_aportaciones}
@@ -2991,4 +2991,9 @@ KNOWLEDGE;
             echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Compostaje_Module', false)) {
+    class_alias('Flavor_Platform_Compostaje_Module', 'Flavor_Chat_Compostaje_Module');
 }

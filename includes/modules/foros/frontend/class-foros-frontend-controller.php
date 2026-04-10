@@ -4,7 +4,7 @@
  *
  * Controlador frontend con shortcodes, AJAX handlers y tabs para el dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Foros
  * @since 4.2.0
  */
@@ -160,16 +160,16 @@ class Flavor_Foros_Frontend_Controller {
 
         wp_enqueue_style(
             'flavor-foros-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/foros/assets/css/foros-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/foros/assets/css/foros-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-foros-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/foros/assets/js/foros-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/foros/assets/js/foros-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -229,7 +229,7 @@ class Flavor_Foros_Frontend_Controller {
         }
         $visual_class_string = implode(' ', $visual_classes);
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_foros)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
                    __('El sistema de foros no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
@@ -393,7 +393,7 @@ class Flavor_Foros_Frontend_Controller {
                     <?php endif; ?>
                 </div>
                 <?php if (is_user_logged_in()): ?>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', 'nuevo-tema', ['foro_id' => $foro_id])); ?>"
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('foros', 'nuevo-tema', ['foro_id' => $foro_id])); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
@@ -746,7 +746,7 @@ class Flavor_Foros_Frontend_Controller {
                         <span class="dashicons dashicons-welcome-add-page"></span>
                         <?php _e('Publicar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
@@ -1146,7 +1146,7 @@ class Flavor_Foros_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Tema creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'tema_id' => $tema_id,
-                'redirect' => Flavor_Chat_Helpers::get_item_url('foros', $tema_id),
+                'redirect' => Flavor_Platform_Helpers::get_item_url('foros', $tema_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el tema.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

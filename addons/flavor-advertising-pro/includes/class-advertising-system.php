@@ -4,7 +4,7 @@
  *
  * Gestión completa de anuncios, anunciantes, pagos y reparto de beneficios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

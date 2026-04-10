@@ -3,7 +3,7 @@
  * Payment Gateway Manager
  * Gestor centralizado de pasarelas de pago
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Facturas
  */
 

@@ -5,7 +5,7 @@
  * Maneja el registro, vinculación y revocación de dispositivos
  * para el cifrado multi-dispositivo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Crypto
  */
 

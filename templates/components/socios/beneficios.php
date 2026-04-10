@@ -5,7 +5,7 @@
  * Grid de tarjetas mostrando los beneficios de la membresia:
  * descuentos, eventos, acceso prioritario, newsletter, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

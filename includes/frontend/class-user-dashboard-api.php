@@ -5,7 +5,7 @@
  * Gestiona las peticiones AJAX de actualizacion de perfil,
  * notificaciones y otras acciones del dashboard.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Frontend
  */
 

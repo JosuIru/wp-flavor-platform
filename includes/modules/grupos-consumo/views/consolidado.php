@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Consolidado de Pedidos por Productor
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -74,7 +74,7 @@ if ($ciclo_id) {
 
     // KPIs del ciclo
     $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
         $kpi_total_pedidos = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE ciclo_id = %d",
             $ciclo_id

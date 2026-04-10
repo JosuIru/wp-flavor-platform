@@ -4,7 +4,7 @@
  *
  * Grid de horarios/programación semanal tipo tabla.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $schedule   Horario: ['lunes' => [['start' => '09:00', 'end' => '14:00', 'label' => '', 'color' => '']], ...]

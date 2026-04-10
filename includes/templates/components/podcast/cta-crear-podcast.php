@@ -4,7 +4,7 @@
  *
  * Sección motivacional para animar a usuarios a crear sus propios podcasts
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Podcast
  */
 

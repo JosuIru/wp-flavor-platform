@@ -4,7 +4,7 @@
  *
  * Repositorio de leyes, sentencias, modelos de denuncia y recursos legales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del modulo de Documentacion Legal
  */
-class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Documentacion_Legal_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -42,7 +42,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal');
+        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal');
     }
 
     /**
@@ -73,7 +73,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      */
     public function maybe_create_tables() {
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
             $this->create_tables();
         }
     }
@@ -247,7 +247,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/listado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/listado.php';
         return ob_get_clean();
     }
 
@@ -272,7 +272,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         $this->incrementar_visitas($documento_id);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/detalle.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/detalle.php';
         return ob_get_clean();
     }
 
@@ -281,7 +281,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_buscar($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/buscar.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/buscar.php';
         return ob_get_clean();
     }
 
@@ -290,7 +290,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_categorias($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/categorias.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/categorias.php';
         return ob_get_clean();
     }
 
@@ -303,7 +303,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/subir.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/subir.php';
         return ob_get_clean();
     }
 
@@ -316,7 +316,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/mis-guardados.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/mis-guardados.php';
         return ob_get_clean();
     }
 
@@ -600,30 +600,83 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      */
     private function register_rest_routes() {
         add_action('rest_api_init', function() {
+            // Listar documentos públicos
             register_rest_route('flavor/v1', '/documentacion-legal', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
                 'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
+            // Obtener documento por ID
             register_rest_route('flavor/v1', '/documentacion-legal/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
                 'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
+            // Buscar documentos
             register_rest_route('flavor/v1', '/documentacion-legal/buscar', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_buscar'],
                 'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
+            // Listar categorías
             register_rest_route('flavor/v1', '/documentacion-legal/categorias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_categorias'],
                 'permission_callback' => [$this, 'public_read_permission'],
             ]);
+
+            // Estadísticas públicas
+            register_rest_route('flavor/v1', '/documentacion-legal/estadisticas', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_estadisticas'],
+                'permission_callback' => [$this, 'public_read_permission'],
+            ]);
+
+            // Mis favoritos (requiere login)
+            register_rest_route('flavor/v1', '/documentacion-legal/mis-favoritos', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_mis_favoritos'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Guardar/quitar de favoritos
+            register_rest_route('flavor/v1', '/documentacion-legal/(?P<id>\d+)/favorito', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_toggle_favorito'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Registrar descarga
+            register_rest_route('flavor/v1', '/documentacion-legal/(?P<id>\d+)/descargar', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_registrar_descarga'],
+                'permission_callback' => [$this, 'public_read_permission'],
+            ]);
+
+            // Añadir comentario
+            register_rest_route('flavor/v1', '/documentacion-legal/(?P<id>\d+)/comentarios', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_agregar_comentario'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Subir documento (requiere login)
+            register_rest_route('flavor/v1', '/documentacion-legal', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_crear_documento'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
         });
+    }
+
+    /**
+     * Permiso: usuario logueado
+     */
+    public function user_logged_in_permission() {
+        return is_user_logged_in();
     }
 
     /**
@@ -705,6 +758,228 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * API: Estadísticas públicas
+     */
+    public function api_estadisticas($request) {
+        global $wpdb;
+        $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+
+        $estadisticas = $wpdb->get_row(
+            "SELECT
+                COUNT(*) AS total_documentos,
+                SUM(CASE WHEN tipo = 'ley' THEN 1 ELSE 0 END) AS leyes,
+                SUM(CASE WHEN tipo = 'decreto' THEN 1 ELSE 0 END) AS decretos,
+                SUM(CASE WHEN tipo = 'ordenanza' THEN 1 ELSE 0 END) AS ordenanzas,
+                SUM(CASE WHEN tipo = 'sentencia' THEN 1 ELSE 0 END) AS sentencias,
+                SUM(CASE WHEN tipo IN ('modelo_denuncia', 'modelo_recurso') THEN 1 ELSE 0 END) AS modelos,
+                SUM(CASE WHEN tipo = 'guia' THEN 1 ELSE 0 END) AS guias,
+                SUM(CASE WHEN verificado = 1 THEN 1 ELSE 0 END) AS verificados,
+                COALESCE(SUM(descargas), 0) AS total_descargas,
+                COALESCE(SUM(visitas), 0) AS total_visitas
+            FROM {$tabla_documentos}
+            WHERE estado = 'publicado'"
+        );
+
+        // Documentos por ámbito
+        $por_ambito = $wpdb->get_results(
+            "SELECT ambito, COUNT(*) as total
+             FROM {$tabla_documentos}
+             WHERE estado = 'publicado'
+             GROUP BY ambito"
+        );
+
+        // Top categorías
+        $por_categoria = $wpdb->get_results(
+            "SELECT categoria, COUNT(*) as total
+             FROM {$tabla_documentos}
+             WHERE estado = 'publicado' AND categoria IS NOT NULL
+             GROUP BY categoria
+             ORDER BY total DESC
+             LIMIT 10"
+        );
+
+        return rest_ensure_response([
+            'estadisticas' => $estadisticas,
+            'por_ambito' => $por_ambito,
+            'por_categoria' => $por_categoria,
+        ]);
+    }
+
+    /**
+     * API: Mis documentos favoritos
+     */
+    public function api_mis_favoritos($request) {
+        global $wpdb;
+        $tabla_docs = $wpdb->prefix . 'flavor_documentacion_legal';
+        $tabla_favs = $wpdb->prefix . 'flavor_documentacion_legal_favoritos';
+        $user_id = get_current_user_id();
+
+        $documentos = $wpdb->get_results($wpdb->prepare(
+            "SELECT d.id, d.titulo, d.descripcion, d.tipo, d.categoria, d.ambito,
+                    d.fecha_publicacion, d.descargas, d.verificado, f.notas, f.created_at as guardado_en
+             FROM {$tabla_favs} f
+             JOIN {$tabla_docs} d ON f.documento_id = d.id
+             WHERE f.user_id = %d AND d.estado = 'publicado'
+             ORDER BY f.created_at DESC",
+            $user_id
+        ));
+
+        return rest_ensure_response(['documentos' => $documentos]);
+    }
+
+    /**
+     * API: Guardar/quitar de favoritos
+     */
+    public function api_toggle_favorito($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_documentacion_legal_favoritos';
+        $documento_id = intval($request['id']);
+        $user_id = get_current_user_id();
+        $notas = sanitize_textarea_field($request->get_param('notas') ?? '');
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla} WHERE documento_id = %d AND user_id = %d",
+            $documento_id, $user_id
+        ));
+
+        if ($existe) {
+            // Quitar de favoritos
+            $wpdb->delete($tabla, [
+                'documento_id' => $documento_id,
+                'user_id' => $user_id,
+            ]);
+            return rest_ensure_response([
+                'success' => true,
+                'es_favorito' => false,
+                'mensaje' => 'Documento quitado de favoritos.',
+            ]);
+        } else {
+            // Añadir a favoritos
+            $wpdb->insert($tabla, [
+                'documento_id' => $documento_id,
+                'user_id' => $user_id,
+                'notas' => $notas,
+            ]);
+            return rest_ensure_response([
+                'success' => true,
+                'es_favorito' => true,
+                'mensaje' => 'Documento guardado en favoritos.',
+            ]);
+        }
+    }
+
+    /**
+     * API: Registrar descarga
+     */
+    public function api_registrar_descarga($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
+        $documento_id = intval($request['id']);
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$tabla} SET descargas = descargas + 1 WHERE id = %d",
+            $documento_id
+        ));
+
+        return rest_ensure_response(['success' => true]);
+    }
+
+    /**
+     * API: Añadir comentario
+     */
+    public function api_agregar_comentario($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_documentacion_legal_comentarios';
+        $documento_id = intval($request['id']);
+        $user_id = get_current_user_id();
+
+        $comentario = sanitize_textarea_field($request->get_param('comentario'));
+        $tipo = sanitize_text_field($request->get_param('tipo') ?? 'nota');
+
+        if (empty($comentario)) {
+            return new WP_Error('empty_comment', 'El comentario es obligatorio.', ['status' => 400]);
+        }
+
+        $tipos_validos = ['nota', 'pregunta', 'aclaracion', 'correccion'];
+        if (!in_array($tipo, $tipos_validos)) {
+            $tipo = 'nota';
+        }
+
+        $wpdb->insert($tabla, [
+            'documento_id' => $documento_id,
+            'user_id' => $user_id,
+            'comentario' => $comentario,
+            'tipo' => $tipo,
+            'estado' => 'visible',
+        ]);
+
+        $comentario_id = $wpdb->insert_id;
+        $usuario = get_userdata($user_id);
+
+        return rest_ensure_response([
+            'success' => true,
+            'comentario' => [
+                'id' => $comentario_id,
+                'comentario' => $comentario,
+                'tipo' => $tipo,
+                'autor_nombre' => $usuario->display_name,
+                'created_at' => current_time('mysql'),
+            ],
+        ]);
+    }
+
+    /**
+     * API: Crear documento (subir)
+     */
+    public function api_crear_documento($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
+        $user_id = get_current_user_id();
+
+        $datos = [
+            'titulo' => sanitize_text_field($request->get_param('titulo')),
+            'descripcion' => sanitize_textarea_field($request->get_param('descripcion')),
+            'contenido' => wp_kses_post($request->get_param('contenido')),
+            'tipo' => sanitize_text_field($request->get_param('tipo') ?? 'otro'),
+            'categoria' => sanitize_text_field($request->get_param('categoria')),
+            'ambito' => sanitize_text_field($request->get_param('ambito') ?? 'estatal'),
+            'fecha_publicacion' => sanitize_text_field($request->get_param('fecha_publicacion')),
+            'numero_referencia' => sanitize_text_field($request->get_param('numero_referencia')),
+            'url_oficial' => esc_url_raw($request->get_param('url_oficial')),
+            'palabras_clave' => sanitize_text_field($request->get_param('palabras_clave')),
+            'autor_id' => $user_id,
+            'estado' => 'borrador', // Requiere revisión
+        ];
+
+        if (empty($datos['titulo'])) {
+            return new WP_Error('missing_title', 'El título es obligatorio.', ['status' => 400]);
+        }
+
+        $tipos_validos = ['ley', 'decreto', 'ordenanza', 'sentencia', 'modelo_denuncia', 'modelo_recurso', 'guia', 'informe', 'otro'];
+        if (!in_array($datos['tipo'], $tipos_validos)) {
+            $datos['tipo'] = 'otro';
+        }
+
+        $ambitos_validos = ['estatal', 'autonomico', 'provincial', 'municipal', 'europeo'];
+        if (!in_array($datos['ambito'], $ambitos_validos)) {
+            $datos['ambito'] = 'estatal';
+        }
+
+        $resultado = $wpdb->insert($tabla, $datos);
+
+        if ($resultado === false) {
+            return new WP_Error('db_error', 'Error al guardar el documento.', ['status' => 500]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'documento_id' => $wpdb->insert_id,
+            'mensaje' => 'Documento guardado. Pendiente de revisión y verificación.',
+        ]);
+    }
+
+    /**
      * Carga assets frontend
      */
     public function enqueue_frontend_assets() {
@@ -712,16 +987,16 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-documentacion-legal',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/documentacion-legal/assets/css/documentacion-legal.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/documentacion-legal/assets/css/documentacion-legal.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-documentacion-legal',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/documentacion-legal/assets/js/documentacion-legal.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/documentacion-legal/assets/js/documentacion-legal.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -823,7 +1098,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         }
 
         $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 
@@ -1008,7 +1283,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             'descargas' => $wpdb->get_var("SELECT SUM(descargas) FROM $tabla"),
         ];
 
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/documentacion-legal/views/dashboard.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/documentacion-legal/views/dashboard.php';
     }
 
     /**
@@ -2362,4 +2637,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Documentacion_Legal_Module', false)) {
+    class_alias('Flavor_Platform_Documentacion_Legal_Module', 'Flavor_Chat_Documentacion_Legal_Module');
 }

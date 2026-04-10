@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

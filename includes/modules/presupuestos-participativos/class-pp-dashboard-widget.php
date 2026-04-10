@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Presupuestos Participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -97,7 +97,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => number_format($presupuesto_activo->importe_total, 0, ',', '.') . ' €',
                 'label' => __('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Platform_Helpers::get_action_url('presupuestos_participativos', ''),
             ];
 
             $fase_texto = [
@@ -120,7 +120,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $proyectos_en_votacion,
                     'label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'success',
-                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&tab=proyectos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', 'proyectos'),
+                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&tab=proyectos') : Flavor_Platform_Helpers::get_action_url('presupuestos_participativos', 'proyectos'),
                 ];
             }
         } else {
@@ -141,7 +141,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Platform_Helpers::get_action_url('presupuestos_participativos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -173,7 +173,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-lightbulb',
                 'title' => wp_trim_words($proyecto->titulo, 5, '...'),
                 'meta' => number_format($proyecto->coste_estimado, 0, ',', '.') . ' €',
-                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&proyecto=' . $proyecto->id) : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', 'proyecto') . '/' . $proyecto->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&proyecto=' . $proyecto->id) : Flavor_Platform_Helpers::get_action_url('presupuestos_participativos', 'proyecto') . '/' . $proyecto->id . '/',
                 'badge' => $proyecto->total_votos > 0 ? $proyecto->total_votos . ' votos' : null,
             ];
         }

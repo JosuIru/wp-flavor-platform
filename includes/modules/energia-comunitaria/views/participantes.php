@@ -2,7 +2,7 @@
 /**
  * Vista: Participantes de Comunidades Energéticas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +23,7 @@ if ($energia_comunidad_id) {
 }
 
 $participantes = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_participantes)) {
     $participantes = $wpdb->get_results(
         "SELECT p.*, c.nombre as comunidad_nombre, u.display_name, u.user_email
          FROM $tabla_participantes p

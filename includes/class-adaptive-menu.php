@@ -4,7 +4,7 @@
  *
  * Menú que se adapta según el estado de login del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -106,7 +106,7 @@ class Flavor_Adaptive_Menu {
             <?php if (is_user_logged_in()) : ?>
                 <!-- Usuario Logueado -->
                 <li class="flavor-adaptive-menu__item">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="flavor-adaptive-menu__link">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('', '')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">🏠</span>
                         <?php _e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
@@ -123,7 +123,7 @@ class Flavor_Adaptive_Menu {
                 if ($unread_count > 0) :
                 ?>
                 <li class="flavor-adaptive-menu__item">
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '') . '#notificaciones'); ?>" class="flavor-adaptive-menu__link flavor-adaptive-menu__link--notifications">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('', '') . '#notificaciones'); ?>" class="flavor-adaptive-menu__link flavor-adaptive-menu__link--notifications">
                         <span class="flavor-adaptive-menu__icon">🔔</span>
                         <span class="flavor-adaptive-menu__badge"><?php echo esc_html($unread_count); ?></span>
                     </a>
@@ -187,7 +187,7 @@ class Flavor_Adaptive_Menu {
 
                     <ul class="flavor-user-dropdown__items">
                         <li>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="flavor-user-dropdown__link">
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('', '')); ?>" class="flavor-user-dropdown__link">
                                 <span class="flavor-user-dropdown__icon">🏠</span>
                                 <?php _e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>

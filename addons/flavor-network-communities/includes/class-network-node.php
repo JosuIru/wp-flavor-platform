@@ -5,7 +5,7 @@
  * Representa una entidad/comunidad/empresa en la red.
  * Proporciona métodos CRUD y de consulta.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

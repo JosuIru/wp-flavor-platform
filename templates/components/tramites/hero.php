@@ -5,7 +5,7 @@
  * Seccion hero para el modulo de tramites administrativos.
  * Titulo, subtitulo, buscador de tramites y estadisticas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

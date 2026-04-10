@@ -2,7 +2,7 @@
 /**
  * Template: Compromisos de Suficiencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,7 +10,10 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$tipos_compromiso = Flavor_Chat_Economia_Suficiencia_Module::TIPOS_COMPROMISO;
+$economia_suficiencia_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Suficiencia_Module')
+    : 'Flavor_Chat_Economia_Suficiencia_Module';
+$tipos_compromiso = $economia_suficiencia_module_class::TIPOS_COMPROMISO;
 
 // Obtener compromisos activos del usuario
 global $wpdb;

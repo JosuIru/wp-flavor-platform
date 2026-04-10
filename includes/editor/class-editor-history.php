@@ -2,7 +2,7 @@
 /**
  * Editor History - Sistema de Undo/Redo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -2,7 +2,7 @@
 /**
  * Template: Dashboard de estadísticas del usuario de compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  *
  * Variables esperadas en $args:

@@ -2,7 +2,7 @@
 /**
  * Orquestador del Ciclo de Trading
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -374,7 +374,7 @@ class Flavor_Trading_IA_Ciclo {
 
         } catch (\Exception $excepcion) {
             $resultado_ciclo['errores'][] = $excepcion->getMessage();
-            flavor_chat_ia_log('Error en ciclo trading: ' . $excepcion->getMessage(), 'trading_ia');
+            flavor_platform_log('Error en ciclo trading: ' . $excepcion->getMessage(), 'trading_ia');
         }
 
         return $resultado_ciclo;

@@ -2,7 +2,7 @@
 /**
  * Módulo de Incidencias Urbanas para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Incidencias Urbanas - Reportar problemas del barrio/ciudad
  */
-class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -187,7 +187,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_incidencias);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_incidencias);
     }
 
     /**
@@ -434,8 +434,11 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     public function get_empresa_usuario($user_id = null) {
         $user_id = $user_id ?: get_current_user_id();
 
-        if (class_exists('Flavor_Chat_Empresas_Module')) {
-            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+        $empresas_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Empresas_Module')
+            : 'Flavor_Chat_Empresas_Module';
+        if (class_exists($empresas_module_class)) {
+            $empresas_module = Flavor_Platform_Module_Loader::get_instance()->get_module('empresas');
             if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
                 return $empresas_module->get_empresa_actual_usuario($user_id);
             }
@@ -459,7 +462,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             return 0;
         }
 
@@ -482,7 +485,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $estadisticas = [];
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             return $estadisticas;
         }
 
@@ -1094,7 +1097,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         }
 
         $ruta_modulo = plugin_dir_url(__FILE__);
-        $version_modulo = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version_modulo = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         // CSS
         wp_enqueue_style(
@@ -1191,7 +1194,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             $this->create_tables();
         }
     }
@@ -2590,7 +2593,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
-        // Cargar también la clase API móvil (namespace flavor-chat-ia/v1)
+        // Cargar también la clase API móvil (namespace Flavor Platform)
         $api_file = dirname(__FILE__) . '/class-incidencias-api.php';
         if (file_exists($api_file)) {
             require_once $api_file;
@@ -2881,7 +2884,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             return null;
         }
 
@@ -3720,4 +3723,8 @@ KNOWLEDGE;
             Flavor_Incidencias_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Incidencias_Module', false)) {
+    class_alias('Flavor_Platform_Incidencias_Module', 'Flavor_Chat_Incidencias_Module');
 }

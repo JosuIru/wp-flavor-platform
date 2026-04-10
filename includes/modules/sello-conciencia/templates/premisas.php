@@ -4,14 +4,17 @@
  *
  * Muestra las 5 premisas fundamentales de una economía consciente.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$premisas = Flavor_Chat_Sello_Conciencia_Module::PREMISAS;
+$sello_conciencia_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Sello_Conciencia_Module')
+    : 'Flavor_Chat_Sello_Conciencia_Module';
+$premisas = $sello_conciencia_module_class::PREMISAS;
 ?>
 
 <div class="fsc-premisas">

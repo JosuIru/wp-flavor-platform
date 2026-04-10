@@ -4,7 +4,7 @@
  *
  * Gestión completa de incidencias: listado, filtros, detalles y asignación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

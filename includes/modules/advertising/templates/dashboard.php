@@ -2,7 +2,7 @@
 /**
  * Template: Dashboard del Anunciante
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 $usuario_id = get_current_user_id();
-$modulo = Flavor_Chat_Module_Loader::get_instance()->get_module('advertising');
+$modulo = Flavor_Platform_Module_Loader::get_instance()->get_module('advertising');
 
 // Obtener datos
 $resultado_anuncios = $modulo->execute_action('mis_anuncios', []);

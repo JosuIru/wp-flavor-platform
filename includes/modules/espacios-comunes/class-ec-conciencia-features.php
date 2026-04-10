@@ -8,7 +8,7 @@
  * - Cuidado Comunitario: Sistema de voluntariado para mantenimiento
  * - Dashboard de Sostenibilidad: Índices de equidad y rotación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EspaciosComunes
  * @since 4.2.0
  */

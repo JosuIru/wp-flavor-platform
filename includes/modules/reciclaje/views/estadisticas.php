@@ -3,7 +3,7 @@
  * Vista Estadísticas - Módulo Reciclaje
  * Análisis detallado del impacto del reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

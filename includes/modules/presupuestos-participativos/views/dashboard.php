@@ -4,7 +4,7 @@
  *
  * Panel de control con estadísticas de presupuestos participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

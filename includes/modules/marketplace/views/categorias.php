@@ -2,7 +2,7 @@
 /**
  * Vista Categorías - Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

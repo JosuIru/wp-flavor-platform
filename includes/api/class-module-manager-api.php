@@ -5,7 +5,7 @@
  * Permite a Claude Code activar/desactivar módulos, ver configuraciones
  * y generar datos de demostración.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */
@@ -901,7 +901,7 @@ class Flavor_Module_Manager_API {
         $generator_class = 'Flavor_Demo_Data_Generator';
         if ( ! class_exists( $generator_class ) ) {
             // Intentar cargar
-            $path = FLAVOR_CHAT_IA_PATH . 'includes/class-demo-data-generator.php';
+            $path = FLAVOR_PLATFORM_PATH . 'includes/class-demo-data-generator.php';
             if ( file_exists( $path ) ) {
                 require_once $path;
             }

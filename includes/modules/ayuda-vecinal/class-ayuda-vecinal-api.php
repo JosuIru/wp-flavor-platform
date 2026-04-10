@@ -2,7 +2,7 @@
 /**
  * API REST para Ayuda Vecinal (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Ayuda_Vecinal_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,14 +28,14 @@ class Flavor_Ayuda_Vecinal_API {
 
     public function register_routes() {
         // GET /ayuda-vecinal
-        register_rest_route(self::NAMESPACE, '/ayuda-vecinal', [
+        flavor_register_rest_route(self::NAMESPACE, '/ayuda-vecinal', [
             'methods' => 'GET',
             'callback' => [$this, 'get_sistema'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /ayuda-vecinal/solicitudes
-        register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes', [
+        flavor_register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_solicitud'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -64,14 +64,14 @@ class Flavor_Ayuda_Vecinal_API {
         ]);
 
         // POST /ayuda-vecinal/solicitudes/{id}/ofrecer
-        register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes/(?P<id>\d+)/ofrecer', [
+        flavor_register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes/(?P<id>\d+)/ofrecer', [
             'methods' => 'POST',
             'callback' => [$this, 'ofrecer_ayuda'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /ayuda-vecinal/solicitudes/{id}
-        register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/ayuda-vecinal/solicitudes/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_solicitud'],
             'permission_callback' => [$this, 'check_authentication'],

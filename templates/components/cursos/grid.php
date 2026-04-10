@@ -4,7 +4,7 @@
  *
  * Muestra una cuadrícula de cursos con imagen, título, instructor, duración, nivel y precio
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

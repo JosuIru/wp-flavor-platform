@@ -1,12 +1,20 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/services/media_upload_service.dart';
 import '../../../../core/widgets/flavor_state_widgets.dart';
+import '../chat_main_screen.dart';
+import 'search_messages_screen.dart';
+import 'call_screen.dart';
+import 'create_group_screen.dart';
 
 /// Pantalla de información y configuración de grupo
 class GroupInfoScreen extends ConsumerStatefulWidget {
@@ -25,11 +33,37 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
   bool _isLoading = true;
   bool _isAdmin = false;
   String? _currentUserId;
+  bool _notificationsEnabled = true;
+
+  String get _notificationsPrefKey => 'chat_group_notifications_${widget.groupId}';
 
   @override
   void initState() {
     super.initState();
     _loadGroupInfo();
+    _loadNotificationPreference();
+  }
+
+  Future<void> _loadNotificationPreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled = prefs.getBool(_notificationsPrefKey) ?? true;
+      if (mounted) {
+        setState(() => _notificationsEnabled = enabled);
+      }
+    } catch (e) {
+      // Usar valor por defecto
+    }
+  }
+
+  Future<void> _setNotificationPreference(bool enabled) async {
+    setState(() => _notificationsEnabled = enabled);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_notificationsPrefKey, enabled);
+    } catch (e) {
+      // Ignorar error
+    }
   }
 
   Future<void> _loadGroupInfo() async {
@@ -238,10 +272,8 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                     secondary: const Icon(Icons.notifications),
                     title: const Text('Notificaciones'),
                     subtitle: const Text('Recibir notificaciones de este grupo'),
-                    value: true, // TODO: Conectar con preferencias
-                    onChanged: (value) {
-                      // TODO: Guardar preferencia
-                    },
+                    value: _notificationsEnabled,
+                    onChanged: _setNotificationPreference,
                   ),
                 ),
 
@@ -390,7 +422,13 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
 
     return GestureDetector(
       onTap: () {
-        // TODO: Navegar a galería filtrada
+        // Navegar a búsqueda filtrada por tipo de media
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchScreen(conversationId: widget.groupId),
+          ),
+        );
       },
       child: Container(
         width: 80,
@@ -450,10 +488,20 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
   void _handleMenuAction(String action) {
     switch (action) {
       case 'search':
-        // TODO: Navegar a búsqueda
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchScreen(conversationId: widget.groupId),
+          ),
+        );
         break;
       case 'media':
-        // TODO: Navegar a multimedia
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchScreen(conversationId: widget.groupId),
+          ),
+        );
         break;
       case 'settings':
         _editGroup();
@@ -498,10 +546,39 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
   }
 
   Future<void> _addMember() async {
-    // TODO: Mostrar selector de contactos
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selector de contactos próximamente')),
+    // Excluir usuarios que ya son miembros
+    final existingMembers = _members.map((m) => ChatUser(
+      id: m.userId,
+      name: m.name,
+      avatarUrl: m.avatarUrl,
+    )).toList();
+
+    final result = await Navigator.push<List<ChatUser>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ContactPickerScreen(
+          title: 'Añadir miembros',
+          excludeUsers: existingMembers,
+          multiSelect: true,
+        ),
+      ),
     );
+
+    if (result != null && result.isNotEmpty) {
+      // Añadir cada usuario seleccionado al grupo
+      for (final user in result) {
+        await _chatService.addMember(widget.groupId, user.id);
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${result.length} miembro(s) añadido(s)'),
+          ),
+        );
+      }
+      _loadGroupInfo();
+    }
   }
 
   void _showAllMembers() {
@@ -792,10 +869,26 @@ class _EditGroupDialogState extends State<_EditGroupDialog> {
     final image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      // TODO: Subir imagen y obtener URL
-      setState(() {
-        _newAvatarUrl = image.path; // Temporal
-      });
+      // Subir imagen al servidor
+      final uploadService = MediaUploadService();
+      final uploadResult = await uploadService.uploadImage(
+        File(image.path),
+        maxWidth: 512,
+        maxHeight: 512,
+        quality: 90,
+      );
+
+      if (uploadResult.success && uploadResult.url != null) {
+        setState(() {
+          _newAvatarUrl = uploadResult.url;
+        });
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(uploadResult.error ?? 'Error al subir imagen')),
+          );
+        }
+      }
     }
   }
 }
@@ -815,11 +908,38 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   ChatUser? _user;
   bool _isLoading = true;
   bool _isBlocked = false;
+  bool _userNotificationsEnabled = true;
+  List<ChatGroup> _commonGroups = [];
+
+  String get _userNotificationsPrefKey => 'chat_user_notifications_${widget.userId}';
 
   @override
   void initState() {
     super.initState();
     _loadUser();
+    _loadUserNotificationPreference();
+  }
+
+  Future<void> _loadUserNotificationPreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled = prefs.getBool(_userNotificationsPrefKey) ?? true;
+      if (mounted) {
+        setState(() => _userNotificationsEnabled = enabled);
+      }
+    } catch (e) {
+      // Usar valor por defecto
+    }
+  }
+
+  Future<void> _setUserNotificationPreference(bool enabled) async {
+    setState(() => _userNotificationsEnabled = enabled);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_userNotificationsPrefKey, enabled);
+    } catch (e) {
+      // Ignorar error
+    }
   }
 
   Future<void> _loadUser() async {
@@ -828,10 +948,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     try {
       final user = await _chatService.getUserInfo(widget.userId);
       final isBlocked = await _chatService.isUserBlocked(widget.userId);
+      final commonGroups = await _chatService.getCommonGroups(widget.userId);
 
       setState(() {
         _user = user;
         _isBlocked = isBlocked;
+        _commonGroups = commonGroups;
         _isLoading = false;
       });
     } catch (e) {
@@ -1007,9 +1129,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.call),
-                          onPressed: () {
-                            // TODO: Llamar
-                          },
+                          onPressed: () => _callPhone(_user!.phone!),
                         ),
                         IconButton(
                           icon: const Icon(Icons.chat),
@@ -1034,20 +1154,16 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   leading: const Icon(Icons.photo_library),
                   title: const Text('Multimedia compartida'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // TODO: Mostrar multimedia
-                  },
+                  onTap: () => _showSharedMedia(),
                 ),
 
                 // Grupos en común
                 ListTile(
                   leading: const Icon(Icons.group),
                   title: const Text('Grupos en común'),
-                  subtitle: const Text('3 grupos'), // TODO: Cargar real
+                  subtitle: Text('${_commonGroups.length} grupos'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // TODO: Mostrar grupos
-                  },
+                  onTap: _showCommonGroups,
                 ),
 
                 const Divider(),
@@ -1056,10 +1172,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                 SwitchListTile(
                   secondary: const Icon(Icons.notifications),
                   title: const Text('Notificaciones'),
-                  value: true, // TODO: Cargar preferencia
-                  onChanged: (value) {
-                    // TODO: Guardar preferencia
-                  },
+                  value: _userNotificationsEnabled,
+                  onChanged: _setUserNotificationPreference,
                 ),
 
                 const SizedBox(height: 32),
@@ -1114,18 +1228,139 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   }
 
   void _startChat() {
-    // TODO: Navegar a chat con usuario
-    Navigator.pop(context);
+    // Navegar a chat con usuario
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatMainScreen(
+          conversationId: 'user_${widget.userId}',
+          name: _user?.name ?? 'Usuario',
+          avatarUrl: _user?.avatarUrl,
+          isGroup: false,
+        ),
+      ),
+    );
   }
 
   void _startVoiceCall() {
     _chatService.startCall(widget.userId, isVideo: false);
-    // TODO: Navegar a pantalla de llamada
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CallScreen(
+          recipientId: widget.userId,
+          recipientName: _user?.name ?? 'Usuario',
+          recipientAvatar: _user?.avatarUrl,
+          isVideo: false,
+          isIncoming: false,
+        ),
+      ),
+    );
   }
 
   void _startVideoCall() {
     _chatService.startCall(widget.userId, isVideo: true);
-    // TODO: Navegar a pantalla de llamada
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CallScreen(
+          recipientId: widget.userId,
+          recipientName: _user?.name ?? 'Usuario',
+          recipientAvatar: _user?.avatarUrl,
+          isVideo: true,
+          isIncoming: false,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _callPhone(String phoneNumber) async {
+    final phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se puede realizar la llamada')),
+        );
+      }
+    }
+  }
+
+  void _showSharedMedia() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchScreen(conversationId: 'user_${widget.userId}'),
+      ),
+    );
+  }
+
+  void _showCommonGroups() {
+    if (_commonGroups.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No hay grupos en común')),
+      );
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    'Grupos en común (${_commonGroups.length})',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _commonGroups.length,
+                itemBuilder: (context, index) {
+                  final group = _commonGroups[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: group.avatarUrl != null
+                          ? CachedNetworkImageProvider(group.avatarUrl!)
+                          : null,
+                      child: group.avatarUrl == null
+                          ? const Icon(Icons.group)
+                          : null,
+                    ),
+                    title: Text(group.name),
+                    subtitle: Text('${group.memberCount} miembros'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GroupInfoScreen(groupId: group.id),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showReportDialog() {

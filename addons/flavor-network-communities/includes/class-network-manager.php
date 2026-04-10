@@ -6,7 +6,7 @@
  * nodos, conexiones, contenido compartido, colaboraciones,
  * mensajería, mapa, directorio y sellos de calidad.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

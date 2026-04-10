@@ -20,7 +20,7 @@
  * - $user_prefs     Preferencias del usuario
  * - $categories     Categorias disponibles (si existe)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.1.0
  */
 
@@ -90,7 +90,7 @@ $active_filter = $user_prefs['activeFilter'] ?? 'all';
 // Vista actual
 $view_mode = $user_prefs['viewMode'] ?? 'grid';
 
-$module_loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+$module_loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
 $registered_modules = $module_loader ? $module_loader->get_registered_modules() : [];
 $ecosystem_nodes = [];
 $active_module_ids = [];

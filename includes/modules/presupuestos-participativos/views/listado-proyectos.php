@@ -12,7 +12,7 @@
  * - $votos_maximos: int numero máximo de votos permitidos
  * - $atributos: array con configuracion del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

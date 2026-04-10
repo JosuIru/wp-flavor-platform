@@ -4,7 +4,7 @@
  *
  * Formulario para solicitar/reservar una plaza de parking.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_parkings)) {
     echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -75,7 +75,7 @@ $duraciones = [
     'custom' => __('Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
-$parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
+$parkings_url = Flavor_Platform_Helpers::get_action_url('parkings', '');
 
 // Generar nonce para el formulario
 $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');

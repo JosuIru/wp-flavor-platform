@@ -4,7 +4,7 @@
  *
  * Endpoints para configurar layouts, menús, footers y ajustes del sitio.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */
@@ -640,7 +640,7 @@ class Flavor_Site_Config_API {
         $script .= "echo 'Configuración aplicada correctamente.';\n";
 
         // Guardar script
-        $script_path = FLAVOR_CHAT_IA_PATH . 'tools/apply-config-' . time() . '.php';
+        $script_path = FLAVOR_PLATFORM_PATH . 'tools/apply-config-' . time() . '.php';
         $script_dir = dirname( $script_path );
 
         if ( ! file_exists( $script_dir ) ) {

@@ -4,7 +4,7 @@
  *
  * Widget de sidebar genérico y reutilizable.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $title      Título del widget

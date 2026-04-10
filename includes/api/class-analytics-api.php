@@ -4,7 +4,7 @@
  *
  * Recibe eventos de tracking desde las apps Flutter y genera estadísticas.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */

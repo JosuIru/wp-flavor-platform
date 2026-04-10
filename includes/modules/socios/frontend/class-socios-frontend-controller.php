@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Socios
  */
 
@@ -58,7 +58,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-socios',
@@ -154,7 +154,7 @@ class Flavor_Socios_Frontend_Controller {
             $tabla_socios = $wpdb->prefix . 'flavor_socios';
             $usuario_id = get_current_user_id();
 
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
                 $es_socio = $wpdb->get_var($wpdb->prepare(
                     "SELECT id FROM {$tabla_socios} WHERE usuario_id = %d AND estado IN ('activo', 'pendiente')",
                     $usuario_id
@@ -174,7 +174,7 @@ class Flavor_Socios_Frontend_Controller {
         $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
         $tipos_membresia = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
             $tipos_membresia = $wpdb->get_results(
                 "SELECT * FROM {$tabla_tipos} WHERE activo = 1 ORDER BY precio ASC"
             );
@@ -341,7 +341,7 @@ class Flavor_Socios_Frontend_Controller {
         $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
 
         $socio = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT s.*, t.nombre as tipo_nombre, t.beneficios as tipo_beneficios
                  FROM {$tabla_socios} s
@@ -592,7 +592,7 @@ class Flavor_Socios_Frontend_Controller {
         }
 
         $pagos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pagos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pagos)) {
             $pagos = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_pagos} WHERE socio_id = %d ORDER BY fecha_pago DESC",
                 $socio->id
@@ -694,7 +694,7 @@ class Flavor_Socios_Frontend_Controller {
         global $wpdb;
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             return '';
         }
 
@@ -770,7 +770,7 @@ class Flavor_Socios_Frontend_Controller {
         $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
 
         $tipos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
             $tipos = $wpdb->get_results("SELECT * FROM {$tabla_tipos} WHERE activo = 1 ORDER BY precio");
         }
 

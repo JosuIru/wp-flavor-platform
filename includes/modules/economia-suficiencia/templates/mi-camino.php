@@ -2,7 +2,7 @@
 /**
  * Template: Mi Camino de Suficiencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -10,10 +10,13 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$modulo = new Flavor_Chat_Economia_Suficiencia_Module();
+$economia_suficiencia_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Suficiencia_Module')
+    : 'Flavor_Chat_Economia_Suficiencia_Module';
+$modulo = new $economia_suficiencia_module_class();
 $stats = $modulo->get_estadisticas_usuario($user_id);
 $nivel = $stats['nivel'];
-$categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
+$categorias = $economia_suficiencia_module_class::CATEGORIAS_NECESIDADES;
 ?>
 
 <div class="es-container">
@@ -96,14 +99,14 @@ $categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
                 <?php endforeach; ?>
             </div>
             <p style="text-align: center; margin-top: 1rem;">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--secondary es-btn--small">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--secondary es-btn--small">
                     <?php esc_html_e('Actualizar evaluación', 'flavor-platform'); ?>
                 </a>
             </p>
             <?php else : ?>
             <div class="es-empty-state" style="padding: 1.5rem;">
                 <p><?php esc_html_e('Aún no has evaluado tus necesidades.', 'flavor-platform'); ?></p>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--primary es-btn--small">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--primary es-btn--small">
                     <?php esc_html_e('Evaluar ahora', 'flavor-platform'); ?>
                 </a>
             </div>
@@ -115,7 +118,7 @@ $categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
             <h3><?php esc_html_e('Continúa tu camino', 'flavor-platform'); ?></h3>
 
             <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'compromisos')); ?>" class="es-card" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'compromisos')); ?>" class="es-card" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
                     <span style="font-size: 2rem;">✊</span>
                     <div>
                         <strong><?php esc_html_e('Hacer un compromiso', 'flavor-platform'); ?></strong>
@@ -125,7 +128,7 @@ $categorias = Flavor_Chat_Economia_Suficiencia_Module::CATEGORIAS_NECESIDADES;
                     </div>
                 </a>
 
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="es-card" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="es-card" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
                     <span style="font-size: 2rem;">📦</span>
                     <div>
                         <strong><?php esc_html_e('Compartir un objeto', 'flavor-platform'); ?></strong>

@@ -2,7 +2,7 @@
 /**
  * Vista de Gestión de Emisiones en Vivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Expone páginas, posts y CPTs como JSON estructurado
  * para renderizado nativo en apps móviles (sin WebViews).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -1096,7 +1096,7 @@ class Flavor_Native_Content_API {
                     'screen_type' => 'chat',
                     'title' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
-                        'api_endpoint' => rest_url('flavor-chat-ia/v1/chat'),
+                        'api_endpoint' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/chat'),
                         'welcome_message' => __('¡Hola! ¿En qué puedo ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'placeholder' => __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
@@ -1140,7 +1140,7 @@ class Flavor_Native_Content_API {
                     'screen_type' => 'notifications',
                     'title' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
-                        'api_endpoint' => rest_url('flavor-chat-ia/v1/notifications'),
+                        'api_endpoint' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/notifications'),
                     ],
                 ];
 
@@ -1234,7 +1234,7 @@ class Flavor_Native_Content_API {
      */
     private function get_module_screen_data($module_id) {
         // Verificar si el módulo está activo
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         if (!in_array($module_id, $active_modules, true)) {
@@ -1251,7 +1251,11 @@ class Flavor_Native_Content_API {
             'description' => $module_config['description'] ?? '',
             'icon' => $module_config['icon'] ?? 'extension',
             'color' => $module_config['color'] ?? '#4CAF50',
-            'api_namespace' => 'flavor-chat-ia/v1/' . $module_id,
+            'api_namespace' => FLAVOR_PLATFORM_REST_NAMESPACE . '/' . $module_id,
+            'api_namespaces' => [
+                FLAVOR_PLATFORM_REST_NAMESPACE . '/' . $module_id,
+                FLAVOR_CHAT_IA_REST_NAMESPACE . '/' . $module_id,
+            ],
             'endpoints' => $this->get_module_endpoints($module_id),
             'config' => $module_config,
         ];
@@ -1333,7 +1337,7 @@ class Flavor_Native_Content_API {
      * Obtiene los endpoints disponibles para un módulo
      */
     private function get_module_endpoints($module_id) {
-        $base = 'flavor-chat-ia/v1/' . $module_id;
+        $base = FLAVOR_PLATFORM_REST_NAMESPACE . '/' . $module_id;
 
         // Endpoints base comunes
         return [
@@ -1342,6 +1346,7 @@ class Flavor_Native_Content_API {
             'create' => rest_url($base),
             'update' => rest_url($base . '/{id}'),
             'delete' => rest_url($base . '/{id}'),
+            'legacy_list' => rest_url(FLAVOR_CHAT_IA_REST_NAMESPACE . '/' . $module_id),
         ];
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/** Gestión de Asistentes * @package FlavorChatIA */
+/** Gestión de Asistentes * @package FlavorPlatform */
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-asistentes-management">

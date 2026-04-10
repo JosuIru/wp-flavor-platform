@@ -5,7 +5,7 @@
  * Seccion informativa sobre el proceso de registro como socio.
  * Muestra los pasos del formulario y botones de accion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

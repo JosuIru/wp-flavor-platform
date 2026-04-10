@@ -2,7 +2,7 @@
 /**
  * Controlador frontend: Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -26,7 +26,7 @@ class Flavor_Frontend_Bicicletas_Controller extends Flavor_Frontend_Controller_B
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_data();
         }
 
@@ -63,7 +63,7 @@ class Flavor_Frontend_Bicicletas_Controller extends Flavor_Frontend_Controller_B
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return $this->get_demo_single($item_id);
         }
 
@@ -99,7 +99,7 @@ class Flavor_Frontend_Bicicletas_Controller extends Flavor_Frontend_Controller_B
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['resultados' => [], 'total_resultados' => 0, 'sugerencias' => []];
         }
 

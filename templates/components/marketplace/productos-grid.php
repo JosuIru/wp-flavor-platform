@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Marketplace Productos Grid
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

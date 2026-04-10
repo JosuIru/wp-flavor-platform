@@ -3,7 +3,7 @@
  * Dashboard principal de Kulturaka
  * Muestra las 3 vistas principales: Espacio, Artista, Comunidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Kulturaka
  */
 

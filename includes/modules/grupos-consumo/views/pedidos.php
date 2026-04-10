@@ -4,7 +4,7 @@
  *
  * Los handlers AJAX están en class-grupos-consumo-module.php
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

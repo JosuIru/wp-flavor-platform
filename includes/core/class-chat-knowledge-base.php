@@ -2,14 +2,14 @@
 /**
  * Base de conocimiento personalizada
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Knowledge_Base {
+class Flavor_Platform_Knowledge_Base {
 
     /**
      * Instancia singleton
@@ -19,7 +19,7 @@ class Flavor_Chat_Knowledge_Base {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Knowledge_Base
+     * @return Flavor_Platform_Knowledge_Base
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -136,7 +136,7 @@ class Flavor_Chat_Knowledge_Base {
      * Invalida la caché de conocimiento
      */
     public function invalidate_cache() {
-        delete_transient('flavor_chat_knowledge_context');
+        delete_transient('flavor_platform_knowledge_context');
     }
 
     /**
@@ -182,4 +182,8 @@ class Flavor_Chat_Knowledge_Base {
 
         return flavor_update_main_settings($settings);
     }
+}
+
+if (!class_exists('Flavor_Chat_Knowledge_Base', false)) {
+    class_alias('Flavor_Platform_Knowledge_Base', 'Flavor_Chat_Knowledge_Base');
 }

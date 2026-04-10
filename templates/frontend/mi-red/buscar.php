@@ -4,7 +4,7 @@
  *
  * Búsqueda federada de contenido.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -84,7 +84,7 @@ $resultados = $datos_vista['resultados'] ?? [];
                     <h3><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="mi-red-feed__list">
                         <?php foreach ($resultados['publicaciones'] as $item) : ?>
-                            <?php include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php'; ?>
+                            <?php include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/partials/feed-item.php'; ?>
                         <?php endforeach; ?>
                     </div>
                 </section>

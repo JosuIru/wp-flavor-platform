@@ -5,7 +5,7 @@
  * Seccion de llamada a la accion para enviar propuestas.
  * Fondo con gradiente, estadistica destacada y boton principal.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

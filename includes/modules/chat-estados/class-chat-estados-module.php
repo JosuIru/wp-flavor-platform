@@ -6,7 +6,7 @@
  * que desaparecen automáticamente después de 24 horas.
  * Similar a WhatsApp Status / Instagram Stories.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules/Chat_Estados
  * @since 1.5.0
  */
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Estados_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -85,7 +85,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_chat_estados';
-        return Flavor_Chat_Helpers::tabla_existe($tabla);
+        return Flavor_Platform_Helpers::tabla_existe($tabla);
     }
 
     /**
@@ -258,8 +258,11 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         $archivo_tab = dirname(__FILE__) . '/class-chat-estados-dashboard-tab.php';
         if (file_exists($archivo_tab)) {
             require_once $archivo_tab;
-            if (class_exists('Flavor_Chat_Estados_Dashboard_Tab')) {
-                Flavor_Chat_Estados_Dashboard_Tab::get_instance();
+            $dashboard_tab_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Estados_Dashboard_Tab')
+                : 'Flavor_Chat_Estados_Dashboard_Tab';
+            if (class_exists($dashboard_tab_class)) {
+                $dashboard_tab_class::get_instance();
             }
         }
     }
@@ -377,16 +380,16 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-chat-estados',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-estados/assets/css/chat-estados.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-estados/assets/css/chat-estados.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-chat-estados',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/chat-estados/assets/js/chat-estados.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/chat-estados/assets/js/chat-estados.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -856,7 +859,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         ));
 
         // Iniciar conversación privada si existe el módulo de chat interno
-        $chat_interno = Flavor_Chat_Module_Loader::get_instance()->get_module('chat_interno');
+        $chat_interno = Flavor_Platform_Module_Loader::get_instance()->get_module('chat_interno');
         if ($chat_interno && method_exists($chat_interno, 'iniciar_conversacion')) {
             $contexto = sprintf(
                 __('Respondiendo a tu estado: "%s"', 'flavor-platform'),
@@ -1396,11 +1399,11 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/estados-viewer.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-estados/frontend/estados-viewer.php';
         // Incluir fullscreen viewer (siempre oculto por defecto)
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/estados-fullscreen.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-estados/frontend/estados-fullscreen.php';
         // Incluir modal de crear estado
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
         return ob_get_clean();
     }
 
@@ -1413,7 +1416,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
         return ob_get_clean();
     }
 
@@ -1529,7 +1532,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         }
 
         if (!class_exists('Flavor_Module_Widget')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
         }
 
         $registry->register(new Flavor_Module_Widget([
@@ -1567,7 +1570,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_dashboard_widget() {
         $estados = $this->obtener_estados_contactos();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/views/dashboard-widget.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/chat-estados/views/dashboard-widget.php';
     }
 
     /**
@@ -1773,14 +1776,19 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
 // Inicializar
 add_action('plugins_loaded', function() {
-    if (class_exists('Flavor_Chat_Module_Loader') && method_exists('Flavor_Chat_Module_Loader', 'get_instance')) {
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+    if (class_exists('Flavor_Platform_Module_Loader') && method_exists('Flavor_Platform_Module_Loader', 'get_instance')) {
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         if ($loader && method_exists($loader, 'get_module') && $loader->get_module('chat_estados')) {
             return;
         }
     }
 
-    if (class_exists('Flavor_Chat_Estados_Module')) {
-        new Flavor_Chat_Estados_Module();
+    $module_class = 'Flavor_Platform_Estados_Module';
+    if (class_exists($module_class)) {
+        new $module_class();
     }
 }, 20);
+
+if (!class_exists('Flavor_Chat_Estados_Module', false)) {
+    class_alias('Flavor_Platform_Estados_Module', 'Flavor_Chat_Estados_Module');
+}

@@ -2,7 +2,7 @@
 /**
  * Vista Asignación de Presupuesto - Módulo Presupuestos Participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\PresupuestosParticipativos
  */
 if (!defined('ABSPATH')) exit;

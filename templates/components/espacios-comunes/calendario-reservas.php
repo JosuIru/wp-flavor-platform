@@ -2,7 +2,7 @@
 /**
  * Template: Calendario de Reservas de Espacios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -16,7 +16,7 @@
  * - $btn_url (string): URL del botón
  * - $estilo (string): grid, cards, minimal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

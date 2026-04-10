@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo operativo para gestión de clientes.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Sistema completo para subir, organizar y reproducir archivos de audio
  * sin necesidad de servidor de streaming externo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -106,7 +106,7 @@ class Flavor_Radio_Media_Manager {
         global $wpdb;
         $tabla_audios = $wpdb->prefix . 'flavor_radio_audios';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_audios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_audios)) {
             return;
         }
 
@@ -646,7 +646,7 @@ class Flavor_Radio_Media_Manager {
 
         // Buscar programación activa
         $programacion = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_auto)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_auto)) {
             $programacion = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM $tabla_auto
                  WHERE dia_semana = %d

@@ -2,7 +2,7 @@
 /**
  * Template: Categorias de Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

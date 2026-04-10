@@ -4,7 +4,7 @@
  *
  * Displays a grid of upcoming workshops with filtering and sorting options
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Talleres
  */
 

@@ -3,7 +3,7 @@
  * Modulo de Transparencia para Chat IA
  * Portal de transparencia y rendicion de cuentas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo de Transparencia - Portal completo de transparencia y rendicion de cuentas
  */
-class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -57,7 +57,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_documentos = $this->prefijo_tabla . 'documentos_publicos';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_documentos);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_documentos);
     }
 
     /**
@@ -392,7 +392,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function maybe_create_tables() {
         $tabla_documentos = $this->prefijo_tabla . 'documentos_publicos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
             $this->create_tables();
         }
     }
@@ -2786,7 +2786,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_solicitudes = $this->prefijo_tabla . 'solicitudes_info';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return 0;
         }
 
@@ -3111,7 +3111,7 @@ KNOWLEDGE;
 
         $tabla_documentos = $wpdb->prefix . 'flavor_transparencia_documentos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
             return $estadisticas;
         }
 
@@ -3450,4 +3450,8 @@ KNOWLEDGE;
             echo '<p>' . esc_html__('Gestión de solicitudes de acceso a información pública.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Transparencia_Module', false)) {
+    class_alias('Flavor_Platform_Transparencia_Module', 'Flavor_Chat_Transparencia_Module');
 }

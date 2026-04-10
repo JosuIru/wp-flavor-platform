@@ -5,7 +5,7 @@
  * Expone todas las acciones de todos los módulos vía REST API
  * para uso desde formularios frontend, apps móviles, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -309,7 +309,7 @@ class Flavor_Module_Actions_API {
         $parametros = $request->get_json_params() ?: [];
 
         // Obtener el módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $module = $loader->get_module($module_id);
 
         if (!$module) {
@@ -372,7 +372,7 @@ class Flavor_Module_Actions_API {
                 );
             }
         } catch (Exception $e) {
-            flavor_chat_ia_log('Error ejecutando acción ' . $action_name . ': ' . $e->getMessage(), 'error');
+            flavor_platform_log('Error ejecutando acción ' . $action_name . ': ' . $e->getMessage(), 'error');
 
             return new WP_Error(
                 'execution_error',
@@ -478,7 +478,7 @@ class Flavor_Module_Actions_API {
     public function get_module_info($request) {
         $module_id = $request->get_param('module_id');
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $module = $loader->get_module($module_id);
 
         if (!$module) {
@@ -525,7 +525,7 @@ class Flavor_Module_Actions_API {
      * Devuelve informacion basica publica: id, nombre, descripcion y estado.
      */
     public function list_modules($request) {
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_cargados = $loader->get_loaded_modules();
 
         $lista_modulos_publicos = [];

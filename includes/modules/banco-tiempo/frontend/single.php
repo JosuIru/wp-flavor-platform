@@ -8,7 +8,7 @@
  * - $categorias: array de categorias
  * - $categoria: categoria normalizada del servicio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

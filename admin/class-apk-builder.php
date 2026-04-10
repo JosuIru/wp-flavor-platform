@@ -5,7 +5,7 @@
  * Sistema para generar APKs personalizadas desde el panel de WordPress.
  * Permite configurar branding, módulos y generar builds.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Admin
  * @since 1.0.0
  */
@@ -47,8 +47,8 @@ class Flavor_APK_Builder {
      * Constructor
      */
     private function __construct() {
-        $this->flutter_path = FLAVOR_CHAT_IA_PATH . 'mobile-apps';
-        $this->builds_path = FLAVOR_CHAT_IA_PATH . 'builds';
+        $this->flutter_path = FLAVOR_PLATFORM_PATH . 'mobile-apps';
+        $this->builds_path = FLAVOR_PLATFORM_PATH . 'builds';
 
         add_action('admin_menu', array($this, 'add_menu_page'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
@@ -94,16 +94,16 @@ class Flavor_APK_Builder {
 
         wp_enqueue_style(
             'flavor-apk-builder',
-            FLAVOR_CHAT_IA_URL . 'admin/css/apk-builder.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/apk-builder.css',
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-apk-builder',
-            FLAVOR_CHAT_IA_URL . 'admin/js/apk-builder.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/apk-builder.js',
             array('jquery', 'wp-color-picker'),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

@@ -2,7 +2,7 @@
 /**
  * Template: Reproductor de Radio en Vivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

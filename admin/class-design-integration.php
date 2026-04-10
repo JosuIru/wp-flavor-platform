@@ -4,7 +4,7 @@
  *
  * Integra design-settings existente con theme-customizer nuevo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

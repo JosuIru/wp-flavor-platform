@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -399,7 +400,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                     radius: 50,
                     backgroundColor: colorScheme.primaryContainer,
                     backgroundImage: _avatarPath != null
-                        ? AssetImage(_avatarPath!) // TODO: FileImage
+                        ? FileImage(File(_avatarPath!))
                         : null,
                     child: _avatarPath == null
                         ? Icon(

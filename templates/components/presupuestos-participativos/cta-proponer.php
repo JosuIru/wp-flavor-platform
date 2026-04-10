@@ -5,7 +5,7 @@
  * Call to action para invitar a proponer un proyecto
  * en los presupuestos participativos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

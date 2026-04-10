@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Huella Ecológica
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\HuellaEcologica
  */
 
@@ -92,7 +92,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
         $mis_registros = 0;
         $objetivos_cumplidos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_huella)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_huella)) {
             // Última huella calculada
             $mi_huella_actual = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT valor_co2 FROM {$tabla_huella} WHERE usuario_id = %d ORDER BY fecha DESC LIMIT 1",
@@ -107,7 +107,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_objetivos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_objetivos)) {
             $objetivos_cumplidos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_objetivos} WHERE usuario_id = %d AND estado = 'cumplido'",
                 $user_id
@@ -193,15 +193,15 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-calculator"></span>
                     <?php esc_html_e('Calcular Huella', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'consejos')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'consejos')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-lightbulb"></span>
                     <?php esc_html_e('Consejos', 'flavor-platform'); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'compensar')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'compensar')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-palmtree"></span>
                     <?php esc_html_e('Compensar', 'flavor-platform'); ?>
                 </a>
@@ -224,7 +224,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
         $tabla_huella = $wpdb->prefix . 'flavor_huella_registros';
 
         $registros = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_huella)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_huella)) {
             $registros = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_huella} WHERE usuario_id = %d ORDER BY fecha DESC LIMIT 12",
                 $user_id
@@ -235,7 +235,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
         <div class="flavor-panel flavor-seguimiento-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Mi Seguimiento', 'flavor-platform'); ?></h2>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nuevo Registro', 'flavor-platform'); ?>
                 </a>
@@ -246,7 +246,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
                     <span class="dashicons dashicons-chart-line"></span>
                     <p><?php esc_html_e('Aún no has registrado tu huella ecológica.', 'flavor-platform'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Calcular tu huella es el primer paso para reducirla.', 'flavor-platform'); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Calcular mi huella', 'flavor-platform'); ?>
                     </a>
                 </div>

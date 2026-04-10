@@ -6,7 +6,7 @@
  * entidad de cualquier módulo: valoraciones, favoritos, comentarios,
  * seguimiento, reportes, etiquetas, etc.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -816,16 +816,16 @@ class Flavor_Shared_Features {
 
         wp_enqueue_style(
             'flavor-shared-features',
-            FLAVOR_CHAT_IA_URL . 'assets/css/modules/shared-features.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/modules/shared-features.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-shared-features',
-            FLAVOR_CHAT_IA_URL . 'assets/js/shared-features.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/shared-features.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

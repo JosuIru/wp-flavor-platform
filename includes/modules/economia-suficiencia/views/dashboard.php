@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para modelo económico basado en suficiencia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

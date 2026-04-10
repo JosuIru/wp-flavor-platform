@@ -4,7 +4,7 @@
  *
  * Muestra el historial y estadísticas de cuidados del usuario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,9 +12,12 @@ if (!defined('ABSPATH')) {
 }
 
 $user_id = get_current_user_id();
-$modulo = new Flavor_Chat_Circulos_Cuidados_Module();
+$circulos_cuidados_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Circulos_Cuidados_Module')
+    : 'Flavor_Chat_Circulos_Cuidados_Module';
+$modulo = new $circulos_cuidados_module_class();
 $stats = $modulo->get_estadisticas_usuario($user_id);
-$tipos = Flavor_Chat_Circulos_Cuidados_Module::TIPOS_CIRCULO;
+$tipos = $circulos_cuidados_module_class::TIPOS_CIRCULO;
 
 // Obtener círculos donde participa
 global $wpdb;

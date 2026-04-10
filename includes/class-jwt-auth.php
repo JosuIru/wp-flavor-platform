@@ -5,7 +5,7 @@
  * Intercepta todas las peticiones REST y verifica el token JWT
  * automáticamente, estableciendo el usuario actual.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

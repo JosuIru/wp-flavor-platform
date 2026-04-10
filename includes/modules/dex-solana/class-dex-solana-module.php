@@ -4,7 +4,7 @@
  *
  * Exchange descentralizado simulado para tokens Solana con AMM, farming y modo dual (paper + real).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Modulo DEX Solana - Swap de tokens, pools de liquidez AMM, yield farming y modo dual
  */
-class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -45,7 +45,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_swaps);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_swaps);
     }
 
     /**
@@ -136,7 +136,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * @return bool
      */
     private function is_experimental_enabled() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $global_enabled = !empty($settings['enable_experimental_modules']);
         $module_enabled = !empty($settings['experimental_modules'])
             && is_array($settings['experimental_modules'])
@@ -170,7 +170,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * Carga las clases auxiliares del modulo
      */
     private function cargar_clases_auxiliares() {
-        $directorio_modulo = FLAVOR_CHAT_IA_PATH . 'includes/modules/dex-solana/';
+        $directorio_modulo = FLAVOR_PLATFORM_PATH . 'includes/modules/dex-solana/';
 
         $archivos_clases = array(
             'class-dex-solana-jupiter-api.php',
@@ -207,7 +207,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
             if (!empty($tokens_disponibles)) {
                 $this->pool_manager->sembrar_pools_iniciales();
             } else {
-                flavor_chat_ia_log( 'No se pueden crear pools: registro de tokens vacío', 'warning', 'DEX-Solana' );
+                flavor_platform_log( 'No se pueden crear pools: registro de tokens vacío', 'warning', 'DEX-Solana' );
             }
         }
         if ($this->get_setting('farming_activo', true) && !empty($tokens_disponibles)) {
@@ -679,7 +679,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
         $tabla_portfolio = $wpdb->prefix . 'flavor_dex_portfolio';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_swaps)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_swaps)) {
             return $estadisticas;
         }
 
@@ -698,7 +698,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         ];
 
         // Tokens en portfolio (contamos desde tokens_json)
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_portfolio)) {
             $portfolio_row = $wpdb->get_row($wpdb->prepare(
                 "SELECT tokens_json, balance_usdc FROM $tabla_portfolio WHERE usuario_id = %d",
                 $user_id
@@ -2700,4 +2700,8 @@ KNOWLEDGE;
             Flavor_Dex_Solana_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Dex_Solana_Module', false)) {
+    class_alias('Flavor_Platform_Dex_Solana_Module', 'Flavor_Chat_Dex_Solana_Module');
 }

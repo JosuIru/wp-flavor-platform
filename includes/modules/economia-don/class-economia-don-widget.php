@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Economía del Don
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,14 +17,14 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
     /**
      * Referencia al módulo
      *
-     * @var Flavor_Chat_Economia_Don_Module
+     * @var Flavor_Platform_Module_Interface
      */
     protected $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Economia_Don_Module $module
+     * @param Flavor_Platform_Module_Interface $module
      */
     public function __construct($module) {
         $this->module = $module;
@@ -83,7 +83,10 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
             'order' => 'DESC',
         ]);
 
-        $categorias = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
+        $economia_don_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Economia_Don_Module')
+            : 'Flavor_Chat_Economia_Don_Module';
+        $categorias = $economia_don_module_class::CATEGORIAS_DON;
         $items = [];
 
         foreach ($dones_disponibles as $don) {

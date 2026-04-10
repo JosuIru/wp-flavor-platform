@@ -2,7 +2,7 @@
 /**
  * API REST para el módulo de Eventos
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Eventos
  * @since 3.0.0
  */
@@ -21,7 +21,7 @@ class Flavor_Eventos_API {
     /**
      * Namespace de la API
      */
-    const API_NAMESPACE = 'flavor-chat-ia/v1';
+    const API_NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     /**
      * Obtener instancia singleton
@@ -45,7 +45,7 @@ class Flavor_Eventos_API {
      */
     public function register_routes() {
         // GET /eventos - Listar eventos
-        register_rest_route(self::API_NAMESPACE, '/eventos', [
+        flavor_register_rest_route(self::API_NAMESPACE, '/eventos', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_eventos'],
             'permission_callback' => [$this, 'public_read_permission'],
@@ -66,7 +66,7 @@ class Flavor_Eventos_API {
         ]);
 
         // GET /eventos/{id} - Detalle de evento
-        register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)', [
+        flavor_register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_evento_detail'],
             'permission_callback' => [$this, 'public_read_permission'],
@@ -81,7 +81,7 @@ class Flavor_Eventos_API {
         ]);
 
         // POST /eventos/{id}/inscribir - Inscribirse en evento
-        register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)/inscribir', [
+        flavor_register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)/inscribir', [
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'inscribir_en_evento'],
             'permission_callback' => 'is_user_logged_in',
@@ -96,7 +96,7 @@ class Flavor_Eventos_API {
         ]);
 
         // DELETE /eventos/{id}/cancelar - Cancelar inscripción
-        register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)/cancelar', [
+        flavor_register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)/cancelar', [
             'methods' => WP_REST_Server::DELETABLE,
             'callback' => [$this, 'cancelar_inscripcion'],
             'permission_callback' => 'is_user_logged_in',
@@ -111,7 +111,7 @@ class Flavor_Eventos_API {
         ]);
 
         // POST /eventos - Crear evento
-        register_rest_route(self::API_NAMESPACE, '/eventos', [
+        flavor_register_rest_route(self::API_NAMESPACE, '/eventos', [
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'crear_evento'],
             'permission_callback' => function() {
@@ -198,7 +198,7 @@ class Flavor_Eventos_API {
             'data' => [
                 'id' => $evento_id,
                 'message' => __('Evento creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
+                'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle')),
             ],
         ]);
     }
@@ -264,7 +264,7 @@ class Flavor_Eventos_API {
         wp_send_json_success([
             'id' => $evento_id,
             'message' => __('Evento creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
+            'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle')),
         ]);
     }
 

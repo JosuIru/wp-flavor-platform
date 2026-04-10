@@ -2,7 +2,7 @@
 /**
  * Vista de Estadísticas de Uso - Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BicicletasCompartidas
  */
 

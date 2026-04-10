@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para preservación de conocimientos tradicionales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

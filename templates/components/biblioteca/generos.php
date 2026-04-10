@@ -5,7 +5,7 @@
  * Muestra tarjetas interactivas para navegar por los diferentes géneros
  * de libros disponibles en la biblioteca.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Variables pasadas al template
  */
 

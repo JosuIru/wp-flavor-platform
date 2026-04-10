@@ -4,7 +4,7 @@
  *
  * Badge/etiqueta de estado con colores semánticos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $status   Estado (pending, active, completed, cancelled, etc.)

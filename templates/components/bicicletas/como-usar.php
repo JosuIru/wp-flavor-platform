@@ -2,7 +2,7 @@
 /**
  * Cómo Usar - Pasos del Servicio de Bicicletas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Bicicletas
  */
 

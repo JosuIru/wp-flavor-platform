@@ -2,7 +2,7 @@
 /**
  * Panel de privacidad del usuario
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {

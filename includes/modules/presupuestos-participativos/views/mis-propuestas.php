@@ -7,7 +7,7 @@
  * - $categorias: array de categorias disponibles
  * - $atributos: array con configuracion del shortcode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

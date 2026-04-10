@@ -5,7 +5,7 @@
  * Muestra una vista integrada de todos los módulos activos del usuario,
  * organizados jerárquicamente (Base > Verticales > Transversales).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.3.0
  */
 
@@ -201,16 +201,16 @@ class Flavor_Unified_Portal {
 
             wp_enqueue_style(
                 'flavor-unified-portal',
-                FLAVOR_CHAT_IA_URL . "assets/css/layouts/unified-portal{$sufijo_minificado}.css",
+                FLAVOR_PLATFORM_URL . "assets/css/layouts/unified-portal{$sufijo_minificado}.css",
                 ['fl-design-tokens'],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
 
             wp_enqueue_script(
                 'flavor-unified-portal',
-                FLAVOR_CHAT_IA_URL . "assets/js/unified-portal{$sufijo_minificado}.js",
+                FLAVOR_PLATFORM_URL . "assets/js/unified-portal{$sufijo_minificado}.js",
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -218,7 +218,7 @@ class Flavor_Unified_Portal {
                 'ajaxUrl'     => admin_url('admin-ajax.php'),
                 'nonce'       => wp_create_nonce('flavor_unified_portal'),
                 'userId'      => get_current_user_id(),
-                'settingsUrl' => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
+                'settingsUrl' => Flavor_Platform_Helpers::get_action_url('configuracion', ''),
                 'i18n'        => [
                     'loading'                 => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'error'                   => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -324,12 +324,12 @@ class Flavor_Unified_Portal {
      * Carga datos de módulos agrupados por tipo
      */
     private function load_modules_data() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             $this->modules_by_type = ['base' => [], 'vertical' => [], 'transversal' => [], 'service' => []];
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $active_modules = $loader->get_loaded_modules();
 
         $this->modules_by_type = [
@@ -434,7 +434,7 @@ class Flavor_Unified_Portal {
         }
 
         // Usar ruta dinámica del portal: /mi-portal/{modulo}/
-        return Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $slug), '');
+        return Flavor_Platform_Helpers::get_action_url(str_replace('-', '_', $slug), '');
     }
 
     /**
@@ -937,7 +937,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Aviso oficial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $aviso['titulo'],
                     'excerpt' => wp_trim_words($aviso['contenido'], 15, '...'),
-                    'url' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('avisos_municipales', ''),
                     'time' => strtotime($aviso['fecha_publicacion']),
                     'time_ago' => $this->time_ago($aviso['fecha_publicacion']),
                     'meta' => !empty($aviso['categoria']) ? $aviso['categoria'] : '',
@@ -968,7 +968,7 @@ class Flavor_Unified_Portal {
                     'source' => $nombre_autor,
                     'title' => '',
                     'excerpt' => wp_trim_words($pub['contenido'], 20, '...'),
-                    'url' => Flavor_Chat_Helpers::get_action_url('red_social', '') . '?pub=' . $pub['id'],
+                    'url' => Flavor_Platform_Helpers::get_action_url('red_social', '') . '?pub=' . $pub['id'],
                     'time' => strtotime($pub['fecha_creacion']),
                     'time_ago' => $this->time_ago($pub['fecha_creacion']),
                     'meta' => $pub['reacciones'] > 0 ? sprintf(_n('%d reacción', '%d reacciones', (int) $pub['reacciones'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $pub['reacciones']) : '',
@@ -996,7 +996,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $evento['titulo'],
                     'excerpt' => !empty($evento['descripcion']) ? wp_trim_words($evento['descripcion'], 12, '...') : '',
-                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('eventos', ''),
                     'time' => strtotime($evento['fecha']),
                     'time_ago' => date_i18n(get_option('date_format'), strtotime($evento['fecha'])),
                     'meta' => !empty($evento['lugar']) ? '📍 ' . $evento['lugar'] : '',
@@ -1025,7 +1025,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $tema['titulo'],
                     'excerpt' => '',
-                    'url' => Flavor_Chat_Helpers::get_action_url('foros', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('foros', ''),
                     'time' => strtotime($tema['fecha_creacion']),
                     'time_ago' => $this->time_ago($tema['fecha_creacion']),
                     'meta' => $tema['respuestas'] > 0 ? sprintf(_n('%d respuesta', '%d respuestas', (int) $tema['respuestas'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $tema['respuestas']) : __('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1052,7 +1052,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $ep['titulo'],
                     'excerpt' => !empty($ep['descripcion']) ? wp_trim_words($ep['descripcion'], 10, '...') : '',
-                    'url' => Flavor_Chat_Helpers::get_action_url('podcast', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('podcast', ''),
                     'time' => strtotime($ep['fecha_publicacion']),
                     'time_ago' => $this->time_ago($ep['fecha_publicacion']),
                     'meta' => !empty($ep['duracion']) ? '⏱️ ' . $ep['duracion'] . ' min' : '',
@@ -1130,7 +1130,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📅',
                     'text' => $evento['titulo'],
-                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('eventos', ''),
                     'module' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'normal',
                 ];
@@ -1150,7 +1150,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📆',
                     'text' => sprintf(_n('%d reserva pendiente', '%d reservas pendientes', $reservas, FLAVOR_PLATFORM_TEXT_DOMAIN), $reservas),
-                    'url' => Flavor_Chat_Helpers::get_action_url('reservas', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('reservas', ''),
                     'module' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'high',
                 ];
@@ -1170,7 +1170,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📋',
                     'text' => sprintf(_n('%d trámite activo', '%d trámites activos', $tramites, FLAVOR_PLATFORM_TEXT_DOMAIN), $tramites),
-                    'url' => Flavor_Chat_Helpers::get_action_url('tramites', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('tramites', ''),
                     'module' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'normal',
                 ];
@@ -1188,7 +1188,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '🗳️',
                     'text' => sprintf(_n('%d votación abierta', '%d votaciones abiertas', $votaciones, FLAVOR_PLATFORM_TEXT_DOMAIN), $votaciones),
-                    'url' => Flavor_Chat_Helpers::get_action_url('participacion', ''),
+                    'url' => Flavor_Platform_Helpers::get_action_url('participacion', ''),
                     'module' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'high',
                 ];

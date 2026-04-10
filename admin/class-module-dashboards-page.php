@@ -2,7 +2,7 @@
 /**
  * Índice de dashboards admin de módulos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -228,7 +228,7 @@ class Flavor_Module_Dashboards_Page {
      * @return array<int,array<string,mixed>>
      */
     public function get_dashboard_rows() {
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modules = $loader->get_registered_modules();
         $view = class_exists('Flavor_Admin_Menu_Manager')
             ? Flavor_Admin_Menu_Manager::get_instance()->obtener_vista_activa()
@@ -237,7 +237,7 @@ class Flavor_Module_Dashboards_Page {
 
         foreach ($modules as $module_id => $module_data) {
             // Solo mostrar módulos activos
-            if (!Flavor_Chat_Module_Loader::is_module_active($module_id)) {
+            if (!Flavor_Platform_Module_Loader::is_module_active($module_id)) {
                 continue;
             }
 
@@ -471,7 +471,7 @@ class Flavor_Module_Dashboards_Page {
      * @return string
      */
     private function get_module_main_file($module_id) {
-        $dir = FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id);
+        $dir = FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $module_id);
         $files = glob($dir . '/*.php');
         if (empty($files)) {
             return '';
@@ -520,9 +520,9 @@ class Flavor_Module_Dashboards_Page {
             || strpos($source, 'render_pagina_dashboard(') !== false
             || strpos($source, 'render_admin_page(') !== false
             || strpos($source, "'render_callback'") !== false;
-        $has_view = file_exists(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/views/dashboard.php');
-        $has_tab = !empty(glob(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-tab.php'));
-        $has_widget = !empty(glob(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-widget.php'));
+        $has_view = file_exists(FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/views/dashboard.php');
+        $has_tab = !empty(glob(FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-tab.php'));
+        $has_widget = !empty(glob(FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-widget.php'));
         $is_mapped = Flavor_Module_Admin_Pages_Helper::get_module_dashboard_page($module_id) !== null;
 
         if ($is_mapped && $has_admin_config && $has_render_admin) {

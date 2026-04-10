@@ -3,7 +3,7 @@
  * Template: WooCommerce Ofertas Banner
  * Muestra productos en oferta con imagen, precios original y de oferta
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

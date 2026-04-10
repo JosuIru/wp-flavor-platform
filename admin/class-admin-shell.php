@@ -5,7 +5,7 @@
  * Reemplaza el sidebar de WordPress con una interfaz moderna y elegante
  * cuando el usuario está en páginas del plugin Flavor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -374,11 +374,11 @@ class Flavor_Admin_Shell {
         }
 
         // CSS del shell
-        $shell_css_path = FLAVOR_CHAT_IA_PATH . 'admin/css/admin-shell.css';
-        $shell_css_ver = file_exists($shell_css_path) ? (string) filemtime($shell_css_path) : FLAVOR_CHAT_IA_VERSION;
+        $shell_css_path = FLAVOR_PLATFORM_PATH . 'admin/css/admin-shell.css';
+        $shell_css_ver = file_exists($shell_css_path) ? (string) filemtime($shell_css_path) : FLAVOR_PLATFORM_VERSION;
         wp_enqueue_style(
             'flavor-admin-shell',
-            FLAVOR_CHAT_IA_URL . 'admin/css/admin-shell.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/admin-shell.css',
             [],
             $shell_css_ver
         );
@@ -387,7 +387,7 @@ class Flavor_Admin_Shell {
         if (!wp_script_is('alpine', 'enqueued')) {
             wp_enqueue_script(
                 'alpine',
-                FLAVOR_CHAT_IA_URL . 'assets/vbp/vendor/alpine.min.js',
+                FLAVOR_PLATFORM_URL . 'assets/vbp/vendor/alpine.min.js',
                 [],
                 '3.14.3',
                 true
@@ -402,11 +402,11 @@ class Flavor_Admin_Shell {
         }
 
         // JS del shell
-        $shell_js_path = FLAVOR_CHAT_IA_PATH . 'admin/js/admin-shell.js';
-        $shell_js_ver = file_exists($shell_js_path) ? (string) filemtime($shell_js_path) : FLAVOR_CHAT_IA_VERSION;
+        $shell_js_path = FLAVOR_PLATFORM_PATH . 'admin/js/admin-shell.js';
+        $shell_js_ver = file_exists($shell_js_path) ? (string) filemtime($shell_js_path) : FLAVOR_PLATFORM_VERSION;
         wp_enqueue_script(
             'flavor-admin-shell',
-            FLAVOR_CHAT_IA_URL . 'admin/js/admin-shell.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/admin-shell.js',
             ['alpine'],
             $shell_js_ver,
             true
@@ -449,7 +449,7 @@ class Flavor_Admin_Shell {
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         $is_dark_mode = $this->is_dark_mode();
 
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/shell-sidebar.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/shell-sidebar.php';
     }
 
     /**

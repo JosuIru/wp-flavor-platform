@@ -24,7 +24,7 @@ class ApiConfig {
 
   /// Endpoints
   static const String discoveryEndpoint = '/wp-json/app-discovery/v1';
-  static const String modulesEndpoint = '/wp-json/flavor-chat-ia/v1';
+  static const String modulesEndpoint = '/wp-json/flavor-platform/v1';
 
   /// Actualiza la URL base y el token
   static void configure({

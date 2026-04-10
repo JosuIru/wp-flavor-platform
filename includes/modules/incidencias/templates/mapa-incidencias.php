@@ -2,7 +2,7 @@
 /**
  * Template: Mapa de Incidencias
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

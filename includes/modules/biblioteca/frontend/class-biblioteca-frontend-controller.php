@@ -2,7 +2,7 @@
 /**
  * Controller Frontend para Biblioteca
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

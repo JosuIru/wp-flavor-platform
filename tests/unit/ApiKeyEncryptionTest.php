@@ -2,7 +2,7 @@
 /**
  * Tests para la clase de encriptación de API Keys
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';

@@ -2,7 +2,7 @@
 /**
  * Modulo de Red Social Comunitaria para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
  * - Este modulo es PROVIDER de publicaciones
  * - Las publicaciones pueden vincularse a productos, eventos, etc.
  */
-class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -81,7 +81,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones);
     }
 
     /**
@@ -665,7 +665,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_social_publicaciones';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -809,7 +809,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         foreach ($esquemas as $tabla => $sql) {
             // Verificar si la tabla existe
-            if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                 continue;
             }
 
@@ -3588,7 +3588,7 @@ KNOWLEDGE;
      * Renderizar dashboard del panel unificado
      */
     public function render_admin_dashboard() {
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/dashboard.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'includes/modules/red-social/views/dashboard.php';
         if (file_exists($ruta_template)) {
             include $ruta_template;
         } else {
@@ -3655,7 +3655,7 @@ KNOWLEDGE;
      * Renderizar página de publicaciones del panel unificado
      */
     public function render_admin_publicaciones() {
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/publicaciones.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'includes/modules/red-social/views/publicaciones.php';
         if (file_exists($ruta_template)) {
             include $ruta_template;
         } else {
@@ -3763,7 +3763,7 @@ KNOWLEDGE;
      * Renderizar página de moderación del panel unificado
      */
     public function render_admin_moderacion() {
-        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/moderacion.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'includes/modules/red-social/views/moderacion.php';
         if (file_exists($ruta_template)) {
             include $ruta_template;
         } else {
@@ -3896,14 +3896,14 @@ KNOWLEDGE;
         $total_usuarios = 0;
         $publicaciones_semana = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             $total_publicaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_publicaciones");
             $publicaciones_semana = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_publicaciones WHERE fecha_publicacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $total_usuarios = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_perfiles");
         }
         ?>
@@ -3947,7 +3947,7 @@ KNOWLEDGE;
             'nuevos_usuarios_semana' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             $estadisticas['total_publicaciones'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_publicaciones");
             $estadisticas['publicaciones_hoy'] = (int) $wpdb->get_var(
                 $wpdb->prepare(
@@ -3960,7 +3960,7 @@ KNOWLEDGE;
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $estadisticas['total_usuarios'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_perfiles");
             $estadisticas['nuevos_usuarios_semana'] = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_perfiles WHERE fecha_registro >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
@@ -4015,7 +4015,7 @@ KNOWLEDGE;
             return $estadisticas;
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_publicaciones)) {
             // Mis publicaciones
             $mis_publicaciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_publicaciones}
@@ -4031,7 +4031,7 @@ KNOWLEDGE;
             ];
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_seguimientos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_seguimientos)) {
             // Seguidores
             $seguidores = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_seguimientos}
@@ -5425,7 +5425,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         // Verificar permisos según el tipo de entidad
-        $modulo_entidad = Flavor_Chat_Module_Loader::get_instance()->get_module($entidad);
+        $modulo_entidad = Flavor_Platform_Module_Loader::get_instance()->get_module($entidad);
         if ($modulo_entidad && method_exists($modulo_entidad, 'usuario_es_miembro')) {
             return $modulo_entidad->usuario_es_miembro($entidad_id, $usuario_id);
         }
@@ -5602,4 +5602,8 @@ KNOWLEDGE;
             Flavor_Red_Social_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Red_Social_Module', false)) {
+    class_alias('Flavor_Platform_Red_Social_Module', 'Flavor_Chat_Red_Social_Module');
 }

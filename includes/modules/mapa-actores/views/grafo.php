@@ -2,7 +2,7 @@
 /**
  * Vista de grafo de relaciones (tabla de aristas).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

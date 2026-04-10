@@ -5,7 +5,7 @@
  * Proporciona endpoints para gestión de claves,
  * intercambio de prekey bundles y dispositivos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage API
  */
 
@@ -42,8 +42,8 @@ class Flavor_E2E_REST_API {
      */
     private function cargar_dependencias() {
         if (!$this->key_manager) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-key-manager.php';
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-session-manager.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-key-manager.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/class-signal-session-manager.php';
 
             $this->key_manager = new Flavor_Signal_Key_Manager();
             $this->session_manager = new Flavor_Signal_Session_Manager($this->key_manager);
@@ -278,7 +278,7 @@ class Flavor_E2E_REST_API {
         $usuario_id = get_current_user_id();
 
         // Verificar requisitos criptográficos
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
 
         // Crear una clase temporal para usar el método estático del trait
         $crypto_check = new class {
@@ -315,7 +315,7 @@ class Flavor_E2E_REST_API {
 
         // Si no se proporciona dispositivo_id, generar uno
         if (empty($dispositivo_id)) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
             $helper = new class {
                 use Flavor_Crypto_Helpers_Trait;
                 public function generar_id() {
@@ -695,7 +695,7 @@ class Flavor_E2E_REST_API {
         }
 
         // Generar código de recuperación
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
         $helper = new class {
             use Flavor_Crypto_Helpers_Trait;
 
@@ -812,7 +812,7 @@ class Flavor_E2E_REST_API {
         }
 
         // Descifrar backup
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/crypto/trait-crypto-helpers.php';
         $helper = new class {
             use Flavor_Crypto_Helpers_Trait;
 

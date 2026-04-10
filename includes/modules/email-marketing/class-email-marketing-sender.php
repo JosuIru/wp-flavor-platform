@@ -2,7 +2,7 @@
 /**
  * Clase para envío de emails
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

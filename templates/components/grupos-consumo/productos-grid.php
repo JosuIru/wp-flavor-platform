@@ -10,7 +10,7 @@
  * @var array  $opciones_ordenar
  * @var string $component_classes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -4,7 +4,7 @@
  *
  * Pasos explicativos del proceso de carpooling
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

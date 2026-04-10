@@ -5,7 +5,7 @@
  * Endpoint único que consolida toda la configuración necesaria para la app.
  * Incluye versionado, validación y sincronización bidireccional.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.2.0
  */
@@ -1261,7 +1261,7 @@ class Flavor_App_Manifest_API {
      * @return string
      */
     private function detect_flutter_version() {
-        $pubspec_path = FLAVOR_CHAT_IA_PATH . 'mobile-apps/pubspec.yaml';
+        $pubspec_path = FLAVOR_PLATFORM_PATH . 'mobile-apps/pubspec.yaml';
 
         if ( file_exists( $pubspec_path ) ) {
             $content = file_get_contents( $pubspec_path );

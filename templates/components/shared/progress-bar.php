@@ -4,7 +4,7 @@
  *
  * Barra de progreso con múltiples variantes y estados.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param int    $value       Valor actual (0-100 o absoluto si $max se proporciona)

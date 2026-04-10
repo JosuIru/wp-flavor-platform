@@ -2,7 +2,7 @@
 /**
  * Vista: Instalaciones Energéticas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -32,7 +32,7 @@ if ($filtro_comunidad) {
 }
 
 $instalaciones = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones)) {
     $instalaciones = $wpdb->get_results(
         "SELECT i.*, c.nombre as comunidad_nombre
          FROM $tabla_instalaciones i

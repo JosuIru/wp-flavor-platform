@@ -4,7 +4,7 @@
  *
  * Call-to-action para que los vecinos se unan como voluntarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

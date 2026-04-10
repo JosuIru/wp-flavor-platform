@@ -5,7 +5,7 @@
  * Bolsa de empleo ético, emprendimiento local, formación profesional
  * y promoción de condiciones laborales justas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\TrabajoDigno
  * @since 4.2.0
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
 
@@ -754,7 +754,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
      * Encola scripts y estilos
      */
     public function enqueue_assets() {
-        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/';
+        $base_url = FLAVOR_PLATFORM_URL . 'includes/modules/trabajo-digno/assets/';
 
         wp_enqueue_style(
             'flavor-trabajo-digno',
@@ -1677,4 +1677,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Trabajo_Digno_Module', false)) {
+    class_alias('Flavor_Platform_Trabajo_Digno_Module', 'Flavor_Chat_Trabajo_Digno_Module');
 }

@@ -4,7 +4,7 @@
  *
  * Toggle para suscribirse/desuscribirse a elementos (newsletter, notificaciones, seguir, etc.)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param int    $item_id       ID del item

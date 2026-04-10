@@ -5,7 +5,7 @@
  * Sistema centralizado para registrar subpáginas y badges de módulos
  * que se mostrarán en el Flavor Admin Shell.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

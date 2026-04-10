@@ -4,7 +4,7 @@
  *
  * Tarjeta de autor/usuario reutilizable para sidebars.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $author     Datos del autor: name, avatar, bio, verified, rating, stats, url

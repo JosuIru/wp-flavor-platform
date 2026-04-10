@@ -2,7 +2,7 @@
 /**
  * Theme Manager - Sistema de Temas/Skins
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -58,7 +58,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Cualquier proyecto, punto de partida personalizable', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/default.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/default.png',
                 'variables' => [
                     // Colores primarios
                     '--flavor-primary' => '#3b82f6',
@@ -132,7 +132,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Proyectos creativos, agencias, portfolios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/purple.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/purple.png',
                 'variables' => [
                     '--flavor-primary' => '#8b5cf6',
                     '--flavor-primary-hover' => '#7c3aed',
@@ -169,7 +169,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Proyectos marítimos, wellness, viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/ocean.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/ocean.png',
                 'variables' => [
                     '--flavor-primary' => '#0891b2',
                     '--flavor-primary-hover' => '#0e7490',
@@ -202,7 +202,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Proyectos ecológicos, naturaleza, sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Open Sans',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/forest.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/forest.png',
                 'variables' => [
                     '--flavor-primary' => '#16a34a',
                     '--flavor-primary-hover' => '#15803d',
@@ -232,7 +232,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Proyectos creativos, eventos, entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Montserrat',
                 'font_family_body' => 'Open Sans',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/sunset.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/sunset.png',
                 'variables' => [
                     '--flavor-primary' => '#ea580c',
                     '--flavor-primary-hover' => '#c2410c',
@@ -262,7 +262,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Apps, plataformas tech, uso nocturno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/dark.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/dark.png',
                 'variables' => [
                     '--flavor-primary' => '#60a5fa',
                     '--flavor-primary-hover' => '#3b82f6',
@@ -295,7 +295,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Portfolios, diseño editorial, marcas premium', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/minimal.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/minimal.png',
                 'variables' => [
                     '--flavor-primary' => '#171717',
                     '--flavor-primary-hover' => '#404040',
@@ -331,7 +331,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Empresas, corporaciones, consultoras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Montserrat',
                 'font_family_body' => 'Open Sans',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/corporate.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/corporate.png',
                 'variables' => [
                     '--flavor-primary' => '#1e40af',
                     '--flavor-primary-hover' => '#1e3a8a',
@@ -364,7 +364,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Startups, SaaS, plataformas digitales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Roboto',
                 'font_family_body' => 'Roboto',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/themacle.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/themacle.png',
                 'variables' => [
                     // Colores primarios (índigo)
                     '--flavor-primary' => '#5660b9',
@@ -438,7 +438,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Apps nocturnas, dashboards, herramientas dev', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Roboto',
                 'font_family_body' => 'Roboto',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/themacle-dark.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/themacle-dark.png',
                 'variables' => [
                     // Colores primarios (índigo claro sobre oscuro)
                     '--flavor-primary' => '#7b84d1',
@@ -508,7 +508,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Comunidades ecologicas, huertos, sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Merriweather',
                 'font_family_body' => 'Merriweather',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/zunbeltz.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/zunbeltz.png',
                 'variables' => [
                     // Colores primarios (verde oscuro)
                     '--flavor-primary' => '#2D5F2E',
@@ -575,7 +575,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Estudios de arquitectura, inmobiliarias, interiorismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Bricolage Grotesque',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/naarq.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/naarq.png',
                 'variables' => [
                     // Colores primarios (negro)
                     '--flavor-primary' => '#1a1a1a',
@@ -642,7 +642,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Teatros, espacios culturales, eventos artisticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Montserrat',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/campi.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/campi.png',
                 'variables' => [
                     // Colores primarios (navy oscuro)
                     '--flavor-primary' => '#1a1b3a',
@@ -715,7 +715,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Redes locales, comunidades, plataformas civicas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/denendako.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/denendako.png',
                 'variables' => [
                     // Colores primarios (gris oscuro)
                     '--flavor-primary' => '#333333',
@@ -782,7 +782,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Teatro familiar, actividades infantiles, ludotecas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Quicksand',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/escena-familiar.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/escena-familiar.png',
                 'variables' => [
                     // Colores primarios (púrpura)
                     '--flavor-primary' => '#7c3aed',
@@ -855,7 +855,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Grupos de consumo, cooperativas alimentarias, km0', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/grupos-consumo.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/grupos-consumo.png',
                 'variables' => [
                     // Colores primarios (verde orgánico)
                     '--flavor-primary' => '#4a7c59',
@@ -928,7 +928,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Redes sociales locales, comunidades digitales, dashboards', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Nunito Sans',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/comunidad-viva.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/comunidad-viva.png',
                 'variables' => [
                     // Colores primarios (indigo)
                     '--flavor-primary' => '#4f46e5',
@@ -1001,7 +1001,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Restaurantes, cocinas comunitarias, catering', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Playfair Display',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/jantoki.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/jantoki.png',
                 'variables' => [
                     // Colores primarios (warm brown)
                     '--flavor-primary' => '#8b5a2b',
@@ -1074,7 +1074,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Marketplaces locales, tiendas online, comercio km0', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/mercado-espiral.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/mercado-espiral.png',
                 'variables' => [
                     // Colores primarios (green)
                     '--flavor-primary' => '#2e7d32',
@@ -1147,7 +1147,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Banca cooperativa, finanzas eticas, criptomonedas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Space Grotesk',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/spiral-bank.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/spiral-bank.png',
                 'variables' => [
                     // Colores primarios (purple)
                     '--flavor-primary' => '#764ba2',
@@ -1220,7 +1220,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Redes de cuidados, apoyo mutuo, servicios sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/red-cuidados.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/red-cuidados.png',
                 'variables' => [
                     // Colores primarios (pink)
                     '--flavor-primary' => '#ec4899',
@@ -1293,7 +1293,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Plataformas e-learning, educacion P2P, cursos online', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Plus Jakarta Sans',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/academia-espiral.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/academia-espiral.png',
                 'variables' => [
                     // Colores primarios (amber)
                     '--flavor-primary' => '#d97706',
@@ -1366,7 +1366,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Gobernanza participativa, votaciones, asambleas digitales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Nunito Sans',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/democracia-universal.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/democracia-universal.png',
                 'variables' => [
                     // Colores primarios (violet)
                     '--flavor-primary' => '#8b5cf6',
@@ -1439,7 +1439,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Plataformas de video, streaming, contenido multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/flujo.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/flujo.png',
                 'variables' => [
                     // Colores primarios (dark green)
                     '--flavor-primary' => '#166534',
@@ -1512,7 +1512,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Eventos culturales, festivales, produccion artistica', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'DM Sans',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/kulturaka.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/kulturaka.png',
                 'variables' => [
                     // Colores primarios (red)
                     '--flavor-primary' => '#e63946',
@@ -1585,7 +1585,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Revitalizacion rural, municipios, desarrollo local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Outfit',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/pueblo-vivo.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/pueblo-vivo.png',
                 'variables' => [
                     // Colores primarios (earth orange)
                     '--flavor-primary' => '#c2703a',
@@ -1658,7 +1658,7 @@ class Flavor_Theme_Manager {
                 'ideal_for' => __('Coworkings, espacios compartidos, gestion de recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
-                'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/ecos-comunitarios.png',
+                'preview' => FLAVOR_PLATFORM_URL . 'assets/images/themes/ecos-comunitarios.png',
                 'variables' => [
                     // Colores primarios (teal/cyan)
                     '--flavor-primary' => '#0891b2',
@@ -1768,7 +1768,7 @@ class Flavor_Theme_Manager {
      */
     private function load_sector_themes() {
         // Incluir archivo de presets si existe
-        $ruta_archivo_presets = FLAVOR_CHAT_IA_PATH . 'includes/config/theme-presets.php';
+        $ruta_archivo_presets = FLAVOR_PLATFORM_PATH . 'includes/config/theme-presets.php';
 
         if (!file_exists($ruta_archivo_presets)) {
             return;
@@ -1874,7 +1874,7 @@ class Flavor_Theme_Manager {
      * Encolar CSS base de componentes
      */
     public function enqueue_base_css() {
-        $ruta_archivo_css = FLAVOR_CHAT_IA_PATH . 'assets/css/core/flavor-base.css';
+        $ruta_archivo_css = FLAVOR_PLATFORM_PATH . 'assets/css/core/flavor-base.css';
         if (!file_exists($ruta_archivo_css)) {
             return;
         }
@@ -1883,17 +1883,17 @@ class Flavor_Theme_Manager {
 
         wp_enqueue_style(
             'flavor-base-css',
-            FLAVOR_CHAT_IA_URL . "assets/css/core/flavor-base{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/core/flavor-base{$sufijo_asset}.css",
             [],
             filemtime($ruta_archivo_css)
         );
 
         // CSS común de módulos (v4.2.0)
-        $modules_css_path = FLAVOR_CHAT_IA_PATH . 'assets/css/modules/modules-common.css';
+        $modules_css_path = FLAVOR_PLATFORM_PATH . 'assets/css/modules/modules-common.css';
         if (file_exists($modules_css_path)) {
             wp_enqueue_style(
                 'flavor-modules-common',
-                FLAVOR_CHAT_IA_URL . 'assets/css/modules/modules-common.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/modules/modules-common.css',
                 ['flavor-base-css'],
                 filemtime($modules_css_path)
             );
@@ -2229,7 +2229,7 @@ class Flavor_Theme_Manager {
             'description' => $theme['description'] ?? '',
             'variables' => $theme['variables'],
             'exported_at' => current_time('c'),
-            'flavor_version' => FLAVOR_CHAT_IA_VERSION,
+            'flavor_version' => FLAVOR_PLATFORM_VERSION,
         ];
 
         wp_send_json_success([

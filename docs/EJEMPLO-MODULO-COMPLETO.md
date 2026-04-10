@@ -203,25 +203,25 @@ private function get_module_nav_items($module_id, $override = '') {
         'biblioteca' => [
             [
                 'slug' => 'catalogo',
-                'label' => __('Catálogo', 'flavor-chat-ia'),
+                'label' => __('Catálogo', 'flavor-platform'),
                 'url' => home_url('/biblioteca/'),
                 'icon' => '📚'
             ],
             [
                 'slug' => 'mis-libros',
-                'label' => __('Mis Libros', 'flavor-chat-ia'),
+                'label' => __('Mis Libros', 'flavor-platform'),
                 'url' => home_url('/biblioteca/mis-libros/'),
                 'icon' => '⭐'
             ],
             [
                 'slug' => 'compartir',
-                'label' => __('Compartir Libro', 'flavor-chat-ia'),
+                'label' => __('Compartir Libro', 'flavor-platform'),
                 'url' => home_url('/biblioteca/compartir/'),
                 'icon' => '➕'
             ],
             [
                 'slug' => 'solicitar',
-                'label' => __('Solicitar Libro', 'flavor-chat-ia'),
+                'label' => __('Solicitar Libro', 'flavor-platform'),
                 'url' => home_url('/biblioteca/solicitar/'),
                 'icon' => '🔔'
             ],
@@ -244,15 +244,15 @@ private function get_quick_actions_smart() {
     if ($this->is_module_active('biblioteca')) {
         $actions[] = [
             'icon' => '📚',
-            'title' => __('Compartir Libro', 'flavor-chat-ia'),
-            'description' => __('Añade un libro a la biblioteca', 'flavor-chat-ia'),
+            'title' => __('Compartir Libro', 'flavor-platform'),
+            'description' => __('Añade un libro a la biblioteca', 'flavor-platform'),
             'url' => home_url('/biblioteca/compartir/'),
         ];
 
         $actions[] = [
             'icon' => '🔔',
-            'title' => __('Solicitar Libro', 'flavor-chat-ia'),
-            'description' => __('Pide un libro que necesites', 'flavor-chat-ia'),
+            'title' => __('Solicitar Libro', 'flavor-platform'),
+            'description' => __('Pide un libro que necesites', 'flavor-platform'),
             'url' => home_url('/biblioteca/solicitar/'),
         ];
     }
@@ -288,17 +288,17 @@ public function add_stats($stats) {
     $stats[] = [
         'module' => 'biblioteca',
         'icon' => '📚',
-        'label' => __('Biblioteca', 'flavor-chat-ia'),
+        'label' => __('Biblioteca', 'flavor-platform'),
         'value' => $libros_compartidos,
         'secondary' => [
             [
                 'value' => $libros_prestados,
-                'label' => __('Prestados', 'flavor-chat-ia'),
+                'label' => __('Prestados', 'flavor-platform'),
             ],
         ],
         'link' => home_url('/biblioteca/mis-libros/'),
-        'link_text' => __('Ver mis libros', 'flavor-chat-ia'),
-        'badge' => __('Lectura', 'flavor-chat-ia'),
+        'link_text' => __('Ver mis libros', 'flavor-platform'),
+        'badge' => __('Lectura', 'flavor-platform'),
     ];
 
     return $stats;

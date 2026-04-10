@@ -296,15 +296,15 @@ Widget para dashboards admin y frontend que muestra:
 ### Endpoints Movil (class-avisos-municipales-api.php)
 
 ```
-GET  /wp-json/flavor-chat-ia/v1/avisos-municipales
+GET  /wp-json/flavor-platform/v1/avisos-municipales
      ?categoria={slug}
      Obtiene lista de avisos (requiere autenticacion)
      Respuesta: { success, avisos[], categorias[], mis_suscripciones[] }
 
-POST /wp-json/flavor-chat-ia/v1/avisos-municipales/{id}/leer
+POST /wp-json/flavor-platform/v1/avisos-municipales/{id}/leer
      Marca aviso como leido (requiere autenticacion)
 
-POST /wp-json/flavor-chat-ia/v1/avisos-municipales/suscripciones
+POST /wp-json/flavor-platform/v1/avisos-municipales/suscripciones
      Body: { categorias: [] }
      Actualiza suscripciones del usuario
 ```

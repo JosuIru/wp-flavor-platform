@@ -5,7 +5,7 @@
  * Muestra el proximo viaje programado del usuario actual,
  * ya sea como conductor o como pasajero.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules/Carpooling
  */
 
@@ -217,7 +217,7 @@ if ($proximo_viaje) {
             </a>
 
             <?php if ($es_conductor) : ?>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('carpooling', 'mis-viajes')); ?>" class="cp-btn cp-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('carpooling', 'mis-viajes')); ?>" class="cp-btn cp-btn-outline">
                     <span class="dashicons dashicons-list-view"></span>
                     <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>

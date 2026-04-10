@@ -2,7 +2,7 @@
 /**
  * Vista: Gestión de Cuotas (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -37,7 +37,7 @@ if (!empty($_POST['generar_cuotas']) && wp_verify_nonce($_POST['_wpnonce'], 'soc
     $socios_activos = $wpdb->get_results("SELECT id, cuota_mensual FROM $tabla_socios WHERE estado = 'activo'");
     $dia_cargo = 1;
 
-    $modulo_socios = Flavor_Chat_IA::get_instance()->get_module('socios');
+    $modulo_socios = Flavor_Platform::get_instance()->get_module('socios');
     if ($modulo_socios) {
         $dia_cargo = $modulo_socios->get_setting('dia_cargo', 1);
     }

@@ -3,7 +3,7 @@
  * Vista Dashboard - Módulo Compostaje
  * Panel principal con estadísticas de compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

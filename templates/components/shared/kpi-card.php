@@ -4,7 +4,7 @@
  *
  * Tarjeta de indicador clave de rendimiento.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $value      Valor principal (ej: "1,234", "85%")

@@ -4,7 +4,7 @@
  *
  * Comparación de estadísticas entre periodos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $current      Datos actuales: ['value' => 100, 'label' => 'Este mes']

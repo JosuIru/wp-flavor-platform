@@ -5,7 +5,7 @@
  * Detecta qué sistemas están activos (wp-calendario-experiencias, basabere-campamentos, Flavor Chat IA)
  * y devuelve información estructurada para las apps móviles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -70,7 +70,7 @@ class Flavor_Plugin_Detector {
      * @return bool
      */
     public function is_flavor_chat_active() {
-        return class_exists('Flavor_Chat_IA');
+        return class_exists('Flavor_Platform');
     }
 
     /**
@@ -114,14 +114,14 @@ class Flavor_Plugin_Detector {
      * @return array
      */
     private function get_flavor_chat_info() {
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.5.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.5.0';
 
         // Obtener perfil activo
         $profiles = Flavor_App_Profiles::get_instance();
         $active_profile = $profiles->obtener_perfil_activo();
 
         // Obtener módulos activos
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $active_modules = array_keys($loader->get_loaded_modules());
 
         return [
@@ -129,7 +129,8 @@ class Flavor_Plugin_Detector {
             'name' => 'Flavor Chat IA',
             'active' => true,
             'version' => $version,
-            'api_namespace' => 'flavor-chat-ia/v1',
+            'api_namespace' => FLAVOR_PLATFORM_REST_NAMESPACE,
+            'api_namespaces' => [FLAVOR_PLATFORM_REST_NAMESPACE, FLAVOR_CHAT_IA_REST_NAMESPACE],
             'profile' => $active_profile,
             'modules' => $active_modules,
             'features' => $this->get_flavor_features($active_modules),
@@ -278,12 +279,14 @@ class Flavor_Plugin_Detector {
      * @return array
      */
     private function get_flavor_endpoints($modules) {
-        $base = '/wp-json/flavor-chat-ia/v1';
+        $base = '/wp-json/' . FLAVOR_PLATFORM_REST_NAMESPACE;
+        $legacy_base = '/wp-json/' . FLAVOR_CHAT_IA_REST_NAMESPACE;
 
         $endpoints = [
             'discovery' => '/wp-json/app-discovery/v1/info',
             'modules' => '/wp-json/app-discovery/v1/modules',
             'theme' => '/wp-json/app-discovery/v1/theme',
+            'legacy_base' => $legacy_base,
         ];
 
         // Endpoints por módulo

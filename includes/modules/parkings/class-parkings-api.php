@@ -2,7 +2,7 @@
 /**
  * API REST para Parkings (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Parkings_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,14 +28,14 @@ class Flavor_Parkings_API {
 
     public function register_routes() {
         // GET /parkings
-        register_rest_route(self::NAMESPACE, '/parkings', [
+        flavor_register_rest_route(self::NAMESPACE, '/parkings', [
             'methods' => 'GET',
             'callback' => [$this, 'get_parkings'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /parkings/reservar
-        register_rest_route(self::NAMESPACE, '/parkings/reservar', [
+        flavor_register_rest_route(self::NAMESPACE, '/parkings/reservar', [
             'methods' => 'POST',
             'callback' => [$this, 'reservar_parking'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -58,7 +58,7 @@ class Flavor_Parkings_API {
         ]);
 
         // POST /parkings/reservas/{id}/extender
-        register_rest_route(self::NAMESPACE, '/parkings/reservas/(?P<id>\d+)/extender', [
+        flavor_register_rest_route(self::NAMESPACE, '/parkings/reservas/(?P<id>\d+)/extender', [
             'methods' => 'POST',
             'callback' => [$this, 'extender_reserva'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -71,7 +71,7 @@ class Flavor_Parkings_API {
         ]);
 
         // DELETE /parkings/reservas/{id}
-        register_rest_route(self::NAMESPACE, '/parkings/reservas/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/parkings/reservas/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_reserva'],
             'permission_callback' => [$this, 'check_authentication'],

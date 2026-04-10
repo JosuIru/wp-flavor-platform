@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Cursos
  */
 

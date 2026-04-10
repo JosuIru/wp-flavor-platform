@@ -112,7 +112,7 @@ $estados_labels = [
                             </span>
                         </div>
                         <div class="evento-card-footer">
-                            <a href="<?php echo esc_url(add_query_arg('evento_id', $inscripcion->evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="btn btn-outline btn-sm">
+                            <a href="<?php echo esc_url(add_query_arg('evento_id', $inscripcion->evento_id, Flavor_Platform_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="btn btn-outline btn-sm">
                                 <?php _e('Ver evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php if ($inscripcion->estado === 'confirmada' || $inscripcion->estado === 'pendiente'): ?>
@@ -129,7 +129,7 @@ $estados_labels = [
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <h3><?php _e('No tienes inscripciones próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php _e('Explora los eventos disponibles y apúntate.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="btn btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('eventos', '')); ?>" class="btn btn-primary">
                     <?php _e('Ver eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>

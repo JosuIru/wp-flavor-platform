@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Configuración del módulo Transparencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -2,7 +2,7 @@
 /**
  * Animation Manager - Sistema de Animaciones CSS
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -303,9 +303,9 @@ class Flavor_Animation_Manager {
 
         wp_enqueue_style(
             'flavor-animations',
-            FLAVOR_CHAT_IA_URL . "assets/css/core/animations{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/core/animations{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 

@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Chat Estados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Controlador Frontend para el módulo de Chat Estados
  */
-class Flavor_Chat_Estados_Frontend_Controller {
+class Flavor_Platform_Estados_Frontend_Controller {
 
     /**
      * Instancia única
@@ -55,7 +55,7 @@ class Flavor_Chat_Estados_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -144,4 +144,8 @@ class Flavor_Chat_Estados_Frontend_Controller {
         echo '<p>' . esc_html__('Contenido del tab de Chat Estados.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
+}
+
+if (!class_exists('Flavor_Chat_Estados_Frontend_Controller', false)) {
+    class_alias('Flavor_Platform_Estados_Frontend_Controller', 'Flavor_Chat_Estados_Frontend_Controller');
 }

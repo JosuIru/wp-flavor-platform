@@ -2,7 +2,7 @@
 /**
  * Vista de Perfil Público de Artista (Kulturaka)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Socios\Artistas
  *
  * Variables disponibles:

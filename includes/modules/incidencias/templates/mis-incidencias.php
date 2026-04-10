@@ -21,7 +21,7 @@ $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 $usuario_id = get_current_user_id();
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
     echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -84,14 +84,14 @@ $estados_colors = [
 <div class="mis-incidencias-wrapper">
     <div class="incidencias-header">
         <h2><?php esc_html_e('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
+        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
             <?php esc_html_e('Nueva incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <!-- Resumen -->
-    <?php $base_url = Flavor_Chat_Helpers::get_action_url('incidencias', ''); ?>
+    <?php $base_url = Flavor_Platform_Helpers::get_action_url('incidencias', ''); ?>
     <div class="incidencias-stats">
         <a href="<?php echo esc_url($base_url); ?>" class="stat-card" title="<?php esc_attr_e('Ver todas las incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="stat-value"><?php echo esc_html($stats['total']); ?></span>
@@ -141,7 +141,7 @@ $estados_colors = [
                         </div>
                     </div>
                     <div class="incidencia-actions">
-                        <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, Flavor_Chat_Helpers::get_action_url('incidencias', 'detalle'))); ?>" class="btn btn-sm btn-outline">
+                        <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, Flavor_Platform_Helpers::get_action_url('incidencias', 'detalle'))); ?>" class="btn btn-sm btn-outline">
                             <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
@@ -153,7 +153,7 @@ $estados_colors = [
             <span class="dashicons dashicons-flag"></span>
             <h3><?php esc_html_e('No has reportado incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php esc_html_e('Cuando reportes una incidencia, aparecerá aquí para que puedas seguir su estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
                 <?php esc_html_e('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

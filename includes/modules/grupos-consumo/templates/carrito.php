@@ -2,7 +2,7 @@
 /**
  * Template: Carrito / Lista de Compra de Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 
@@ -22,7 +22,7 @@ $total_estimado = $args['total'] ?? 0;
         <div class="gc-carrito-login-requerido">
             <span class="dashicons dashicons-lock"></span>
             <p><?php _e('Inicia sesión para ver tu lista de compra.', 'flavor-platform'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="gc-btn gc-btn-primary">
                 <?php _e('Iniciar sesión', 'flavor-platform'); ?>
             </a>
         </div>
@@ -31,7 +31,7 @@ $total_estimado = $args['total'] ?? 0;
             <span class="gc-carrito-icono-vacio">🛒</span>
             <h3><?php _e('Tu lista está vacía', 'flavor-platform'); ?></h3>
             <p><?php _e('Añade productos desde el catálogo para empezar tu pedido.', 'flavor-platform'); ?></p>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                 <?php _e('Ver productos', 'flavor-platform'); ?>
             </a>
         </div>
@@ -118,7 +118,7 @@ $total_estimado = $args['total'] ?? 0;
         </div>
 
         <div class="gc-carrito-acciones">
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
                 <?php _e('Seguir comprando', 'flavor-platform'); ?>
             </a>

@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Trabajo Digno
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -74,7 +74,10 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
 
         foreach ($ofertas_recientes as $oferta) {
             $tipo = get_post_meta($oferta->ID, '_td_tipo', true);
-            $tipos = Flavor_Chat_Trabajo_Digno_Module::TIPOS_OFERTA;
+            $trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+                : 'Flavor_Chat_Trabajo_Digno_Module';
+            $tipos = $trabajo_digno_module_class::TIPOS_OFERTA;
             $tipo_data = $tipos[$tipo] ?? ['nombre' => ''];
 
             $items[] = [

@@ -4,7 +4,7 @@
  * +13 puntos: Economía circular, huella de carbono, retos comunitarios,
  * red de reparadores y dashboard de impacto
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Reciclaje
  * @since 4.2.0
  */

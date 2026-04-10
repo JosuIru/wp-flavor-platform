@@ -4,9 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/widgets/flavor_state_widgets.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/services/webrtc_service.dart';
+import 'contact_picker_screen.dart';
 
 /// Estado de la llamada
 enum CallState {
@@ -49,6 +52,15 @@ class _CallScreenState extends ConsumerState<CallScreen>
   bool _isVideoEnabled = true;
   bool _isFrontCamera = true;
   bool _showControls = true;
+  bool _showChatOverlay = false;
+
+  // WebRTC
+  final WebRTCService _webrtcService = WebRTCService();
+  bool _webrtcInitialized = false;
+
+  // Mensajes del chat durante la llamada
+  final List<_CallChatMessage> _chatMessages = [];
+  final TextEditingController _chatController = TextEditingController();
 
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -73,17 +85,72 @@ class _CallScreenState extends ConsumerState<CallScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
+    // Inicializar WebRTC
+    _initializeWebRTC();
+
     // Iniciar llamada
     _initializeCall();
+  }
+
+  Future<void> _initializeWebRTC() async {
+    try {
+      await _webrtcService.initialize();
+
+      // Configurar callbacks
+      _webrtcService.onStateChanged = (state) {
+        if (mounted) {
+          setState(() {
+            switch (state) {
+              case WebRTCConnectionState.connected:
+                _callState = CallState.inCall;
+                break;
+              case WebRTCConnectionState.reconnecting:
+                _callState = CallState.reconnecting;
+                break;
+              case WebRTCConnectionState.failed:
+              case WebRTCConnectionState.disconnected:
+                _endCall();
+                break;
+              default:
+                break;
+            }
+          });
+        }
+      };
+
+      setState(() => _webrtcInitialized = true);
+    } catch (e) {
+      debugPrint('[CallScreen] Error al inicializar WebRTC: $e');
+    }
   }
 
   @override
   void dispose() {
     _durationTimer?.cancel();
     _pulseController.dispose();
+    _chatController.dispose();
+    _webrtcService.endCall();
     WakelockPlus.disable();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
+  }
+
+  void _toggleChatOverlay() {
+    setState(() => _showChatOverlay = !_showChatOverlay);
+  }
+
+  void _sendChatMessage() {
+    final text = _chatController.text.trim();
+    if (text.isEmpty) return;
+
+    setState(() {
+      _chatMessages.add(_CallChatMessage(
+        text: text,
+        isMe: true,
+        timestamp: DateTime.now(),
+      ));
+    });
+    _chatController.clear();
   }
 
   Future<void> _initializeCall() async {
@@ -139,22 +206,22 @@ class _CallScreenState extends ConsumerState<CallScreen>
 
   void _toggleMute() {
     setState(() => _isMuted = !_isMuted);
-    // TODO: Mutear audio real
+    _webrtcService.toggleMute(_isMuted);
   }
 
-  void _toggleSpeaker() {
+  void _toggleSpeaker() async {
     setState(() => _isSpeakerOn = !_isSpeakerOn);
-    // TODO: Cambiar salida de audio
+    await _webrtcService.toggleSpeaker(_isSpeakerOn);
   }
 
   void _toggleVideo() {
     setState(() => _isVideoEnabled = !_isVideoEnabled);
-    // TODO: Habilitar/deshabilitar cámara
+    _webrtcService.toggleVideo(_isVideoEnabled);
   }
 
-  void _switchCamera() {
+  void _switchCamera() async {
     setState(() => _isFrontCamera = !_isFrontCamera);
-    // TODO: Cambiar cámara
+    await _webrtcService.switchCamera();
   }
 
   @override
@@ -184,6 +251,137 @@ class _CallScreenState extends ConsumerState<CallScreen>
             // Controles de llamada entrante
             if (_callState == CallState.ringing && widget.isIncoming)
               _buildIncomingControls(),
+
+            // Chat overlay durante la llamada
+            if (_showChatOverlay && _callState == CallState.inCall)
+              _buildChatOverlay(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatOverlay() {
+    return Positioned(
+      left: 16,
+      right: 16,
+      bottom: 160,
+      child: Container(
+        height: 300,
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white24),
+        ),
+        child: Column(
+          children: [
+            // Encabezado
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.white24)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.chat, color: Colors.white70, size: 20),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Chat',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: _toggleChatOverlay,
+                    child: const Icon(Icons.close, color: Colors.white70, size: 20),
+                  ),
+                ],
+              ),
+            ),
+
+            // Lista de mensajes
+            Expanded(
+              child: _chatMessages.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Sin mensajes',
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: _chatMessages.length,
+                      itemBuilder: (context, index) {
+                        final message = _chatMessages[index];
+                        return Align(
+                          alignment: message.isMe
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: message.isMe
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.grey[800],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              message.text,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+
+            // Campo de entrada
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.white24)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _chatController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Escribe un mensaje...',
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white12,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                      ),
+                      onSubmitted: (_) => _sendChatMessage(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: _sendChatMessage,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.send, color: Colors.white, size: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -423,9 +621,8 @@ class _CallScreenState extends ConsumerState<CallScreen>
                       _buildControlButton(
                         icon: Icons.chat,
                         label: 'Chat',
-                        onTap: () {
-                          // TODO: Mostrar chat durante llamada
-                        },
+                        isActive: _showChatOverlay,
+                        onTap: _toggleChatOverlay,
                       ),
                     ],
                   ),
@@ -634,8 +831,10 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
   Timer? _durationTimer;
   bool _isMuted = false;
   bool _isVideoEnabled = true;
+  bool _isFrontCamera = true;
 
   final List<_ParticipantState> _participantStates = [];
+  final WebRTCService _webrtcService = WebRTCService();
 
   @override
   void initState() {
@@ -680,6 +879,54 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
     }
   }
 
+  Future<void> _addParticipant() async {
+    // Obtener IDs de participantes actuales
+    final currentParticipantIds = _participantStates.map((p) => p.member.id).toSet();
+
+    final selectedContacts = await Navigator.push<List<ChatUser>>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ContactPickerScreen(
+          title: 'Añadir participante',
+          multiSelect: true,
+          excludeUserIds: currentParticipantIds.toList(),
+        ),
+      ),
+    );
+
+    if (selectedContacts != null && selectedContacts.isNotEmpty) {
+      setState(() {
+        for (final contact in selectedContacts) {
+          _participantStates.add(_ParticipantState(
+            member: GroupMember(
+              id: contact.id,
+              name: contact.name,
+              avatarUrl: contact.avatarUrl,
+            ),
+            isConnected: false,
+          ));
+        }
+      });
+
+      // Simular conexión de nuevos participantes
+      for (int i = _participantStates.length - selectedContacts.length;
+          i < _participantStates.length;
+          i++) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) {
+          setState(() {
+            _participantStates[i].isConnected = true;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _switchCamera() async {
+    setState(() => _isFrontCamera = !_isFrontCamera);
+    await _webrtcService.switchCamera();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -699,9 +946,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add),
-            onPressed: () {
-              // TODO: Añadir participante
-            },
+            onPressed: _addParticipant,
           ),
         ],
       ),
@@ -855,9 +1100,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
             ),
             _buildControlButton(
               icon: Icons.flip_camera_ios,
-              onTap: () {
-                // TODO: Cambiar cámara
-              },
+              onTap: _switchCamera,
             ),
           ],
         ),
@@ -911,5 +1154,18 @@ class _ParticipantState {
     required this.member,
     this.isConnected = false,
     this.isSpeaking = false,
+  });
+}
+
+/// Mensaje de chat durante una llamada
+class _CallChatMessage {
+  final String text;
+  final bool isMe;
+  final DateTime timestamp;
+
+  _CallChatMessage({
+    required this.text,
+    required this.isMe,
+    required this.timestamp,
   });
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Eventos Calendario
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) { exit; }
 
@@ -28,14 +28,14 @@ if ($mes_siguiente > 12) { $mes_siguiente = 1; $anio_siguiente++; }
 $eventos_del_mes = [];
 $eventos_por_dia = [];
 $modulo_eventos = null;
-if (class_exists('Flavor_Chat_Module_Loader')) {
-    $loader = Flavor_Chat_Module_Loader::get_instance();
+if (class_exists('Flavor_Platform_Module_Loader')) {
+    $loader = Flavor_Platform_Module_Loader::get_instance();
     $modulo_eventos = $loader->get_module('eventos');
 }
 if ($modulo_eventos) {
     global $wpdb;
     $tabla = $wpdb->prefix . 'flavor_eventos';
-    if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
         $fecha_inicio_mes = sprintf('%04d-%02d-01 00:00:00', $anio_actual, $mes_actual);
         $fecha_fin_mes = sprintf('%04d-%02d-%02d 23:59:59', $anio_actual, $mes_actual, $dias_en_mes);
         $eventos_del_mes = $wpdb->get_results(

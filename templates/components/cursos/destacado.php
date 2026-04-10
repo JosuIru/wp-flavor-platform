@@ -4,7 +4,7 @@
  *
  * Tarjeta grande de curso destacado con descripción completa y CTA
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

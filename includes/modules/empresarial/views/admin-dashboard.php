@@ -2,7 +2,7 @@
 /**
  * Vista: Dashboard Empresarial (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $estadisticas Estadísticas del módulo
  */
 

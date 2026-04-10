@@ -2,7 +2,7 @@
 /**
  * Controller Frontend para Cursos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

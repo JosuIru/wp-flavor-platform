@@ -4,7 +4,7 @@
  *
  * Muestra todos los tramites disponibles agrupados por categoria
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -15,7 +15,7 @@ global $wpdb;
 $tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_tipos_tramite)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_tipos_tramite)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -69,7 +69,7 @@ foreach ($tramites as $tramite) {
 }
 
 // URL base para los tramites
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="tramites-catalogo-wrapper">

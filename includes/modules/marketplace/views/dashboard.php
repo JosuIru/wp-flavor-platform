@@ -2,7 +2,7 @@
 /**
  * Dashboard Profesional - Marketplace Comunitario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;
@@ -27,61 +27,193 @@ $filtro_fecha_desde = isset($_GET['filtro_fecha_desde']) ? sanitize_text_field($
 $filtro_fecha_hasta = isset($_GET['filtro_fecha_hasta']) ? sanitize_text_field($_GET['filtro_fecha_hasta']) : '';
 
 // ============================================
-// DATOS PRINCIPALES
+// DATOS CON CACHÉ (OPTIMIZADO)
 // ============================================
-$post_counts = wp_count_posts('marketplace_item');
-$anuncios_publicados = isset($post_counts->publish) ? (int) $post_counts->publish : 0;
-$anuncios_pendientes = isset($post_counts->pending) ? (int) $post_counts->pending : 0;
-$anuncios_borrador = isset($post_counts->draft) ? (int) $post_counts->draft : 0;
-$total_anuncios = $anuncios_publicados + $anuncios_pendientes + $anuncios_borrador;
+$stats = flavor_get_dashboard_stats('marketplace', function() use ($wpdb) {
+    $inicio_mes = gmdate('Y-m-01');
+    $mes_anterior = gmdate('Y-m-01', strtotime('-1 month'));
+    $ultimo_dia_mes_anterior = gmdate('Y-m-t 23:59:59', strtotime('-1 month'));
+    $hace_7_dias = gmdate('Y-m-d', strtotime('-7 days'));
 
-// Vistas totales (usando postmeta simulado)
-$vistas_totales = (int) $wpdb->get_var(
-    "SELECT COALESCE(SUM(CAST(meta_value AS UNSIGNED)), 0)
-     FROM {$wpdb->postmeta}
-     WHERE meta_key = '_marketplace_views'"
-);
+    // Query combinada para estadísticas de posts
+    $post_stats = $wpdb->get_row($wpdb->prepare(
+        "SELECT
+            COUNT(*) as total,
+            SUM(post_status = 'publish') as publicados,
+            SUM(post_status = 'pending') as pendientes,
+            SUM(post_status = 'draft') as borradores,
+            SUM(post_status = 'publish' AND post_date >= %s) as mes_actual,
+            SUM(post_status = 'publish' AND post_date BETWEEN %s AND %s) as mes_anterior
+         FROM {$wpdb->posts}
+         WHERE post_type = 'marketplace_item'
+         AND post_status IN ('publish', 'pending', 'draft')",
+        $inicio_mes,
+        $mes_anterior,
+        $ultimo_dia_mes_anterior
+    ), ARRAY_A);
 
-// Anuncios con precio (para análisis de mercado)
-$anuncios_con_precio = (int) $wpdb->get_var(
-    "SELECT COUNT(DISTINCT post_id)
-     FROM {$wpdb->postmeta}
-     WHERE meta_key = '_marketplace_precio'
-     AND meta_value > 0"
-);
+    // Query combinada para estadísticas de postmeta
+    $meta_stats = $wpdb->get_row(
+        "SELECT
+            COALESCE(SUM(CASE WHEN meta_key = '_marketplace_views' THEN CAST(meta_value AS UNSIGNED) ELSE 0 END), 0) as vistas_totales,
+            COUNT(DISTINCT CASE WHEN meta_key = '_marketplace_precio' AND meta_value > 0 THEN post_id END) as con_precio,
+            COALESCE(AVG(CASE WHEN meta_key = '_marketplace_precio' AND meta_value > 0 THEN CAST(meta_value AS DECIMAL(10,2)) END), 0) as precio_promedio,
+            COUNT(DISTINCT CASE WHEN meta_key = '_marketplace_contacts' AND CAST(meta_value AS UNSIGNED) > 0 THEN post_id END) as con_contactos
+         FROM {$wpdb->postmeta}
+         WHERE meta_key IN ('_marketplace_views', '_marketplace_precio', '_marketplace_contacts')",
+        ARRAY_A
+    );
 
-// Precio promedio de ventas
-$precio_promedio = (float) $wpdb->get_var(
-    "SELECT COALESCE(AVG(CAST(meta_value AS DECIMAL(10,2))), 0)
-     FROM {$wpdb->postmeta}
-     WHERE meta_key = '_marketplace_precio'
-     AND meta_value > 0"
-);
+    // Vistas del mes (con JOIN)
+    $vistas_mes_stats = $wpdb->get_row($wpdb->prepare(
+        "SELECT
+            SUM(pm.meta_value >= %s) as vistas_mes,
+            SUM(pm.meta_value BETWEEN %s AND %s) as vistas_mes_anterior
+         FROM {$wpdb->postmeta} pm
+         INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+         WHERE pm.meta_key = '_marketplace_last_view'",
+        $inicio_mes,
+        $mes_anterior,
+        $ultimo_dia_mes_anterior
+    ), ARRAY_A);
 
-// ============================================
-// ANUNCIOS DEL MES Y TENDENCIA
-// ============================================
-$inicio_mes = gmdate('Y-m-01');
-$anuncios_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-     AND post_status = 'publish'
-     AND post_date >= %s",
-    $inicio_mes
-));
+    // Evolución mensual (12 meses) - Una sola query con GROUP BY
+    $evolucion_raw = $wpdb->get_results(
+        "SELECT DATE_FORMAT(post_date, '%Y-%m') as mes, COUNT(*) as total
+         FROM {$wpdb->posts}
+         WHERE post_type = 'marketplace_item'
+         AND post_status = 'publish'
+         AND post_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+         GROUP BY DATE_FORMAT(post_date, '%Y-%m')
+         ORDER BY mes ASC",
+        ARRAY_A
+    );
+    $evolucion_map = [];
+    foreach ($evolucion_raw as $row) {
+        $evolucion_map[$row['mes']] = (int) $row['total'];
+    }
+    $labels_meses = [];
+    $data_anuncios_mes = [];
+    for ($i = 11; $i >= 0; $i--) {
+        $mes_key = gmdate('Y-m', strtotime("-{$i} months"));
+        $labels_meses[] = date_i18n('M Y', strtotime($mes_key . '-01'));
+        $data_anuncios_mes[] = $evolucion_map[$mes_key] ?? 0;
+    }
 
-// Mes anterior
-$mes_anterior = gmdate('Y-m-01', strtotime('-1 month'));
-$ultimo_dia_mes_anterior = gmdate('Y-m-t 23:59:59', strtotime('-1 month'));
-$anuncios_mes_anterior = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-     AND post_status = 'publish'
-     AND post_date BETWEEN %s AND %s",
-    $mes_anterior,
-    $ultimo_dia_mes_anterior
-));
+    // Actividad 7 días - Una sola query con GROUP BY
+    $actividad_raw = $wpdb->get_results($wpdb->prepare(
+        "SELECT DATE(post_date) as dia, COUNT(*) as total
+         FROM {$wpdb->posts}
+         WHERE post_type = 'marketplace_item'
+         AND post_status = 'publish'
+         AND post_date >= %s
+         GROUP BY DATE(post_date)",
+        $hace_7_dias
+    ), ARRAY_A);
+    $actividad_map = [];
+    foreach ($actividad_raw as $row) {
+        $actividad_map[$row['dia']] = (int) $row['total'];
+    }
+    $actividad_7_dias = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $dia = gmdate('Y-m-d', strtotime("-{$i} days"));
+        $actividad_7_dias[] = $actividad_map[$dia] ?? 0;
+    }
 
+    // Top 10 productos más vistos
+    $top_productos = $wpdb->get_results(
+        "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas
+         FROM {$wpdb->posts} p
+         LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_marketplace_views'
+         WHERE p.post_type = 'marketplace_item'
+         AND p.post_status = 'publish'
+         ORDER BY vistas DESC
+         LIMIT 10",
+        ARRAY_A
+    );
+
+    // Top 5 vendedores
+    $top_vendedores = $wpdb->get_results(
+        "SELECT p.post_author, u.display_name, COUNT(*) as total_anuncios,
+                COALESCE(AVG(CAST(pm_rating.meta_value AS DECIMAL(3,2))), 0) as rating_promedio
+         FROM {$wpdb->posts} p
+         INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+         LEFT JOIN {$wpdb->postmeta} pm_rating ON p.ID = pm_rating.post_id AND pm_rating.meta_key = '_marketplace_seller_rating'
+         WHERE p.post_type = 'marketplace_item'
+         AND p.post_status = 'publish'
+         GROUP BY p.post_author
+         ORDER BY total_anuncios DESC, rating_promedio DESC
+         LIMIT 5",
+        ARRAY_A
+    );
+
+    // Trending 7 días
+    $trending = $wpdb->get_results($wpdb->prepare(
+        "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas_recientes
+         FROM {$wpdb->posts} p
+         INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+         WHERE p.post_type = 'marketplace_item'
+         AND p.post_status = 'publish'
+         AND pm.meta_key = '_marketplace_last_view'
+         AND pm.meta_value >= %s
+         ORDER BY vistas_recientes DESC
+         LIMIT 5",
+        $hace_7_dias
+    ), ARRAY_A);
+
+    // Precios por categoría - Una sola query
+    $precios_cat_raw = $wpdb->get_results(
+        "SELECT t.name as categoria, t.slug,
+                COALESCE(AVG(CAST(pm.meta_value AS DECIMAL(10,2))), 0) as precio_promedio,
+                COUNT(DISTINCT pm.post_id) as total
+         FROM {$wpdb->postmeta} pm
+         INNER JOIN {$wpdb->term_relationships} tr ON pm.post_id = tr.object_id
+         INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+         INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
+         WHERE pm.meta_key = '_marketplace_precio'
+         AND pm.meta_value > 0
+         AND tt.taxonomy = 'marketplace_categoria'
+         GROUP BY t.term_id
+         HAVING precio_promedio > 0
+         ORDER BY precio_promedio DESC",
+        ARRAY_A
+    );
+
+    return [
+        'post_stats' => $post_stats,
+        'meta_stats' => $meta_stats,
+        'vistas_mes_stats' => $vistas_mes_stats,
+        'labels_meses' => $labels_meses,
+        'data_anuncios_mes' => $data_anuncios_mes,
+        'actividad_7_dias' => $actividad_7_dias,
+        'top_productos' => $top_productos,
+        'top_vendedores' => $top_vendedores,
+        'trending' => $trending,
+        'precios_por_categoria' => $precios_cat_raw,
+    ];
+}, 300);
+
+// Extraer datos del caché
+$post_stats = $stats['post_stats'] ?? [];
+$meta_stats = $stats['meta_stats'] ?? [];
+$vistas_mes_stats = $stats['vistas_mes_stats'] ?? [];
+
+$total_anuncios = (int) ($post_stats['total'] ?? 0);
+$anuncios_publicados = (int) ($post_stats['publicados'] ?? 0);
+$anuncios_pendientes = (int) ($post_stats['pendientes'] ?? 0);
+$anuncios_borrador = (int) ($post_stats['borradores'] ?? 0);
+$anuncios_mes = (int) ($post_stats['mes_actual'] ?? 0);
+$anuncios_mes_anterior = (int) ($post_stats['mes_anterior'] ?? 0);
+
+$vistas_totales = (int) ($meta_stats['vistas_totales'] ?? 0);
+$anuncios_con_precio = (int) ($meta_stats['con_precio'] ?? 0);
+$precio_promedio = (float) ($meta_stats['precio_promedio'] ?? 0);
+$anuncios_con_contactos = (int) ($meta_stats['con_contactos'] ?? 0);
+
+$vistas_mes = (int) ($vistas_mes_stats['vistas_mes'] ?? 0);
+$vistas_mes_anterior = (int) ($vistas_mes_stats['vistas_mes_anterior'] ?? 0);
+
+// Calcular tendencias
 $trend_anuncios = null;
 $trend_value_anuncios = '';
 if ($anuncios_mes_anterior > 0) {
@@ -89,26 +221,6 @@ if ($anuncios_mes_anterior > 0) {
     $trend_anuncios = $diff >= 0 ? 'up' : 'down';
     $trend_value_anuncios = ($diff >= 0 ? '+' : '') . round($diff, 1) . '%';
 }
-
-// Vistas del mes
-$vistas_mes = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*)
-     FROM {$wpdb->postmeta} pm
-     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
-     WHERE pm.meta_key = '_marketplace_last_view'
-     AND pm.meta_value >= %s",
-    $inicio_mes
-));
-
-$vistas_mes_anterior = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*)
-     FROM {$wpdb->postmeta} pm
-     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
-     WHERE pm.meta_key = '_marketplace_last_view'
-     AND pm.meta_value BETWEEN %s AND %s",
-    $mes_anterior,
-    $ultimo_dia_mes_anterior
-));
 
 $trend_vistas = null;
 $trend_value_vistas = '';
@@ -118,17 +230,21 @@ if ($vistas_mes_anterior > 0) {
     $trend_value_vistas = ($diff_vistas >= 0 ? '+' : '') . round($diff_vistas, 1) . '%';
 }
 
-// Tasa de conversión (anuncios con contactos vs total)
-$anuncios_con_contactos = (int) $wpdb->get_var(
-    "SELECT COUNT(DISTINCT post_id)
-     FROM {$wpdb->postmeta}
-     WHERE meta_key = '_marketplace_contacts'
-     AND CAST(meta_value AS UNSIGNED) > 0"
-);
 $tasa_conversion = $anuncios_publicados > 0 ? ($anuncios_con_contactos / $anuncios_publicados) * 100 : 0;
 
+// Datos de gráficos desde caché
+$labels_meses = $stats['labels_meses'] ?? [];
+$data_anuncios_mes = $stats['data_anuncios_mes'] ?? [];
+$actividad_7_dias = $stats['actividad_7_dias'] ?? [];
+
+// Rankings desde caché (convertir a objetos para compatibilidad)
+$top_productos_vistos = array_map(fn($p) => (object) $p, $stats['top_productos'] ?? []);
+$top_vendedores = array_map(fn($v) => (object) $v, $stats['top_vendedores'] ?? []);
+$trending_7_dias = array_map(fn($t) => (object) $t, $stats['trending'] ?? []);
+$precios_por_categoria = $stats['precios_por_categoria'] ?? [];
+
 // ============================================
-// CATEGORÍAS
+// TAXONOMÍAS (WordPress tiene caché interno)
 // ============================================
 $categorias = get_terms([
     'taxonomy' => 'marketplace_categoria',
@@ -147,9 +263,6 @@ if (!is_wp_error($categorias)) {
 usort($categorias_stats, fn($a, $b) => $b['total'] <=> $a['total']);
 $categorias_activas = count(array_filter($categorias_stats, fn($cat) => $cat['total'] > 0));
 
-// ============================================
-// TIPOS
-// ============================================
 $tipos = get_terms([
     'taxonomy' => 'marketplace_tipo',
     'hide_empty' => false,
@@ -167,101 +280,7 @@ if (!is_wp_error($tipos)) {
 usort($tipos_stats, fn($a, $b) => $b['total'] <=> $a['total']);
 
 // ============================================
-// EVOLUCIÓN MENSUAL (12 MESES)
-// ============================================
-$labels_meses = [];
-$data_anuncios_mes = [];
-for ($i = 11; $i >= 0; $i--) {
-    $mes = gmdate('Y-m-01', strtotime("-{$i} months"));
-    $mes_fin = gmdate('Y-m-t 23:59:59', strtotime("-{$i} months"));
-    $labels_meses[] = date_i18n('M Y', strtotime($mes));
-
-    $count = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$wpdb->posts}
-         WHERE post_type = 'marketplace_item'
-         AND post_status = 'publish'
-         AND post_date BETWEEN %s AND %s",
-        $mes,
-        $mes_fin
-    ));
-    $data_anuncios_mes[] = $count;
-}
-
-// ============================================
-// TOP 10 PRODUCTOS MÁS VISTOS
-// ============================================
-$top_productos_vistos = $wpdb->get_results(
-    "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas
-     FROM {$wpdb->posts} p
-     LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_marketplace_views'
-     WHERE p.post_type = 'marketplace_item'
-     AND p.post_status = 'publish'
-     ORDER BY vistas DESC
-     LIMIT 10"
-);
-
-// ============================================
-// TOP 5 VENDEDORES
-// ============================================
-$top_vendedores = $wpdb->get_results(
-    "SELECT p.post_author, u.display_name, COUNT(*) as total_anuncios,
-            COALESCE(AVG(CAST(pm_rating.meta_value AS DECIMAL(3,2))), 0) as rating_promedio
-     FROM {$wpdb->posts} p
-     INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
-     LEFT JOIN {$wpdb->postmeta} pm_rating ON p.ID = pm_rating.post_id AND pm_rating.meta_key = '_marketplace_seller_rating'
-     WHERE p.post_type = 'marketplace_item'
-     AND p.post_status = 'publish'
-     GROUP BY p.post_author
-     ORDER BY total_anuncios DESC, rating_promedio DESC
-     LIMIT 5"
-);
-
-// ============================================
-// ANÁLISIS DE PRECIOS POR CATEGORÍA
-// ============================================
-$precios_por_categoria = [];
-foreach ($categorias_stats as $cat) {
-    if ($cat['total'] > 0) {
-        $precio_cat = (float) $wpdb->get_var($wpdb->prepare(
-            "SELECT COALESCE(AVG(CAST(pm.meta_value AS DECIMAL(10,2))), 0)
-             FROM {$wpdb->postmeta} pm
-             INNER JOIN {$wpdb->term_relationships} tr ON pm.post_id = tr.object_id
-             INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-             INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
-             WHERE pm.meta_key = '_marketplace_precio'
-             AND t.slug = %s
-             AND pm.meta_value > 0",
-            $cat['slug']
-        ));
-        if ($precio_cat > 0) {
-            $precios_por_categoria[] = [
-                'categoria' => $cat['nombre'],
-                'precio_promedio' => $precio_cat,
-                'total' => $cat['total'],
-            ];
-        }
-    }
-}
-usort($precios_por_categoria, fn($a, $b) => $b['precio_promedio'] <=> $a['precio_promedio']);
-
-// ============================================
-// PRODUCTOS TRENDING (MÁS VISTOS ÚLTIMOS 7 DÍAS)
-// ============================================
-$trending_7_dias = $wpdb->get_results($wpdb->prepare(
-    "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas_recientes
-     FROM {$wpdb->posts} p
-     INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-     WHERE p.post_type = 'marketplace_item'
-     AND p.post_status = 'publish'
-     AND pm.meta_key = '_marketplace_last_view'
-     AND pm.meta_value >= %s
-     ORDER BY vistas_recientes DESC
-     LIMIT 5",
-    gmdate('Y-m-d', strtotime('-7 days'))
-));
-
-// ============================================
-// ANUNCIOS RECIENTES
+// DATOS EN TIEMPO REAL (SIN CACHÉ)
 // ============================================
 $anuncios_recientes = get_posts([
     'post_type' => 'marketplace_item',
@@ -270,20 +289,6 @@ $anuncios_recientes = get_posts([
     'orderby' => 'date',
     'order' => 'DESC',
 ]);
-
-// Actividad últimos 7 días
-$actividad_7_dias = [];
-for ($i = 6; $i >= 0; $i--) {
-    $dia = gmdate('Y-m-d', strtotime("-{$i} days"));
-    $count = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$wpdb->posts}
-         WHERE post_type = 'marketplace_item'
-         AND post_status = 'publish'
-         AND DATE(post_date) = %s",
-        $dia
-    ));
-    $actividad_7_dias[] = $count;
-}
 
 ?>
 

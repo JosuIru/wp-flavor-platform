@@ -4,7 +4,7 @@
  *
  * Gestión de pedidos colectivos, productores locales y repartos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  * - Este modulo es CONSUMER de contenido
  * - Productos y Productores pueden tener recetas, multimedia, videos vinculados
  */
-class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -111,9 +111,9 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/grupos-consumo/assets/';
-        $assets_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/assets/';
-        $version = FLAVOR_CHAT_IA_VERSION;
+        $assets_url = FLAVOR_PLATFORM_URL . 'includes/modules/grupos-consumo/assets/';
+        $assets_path = FLAVOR_PLATFORM_PATH . 'includes/modules/grupos-consumo/assets/';
+        $version = FLAVOR_PLATFORM_VERSION;
         $gc_frontend_version = file_exists($assets_path . 'gc-frontend.js')
             ? (string) filemtime($assets_path . 'gc-frontend.js')
             : $version;
@@ -1284,7 +1284,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
             $tabla_suscripciones = $wpdb->prefix . 'flavor_gc_suscripciones';
 
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
                 $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
                     $user_id
@@ -1660,7 +1660,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'pendiente'");
@@ -1679,7 +1679,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $stats = [];
 
         // Pedidos pendientes
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos WHERE estado = 'pendiente'");
             $stats[] = [
                 'icon' => 'dashicons-clipboard',
@@ -1691,7 +1691,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         }
 
         // Consumidores activos
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             $activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_consumidores WHERE estado = 'activo'");
             $stats[] = [
                 'icon' => 'dashicons-groups',
@@ -1730,8 +1730,8 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $tabla_lista_compra = $wpdb->prefix . 'flavor_gc_lista_compra';
 
         // Si ambas tablas existen, ya esta instalado
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos) &&
-            Flavor_Chat_Helpers::tabla_existe($tabla_lista_compra)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos) &&
+            Flavor_Platform_Helpers::tabla_existe($tabla_lista_compra)) {
             return;
         }
 
@@ -3785,7 +3785,7 @@ KNOWLEDGE;
      */
     protected function render_catalogo_completo($atributos) {
         // Intentar cargar el template del catálogo si existe
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/templates/catalogo.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/grupos-consumo/templates/catalogo.php';
 
         if (file_exists($template_path)) {
             // Preparar datos para el template
@@ -4110,7 +4110,7 @@ KNOWLEDGE;
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             // Crear la tabla si no existe
             $this->crear_tabla_consumidores();
         }
@@ -5269,7 +5269,7 @@ KNOWLEDGE;
             if (strpos($gc_frontend_data, 'var gcFrontend =') === false) {
                 wp_localize_script('gc-frontend', 'gcFrontend', [
                     'ajaxUrl' => admin_url('admin-ajax.php'),
-                    'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
+                    'restUrl' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'),
                     'nonce' => wp_create_nonce('gc_nonce'),
                     'restNonce' => wp_create_nonce('wp_rest'),
                     'isLoggedIn' => is_user_logged_in(),
@@ -5474,7 +5474,7 @@ KNOWLEDGE;
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             return 0;
         }
 
@@ -5583,7 +5583,7 @@ KNOWLEDGE;
         }
 
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             return [];
         }
 
@@ -6297,7 +6297,7 @@ KNOWLEDGE;
 
             function buscarProductoresCercanos(latitud, longitud) {
                 $.ajax({
-                    url: '<?php echo esc_url(rest_url('flavor-chat-ia/v1/gc/productores-cercanos')); ?>',
+                    url: '<?php echo esc_url(rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/productores-cercanos')); ?>',
                     method: 'GET',
                     data: {
                         lat: latitud,
@@ -6888,4 +6888,8 @@ KNOWLEDGE;
             ],
         ];
     }
+}
+
+if (!class_exists('Flavor_Chat_Grupos_Consumo_Module', false)) {
+    class_alias('Flavor_Platform_Grupos_Consumo_Module', 'Flavor_Chat_Grupos_Consumo_Module');
 }

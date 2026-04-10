@@ -2,7 +2,7 @@
 /**
  * Vista: Listado de colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $colectivos  Lista de colectivos
  * @var array $categorias  Etiquetas de tipo
  * @var array $atributos   Atributos del shortcode
@@ -39,7 +39,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
             <h3><?php esc_html_e('No hay colectivos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php esc_html_e('Sé el primero en crear un colectivo o asociación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -64,7 +64,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
 
                     <div class="flavor-col-card-body">
                         <h3 class="flavor-col-card-titulo">
-                            <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Platform_Helpers::get_action_url('colectivos', ''))); ?>">
                                 <?php echo esc_html($colectivo['nombre']); ?>
                             </a>
                         </h3>
@@ -88,7 +88,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
                     </div>
 
                     <div class="flavor-col-card-footer">
-                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Platform_Helpers::get_action_url('colectivos', ''))); ?>"
                            class="flavor-col-btn flavor-col-btn-secondary">
                             <?php esc_html_e('Ver colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>

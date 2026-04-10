@@ -5,7 +5,7 @@
  * Expandable/collapsible FAQ-style section using native
  * <details>/<summary> elements — no JavaScript required.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo            Section heading text.
  * @var array  $items             Repeater field — each item contains:

@@ -2,7 +2,7 @@
 /**
  * Template: Listado de Círculos de Cuidados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -22,7 +22,10 @@ if (!empty($atts['tipo'])) {
 }
 
 $circulos = new WP_Query($args);
-$tipos = Flavor_Chat_Circulos_Cuidados_Module::TIPOS_CIRCULO;
+$circulos_cuidados_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Circulos_Cuidados_Module')
+    : 'Flavor_Chat_Circulos_Cuidados_Module';
+$tipos = $circulos_cuidados_module_class::TIPOS_CIRCULO;
 ?>
 
 <div class="cc-listado">

@@ -5,7 +5,7 @@
  * Analiza requisitos del usuario y genera estructura de sitio
  * con páginas VBP, módulos y configuración de dashboard.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 3.2.0
  */
 
@@ -803,7 +803,7 @@ PROMPT;
         ];
 
         $lineas = [];
-        $addons_dir = FLAVOR_CHAT_IA_PATH . 'addons/';
+        $addons_dir = FLAVOR_PLATFORM_PATH . 'addons/';
 
         foreach ( $addons as $slug => $desc ) {
             $instalado = is_dir( $addons_dir . $slug ) ? '(instalado)' : '(disponible)';

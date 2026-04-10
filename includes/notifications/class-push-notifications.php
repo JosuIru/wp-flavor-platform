@@ -5,7 +5,7 @@
  * Proporciona una interfaz singleton para enviar notificaciones push
  * a través del canal FCM (Firebase Cloud Messaging).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Notifications
  */
 

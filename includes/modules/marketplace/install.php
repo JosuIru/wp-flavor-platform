@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo de Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Marketplace
  */
 

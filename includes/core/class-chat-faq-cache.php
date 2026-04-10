@@ -2,14 +2,14 @@
 /**
  * Caché de respuestas FAQ para optimizar tokens
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_FAQ_Cache {
+class Flavor_Platform_FAQ_Cache {
 
     /**
      * Instancia singleton
@@ -29,7 +29,7 @@ class Flavor_Chat_FAQ_Cache {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_FAQ_Cache
+     * @return Flavor_Platform_FAQ_Cache
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -166,4 +166,8 @@ class Flavor_Chat_FAQ_Cache {
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_" . self::CACHE_PREFIX . "%'"
         );
     }
+}
+
+if (!class_exists('Flavor_Chat_FAQ_Cache', false)) {
+    class_alias('Flavor_Platform_FAQ_Cache', 'Flavor_Chat_FAQ_Cache');
 }

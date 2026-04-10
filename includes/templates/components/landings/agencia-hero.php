@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Agencia
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color_primario = $color_primario ?? '#ec4899';

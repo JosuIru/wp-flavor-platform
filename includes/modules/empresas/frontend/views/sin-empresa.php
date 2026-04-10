@@ -2,7 +2,7 @@
 /**
  * Vista Sin Empresa - Frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

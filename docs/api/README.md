@@ -35,7 +35,7 @@ https://tu-sitio.com/wp-json/
 |-----------|-------------|-----------|
 | `flavor-site-builder/v1` | Orquestador para crear sitios | 17 |
 | `flavor-vbp/v1` | VBP, Site Config, Modules, Media, SEO, App | 78 |
-| `flavor-chat-ia/v1` | Grupos de consumo y funcionalidades principales | 20+ |
+| `flavor-platform/v1` | Grupos de consumo y funcionalidades principales | 20+ |
 | `flavor-network/v1` | Red de comunidades | 15+ |
 | `flavor/v1` | PWA, temas, dashboard cliente | 10+ |
 | `chat-ia-mobile/v1` | API móvil Flutter | 10+ |
@@ -47,7 +47,7 @@ https://tu-sitio.com/wp-json/
 Para aplicaciones moviles y clientes externos, usa autenticacion JWT:
 
 ```bash
-curl -X GET "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/mis-pedidos" \
+curl -X GET "https://tu-sitio.com/wp-json/flavor-platform/v1/mis-pedidos" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -56,7 +56,7 @@ curl -X GET "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/mis-pedidos" \
 Para peticiones desde el frontend de WordPress:
 
 ```javascript
-fetch('/wp-json/flavor-chat-ia/v1/gc/perfil', {
+fetch('/wp-json/flavor-platform/v1/gc/perfil', {
     headers: {
         'X-WP-Nonce': wpApiSettings.nonce
     }
@@ -121,7 +121,7 @@ X-RateLimit-Reset: 1699999999
 ### Listar Pedidos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/pedidos
+GET /wp-json/flavor-platform/v1/pedidos
 ```
 
 **Parametros:**
@@ -135,7 +135,7 @@ GET /wp-json/flavor-chat-ia/v1/pedidos
 **Ejemplo:**
 
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/pedidos?estado=abierto&per_page=20"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/pedidos?estado=abierto&per_page=20"
 ```
 
 **Respuesta:**
@@ -170,19 +170,19 @@ curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/pedidos?estado=abierto&per_
 ### Obtener Detalle de Pedido
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/pedidos/{id}
+GET /wp-json/flavor-platform/v1/pedidos/{id}
 ```
 
 **Ejemplo:**
 
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/pedidos/123"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/pedidos/123"
 ```
 
 ### Unirse a un Pedido
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/pedidos/{id}/unirse
+POST /wp-json/flavor-platform/v1/pedidos/{id}/unirse
 ```
 
 **Body:**
@@ -196,7 +196,7 @@ POST /wp-json/flavor-chat-ia/v1/pedidos/{id}/unirse
 **Ejemplo:**
 
 ```bash
-curl -X POST "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/pedidos/123/unirse" \
+curl -X POST "https://tu-sitio.com/wp-json/flavor-platform/v1/pedidos/123/unirse" \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"cantidad": 2.5}'
@@ -217,7 +217,7 @@ curl -X POST "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/pedidos/123/unirse"
 ### Mis Pedidos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/mis-pedidos
+GET /wp-json/flavor-platform/v1/mis-pedidos
 ```
 
 **Requiere autenticacion**
@@ -225,8 +225,8 @@ GET /wp-json/flavor-chat-ia/v1/mis-pedidos
 ### Marcar como Pagado/Recogido
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/pedidos/{id}/marcar-pagado
-POST /wp-json/flavor-chat-ia/v1/pedidos/{id}/marcar-recogido
+POST /wp-json/flavor-platform/v1/pedidos/{id}/marcar-pagado
+POST /wp-json/flavor-platform/v1/pedidos/{id}/marcar-recogido
 ```
 
 ---
@@ -236,7 +236,7 @@ POST /wp-json/flavor-chat-ia/v1/pedidos/{id}/marcar-recogido
 ### Obtener Perfil
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/perfil
+GET /wp-json/flavor-platform/v1/gc/perfil
 ```
 
 **Respuesta:**
@@ -266,7 +266,7 @@ GET /wp-json/flavor-chat-ia/v1/gc/perfil
 ### Actualizar Preferencias
 
 ```bash
-PUT /wp-json/flavor-chat-ia/v1/gc/preferencias
+PUT /wp-json/flavor-platform/v1/gc/preferencias
 ```
 
 **Body:**
@@ -285,13 +285,13 @@ PUT /wp-json/flavor-chat-ia/v1/gc/preferencias
 ### Obtener Lista
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/lista-compra
+GET /wp-json/flavor-platform/v1/gc/lista-compra
 ```
 
 ### Agregar Producto
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/gc/lista-compra/agregar
+POST /wp-json/flavor-platform/v1/gc/lista-compra/agregar
 ```
 
 **Body:**
@@ -306,7 +306,7 @@ POST /wp-json/flavor-chat-ia/v1/gc/lista-compra/agregar
 ### Eliminar de Lista
 
 ```bash
-DELETE /wp-json/flavor-chat-ia/v1/gc/lista-compra/{id}
+DELETE /wp-json/flavor-platform/v1/gc/lista-compra/{id}
 ```
 
 ---
@@ -316,13 +316,13 @@ DELETE /wp-json/flavor-chat-ia/v1/gc/lista-compra/{id}
 ### Listar Suscripciones
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/suscripciones
+GET /wp-json/flavor-platform/v1/gc/suscripciones
 ```
 
 ### Crear Suscripcion
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/gc/suscripciones
+POST /wp-json/flavor-platform/v1/gc/suscripciones
 ```
 
 **Body:**
@@ -337,13 +337,13 @@ POST /wp-json/flavor-chat-ia/v1/gc/suscripciones
 ### Pausar Suscripcion
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/gc/suscripciones/{id}/pausar
+POST /wp-json/flavor-platform/v1/gc/suscripciones/{id}/pausar
 ```
 
 ### Cancelar Suscripcion
 
 ```bash
-POST /wp-json/flavor-chat-ia/v1/gc/suscripciones/{id}/cancelar
+POST /wp-json/flavor-platform/v1/gc/suscripciones/{id}/cancelar
 ```
 
 **Body (opcional):**
@@ -361,7 +361,7 @@ POST /wp-json/flavor-chat-ia/v1/gc/suscripciones/{id}/cancelar
 ### Listar Productos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/productos
+GET /wp-json/flavor-platform/v1/gc/productos
 ```
 
 **Parametros:**
@@ -377,13 +377,13 @@ GET /wp-json/flavor-chat-ia/v1/gc/productos
 **Ejemplo:**
 
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/gc/productos?categoria=verduras&busqueda=tomate"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/gc/productos?categoria=verduras&busqueda=tomate"
 ```
 
 ### Listar Productores
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/productores
+GET /wp-json/flavor-platform/v1/gc/productores
 ```
 
 **Parametros:**
@@ -396,7 +396,7 @@ GET /wp-json/flavor-chat-ia/v1/gc/productores
 ### Productores Cercanos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/productores-cercanos
+GET /wp-json/flavor-platform/v1/gc/productores-cercanos
 ```
 
 **Parametros (requeridos):**
@@ -410,25 +410,25 @@ GET /wp-json/flavor-chat-ia/v1/gc/productores-cercanos
 **Ejemplo:**
 
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/gc/productores-cercanos?lat=40.4168&lng=-3.7038&limite=10"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/gc/productores-cercanos?lat=40.4168&lng=-3.7038&limite=10"
 ```
 
 ### Tipos de Cestas
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/cestas-tipo
+GET /wp-json/flavor-platform/v1/gc/cestas-tipo
 ```
 
 ### Calendario de Ciclos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/ciclos/calendario?meses=3
+GET /wp-json/flavor-platform/v1/gc/ciclos/calendario?meses=3
 ```
 
 ### Historial de Pedidos
 
 ```bash
-GET /wp-json/flavor-chat-ia/v1/gc/pedidos/historial?limite=20
+GET /wp-json/flavor-platform/v1/gc/pedidos/historial?limite=20
 ```
 
 ---

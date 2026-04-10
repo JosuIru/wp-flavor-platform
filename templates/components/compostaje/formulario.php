@@ -2,7 +2,7 @@
 /**
  * Template: Formulario de aportación de residuos orgánicos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  *
  * Variables esperadas en $args:

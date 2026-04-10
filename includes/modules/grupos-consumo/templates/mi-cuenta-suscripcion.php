@@ -2,7 +2,7 @@
 /**
  * Template: Tab Mi Cesta/Suscripción en Mi Cuenta
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 

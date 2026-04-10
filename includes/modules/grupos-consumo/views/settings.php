@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Configuración del Módulo de Grupos de Consumo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -288,7 +288,7 @@ $config = get_option('flavor_gc_settings', [
                 <tr>
                     <td><strong><?php _e('Endpoints API REST', 'flavor-platform'); ?></strong></td>
                     <td>
-                        <code><?php echo rest_url('flavor-chat-ia/v1/gc/'); ?></code>
+                        <code><?php echo rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'); ?></code>
                     </td>
                 </tr>
             </tbody>

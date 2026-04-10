@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Fichaje de Empleados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,14 +17,14 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
     /**
      * Instancia del módulo
      *
-     * @var Flavor_Chat_Fichaje_Empleados_Module
+     * @var Flavor_Platform_Module_Interface
      */
     private $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Fichaje_Empleados_Module $module Instancia del módulo
+     * @param Flavor_Platform_Module_Interface $module Instancia del módulo
      */
     public function __construct($module) {
         $this->module = $module;

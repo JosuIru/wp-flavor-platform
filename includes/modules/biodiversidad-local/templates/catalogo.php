@@ -2,7 +2,7 @@
 /**
  * Template: Catálogo de Especies
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,13 +12,16 @@ if (!defined('ABSPATH')) {
 // Encolar estilos del módulo
 wp_enqueue_style(
     'flavor-biodiversidad-local',
-    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+    FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
     [],
-    FLAVOR_CHAT_IA_VERSION
+    FLAVOR_PLATFORM_VERSION
 );
 
-$categorias = Flavor_Chat_Biodiversidad_Local_Module::CATEGORIAS_ESPECIES;
-$estados = Flavor_Chat_Biodiversidad_Local_Module::ESTADOS_CONSERVACION;
+$biodiversidad_local_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Biodiversidad_Local_Module')
+    : 'Flavor_Chat_Biodiversidad_Local_Module';
+$categorias = $biodiversidad_local_module_class::CATEGORIAS_ESPECIES;
+$estados = $biodiversidad_local_module_class::ESTADOS_CONSERVACION;
 
 $especies = get_posts([
     'post_type' => 'bl_especie',

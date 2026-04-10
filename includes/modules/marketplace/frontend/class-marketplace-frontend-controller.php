@@ -2,7 +2,7 @@
 /**
  * Controller Frontend para Marketplace
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -89,7 +89,7 @@ class Flavor_Marketplace_Frontend_Controller {
     public function registrar_assets() {
         // Ruta al directorio del modulo marketplace (no frontend)
         $module_url = plugins_url('/', dirname(__FILE__));
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0';
 
         // CSS base
         wp_register_style(
@@ -285,7 +285,7 @@ class Flavor_Marketplace_Frontend_Controller {
         }
 
         // Cargar template
-        $template_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/marketplace/mis-anuncios.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'templates/frontend/marketplace/mis-anuncios.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;
@@ -319,7 +319,7 @@ class Flavor_Marketplace_Frontend_Controller {
         $marketplace_comunidad_id = absint($atributos['comunidad']);
 
         // Cargar template
-        $template_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/marketplace/formulario.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'templates/frontend/marketplace/formulario.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;

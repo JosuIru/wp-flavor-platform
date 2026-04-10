@@ -4,7 +4,7 @@
  *
  * Muestra las plazas disponibles con colores verde (libre) / rojo (ocupada).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existen las tablas
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_parkings)) {
     echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -205,7 +205,7 @@ $tipos_labels = [
 
                     <?php if (is_user_logged_in() && $parking_data['libres'] > 0): ?>
                         <footer class="parking-card__footer">
-                            <a href="<?php echo esc_url(add_query_arg('parking', $parking_id, Flavor_Chat_Helpers::get_action_url('parkings', 'solicitar'))); ?>" class="btn btn-primary btn-sm">
+                            <a href="<?php echo esc_url(add_query_arg('parking', $parking_id, Flavor_Platform_Helpers::get_action_url('parkings', 'solicitar'))); ?>" class="btn btn-primary btn-sm">
                                 <?php esc_html_e('Reservar plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </footer>

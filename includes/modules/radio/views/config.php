@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Radio Comunitaria
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Radio
  */
 

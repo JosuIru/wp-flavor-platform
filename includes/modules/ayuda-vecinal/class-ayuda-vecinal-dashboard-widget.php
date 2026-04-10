@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\AyudaVecinal
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -97,14 +97,14 @@ class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $solicitudes_activas,
                 'label' => __('Necesitan ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $solicitudes_activas > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal') : Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'solicitudes'),
+                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal') : Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'solicitudes'),
             ],
             [
                 'icon' => 'dashicons-heart',
                 'valor' => $ofertas_activas,
                 'label' => __('Ofrecen ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $ofertas_activas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&tab=ofertas') : Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'ofertas'),
+                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&tab=ofertas') : Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'ofertas'),
             ],
         ];
 
@@ -114,7 +114,7 @@ class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $mis_solicitudes,
                 'label' => __('Mis solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&tab=mis-solicitudes') : Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'mis-solicitudes'),
+                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&tab=mis-solicitudes') : Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'mis-solicitudes'),
             ];
         }
 
@@ -127,7 +127,7 @@ class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             'footer' => [
                 [
                     'label' => __('Ofrecer ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&action=ofrecer') : Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'ofrecer'),
+                    'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&action=ofrecer') : Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'ofrecer'),
                     'icon' => 'dashicons-heart',
                 ],
             ],
@@ -163,7 +163,7 @@ class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'icon' => $icono,
                 'title' => wp_trim_words($solicitud->titulo, 5, '...'),
                 'meta' => $solicitud->categoria ?: human_time_diff(strtotime($solicitud->fecha_creacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&solicitud=' . $solicitud->id) : Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'solicitud') . '/' . $solicitud->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=ayuda-vecinal&solicitud=' . $solicitud->id) : Flavor_Platform_Helpers::get_action_url('ayuda_vecinal', 'solicitud') . '/' . $solicitud->id . '/',
                 'badge' => $solicitud->urgencia === 'alta' ? __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN) : null,
             ];
         }

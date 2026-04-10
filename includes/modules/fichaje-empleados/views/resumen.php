@@ -2,7 +2,7 @@
 /**
  * Vista: Resumen mensual de horas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

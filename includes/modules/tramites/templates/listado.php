@@ -4,7 +4,7 @@
  *
  * Muestra un listado de todos los expedientes/solicitudes de tramites
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,7 +17,7 @@ $tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
 $tabla_estados = $wpdb->prefix . 'flavor_estados_tramite';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_expedientes)) {
     echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -116,7 +116,7 @@ foreach ($expedientes as $exp) {
 }
 
 // URL base
-$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
+$tramites_base_url = Flavor_Platform_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="tramites-listado-wrapper">

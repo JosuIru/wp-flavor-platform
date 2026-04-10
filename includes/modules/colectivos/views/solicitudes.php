@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Solicitudes de Unión a Colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

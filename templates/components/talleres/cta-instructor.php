@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: CTA Instructor Talleres
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

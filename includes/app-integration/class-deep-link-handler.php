@@ -4,7 +4,7 @@
  *
  * Procesa URLs cortas tipo /app/{slug} y redirige según el dispositivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

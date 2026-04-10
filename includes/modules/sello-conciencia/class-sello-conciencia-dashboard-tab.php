@@ -5,7 +5,7 @@
  * Sistema de certificación de comercios y productos con criterios
  * de sostenibilidad, ética y economía social.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

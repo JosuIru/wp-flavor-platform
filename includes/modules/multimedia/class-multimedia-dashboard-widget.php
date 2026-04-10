@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Multimedia
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -86,14 +86,14 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_albumes,
                 'label' => __('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=multimedia-albumes') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
+                'url' => $es_admin ? admin_url('admin.php?page=multimedia-albumes') : Flavor_Platform_Helpers::get_action_url('multimedia', 'galeria'),
             ],
             [
                 'icon' => 'dashicons-images-alt2',
                 'valor' => $total_archivos,
                 'label' => __('Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
+                'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Platform_Helpers::get_action_url('multimedia', 'galeria'),
             ],
         ];
 
@@ -103,7 +103,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_archivos,
                 'label' => __('Mis archivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria&autor=' . $user_id) : Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'),
+                'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria&autor=' . $user_id) : Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria'),
             ];
         }
 
@@ -116,7 +116,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
+                    'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Platform_Helpers::get_action_url('multimedia', 'galeria'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -149,7 +149,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'meta' => sprintf(_n('%d archivo', '%d archivos', $album->total_archivos ?? 0, FLAVOR_PLATFORM_TEXT_DOMAIN), $album->total_archivos ?? 0),
                 'url' => $es_admin
                     ? admin_url('admin.php?page=multimedia-albumes&album=' . $album->id)
-                    : add_query_arg('album_id', $album->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria')),
+                    : add_query_arg('album_id', $album->id, Flavor_Platform_Helpers::get_action_url('multimedia', 'mi-galeria')),
             ];
         }
 

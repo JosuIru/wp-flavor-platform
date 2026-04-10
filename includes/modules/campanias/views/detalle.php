@@ -2,7 +2,7 @@
 /**
  * Vista de detalle de campania
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

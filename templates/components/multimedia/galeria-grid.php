@@ -2,7 +2,7 @@
 /**
  * Template: Galeria Grid de Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

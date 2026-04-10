@@ -5,7 +5,7 @@
  * Controla la frecuencia de peticiones a los endpoints publicos
  * usando transients de WordPress por direccion IP del cliente.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -77,7 +77,7 @@ class Flavor_API_Rate_Limiter {
         $direccion_ip_cliente = self::obtener_ip_cliente();
 
         if (empty($direccion_ip_cliente)) {
-            flavor_chat_ia_log('Rate Limiter: No se pudo determinar la IP del cliente', 'warning');
+            flavor_platform_log('Rate Limiter: No se pudo determinar la IP del cliente', 'warning');
             return true;
         }
 
@@ -115,7 +115,7 @@ class Flavor_API_Rate_Limiter {
         if ($datos_contador['cantidad_peticiones'] > $limite_maximo_peticiones) {
             $segundos_restantes = self::VENTANA_TIEMPO_SEGUNDOS - $tiempo_transcurrido;
 
-            flavor_chat_ia_log(
+            flavor_platform_log(
                 sprintf(
                     'Rate Limiter: IP %s excedio el limite de %d peticiones %s/min. Total: %d',
                     $direccion_ip_cliente,

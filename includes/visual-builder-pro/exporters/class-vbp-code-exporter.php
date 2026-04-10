@@ -4,7 +4,7 @@
  *
  * Controlador principal para exportación de código React/Vue.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Visual_Builder_Pro
  * @since 2.1.0
  */

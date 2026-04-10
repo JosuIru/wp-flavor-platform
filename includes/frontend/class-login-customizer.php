@@ -4,7 +4,7 @@
  *
  * Aplica los estilos del plugin Flavor a la página de login de WP
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 
@@ -95,7 +95,7 @@ class Flavor_Login_Customizer {
                 'flavor-login-fonts',
                 'https://fonts.googleapis.com/css2?family=' . $fonts_string . '&display=swap',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
     }

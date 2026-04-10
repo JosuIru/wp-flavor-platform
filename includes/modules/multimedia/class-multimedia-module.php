@@ -2,7 +2,7 @@
 /**
  * Módulo de Multimedia para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Multimedia - Galería y contenidos audiovisuales comunitarios
  */
-class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Multimedia_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -40,7 +40,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_multimedia';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -171,7 +171,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
-        return Flavor_Chat_Helpers::tabla_existe($tabla_multimedia);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_multimedia);
     }
 
     /**
@@ -499,7 +499,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_multimedia';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return 0;
         }
 
@@ -611,7 +611,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     public function maybe_create_tables() {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_multimedia';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $this->create_tables();
         }
     }
@@ -2907,7 +2907,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/dashboard.php';
+        $template = FLAVOR_PLATFORM_PATH . 'includes/modules/multimedia/views/dashboard.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -2930,7 +2930,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/admin-galeria.php';
+        $template = FLAVOR_PLATFORM_PATH . 'includes/modules/multimedia/views/admin-galeria.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -2943,7 +2943,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Renderizar configuración del panel unificado
      */
     public function render_admin_configuracion() {
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/admin-configuracion.php';
+        $template = FLAVOR_PLATFORM_PATH . 'includes/modules/multimedia/views/admin-configuracion.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -3049,7 +3049,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Renderizar página admin
      */
     public function render_admin_page() {
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/dashboard.php';
+        $template = FLAVOR_PLATFORM_PATH . 'includes/modules/multimedia/views/dashboard.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -3107,7 +3107,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-multimedia-css',
@@ -3150,7 +3150,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         }
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-multimedia-admin-css',
@@ -3451,7 +3451,7 @@ KNOWLEDGE;
         $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
         $tabla_albumes = $wpdb->prefix . 'flavor_multimedia_albumes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
             return $estadisticas;
         }
 
@@ -3813,4 +3813,8 @@ KNOWLEDGE;
             }
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Multimedia_Module', false)) {
+    class_alias('Flavor_Platform_Multimedia_Module', 'Flavor_Chat_Multimedia_Module');
 }

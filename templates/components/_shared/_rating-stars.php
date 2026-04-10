@@ -2,7 +2,7 @@
 /**
  * Componente Compartido: Estrellas de Valoración
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var float $valoracion 0.0 - 5.0
  * @var int $total_valoraciones
  * @var bool $mostrar_numero

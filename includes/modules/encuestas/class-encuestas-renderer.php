@@ -4,7 +4,7 @@
  *
  * Genera el HTML para las diferentes vistas de encuestas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -20,14 +20,14 @@ class Flavor_Encuestas_Renderer {
     /**
      * Referencia al módulo principal
      *
-     * @var Flavor_Chat_Encuestas_Module
+     * @var Flavor_Platform_Module_Interface
      */
     private $module;
 
     /**
      * Constructor
      *
-     * @param Flavor_Chat_Encuestas_Module $module Módulo principal
+     * @param Flavor_Platform_Module_Interface $module Módulo principal
      */
     public function __construct($module) {
         $this->module = $module;

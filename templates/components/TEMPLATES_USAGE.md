@@ -281,12 +281,12 @@ Todos los templates incluyen datos de ejemplo funcionales que se muestran cuando
 
 Todos los textos usan funciones de WordPress para traducción:
 ```php
-__('Texto a traducir', 'flavor-chat-ia')
-_e('Texto a traducir', 'flavor-chat-ia')
-_n('singular', 'plural', $count, 'flavor-chat-ia')
+__('Texto a traducir', 'flavor-platform')
+_e('Texto a traducir', 'flavor-platform')
+_n('singular', 'plural', $count, 'flavor-platform')
 ```
 
-Dominio de texto: `flavor-chat-ia`
+Dominio de texto: `flavor-platform`
 
 ---
 

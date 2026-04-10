@@ -4,7 +4,7 @@
  *
  * Migra contenido del editor legacy a VBP.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 2.3.0
  */
 

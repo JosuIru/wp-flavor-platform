@@ -5,7 +5,7 @@
  * Traduce entre los formatos de API de diferentes sistemas
  * para que las mismas APKs funcionen con todos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -87,11 +87,11 @@ class Flavor_API_Adapter {
      * Reenvía petición a Flavor Chat IA
      */
     private function forward_to_flavor_chat($request) {
-        if (!class_exists('Flavor_Chat_Core')) {
+        if (!class_exists('Flavor_Platform_Core')) {
             return new WP_Error('flavor_not_available', 'Flavor Chat no disponible');
         }
 
-        $core = Flavor_Chat_Core::get_instance();
+        $core = Flavor_Platform_Core::get_instance();
 
         // Adaptar parámetros al formato de Flavor
         $message = $request->get_param('message');
@@ -156,7 +156,7 @@ class Flavor_API_Adapter {
      */
     private function get_flavor_site_info() {
         $profiles = Flavor_App_Profiles::get_instance();
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         return [
             'profile' => $profiles->obtener_perfil_activo(),

@@ -2,7 +2,7 @@
 /**
  * Template: Widget compacto de disponibilidad de plazas en tiempo real
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Parkings
  */
 

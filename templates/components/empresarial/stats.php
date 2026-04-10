@@ -2,7 +2,7 @@
 /**
  * Template: Estadísticas / Métricas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

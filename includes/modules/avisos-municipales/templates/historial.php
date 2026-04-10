@@ -4,7 +4,7 @@
  *
  * Muestra el historial de avisos pasados con paginacion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -17,7 +17,7 @@ $tabla_categorias = $wpdb->prefix . 'flavor_avisos_categorias';
 $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 
 // Verificar si existe la tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_avisos)) {
     echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
@@ -132,7 +132,7 @@ $prioridades_config = [
 ];
 
 // URL base para los detalles
-$avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '');
+$avisos_base_url = Flavor_Platform_Helpers::get_action_url('avisos_municipales', '');
 $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
 ?>
 

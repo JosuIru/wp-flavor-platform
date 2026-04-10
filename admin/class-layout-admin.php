@@ -5,7 +5,7 @@
  * Gestiona la interfaz de selección de menús y footers
  * con vista previa visual.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -73,16 +73,16 @@ class Flavor_Layout_Admin {
 
         wp_enqueue_style(
             'flavor-layout-admin',
-            FLAVOR_CHAT_IA_URL . "admin/css/layout-admin{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/layout-admin{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-layout-admin',
-            FLAVOR_CHAT_IA_URL . "admin/js/layout-admin{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "admin/js/layout-admin{$sufijo_asset}.js",
             ['jquery', 'wp-color-picker'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

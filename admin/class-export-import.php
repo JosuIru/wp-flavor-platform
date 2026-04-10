@@ -262,7 +262,7 @@ class Flavor_Export_Import {
      * Registra comandos WP-CLI
      */
     private function registrar_comandos_cli() {
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/cli/class-export-import-command.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/cli/class-export-import-command.php';
     }
 
     /**
@@ -295,17 +295,17 @@ class Flavor_Export_Import {
         // CSS
         wp_enqueue_style(
             'flavor-export-import-css',
-            FLAVOR_CHAT_IA_URL . "admin/css/export-import{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "admin/css/export-import{$sufijo_asset}.css",
             array(),
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS
         wp_enqueue_script(
             'flavor-export-import-js',
-            FLAVOR_CHAT_IA_URL . "admin/js/export-import{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "admin/js/export-import{$sufijo_asset}.js",
             array('jquery', 'wp-util'),
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

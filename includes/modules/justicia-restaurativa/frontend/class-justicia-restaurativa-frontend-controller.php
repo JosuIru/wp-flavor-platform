@@ -5,7 +5,7 @@
  * Gestiona procesos de mediación comunitaria, resolución de conflictos
  * y prácticas restaurativas para la reparación del daño.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -710,7 +710,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_justicia_casos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -799,7 +799,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_justicia_casos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return [];
         }
 
@@ -813,7 +813,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_justicia_casos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return null;
         }
 

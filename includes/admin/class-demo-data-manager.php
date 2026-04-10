@@ -4,7 +4,7 @@
  *
  * Permite poblar y limpiar datos de ejemplo en los módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -88,7 +88,7 @@ class Flavor_Demo_Data_Manager {
             $redirect_args['tab'] = $redirect_tab;
         }
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             $redirect_args,
             admin_url('admin.php')
         ));
@@ -133,7 +133,7 @@ class Flavor_Demo_Data_Manager {
             $redirect_args['tab'] = $redirect_tab;
         }
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             $redirect_args,
             admin_url('admin.php')
         ));
@@ -585,7 +585,7 @@ class Flavor_Demo_Data_Manager {
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
         // Verificar que las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_servicios)) {
             return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
@@ -713,7 +713,7 @@ class Flavor_Demo_Data_Manager {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
         // Verificar que la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
             return ['success' => false, 'error' => __('categoria', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
@@ -1447,18 +1447,19 @@ class Flavor_Demo_Data_Manager {
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
 
         // Verificar que la tabla existe - Si no, intentar crearla
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             // Intentar crear las tablas del módulo
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/ayuda-vecinal/class-ayuda-vecinal-module.php';
-            if (class_exists('Flavor_Chat_Ayuda_Vecinal_Module')) {
-                $modulo = new Flavor_Chat_Ayuda_Vecinal_Module();
+            require_once FLAVOR_PLATFORM_PATH . 'includes/modules/ayuda-vecinal/class-ayuda-vecinal-module.php';
+            $module_class = flavor_get_runtime_class_name('Flavor_Chat_Ayuda_Vecinal_Module');
+            if (class_exists($module_class)) {
+                $modulo = new $module_class();
                 // Ejecutar el init directamente
                 if (method_exists($modulo, 'init')) {
                     $modulo->init();
                 }
 
                 // Verificar de nuevo
-                if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+                if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
                     return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             } else {
@@ -1605,7 +1606,7 @@ class Flavor_Demo_Data_Manager {
         $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
 
         // Verificar que la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_reservas)) {
             return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
@@ -1776,16 +1777,17 @@ class Flavor_Demo_Data_Manager {
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
         // Verificar que la tabla de fichajes existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             // Intentar crear las tablas del módulo
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/fichaje-empleados/class-fichaje-empleados-module.php';
-            if (class_exists('Flavor_Chat_Fichaje_Empleados_Module')) {
-                $modulo = new Flavor_Chat_Fichaje_Empleados_Module();
+            require_once FLAVOR_PLATFORM_PATH . 'includes/modules/fichaje-empleados/class-fichaje-empleados-module.php';
+            $module_class = flavor_get_runtime_class_name('Flavor_Chat_Fichaje_Empleados_Module');
+            if (class_exists($module_class)) {
+                $modulo = new $module_class();
                 // El módulo crea tablas en __construct vía init hook
                 do_action('init');
 
                 // Verificar de nuevo
-                if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+                if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
                     return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             }
@@ -2318,17 +2320,18 @@ class Flavor_Demo_Data_Manager {
         $tabla_historias = $wpdb->prefix . 'flavor_social_historias';
 
         // Verificar que las tablas existen - Si no, intentar crearlas
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             // Intentar crear las tablas con maybe_create_tables del módulo
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/class-red-social-module.php';
-            if (class_exists('Flavor_Chat_Red_Social_Module')) {
-                $modulo = new Flavor_Chat_Red_Social_Module();
+            require_once FLAVOR_PLATFORM_PATH . 'includes/modules/red-social/class-red-social-module.php';
+            $module_class = flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module');
+            if (class_exists($module_class)) {
+                $modulo = new $module_class();
                 if (method_exists($modulo, 'maybe_create_tables')) {
                     $modulo->maybe_create_tables();
                 }
 
                 // Verificar de nuevo
-                if (!Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+                if (!Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
                     return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             } else {
@@ -2819,7 +2822,7 @@ class Flavor_Demo_Data_Manager {
         $tabla_colaboraciones = $prefix . 'collaborations';
 
         // Verificar que las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_nodos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_nodos)) {
             return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
@@ -3440,7 +3443,7 @@ class Flavor_Demo_Data_Manager {
 
         $mensaje = $resultado['success'] ? 'demo_pages_created' : 'demo_pages_error';
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             [
                 'page' => 'flavor-module-dashboards',
                 'mensaje' => $mensaje,
@@ -3466,7 +3469,7 @@ class Flavor_Demo_Data_Manager {
 
         $mensaje = $resultado['success'] ? 'demo_pages_deleted' : 'demo_pages_delete_error';
 
-        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+        Flavor_Platform_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => $resultado['count'] ?? 0],
             admin_url('admin.php')
         ));
@@ -3851,7 +3854,7 @@ class Flavor_Demo_Data_Manager {
             return $definiciones;
         }
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = array_map('sanitize_key', $settings['active_modules'] ?? []);
         $active_frontend = array_map('sanitize_key', $settings['active_frontend_modules'] ?? []);
 
@@ -3906,7 +3909,7 @@ private function populate_participacion() {
     global $wpdb;
     $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -3985,7 +3988,7 @@ private function populate_biblioteca() {
     global $wpdb;
     $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4067,7 +4070,7 @@ private function populate_bicicletas_compartidas() {
     $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
     $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4170,7 +4173,7 @@ private function populate_carpooling() {
     global $wpdb;
     $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_viajes)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_viajes)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4247,7 +4250,7 @@ private function populate_compostaje() {
     global $wpdb;
     $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4320,7 +4323,7 @@ private function populate_huertos_urbanos() {
     $tabla_huertos = $wpdb->prefix . 'flavor_huertos';
     $tabla_parcelas = $wpdb->prefix . 'flavor_huertos_parcelas';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_huertos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4420,7 +4423,7 @@ private function populate_parkings() {
     $tabla_parkings = $wpdb->prefix . 'flavor_parkings';
     $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_parkings)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4521,7 +4524,7 @@ private function populate_podcast() {
     $tabla_series = $wpdb->prefix . 'flavor_podcast_series';
     $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_series)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_series)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4621,7 +4624,7 @@ private function populate_reciclaje() {
     global $wpdb;
     $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4690,7 +4693,7 @@ private function populate_transparencia() {
     global $wpdb;
     $tabla_documentos = $wpdb->prefix . 'flavor_transparencia_documentos_publicos';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4822,7 +4825,7 @@ private function populate_chat_grupos() {
     global $wpdb;
     $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4899,7 +4902,7 @@ private function populate_cursos() {
     global $wpdb;
     $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -4982,7 +4985,7 @@ private function populate_espacios_comunes() {
     global $wpdb;
     $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_espacios)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -5053,7 +5056,7 @@ private function populate_foros() {
     global $wpdb;
     $tabla_foros = $wpdb->prefix . 'flavor_foros';
 
-    if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+    if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
@@ -5251,14 +5254,14 @@ private function populate_energia_comunitaria() {
     $tabla_comunidades_sociales = $wpdb->prefix . 'flavor_comunidades';
 
     if (
-        !Flavor_Chat_Helpers::tabla_existe($tabla_comunidades) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_lecturas) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_incidencias) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_participantes) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_cierres) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_cierres_detalle) ||
-        !Flavor_Chat_Helpers::tabla_existe($tabla_liquidaciones)
+        !Flavor_Platform_Helpers::tabla_existe($tabla_comunidades) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_instalaciones) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_lecturas) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_incidencias) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_participantes) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_cierres) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_cierres_detalle) ||
+        !Flavor_Platform_Helpers::tabla_existe($tabla_liquidaciones)
     ) {
         return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
@@ -5268,7 +5271,7 @@ private function populate_energia_comunitaria() {
     $responsable_id = !empty($usuarios_demo[1]) ? (int) $usuarios_demo[1] : $creador_id;
 
     $comunidades_sociales = [];
-    if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades_sociales)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla_comunidades_sociales)) {
         $comunidades_sociales = $wpdb->get_col(
             "SELECT id FROM {$tabla_comunidades_sociales} WHERE estado = 'activa' ORDER BY id ASC LIMIT 2"
         );

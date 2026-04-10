@@ -4,7 +4,7 @@
  *
  * Resumen de usuario para dashboards y headers.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $user       Datos del usuario: id, name, avatar, role, verified, email

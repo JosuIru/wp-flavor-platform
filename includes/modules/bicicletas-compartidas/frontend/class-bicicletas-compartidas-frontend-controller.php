@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Bicicletas Compartidas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -31,7 +31,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      * Constructor privado
      */
     private function __construct() {
-        $this->config = get_option('flavor_chat_ia_settings', []);
+        $this->config = flavor_get_main_settings();
         $this->init();
     }
 
@@ -90,7 +90,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugin_dir_url(dirname(__FILE__));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-bicicletas-frontend',
@@ -1088,7 +1088,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         // Crear incidencia (si existe tabla de incidencias de bicicletas)
         $tabla_incidencias = $wpdb->prefix . 'flavor_bicicletas_incidencias';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
             $wpdb->insert($tabla_incidencias, [
                 'bicicleta_id' => $bicicleta_id,
                 'usuario_id' => get_current_user_id(),

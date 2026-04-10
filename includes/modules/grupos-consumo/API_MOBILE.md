@@ -5,7 +5,7 @@ Documentación de endpoints REST para integrar el módulo de Grupos de Consumo e
 ## Base URL
 
 ```
-https://tu-dominio.com/wp-json/flavor-chat-ia/v1
+https://tu-dominio.com/wp-json/flavor-platform/v1
 ```
 
 ## Autenticación
@@ -288,7 +288,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GruposConsumoService {
-  final String baseUrl = 'https://tu-dominio.com/wp-json/flavor-chat-ia/v1';
+  final String baseUrl = 'https://tu-dominio.com/wp-json/flavor-platform/v1';
   String? _authToken;
 
   // Listar pedidos abiertos
@@ -387,13 +387,13 @@ Prueba los endpoints con cURL:
 
 ```bash
 # Listar pedidos
-curl https://tu-dominio.com/wp-json/flavor-chat-ia/v1/pedidos
+curl https://tu-dominio.com/wp-json/flavor-platform/v1/pedidos
 
 # Obtener pedido específico
-curl https://tu-dominio.com/wp-json/flavor-chat-ia/v1/pedidos/123
+curl https://tu-dominio.com/wp-json/flavor-platform/v1/pedidos/123
 
 # Unirse a pedido (requiere auth)
-curl -X POST https://tu-dominio.com/wp-json/flavor-chat-ia/v1/pedidos/123/unirse \
+curl -X POST https://tu-dominio.com/wp-json/flavor-platform/v1/pedidos/123/unirse \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{"cantidad": 2}'

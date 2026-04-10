@@ -5,7 +5,7 @@
  * Búsqueda de publicaciones, usuarios, hashtags y comunidades
  * con filtros avanzados por tipo, fecha, ubicación y más.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -319,7 +319,7 @@ class Flavor_Social_Search {
         global $wpdb;
 
         $tabla = $this->prefix . 'social_publicaciones';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['items' => [], 'total' => 0];
         }
 
@@ -351,7 +351,7 @@ class Flavor_Social_Search {
             $tabla_hashtags = $this->prefix . 'social_hashtags';
             $tabla_rel = $this->prefix . 'social_publicaciones_hashtags';
 
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_hashtags)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_hashtags)) {
                 $where[] = "p.id IN (
                     SELECT ph.publicacion_id FROM {$tabla_rel} ph
                     INNER JOIN {$tabla_hashtags} h ON ph.hashtag_id = h.id
@@ -428,7 +428,7 @@ class Flavor_Social_Search {
         $params[] = '%' . $wpdb->esc_like($termino) . '%';
 
         // Filtro de verificados
-        if ($opciones['verificados'] && Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if ($opciones['verificados'] && Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $where[] = "p.verificado = 1";
         }
 
@@ -436,7 +436,7 @@ class Flavor_Social_Search {
 
         // Ordenación
         $orderby = 'u.display_name ASC';
-        if ($opciones['ordenar'] === 'popular' && Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if ($opciones['ordenar'] === 'popular' && Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $orderby = 'p.seguidores_count DESC';
         }
 
@@ -444,7 +444,7 @@ class Flavor_Social_Search {
         $join_perfil = '';
         $select_extra = '0 as seguidores_count, 0 as publicaciones_count, 0 as verificado, NULL as bio';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_perfiles)) {
             $join_perfil = "LEFT JOIN {$tabla_perfiles} p ON u.ID = p.usuario_id";
             $select_extra = 'COALESCE(p.seguidores_count, 0) as seguidores_count,
                              COALESCE(p.publicaciones_count, 0) as publicaciones_count,
@@ -502,7 +502,7 @@ class Flavor_Social_Search {
         global $wpdb;
 
         $tabla = $this->prefix . 'social_hashtags';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['items' => [], 'total' => 0];
         }
 
@@ -551,7 +551,7 @@ class Flavor_Social_Search {
         global $wpdb;
 
         $tabla = $this->prefix . 'comunidades';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
             return ['items' => [], 'total' => 0];
         }
 
@@ -617,7 +617,7 @@ class Flavor_Social_Search {
 
         // Sugerir hashtags
         $tabla_hashtags = $this->prefix . 'social_hashtags';
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_hashtags)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_hashtags)) {
             $termino_limpio = ltrim($termino, '#');
             $hashtags = $wpdb->get_results($wpdb->prepare(
                 "SELECT nombre, usos_count FROM {$tabla_hashtags}
@@ -833,16 +833,16 @@ class Flavor_Social_Search {
     public function enqueue_assets() {
         wp_enqueue_style(
             'flavor-social-search',
-            FLAVOR_CHAT_IA_URL . 'assets/css/modules/social-search.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/modules/social-search.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-social-search',
-            FLAVOR_CHAT_IA_URL . 'assets/js/social-search.js',
+            FLAVOR_PLATFORM_URL . 'assets/js/social-search.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
     }

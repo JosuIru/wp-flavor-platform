@@ -2,7 +2,7 @@
 /**
  * Vista: Gestión de Parcelas - Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

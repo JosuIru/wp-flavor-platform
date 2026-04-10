@@ -5,7 +5,7 @@
  * Grid de tarjetas de proyectos con presupuesto, votos,
  * progreso y estado de ejecucion.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

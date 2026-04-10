@@ -4,7 +4,7 @@
  *
  * Controlador frontend para redes de apoyo mutuo comunitario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\CirculosCuidados
  * @since 4.2.0
  */
@@ -144,16 +144,16 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
     public function registrar_assets() {
         wp_register_style(
             'flavor-circulos-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-frontend.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-circulos-frontend',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -192,7 +192,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         $this->enqueue_assets();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_circulos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_circulos)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
                    __('El sistema de círculos de cuidados no está configurado.', 'flavor-platform') . '</div>';
         }
@@ -242,7 +242,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <?php endforeach; ?>
                     </select>
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos-cuidados', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos-cuidados', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Crear Círculo', 'flavor-platform'); ?>
                         </a>
@@ -430,7 +430,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <h2>
                             <?php _e('Necesidades Abiertas', 'flavor-platform'); ?>
                             <?php if ($es_miembro): ?>
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos-cuidados', 'publicar-necesidad', ['circulo_id' => $circulo_id])); ?>"
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos-cuidados', 'publicar-necesidad', ['circulo_id' => $circulo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline" style="float: right;">
                                     <span class="dashicons dashicons-plus"></span>
                                     <?php _e('Publicar', 'flavor-platform'); ?>
@@ -582,7 +582,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Crear Círculo', 'flavor-platform'); ?>
                     </button>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('circulos-cuidados')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('circulos-cuidados')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-platform'); ?>
                     </a>
                 </div>
@@ -966,7 +966,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Círculo creado. ¡Gracias por tejer comunidad!', 'flavor-platform'),
                 'circulo_id' => $circulo_id,
-                'redirect' => Flavor_Chat_Helpers::get_item_url('circulos-cuidados', $circulo_id),
+                'redirect' => Flavor_Platform_Helpers::get_item_url('circulos-cuidados', $circulo_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el círculo.', 'flavor-platform')]);

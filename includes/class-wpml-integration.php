@@ -4,7 +4,7 @@
  *
  * Gestiona la traducción de contenido y detección de idiomas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -56,7 +56,7 @@ class Flavor_WPML_Integration {
         $this->wpml_active = defined('ICL_SITEPRESS_VERSION') || class_exists('SitePress');
 
         if ($this->wpml_active) {
-            flavor_chat_ia_log('WPML detectado y activo', 'info');
+            flavor_platform_log('WPML detectado y activo', 'info');
         }
     }
 
@@ -78,13 +78,13 @@ class Flavor_WPML_Integration {
         add_action('init', [$this, 'register_content_types'], 21);
 
         // Traducir respuestas del chat
-        add_filter('flavor_chat_ia_message_content', [$this, 'translate_message'], 10, 2);
+        add_filter('flavor_platform_message_content', [$this, 'translate_message'], 10, 2);
 
         // Traducir base de conocimiento
-        add_filter('flavor_chat_ia_knowledge_base', [$this, 'translate_knowledge_base']);
+        add_filter('flavor_platform_knowledge_base', [$this, 'translate_knowledge_base']);
 
         // Filtrar posts por idioma
-        add_filter('flavor_chat_ia_query_args', [$this, 'filter_posts_by_language']);
+        add_filter('flavor_platform_query_args', [$this, 'filter_posts_by_language']);
     }
 
     /**
@@ -97,7 +97,7 @@ class Flavor_WPML_Integration {
             $this->current_language = get_locale();
         }
 
-        flavor_chat_ia_log('Idioma detectado: ' . $this->current_language, 'info');
+        flavor_platform_log('Idioma detectado: ' . $this->current_language, 'info');
     }
 
     /**
@@ -146,7 +146,7 @@ class Flavor_WPML_Integration {
         ];
 
         // Permitir que modulos y addons registren strings dinamicos
-        $extra_strings = apply_filters('flavor_chat_ia_wpml_strings', []);
+        $extra_strings = apply_filters('flavor_platform_wpml_strings', []);
         if (is_array($extra_strings)) {
             foreach ($extra_strings as $name => $value) {
                 $strings[$name] = $value;
@@ -193,8 +193,8 @@ class Flavor_WPML_Integration {
             'marketplace_categoria',
         ];
 
-        $post_types = apply_filters('flavor_chat_ia_wpml_post_types', $post_types);
-        $taxonomies = apply_filters('flavor_chat_ia_wpml_taxonomies', $taxonomies);
+        $post_types = apply_filters('flavor_platform_wpml_post_types', $post_types);
+        $taxonomies = apply_filters('flavor_platform_wpml_taxonomies', $taxonomies);
 
         if (is_array($post_types)) {
             foreach ($post_types as $post_type) {

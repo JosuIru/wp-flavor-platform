@@ -4,7 +4,7 @@
  *
  * Panel de moderacion para hilos y respuestas reportados
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

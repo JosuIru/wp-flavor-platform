@@ -2,7 +2,7 @@
 /**
  * Vista de Galería Multimedia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

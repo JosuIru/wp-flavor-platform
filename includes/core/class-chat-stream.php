@@ -2,14 +2,14 @@
 /**
  * Handler SSE para streaming de respuestas del chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Stream {
+class Flavor_Platform_Stream {
 
     /**
      * Registra el endpoint AJAX para streaming
@@ -24,7 +24,7 @@ class Flavor_Chat_Stream {
      */
     public static function handle_send_message_stream() {
         // Verificar nonce (compatible con ambos sistemas de assets)
-        $nonce_valido = check_ajax_referer('flavor_chat_nonce', 'nonce', false)
+        $nonce_valido = check_ajax_referer('flavor_platform_nonce', 'nonce', false)
             || check_ajax_referer('chat_ia_nonce', 'nonce', false);
         if (!$nonce_valido) {
             self::enviar_error_sse('Nonce inválido');
@@ -58,8 +58,11 @@ class Flavor_Chat_Stream {
         }
 
         // Antispam
-        if (class_exists('Flavor_Chat_Antispam')) {
-            $antispam = Flavor_Chat_Antispam::get_instance();
+        $antispam_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Antispam')
+            : 'Flavor_Chat_Antispam';
+        if (class_exists($antispam_class)) {
+            $antispam = $antispam_class::get_instance();
             $validacion = $antispam->validate_message($mensaje, $id_sesion, $ip_cliente, [
                 'honeypot' => $honeypot,
             ]);
@@ -81,7 +84,10 @@ class Flavor_Chat_Stream {
         }
 
         // Obtener o crear sesión
-        $sesion = new Flavor_Chat_Session($id_sesion);
+        $session_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Session')
+            : 'Flavor_Chat_Session';
+        $sesion = new $session_class($id_sesion);
         if (!$sesion->get_conversation_id()) {
             $sesion->start_conversation($idioma);
         }
@@ -105,8 +111,11 @@ class Flavor_Chat_Stream {
         }
 
         // Fallback: usar engine legacy sin streaming
-        if (class_exists('Flavor_Chat_Claude_Engine')) {
-            $motor_legacy = Flavor_Chat_Claude_Engine::get_instance();
+        $legacy_engine_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Claude_Engine')
+            : 'Flavor_Chat_Claude_Engine';
+        if (class_exists($legacy_engine_class)) {
+            $motor_legacy = $legacy_engine_class::get_instance();
             $respuesta = $motor_legacy->send_message($sesion, $mensaje);
             if ($respuesta['success']) {
                 self::enviar_evento_sse('token', ['token' => $respuesta['response']]);
@@ -226,4 +235,8 @@ class Flavor_Chat_Stream {
         }
         return '0.0.0.0';
     }
+}
+
+if (!class_exists('Flavor_Chat_Stream', false)) {
+    class_alias('Flavor_Platform_Stream', 'Flavor_Chat_Stream');
 }

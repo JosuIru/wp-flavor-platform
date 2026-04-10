@@ -49,7 +49,10 @@ $reservas = $wpdb->get_results($wpdb->prepare(
     $usuario_id
 ));
 
-$settings_module = new Flavor_Chat_Biblioteca_Module();
+$biblioteca_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Biblioteca_Module')
+    : 'Flavor_Chat_Biblioteca_Module';
+$settings_module = new $biblioteca_module_class();
 $settings = $settings_module->get_settings();
 $max_renovaciones = $settings['renovaciones_maximas'] ?? 2;
 ?>

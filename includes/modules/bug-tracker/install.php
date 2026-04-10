@@ -2,7 +2,7 @@
 /**
  * Instalación de tablas para el módulo Bug Tracker
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Bug_Tracker
  */
 

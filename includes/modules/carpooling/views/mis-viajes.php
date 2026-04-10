@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     <div id="carpooling-mis-viajes" class="carpooling-mis-viajes">
         <div class="carpooling-mis-viajes__header">
             <h2 class="carpooling-mis-viajes__titulo"><?php esc_html_e('Mis viajes como conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('carpooling', 'publicar-viaje')); ?>" class="carpooling-btn carpooling-btn--primary carpooling-btn--sm">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('carpooling', 'publicar-viaje')); ?>" class="carpooling-btn carpooling-btn--primary carpooling-btn--sm">
                 + <?php esc_html_e('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>

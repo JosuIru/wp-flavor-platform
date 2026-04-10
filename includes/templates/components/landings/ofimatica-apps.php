@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Apps Ofimática
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

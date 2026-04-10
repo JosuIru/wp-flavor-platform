@@ -2,7 +2,7 @@
 /**
  * Webhook Manager - Sistema de Webhooks
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

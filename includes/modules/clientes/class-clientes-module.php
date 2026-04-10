@@ -2,7 +2,7 @@
 /**
  * Modulo de Gestion de Clientes / CRM para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
  * Modulo: Gestion de Clientes
  * CRM basico para gestionar clientes, notas e interacciones
  */
-class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Clientes_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -36,7 +36,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_clientes);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_clientes);
     }
 
     /**
@@ -596,7 +596,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
         global $wpdb;
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
             return 0;
         }
         return (int) $wpdb->get_var(
@@ -614,7 +614,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
         $estadisticas = [];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_clientes)) {
             return $estadisticas;
         }
 
@@ -2430,4 +2430,8 @@ KNOWLEDGE;
             Flavor_Clientes_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Clientes_Module', false)) {
+    class_alias('Flavor_Platform_Clientes_Module', 'Flavor_Chat_Clientes_Module');
 }

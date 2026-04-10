@@ -2,14 +2,14 @@
 /**
  * Gestión de assets (CSS/JS) del chat
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Assets {
+class Flavor_Platform_Assets {
 
     /**
      * Instancia singleton
@@ -19,7 +19,7 @@ class Flavor_Chat_Assets {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Assets
+     * @return Flavor_Platform_Assets
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -50,17 +50,17 @@ class Flavor_Chat_Assets {
         // CSS
         wp_enqueue_style(
             'flavor-platform',
-            FLAVOR_CHAT_IA_URL . "assets/css/modules/chat-widget{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/modules/chat-widget{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JS
         wp_enqueue_script(
             'flavor-platform',
-            FLAVOR_CHAT_IA_URL . "assets/js/chat-widget{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/chat-widget{$sufijo_asset}.js",
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -73,7 +73,7 @@ class Flavor_Chat_Assets {
         // Variables para JS
         wp_localize_script('flavor-platform', 'flavorChatConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('flavor_chat_nonce'),
+            'nonce' => wp_create_nonce('flavor_platform_nonce'),
             'language' => $this->get_current_language(),
             'strings' => $this->get_translated_strings(),
             'appearance' => [
@@ -182,4 +182,8 @@ class Flavor_Chat_Assets {
 
         return $result;
     }
+}
+
+if (!class_exists('Flavor_Chat_Assets', false)) {
+    class_alias('Flavor_Platform_Assets', 'Flavor_Chat_Assets');
 }

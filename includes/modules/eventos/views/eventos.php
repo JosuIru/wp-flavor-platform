@@ -1,5 +1,5 @@
 <?php
-/** Gestión de Eventos * @package FlavorChatIA */
+/** Gestión de Eventos * @package FlavorPlatform */
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-eventos-management">

@@ -2,14 +2,14 @@
 /**
  * Analytics del chat
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Analytics {
+class Flavor_Platform_Analytics {
 
     /**
      * Instancia singleton
@@ -19,7 +19,7 @@ class Flavor_Chat_Analytics {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_Analytics
+     * @return Flavor_Platform_Analytics
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -145,4 +145,8 @@ class Flavor_Chat_Analytics {
             $limit
         ), ARRAY_A);
     }
+}
+
+if (!class_exists('Flavor_Chat_Analytics', false)) {
+    class_alias('Flavor_Platform_Analytics', 'Flavor_Chat_Analytics');
 }

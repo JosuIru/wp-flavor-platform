@@ -2,7 +2,7 @@
 /**
  * Template: Sección de intercambio de semillas/cosechas entre hortelanos
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Huertos_Urbanos
  */
 

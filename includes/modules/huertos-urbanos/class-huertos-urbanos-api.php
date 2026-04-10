@@ -2,7 +2,7 @@
 /**
  * API REST para Huertos Urbanos (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Huertos_Urbanos_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,14 +28,14 @@ class Flavor_Huertos_Urbanos_API {
 
     public function register_routes() {
         // GET /huertos-urbanos/dashboard
-        register_rest_route(self::NAMESPACE, '/huertos-urbanos/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/huertos-urbanos/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /huertos-urbanos/solicitar-parcela
-        register_rest_route(self::NAMESPACE, '/huertos-urbanos/solicitar-parcela', [
+        flavor_register_rest_route(self::NAMESPACE, '/huertos-urbanos/solicitar-parcela', [
             'methods' => 'POST',
             'callback' => [$this, 'solicitar_parcela'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -53,14 +53,14 @@ class Flavor_Huertos_Urbanos_API {
         ]);
 
         // POST /huertos-urbanos/tareas/{id}/completar
-        register_rest_route(self::NAMESPACE, '/huertos-urbanos/tareas/(?P<id>\d+)/completar', [
+        flavor_register_rest_route(self::NAMESPACE, '/huertos-urbanos/tareas/(?P<id>\d+)/completar', [
             'methods' => 'POST',
             'callback' => [$this, 'completar_tarea'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /huertos-urbanos/intercambios/{id}/contactar
-        register_rest_route(self::NAMESPACE, '/huertos-urbanos/intercambios/(?P<id>\d+)/contactar', [
+        flavor_register_rest_route(self::NAMESPACE, '/huertos-urbanos/intercambios/(?P<id>\d+)/contactar', [
             'methods' => 'POST',
             'callback' => [$this, 'contactar_intercambio'],
             'permission_callback' => [$this, 'check_authentication'],

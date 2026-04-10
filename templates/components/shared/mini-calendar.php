@@ -4,7 +4,7 @@
  *
  * Calendario compacto para dashboards y sidebars.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $events     Eventos: [['date' => '2024-01-15', 'title' => 'Evento', 'color' => 'blue', 'url' => '#']]

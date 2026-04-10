@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Talleres
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -65,7 +65,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -251,7 +251,7 @@ class Flavor_Talleres_Frontend_Controller {
             'limite' => 1,
         ], $atts);
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             return '<p class="fmd-widget-empty">' . __('Módulo no configurado.', 'flavor-platform') . '</p>';
         }
 
@@ -332,7 +332,7 @@ class Flavor_Talleres_Frontend_Controller {
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
         $usuario_id = get_current_user_id();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_materiales)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_materiales)) {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-platform') . '</p>';
         }
 
@@ -458,7 +458,7 @@ class Flavor_Talleres_Frontend_Controller {
         }
         $atts['visual_class_string'] = implode(' ', $visual_classes);
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
             echo '<p class="flavor-error">' . __('El módulo de talleres no está configurado.', 'flavor-platform') . '</p>';
             return;
         }

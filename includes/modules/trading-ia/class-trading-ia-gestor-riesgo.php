@@ -2,7 +2,7 @@
 /**
  * Gestion de Riesgo - Protege el capital del usuario
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

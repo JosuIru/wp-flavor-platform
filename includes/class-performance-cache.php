@@ -363,9 +363,9 @@ class Flavor_Performance_Cache {
         }, 'addons');
 
         // Precarga módulos activos
-        if (class_exists('Flavor_Chat_Module_Loader')) {
+        if (class_exists('Flavor_Platform_Module_Loader')) {
             $this->remember('modulos_activos', function() {
-                return Flavor_Chat_Module_Loader::get_instance()->get_loaded_modules();
+                return Flavor_Platform_Module_Loader::get_instance()->get_loaded_modules();
             }, 'modulos');
         }
 

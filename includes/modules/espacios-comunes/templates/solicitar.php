@@ -3,7 +3,7 @@
  * Template: Solicitar Reserva de Espacio
  * Formulario para crear una nueva solicitud de reserva
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EspaciosComunes
  */
 
@@ -58,8 +58,11 @@ if (!function_exists('espacios_get_primera_imagen')) {
 }
 
 // Configuracion del modulo
-$modulo = class_exists('Flavor_Chat_Espacios_Comunes_Module')
-    ? Flavor_Chat_Espacios_Comunes_Module::get_instance()
+$espacios_comunes_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Espacios_Comunes_Module')
+    : 'Flavor_Chat_Espacios_Comunes_Module';
+$modulo = class_exists($espacios_comunes_module_class)
+    ? $espacios_comunes_module_class::get_instance()
     : null;
 $settings = $modulo ? $modulo->get_settings() : [];
 

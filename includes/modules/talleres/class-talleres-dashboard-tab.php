@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Talleres
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Talleres
  */
 
@@ -50,7 +50,7 @@ class Flavor_Talleres_Dashboard_Tab {
         $talleres = [];
         $total_proximos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $total_proximos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'publicado' AND fecha_inicio >= %s",
                 date('Y-m-d')
@@ -148,7 +148,7 @@ class Flavor_Talleres_Dashboard_Tab {
         $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
 
         $inscripciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones) && Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_inscripciones) && Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $inscripciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT i.*, t.titulo, t.fecha_inicio, t.fecha_fin, t.slug, t.instructor_nombre, t.certificado
                  FROM {$tabla_inscripciones} i

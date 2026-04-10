@@ -2,7 +2,7 @@
 /**
  * API REST para el sistema de reputación
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) {

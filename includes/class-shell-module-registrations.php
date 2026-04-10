@@ -4,7 +4,7 @@
  *
  * Registra las subpáginas y badges de cada módulo en el Shell Navigation Registry.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 

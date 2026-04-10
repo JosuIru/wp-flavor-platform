@@ -4,7 +4,7 @@
  *
  * Gestiona la creacion de tablas de base de datos para los modulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 
@@ -191,7 +191,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
             foreach ($tablas_modulo as $nombre_tabla) {
                 $tablas_esperadas[] = $nombre_tabla;
 
-                if (Flavor_Chat_Helpers::tabla_existe($nombre_tabla)) {
+                if (Flavor_Platform_Helpers::tabla_existe($nombre_tabla)) {
                     $tablas_existentes[] = $nombre_tabla;
                 } else {
                     $tablas_faltantes[] = $nombre_tabla;
@@ -232,7 +232,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
         $tablas_existentes = [];
 
         // Metodo 1: Buscar archivo install.php del modulo
-        $ruta_install = FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $modulo_id) . '/install.php';
+        $ruta_install = FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $modulo_id) . '/install.php';
 
         if (file_exists($ruta_install)) {
             require_once $ruta_install;
@@ -270,7 +270,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
                 // Verificar que tablas se crearon
                 $tablas_esperadas = $this->obtener_tablas_esperadas_modulo($modulo_id);
                 foreach ($tablas_esperadas as $nombre_tabla) {
-                    if (Flavor_Chat_Helpers::tabla_existe($nombre_tabla)) {
+                    if (Flavor_Platform_Helpers::tabla_existe($nombre_tabla)) {
                         $tablas_creadas[] = $nombre_tabla;
                     }
                 }
@@ -280,7 +280,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
         // Verificar tablas existentes vs creadas
         $tablas_esperadas = $this->obtener_tablas_esperadas_modulo($modulo_id);
         foreach ($tablas_esperadas as $nombre_tabla) {
-            if (Flavor_Chat_Helpers::tabla_existe($nombre_tabla)) {
+            if (Flavor_Platform_Helpers::tabla_existe($nombre_tabla)) {
                 if (!in_array($nombre_tabla, $tablas_creadas, true)) {
                     $tablas_existentes[] = $nombre_tabla;
                 }
@@ -378,11 +378,11 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
      * @return object|null
      */
     private function obtener_instancia_modulo($modulo_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return null;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         return $loader->get_module($modulo_id);
     }
 

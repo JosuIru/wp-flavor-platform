@@ -79,11 +79,21 @@ class SystemInfo {
 
   /// Verifica si tiene un sistema activo
   bool hasSystem(String systemId) {
+    if (systemId == 'flavor-chat-ia' || systemId == 'flavor-platform') {
+      return activeSystems.any((s) {
+        final id = s['id']?.toString();
+        return id == 'flavor-chat-ia' || id == 'flavor-platform';
+      });
+    }
+
     return activeSystems.any((s) => s['id'] == systemId);
   }
 
   /// Verifica si tiene Flavor Chat IA
   bool get hasFlavorChatIA => hasSystem('flavor-chat-ia');
+
+  /// Verifica si tiene Flavor Platform
+  bool get hasFlavorPlatform => hasSystem('flavor-platform');
 
   /// Verifica si tiene wp-calendario-experiencias
   bool get hasCalendarioExperiencias => hasSystem('calendario-experiencias');

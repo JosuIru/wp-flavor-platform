@@ -4,7 +4,7 @@
  *
  * Tests de interfaz comun, configuracion y mocks de llamadas API
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Tests
  */
 

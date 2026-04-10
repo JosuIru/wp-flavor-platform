@@ -4,7 +4,7 @@
  *
  * Barra de búsqueda con filtros opcionales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param string $placeholder  Placeholder del input

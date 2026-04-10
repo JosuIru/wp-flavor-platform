@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Trabajo Digno
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\TrabajoDigno
  */
 
@@ -93,7 +93,7 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
         $cooperativas_registradas = 0;
         $empleos_dignos_creados = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_ofertas)) {
             $ofertas_activas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_ofertas} WHERE estado = 'activa' AND fecha_limite >= CURDATE()"
             );
@@ -102,14 +102,14 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_candidaturas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_candidaturas)) {
             $mis_candidaturas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_candidaturas} WHERE candidato_id = %d",
                 $user_id
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_cooperativas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_cooperativas)) {
             $cooperativas_registradas = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_cooperativas} WHERE estado = 'activa'"
             );
@@ -176,15 +176,15 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'ofertas')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('trabajo_digno', 'ofertas')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Ver Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('trabajo_digno', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-admin-users"></span>
                     <?php esc_html_e('Mi Perfil Laboral', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'cooperativas')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('trabajo_digno', 'cooperativas')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Cooperativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
@@ -207,7 +207,7 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
         $tabla_ofertas = $wpdb->prefix . 'flavor_trabajo_ofertas';
 
         $ofertas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_ofertas)) {
             $ofertas = $wpdb->get_results(
                 "SELECT * FROM {$tabla_ofertas}
                  WHERE estado = 'activa' AND fecha_limite >= CURDATE()
@@ -266,7 +266,7 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
                                         date_i18n(get_option('date_format'), strtotime($oferta->fecha_limite))
                                     ); ?>
                                 </span>
-                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'oferta') . '/' . $oferta->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('trabajo_digno', 'oferta') . '/' . $oferta->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                     <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>

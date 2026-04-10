@@ -4,7 +4,7 @@
  *
  * Gestiona la previsualización de páginas construidas con el Page Builder
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

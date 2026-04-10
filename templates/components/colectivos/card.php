@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Colectivo/Asociación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

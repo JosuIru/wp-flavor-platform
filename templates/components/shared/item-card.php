@@ -5,7 +5,7 @@
  * Card genérica que se adapta según los datos proporcionados.
  * Para casos específicos, crear cards personalizadas por módulo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array $item  Datos del item (o usar $card_item si viene de items-grid)

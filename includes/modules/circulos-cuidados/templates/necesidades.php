@@ -4,7 +4,7 @@
  *
  * Muestra las necesidades de cuidado abiertas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

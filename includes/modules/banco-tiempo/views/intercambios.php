@@ -4,7 +4,7 @@
  *
  * Gestión de intercambios y transacciones entre usuarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

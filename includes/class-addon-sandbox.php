@@ -227,7 +227,7 @@ class Flavor_Addon_Sandbox {
             return $result;
 
         } catch (Exception $e) {
-            flavor_chat_ia_log("Error en sandbox para addon {$addon_slug}: " . $e->getMessage(), 'error');
+            flavor_platform_log("Error en sandbox para addon {$addon_slug}: " . $e->getMessage(), 'error');
             return new WP_Error('sandbox_error', $e->getMessage());
 
         } finally {
@@ -306,7 +306,7 @@ class Flavor_Addon_Sandbox {
 
             // Verificar límite
             if ($this->resource_usage[$current_addon]['db_queries'] > $this->resource_limits['max_db_queries']) {
-                flavor_chat_ia_log("Addon {$current_addon} excedió límite de queries", 'warning');
+                flavor_platform_log("Addon {$current_addon} excedió límite de queries", 'warning');
             }
         }
 
@@ -335,7 +335,7 @@ class Flavor_Addon_Sandbox {
 
             // Verificar límite
             if ($this->resource_usage[$current_addon]['http_requests'] > $this->resource_limits['max_http_requests']) {
-                flavor_chat_ia_log("Addon {$current_addon} excedió límite de HTTP requests", 'warning');
+                flavor_platform_log("Addon {$current_addon} excedió límite de HTTP requests", 'warning');
             }
         }
     }
@@ -397,7 +397,7 @@ class Flavor_Addon_Sandbox {
      */
     public function cleanup_stats() {
         $this->resource_usage = [];
-        flavor_chat_ia_log('Estadísticas de sandbox limpiadas');
+        flavor_platform_log('Estadísticas de sandbox limpiadas');
     }
 
     /**
@@ -442,7 +442,7 @@ class Flavor_Addon_Sandbox {
         if (!in_array($addon_slug, $whitelist)) {
             $whitelist[] = $addon_slug;
             update_option('flavor_addon_whitelist', $whitelist);
-            flavor_chat_ia_log("Addon {$addon_slug} añadido a whitelist");
+            flavor_platform_log("Addon {$addon_slug} añadido a whitelist");
         }
 
         return true;
@@ -461,7 +461,7 @@ class Flavor_Addon_Sandbox {
         if ($key !== false) {
             unset($whitelist[$key]);
             update_option('flavor_addon_whitelist', array_values($whitelist));
-            flavor_chat_ia_log("Addon {$addon_slug} removido de whitelist");
+            flavor_platform_log("Addon {$addon_slug} removido de whitelist");
         }
 
         return true;

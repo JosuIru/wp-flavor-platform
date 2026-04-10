@@ -5,7 +5,7 @@
  * Orquesta la activacion, desactivacion y gestion de plantillas completas
  * coordinando todos los componentes involucrados: modulos, paginas, landing, config, demo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator
  */
 
@@ -802,7 +802,7 @@ class Flavor_Template_Orchestrator {
             'fecha_activacion' => current_time('mysql'),
             'opciones' => $opciones,
             'modulos' => $definicion['modulos']['requeridos'] ?? [],
-            'version' => FLAVOR_CHAT_IA_VERSION ?? '1.0.0',
+            'version' => FLAVOR_PLATFORM_VERSION ?? '1.0.0',
         ];
 
         update_option('flavor_plantillas_activas', $plantillas_activas);
@@ -848,8 +848,8 @@ class Flavor_Template_Orchestrator {
         }
 
         // Tambien registrar en el log del plugin si existe la funcion
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log("[Orchestrator] {$accion}", 'info', $datos);
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log("[Orchestrator] {$accion}", 'info', $datos);
         }
     }
 

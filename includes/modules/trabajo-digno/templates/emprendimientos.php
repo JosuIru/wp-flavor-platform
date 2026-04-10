@@ -2,14 +2,17 @@
 /**
  * Template: Emprendimientos Locales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$sectores = Flavor_Chat_Trabajo_Digno_Module::SECTORES;
+$trabajo_digno_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Trabajo_Digno_Module')
+    : 'Flavor_Chat_Trabajo_Digno_Module';
+$sectores = $trabajo_digno_module_class::SECTORES;
 
 $emprendimientos = get_posts([
     'post_type' => 'td_emprendimiento',

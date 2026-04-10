@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $resultado: array con 'success', 'talleres' (array de talleres inscritos)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

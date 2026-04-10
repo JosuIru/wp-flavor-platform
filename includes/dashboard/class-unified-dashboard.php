@@ -5,7 +5,7 @@
  * Centraliza la visualizacion de widgets de todos los modulos activos
  * en una unica vista personalizable por el usuario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Dashboard
  * @since 4.0.0
  */
@@ -112,8 +112,8 @@ class Flavor_Unified_Dashboard {
      */
     public function load_dependencies(): void {
         // Cargar archivos necesarios
-        $dashboard_path = FLAVOR_CHAT_IA_PATH . 'includes/dashboard/';
-        $frontend_path = FLAVOR_CHAT_IA_PATH . 'includes/frontend/';
+        $dashboard_path = FLAVOR_PLATFORM_PATH . 'includes/dashboard/';
+        $frontend_path = FLAVOR_PLATFORM_PATH . 'includes/frontend/';
 
         // Verificar que los archivos existan
         $archivos_requeridos = [
@@ -170,8 +170,8 @@ class Flavor_Unified_Dashboard {
             return;
         }
 
-        $plugin_url = FLAVOR_CHAT_IA_URL;
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_PLATFORM_URL;
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '4.1.0';
 
         // =====================================================================
         // CSS - Sistema de Diseño Unificado (v4.1.0)
@@ -258,7 +258,7 @@ class Flavor_Unified_Dashboard {
         );
 
         // CSS Unificado (admin)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/unified-dashboard.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/css/unified-dashboard.css')) {
             wp_enqueue_style(
                 'fud-unified-dashboard',
                 $plugin_url . 'admin/css/unified-dashboard.css',
@@ -295,7 +295,7 @@ class Flavor_Unified_Dashboard {
 
         // JS del dashboard (legacy)
         $js_path = $plugin_url . 'admin/js/unified-dashboard.js';
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/js/unified-dashboard.js')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/js/unified-dashboard.js')) {
             wp_enqueue_script(
                 'fud-unified-dashboard',
                 $js_path,
@@ -492,7 +492,7 @@ class Flavor_Unified_Dashboard {
         $user_prefs    = $this->get_user_preferences();
 
         // Cargar la vista (las variables locales estan disponibles en el scope del include)
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/unified-dashboard.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/unified-dashboard.php';
     }
 
     /**
@@ -540,14 +540,14 @@ class Flavor_Unified_Dashboard {
      */
     private function register_module_widgets(Flavor_Widget_Registry $registry): void {
         // Verificar que el Module Loader existe
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
 
         // Obtener módulos activos desde ambas ubicaciones
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         // También leer de flavor_active_modules (legacy/compatibilidad)
@@ -872,7 +872,7 @@ class Flavor_Unified_Dashboard {
      */
     public function get_system_overview_data(): array {
         // Obtener módulos activos desde ambas ubicaciones
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         $modulos_activos_legacy = get_option('flavor_active_modules', []);
@@ -882,8 +882,8 @@ class Flavor_Unified_Dashboard {
 
         $total_modulos = 0;
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $total_modulos = count(Flavor_Chat_Module_Loader::get_instance()->get_registered_modules());
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $total_modulos = count(Flavor_Platform_Module_Loader::get_instance()->get_registered_modules());
         }
 
         $tiene_api_key = !empty($configuracion['claude_api_key']) ||
@@ -1019,7 +1019,7 @@ class Flavor_Unified_Dashboard {
      */
     public function get_quick_actions_data(): array {
         // Obtener módulos activos desde ambas ubicaciones
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         $modulos_activos_legacy = get_option('flavor_active_modules', []);
@@ -1401,8 +1401,8 @@ class Flavor_Unified_Dashboard {
             return;
         }
 
-        $plugin_url = FLAVOR_CHAT_IA_URL;
-        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_PLATFORM_URL;
+        $version = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '4.1.0';
 
         // Dashicons
         wp_enqueue_style('dashicons');
@@ -1506,7 +1506,7 @@ class Flavor_Unified_Dashboard {
         );
 
         // Dashboard principal (si existe)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/js/unified-dashboard.js')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/js/unified-dashboard.js')) {
             wp_enqueue_script(
                 'flavor-unified-dashboard',
                 $plugin_url . 'assets/js/unified-dashboard.js',
@@ -2439,11 +2439,11 @@ class Flavor_Unified_Dashboard {
     private function get_widget_semantics_frontend(string $module_id): array {
         $module_key = sanitize_key(str_replace('-', '_', $module_id));
 
-        if ($module_key === '' || !class_exists('Flavor_Chat_Module_Loader')) {
+        if ($module_key === '' || !class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader ? $loader->get_registered_modules() : [];
         $module_data = $registered_modules[$module_key] ?? null;
 
@@ -2593,11 +2593,11 @@ class Flavor_Unified_Dashboard {
      * @return array
      */
     private function build_frontend_ecosystem_nodes(array $widgets): array {
-        if (empty($widgets) || !class_exists('Flavor_Chat_Module_Loader')) {
+        if (empty($widgets) || !class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $registered_modules = $loader ? $loader->get_registered_modules() : [];
 
         if (empty($registered_modules)) {
@@ -3794,8 +3794,8 @@ class Flavor_Unified_Dashboard {
         // Normalizar a guiones bajos para el loader
         $module_id_normalizado = str_replace('-', '_', $module_id);
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             if (method_exists($loader, 'get_module')) {
                 return $loader->get_module($module_id_normalizado);
             }
@@ -3870,7 +3870,7 @@ class Flavor_Unified_Dashboard {
         ];
 
         // Obtener módulos activos desde configuración (ambas ubicaciones)
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $activos = $settings['active_modules'] ?? [];
 
         // También leer de flavor_active_modules (legacy/compatibilidad)
@@ -3921,7 +3921,7 @@ class Flavor_Unified_Dashboard {
     public function render_gailu_impact_panel(bool $compact = false): void {
         // Obtener métricas Gailu desde el Module Loader
         // Leer de ambas ubicaciones de configuración
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos_ids = $configuracion['active_modules'] ?? [];
 
         $modulos_activos_legacy = get_option('flavor_active_modules', []);
@@ -3934,8 +3934,8 @@ class Flavor_Unified_Dashboard {
         }
 
         $gailu_metricas = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $gailu_metricas = Flavor_Platform_Module_Loader::get_gailu_metricas($modulos_activos_ids);
         }
 
         if (empty($gailu_metricas)) {

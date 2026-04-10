@@ -3,7 +3,7 @@
  * Template: Radio Podcasts Grid
  * Lista/grid de podcasts de la radio comunitaria
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

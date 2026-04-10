@@ -2,7 +2,7 @@
 /**
  * Vista: Detalle de colectivo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array  $colectivo             Datos del colectivo
  * @var array  $miembros              Lista de miembros
  * @var array  $proyectos             Lista de proyectos

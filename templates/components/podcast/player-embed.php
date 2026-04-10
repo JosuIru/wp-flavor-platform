@@ -5,7 +5,7 @@
  * Player de podcast con controles completos: play/pause, barra de progreso,
  * control de velocidad y volumen.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Podcast
  */
 

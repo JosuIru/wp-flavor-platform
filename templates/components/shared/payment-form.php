@@ -4,7 +4,7 @@
  *
  * Formulario de pago integrado con múltiples métodos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param float  $amount       Importe a pagar

@@ -2,7 +2,7 @@
 /**
  * Vista de busqueda rapida de actores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

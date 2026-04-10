@@ -5,7 +5,7 @@
  * Sistema centralizado para moderar contenido generado por usuarios
  * en todos los módulos de la plataforma.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.4.0
  */
 
@@ -1443,16 +1443,16 @@ class Flavor_Moderation_Manager {
 
         wp_enqueue_style(
             'flavor-moderation-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/moderation/assets/moderation-admin.css',
+            FLAVOR_PLATFORM_URL . 'includes/moderation/assets/moderation-admin.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-moderation-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/moderation/assets/moderation-admin.js',
+            FLAVOR_PLATFORM_URL . 'includes/moderation/assets/moderation-admin.js',
             ['jquery', 'wp-util'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -1486,7 +1486,7 @@ class Flavor_Moderation_Manager {
      */
     public function render_admin_page() {
         $tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'cola';
-        include FLAVOR_CHAT_IA_PATH . 'includes/moderation/views/admin-moderation.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/moderation/views/admin-moderation.php';
     }
 
     /**

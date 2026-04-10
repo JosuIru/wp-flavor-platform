@@ -4,7 +4,7 @@
  *
  * Sección hero principal para la red de ayuda vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

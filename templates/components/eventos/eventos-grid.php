@@ -1,22 +1,22 @@
 <?php
 /**
  * Template: Eventos Grid
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) { exit; }
 
 // Obtener eventos desde BD
 $eventos_lista = [];
 $modulo_eventos = null;
-if (class_exists('Flavor_Chat_Module_Loader')) {
-    $loader = Flavor_Chat_Module_Loader::get_instance();
+if (class_exists('Flavor_Platform_Module_Loader')) {
+    $loader = Flavor_Platform_Module_Loader::get_instance();
     $modulo_eventos = $loader->get_module('eventos');
 }
 
 if ($modulo_eventos) {
     global $wpdb;
     $tabla = $wpdb->prefix . 'flavor_eventos';
-    if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+    if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
         $eventos_lista = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM $tabla WHERE estado = 'publicado' AND fecha_inicio >= %s ORDER BY fecha_inicio ASC LIMIT 12",
@@ -145,7 +145,7 @@ $tipos_disponibles = array_unique(array_column($eventos_lista, 'tipo'));
                         <?php endif; ?>
 
                         <!-- CTA -->
-                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('eventos', $evento['id'], 'inscribirse')); ?>" class="flavor-button flavor-button-primary w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90" style="background: <?php echo esc_attr($color_tipo); ?>;">
+                        <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('eventos', $evento['id'], 'inscribirse')); ?>" class="flavor-button flavor-button-primary w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90" style="background: <?php echo esc_attr($color_tipo); ?>;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                             <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>

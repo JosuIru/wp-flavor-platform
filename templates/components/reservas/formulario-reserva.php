@@ -2,7 +2,7 @@
 /**
  * Formulario de reserva para frontend
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

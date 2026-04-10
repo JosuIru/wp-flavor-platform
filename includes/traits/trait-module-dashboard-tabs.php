@@ -6,7 +6,7 @@
  * Los módulos que usen este trait pueden definir sus propios tabs
  * sin depender de configuración centralizada en class-dynamic-pages.php
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 
@@ -90,7 +90,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
      */
     protected function get_integration_tabs_fallback() {
         // Verificar que el loader de módulos existe
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
@@ -98,7 +98,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
         $modulo_actual = $this->get_module_id_for_tabs();
         $entity_id = $this->get_current_entity_id_for_tabs();
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         // Módulos de red que pueden proveer tabs
         $modulos_red = ['foros', 'red_social', 'chat_grupos', 'multimedia', 'podcast', 'comunidades'];
@@ -379,8 +379,8 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
         $paths = [
             get_stylesheet_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
             get_template_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
         ];
 
         foreach ($paths as $path) {

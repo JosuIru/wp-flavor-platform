@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Hero Biblioteca
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 $color = $color_primario ?? '#6366f1';

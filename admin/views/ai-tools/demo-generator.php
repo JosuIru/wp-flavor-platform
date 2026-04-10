@@ -4,7 +4,7 @@
  *
  * Genera datos de prueba para módulos. Solo disponible en modo desarrollo.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.2
  */
 

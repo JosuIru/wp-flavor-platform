@@ -2,7 +2,7 @@
 /**
  * Module Config - Configuración Granular por Módulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -4,7 +4,7 @@
  *
  * Muestra una cuadrícula de cursos disponibles con filtros y paginación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Cursos
  */
 

@@ -6,7 +6,7 @@
  * Permite que cada módulo herede los colores del tema activo o defina
  * su propia paleta personalizada.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.3.0
  */
 
@@ -76,9 +76,9 @@ class Flavor_Module_Colors {
     public function enqueue_module_components_css() {
         wp_enqueue_style(
             'flavor-dashboard-module-components',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-module-components.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-module-components.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 

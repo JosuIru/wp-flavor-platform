@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Socio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 
@@ -59,7 +59,7 @@ $nivel_clase = match($nivel) {
     </div>
     <?php endif; ?>
 
-    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('socios', $id, 'perfil')); ?>"
+    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('socios', $id, 'perfil')); ?>"
        class="block w-full text-center py-2 border border-rose-300 text-rose-600 rounded-lg text-sm font-medium hover:bg-rose-50 transition-colors">
         <?php echo esc_html__('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>

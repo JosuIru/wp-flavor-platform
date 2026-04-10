@@ -2,7 +2,7 @@
 /**
  * Vista Procesos de Votación - Módulo Participación Ciudadana (Admin)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

@@ -2,7 +2,7 @@
 /**
  * Controlador Frontend - Módulo Empresas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

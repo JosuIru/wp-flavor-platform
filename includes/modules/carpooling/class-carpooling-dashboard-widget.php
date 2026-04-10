@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Carpooling
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Carpooling
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -90,7 +90,7 @@ class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $viajes_disponibles,
                 'label' => __('Viajes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes') : Flavor_Chat_Helpers::get_action_url('carpooling', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes') : Flavor_Platform_Helpers::get_action_url('carpooling', ''),
             ],
         ];
 
@@ -100,7 +100,7 @@ class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_viajes,
                 'label' => __('Ofrezco', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_viajes > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&tab=mis-viajes') : Flavor_Chat_Helpers::get_action_url('carpooling', 'mis-viajes'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&tab=mis-viajes') : Flavor_Platform_Helpers::get_action_url('carpooling', 'mis-viajes'),
             ];
 
             $stats[] = [
@@ -108,7 +108,7 @@ class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_reservas,
                 'label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_reservas > 0 ? 'info' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&tab=reservas') : Flavor_Chat_Helpers::get_action_url('carpooling', 'reservas'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&tab=reservas') : Flavor_Platform_Helpers::get_action_url('carpooling', 'reservas'),
             ];
         }
 
@@ -121,7 +121,7 @@ class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Buscar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes') : Flavor_Chat_Helpers::get_action_url('carpooling', 'buscar'),
+                    'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes') : Flavor_Platform_Helpers::get_action_url('carpooling', 'buscar'),
                     'icon' => 'dashicons-search',
                 ],
             ],
@@ -153,7 +153,7 @@ class Flavor_Carpooling_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-car',
                 'title' => $ruta,
                 'meta' => date_i18n('j M, H:i', strtotime($viaje->fecha_salida)),
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&viaje=' . $viaje->id) : Flavor_Chat_Helpers::get_action_url('carpooling', 'viaje') . '/' . $viaje->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-carpooling-viajes&viaje=' . $viaje->id) : Flavor_Platform_Helpers::get_action_url('carpooling', 'viaje') . '/' . $viaje->id . '/',
                 'badge' => $viaje->plazas_disponibles > 0 ? $viaje->plazas_disponibles . ' plazas' : null,
             ];
         }

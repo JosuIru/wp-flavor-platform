@@ -231,7 +231,7 @@ PUT /flavor/v1/ayuda-vecinal/{id}
 // Body: estado, campos editables...
 ```
 
-### API Movil (Namespace: flavor-chat-ia/v1)
+### API Movil (Namespace: flavor-platform/v1)
 
 ```
 GET /ayuda-vecinal

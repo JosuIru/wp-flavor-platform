@@ -5,26 +5,26 @@
  * Expone shortcodes canónicos y los redirige al módulo principal
  * sin duplicar la lógica de negocio.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Interno_Frontend_Controller {
+class Flavor_Platform_Interno_Frontend_Controller {
 
     /**
      * Instancia singleton.
      *
-     * @var Flavor_Chat_Interno_Frontend_Controller|null
+     * @var Flavor_Platform_Module_Interface|null
      */
     private static $instance = null;
 
     /**
      * Devuelve instancia singleton.
      *
-     * @return Flavor_Chat_Interno_Frontend_Controller
+     * @return self
      */
     public static function get_instance() {
         if (null === self::$instance) {
@@ -80,11 +80,11 @@ class Flavor_Chat_Interno_Frontend_Controller {
      * @return object|null
      */
     private function get_module() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return null;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         if (!$loader || !method_exists($loader, 'get_module')) {
             return null;
         }
@@ -93,5 +93,8 @@ class Flavor_Chat_Interno_Frontend_Controller {
     }
 }
 
-Flavor_Chat_Interno_Frontend_Controller::get_instance();
-
+$frontend_controller_class = 'Flavor_Platform_Interno_Frontend_Controller';
+if (!class_exists('Flavor_Chat_Interno_Frontend_Controller', false)) {
+    class_alias('Flavor_Platform_Interno_Frontend_Controller', 'Flavor_Chat_Interno_Frontend_Controller');
+}
+$frontend_controller_class::get_instance();

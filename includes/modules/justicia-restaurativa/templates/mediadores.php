@@ -2,14 +2,17 @@
 /**
  * Template: Mediadores
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$modulo = new Flavor_Chat_Justicia_Restaurativa_Module();
+$justicia_restaurativa_module_class = function_exists('flavor_get_runtime_class_name')
+    ? flavor_get_runtime_class_name('Flavor_Chat_Justicia_Restaurativa_Module')
+    : 'Flavor_Chat_Justicia_Restaurativa_Module';
+$modulo = new $justicia_restaurativa_module_class();
 $mediadores = $modulo->get_mediadores();
 $user_id = get_current_user_id();
 

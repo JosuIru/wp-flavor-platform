@@ -4,14 +4,14 @@
  *
  * Sistema de anuncios éticos con reparto de beneficios a la comunidad.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Advertising_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -1809,7 +1809,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         $this->enqueue_frontend_assets();
 
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/advertising/templates/dashboard.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/advertising/templates/dashboard.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;
@@ -1878,7 +1878,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         $this->enqueue_frontend_assets();
 
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/advertising/templates/crear.php';
+        $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/advertising/templates/crear.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;
@@ -1983,7 +1983,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         if ($enqueued) return;
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-ads-frontend',
@@ -2020,7 +2020,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         if (is_admin()) return;
 
         $base_url = plugins_url('assets/', __FILE__);
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_script(
             'flavor-ads-tracking',
@@ -2540,4 +2540,8 @@ KNOWLEDGE;
             Flavor_Advertising_Dashboard_Tab::get_instance();
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Advertising_Module', false)) {
+    class_alias('Flavor_Platform_Advertising_Module', 'Flavor_Chat_Advertising_Module');
 }

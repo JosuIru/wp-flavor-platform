@@ -2,14 +2,14 @@
 /**
  * Gestión de sesiones del chat
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Session {
+class Flavor_Platform_Session {
 
     /**
      * ID de la sesión
@@ -58,7 +58,7 @@ class Flavor_Chat_Session {
      * Carga una sesión existente desde transient
      */
     private function load_session() {
-        $data = get_transient('flavor_chat_session_' . $this->session_id);
+        $data = get_transient('flavor_platform_session_' . $this->session_id);
 
         if ($data) {
             $this->conversation_id = $data['conversation_id'] ?? null;
@@ -78,7 +78,7 @@ class Flavor_Chat_Session {
         ];
 
         // Guardar por 24 horas
-        set_transient('flavor_chat_session_' . $this->session_id, $data, DAY_IN_SECONDS);
+        set_transient('flavor_platform_session_' . $this->session_id, $data, DAY_IN_SECONDS);
     }
 
     /**
@@ -160,6 +160,10 @@ class Flavor_Chat_Session {
     public function clear() {
         $this->messages = [];
         $this->conversation_id = null;
-        delete_transient('flavor_chat_session_' . $this->session_id);
+        delete_transient('flavor_platform_session_' . $this->session_id);
     }
+}
+
+if (!class_exists('Flavor_Chat_Session', false)) {
+    class_alias('Flavor_Platform_Session', 'Flavor_Chat_Session');
 }

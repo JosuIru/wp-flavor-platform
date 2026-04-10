@@ -2,7 +2,7 @@
 /**
  * Template: Lista de Categorias de Foros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

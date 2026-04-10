@@ -2,7 +2,7 @@
 /**
  * Widget de estados para el dashboard
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules/Chat_Estados
  * @since 1.5.0
  */

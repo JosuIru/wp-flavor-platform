@@ -5,7 +5,7 @@
  * Gestiona versiones de modulos de forma independiente,
  * verificacion de dependencias y compatibilidad.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Includes
  * @since 3.4.0
  */
@@ -488,8 +488,8 @@ class Flavor_Module_Versioning {
 
         // Verificar version de Flavor Platform
         if ( ! empty( $module_info['flavor_version_min'] ) ) {
-            $flavor_version = defined( 'FLAVOR_CHAT_IA_VERSION' )
-                ? FLAVOR_CHAT_IA_VERSION
+            $flavor_version = defined( 'FLAVOR_PLATFORM_VERSION' )
+                ? FLAVOR_PLATFORM_VERSION
                 : '0.0.0';
 
             $result['details']['flavor_version'] = array(

@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Pagos de Socios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

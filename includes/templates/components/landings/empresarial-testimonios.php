@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Testimonios Empresariales
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

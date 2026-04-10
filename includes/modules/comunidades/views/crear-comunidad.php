@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $categorias: array de categorias disponibles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

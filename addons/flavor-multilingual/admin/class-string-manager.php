@@ -575,7 +575,7 @@ class Flavor_String_Manager {
 
         $paths = array(
             FLAVOR_MULTILINGUAL_PATH,
-            FLAVOR_CHAT_IA_PATH,
+            FLAVOR_PLATFORM_PATH,
             get_template_directory(),
         );
 

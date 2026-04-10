@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Solicitudes de Ayuda
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

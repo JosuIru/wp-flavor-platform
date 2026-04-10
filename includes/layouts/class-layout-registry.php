@@ -5,7 +5,7 @@
  * Gestiona menús y footers predefinidos seleccionables
  * para web y APKs móviles.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 1.6.0
  */
 
@@ -715,16 +715,16 @@ class Flavor_Layout_Registry {
 
         wp_enqueue_style(
             'flavor-layouts',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts/layouts{$sufijo_asset}.css",
+            FLAVOR_PLATFORM_URL . "assets/css/layouts/layouts{$sufijo_asset}.css",
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-layouts',
-            FLAVOR_CHAT_IA_URL . "assets/js/layouts{$sufijo_asset}.js",
+            FLAVOR_PLATFORM_URL . "assets/js/layouts{$sufijo_asset}.js",
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

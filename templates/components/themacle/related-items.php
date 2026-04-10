@@ -5,7 +5,7 @@
  * Displays a responsive grid of related content items.
  * Shows skeleton placeholders when no data source is available.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo         Section heading text.
  * @var int    $columnas       Number of columns (2, 3, or 4).

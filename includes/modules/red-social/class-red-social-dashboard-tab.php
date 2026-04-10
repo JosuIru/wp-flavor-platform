@@ -2,7 +2,7 @@
 /**
  * Dashboard Tab para Red Social
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -85,7 +85,10 @@ class Flavor_Red_Social_Dashboard_Tab {
 
     private function enqueue_assets() {
         $module_url = plugin_dir_url(__FILE__);
-        $version = defined('Flavor_Chat_Red_Social_Module::VERSION') ? Flavor_Chat_Red_Social_Module::VERSION : '2.0.0';
+        $red_social_module_class = function_exists('flavor_get_runtime_class_name')
+            ? flavor_get_runtime_class_name('Flavor_Chat_Red_Social_Module')
+            : 'Flavor_Chat_Red_Social_Module';
+        $version = defined($red_social_module_class . '::VERSION') ? $red_social_module_class::VERSION : '2.0.0';
 
         wp_enqueue_style(
             'flavor-red-social',

@@ -4,7 +4,7 @@
  *
  * Listado de viajes disponibles en formato tarjetas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Muestra un timeline visual de las fases del proceso de participación ciudadana
  * con indicadores de progreso y fechas clave.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Variables pasadas al template
  */
 

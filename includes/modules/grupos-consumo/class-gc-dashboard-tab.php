@@ -4,7 +4,7 @@
  *
  * Integra el módulo con el dashboard de usuario de Flavor.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -144,7 +144,7 @@ class Flavor_GC_Dashboard_Tab {
         global $wpdb;
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             return 0;
         }
 
@@ -180,7 +180,7 @@ class Flavor_GC_Dashboard_Tab {
         $importe_ultimo_ciclo = 0.0;
         $importe_ciclo_activo = 0.0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
                 $user_id
@@ -266,7 +266,7 @@ class Flavor_GC_Dashboard_Tab {
                 $alertas[] = __('La entrega es en menos de 24 horas.', 'flavor-platform');
             }
         }
-        if ($ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if ($ciclo && Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $importe_ciclo_activo = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
                 $user_id,
@@ -274,7 +274,7 @@ class Flavor_GC_Dashboard_Tab {
             ));
         }
 
-        if ($filtro_ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if ($filtro_ciclo && Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $importe_ciclo_activo = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
                 $user_id,
@@ -283,7 +283,7 @@ class Flavor_GC_Dashboard_Tab {
         }
 
         $detalle_ciclo = [];
-        if ($filtro_ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if ($filtro_ciclo && Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $detalle_ciclo = $wpdb->get_results($wpdb->prepare(
                 "SELECT p.producto_id, p.cantidad, p.precio_unitario, (p.cantidad * p.precio_unitario) as total,
                         pr.post_title as producto
@@ -469,16 +469,16 @@ class Flavor_GC_Dashboard_Tab {
             </div>
 
             <div class="gc-panel-actions">
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>">
                     <?php _e('Ver productos', 'flavor-platform'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>">
                     <?php _e('Pedido actual', 'flavor-platform'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>">
                     <?php _e('Historial', 'flavor-platform'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'suscripciones')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'suscripciones')); ?>">
                     <?php _e('Suscripciones', 'flavor-platform'); ?>
                 </a>
                 <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_resumen_usuario'), 'gc_exportar_resumen_usuario')); ?>">
@@ -546,7 +546,7 @@ class Flavor_GC_Dashboard_Tab {
         $pedidos_mes = 0;
         $importe_mes = 0.0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
                 $user_id
@@ -618,7 +618,7 @@ class Flavor_GC_Dashboard_Tab {
 
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             wp_die(__('No hay datos disponibles.', 'flavor-platform'));
         }
 
@@ -681,7 +681,7 @@ class Flavor_GC_Dashboard_Tab {
         $pedidos_mes = 0;
         $importe_mes = 0.0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
                 $user_id
@@ -779,7 +779,7 @@ class Flavor_GC_Dashboard_Tab {
 
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             wp_die(__('No hay datos disponibles.', 'flavor-platform'));
         }
 
@@ -874,7 +874,7 @@ class Flavor_GC_Dashboard_Tab {
 
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             return [];
         }
 
@@ -994,7 +994,7 @@ class Flavor_GC_Dashboard_Tab {
 
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             return array_fill(0, $months, 0);
         }
 
@@ -1067,7 +1067,7 @@ class Flavor_GC_Dashboard_Tab {
         }
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
             return [];
         }
         return $wpdb->get_results($wpdb->prepare(
@@ -1116,7 +1116,7 @@ class Flavor_GC_Dashboard_Tab {
                 <div class="gc-empty-state">
                     <span class="gc-empty-icon dashicons dashicons-cart"></span>
                     <p><?php _e('Tu lista de la compra está vacía.', 'flavor-platform'); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                         <?php _e('Ver Productos', 'flavor-platform'); ?>
                     </a>
                 </div>
@@ -1661,7 +1661,7 @@ class Flavor_GC_Dashboard_Tab {
         global $wpdb;
         $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             $consumidor = $wpdb->get_row($wpdb->prepare(
                 "SELECT *
                  FROM {$tabla_consumidores}
@@ -1815,7 +1815,7 @@ class Flavor_GC_Dashboard_Tab {
 
         // Obtener grupos del usuario
         $membresias = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_consumidores)) {
             $membresias = $wpdb->get_results($wpdb->prepare(
                 "SELECT c.*, g.post_title as grupo_nombre, g.post_content as grupo_descripcion
                  FROM {$tabla_consumidores} c
@@ -1829,7 +1829,7 @@ class Flavor_GC_Dashboard_Tab {
         // Estadisticas por grupo
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
         $estadisticas_grupos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos) && !empty($membresias)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos) && !empty($membresias)) {
             foreach ($membresias as $membresia) {
                 $total_pedidos = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(DISTINCT ciclo_id) FROM {$tabla_pedidos} WHERE usuario_id = %d",
@@ -1956,11 +1956,11 @@ class Flavor_GC_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="gc-grupo-acciones">
-                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($membresia->grupo_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($membresia->grupo_id), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline">
                                     <?php _e('Ver Grupo', 'flavor-platform'); ?>
                                 </a>
                                 <?php if ($membresia->estado === 'activo'): ?>
-                                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
+                                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                                         <?php _e('Hacer Pedido', 'flavor-platform'); ?>
                                     </a>
                                 <?php endif; ?>
@@ -2002,7 +2002,7 @@ class Flavor_GC_Dashboard_Tab {
                                         <?php printf(_n('%d miembro', '%d miembros', $num_miembros, 'flavor-platform'), $num_miembros); ?>
                                     </p>
                                 </div>
-                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($grupo->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($grupo->ID), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
                                     <?php _e('Ver Detalles', 'flavor-platform'); ?>
                                 </a>
                             </div>
@@ -2178,7 +2178,7 @@ class Flavor_GC_Dashboard_Tab {
                 <div class="gc-empty-state gc-empty-sm">
                     <span class="gc-empty-icon dashicons dashicons-calendar-alt"></span>
                     <p><?php _e('No tienes entregas programadas proximamente.', 'flavor-platform'); ?></p>
-                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                         <?php _e('Hacer un Pedido', 'flavor-platform'); ?>
                     </a>
                 </div>
@@ -2281,7 +2281,7 @@ class Flavor_GC_Dashboard_Tab {
 
             // Obtener estado de pago si existe entrega
             $estado_pago = 'pendiente';
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_entregas)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_entregas)) {
                 $entrega_registro = $wpdb->get_row($wpdb->prepare(
                     "SELECT estado_pago FROM {$tabla_entregas} WHERE usuario_id = %d AND ciclo_id = %d",
                     $usuario_id,
@@ -2322,7 +2322,7 @@ class Flavor_GC_Dashboard_Tab {
         global $wpdb;
         $tabla_entregas = $wpdb->prefix . 'flavor_gc_entregas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_entregas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_entregas)) {
             return [];
         }
 
@@ -2375,7 +2375,7 @@ class Flavor_GC_Dashboard_Tab {
 
             // Verificar si el usuario tiene pedido en este ciclo
             $tiene_pedido = false;
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            if (Flavor_Platform_Helpers::tabla_existe($tabla_pedidos)) {
                 $tiene_pedido = (bool) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
                     $usuario_id,
@@ -2425,7 +2425,7 @@ class Flavor_GC_Dashboard_Tab {
             'importe_pendiente' => 0,
         ];
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_entregas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_entregas)) {
             return $estadisticas;
         }
 

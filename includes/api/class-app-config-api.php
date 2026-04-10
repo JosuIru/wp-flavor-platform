@@ -4,7 +4,7 @@
  *
  * Endpoints para configurar apps Flutter: colores, branding, módulos, permisos.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage API
  * @since 2.1.0
  */
@@ -64,7 +64,7 @@ class Flavor_App_Config_API {
     private function __construct() {
         $settings = get_option( 'flavor_chat_ia_settings', array() );
         $this->api_key = flavor_get_vbp_api_key();
-        $this->mobile_apps_path = FLAVOR_CHAT_IA_PATH . 'mobile-apps/';
+        $this->mobile_apps_path = FLAVOR_PLATFORM_PATH . 'mobile-apps/';
 
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
@@ -649,7 +649,7 @@ class Flavor_App_Config_API {
             'config' => $config,
             'export_date' => current_time( 'c' ),
             'wordpress_version' => get_bloginfo( 'version' ),
-            'plugin_version' => defined( 'FLAVOR_CHAT_IA_VERSION' ) ? FLAVOR_CHAT_IA_VERSION : '2.1.0',
+            'plugin_version' => defined( 'FLAVOR_PLATFORM_VERSION' ) ? FLAVOR_PLATFORM_VERSION : '2.1.0',
         ) );
     }
 

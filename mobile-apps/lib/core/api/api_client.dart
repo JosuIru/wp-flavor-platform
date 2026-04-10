@@ -11,6 +11,10 @@ class ApiClient {
   final String? _customBaseUrl;
 
   static const String _tokenKey = 'auth_token';
+  static const String _legacyFlavorApiPrefix = '/wp-json/flavor-chat-ia/v1';
+  static const String _platformFlavorApiPrefix = '/wp-json/flavor-platform/v1';
+  static const String _legacyFlavorRelativePrefix = '/flavor-chat-ia/v1';
+  static const String _platformFlavorRelativePrefix = '/flavor-platform/v1';
 
   /// Constructor con URL por defecto desde configuracion
   ApiClient({String? baseUrl, bool enableSecurityFeatures = true})
@@ -40,6 +44,14 @@ class ApiClient {
     // Interceptor para añadir token de autenticación
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
+        final preferredApiNamespace = await ServerConfig.getApiNamespace();
+        final preferPlatformNamespace =
+            preferredApiNamespace.contains('flavor-platform');
+
+        if (preferPlatformNamespace) {
+          options.path = _rewriteFlavorNamespacePath(options.path);
+        }
+
         final token = await getToken();
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
@@ -69,6 +81,12 @@ class ApiClient {
   static Future<ApiClient> fromSavedConfig() async {
     final apiUrl = await ServerConfig.getFullApiUrl();
     return ApiClient(baseUrl: apiUrl);
+  }
+
+  static String _rewriteFlavorNamespacePath(String path) {
+    return path
+        .replaceAll(_legacyFlavorApiPrefix, _platformFlavorApiPrefix)
+        .replaceAll(_legacyFlavorRelativePrefix, _platformFlavorRelativePrefix);
   }
 
   /// Descubre compatibilidad del sitio usando app-discovery.
@@ -179,7 +197,7 @@ class ApiClient {
       if (apiNs.contains('camps/')) {
         campsNamespace = apiNs;
       }
-      if (apiNs.contains('flavor-chat-ia')) {
+      if (apiNs.contains('flavor-chat-ia') || apiNs.contains('flavor-platform')) {
         flavorNamespace = apiNs;
       }
     }
@@ -206,6 +224,7 @@ class ApiClient {
       fallback,
       ServerConfig.defaultApiNamespace,
       '/wp-json/camps/v1',
+      '/wp-json/flavor-platform/v1',
       '/wp-json/flavor-chat-ia/v1',
     ];
 
@@ -1511,7 +1530,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await Dio().get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos',
+        '$serverUrl/wp-json/flavor-platform/v1/pedidos',
         queryParameters: {
           'estado': estado,
           'per_page': perPage,
@@ -1535,7 +1554,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/mis-pedidos',
+        '$serverUrl/wp-json/flavor-platform/v1/mis-pedidos',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1548,7 +1567,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/perfil',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/perfil',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1562,7 +1581,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/suscripciones',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1579,7 +1598,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/suscripciones',
         data: {
           'producto_id': productoId,
           'frecuencia': frecuencia,
@@ -1598,7 +1617,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones/$id/pausar',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/suscripciones/$id/pausar',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1612,7 +1631,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones/$id/cancelar',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/suscripciones/$id/cancelar',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1625,7 +1644,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/pedidos/historial',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/pedidos/historial',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1638,7 +1657,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/ciclos/calendario',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/ciclos/calendario',
         queryParameters: {
           'include_productores': '1',
         },
@@ -1655,7 +1674,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productores-cercanos',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/productores-cercanos',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1673,7 +1692,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productores',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/productores',
         queryParameters: {
           'eco': soloEco ? '1' : '0',
           'con_entrega': conEntrega ? '1' : '0',
@@ -1698,7 +1717,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productos',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/productos',
         queryParameters: {
           if (categoria != null && categoria.isNotEmpty) 'categoria': categoria,
           if (productorId != null && productorId > 0)
@@ -1720,7 +1739,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/lista-compra',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1736,7 +1755,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra/agregar',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/lista-compra/agregar',
         data: {
           'producto_id': productoId,
           'cantidad': cantidad,
@@ -1754,7 +1773,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra/$itemId',
+        '$serverUrl/wp-json/flavor-platform/v1/gc/lista-compra/$itemId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1771,7 +1790,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await Dio().get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios',
+        '$serverUrl/wp-json/flavor-platform/v1/banco-tiempo/servicios',
         queryParameters: {
           'categoria': categoria,
           'limite': limite,
@@ -1795,7 +1814,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/mis-servicios',
+        '$serverUrl/wp-json/flavor-platform/v1/banco-tiempo/mis-servicios',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1813,7 +1832,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await Dio().get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/anuncios',
         queryParameters: {
           'categoria': categoria,
           'tipo': tipo,
@@ -1838,7 +1857,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/mis-anuncios',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/mis-anuncios',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1854,7 +1873,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/unirse',
+        '$serverUrl/wp-json/flavor-platform/v1/pedidos/$pedidoId/unirse',
         data: {
           'cantidad': cantidad,
         },
@@ -1871,7 +1890,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/marcar-pagado',
+        '$serverUrl/wp-json/flavor-platform/v1/pedidos/$pedidoId/marcar-pagado',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1885,7 +1904,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/marcar-recogido',
+        '$serverUrl/wp-json/flavor-platform/v1/pedidos/$pedidoId/marcar-recogido',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1903,7 +1922,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios',
+        '$serverUrl/wp-json/flavor-platform/v1/banco-tiempo/servicios',
         data: {
           'titulo': titulo,
           'descripcion': descripcion,
@@ -1928,7 +1947,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.put(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios/$servicioId',
+        '$serverUrl/wp-json/flavor-platform/v1/banco-tiempo/servicios/$servicioId',
         data: {
           if (titulo != null) 'titulo': titulo,
           if (descripcion != null) 'descripcion': descripcion,
@@ -1948,7 +1967,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios/$servicioId',
+        '$serverUrl/wp-json/flavor-platform/v1/banco-tiempo/servicios/$servicioId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -1969,7 +1988,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/anuncios',
         data: {
           'titulo': titulo,
           'descripcion': descripcion,
@@ -2000,7 +2019,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.put(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/anuncios/$anuncioId',
         data: {
           if (titulo != null) 'titulo': titulo,
           if (descripcion != null) 'descripcion': descripcion,
@@ -2021,7 +2040,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId/marcar-vendido',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/anuncios/$anuncioId/marcar-vendido',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2035,7 +2054,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId',
+        '$serverUrl/wp-json/flavor-platform/v1/marketplace/anuncios/$anuncioId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2057,7 +2076,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias',
         queryParameters: {
           if (estado != null) 'estado': estado,
           if (prioridad != null) 'prioridad': prioridad,
@@ -2076,7 +2095,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/mis-incidencias',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias/mis-incidencias',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2090,7 +2109,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias/$incidenciaId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2109,7 +2128,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias',
         data: {
           'titulo': titulo,
           'descripcion': descripcion,
@@ -2132,7 +2151,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId/comentarios',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias/$incidenciaId/comentarios',
         data: {
           'comentario': comentario,
         },
@@ -2151,7 +2170,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.put(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId/estado',
+        '$serverUrl/wp-json/flavor-platform/v1/incidencias/$incidenciaId/estado',
         data: {
           'estado': estado,
         },
@@ -2291,7 +2310,7 @@ class ApiClient {
         if (nivel != null && nivel.isNotEmpty) 'nivel': nivel,
       };
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos',
+        '$serverUrl/wp-json/flavor-platform/v1/cursos',
         queryParameters: queryParams,
       );
       return ApiResponse.success(response.data);
@@ -2305,7 +2324,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/mis-cursos',
+        '$serverUrl/wp-json/flavor-platform/v1/cursos/mis-cursos',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2318,7 +2337,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/$cursoId',
+        '$serverUrl/wp-json/flavor-platform/v1/cursos/$cursoId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2333,7 +2352,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/$cursoId/inscripcion',
+        '$serverUrl/wp-json/flavor-platform/v1/cursos/$cursoId/inscripcion',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2361,7 +2380,7 @@ class ApiClient {
         if (disponible != null) 'disponible': disponible ? 1 : 0,
       };
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/catalogo',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/catalogo',
         queryParameters: queryParams,
       );
       return ApiResponse.success(response.data);
@@ -2375,7 +2394,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/mis-prestamos',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/mis-prestamos',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2388,7 +2407,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/reservas',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2402,7 +2421,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/libros/$libroId',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/libros/$libroId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2416,7 +2435,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/prestamos',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/prestamos',
         data: {'libro_id': libroId},
       );
       return ApiResponse.success(response.data);
@@ -2431,7 +2450,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/reservas',
         data: {'libro_id': libroId},
       );
       return ApiResponse.success(response.data);
@@ -2446,7 +2465,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/prestamos/$prestamoId/renovar',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/prestamos/$prestamoId/renovar',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2460,7 +2479,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas/$reservaId',
+        '$serverUrl/wp-json/flavor-platform/v1/biblioteca/reservas/$reservaId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2486,7 +2505,7 @@ class ApiClient {
         if (disponible != null) 'disponible': disponible ? 1 : 0,
       };
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes',
+        '$serverUrl/wp-json/flavor-platform/v1/espacios-comunes',
         queryParameters: queryParams,
       );
       return ApiResponse.success(response.data);
@@ -2500,7 +2519,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/mis-reservas',
+        '$serverUrl/wp-json/flavor-platform/v1/espacios-comunes/mis-reservas',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2514,7 +2533,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/$espacioId',
+        '$serverUrl/wp-json/flavor-platform/v1/espacios-comunes/$espacioId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2533,7 +2552,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/reservas',
+        '$serverUrl/wp-json/flavor-platform/v1/espacios-comunes/reservas',
         data: {
           'espacio_id': espacioId,
           'fecha': fecha,
@@ -2554,7 +2573,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/reservas/$reservaId',
+        '$serverUrl/wp-json/flavor-platform/v1/espacios-comunes/reservas/$reservaId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2580,7 +2599,7 @@ class ApiClient {
         if (nivel != null && nivel.isNotEmpty) 'nivel': nivel,
       };
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres',
+        '$serverUrl/wp-json/flavor-platform/v1/talleres',
         queryParameters: queryParams,
       );
       return ApiResponse.success(response.data);
@@ -2594,7 +2613,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/mis-talleres',
+        '$serverUrl/wp-json/flavor-platform/v1/talleres/mis-talleres',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2607,7 +2626,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/$tallerId',
+        '$serverUrl/wp-json/flavor-platform/v1/talleres/$tallerId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2621,7 +2640,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/$tallerId/inscripcion',
+        '$serverUrl/wp-json/flavor-platform/v1/talleres/$tallerId/inscripcion',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2635,7 +2654,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/inscripciones/$inscripcionId',
+        '$serverUrl/wp-json/flavor-platform/v1/talleres/inscripciones/$inscripcionId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2661,7 +2680,7 @@ class ApiClient {
         if (online != null) 'online': online ? 1 : 0,
       };
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites',
+        '$serverUrl/wp-json/flavor-platform/v1/tramites',
         queryParameters: queryParams,
       );
       return ApiResponse.success(response.data);
@@ -2675,7 +2694,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/mis-solicitudes',
+        '$serverUrl/wp-json/flavor-platform/v1/tramites/mis-solicitudes',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2688,7 +2707,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/$tramiteId',
+        '$serverUrl/wp-json/flavor-platform/v1/tramites/$tramiteId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2704,7 +2723,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/$tramiteId/solicitud',
+        '$serverUrl/wp-json/flavor-platform/v1/tramites/$tramiteId/solicitud',
         data: {
           if (observaciones != null && observaciones.isNotEmpty)
             'observaciones': observaciones,
@@ -2722,7 +2741,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/solicitudes/$solicitudId',
+        '$serverUrl/wp-json/flavor-platform/v1/tramites/solicitudes/$solicitudId',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2739,7 +2758,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/dashboard',
+        '$serverUrl/wp-json/flavor-platform/v1/huertos-urbanos/dashboard',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2755,7 +2774,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/solicitar-parcela',
+        '$serverUrl/wp-json/flavor-platform/v1/huertos-urbanos/solicitar-parcela',
         data: {
           'tamanio': tamanio,
           if (observaciones != null && observaciones.isNotEmpty)
@@ -2774,7 +2793,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/tareas/$tareaId/completar',
+        '$serverUrl/wp-json/flavor-platform/v1/huertos-urbanos/tareas/$tareaId/completar',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2790,7 +2809,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/intercambios/$intercambioId/contactar',
+        '$serverUrl/wp-json/flavor-platform/v1/huertos-urbanos/intercambios/$intercambioId/contactar',
         data: {'mensaje': mensaje},
       );
       return ApiResponse.success(response.data);
@@ -2808,7 +2827,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.get(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/reciclaje/dashboard',
+        '$serverUrl/wp-json/flavor-platform/v1/reciclaje/dashboard',
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2824,7 +2843,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio
-          .get('$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas');
+          .get('$serverUrl/wp-json/flavor-platform/v1/bicicletas-compartidas');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2836,7 +2855,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas/alquilar',
+          '$serverUrl/wp-json/flavor-platform/v1/bicicletas-compartidas/alquilar',
           data: {'estacion_id': estacionId});
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2848,7 +2867,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas/finalizar');
+          '$serverUrl/wp-json/flavor-platform/v1/bicicletas-compartidas/finalizar');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2863,7 +2882,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response =
-          await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/parkings');
+          await _dio.get('$serverUrl/wp-json/flavor-platform/v1/parkings');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2878,7 +2897,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservar',
+        '$serverUrl/wp-json/flavor-platform/v1/parkings/reservar',
         data: {
           'parking_id': parkingId,
           'fecha_entrada': fechaEntrada,
@@ -2896,7 +2915,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservas/$reservaId/extender',
+        '$serverUrl/wp-json/flavor-platform/v1/parkings/reservas/$reservaId/extender',
         data: {'horas': horas},
       );
       return ApiResponse.success(response.data);
@@ -2910,7 +2929,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservas/$reservaId');
+          '$serverUrl/wp-json/flavor-platform/v1/parkings/reservas/$reservaId');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2927,7 +2946,7 @@ class ApiClient {
       final serverUrl = await ServerConfig.getServerUrl();
       final queryParams = categoria != null ? {'categoria': categoria} : null;
       final response = await _dio.get(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales',
+          '$serverUrl/wp-json/flavor-platform/v1/avisos-municipales',
           queryParameters: queryParams);
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2940,7 +2959,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales/$avisoId/leer');
+          '$serverUrl/wp-json/flavor-platform/v1/avisos-municipales/$avisoId/leer');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2952,7 +2971,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales/suscripciones',
+          '$serverUrl/wp-json/flavor-platform/v1/avisos-municipales/suscripciones',
           data: {'categorias': categorias});
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -2968,7 +2987,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response =
-          await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal');
+          await _dio.get('$serverUrl/wp-json/flavor-platform/v1/ayuda-vecinal');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -2984,7 +3003,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-        '$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes',
+        '$serverUrl/wp-json/flavor-platform/v1/ayuda-vecinal/solicitudes',
         data: {
           'titulo': titulo,
           'descripcion': descripcion,
@@ -3003,7 +3022,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes/$solicitudId/ofrecer');
+          '$serverUrl/wp-json/flavor-platform/v1/ayuda-vecinal/solicitudes/$solicitudId/ofrecer');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -3015,7 +3034,7 @@ class ApiClient {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.delete(
-          '$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes/$solicitudId');
+          '$serverUrl/wp-json/flavor-platform/v1/ayuda-vecinal/solicitudes/$solicitudId');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
@@ -3724,7 +3743,7 @@ class ApiClient {
   }) async {
     try {
       final response = await _dio
-          .get('/flavor-chat-ia/v1/woocommerce/pedidos', queryParameters: {
+          .get('/flavor-platform/v1/woocommerce/pedidos', queryParameters: {
         if (estado != null) 'estado': estado,
         if (limite != null) 'limite': limite,
       });
@@ -3742,7 +3761,7 @@ class ApiClient {
   }) async {
     try {
       final response = await _dio
-          .get('/flavor-chat-ia/v1/woocommerce/productos', queryParameters: {
+          .get('/flavor-platform/v1/woocommerce/productos', queryParameters: {
         if (busqueda != null) 'busqueda': busqueda,
         if (limite != null) 'limite': limite,
         if (pagina != null) 'pagina': pagina,

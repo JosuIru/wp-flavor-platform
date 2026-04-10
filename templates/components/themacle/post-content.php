@@ -5,7 +5,7 @@
  * Full article layout with optional featured image, meta info bar,
  * post body, and social share buttons.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var bool   $mostrar_imagen_destacada Whether to display the featured image.
  * @var bool   $mostrar_fecha            Whether to display the publication date.

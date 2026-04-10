@@ -5,7 +5,7 @@
  * Maneja todas las vistas frontend, shortcodes, AJAX y dashboard tabs
  * para el sistema de avisos y comunicados municipales.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -1190,7 +1190,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function obtener_categorias() {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['categorias'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['categorias'])) {
             return [];
         }
 
@@ -1205,7 +1205,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function obtener_zonas() {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['zonas'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['zonas'])) {
             return [];
         }
 
@@ -1220,7 +1220,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function obtener_suscripciones($usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['suscripciones'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['suscripciones'])) {
             return [];
         }
 
@@ -1255,7 +1255,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function aviso_leido($aviso_id, $usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['lecturas'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['lecturas'])) {
             return false;
         }
 
@@ -1271,7 +1271,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function aviso_confirmado($aviso_id, $usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['confirmaciones'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['confirmaciones'])) {
             return false;
         }
 
@@ -1287,7 +1287,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function marcar_como_leido($aviso_id, $usuario_id) {
         global $wpdb;
 
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['lecturas'])) {
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tablas['lecturas'])) {
             return false;
         }
 

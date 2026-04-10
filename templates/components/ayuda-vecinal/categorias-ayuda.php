@@ -2,7 +2,7 @@
 /**
  * Template: Categorias de Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

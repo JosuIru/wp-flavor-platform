@@ -4,7 +4,7 @@
  *
  * Maneja todos los cálculos y consultas de estadísticas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

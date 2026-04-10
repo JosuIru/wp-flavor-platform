@@ -4,7 +4,7 @@
  *
  * Sistema de tracking de denuncias ante administraciones publicas.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 /**
  * Clase principal del modulo de Seguimiento de Denuncias
  */
-class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -36,7 +36,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         global $wpdb;
-        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias');
+        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias');
     }
 
     /**
@@ -76,7 +76,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      */
     public function maybe_create_tables() {
         global $wpdb;
-        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
+        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
             $this->create_tables();
         }
     }
@@ -225,7 +225,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/listado.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/listado.php';
         return ob_get_clean();
     }
 
@@ -252,7 +252,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/detalle.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/detalle.php';
         return ob_get_clean();
     }
 
@@ -265,7 +265,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/crear.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/crear.php';
         return ob_get_clean();
     }
 
@@ -278,7 +278,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         }
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/mis-denuncias.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/mis-denuncias.php';
         return ob_get_clean();
     }
 
@@ -291,7 +291,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         $denuncia_id = $atts['id'] ?: (isset($_GET['denuncia_id']) ? intval($_GET['denuncia_id']) : 0);
 
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/timeline.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/timeline.php';
         return ob_get_clean();
     }
 
@@ -300,7 +300,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_estadisticas($atts) {
         ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/estadisticas.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/estadisticas.php';
         return ob_get_clean();
     }
 
@@ -609,24 +609,329 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      */
     private function register_rest_routes() {
         add_action('rest_api_init', function() {
+            // Listar denuncias públicas
             register_rest_route('flavor/v1', '/denuncias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
                 'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
+            // Crear nueva denuncia
+            register_rest_route('flavor/v1', '/denuncias', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_crear'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Mis denuncias
+            register_rest_route('flavor/v1', '/denuncias/mis', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_mis_denuncias'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Estadísticas
+            register_rest_route('flavor/v1', '/denuncias/estadisticas', [
+                'methods' => 'GET',
+                'callback' => [$this, 'api_estadisticas'],
+                'permission_callback' => [$this, 'public_read_permission'],
+            ]);
+
+            // Detalle de denuncia
             register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
                 'permission_callback' => [$this, 'can_read_denuncia'],
             ]);
 
+            // Timeline de denuncia
             register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)/timeline', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_timeline'],
                 'permission_callback' => [$this, 'can_read_denuncia'],
             ]);
+
+            // Seguir/dejar de seguir denuncia
+            register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)/seguir', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_seguir'],
+                'permission_callback' => [$this, 'user_logged_in_permission'],
+            ]);
+
+            // Cambiar estado
+            register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)/estado', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_cambiar_estado'],
+                'permission_callback' => [$this, 'can_edit_denuncia'],
+            ]);
+
+            // Agregar evento al timeline
+            register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)/eventos', [
+                'methods' => 'POST',
+                'callback' => [$this, 'api_agregar_evento'],
+                'permission_callback' => [$this, 'can_edit_denuncia'],
+            ]);
         });
+    }
+
+    /**
+     * Permiso: Usuario autenticado
+     */
+    public function user_logged_in_permission() {
+        return is_user_logged_in();
+    }
+
+    /**
+     * Permiso: Puede editar la denuncia
+     */
+    public function can_edit_denuncia($request) {
+        if (!is_user_logged_in()) {
+            return false;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias';
+        $denuncia = $wpdb->get_row($wpdb->prepare("SELECT denunciante_id FROM $tabla WHERE id = %d", $request['id']));
+
+        if (!$denuncia) {
+            return false;
+        }
+
+        return $denuncia->denunciante_id == get_current_user_id() || current_user_can('manage_options');
+    }
+
+    /**
+     * API: Crear denuncia
+     */
+    public function api_crear($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias';
+
+        $params = $request->get_json_params();
+
+        $titulo = sanitize_text_field($params['titulo'] ?? '');
+        $organismo = sanitize_text_field($params['organismo_destino'] ?? '');
+
+        if (empty($titulo) || empty($organismo)) {
+            return new WP_Error('missing_fields', 'Título y organismo son obligatorios', ['status' => 400]);
+        }
+
+        $fecha_presentacion = sanitize_text_field($params['fecha_presentacion'] ?? date('Y-m-d'));
+        $plazo_dias = intval($params['plazo_respuesta'] ?? 30);
+        $fecha_limite = date('Y-m-d', strtotime($fecha_presentacion . ' + ' . $plazo_dias . ' days'));
+
+        $datos = [
+            'titulo' => $titulo,
+            'descripcion' => wp_kses_post($params['descripcion'] ?? ''),
+            'tipo' => sanitize_text_field($params['tipo'] ?? 'denuncia'),
+            'categoria' => sanitize_text_field($params['categoria'] ?? ''),
+            'ambito' => sanitize_text_field($params['ambito'] ?? 'municipal'),
+            'organismo_destino' => $organismo,
+            'numero_registro' => sanitize_text_field($params['numero_registro'] ?? ''),
+            'fecha_presentacion' => $fecha_presentacion,
+            'fecha_limite_respuesta' => $fecha_limite,
+            'estado' => 'presentada',
+            'prioridad' => sanitize_text_field($params['prioridad'] ?? 'media'),
+            'denunciante_id' => get_current_user_id(),
+            'denunciante_nombre' => wp_get_current_user()->display_name,
+            'denunciante_tipo' => sanitize_text_field($params['denunciante_tipo'] ?? 'individual'),
+            'visibilidad' => sanitize_text_field($params['visibilidad'] ?? 'miembros'),
+        ];
+
+        $resultado = $wpdb->insert($tabla, $datos);
+
+        if ($resultado === false) {
+            return new WP_Error('db_error', 'Error al crear la denuncia', ['status' => 500]);
+        }
+
+        $denuncia_id = $wpdb->insert_id;
+
+        // Crear evento de creación
+        $this->crear_evento($denuncia_id, 'creacion', 'Denuncia registrada', 'Se ha registrado la denuncia en el sistema.');
+
+        // Agregar como participante
+        $tabla_participantes = $wpdb->prefix . 'flavor_seguimiento_denuncias_participantes';
+        $wpdb->insert($tabla_participantes, [
+            'denuncia_id' => $denuncia_id,
+            'user_id' => get_current_user_id(),
+            'rol' => 'denunciante',
+        ]);
+
+        return rest_ensure_response([
+            'success' => true,
+            'denuncia_id' => $denuncia_id,
+            'mensaje' => 'Denuncia registrada correctamente.',
+        ]);
+    }
+
+    /**
+     * API: Mis denuncias
+     */
+    public function api_mis_denuncias($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias';
+        $tabla_participantes = $wpdb->prefix . 'flavor_seguimiento_denuncias_participantes';
+        $user_id = get_current_user_id();
+
+        $limite = intval($request->get_param('limite')) ?: 20;
+
+        // Denuncias donde soy autor o participante
+        $denuncias = $wpdb->get_results($wpdb->prepare(
+            "SELECT DISTINCT d.id, d.titulo, d.tipo, d.estado, d.organismo_destino,
+                    d.fecha_presentacion, d.fecha_limite_respuesta, d.prioridad, d.visibilidad,
+                    p.rol as mi_rol
+             FROM $tabla d
+             LEFT JOIN $tabla_participantes p ON d.id = p.denuncia_id AND p.user_id = %d
+             WHERE d.denunciante_id = %d OR p.user_id = %d
+             ORDER BY d.created_at DESC
+             LIMIT %d",
+            $user_id, $user_id, $user_id, $limite
+        ));
+
+        // Calcular días restantes
+        foreach ($denuncias as &$denuncia) {
+            if ($denuncia->fecha_limite_respuesta) {
+                $hoy = new DateTime();
+                $limite_fecha = new DateTime($denuncia->fecha_limite_respuesta);
+                $diff = $hoy->diff($limite_fecha);
+                $denuncia->dias_restantes = $limite_fecha < $hoy ? -$diff->days : $diff->days;
+            } else {
+                $denuncia->dias_restantes = null;
+            }
+        }
+
+        return rest_ensure_response(['denuncias' => $denuncias]);
+    }
+
+    /**
+     * API: Estadísticas
+     */
+    public function api_estadisticas($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias';
+
+        $estadisticas = [
+            'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla"),
+            'en_tramite' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('presentada', 'en_tramite')"),
+            'con_requerimiento' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'requerimiento'"),
+            'silencio' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'silencio'"),
+            'resueltas_favorable' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'resuelta_favorable'"),
+            'resueltas_desfavorable' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'resuelta_desfavorable'"),
+            'recurridas' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'recurrida'"),
+            'archivadas' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'archivada'"),
+        ];
+
+        // Por tipo
+        $estadisticas['por_tipo'] = $wpdb->get_results(
+            "SELECT tipo, COUNT(*) as total FROM $tabla GROUP BY tipo"
+        );
+
+        // Por ámbito
+        $estadisticas['por_ambito'] = $wpdb->get_results(
+            "SELECT ambito, COUNT(*) as total FROM $tabla GROUP BY ambito"
+        );
+
+        return rest_ensure_response(['estadisticas' => $estadisticas]);
+    }
+
+    /**
+     * API: Seguir/dejar de seguir
+     */
+    public function api_seguir($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias_participantes';
+
+        $denuncia_id = $request['id'];
+        $user_id = get_current_user_id();
+
+        $existe = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, rol FROM $tabla WHERE denuncia_id = %d AND user_id = %d",
+            $denuncia_id, $user_id
+        ));
+
+        if ($existe) {
+            // Si es denunciante no puede dejar de seguir
+            if ($existe->rol === 'denunciante') {
+                return new WP_Error('cannot_unfollow', 'No puedes dejar de seguir tu propia denuncia', ['status' => 400]);
+            }
+
+            // Dejar de seguir
+            $wpdb->delete($tabla, ['id' => $existe->id]);
+            return rest_ensure_response([
+                'success' => true,
+                'siguiendo' => false,
+                'mensaje' => 'Has dejado de seguir esta denuncia.',
+            ]);
+        }
+
+        // Seguir
+        $wpdb->insert($tabla, [
+            'denuncia_id' => $denuncia_id,
+            'user_id' => $user_id,
+            'rol' => 'seguidor',
+        ]);
+
+        return rest_ensure_response([
+            'success' => true,
+            'siguiendo' => true,
+            'mensaje' => 'Ahora sigues esta denuncia.',
+        ]);
+    }
+
+    /**
+     * API: Cambiar estado
+     */
+    public function api_cambiar_estado($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias';
+
+        $params = $request->get_json_params();
+        $nuevo_estado = sanitize_text_field($params['estado'] ?? '');
+        $nota = sanitize_textarea_field($params['nota'] ?? '');
+
+        $estados_validos = ['presentada', 'en_tramite', 'requerimiento', 'silencio', 'resuelta_favorable', 'resuelta_desfavorable', 'archivada', 'recurrida'];
+
+        if (!in_array($nuevo_estado, $estados_validos)) {
+            return new WP_Error('invalid_state', 'Estado no válido', ['status' => 400]);
+        }
+
+        $denuncia = $wpdb->get_row($wpdb->prepare("SELECT estado FROM $tabla WHERE id = %d", $request['id']));
+        $estado_anterior = $denuncia->estado;
+
+        $wpdb->update($tabla, ['estado' => $nuevo_estado], ['id' => $request['id']]);
+
+        // Crear evento de cambio
+        $this->crear_evento($request['id'], 'cambio_estado', 'Estado actualizado: ' . $nuevo_estado, $nota, $estado_anterior, $nuevo_estado);
+
+        return rest_ensure_response([
+            'success' => true,
+            'estado_anterior' => $estado_anterior,
+            'estado_nuevo' => $nuevo_estado,
+            'mensaje' => 'Estado actualizado correctamente.',
+        ]);
+    }
+
+    /**
+     * API: Agregar evento
+     */
+    public function api_agregar_evento($request) {
+        $params = $request->get_json_params();
+
+        $tipo = sanitize_text_field($params['tipo'] ?? 'nota');
+        $titulo = sanitize_text_field($params['titulo'] ?? '');
+        $descripcion = sanitize_textarea_field($params['descripcion'] ?? '');
+
+        if (empty($titulo)) {
+            return new WP_Error('missing_title', 'El título es obligatorio', ['status' => 400]);
+        }
+
+        $evento_id = $this->crear_evento($request['id'], $tipo, $titulo, $descripcion);
+
+        return rest_ensure_response([
+            'success' => true,
+            'evento_id' => $evento_id,
+            'mensaje' => 'Evento agregado correctamente.',
+        ]);
     }
 
     /**
@@ -712,16 +1017,16 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-seguimiento-denuncias',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/seguimiento-denuncias/assets/css/seguimiento-denuncias.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/seguimiento-denuncias/assets/css/seguimiento-denuncias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-seguimiento-denuncias',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/seguimiento-denuncias/assets/js/seguimiento-denuncias.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/seguimiento-denuncias/assets/js/seguimiento-denuncias.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -749,9 +1054,9 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
 
         wp_enqueue_style(
             'flavor-seguimiento-denuncias-admin',
-            FLAVOR_CHAT_IA_URL . 'includes/modules/seguimiento-denuncias/assets/css/seguimiento-denuncias.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/seguimiento-denuncias/assets/css/seguimiento-denuncias.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
     }
 
@@ -886,7 +1191,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             'resueltas' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('resuelta_favorable', 'resuelta_desfavorable')"),
         ];
 
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/seguimiento-denuncias/views/dashboard.php';
+        include FLAVOR_PLATFORM_PATH . 'includes/modules/seguimiento-denuncias/views/dashboard.php';
     }
 
     /**
@@ -2080,4 +2385,8 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             ],
         ];
     }
+}
+
+if (!class_exists('Flavor_Chat_Seguimiento_Denuncias_Module', false)) {
+    class_alias('Flavor_Platform_Seguimiento_Denuncias_Module', 'Flavor_Chat_Seguimiento_Denuncias_Module');
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/flavor_snackbar.dart';
 import '../../../core/widgets/flavor_state_widgets.dart';
@@ -388,32 +391,13 @@ class MultimediaDetalleScreen extends StatelessWidget {
       FlavorSnackbar.showError(context, 'URL del video no disponible');
       return;
     }
-    // En una implementación real, se usaría video_player o chewie
-    // Por ahora mostramos un diálogo informativo
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reproducir video'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Para reproducir el video, se necesita implementar un reproductor de video.'),
-            const SizedBox(height: 12),
-            Text(
-              'URL: $urlVideo',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _VideoPlayerScreen(
+          videoUrl: urlVideo,
+          title: item['titulo'] ?? item['title'] ?? 'Video',
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cerrar'),
-          ),
-        ],
       ),
     );
   }
@@ -424,12 +408,10 @@ class MultimediaDetalleScreen extends StatelessWidget {
       return;
     }
 
-    final textoCompartir = '$titulo\n$url';
-    await Clipboard.setData(ClipboardData(text: textoCompartir));
-
-    if (context.mounted) {
-      FlavorSnackbar.showSuccess(context, 'Enlace copiado al portapapeles');
-    }
+    await Share.share(
+      '$titulo\n$url',
+      subject: titulo,
+    );
   }
 
   String _formatDate(String dateStr) {
@@ -439,5 +421,173 @@ class MultimediaDetalleScreen extends StatelessWidget {
     } catch (_) {
       return dateStr;
     }
+  }
+}
+
+/// Pantalla de reproductor de video fullscreen
+class _VideoPlayerScreen extends StatefulWidget {
+  final String videoUrl;
+  final String title;
+
+  const _VideoPlayerScreen({
+    required this.videoUrl,
+    required this.title,
+  });
+
+  @override
+  State<_VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<_VideoPlayerScreen> {
+  late VideoPlayerController _videoController;
+  ChewieController? _chewieController;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializePlayer();
+  }
+
+  Future<void> _initializePlayer() async {
+    try {
+      _videoController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.videoUrl),
+      );
+
+      await _videoController.initialize();
+
+      _chewieController = ChewieController(
+        videoPlayerController: _videoController,
+        autoPlay: true,
+        looping: false,
+        aspectRatio: _videoController.value.aspectRatio,
+        allowFullScreen: true,
+        allowMuting: true,
+        showControls: true,
+        materialProgressColors: ChewieProgressColors(
+          playedColor: Colors.blue,
+          handleColor: Colors.blue,
+          backgroundColor: Colors.grey.shade300,
+          bufferedColor: Colors.grey.shade500,
+        ),
+        placeholder: Container(
+          color: Colors.black,
+          child: const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          ),
+        ),
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error, color: Colors.red, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  'Error al reproducir video',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  errorMessage,
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _chewieController?.dispose();
+    _videoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        title: Text(
+          widget.title,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+      body: _isLoading
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Colors.white),
+                  SizedBox(height: 16),
+                  Text(
+                    'Cargando video...',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            )
+          : _error != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red, size: 64),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Error al cargar el video',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          _error!,
+                          style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _isLoading = true;
+                            _error = null;
+                          });
+                          _initializePlayer();
+                        },
+                        icon: const Icon(Icons.refresh, color: Colors.white),
+                        label: const Text(
+                          'Reintentar',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : _chewieController != null
+                  ? Chewie(controller: _chewieController!)
+                  : const SizedBox.shrink(),
+    );
   }
 }

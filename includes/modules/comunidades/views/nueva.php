@@ -2,7 +2,7 @@
 /**
  * Vista Admin: Nueva Comunidad
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

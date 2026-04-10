@@ -2,7 +2,7 @@
 /**
  * Instalador de tablas para Economía del Don
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\EconomiaDon
  */
 
@@ -112,12 +112,12 @@ add_action('admin_init', function() {
         // Verificar que el módulo está activo usando función centralizada
         $modulo_activo = false;
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $modulo_activo = Flavor_Chat_Module_Loader::is_module_active('economia-don')
-                          || Flavor_Chat_Module_Loader::is_module_active('economia_don');
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $modulo_activo = Flavor_Platform_Module_Loader::is_module_active('economia-don')
+                          || Flavor_Platform_Module_Loader::is_module_active('economia_don');
         } else {
             // Fallback: verificar en ambas opciones
-            $settings = get_option('flavor_chat_ia_settings', []);
+            $settings = flavor_get_main_settings();
             $modulos_activos = $settings['active_modules'] ?? [];
             $modulos_legacy = get_option('flavor_active_modules', []);
             $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_legacy));

@@ -2,7 +2,7 @@
 /**
  * Widget Dashboard: Biodiversidad Local
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

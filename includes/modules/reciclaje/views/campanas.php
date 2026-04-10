@@ -2,7 +2,7 @@
 /**
  * Vista Campañas - Reciclaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -189,7 +189,7 @@ $total_finalizadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_campanas
 $objetivo_total_kg = (float) $wpdb->get_var("SELECT COALESCE(SUM(objetivo_kg), 0) FROM {$tabla_campanas}");
 
 $kg_mes = 0.0;
-if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
     $inicio_mes = gmdate('Y-m-01 00:00:00');
     $kg_mes = (float) $wpdb->get_var($wpdb->prepare(
         "SELECT COALESCE(SUM(cantidad_kg), 0) FROM {$tabla_depositos} WHERE verificado = 1 AND fecha_deposito >= %s",
@@ -344,7 +344,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
                     <?php
                     $kg_real = 0.0;
                     $participantes = 0;
-                    if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+                    if (Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
                         $fecha_inicio_sql = $campana->fecha_inicio ? (string) $campana->fecha_inicio : null;
                         $fecha_fin_sql = $campana->fecha_fin ? (string) $campana->fecha_fin : null;
 

@@ -4,7 +4,7 @@
  *
  * Displays a responsive grid of cards with image, title, description, and link.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  *
  * @var string $titulo         Section heading text.
  * @var int    $columnas       Number of columns (2, 3, or 4).

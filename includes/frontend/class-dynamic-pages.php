@@ -12,7 +12,7 @@
  * - /app/{modulo}/{accion}/   → Acción específica (crear, editar, ver)
  * - /app/{modulo}/{id}/       → Ver elemento específico
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  */
 
@@ -371,8 +371,8 @@ class Flavor_Dynamic_Pages {
      */
     private function is_module_available($module_id) {
         // Verificar si el módulo existe en el loader
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
 
             // Verificar si el módulo está registrado
             $registered_modules = $loader->get_registered_modules();
@@ -402,7 +402,7 @@ class Flavor_Dynamic_Pages {
      */
     public function maybe_flush_rules() {
         // Forzar flush cuando cambia la ruta base o la versión
-        $current_key = FLAVOR_CHAT_IA_VERSION . '_' . $this->base_path . '_v20_404_fix';
+        $current_key = FLAVOR_PLATFORM_VERSION . '_' . $this->base_path . '_v20_404_fix';
         if (get_option('flavor_dynamic_pages_rules_flushed') !== $current_key) {
             flush_rewrite_rules();
             update_option('flavor_dynamic_pages_rules_flushed', $current_key);
@@ -525,45 +525,45 @@ class Flavor_Dynamic_Pages {
         }
 
         // CSS global del portal (incluye variables de Design Settings)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/layouts/portal.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/css/layouts/portal.css')) {
             wp_enqueue_style(
                 'flavor-portal',
-                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/portal.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/layouts/portal.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
         // CSS del dashboard
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/layouts/dashboard-vb-widgets.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/css/layouts/dashboard-vb-widgets.css')) {
             wp_enqueue_style(
                 'flavor-dynamic-pages',
-                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
                 ['flavor-portal'],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
         // CSS del portal unificado (sistema de layouts)
         $sufijo_min = (defined('WP_DEBUG') && WP_DEBUG) ? '' : '.min';
-        $unified_portal_css = FLAVOR_CHAT_IA_PATH . "assets/css/layouts/unified-portal{$sufijo_min}.css";
+        $unified_portal_css = FLAVOR_PLATFORM_PATH . "assets/css/layouts/unified-portal{$sufijo_min}.css";
         if (file_exists($unified_portal_css)) {
             wp_enqueue_style(
                 'flavor-unified-portal',
-                FLAVOR_CHAT_IA_URL . "assets/css/layouts/unified-portal{$sufijo_min}.css",
+                FLAVOR_PLATFORM_URL . "assets/css/layouts/unified-portal{$sufijo_min}.css",
                 ['flavor-portal'],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
         // CSS del dashboard unificado (paneles de prioridad, Gailu, social)
-        $unified_dashboard_css = FLAVOR_CHAT_IA_PATH . "assets/css/layouts/unified-dashboard{$sufijo_min}.css";
+        $unified_dashboard_css = FLAVOR_PLATFORM_PATH . "assets/css/layouts/unified-dashboard{$sufijo_min}.css";
         if (file_exists($unified_dashboard_css)) {
             wp_enqueue_style(
                 'flavor-unified-dashboard',
-                FLAVOR_CHAT_IA_URL . "assets/css/layouts/unified-dashboard{$sufijo_min}.css",
+                FLAVOR_PLATFORM_URL . "assets/css/layouts/unified-dashboard{$sufijo_min}.css",
                 ['flavor-portal'],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
@@ -575,9 +575,9 @@ class Flavor_Dynamic_Pages {
             if (in_array($module, ['trabajo_digno', 'trabajo-digno'], true)) {
                 wp_enqueue_script(
                     'flavor-trabajo-digno-direct',
-                    FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
+                    FLAVOR_PLATFORM_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
                     ['jquery'],
-                    FLAVOR_CHAT_IA_VERSION,
+                    FLAVOR_PLATFORM_VERSION,
                     true
                 );
                 wp_localize_script('flavor-trabajo-digno-direct', 'flavorTrabajoDigno', [
@@ -591,9 +591,9 @@ class Flavor_Dynamic_Pages {
             } elseif (in_array($module, ['economia_don', 'economia-don'], true)) {
                 wp_enqueue_script(
                     'flavor-economia-don-direct',
-                    FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
+                    FLAVOR_PLATFORM_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
                     ['jquery'],
-                    FLAVOR_CHAT_IA_VERSION,
+                    FLAVOR_PLATFORM_VERSION,
                     true
                 );
                 wp_localize_script('flavor-economia-don-direct', 'edData', [
@@ -608,9 +608,9 @@ class Flavor_Dynamic_Pages {
             } elseif (in_array($module, ['biodiversidad_local', 'biodiversidad-local'], true)) {
                 wp_enqueue_script(
                     'flavor-biodiversidad-direct',
-                    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
+                    FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
                     ['jquery'],
-                    FLAVOR_CHAT_IA_VERSION,
+                    FLAVOR_PLATFORM_VERSION,
                     true
                 );
                 wp_localize_script('flavor-biodiversidad-direct', 'flavorBiodiversidad', [
@@ -628,9 +628,9 @@ class Flavor_Dynamic_Pages {
             } elseif (in_array($module, ['recetas'], true)) {
                 wp_enqueue_script(
                     'flavor-recetas-direct',
-                    FLAVOR_CHAT_IA_URL . 'includes/modules/recetas/assets/js/recetas-frontend.js',
+                    FLAVOR_PLATFORM_URL . 'includes/modules/recetas/assets/js/recetas-frontend.js',
                     ['jquery'],
-                    FLAVOR_CHAT_IA_VERSION,
+                    FLAVOR_PLATFORM_VERSION,
                     true
                 );
                 wp_localize_script('flavor-recetas-direct', 'flavorRecetasConfig', [
@@ -648,27 +648,27 @@ class Flavor_Dynamic_Pages {
             // Paths posibles para el CSS del módulo
             $module_css_paths = [
                 // Con formato de directorio (guiones)
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}-frontend.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-catalogo.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}-frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/gc-catalogo.css",
                 // Con formato de ID (guiones bajos) como fallback
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/frontend.css",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/{$module}-frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/frontend.css",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/{$module}-frontend.css",
             ];
 
             foreach ($module_css_paths as $css_path) {
                 if (file_exists($css_path)) {
                     $css_handle = 'flavor-module-' . basename($css_path, '.css');
-                    $css_url = str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $css_path);
+                    $css_url = str_replace(FLAVOR_PLATFORM_PATH, FLAVOR_PLATFORM_URL, $css_path);
                     wp_enqueue_style(
                         $css_handle,
                         $css_url,
                         [],
-                        FLAVOR_CHAT_IA_VERSION
+                        FLAVOR_PLATFORM_VERSION
                     );
                 }
             }
@@ -678,32 +678,32 @@ class Flavor_Dynamic_Pages {
         if (in_array($module, ['biodiversidad-local', 'biodiversidad_local'])) {
             wp_enqueue_style(
                 'flavor-biodiversidad-local',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
 
         // CSS específico para Mi Red Social
         if (in_array($module, ['mi-red', 'mi_red'])) {
-            $mi_red_css = FLAVOR_CHAT_IA_PATH . 'assets/css/modules/mi-red-social.css';
+            $mi_red_css = FLAVOR_PLATFORM_PATH . 'assets/css/modules/mi-red-social.css';
             if (file_exists($mi_red_css)) {
                 wp_enqueue_style(
                     'flavor-mi-red-social',
-                    FLAVOR_CHAT_IA_URL . 'assets/css/modules/mi-red-social.css',
+                    FLAVOR_PLATFORM_URL . 'assets/css/modules/mi-red-social.css',
                     ['flavor-portal'],
-                    FLAVOR_CHAT_IA_VERSION
+                    FLAVOR_PLATFORM_VERSION
                 );
             }
 
             // JS de Mi Red Social
-            $mi_red_js = FLAVOR_CHAT_IA_PATH . 'assets/js/mi-red-social.js';
+            $mi_red_js = FLAVOR_PLATFORM_PATH . 'assets/js/mi-red-social.js';
             if (file_exists($mi_red_js)) {
                 wp_enqueue_script(
                     'flavor-mi-red-social',
-                    FLAVOR_CHAT_IA_URL . 'assets/js/mi-red-social.js',
+                    FLAVOR_PLATFORM_URL . 'assets/js/mi-red-social.js',
                     ['jquery'],
-                    FLAVOR_CHAT_IA_VERSION,
+                    FLAVOR_PLATFORM_VERSION,
                     true
                 );
 
@@ -732,13 +732,13 @@ class Flavor_Dynamic_Pages {
         }
 
         // JS del portal unificado
-        $unified_portal_js = FLAVOR_CHAT_IA_PATH . "assets/js/unified-portal{$sufijo_min}.js";
+        $unified_portal_js = FLAVOR_PLATFORM_PATH . "assets/js/unified-portal{$sufijo_min}.js";
         if (file_exists($unified_portal_js)) {
             wp_enqueue_script(
                 'flavor-unified-portal',
-                FLAVOR_CHAT_IA_URL . "assets/js/unified-portal{$sufijo_min}.js",
+                FLAVOR_PLATFORM_URL . "assets/js/unified-portal{$sufijo_min}.js",
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -766,17 +766,17 @@ class Flavor_Dynamic_Pages {
             // Paths posibles para el JS del módulo
             $module_js_paths = [
                 // Con formato de directorio (guiones)
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}-frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}-frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/js/frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.js",
                 // Con formato de ID (guiones bajos) como fallback
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/js/{$module}.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/js/{$module}-frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/frontend.js",
-                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/{$module}-frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/js/{$module}.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/js/{$module}-frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/frontend.js",
+                FLAVOR_PLATFORM_PATH . "includes/modules/{$module}/assets/{$module}-frontend.js",
             ];
 
             foreach ($module_js_paths as $js_path) {
@@ -784,9 +784,9 @@ class Flavor_Dynamic_Pages {
                     $js_handle = 'flavor-module-' . basename($js_path, '.js');
                     wp_enqueue_script(
                         $js_handle,
-                        str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $js_path),
+                        str_replace(FLAVOR_PLATFORM_PATH, FLAVOR_PLATFORM_URL, $js_path),
                         ['jquery'],
-                        FLAVOR_CHAT_IA_VERSION,
+                        FLAVOR_PLATFORM_VERSION,
                         true // In footer
                     );
 
@@ -1018,8 +1018,8 @@ class Flavor_Dynamic_Pages {
         <?php
         // Obtener logo de Flavor Platform (prioridad) o custom logo del tema
         $flavor_logo_url = '';
-        if (class_exists('Flavor_Chat_Helpers')) {
-            $flavor_logo_url = Flavor_Chat_Helpers::get_site_logo();
+        if (class_exists('Flavor_Platform_Helpers')) {
+            $flavor_logo_url = Flavor_Platform_Helpers::get_site_logo();
         }
         ?>
         <header class="flavor-app-header">
@@ -1602,7 +1602,7 @@ class Flavor_Dynamic_Pages {
 
         // Cargar la clase si no está cargada
         if (!class_exists('Flavor_Mi_Red_Social')) {
-            $class_path = FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-mi-red-social.php';
+            $class_path = FLAVOR_PLATFORM_PATH . 'includes/frontend/class-mi-red-social.php';
             if (file_exists($class_path)) {
                 require_once $class_path;
             }
@@ -3306,7 +3306,7 @@ class Flavor_Dynamic_Pages {
         }
 
         global $wpdb;
-        $tabla = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla = $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
 
         if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
             $sin_leer = 0;
@@ -3314,7 +3314,7 @@ class Flavor_Dynamic_Pages {
             // Contar mensajes no leídos en grupos donde es miembro
             $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla m
-                 JOIN {$wpdb->prefix}flavor_chat_grupos_miembros gm ON m.grupo_id = gm.grupo_id
+                 JOIN {$wpdb->prefix}flavor_platform_chat_grupos_miembros gm ON m.grupo_id = gm.grupo_id
                  WHERE gm.usuario_id = %d AND m.autor_id != %d AND m.leido = 0",
                 $user_id, $user_id
             ));
@@ -3349,7 +3349,7 @@ class Flavor_Dynamic_Pages {
         }
 
         global $wpdb;
-        $tabla = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla = $wpdb->prefix . 'flavor_platform_chat_grupos_miembros';
 
         if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
             $total = 0;
@@ -4673,16 +4673,16 @@ class Flavor_Dynamic_Pages {
             get_stylesheet_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
             get_template_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
             // Plugin - tabs y plantillas frontend primero
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/templates/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/frontend/tabs/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/templates/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/{$module_slug}/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/frontend/{$template_name}",
             // Vistas legacy al final para no colar pantallas de gestión en el portal
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "includes/modules/{$module_slug}/views/{$template_name}",
             // Template genérico (fallback para todos los módulos)
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$template_name}",
+            FLAVOR_PLATFORM_PATH . "templates/frontend/{$template_name}",
         ];
 
         // Variables disponibles en el template
@@ -4715,7 +4715,7 @@ class Flavor_Dynamic_Pages {
 
         // FALLBACK DINÁMICO: Usar Archive Renderer si no hay template físico
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -4761,7 +4761,7 @@ class Flavor_Dynamic_Pages {
         }
 
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -5470,23 +5470,23 @@ class Flavor_Dynamic_Pages {
         if ($source_module === 'chat-interno') {
             wp_enqueue_style(
                 'flavor-chat-interno',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/css/chat-interno.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/chat-interno/assets/css/chat-interno.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
 
             wp_enqueue_script(
                 'flavor-chat-interno',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/js/chat-interno.js',
+                FLAVOR_PLATFORM_URL . 'includes/modules/chat-interno/assets/js/chat-interno.js',
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             wp_localize_script('flavor-chat-interno', 'flavorChatInterno', [
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'resturl' => rest_url('flavor/v1/chat-interno/'),
-                'nonce' => wp_create_nonce('flavor_chat_interno'),
+                'nonce' => wp_create_nonce('flavor_platform_chat_interno'),
                 'user_id' => get_current_user_id(),
                 'user_name' => wp_get_current_user()->display_name,
                 'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
@@ -5540,23 +5540,23 @@ class Flavor_Dynamic_Pages {
         if ($source_module === 'chat-grupos') {
             wp_enqueue_style(
                 'flavor-chat-grupos',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/css/chat-grupos.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/chat-grupos/assets/css/chat-grupos.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
 
             wp_enqueue_script(
                 'flavor-chat-grupos',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/js/chat-grupos.js',
+                FLAVOR_PLATFORM_URL . 'includes/modules/chat-grupos/assets/js/chat-grupos.js',
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
             wp_localize_script('flavor-chat-grupos', 'flavorChatGrupos', [
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'resturl' => rest_url('flavor/v1/chat-grupos/'),
-                'nonce' => wp_create_nonce('flavor_chat_grupos'),
+                'nonce' => wp_create_nonce('flavor_platform_chat_grupos'),
                 'user_id' => get_current_user_id(),
                 'user_name' => wp_get_current_user()->display_name,
                 'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
@@ -5583,16 +5583,16 @@ class Flavor_Dynamic_Pages {
         if ($source_module === 'multimedia') {
             wp_enqueue_style(
                 'flavor-multimedia-frontend',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/multimedia/assets/css/multimedia-frontend.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/multimedia/assets/css/multimedia-frontend.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
 
             wp_enqueue_script(
                 'flavor-multimedia-frontend',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/multimedia/assets/js/multimedia-frontend.js',
+                FLAVOR_PLATFORM_URL . 'includes/modules/multimedia/assets/js/multimedia-frontend.js',
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -5635,16 +5635,16 @@ class Flavor_Dynamic_Pages {
         if ($source_module === 'red-social') {
             wp_enqueue_style(
                 'flavor-red-social',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/red-social/assets/css/red-social.css',
+                FLAVOR_PLATFORM_URL . 'includes/modules/red-social/assets/css/red-social.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
 
             wp_enqueue_script(
                 'flavor-red-social',
-                FLAVOR_CHAT_IA_URL . 'includes/modules/red-social/assets/js/red-social.js',
+                FLAVOR_PLATFORM_URL . 'includes/modules/red-social/assets/js/red-social.js',
                 ['jquery'],
-                FLAVOR_CHAT_IA_VERSION,
+                FLAVOR_PLATFORM_VERSION,
                 true
             );
 
@@ -5717,7 +5717,7 @@ class Flavor_Dynamic_Pages {
 
         // Marketplace usa un frontend controller más reciente que el archive renderer legacy.
         if ($module_slug === 'marketplace') {
-            $archivo_controller = FLAVOR_CHAT_IA_PATH . 'includes/modules/marketplace/frontend/class-marketplace-frontend-controller.php';
+            $archivo_controller = FLAVOR_PLATFORM_PATH . 'includes/modules/marketplace/frontend/class-marketplace-frontend-controller.php';
             if (!class_exists('Flavor_Marketplace_Frontend_Controller') && file_exists($archivo_controller)) {
                 require_once $archivo_controller;
             }
@@ -5732,7 +5732,7 @@ class Flavor_Dynamic_Pages {
 
         // Usar Archive Renderer dinámico
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -5923,7 +5923,7 @@ class Flavor_Dynamic_Pages {
         }
 
         if ($tab_id === 'reputacion') {
-            $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/banco-tiempo/templates/mi-reputacion.php';
+            $template_path = FLAVOR_PLATFORM_PATH . 'includes/modules/banco-tiempo/templates/mi-reputacion.php';
             if (file_exists($template_path)) {
                 $tab_data = $this->load_module_tab_data('banco-tiempo', 'reputacion', [
                     'user_id' => get_current_user_id(),
@@ -5960,7 +5960,7 @@ class Flavor_Dynamic_Pages {
         $fichajes_hoy = [];
         $horas_trabajadas = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             // Último fichaje del usuario
             $ultimo_fichaje = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_fichajes} WHERE user_id = %d ORDER BY fecha DESC, hora DESC LIMIT 1",
@@ -6163,7 +6163,7 @@ class Flavor_Dynamic_Pages {
         $fichajes = [];
         $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : 'semana';
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             $where_fecha = '';
             switch ($periodo) {
                 case 'hoy':
@@ -6296,7 +6296,7 @@ class Flavor_Dynamic_Pages {
             'detalle_dias' => [],
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
             // Obtener fichajes del mes
             $fichajes = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$tabla_fichajes}
@@ -6488,7 +6488,7 @@ class Flavor_Dynamic_Pages {
         $socio = null;
         $tipo_socio = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
@@ -6507,7 +6507,7 @@ class Flavor_Dynamic_Pages {
                 }
             }
 
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
                 $tipo_socio = $wpdb->get_row($wpdb->prepare(
                     "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
                     $socio->tipo_socio
@@ -6605,13 +6605,13 @@ class Flavor_Dynamic_Pages {
         $socio = null;
         $cuotas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT id FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
             ));
 
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
                 $cuotas = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla_cuotas} WHERE socio_id = %d ORDER BY fecha_vencimiento DESC LIMIT 24",
                     $socio->id
@@ -6693,7 +6693,7 @@ class Flavor_Dynamic_Pages {
         global $wpdb;
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             echo '<div class="fmd-empty-state">';
             echo '<p>' . esc_html__('El directorio de miembros no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
@@ -6770,14 +6770,14 @@ class Flavor_Dynamic_Pages {
         $tipo_socio = null;
         $todos_tipos = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
             ));
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
             if ($socio) {
                 $tipo_socio = $wpdb->get_row($wpdb->prepare(
                     "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
@@ -6877,7 +6877,7 @@ class Flavor_Dynamic_Pages {
         $socio = null;
         $tipo_socio = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
@@ -6890,7 +6890,7 @@ class Flavor_Dynamic_Pages {
                     $socio->apellidos = $wp_user->last_name ?: '';
                 }
             }
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_tipos)) {
                 $tipo_socio = $wpdb->get_row($wpdb->prepare(
                     "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
                     $socio->tipo_socio
@@ -6983,13 +6983,13 @@ class Flavor_Dynamic_Pages {
         $historial = [];
         $estadisticas = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_socios)) {
             $socio = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
                 $user_id
             ));
 
-            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+            if ($socio && Flavor_Platform_Helpers::tabla_existe($tabla_cuotas)) {
                 // Obtener todas las cuotas pagadas
                 $cuotas_pagadas = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla_cuotas} WHERE socio_id = %d AND estado = 'pagada' ORDER BY fecha_pago DESC",
@@ -7090,7 +7090,7 @@ class Flavor_Dynamic_Pages {
         $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_hilos)) {
             ?>
             <div class="fmd-empty-state">
                 <span class="dashicons dashicons-format-chat"></span>
@@ -7504,7 +7504,7 @@ class Flavor_Dynamic_Pages {
         $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
 
         // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
             ?>
             <div class="fmd-empty-state">
                 <span class="dashicons dashicons-category"></span>
@@ -8008,7 +8008,7 @@ class Flavor_Dynamic_Pages {
 
         // Usar Single Renderer dinámico
         if (!class_exists('Flavor_Archive_Renderer')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/class-archive-renderer.php';
         }
 
         $renderer = new Flavor_Archive_Renderer();
@@ -9780,11 +9780,11 @@ class Flavor_Dynamic_Pages {
      * Obtiene los módulos activos
      */
     private function get_active_modules() {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return [];
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modules = $loader->get_loaded_modules();
         $result = [];
 
@@ -9810,11 +9810,11 @@ class Flavor_Dynamic_Pages {
      * Obtiene la instancia de un módulo
      */
     private function get_module_instance($module_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return null;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
 
         // Intentar con guiones bajos
         $instance = $loader->get_module(str_replace('-', '_', $module_id));

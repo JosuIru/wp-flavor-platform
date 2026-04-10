@@ -4,7 +4,7 @@
  *
  * Carga e inicializa todos los componentes del Visual Builder Pro.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -71,8 +71,8 @@ class Flavor_VBP_Loader {
      * Constructor privado
      */
     private function __construct() {
-        $this->ruta_base = FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/';
-        $this->url_base  = FLAVOR_CHAT_IA_URL . 'includes/visual-builder-pro/';
+        $this->ruta_base = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/';
+        $this->url_base  = FLAVOR_PLATFORM_URL . 'includes/visual-builder-pro/';
 
         $this->cargar_archivos();
         $this->inicializar_componentes();
@@ -114,7 +114,7 @@ class Flavor_VBP_Loader {
 
         // Herramienta de migración (solo admin)
         if ( is_admin() ) {
-            $migration_tool_path = FLAVOR_CHAT_IA_PATH . 'includes/tools/class-vbp-migration-tool.php';
+            $migration_tool_path = FLAVOR_PLATFORM_PATH . 'includes/tools/class-vbp-migration-tool.php';
             if ( file_exists( $migration_tool_path ) ) {
                 require_once $migration_tool_path;
             }

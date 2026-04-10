@@ -4,7 +4,7 @@
  *
  * Gestiona la construccion de landing pages con secciones dinamicas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 

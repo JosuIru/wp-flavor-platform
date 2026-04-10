@@ -3,7 +3,7 @@
  * Template: Radio Player - Reproductor de Radio en Vivo
  * Reproductor de radio con controles de play/pause, volumen y programa actual
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  */
 
 if (!defined('ABSPATH')) exit;

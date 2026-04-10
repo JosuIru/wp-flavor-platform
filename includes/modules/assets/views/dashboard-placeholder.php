@@ -11,7 +11,7 @@
  * - $module_color: Color hexadecimal del módulo
  * - $module_description: Descripción breve del módulo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

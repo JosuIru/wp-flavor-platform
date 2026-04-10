@@ -9,7 +9,7 @@
  * @var bool   $mostrar_opciones - Si mostrar opciones de notificacion
  * @var array  $plataformas      - Plataformas disponibles para suscripcion
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

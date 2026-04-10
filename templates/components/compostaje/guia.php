@@ -2,7 +2,7 @@
 /**
  * Template: Guía de Compostaje
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var array $args Parámetros opcionales
  */
 

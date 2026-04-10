@@ -9,7 +9,7 @@
  * - $visibilidad: Tipo de visibilidad del módulo
  * - $capacidad_requerida: Capacidad de WordPress requerida
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

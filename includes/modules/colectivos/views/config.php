@@ -2,7 +2,7 @@
 /**
  * Vista de Configuración - Módulo Colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Colectivos
  */
 

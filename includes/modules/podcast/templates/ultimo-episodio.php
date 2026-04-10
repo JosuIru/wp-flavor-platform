@@ -10,7 +10,7 @@
  * @var bool   $mostrar_boton_serie - Si mostrar boton para ver la serie
  * @var string $titulo_widget    - Titulo personalizado del widget
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

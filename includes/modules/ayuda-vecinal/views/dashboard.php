@@ -3,7 +3,7 @@
  * Dashboard de Ayuda Vecinal
  * Vista general de solicitudes y voluntarios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

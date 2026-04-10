@@ -35,7 +35,7 @@
  *                              - limitado: 'Pocas unidades'
  *                              - vacio: 'Sin disponibilidad'
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

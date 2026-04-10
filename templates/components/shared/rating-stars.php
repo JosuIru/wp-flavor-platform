@@ -4,7 +4,7 @@
  *
  * Sistema de valoración con estrellas interactivo o de solo lectura.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param float  $rating      Valoración actual (0-5)

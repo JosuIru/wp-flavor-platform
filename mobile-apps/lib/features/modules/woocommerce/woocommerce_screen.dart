@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -539,33 +540,382 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: estadoColor.withOpacity(0.2),
-          child: Icon(Icons.receipt, color: estadoColor),
-        ),
-        title: Text('#$numero', style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(fecha),
-            Text(_formatCurrency(total), style: const TextStyle(fontWeight: FontWeight.w600)),
-          ],
-        ),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: estadoColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: () => _showPedidoDetail(pedido),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: estadoColor.withOpacity(0.2),
+                child: Icon(Icons.receipt, color: estadoColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('#$numero', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(fecha, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                    const SizedBox(height: 4),
+                    Text(_formatCurrency(total), style: const TextStyle(fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: estadoColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      _getEstadoLabel(estado),
+                      style: TextStyle(color: estadoColor, fontWeight: FontWeight.w600, fontSize: 12),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                ],
+              ),
+            ],
           ),
-          child: Text(
-            _getEstadoLabel(estado),
-            style: TextStyle(color: estadoColor, fontWeight: FontWeight.w600, fontSize: 12),
-          ),
         ),
-        isThreeLine: true,
       ),
     );
+  }
+
+  void _showPedidoDetail(Map<String, dynamic> pedido) {
+    final pedidoId = pedido['id']?.toString() ?? '';
+    final numero = pedido['numero'] ?? pedido['number'] ?? pedido['id'];
+    final fecha = pedido['fecha'] ?? pedido['date'] ?? '';
+    final estado = pedido['estado'] ?? pedido['status'] ?? '';
+    final total = pedido['total'] ?? 0;
+    final items = (pedido['items'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final direccion = pedido['direccion'] ?? pedido['shipping'] ?? {};
+    final tracking = pedido['tracking'] ?? '';
+    final notas = pedido['notas'] ?? pedido['customer_note'] ?? '';
+    final estadoColor = _getEstadoColor(estado);
+    final puedeCancelar = estado.toLowerCase() == 'pending' ||
+                          estado.toLowerCase() == 'pendiente' ||
+                          estado.toLowerCase() == 'processing' ||
+                          estado.toLowerCase() == 'procesando';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Pedido #$numero',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(fecha, style: TextStyle(color: Colors.grey.shade600)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: estadoColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      _getEstadoLabel(estado),
+                      style: TextStyle(color: estadoColor, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 24),
+            // Content
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                children: [
+                  // Items del pedido
+                  Text(
+                    'Productos (${items.length})',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 12),
+                  if (items.isEmpty)
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Icons.shopping_bag_outlined),
+                        title: const Text('Sin detalles de productos'),
+                        subtitle: Text('Los items del pedido no están disponibles',
+                            style: TextStyle(color: Colors.grey.shade600)),
+                      ),
+                    )
+                  else
+                    ...items.map((item) {
+                      final itemNombre = item['nombre'] ?? item['name'] ?? 'Producto';
+                      final itemPrecio = item['precio'] ?? item['price'] ?? item['subtotal'] ?? 0;
+                      final itemCantidad = item['cantidad'] ?? item['quantity'] ?? 1;
+                      final itemImagen = item['imagen'] ?? item['image'] ?? '';
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: itemImagen.isNotEmpty
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    itemImagen,
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(Icons.shopping_bag, size: 24),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(Icons.shopping_bag, size: 24),
+                                ),
+                          title: Text(itemNombre, maxLines: 2, overflow: TextOverflow.ellipsis),
+                          subtitle: Text('Cantidad: $itemCantidad'),
+                          trailing: Text(
+                            _formatCurrency(itemPrecio),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    }),
+
+                  const SizedBox(height: 16),
+
+                  // Dirección de envío
+                  if (direccion is Map && direccion.isNotEmpty) ...[
+                    const Text(
+                      'Dirección de envío',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.location_on_outlined, color: Colors.grey),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                _formatDireccion(direccion),
+                                style: const TextStyle(height: 1.4),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Tracking
+                  if (tracking.toString().isNotEmpty) ...[
+                    const Text(
+                      'Seguimiento',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Icons.local_shipping_outlined, color: Colors.blue),
+                        title: const Text('Número de seguimiento'),
+                        subtitle: Text(tracking.toString()),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: tracking.toString()));
+                            FlavorSnackbar.showInfo(context, 'Copiado al portapapeles');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Notas
+                  if (notas.toString().isNotEmpty) ...[
+                    const Text(
+                      'Notas del pedido',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.note_outlined, color: Colors.grey),
+                            const SizedBox(width: 12),
+                            Expanded(child: Text(notas.toString())),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Total
+                  Card(
+                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Total del pedido', style: TextStyle(fontSize: 16)),
+                          Text(
+                            _formatCurrency(total),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Botón cancelar
+                  if (puedeCancelar)
+                    OutlinedButton.icon(
+                      onPressed: () => _cancelarPedido(context, pedidoId, numero.toString()),
+                      icon: const Icon(Icons.cancel_outlined, color: Colors.red),
+                      label: const Text('Cancelar pedido', style: TextStyle(color: Colors.red)),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                        side: const BorderSide(color: Colors.red),
+                      ),
+                    ),
+
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDireccion(Map<dynamic, dynamic> direccion) {
+    final partes = <String>[];
+
+    final calle = direccion['address_1'] ?? direccion['calle'] ?? '';
+    final calle2 = direccion['address_2'] ?? '';
+    final ciudad = direccion['city'] ?? direccion['ciudad'] ?? '';
+    final provincia = direccion['state'] ?? direccion['provincia'] ?? '';
+    final cp = direccion['postcode'] ?? direccion['codigo_postal'] ?? '';
+    final pais = direccion['country'] ?? direccion['pais'] ?? '';
+
+    if (calle.toString().isNotEmpty) partes.add(calle.toString());
+    if (calle2.toString().isNotEmpty) partes.add(calle2.toString());
+    if (ciudad.toString().isNotEmpty || cp.toString().isNotEmpty) {
+      partes.add('${cp.toString()} ${ciudad.toString()}'.trim());
+    }
+    if (provincia.toString().isNotEmpty) partes.add(provincia.toString());
+    if (pais.toString().isNotEmpty) partes.add(pais.toString());
+
+    return partes.join('\n');
+  }
+
+  Future<void> _cancelarPedido(BuildContext context, String pedidoId, String numero) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancelar pedido'),
+        content: Text('¿Estás seguro de que deseas cancelar el pedido #$numero?\n\nEsta acción no se puede deshacer.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No, mantener'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Sí, cancelar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/woocommerce/pedidos/$pedidoId/cancelar', data: {});
+
+      if (mounted) {
+        Navigator.pop(context); // Cerrar modal
+
+        if (response.success) {
+          FlavorSnackbar.showSuccess(context, 'Pedido #$numero cancelado');
+          _loadMisPedidos();
+        } else {
+          FlavorSnackbar.showError(context, response.error ?? 'Error al cancelar pedido');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        FlavorSnackbar.showError(context, 'Error: $e');
+      }
+    }
   }
 
   Widget _buildEmptyState({

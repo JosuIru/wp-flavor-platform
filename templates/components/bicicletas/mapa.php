@@ -2,7 +2,7 @@
 /**
  * Mapa Interactivo - Estaciones de Bicicletas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/Bicicletas
  */
 

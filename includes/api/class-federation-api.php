@@ -4,7 +4,7 @@
  *
  * Endpoints para enviar y recibir publicaciones entre nodos.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 4.2.0
  */
 
@@ -443,7 +443,7 @@ class Flavor_Federation_API {
         return [
             'status'    => 'ok',
             'nodo'      => get_bloginfo('name'),
-            'version'   => FLAVOR_CHAT_IA_VERSION,
+            'version'   => FLAVOR_PLATFORM_VERSION,
             'timestamp' => current_time('c'),
         ];
     }

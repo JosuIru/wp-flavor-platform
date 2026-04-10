@@ -2,7 +2,7 @@
 /**
  * Template: Hero Section - Huertos Urbanos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/HuertosUrbanos
  */
 

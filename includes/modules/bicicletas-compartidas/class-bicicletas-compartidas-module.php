@@ -2,7 +2,7 @@
 /**
  * Módulo de Bicicletas Compartidas para Chat IA
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Bicicletas Compartidas - Sistema de bici-sharing comunitario
  */
-class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -39,7 +39,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         global $wpdb;
         $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas);
+        return Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas);
     }
 
     /**
@@ -157,7 +157,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         }
 
         $assets_url = plugin_dir_url(__FILE__) . 'assets/';
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'bicicletas-frontend',
@@ -239,7 +239,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Obtener estaciones activas
         $estaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
             $estaciones = $wpdb->get_results(
                 "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
                  FROM $tabla_estaciones
@@ -409,7 +409,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         ], $atts);
 
         $estaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
             $orden_sql = 'nombre ASC';
             if ($atributos['ordenar'] === 'disponibles') {
                 $orden_sql = 'bicicletas_disponibles DESC';
@@ -529,7 +529,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Obtener estaciones
         $estaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
             $estaciones = $wpdb->get_results(
                 "SELECT id, nombre, direccion, bicicletas_disponibles FROM $tabla_estaciones WHERE estado = 'activa' AND bicicletas_disponibles > 0 ORDER BY nombre"
             );
@@ -537,7 +537,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Obtener bicicletas de la estación seleccionada
         $bicicletas_disponibles = [];
-        if ($estacion_seleccionada_id > 0 && Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+        if ($estacion_seleccionada_id > 0 && Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
             $bicicletas_disponibles = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, codigo, tipo, marca, modelo, talla, color FROM $tabla_bicicletas WHERE estacion_actual_id = %d AND estado = 'disponible' ORDER BY tipo, codigo",
                 $estacion_seleccionada_id
@@ -548,7 +548,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
         $usuario_id = get_current_user_id();
         $prestamo_activo = null;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamo_activo = $wpdb->get_row($wpdb->prepare(
                 "SELECT p.*, b.codigo as bicicleta_codigo FROM $tabla_prestamos p
                  LEFT JOIN $tabla_bicicletas b ON p.bicicleta_id = b.id
@@ -820,7 +820,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         $prestamos = [];
         $prestamo_activo = null;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             // Obtener préstamo activo
             if ($atributos['mostrar_activo'] === 'yes') {
                 $prestamo_activo = $wpdb->get_row($wpdb->prepare(
@@ -1007,7 +1007,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             'km_mes_actual' => 0,
         ];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             // Totales históricos
             $totales = $wpdb->get_row($wpdb->prepare(
                 "SELECT COUNT(*) as viajes, COALESCE(SUM(kilometros_recorridos), 0) as km, COALESCE(SUM(duracion_minutos), 0) as minutos
@@ -2019,7 +2019,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         global $wpdb;
         $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
             $this->create_tables();
         }
     }
@@ -2442,13 +2442,13 @@ KNOWLEDGE;
         $bicicletas_disponibles = 0;
         $prestamos_activos = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
             $bicicletas_disponibles = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_bicicletas WHERE estado = 'disponible'"
             );
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_prestamos WHERE estado = 'activo'"
             );
@@ -2486,7 +2486,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             return 0;
         }
 
@@ -2512,18 +2512,18 @@ KNOWLEDGE;
         $total_estaciones = 0;
         $prestamos_hoy = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
             $total_bicicletas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_bicicletas");
             $bicicletas_disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_bicicletas WHERE estado = 'disponible'");
             $bicicletas_en_uso = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_bicicletas WHERE estado = 'en_uso'");
             $bicicletas_mantenimiento = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_bicicletas WHERE estado = 'mantenimiento'");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
             $total_estaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_estaciones WHERE estado = 'activa'");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamos_hoy = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM $tabla_prestamos WHERE DATE(fecha_inicio) = %s",
                 current_time('Y-m-d')
@@ -2620,7 +2620,7 @@ KNOWLEDGE;
         $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
 
         $bicicletas = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
             $bicicletas = $wpdb->get_results(
                 "SELECT id, codigo, tipo, marca, modelo, talla, estado, kilometros_acumulados
                  FROM $tabla_bicicletas
@@ -2695,7 +2695,7 @@ KNOWLEDGE;
         $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
         $estaciones = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_estaciones)) {
             $estaciones = $wpdb->get_results(
                 "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
                  FROM $tabla_estaciones
@@ -2772,7 +2772,7 @@ KNOWLEDGE;
         $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
         $prestamos = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_prestamos)) {
             $prestamos = $wpdb->get_results("
                 SELECT p.*, b.codigo as bicicleta_codigo, e.nombre as estacion_nombre, u.display_name as usuario_nombre
                 FROM $tabla_prestamos p
@@ -2995,7 +2995,7 @@ KNOWLEDGE;
         $tabla = $wpdb->prefix . 'flavor_bicicletas';
         $options = [];
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+        if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
             $bicicletas = $wpdb->get_results(
                 "SELECT id, codigo, tipo, marca FROM $tabla WHERE estado = 'disponible' ORDER BY codigo ASC LIMIT 50"
             );
@@ -3312,4 +3312,8 @@ KNOWLEDGE;
             echo '<div class="wrap"><h1>' . esc_html__('Uso de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
+}
+
+if (!class_exists('Flavor_Chat_Bicicletas_Compartidas_Module', false)) {
+    class_alias('Flavor_Platform_Bicicletas_Compartidas_Module', 'Flavor_Chat_Bicicletas_Compartidas_Module');
 }

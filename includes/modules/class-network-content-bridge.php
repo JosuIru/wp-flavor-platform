@@ -6,7 +6,7 @@
  * Los providers pueden publicar su contenido para que sea visible
  * en otros nodos federados.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

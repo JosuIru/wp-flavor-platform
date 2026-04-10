@@ -2,7 +2,7 @@
 /**
  * Formulario para crear/editar eventos (Frontend)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Eventos
  */
 

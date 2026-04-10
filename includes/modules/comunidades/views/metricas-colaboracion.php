@@ -4,7 +4,7 @@
  *
  * Dashboard con estadísticas de actividad y colaboración entre comunidades
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

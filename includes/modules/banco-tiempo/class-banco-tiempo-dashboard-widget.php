@@ -7,7 +7,7 @@
  * - Servicios ofrecidos
  * - Intercambios recientes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\BancoTiempo
  * @since 4.1.0
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 /**
@@ -214,7 +214,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => number_format(abs($saldo_horas), 1, ',', '.') . 'h',
             'label' => $saldo_horas >= 0 ? __('Saldo positivo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Saldo negativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $color_saldo,
-            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo') : Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'mi-saldo'),
+            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo') : Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'mi-saldo'),
         ];
 
         // Stat 2: Mis servicios
@@ -223,7 +223,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => $mis_servicios,
             'label' => __('Mis servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $mis_servicios > 0 ? 'primary' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios'),
+            'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios'),
         ];
 
         // Stat 3: Intercambios pendientes
@@ -233,7 +233,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
                 'valor' => $intercambios_pendientes,
                 'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'intercambios'),
+                'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'intercambios'),
             ];
         }
 
@@ -243,7 +243,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => $intercambios_completados,
             'label' => __('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'info',
-            'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'intercambios'),
+            'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'intercambios'),
         ];
 
         // Items: servicios disponibles
@@ -256,7 +256,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'footer' => [
                 [
                     'label' => __('Ver todos los servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios'),
+                    'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -299,7 +299,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
                 'icon' => 'dashicons-hammer',
                 'title' => wp_trim_words($servicio->titulo, 5, '...'),
                 'meta' => $servicio->nombre_usuario ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : add_query_arg('servicio_id', $servicio->id, Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')),
+                'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : add_query_arg('servicio_id', $servicio->id, Flavor_Platform_Helpers::get_action_url('banco_tiempo', 'servicios')),
             ];
         }
 

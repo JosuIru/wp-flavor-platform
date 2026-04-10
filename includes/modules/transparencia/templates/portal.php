@@ -4,7 +4,7 @@
  *
  * Portal principal con acceso a todas las secciones de transparencia.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -30,22 +30,22 @@ $total_actas = 0;
 $total_solicitudes_resueltas = 0;
 $ejercicio_actual = date('Y');
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
     $total_documentos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_documentos WHERE estado = 'publicado'");
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_presupuestos)) {
     $total_presupuestos = (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(DISTINCT ejercicio) FROM $tabla_presupuestos WHERE ejercicio >= %d",
         $ejercicio_actual - 5
     ));
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_actas)) {
     $total_actas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actas WHERE estado IN ('aprobada', 'publicada')");
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
     $total_solicitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes");
     $solicitudes_resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta'");
     $tasa_respuesta = $total_solicitudes > 0 ? round(($solicitudes_resueltas / $total_solicitudes) * 100) : 0;
@@ -99,7 +99,7 @@ $categorias = [
 
 // Documentos recientes
 $documentos_recientes = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
     $documentos_recientes = $wpdb->get_results(
         "SELECT id, titulo, categoria, archivo_url, fecha_publicacion
          FROM $tabla_documentos

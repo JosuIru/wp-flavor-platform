@@ -2,7 +2,7 @@
 /**
  * Template: Fondo Solidario del Banco de Tiempo
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage BancoTiempo
  * @since 4.2.0
  *

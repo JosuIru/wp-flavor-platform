@@ -4,7 +4,7 @@
  *
  * Panel de moderacion de anuncios y gestion de reportes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

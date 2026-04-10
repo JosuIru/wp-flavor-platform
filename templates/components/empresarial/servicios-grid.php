@@ -2,7 +2,7 @@
 /**
  * Template: Grid de Servicios
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

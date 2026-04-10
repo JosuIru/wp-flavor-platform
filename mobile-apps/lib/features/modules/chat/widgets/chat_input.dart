@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'emoji_picker.dart';
 
 /// Widget de entrada de chat con soporte para texto y grabación de voz
 class ChatInput extends StatefulWidget {
@@ -17,6 +20,7 @@ class ChatInput extends StatefulWidget {
   final ValueChanged<String> onTextChanged;
   final VoidCallback onAttachmentTap;
   final Function(File, Duration) onVoiceMessage;
+  final Function(File)? onImageCaptured;
 
   const ChatInput({
     super.key,
@@ -30,6 +34,7 @@ class ChatInput extends StatefulWidget {
     required this.onTextChanged,
     required this.onAttachmentTap,
     required this.onVoiceMessage,
+    this.onImageCaptured,
   });
 
   @override
@@ -42,6 +47,7 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
   Duration _recordDuration = Duration.zero;
   Timer? _timer;
   final AudioRecorder _recorder = AudioRecorder();
+  final ImagePicker _imagePicker = ImagePicker();
   String? _recordingPath;
   double _dragOffset = 0;
 
@@ -129,6 +135,29 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
     _stopRecording(send: false);
   }
 
+  Future<void> _openCamera() async {
+    // Verificar permisos
+    final status = await Permission.camera.request();
+    if (!mounted) return;
+
+    if (!status.isGranted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Se necesita permiso de cámara')),
+      );
+      return;
+    }
+
+    // Abrir cámara
+    final image = await _imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+    );
+
+    if (image != null && widget.onImageCaptured != null) {
+      widget.onImageCaptured!(File(image.path));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -176,7 +205,35 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
                 IconButton(
                   icon: const Icon(Icons.emoji_emotions_outlined),
                   onPressed: () {
-                    // TODO: Mostrar selector de emojis
+                    showEmojiPicker(
+                      context,
+                      onEmojiSelected: (emoji) {
+                        // Insertar emoji en la posición del cursor
+                        final cursorPosition = widget.controller.selection.baseOffset;
+                        final text = widget.controller.text;
+
+                        String newText;
+                        int newCursorPosition;
+
+                        if (cursorPosition < 0 || cursorPosition > text.length) {
+                          // Sin cursor, añadir al final
+                          newText = text + emoji;
+                          newCursorPosition = newText.length;
+                        } else {
+                          // Con cursor, insertar en posición
+                          newText = text.substring(0, cursorPosition) +
+                              emoji +
+                              text.substring(cursorPosition);
+                          newCursorPosition = cursorPosition + emoji.length;
+                        }
+
+                        widget.controller.text = newText;
+                        widget.controller.selection = TextSelection.collapsed(
+                          offset: newCursorPosition,
+                        );
+                        widget.onTextChanged(newText);
+                      },
+                    );
                   },
                   iconSize: 22,
                   color: colorScheme.onSurfaceVariant,
@@ -204,11 +261,7 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
                 if (!hasText)
                   IconButton(
                     icon: const Icon(Icons.camera_alt_outlined),
-                    onPressed: widget.enableCamera
-                        ? () {
-                      // TODO: Abrir cámara
-                    }
-                        : null,
+                    onPressed: widget.enableCamera ? _openCamera : null,
                     iconSize: 22,
                     color: colorScheme.onSurfaceVariant,
                     tooltip:
@@ -385,6 +438,7 @@ class AttachmentPicker extends StatelessWidget {
   final VoidCallback onVideoTap;
   final VoidCallback onFileTap;
   final VoidCallback onLocationTap;
+  final VoidCallback onContactTap;
   final VoidCallback onClose;
 
   const AttachmentPicker({
@@ -394,6 +448,7 @@ class AttachmentPicker extends StatelessWidget {
     required this.onVideoTap,
     required this.onFileTap,
     required this.onLocationTap,
+    required this.onContactTap,
     required this.onClose,
   });
 
@@ -470,9 +525,7 @@ class AttachmentPicker extends StatelessWidget {
                 icon: Icons.person,
                 label: 'Contacto',
                 color: Colors.blue,
-                onTap: () {
-                  // TODO: Selector de contactos
-                },
+                onTap: onContactTap,
               ),
             ],
           ),

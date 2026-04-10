@@ -6,14 +6,14 @@
  * Themacle de Figma. Estos componentes se adaptan visualmente al tema
  * activo mediante CSS custom properties.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
+class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
@@ -1312,4 +1312,9 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         }
     }
 
+}
+
+// Legacy alias for backward compatibility
+if (!class_exists('Flavor_Chat_Themacle_Module', false)) {
+    class_alias('Flavor_Platform_Themacle_Module', 'Flavor_Chat_Themacle_Module');
 }

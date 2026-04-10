@@ -2,7 +2,7 @@
 /**
  * Template: Feed de Actividad Social
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
  * Convierte nombres de clase a rutas de archivo siguiendo convenciones WordPress.
  *
  * Ejemplo:
- * - Flavor_Chat_Core → includes/core/class-chat-core.php
+ * - Flavor_Platform_Core → includes/core/class-chat-core.php
  * - Flavor_Module_WooCommerce → includes/modules/woocommerce/class-woocommerce.php
  *
  * @since 3.0.0
@@ -86,29 +86,29 @@ class Flavor_Autoloader {
      * @return void
      */
     public static function register($prepend = false) {
-        self::$debug = defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG;
+        self::$debug = defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG;
 
         // Registrar mapeo de prefijos
-        self::register_namespace('Flavor_', FLAVOR_CHAT_IA_PATH . 'includes/');
+        self::register_namespace('Flavor_', FLAVOR_PLATFORM_PATH . 'includes/');
 
         // Registrar el autoloader SPL para Flavor_*
         spl_autoload_register([__CLASS__, 'autoload'], true, $prepend);
 
-        // Registrar autoloader PSR-4 para namespace Flavor_Chat_IA
+        // Registrar autoloader PSR-4 para namespace Flavor_Platform
         spl_autoload_register([__CLASS__, 'autoload_psr4'], true, $prepend);
 
         self::log('Autoloader registrado correctamente');
     }
 
     /**
-     * Autoloader PSR-4 para namespace Flavor_Chat_IA
+     * Autoloader PSR-4 para namespace Flavor_Platform
      *
      * @param string $class_name Nombre completo de la clase con namespace
      * @return bool
      */
     public static function autoload_psr4($class_name) {
-        // Solo procesar clases del namespace Flavor_Chat_IA
-        $namespace_prefix = 'Flavor_Chat_IA\\';
+        // Solo procesar clases del namespace Flavor_Platform
+        $namespace_prefix = 'Flavor_Platform\\';
 
         if (strpos($class_name, $namespace_prefix) !== 0) {
             return false;
@@ -123,7 +123,7 @@ class Flavor_Autoloader {
         $class_file = 'class-' . strtolower(str_replace('_', '-', array_pop($parts))) . '.php';
 
         // Construir ruta del archivo
-        $base_dir = FLAVOR_CHAT_IA_PATH . 'includes/';
+        $base_dir = FLAVOR_PLATFORM_PATH . 'includes/';
 
         // Si hay subdirectorios en el namespace
         if (!empty($parts)) {
@@ -179,7 +179,7 @@ class Flavor_Autoloader {
 
         // Verificar mapeo especial primero
         if (isset(self::$special_mappings[$nombre_clase])) {
-            $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'includes/' . self::$special_mappings[$nombre_clase];
+            $ruta_archivo = FLAVOR_PLATFORM_PATH . 'includes/' . self::$special_mappings[$nombre_clase];
             if (self::load_file($ruta_archivo)) {
                 self::$loaded_classes[$nombre_clase] = $ruta_archivo;
                 self::log("Clase cargada (mapeo especial): {$nombre_clase} desde {$ruta_archivo}");
@@ -208,7 +208,7 @@ class Flavor_Autoloader {
      * Convierte nombre de clase a ruta de archivo
      *
      * Conversiones:
-     * - Flavor_Chat_Core → core/class-chat-core.php
+     * - Flavor_Platform_Core → core/class-chat-core.php
      * - Flavor_Module_WooCommerce → modules/woocommerce/class-woocommerce.php
      * - Flavor_Addon_Web_Builder → addons/web-builder/class-web-builder.php
      *
@@ -235,7 +235,7 @@ class Flavor_Autoloader {
             switch ($primer_segmento) {
                 case 'chat':
                     $carpeta_especial = 'core/';
-                    // Flavor_Chat_Core → class-chat-core.php
+                    // Flavor_Platform_Core → class-chat-core.php
                     $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     break;
 
@@ -596,8 +596,8 @@ class Flavor_Autoloader {
             return;
         }
 
-        if (function_exists('flavor_chat_ia_log')) {
-            flavor_chat_ia_log('[Autoloader] ' . $mensaje, $nivel);
+        if (function_exists('flavor_platform_log')) {
+            flavor_platform_log('[Autoloader] ' . $mensaje, $nivel);
         }
     }
 }

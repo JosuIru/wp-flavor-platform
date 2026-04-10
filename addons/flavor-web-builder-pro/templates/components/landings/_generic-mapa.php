@@ -13,7 +13,7 @@
  * - $color_primario (string): Color primario
  * - $mostrar_listado (bool): Mostrar listado lateral
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

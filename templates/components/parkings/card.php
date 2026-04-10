@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Plaza de Parking
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

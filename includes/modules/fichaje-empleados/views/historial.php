@@ -2,7 +2,7 @@
 /**
  * Vista: Historial de fichajes
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

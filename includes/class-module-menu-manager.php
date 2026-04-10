@@ -4,7 +4,7 @@
  *
  * Crea y gestiona automáticamente los menús de WordPress cuando se activan/desactivan módulos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 
@@ -227,7 +227,7 @@ class Flavor_Module_Menu_Manager {
             ],
             [
                 'title' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => Flavor_Chat_Helpers::get_action_url('', ''),
+                'url' => Flavor_Platform_Helpers::get_action_url('', ''),
                 'order' => 2,
                 'icon' => '👤',
                 'require_login' => true,
@@ -249,11 +249,11 @@ class Flavor_Module_Menu_Manager {
      * Añade módulos organizados por categorías
      */
     private function add_modules_by_categories($menu_id) {
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
             return;
         }
 
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $active_modules = $loader->get_loaded_modules();
 
         // Agrupar módulos activos por categoría
@@ -350,7 +350,7 @@ class Flavor_Module_Menu_Manager {
         $parent_id = $this->find_or_create_category_item($menu_id, $category_key);
 
         // Obtener info del módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $instance = $loader->get_module_instance($module_id);
         $module_info = $this->get_module_info($module_id, $instance);
 

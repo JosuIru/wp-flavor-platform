@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Reservas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -69,7 +69,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -281,7 +281,7 @@ class Flavor_Reservas_Frontend_Controller {
         global $wpdb;
         $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_recursos)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_recursos)) {
             echo '<p class="flavor-error">' . __('El módulo de reservas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }

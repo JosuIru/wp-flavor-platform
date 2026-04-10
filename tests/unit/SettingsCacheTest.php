@@ -2,7 +2,7 @@
 /**
  * Tests para las funciones de cache de settings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';

@@ -7,7 +7,7 @@
  *   $sin_leer       - Cantidad de notificaciones sin leer
  *   $usuario        - WP_User objeto del usuario actual
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

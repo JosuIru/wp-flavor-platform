@@ -2,7 +2,7 @@
 /**
  * Template: Calendario de Talleres
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Modules/Talleres
  */
 

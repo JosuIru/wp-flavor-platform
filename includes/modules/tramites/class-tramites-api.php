@@ -2,7 +2,7 @@
 /**
  * API REST para Trámites (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Tramites_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,35 +28,35 @@ class Flavor_Tramites_API {
 
     public function register_routes() {
         // GET /tramites/dashboard
-        register_rest_route(self::NAMESPACE, '/tramites/dashboard', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'get_dashboard'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /tramites/tipos
-        register_rest_route(self::NAMESPACE, '/tramites/tipos', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/tipos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_tipos_tramite'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /tramites/mis-expedientes
-        register_rest_route(self::NAMESPACE, '/tramites/mis-expedientes', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/mis-expedientes', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_expedientes'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /tramites/expedientes/{id}
-        register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_expediente'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // POST /tramites/iniciar
-        register_rest_route(self::NAMESPACE, '/tramites/iniciar', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/iniciar', [
             'methods' => 'POST',
             'callback' => [$this, 'iniciar_tramite'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -73,14 +73,14 @@ class Flavor_Tramites_API {
         ]);
 
         // POST /tramites/expedientes/{id}/documentos
-        register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)/documentos', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)/documentos', [
             'methods' => 'POST',
             'callback' => [$this, 'subir_documento'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // DELETE /tramites/expedientes/{id}
-        register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/tramites/expedientes/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'cancelar_expediente'],
             'permission_callback' => [$this, 'check_authentication'],

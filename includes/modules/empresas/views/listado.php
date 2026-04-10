@@ -2,7 +2,7 @@
 /**
  * Listado de Empresas - Admin
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

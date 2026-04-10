@@ -2,7 +2,7 @@
 /**
  * Template: Biblioteca de Objetos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

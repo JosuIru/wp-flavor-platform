@@ -4,7 +4,7 @@
  *
  * Tarjeta de membresía/suscripción con información del plan y estado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  *
  * @param array  $membership Datos de membresía: ['plan' => '', 'status' => '', 'start_date' => '', 'end_date' => '', 'price' => 0]

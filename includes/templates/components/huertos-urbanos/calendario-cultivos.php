@@ -2,7 +2,7 @@
 /**
  * Template: Calendario de Cultivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Templates/Components/HuertosUrbanos
  */
 

@@ -11,7 +11,7 @@
  * - estilo: Estilo visual ('cards', 'minimal', 'colorful')
  * - clase_adicional: Clases CSS adicionales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

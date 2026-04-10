@@ -30,7 +30,7 @@ switch ($periodo) {
 }
 
 // Verificar tabla
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
     $tabla_puntos = $wpdb->prefix . 'flavor_puntos_usuario';
 }
 

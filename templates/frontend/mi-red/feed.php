@@ -9,7 +9,7 @@
  * - $datos_vista['trending']: array de hashtags trending
  * - $datos_vista['sugerencias']: array de usuarios sugeridos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -115,7 +115,7 @@ $feed = $datos_vista['feed'] ?? [];
         <?php else : ?>
             <?php
             foreach ($feed as $item) :
-                include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
+                include FLAVOR_PLATFORM_PATH . 'templates/frontend/mi-red/partials/feed-item.php';
             endforeach;
             ?>
         <?php endif; ?>

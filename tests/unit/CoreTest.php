@@ -4,14 +4,14 @@
  *
  * Tests de inicializacion, carga de modulos y permisos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Tests
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';
 
 /**
- * Tests del core del plugin Flavor Chat IA
+ * Tests del core del plugin Flavor Platform
  */
 class CoreTest extends Flavor_TestCase {
 
@@ -19,20 +19,37 @@ class CoreTest extends Flavor_TestCase {
      * Test de existencia de constantes del plugin
      */
     public function test_plugin_constants_are_defined() {
-        // Simular constantes que deberian existir
-        $constantesRequeridas = [
+        // Constantes principales (nuevo naming)
+        $constantesPrincipales = [
+            'FLAVOR_PLATFORM_VERSION',
+            'FLAVOR_PLATFORM_PATH',
+            'FLAVOR_PLATFORM_URL',
+            'FLAVOR_PLATFORM_BASENAME',
+        ];
+
+        // Constantes legacy (alias para compatibilidad)
+        $constantesLegacy = [
             'FLAVOR_CHAT_IA_VERSION',
             'FLAVOR_CHAT_IA_PATH',
             'FLAVOR_CHAT_IA_URL',
             'FLAVOR_CHAT_IA_BASENAME',
         ];
 
-        // En ambiente de test, verificar formato esperado
-        foreach ($constantesRequeridas as $nombreConstante) {
+        // Verificar formato de constantes principales
+        foreach ($constantesPrincipales as $nombreConstante) {
+            $this->assertMatchesRegularExpression(
+                '/^FLAVOR_PLATFORM_/',
+                $nombreConstante,
+                "Constante {$nombreConstante} debe seguir el patron FLAVOR_PLATFORM_"
+            );
+        }
+
+        // Verificar formato de constantes legacy
+        foreach ($constantesLegacy as $nombreConstante) {
             $this->assertMatchesRegularExpression(
                 '/^FLAVOR_CHAT_IA_/',
                 $nombreConstante,
-                "Constante {$nombreConstante} debe seguir el patron de nomenclatura"
+                "Constante legacy {$nombreConstante} debe seguir el patron FLAVOR_CHAT_IA_"
             );
         }
     }

@@ -2,7 +2,7 @@
 /**
  * Vista: Gestor de Medios de Radio
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +23,7 @@ $stats = [
     'playlists' => 0,
 ];
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_audios)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_audios)) {
     $stats['total_audios'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_audios WHERE activo = 1");
     $stats['canciones'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_audios WHERE activo = 1 AND tipo = 'cancion'");
     $stats['podcasts'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_audios WHERE activo = 1 AND tipo = 'podcast'");
@@ -31,7 +31,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_audios)) {
     $stats['duracion_total'] = $wpdb->get_var("SELECT SUM(duracion_segundos) FROM $tabla_audios WHERE activo = 1");
 }
 
-if (Flavor_Chat_Helpers::tabla_existe($tabla_playlists)) {
+if (Flavor_Platform_Helpers::tabla_existe($tabla_playlists)) {
     $stats['playlists'] = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_playlists WHERE activa = 1");
 }
 

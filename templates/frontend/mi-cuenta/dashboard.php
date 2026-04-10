@@ -11,7 +11,7 @@
  *   $notificaciones_sin_leer - Cantidad de notificaciones sin leer
  *   $dashboard_instance      - Instancia de Flavor_User_Dashboard
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

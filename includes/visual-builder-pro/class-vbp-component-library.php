@@ -5,7 +5,7 @@
  * Permite guardar, gestionar y reutilizar componentes/bloques
  * en diferentes páginas del editor.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.21
  */

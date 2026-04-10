@@ -2,7 +2,7 @@
 /**
  * Gestión de Solicitudes de Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

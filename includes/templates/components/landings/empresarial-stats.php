@@ -1,7 +1,7 @@
 <?php
 /**
  * Template: Estadísticas Empresariales
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 if (!defined('ABSPATH')) exit;
 

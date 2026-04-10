@@ -4,7 +4,7 @@
  *
  * Sistema de popups/modales configurables.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Visual_Builder_Pro
  * @since 2.0.0
  */
@@ -440,7 +440,7 @@ class Flavor_VBP_Popup_Builder {
         // CSS
         wp_enqueue_style(
             'vbp-popup-frontend',
-            FLAVOR_CHAT_IA_URL . 'assets/vbp/css/popup-frontend.css',
+            FLAVOR_PLATFORM_URL . 'assets/vbp/css/popup-frontend.css',
             array(),
             '2.0.0'
         );
@@ -448,7 +448,7 @@ class Flavor_VBP_Popup_Builder {
         // JS
         wp_enqueue_script(
             'vbp-popup-frontend',
-            FLAVOR_CHAT_IA_URL . 'assets/vbp/js/vbp-popup.js',
+            FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-popup.js',
             array(),
             '2.0.0',
             true

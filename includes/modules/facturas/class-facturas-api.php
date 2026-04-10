@@ -2,7 +2,7 @@
 /**
  * API REST para Facturas (Móvil)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Facturas_API {
 
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     private static $instance = null;
 
@@ -28,28 +28,28 @@ class Flavor_Facturas_API {
 
     public function register_routes() {
         // GET /facturas
-        register_rest_route(self::NAMESPACE, '/facturas', [
+        flavor_register_rest_route(self::NAMESPACE, '/facturas', [
             'methods' => 'GET',
             'callback' => [$this, 'get_facturas'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /facturas/{id}
-        register_rest_route(self::NAMESPACE, '/facturas/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/facturas/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_factura'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /facturas/{id}/pdf
-        register_rest_route(self::NAMESPACE, '/facturas/(?P<id>\d+)/pdf', [
+        flavor_register_rest_route(self::NAMESPACE, '/facturas/(?P<id>\d+)/pdf', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pdf'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /facturas/resumen
-        register_rest_route(self::NAMESPACE, '/facturas/resumen', [
+        flavor_register_rest_route(self::NAMESPACE, '/facturas/resumen', [
             'methods' => 'GET',
             'callback' => [$this, 'get_resumen'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -177,8 +177,11 @@ class Flavor_Facturas_API {
 
         if (empty($factura->pdf_url)) {
             // Intentar generar PDF si existe el método
-            if (class_exists('Flavor_Chat_Facturas_Module')) {
-                $module = Flavor_Chat_Facturas_Module::get_instance();
+            $facturas_module_class = function_exists('flavor_get_runtime_class_name')
+                ? flavor_get_runtime_class_name('Flavor_Chat_Facturas_Module')
+                : 'Flavor_Chat_Facturas_Module';
+            if (class_exists($facturas_module_class)) {
+                $module = $facturas_module_class::get_instance();
                 if (method_exists($module, 'generar_pdf')) {
                     $pdf_url = $module->generar_pdf($factura_id);
                     if ($pdf_url) {

@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Participación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Participacion
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -102,14 +102,14 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $votaciones_activas,
                 'label' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $votaciones_activas > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
             ],
             [
                 'icon' => 'dashicons-lightbulb',
                 'valor' => $propuestas_abiertas,
                 'label' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $propuestas_abiertas > 0 ? 'info' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=propuestas') : Flavor_Chat_Helpers::get_action_url('participacion', 'propuestas'),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=propuestas') : Flavor_Platform_Helpers::get_action_url('participacion', 'propuestas'),
             ],
         ];
 
@@ -119,7 +119,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $mis_votos,
                 'label' => __('Mis votos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_votos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=mis-votos') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=mis-votos') : Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
             ];
         }
 
@@ -137,7 +137,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             'footer' => [
                 [
                     'label' => __('Participar', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
+                    'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Platform_Helpers::get_action_url('participacion', 'votaciones'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -170,7 +170,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'icon' => 'dashicons-chart-bar',
                 'title' => wp_trim_words($votacion->titulo, 5, '...'),
                 'meta' => sprintf(__('Cierra en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $tiempo_restante),
-                'url' => $es_admin ? admin_url('admin.php?page=participacion&votacion=' . $votacion->id) : add_query_arg('encuesta_id', $votacion->id, Flavor_Chat_Helpers::get_action_url('participacion', 'encuesta')),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion&votacion=' . $votacion->id) : add_query_arg('encuesta_id', $votacion->id, Flavor_Platform_Helpers::get_action_url('participacion', 'encuesta')),
                 'badge' => $votacion->total_votos > 0 ? $votacion->total_votos . ' votos' : null,
             ];
         }

@@ -2,7 +2,7 @@
 /**
  * Template: Ranking de composteros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 1.0.0
  *
  * Variables esperadas en $args:

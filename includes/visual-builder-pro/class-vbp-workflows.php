@@ -3,7 +3,7 @@
  * Visual Builder Pro - Workflows System
  * Sistema de flujos de aprobación para publicación
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @since 2.3.0
  */
 

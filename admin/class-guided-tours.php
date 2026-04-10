@@ -1181,7 +1181,7 @@ class Flavor_Guided_Tours {
      * @return void
      */
     public function render_tours_panel() {
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/tours-panel.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/tours-panel.php';
     }
 
     /**
@@ -1213,17 +1213,17 @@ class Flavor_Guided_Tours {
         // CSS del sistema de onboarding
         wp_enqueue_style(
             'flavor-onboarding',
-            FLAVOR_CHAT_IA_URL . 'admin/css/onboarding.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/onboarding.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         // JavaScript del sistema de onboarding
         wp_enqueue_script(
             'flavor-onboarding',
-            FLAVOR_CHAT_IA_URL . 'admin/js/onboarding.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/onboarding.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 

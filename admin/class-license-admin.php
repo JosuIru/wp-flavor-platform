@@ -4,7 +4,7 @@
  *
  * Interfaz para gestionar la licencia de Flavor Platform
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Admin
  * @since 3.2.0
  */
@@ -94,16 +94,16 @@ class Flavor_License_Admin {
 
         wp_enqueue_style(
             'flavor-license-admin',
-            FLAVOR_CHAT_IA_URL . 'admin/css/license-admin.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/license-admin.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            FLAVOR_PLATFORM_VERSION
         );
 
         wp_enqueue_script(
             'flavor-license-admin',
-            FLAVOR_CHAT_IA_URL . 'admin/js/license-admin.js',
+            FLAVOR_PLATFORM_URL . 'admin/js/license-admin.js',
             ['jquery'],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             true
         );
 
@@ -448,7 +448,7 @@ class Flavor_License_Admin {
     private function render_modules_comparison($plans_manager) {
         $plans = $plans_manager->get_plans();
         $base_modules = $plans_manager->get_base_modules();
-        $module_loader = Flavor_Chat_Module_Loader::get_instance();
+        $module_loader = Flavor_Platform_Module_Loader::get_instance();
         $all_modules = $module_loader->get_available_modules();
 
         // Agrupar módulos por categoría

@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Documento de Transparencia
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

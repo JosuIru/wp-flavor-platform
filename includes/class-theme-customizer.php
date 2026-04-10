@@ -4,7 +4,7 @@
  *
  * Sistema de personalización de temas con dark mode
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

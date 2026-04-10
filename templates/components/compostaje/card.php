@@ -2,7 +2,7 @@
 /**
  * Componente: Card de Compostera
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 5.0.0
  */
 

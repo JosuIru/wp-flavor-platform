@@ -4,7 +4,7 @@
  *
  * Muestra la lista de seguidores y usuarios que sigue el usuario actual.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage RedSocial/Templates
  */
 
@@ -16,7 +16,7 @@ $usuario_id = get_current_user_id();
 if (!$usuario_id) {
     echo '<div class="rs-login-required">';
     echo '<p>' . esc_html__('Debes iniciar sesion para ver tus amigos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'amigos'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('red_social', 'amigos'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -160,7 +160,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                     <?php else: ?>
                         <p><?php echo esc_html__('Aun no sigue a nadie.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php if ($es_perfil_propio): ?>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'explorar')); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('red_social', 'explorar')); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -184,7 +184,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                     ));
                     ?>
                     <div class="rs-amigo-card" data-usuario-id="<?php echo esc_attr($usuario_item->ID); ?>">
-                        <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($usuario_item->ID), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-amigo-link">
+                        <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($usuario_item->ID), Flavor_Platform_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-amigo-link">
                             <img class="rs-amigo-avatar"
                                  src="<?php echo esc_url(get_avatar_url($usuario_item->ID, ['size' => 56])); ?>"
                                  alt="">

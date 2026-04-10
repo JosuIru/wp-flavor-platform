@@ -4,7 +4,7 @@
  *
  * Muestra las series/shows de podcast disponibles en formato grid.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @var string $titulo Título de la sección
  * @var string $subtitulo Subtítulo descriptivo
  * @var int $columnas Número de columnas (2, 3, 4)

@@ -82,7 +82,7 @@ Reseñas de libros.
 
 ## Endpoints API REST
 
-**Namespace:** `flavor-chat-ia/v1` y `flavor/v1`
+**Namespace:** `flavor-platform/v1` y `flavor/v1`
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|

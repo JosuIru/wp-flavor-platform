@@ -2,7 +2,7 @@
 /**
  * Calculador de Indicadores Tecnicos para Trading
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

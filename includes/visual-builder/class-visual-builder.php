@@ -8,7 +8,7 @@
  * - Migración automática de sistemas antiguos
  * - Compatibilidad total hacia atrás
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @version 1.0.0
  */
 
@@ -189,7 +189,7 @@ class Flavor_Visual_Builder {
                 flush_rewrite_rules(false);
                 set_transient($flush_key, 'done', HOUR_IN_SECONDS);
 
-                if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
+                if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
                     error_log('[Flavor VB] Rewrite rules regeneradas para flavor_landing');
                 }
             }

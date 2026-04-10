@@ -5,7 +5,7 @@
  * Variables disponibles:
  * - $comunidad_id: ID de la comunidad (opcional)
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.2.0
  */
 

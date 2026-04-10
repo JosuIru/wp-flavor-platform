@@ -4,7 +4,7 @@
  *
  * Endpoints optimizados para aplicaciones móviles
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ class Flavor_Banco_Tiempo_API {
     /**
      * Namespace de la API
      */
-    const NAMESPACE = 'flavor-chat-ia/v1';
+    const NAMESPACE = FLAVOR_PLATFORM_REST_NAMESPACE;
 
     /**
      * Instancia singleton
@@ -48,7 +48,7 @@ class Flavor_Banco_Tiempo_API {
      */
     public function register_routes() {
         // GET /banco-tiempo/servicios - Lista servicios disponibles
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_servicios'],
             'permission_callback' => [$this, 'public_permission_check'],
@@ -75,7 +75,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // POST /banco-tiempo/servicios - Crear nuevo servicio
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_servicio'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -103,7 +103,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // GET /banco-tiempo/mis-servicios - Servicios del usuario
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/mis-servicios', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/mis-servicios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_mis_servicios'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -117,14 +117,14 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // GET /banco-tiempo/saldo - Saldo de horas del usuario
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/saldo', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/saldo', [
             'methods' => 'GET',
             'callback' => [$this, 'get_saldo'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // GET /banco-tiempo/transacciones - Historial de transacciones
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/transacciones', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/transacciones', [
             'methods' => 'GET',
             'callback' => [$this, 'get_transacciones'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -146,7 +146,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // POST /banco-tiempo/servicios/{id}/solicitar - Solicitar servicio
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios/(?P<id>\d+)/solicitar', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios/(?P<id>\d+)/solicitar', [
             'methods' => 'POST',
             'callback' => [$this, 'solicitar_servicio'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -169,7 +169,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // POST /banco-tiempo/transacciones/{id}/completar - Completar intercambio
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/transacciones/(?P<id>\d+)/completar', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/transacciones/(?P<id>\d+)/completar', [
             'methods' => 'POST',
             'callback' => [$this, 'completar_transaccion'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -197,14 +197,14 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // DELETE /banco-tiempo/servicios/{id} - Eliminar servicio
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'eliminar_servicio'],
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
         // PUT /banco-tiempo/servicio/{id} - Actualizar servicio (singular para apps)
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio/(?P<id>\d+)', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'actualizar_servicio'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -238,7 +238,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // POST /banco-tiempo/servicio - Crear servicio (singular para apps, alias de /servicios)
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio', [
             'methods' => 'POST',
             'callback' => [$this, 'crear_servicio'],
             'permission_callback' => [$this, 'check_authentication'],
@@ -272,7 +272,7 @@ class Flavor_Banco_Tiempo_API {
         ]);
 
         // GET /banco-tiempo/categorias - Lista de categorías
-        register_rest_route(self::NAMESPACE, '/banco-tiempo/categorias', [
+        flavor_register_rest_route(self::NAMESPACE, '/banco-tiempo/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
             'permission_callback' => [$this, 'public_permission_check'],

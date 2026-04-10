@@ -4,7 +4,7 @@
  *
  * Muestra los grupos de consumo disponibles para unirse
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -98,7 +98,7 @@ if (!function_exists('gc_contar_miembros')) {
                             <a href="<?php echo get_permalink($grupo->ID); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm">
                                 <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('grupos-consumo', $grupo->ID, 'unirme')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
+                            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_item_url('grupos-consumo', $grupo->ID, 'unirme')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
                                 <?php _e('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
@@ -107,7 +107,7 @@ if (!function_exists('gc_contar_miembros')) {
             </div>
 
             <div class="flavor-section-footer">
-                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="flavor-btn flavor-btn--outline">
+                <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', '')); ?>" class="flavor-btn flavor-btn--outline">
                     <?php _e('Ver todos los grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>

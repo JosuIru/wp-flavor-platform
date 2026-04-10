@@ -2,7 +2,7 @@
 /**
  * Gestión de Perfiles de Aplicación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -335,8 +335,9 @@ class Flavor_App_Profiles {
             ],
         ];
 
-        // Permitir que otros plugins/temas añadan perfiles
-        $this->perfiles_disponibles = apply_filters('flavor_chat_ia_app_profiles', $this->perfiles_disponibles);
+        // Permitir extensiones legacy y nuevas sin romper compatibilidad.
+        $this->perfiles_disponibles = apply_filters('flavor_platform_app_profiles', $this->perfiles_disponibles);
+        $this->perfiles_disponibles = apply_filters('flavor_platform_app_profiles', $this->perfiles_disponibles);
     }
 
     /**
@@ -364,7 +365,7 @@ class Flavor_App_Profiles {
      * @return string
      */
     public function obtener_perfil_activo() {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         return $configuracion['app_profile'] ?? 'personalizado';
     }
 
@@ -380,7 +381,7 @@ class Flavor_App_Profiles {
         }
 
         $perfil = $this->perfiles_disponibles[$perfil_id];
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
 
         // Actualizar perfil activo
         $configuracion['app_profile'] = $perfil_id;
@@ -599,7 +600,7 @@ class Flavor_App_Profiles {
      */
     public function activar_modulo_opcional($modulo_id) {
         // Verificar que el módulo esté registrado en el sistema (no solo en el perfil)
-        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader = Flavor_Platform_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
 
         if (!isset($modulos_registrados[$modulo_id])) {
@@ -628,7 +629,7 @@ class Flavor_App_Profiles {
         $config_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                'flavor_chat_ia_settings'
+                flavor_get_primary_settings_option()
             )
         );
         $configuracion = $config_raw ? maybe_unserialize($config_raw) : [];
@@ -651,7 +652,7 @@ class Flavor_App_Profiles {
             $existe = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT option_id FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
-                    'flavor_chat_ia_settings'
+                    flavor_get_primary_settings_option()
                 )
             );
 
@@ -660,7 +661,7 @@ class Flavor_App_Profiles {
                 $sql = $wpdb->prepare(
                     "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s",
                     $value,
-                    'flavor_chat_ia_settings'
+                    flavor_get_primary_settings_option()
                 );
                 $resultado = $wpdb->query($sql);
                 flavor_log_debug( "UPDATE directo - SQL ejecutado, filas afectadas: {$resultado}", 'AppProfiles' );
@@ -669,7 +670,7 @@ class Flavor_App_Profiles {
                 $resultado = $wpdb->insert(
                     $wpdb->options,
                     [
-                        'option_name'  => 'flavor_chat_ia_settings',
+                        'option_name'  => flavor_get_primary_settings_option(),
                         'option_value' => $value,
                         'autoload'     => 'yes'
                     ],
@@ -682,7 +683,7 @@ class Flavor_App_Profiles {
             $verificacion_raw = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                    'flavor_chat_ia_settings'
+                    flavor_get_primary_settings_option()
                 )
             );
             $verificacion = maybe_unserialize($verificacion_raw);
@@ -698,7 +699,7 @@ class Flavor_App_Profiles {
             }
 
             // Limpiar TODO el caché DESPUÉS de verificar
-            wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+            wp_cache_delete(flavor_get_primary_settings_option(), 'options');
             wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
             wp_cache_delete('alloptions', 'options');
             wp_cache_flush();
@@ -737,7 +738,7 @@ class Flavor_App_Profiles {
         }
 
         // Verificar si existe el instalador de tablas
-        $installer_path = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/components/class-table-installer.php';
+        $installer_path = FLAVOR_PLATFORM_PATH . 'includes/orchestrator/components/class-table-installer.php';
 
         if (!file_exists($installer_path)) {
             return false;
@@ -900,7 +901,7 @@ class Flavor_App_Profiles {
         $config_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                'flavor_chat_ia_settings'
+                flavor_get_primary_settings_option()
             )
         );
         $configuracion = $config_raw ? maybe_unserialize($config_raw) : [];
@@ -923,7 +924,7 @@ class Flavor_App_Profiles {
             $sql = $wpdb->prepare(
                 "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s",
                 $value,
-                'flavor_chat_ia_settings'
+                flavor_get_primary_settings_option()
             );
             $resultado = $wpdb->query($sql);
             flavor_log_debug( "UPDATE directo - SQL ejecutado, filas afectadas: {$resultado}", 'AppProfiles' );
@@ -932,7 +933,7 @@ class Flavor_App_Profiles {
             $verificacion_raw = $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                    'flavor_chat_ia_settings'
+                    flavor_get_primary_settings_option()
                 )
             );
             $verificacion = maybe_unserialize($verificacion_raw);
@@ -948,7 +949,7 @@ class Flavor_App_Profiles {
             }
 
             // Limpiar TODO el caché DESPUÉS de verificar
-            wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+            wp_cache_delete(flavor_get_primary_settings_option(), 'options');
             wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
             wp_cache_delete('alloptions', 'options');
             wp_cache_flush();

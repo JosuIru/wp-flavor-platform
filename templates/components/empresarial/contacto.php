@@ -2,7 +2,7 @@
 /**
  * Template: Formulario de Contacto
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

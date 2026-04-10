@@ -8,7 +8,7 @@
  * @var array  $episodios_relacionados - Episodios de la misma serie
  * @var bool   $puede_interactuar - Si el usuario puede dar like/comentar
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.1
  */
 

@@ -4,7 +4,7 @@
  *
  * Dashboard administrativo para recetario comunitario.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

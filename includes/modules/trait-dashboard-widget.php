@@ -5,7 +5,7 @@
  * Proporciona funcionalidad compartida para que los modulos
  * registren sus widgets en el Dashboard Unificado.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules
  * @since 4.0.0
  */

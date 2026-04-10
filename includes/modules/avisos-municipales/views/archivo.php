@@ -8,7 +8,7 @@
  *   $filtros - Filtros aplicados
  *   $paginacion - Datos de paginación
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

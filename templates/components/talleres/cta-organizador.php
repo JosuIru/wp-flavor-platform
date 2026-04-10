@@ -5,7 +5,7 @@
  * Muestra los beneficios, requisitos y botón de registro para animar
  * a los usuarios a convertirse en organizadores de talleres.
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Templates/Components/Talleres
  */
 

@@ -2,7 +2,7 @@
 /**
  * Frontend Controller para Ayuda Vecinal
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -68,7 +68,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      */
     public function registrar_assets() {
         $base_url = plugins_url('', dirname(dirname(__FILE__)));
-        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+        $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         // CSS
         wp_register_style(
@@ -263,7 +263,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_vecinal_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             return '<p class="flavor-error-mini">' . __('Módulo no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
@@ -317,7 +317,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_vecinal_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
             echo '<p class="flavor-error">' . __('El módulo de ayuda vecinal no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }

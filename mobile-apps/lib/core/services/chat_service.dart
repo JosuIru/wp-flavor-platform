@@ -14,6 +14,7 @@ enum MessageType {
   sticker,
   gif,
   poll,
+  link,
   system,
 }
 
@@ -737,6 +738,12 @@ class ChatService extends ChangeNotifier {
     return _groups.values
         .where((g) => g.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
+  }
+
+  Future<List<ChatGroup>> getCommonGroups(String userId) async {
+    // TODO: Llamar API real para obtener grupos en común
+    // Por ahora devuelve grupos donde ambos usuarios son miembros
+    return _groups.values.toList();
   }
 
   Future<List<ChatMessage>> searchMessages(String query, {String? conversationId}) async {

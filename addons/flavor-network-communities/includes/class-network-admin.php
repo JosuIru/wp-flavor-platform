@@ -5,7 +5,7 @@
  * Interfaz de administración para gestionar el nodo local,
  * conexiones, contenido compartido, colaboraciones y configuración.
  *
- * @package FlavorChatIA\Network
+ * @package FlavorPlatform\Network
  */
 
 if (!defined('ABSPATH')) {

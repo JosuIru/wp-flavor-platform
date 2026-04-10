@@ -248,14 +248,14 @@ GET  /flavor/v1/bicicletas/mis-reservas
 ### API Movil Adicional (class-bicicletas-compartidas-api.php)
 
 ```
-GET  /flavor-chat-ia/v1/bicicletas-compartidas
+GET  /flavor-platform/v1/bicicletas-compartidas
      Vista completa: estaciones, alquiler activo, historial
 
-POST /flavor-chat-ia/v1/bicicletas-compartidas/alquilar
+POST /flavor-platform/v1/bicicletas-compartidas/alquilar
      ?estacion_id=
      Alquilar bicicleta
 
-POST /flavor-chat-ia/v1/bicicletas-compartidas/finalizar
+POST /flavor-platform/v1/bicicletas-compartidas/finalizar
      ?estacion_id=
      Finalizar alquiler
 ```

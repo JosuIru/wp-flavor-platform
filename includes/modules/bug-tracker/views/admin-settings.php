@@ -2,7 +2,7 @@
 /**
  * Vista de configuración del Bug Tracker
  *
- * @package Flavor_Chat_IA
+ * @package Flavor_Platform
  * @subpackage Bug_Tracker
  */
 

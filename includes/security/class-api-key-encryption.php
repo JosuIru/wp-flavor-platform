@@ -5,7 +5,7 @@
  * Proporciona encriptación AES-256-GCM para almacenar API keys de forma segura
  * en la base de datos de WordPress.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 3.1.0
  * @security CRITICAL - Maneja datos sensibles
  */

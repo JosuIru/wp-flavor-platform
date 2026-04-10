@@ -2,7 +2,7 @@
 /**
  * Template: Tablero de Trueques / Cestas de Trueque
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  * @since 4.2.0
  *
@@ -198,7 +198,7 @@ $tipos_colors = [
                                 <?php esc_html_e('Completar', 'flavor-platform'); ?>
                             </button>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))); ?>" class="gc-btn gc-btn--outline">
+                            <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', ''))); ?>" class="gc-btn gc-btn--outline">
                                 <?php esc_html_e('Iniciar sesión', 'flavor-platform'); ?>
                             </a>
                         <?php endif; ?>

@@ -495,7 +495,7 @@ class Flavor_Export_Import_Command {
 
         // Aplicar configuración
         if (isset($datos_preset['config'])) {
-            $ajustes_actuales = get_option('flavor_chat_ia_settings', array());
+            $ajustes_actuales = flavor_get_main_settings();
 
             if (isset($datos_preset['config']['profile'])) {
                 $ajustes_actuales['app_profile'] = $datos_preset['config']['profile'];
@@ -505,7 +505,7 @@ class Flavor_Export_Import_Command {
                 $ajustes_actuales['active_modules'] = $datos_preset['config']['active_modules'];
             }
 
-            update_option('flavor_chat_ia_settings', $ajustes_actuales);
+            flavor_update_main_settings($ajustes_actuales);
             WP_CLI::log('  - Configuración general actualizada');
         }
 
@@ -553,7 +553,7 @@ class Flavor_Export_Import_Command {
      * @return array
      */
     private function obtener_configuracion_completa() {
-        $ajustes = get_option('flavor_chat_ia_settings', array());
+        $ajustes = flavor_get_main_settings();
 
         return array(
             'profile' => isset($ajustes['app_profile']) ? $ajustes['app_profile'] : 'personalizado',

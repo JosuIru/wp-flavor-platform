@@ -3,7 +3,7 @@
  * Vista Gestión de Reservas - Biblioteca
  * Panel de administración de reservas de libros
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {

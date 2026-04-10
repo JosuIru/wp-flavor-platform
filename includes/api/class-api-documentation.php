@@ -2,7 +2,7 @@
 /**
  * API Documentation - Documentación Swagger/OpenAPI
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -514,7 +514,7 @@ class Flavor_API_Documentation {
             'info' => [
                 'title' => 'Flavor Chat IA API',
                 'description' => 'API REST para el plugin Flavor Chat IA. Incluye endpoints para chat con IA, notificaciones, webhooks, temas y más.',
-                'version' => FLAVOR_CHAT_IA_VERSION,
+                'version' => FLAVOR_PLATFORM_VERSION,
                 'contact' => [
                     'name' => 'Flavor',
                     'url' => 'https://flavor.dev',

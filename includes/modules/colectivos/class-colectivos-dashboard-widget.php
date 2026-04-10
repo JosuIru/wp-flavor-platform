@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Colectivos
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\Colectivos
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -79,7 +79,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_colectivos,
                 'label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Platform_Helpers::get_action_url('colectivos', ''),
             ],
         ];
 
@@ -89,7 +89,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_colectivos,
                 'label' => __('Mis colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_colectivos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos&tab=mis-colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', 'mis-colectivos'),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos&tab=mis-colectivos') : Flavor_Platform_Helpers::get_action_url('colectivos', 'mis-colectivos'),
             ];
         }
 
@@ -102,7 +102,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Explorar colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Platform_Helpers::get_action_url('colectivos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -138,7 +138,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-groups',
                 'title' => wp_trim_words($colectivo->nombre, 4, '...'),
                 'meta' => $colectivo->categoria ?: $miembros_texto,
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : Flavor_Chat_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id,
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : Flavor_Platform_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id,
             ];
         }
 

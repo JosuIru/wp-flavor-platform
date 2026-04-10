@@ -5,7 +5,7 @@
  * Permite configurar dinámicamente qué módulos horizontales se vinculan
  * a cada módulo vertical, por contexto (global o específico de comunidad).
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) {
@@ -122,8 +122,8 @@ class Flavor_Module_Relations_Admin {
 
         $style_path = dirname(__FILE__) . '/css/module-relations.css';
         $script_path = dirname(__FILE__) . '/js/module-relations.js';
-        $asset_version = defined('FLAVOR_CHAT_IA_VERSION')
-            ? FLAVOR_CHAT_IA_VERSION
+        $asset_version = defined('FLAVOR_PLATFORM_VERSION')
+            ? FLAVOR_PLATFORM_VERSION
             : '1.0.0';
         $style_version = file_exists($style_path) ? (string) filemtime($style_path) : $asset_version;
         $script_version = file_exists($script_path) ? (string) filemtime($script_path) : $asset_version;
@@ -276,7 +276,7 @@ class Flavor_Module_Relations_Admin {
      */
     private function obtener_modulos_verticales() {
         $active_modules = get_option('flavor_active_modules', []);
-        $module_loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $module_loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
 
         if (!$module_loader) {
             return [];
@@ -316,7 +316,7 @@ class Flavor_Module_Relations_Admin {
      */
     private function obtener_modulos_horizontales() {
         $active_modules = get_option('flavor_active_modules', []);
-        $module_loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $module_loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
 
         if (!$module_loader) {
             return [];
@@ -466,7 +466,7 @@ class Flavor_Module_Relations_Admin {
             return [];
         }
 
-        $module_loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+        $module_loader = class_exists('Flavor_Platform_Module_Loader') ? Flavor_Platform_Module_Loader::get_instance() : null;
         if (!$module_loader) {
             return [];
         }

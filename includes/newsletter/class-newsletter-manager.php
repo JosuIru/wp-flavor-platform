@@ -2,7 +2,7 @@
 /**
  * Gestor de Newsletter - Envio de campanas y tracking
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Newsletter
  * @since 3.1.0
  */

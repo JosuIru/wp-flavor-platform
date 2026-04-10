@@ -2,7 +2,7 @@
 /**
  * Vista del Dashboard de Parkings
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Parkings
  */
 

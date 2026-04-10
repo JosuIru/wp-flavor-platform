@@ -5,7 +5,7 @@
  * Seccion de 3 pasos explicando el proceso de participacion ciudadana:
  * Propon, Debate y Vota.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  */
 
 if (!defined('ABSPATH')) exit;

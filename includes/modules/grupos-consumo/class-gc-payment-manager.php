@@ -5,7 +5,7 @@
  * Singleton que orquesta todas las pasarelas de pago,
  * procesa checkout y gestiona transacciones.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\GruposConsumo\Payments
  * @since 4.1.0
  */

@@ -4,7 +4,7 @@
  *
  * Maneja todas las operaciones CRUD de suscriptores.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage EmailMarketing
  */
 

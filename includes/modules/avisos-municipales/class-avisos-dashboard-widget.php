@@ -2,7 +2,7 @@
 /**
  * Widget de Dashboard para Avisos Municipales
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Modules\AvisosMunicipales
  * @since 4.1.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('Flavor_Dashboard_Widget_Base')) {
-    require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+    require_once FLAVOR_PLATFORM_PATH . 'includes/dashboard/interface-dashboard-widget.php';
 }
 
 class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
@@ -76,7 +76,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $avisos_activos,
                 'label' => __('Avisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $avisos_activos > 0 ? 'info' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Platform_Helpers::get_action_url('avisos_municipales', ''),
             ],
         ];
 
@@ -86,7 +86,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $avisos_urgentes,
                 'label' => __('Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&urgente=1') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&urgente=1') : Flavor_Platform_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
             ];
         }
 
@@ -99,7 +99,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
+                    'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Platform_Helpers::get_action_url('avisos_municipales', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -130,7 +130,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $aviso->urgente ? 'dashicons-warning' : 'dashicons-megaphone',
                 'title' => wp_trim_words($aviso->titulo, 5, '...'),
                 'meta' => human_time_diff(strtotime($aviso->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&aviso=' . $aviso->id) : Flavor_Chat_Helpers::get_action_url('avisos_municipales', 'aviso') . '/' . $aviso->id . '/',
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&aviso=' . $aviso->id) : Flavor_Platform_Helpers::get_action_url('avisos_municipales', 'aviso') . '/' . $aviso->id . '/',
                 'badge' => $aviso->urgente ? __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN) : null,
             ];
         }

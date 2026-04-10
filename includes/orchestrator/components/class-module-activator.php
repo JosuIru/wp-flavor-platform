@@ -4,7 +4,7 @@
  *
  * Gestiona la activacion y desactivacion de modulos para plantillas
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage Orchestrator/Components
  */
 
@@ -270,14 +270,14 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
      * @return bool
      */
     private function modulo_existe($modulo_id) {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $modulos_registrados = $loader->get_registered_modules();
             return isset($modulos_registrados[$modulo_id]);
         }
 
         // Fallback: verificar si existe el archivo del modulo
-        $ruta_modulo = FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $modulo_id);
+        $ruta_modulo = FLAVOR_PLATFORM_PATH . 'includes/modules/' . str_replace('_', '-', $modulo_id);
         return is_dir($ruta_modulo);
     }
 
@@ -292,8 +292,8 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
             return;
         }
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $loader->load_active_modules();
         }
     }

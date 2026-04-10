@@ -9,7 +9,7 @@ Sistema de intercambio de servicios donde el tiempo es la moneda. Una hora siemp
 ## Base URL
 
 ```
-https://tu-sitio.com/wp-json/flavor-chat-ia/v1/banco-tiempo
+https://tu-sitio.com/wp-json/flavor-platform/v1/banco-tiempo
 ```
 
 ## Autenticación
@@ -68,7 +68,7 @@ GET /banco-tiempo/servicios
 
 **cURL**:
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios?categoria=educacion&limite=10"
+curl "https://tu-sitio.com/wp-json/flavor-platform/v1/banco-tiempo/servicios?categoria=educacion&limite=10"
 ```
 
 ---
@@ -116,7 +116,7 @@ POST /banco-tiempo/servicios
 
 **cURL**:
 ```bash
-curl -X POST "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios" \
+curl -X POST "https://tu-sitio.com/wp-json/flavor-platform/v1/banco-tiempo/servicios" \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -297,7 +297,7 @@ POST /banco-tiempo/servicios/{id}/solicitar
 
 **cURL**:
 ```bash
-curl -X POST "https://tu-sitio.com/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios/10/solicitar" \
+curl -X POST "https://tu-sitio.com/wp-json/flavor-platform/v1/banco-tiempo/servicios/10/solicitar" \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -503,7 +503,7 @@ Usuario A → GET /saldo
 ```dart
 class BancoTiempoService {
   final Dio _dio;
-  final String baseUrl = 'https://tu-sitio.com/wp-json/flavor-chat-ia/v1/banco-tiempo';
+  final String baseUrl = 'https://tu-sitio.com/wp-json/flavor-platform/v1/banco-tiempo';
 
   // Listar servicios
   Future<List<Servicio>> getServicios({

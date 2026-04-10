@@ -12,7 +12,7 @@
  * - $porcentaje_gestion: % de gastos de gestion
  * - $notas_ciclo: Notas del ciclo actual
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @subpackage GruposConsumo
  */
 
@@ -28,7 +28,7 @@ $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
 $gastos_gestion = $total_productos * ($porcentaje_gestion / 100);
 $total_final = $total_productos + $gastos_gestion;
 $notas_ciclo = $args['notas_ciclo'] ?? '';
-$url_catalogo = $args['url_catalogo'] ?? Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos');
+$url_catalogo = $args['url_catalogo'] ?? Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos');
 ?>
 
 <div class="flavor-gc-carrito-completo" data-usuario="<?php echo esc_attr($usuario_id); ?>">
@@ -41,7 +41,7 @@ $url_catalogo = $args['url_catalogo'] ?? Flavor_Chat_Helpers::get_action_url('gr
             </div>
             <h2><?php _e('Acceso restringido', 'flavor-platform'); ?></h2>
             <p><?php _e('Necesitas iniciar sesion para ver y gestionar tu pedido.', 'flavor-platform'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="flavor-gc-btn flavor-gc-btn-primary flavor-gc-btn-lg">
+            <a href="<?php echo esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="flavor-gc-btn flavor-gc-btn-primary flavor-gc-btn-lg">
                 <span class="dashicons dashicons-admin-users"></span>
                 <?php _e('Iniciar sesion', 'flavor-platform'); ?>
             </a>
@@ -165,7 +165,7 @@ $url_catalogo = $args['url_catalogo'] ?? Flavor_Chat_Helpers::get_action_url('gr
                                             <?php endif; ?>
                                         </div>
                                         <div class="flavor-gc-producto-texto">
-                                            <a href="<?php echo esc_url(add_query_arg('product', intval($item['producto_id']), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-gc-producto-nombre">
+                                            <a href="<?php echo esc_url(add_query_arg('product', intval($item['producto_id']), Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-gc-producto-nombre">
                                                 <?php echo esc_html($item['nombre']); ?>
                                             </a>
                                             <?php if (!empty($item['es_ecologico'])): ?>
@@ -376,7 +376,7 @@ $url_catalogo = $args['url_catalogo'] ?? Flavor_Chat_Helpers::get_action_url('gr
             </p>
         </div>
         <div class="flavor-gc-modal-footer">
-            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')); ?>" class="flavor-gc-btn flavor-gc-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')); ?>" class="flavor-gc-btn flavor-gc-btn-primary">
                 <?php _e('Ver mis pedidos', 'flavor-platform'); ?>
             </a>
         </div>
