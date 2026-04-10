@@ -1,77 +1,79 @@
 <template>
-  <div class="flavor-pb-modal-overlay" @click.self="$emit('close')">
-    <div class="flavor-pb-modal templates-modal">
-      <div class="modal-header">
-        <h3>Plantillas de Ejemplo</h3>
-        <button class="modal-close" @click="$emit('close')" title="Cerrar">
-          <span class="dashicons dashicons-no-alt"></span>
-        </button>
+  <Modal
+    title="Plantillas de Ejemplo"
+    size="large"
+    @close="$emit('close')"
+  >
+    <div class="templates-content">
+      <!-- Filtros -->
+      <div class="templates-filters">
+        <div class="search-box">
+          <span class="dashicons dashicons-search"></span>
+          <input
+            ref="searchInput"
+            type="text"
+            v-model="searchQuery"
+            placeholder="Buscar plantilla..."
+            class="search-input"
+          />
+        </div>
+        <select v-model="selectedCategory" class="category-filter">
+          <option value="">Todas las categorías</option>
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+            {{ cat.label }}
+          </option>
+        </select>
       </div>
 
-      <div class="modal-body">
-        <!-- Filtros -->
-        <div class="templates-filters">
-          <div class="search-box">
-            <span class="dashicons dashicons-search"></span>
-            <input
-              type="text"
-              v-model="searchQuery"
-              placeholder="Buscar plantilla..."
-              class="search-input"
-            />
-          </div>
-          <select v-model="selectedCategory" class="category-filter">
-            <option value="">Todas las categorias</option>
-            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-              {{ cat.label }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Grid de plantillas -->
-        <div class="templates-grid" v-if="filteredTemplates.length > 0">
-          <div
-            v-for="template in filteredTemplates"
-            :key="template.id"
-            class="template-card"
-            :class="{ 'is-selected': selectedTemplate === template.id }"
-            @click="selectTemplate(template.id)"
-          >
-            <div class="template-preview">
-              <img v-if="template.thumbnail" :src="template.thumbnail" :alt="template.name" />
-              <span v-else class="dashicons" :class="template.icon || 'dashicons-layout'"></span>
-            </div>
-            <div class="template-info">
-              <h4>{{ template.name || 'Sin nombre' }}</h4>
-              <p v-if="template.description" class="template-description">{{ template.description }}</p>
-              <span v-if="template.categoryLabel" class="template-category">{{ template.categoryLabel }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Estado vacio -->
-        <div v-else class="templates-empty">
-          <span class="dashicons dashicons-portfolio"></span>
-          <p>No se encontraron plantillas</p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="button" @click="$emit('close')">Cancelar</button>
-        <button
-          class="button button-primary"
-          :disabled="!selectedTemplate"
-          @click="loadTemplate"
+      <!-- Grid de plantillas -->
+      <div class="templates-grid" v-if="filteredTemplates.length > 0">
+        <div
+          v-for="template in filteredTemplates"
+          :key="template.id"
+          class="template-card"
+          :class="{ 'is-selected': selectedTemplate === template.id }"
+          @click="selectTemplate(template.id)"
         >
-          Cargar Plantilla
-        </button>
+          <div class="template-preview">
+            <img
+              v-if="template.thumbnail"
+              :src="template.thumbnail"
+              :alt="template.name"
+              loading="lazy"
+            />
+            <span v-else class="dashicons" :class="template.icon || 'dashicons-layout'"></span>
+          </div>
+          <div class="template-info">
+            <h4>{{ template.name || 'Sin nombre' }}</h4>
+            <p v-if="template.description" class="template-description">{{ template.description }}</p>
+            <span v-if="template.categoryLabel" class="template-category">{{ template.categoryLabel }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado vacío -->
+      <div v-else class="templates-empty">
+        <span class="dashicons dashicons-portfolio"></span>
+        <p>No se encontraron plantillas</p>
       </div>
     </div>
-  </div>
+
+    <template #footer>
+      <button class="button" @click="$emit('close')">Cancelar</button>
+      <button
+        class="button button-primary"
+        :disabled="!selectedTemplate"
+        @click="loadTemplate"
+      >
+        Cargar Plantilla
+      </button>
+    </template>
+  </Modal>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
+import Modal from '../ui/Modal.vue';
 import { useBuilderStore } from '../../stores/builderStore';
 import { useUiStore } from '../../stores/uiStore';
 
@@ -84,26 +86,27 @@ const uiStore = useUiStore();
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const selectedTemplate = ref(null);
+const searchInput = ref(null);
 
-// Obtener plantillas de la configuracion de WordPress
-// La estructura de PHP es: { categoria: { label, templates: { key: {...} } } }
-// La transformamos a un array plano: [{ id, name, description, category, ... }]
+// Focus search on mount
+onMounted(async () => {
+  await nextTick();
+  searchInput.value?.focus();
+});
+
+// Transformar plantillas de la config de WordPress a array plano
 const templates = computed(() => {
   const wpConfig = window.flavorPageBuilder || {};
-  const tpls = wpConfig.templates;
+  const templatesConfig = wpConfig.templates;
 
-  if (!tpls || typeof tpls !== 'object') return [];
+  if (!templatesConfig || typeof templatesConfig !== 'object') return [];
+  if (Array.isArray(templatesConfig)) return templatesConfig;
 
-  // Si ya es un array plano, usarlo directamente
-  if (Array.isArray(tpls)) return tpls;
-
-  // Transformar estructura anidada a array plano
   const flatTemplates = [];
 
-  for (const [categoryKey, categoryData] of Object.entries(tpls)) {
-    // Verificar si tiene la estructura { label, templates }
-    if (categoryData && categoryData.templates && typeof categoryData.templates === 'object') {
-      // Estructura anidada con categorias
+  for (const [categoryKey, categoryData] of Object.entries(templatesConfig)) {
+    if (categoryData?.templates && typeof categoryData.templates === 'object') {
+      // Estructura anidada con categorías
       const categoryLabel = categoryData.label || categoryKey;
 
       for (const [templateKey, templateData] of Object.entries(categoryData.templates)) {
@@ -112,14 +115,14 @@ const templates = computed(() => {
           name: templateData.name || templateKey,
           description: templateData.description || '',
           category: categoryKey,
-          categoryLabel: categoryLabel,
+          categoryLabel,
           thumbnail: templateData.preview || templateData.thumbnail || '',
           icon: templateData.icon || 'dashicons-layout',
           layout: templateData.layout || [],
         });
       }
-    } else if (categoryData && categoryData.name) {
-      // Estructura plana (la plantilla esta directamente)
+    } else if (categoryData?.name) {
+      // Estructura plana
       flatTemplates.push({
         id: categoryKey,
         name: categoryData.name || categoryKey,
@@ -136,21 +139,18 @@ const templates = computed(() => {
 });
 
 const categories = computed(() => {
-  const catsMap = new Map();
-  const tplList = templates.value;
+  const categoriesMap = new Map();
 
-  if (Array.isArray(tplList)) {
-    tplList.forEach(t => {
-      if (t && t.category && !catsMap.has(t.category)) {
-        catsMap.set(t.category, {
-          id: t.category,
-          label: t.categoryLabel || t.category.charAt(0).toUpperCase() + t.category.slice(1).replace(/[-_]/g, ' ')
-        });
-      }
-    });
+  for (const template of templates.value) {
+    if (template.category && !categoriesMap.has(template.category)) {
+      categoriesMap.set(template.category, {
+        id: template.category,
+        label: template.categoryLabel || formatCategoryLabel(template.category),
+      });
+    }
   }
 
-  return Array.from(catsMap.values());
+  return Array.from(categoriesMap.values());
 });
 
 const filteredTemplates = computed(() => {
@@ -158,18 +158,22 @@ const filteredTemplates = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    result = result.filter(t =>
-      t.name?.toLowerCase().includes(query) ||
-      t.description?.toLowerCase().includes(query)
+    result = result.filter(template =>
+      template.name?.toLowerCase().includes(query) ||
+      template.description?.toLowerCase().includes(query)
     );
   }
 
   if (selectedCategory.value) {
-    result = result.filter(t => t.category === selectedCategory.value);
+    result = result.filter(template => template.category === selectedCategory.value);
   }
 
   return result;
 });
+
+function formatCategoryLabel(category) {
+  return category.charAt(0).toUpperCase() + category.slice(1).replace(/[-_]/g, ' ');
+}
 
 function selectTemplate(templateId) {
   selectedTemplate.value = templateId;
@@ -182,12 +186,12 @@ function loadTemplate() {
   if (!template) return;
 
   // Confirmar si hay contenido existente
-  if (builderStore.sections.length > 0 && builderStore.sections.some(s => s.blocks.length > 0)) {
+  const hasContent = builderStore.sections.some(s => s.blocks.length > 0);
+
+  if (hasContent) {
     uiStore.confirm(
-      '¿Cargar esta plantilla? Se reemplazara el contenido actual.',
-      () => {
-        applyTemplate(template);
-      }
+      '¿Cargar esta plantilla? Se reemplazará el contenido actual.',
+      () => applyTemplate(template)
     );
   } else {
     applyTemplate(template);
@@ -195,81 +199,23 @@ function loadTemplate() {
 }
 
 function applyTemplate(template) {
-  if (template.layout && Array.isArray(template.layout)) {
-    // Transformar formato PHP (component_id, data) a formato Vue (componentId, values)
-    const transformedLayout = template.layout.map(item => ({
-      componentId: item.component_id || item.componentId,
-      values: item.data || item.values || {},
-      variant: item.variant || null,
-    }));
+  if (!Array.isArray(template.layout)) return;
 
-    builderStore.importLayout(JSON.stringify(transformedLayout));
-    uiStore.showSuccess(`Plantilla "${template.name}" cargada correctamente`);
-  }
+  // Transformar formato PHP a formato Vue
+  const transformedLayout = template.layout.map(item => ({
+    componentId: item.component_id || item.componentId,
+    values: item.data || item.values || {},
+    variant: item.variant || null,
+  }));
+
+  builderStore.importLayout(JSON.stringify(transformedLayout));
+  uiStore.showSuccess(`Plantilla "${template.name}" cargada correctamente`);
   emit('close');
 }
 </script>
 
 <style scoped>
-.flavor-pb-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100000;
-}
-
-.flavor-pb-modal {
-  background: var(--pb-bg-light, #fff);
-  border-radius: var(--pb-radius-lg, 8px);
-  box-shadow: var(--pb-shadow-lg, 0 4px 12px rgba(0,0,0,0.15));
-  max-width: 90vw;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.templates-modal {
-  width: 900px;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--pb-border, #c3c4c7);
-}
-
-.modal-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--pb-text-muted, #787c82);
-  border-radius: 4px;
-}
-
-.modal-close:hover {
-  background: var(--pb-bg, #f0f0f1);
-  color: var(--pb-text, #1d2327);
-}
-
-.modal-body {
-  flex: 1;
-  overflow-y: auto;
+.templates-content {
   padding: 20px;
 }
 
@@ -290,27 +236,30 @@ function applyTemplate(template) {
   left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--pb-text-muted, #787c82);
+  color: var(--pb-text-muted);
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .search-input {
   width: 100%;
   padding: 8px 12px 8px 34px;
-  border: 1px solid var(--pb-border, #c3c4c7);
-  border-radius: var(--pb-radius, 4px);
+  border: 1px solid var(--pb-border);
+  border-radius: var(--pb-radius);
   font-size: 13px;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--pb-primary, #0073aa);
-  box-shadow: 0 0 0 1px var(--pb-primary, #0073aa);
+  border-color: var(--pb-primary);
+  box-shadow: 0 0 0 1px var(--pb-primary);
 }
 
 .category-filter {
   padding: 8px 12px;
-  border: 1px solid var(--pb-border, #c3c4c7);
-  border-radius: var(--pb-radius, 4px);
+  border: 1px solid var(--pb-border);
+  border-radius: var(--pb-radius);
   font-size: 13px;
   min-width: 180px;
 }
@@ -318,31 +267,33 @@ function applyTemplate(template) {
 /* Grid de plantillas */
 .templates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
+  max-height: calc(60vh - 120px);
+  overflow-y: auto;
 }
 
 .template-card {
-  border: 2px solid var(--pb-border-light, #e2e4e7);
-  border-radius: var(--pb-radius, 4px);
+  border: 2px solid var(--pb-border-light);
+  border-radius: var(--pb-radius);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .template-card:hover {
-  border-color: var(--pb-border, #c3c4c7);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-color: var(--pb-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .template-card.is-selected {
-  border-color: var(--pb-primary, #0073aa);
-  box-shadow: 0 0 0 1px var(--pb-primary, #0073aa);
+  border-color: var(--pb-primary);
+  box-shadow: 0 0 0 1px var(--pb-primary);
 }
 
 .template-preview {
-  height: 150px;
-  background: var(--pb-bg, #f0f0f1);
+  height: 140px;
+  background: var(--pb-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -356,10 +307,10 @@ function applyTemplate(template) {
 }
 
 .template-preview .dashicons {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: var(--pb-text-muted, #787c82);
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--pb-text-muted);
 }
 
 .template-info {
@@ -368,17 +319,14 @@ function applyTemplate(template) {
 
 .template-info h4 {
   margin: 0 0 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
-.template-info p {
-  margin: 0;
-  font-size: 12px;
-  color: var(--pb-text-light, #50575e);
-}
-
 .template-description {
+  margin: 0;
+  font-size: 11px;
+  color: var(--pb-text-light);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -390,18 +338,18 @@ function applyTemplate(template) {
   margin-top: 6px;
   padding: 2px 8px;
   font-size: 10px;
-  background: var(--pb-bg, #f0f0f1);
-  color: var(--pb-text-muted, #787c82);
+  background: var(--pb-bg);
+  color: var(--pb-text-muted);
   border-radius: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
-/* Estado vacio */
+/* Estado vacío */
 .templates-empty {
   text-align: center;
   padding: 60px 20px;
-  color: var(--pb-text-muted, #787c82);
+  color: var(--pb-text-muted);
 }
 
 .templates-empty .dashicons {
@@ -409,24 +357,11 @@ function applyTemplate(template) {
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
+  opacity: 0.5;
 }
 
 .templates-empty p {
   margin: 0;
   font-size: 14px;
-}
-
-/* Footer */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 16px 20px;
-  border-top: 1px solid var(--pb-border, #c3c4c7);
-  background: var(--pb-bg, #f0f0f1);
-}
-
-.modal-footer .button {
-  padding: 8px 16px;
 }
 </style>
