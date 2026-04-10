@@ -164,12 +164,29 @@ export function usePreview() {
   }
 
   /**
+   * Extraer HTML del cache (soporta formato nuevo y legacy)
+   */
+  function extractHtmlFromCache(cache) {
+    const htmlCache = {};
+    for (const [blockId, cached] of Object.entries(cache)) {
+      if (typeof cached === 'string') {
+        // Formato legacy
+        htmlCache[blockId] = cached;
+      } else if (cached?.html) {
+        // Formato nuevo {html, timestamp, valuesHash}
+        htmlCache[blockId] = cached.html;
+      }
+    }
+    return htmlCache;
+  }
+
+  /**
    * Enviar layout al preview
    */
   function sendLayoutToPreview() {
     sendMessage('UPDATE_LAYOUT', {
       sections: builderStore.sections,
-      previewCache: builderStore.previewHtmlCache,
+      previewCache: extractHtmlFromCache(builderStore.previewHtmlCache),
     });
   }
 

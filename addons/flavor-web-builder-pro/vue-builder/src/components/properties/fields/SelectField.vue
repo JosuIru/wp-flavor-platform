@@ -1,9 +1,5 @@
 <template>
-  <div class="field select-field">
-    <label class="field-label">
-      {{ field.label || field.key }}
-      <span v-if="field.required" class="required">*</span>
-    </label>
+  <FieldWrapper :field="field" field-class="select-field">
     <select
       class="field-select"
       :value="value"
@@ -20,14 +16,12 @@
         {{ option.label }}
       </option>
     </select>
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
-    </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import FieldWrapper from './FieldWrapper.vue';
 
 const props = defineProps({
   field: {
@@ -65,18 +59,6 @@ function handleChange(event) {
 </script>
 
 <style scoped>
-.field-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
-.required {
-  color: var(--pb-error);
-}
-
 .field-select {
   width: 100%;
   padding: 8px 32px 8px 10px;
@@ -95,11 +77,5 @@ function handleChange(event) {
   outline: none;
   border-color: var(--pb-primary);
   box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
-}
-
-.field-description {
-  margin: 6px 0 0;
-  font-size: 11px;
-  color: var(--pb-text-muted);
 }
 </style>

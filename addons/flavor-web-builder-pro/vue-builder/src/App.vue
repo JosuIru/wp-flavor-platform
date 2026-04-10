@@ -106,23 +106,31 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 import { useBuilderStore } from './stores/builderStore';
 import { useUiStore } from './stores/uiStore';
 import { useKeyboard } from './composables/useKeyboard';
 import { useAutoSave } from './composables/useAutoSave';
 
-// Componentes
+// Componentes principales (carga inmediata)
 import MainToolbar from './components/toolbar/MainToolbar.vue';
 import ComponentsSidebar from './components/sidebar/ComponentsSidebar.vue';
 import BuilderCanvas from './components/canvas/BuilderCanvas.vue';
 import PropertiesPanel from './components/properties/PropertiesPanel.vue';
-import VariantModal from './components/sidebar/VariantModal.vue';
-import TemplatesModal from './components/sidebar/TemplatesModal.vue';
-import SectionSettingsModal from './components/sidebar/SectionSettingsModal.vue';
 import ConfirmDialog from './components/ui/ConfirmDialog.vue';
 import Toast from './components/ui/Toast.vue';
 import DragGhost from './components/canvas/DragGhost.vue';
+
+// Modales pesados (lazy loading - solo se cargan cuando se usan)
+const VariantModal = defineAsyncComponent(() =>
+  import('./components/sidebar/VariantModal.vue')
+);
+const TemplatesModal = defineAsyncComponent(() =>
+  import('./components/sidebar/TemplatesModal.vue')
+);
+const SectionSettingsModal = defineAsyncComponent(() =>
+  import('./components/sidebar/SectionSettingsModal.vue')
+);
 
 // Stores
 const builderStore = useBuilderStore();

@@ -1,5 +1,5 @@
 <template>
-  <div class="field toggle-field">
+  <FieldWrapper :field="field" field-class="toggle-field" :show-label="false">
     <label class="toggle-wrapper">
       <span class="toggle-switch" :class="{ 'is-active': value }">
         <span class="toggle-handle"></span>
@@ -14,13 +14,12 @@
       :checked="value"
       @change="handleChange"
     />
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
-    </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
+import FieldWrapper from './FieldWrapper.vue';
+
 defineProps({
   field: {
     type: Object,
@@ -60,6 +59,7 @@ function handleChange(event) {
 
 .toggle-switch {
   position: relative;
+  flex-shrink: 0;
   width: 40px;
   height: 22px;
   background: var(--pb-border);
@@ -90,11 +90,5 @@ function handleChange(event) {
 .toggle-label {
   font-size: 13px;
   color: var(--pb-text);
-}
-
-.field-description {
-  margin: 6px 0 0 50px;
-  font-size: 11px;
-  color: var(--pb-text-muted);
 }
 </style>

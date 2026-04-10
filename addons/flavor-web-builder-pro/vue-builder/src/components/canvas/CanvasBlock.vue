@@ -110,9 +110,12 @@ const variantLabel = computed(() => {
   return variant?.label || props.block.variant;
 });
 
-const previewHtml = computed(() =>
-  builderStore.previewHtmlCache[props.block.id] || ''
-);
+const previewHtml = computed(() => {
+  const cached = builderStore.previewHtmlCache[props.block.id];
+  // Soportar nuevo formato {html, timestamp, valuesHash} y legacy (string directo)
+  if (!cached) return '';
+  return typeof cached === 'string' ? cached : cached.html || '';
+});
 
 const canResize = computed(() => {
   // Determinar si el bloque puede redimensionarse basado en sus campos

@@ -1,16 +1,12 @@
 <template>
-  <div class="field number-field">
-    <label class="field-label">
-      {{ field.label || field.key }}
-      <span v-if="field.required" class="required">*</span>
-    </label>
+  <FieldWrapper :field="field" field-class="number-field">
     <div class="number-input-wrapper">
       <button class="step-btn" @click="decrement" :disabled="isAtMin">
         <span class="dashicons dashicons-minus"></span>
       </button>
       <input
         type="number"
-        class="field-input"
+        class="field-input number-input"
         :value="value"
         :min="field.min"
         :max="field.max"
@@ -22,14 +18,12 @@
       </button>
       <span v-if="field.unit" class="field-unit">{{ field.unit }}</span>
     </div>
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
-    </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import FieldWrapper from './FieldWrapper.vue';
 
 const props = defineProps({
   field: {
@@ -52,85 +46,51 @@ const isAtMax = computed(() =>
   props.field.max !== undefined && props.value >= props.field.max
 );
 
-function handleInput(event) {
-  let numberValue = parseFloat(event.target.value);
-  if (isNaN(numberValue)) numberValue = 0;
-
-  // Aplicar límites
+function clampValue(numberValue) {
   if (props.field.min !== undefined) {
     numberValue = Math.max(props.field.min, numberValue);
   }
   if (props.field.max !== undefined) {
     numberValue = Math.min(props.field.max, numberValue);
   }
+  return numberValue;
+}
 
-  emit('update', numberValue);
+function handleInput(event) {
+  let numberValue = parseFloat(event.target.value);
+  if (isNaN(numberValue)) numberValue = 0;
+  emit('update', clampValue(numberValue));
 }
 
 function increment() {
   const step = props.field.step || 1;
-  let newValue = (props.value || 0) + step;
-
-  if (props.field.max !== undefined) {
-    newValue = Math.min(props.field.max, newValue);
-  }
-
-  emit('update', newValue);
+  emit('update', clampValue((props.value || 0) + step));
 }
 
 function decrement() {
   const step = props.field.step || 1;
-  let newValue = (props.value || 0) - step;
-
-  if (props.field.min !== undefined) {
-    newValue = Math.max(props.field.min, newValue);
-  }
-
-  emit('update', newValue);
+  emit('update', clampValue((props.value || 0) - step));
 }
 </script>
 
 <style scoped>
-.field-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
-.required {
-  color: var(--pb-error);
-}
-
 .number-input-wrapper {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.field-input {
+.number-input {
   flex: 1;
   min-width: 60px;
-  padding: 8px 10px;
-  border: 1px solid var(--pb-border);
-  border-radius: var(--pb-radius);
-  font-size: 13px;
   text-align: center;
-  background: var(--pb-bg-light);
   -moz-appearance: textfield;
 }
 
-.field-input::-webkit-inner-spin-button,
-.field-input::-webkit-outer-spin-button {
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.field-input:focus {
-  outline: none;
-  border-color: var(--pb-primary);
-  box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
 }
 
 .step-btn {
@@ -161,11 +121,5 @@ function decrement() {
   font-size: 12px;
   color: var(--pb-text-muted);
   margin-left: 4px;
-}
-
-.field-description {
-  margin: 6px 0 0;
-  font-size: 11px;
-  color: var(--pb-text-muted);
 }
 </style>
