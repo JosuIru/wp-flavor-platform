@@ -50,7 +50,7 @@ bash /ruta/plugin/tools/validate-site.sh "http://SITIO" "/ruta/wordpress"
 cd /ruta/wordpress
 
 # 1. Verificar plugin activo
-wp plugin is-active flavor-chat-ia || echo "ERROR: Plugin no activo"
+wp plugin is-active flavor-platform || echo "ERROR: Plugin no activo"
 
 # 2. Verificar tema EXISTE (no solo configurado)
 ls wp-content/themes/flavor-starter || echo "ERROR: Tema no instalado"
@@ -250,7 +250,7 @@ Header: `X-VBP-Key: <API_KEY>` (ver sección "Configuración de API Key")
 cd /ruta/wordpress
 
 # Plugin activo
-wp plugin is-active flavor-chat-ia && echo "OK: Plugin"
+wp plugin is-active flavor-platform && echo "OK: Plugin"
 
 # Tema instalado Y activo
 [ -d "wp-content/themes/flavor-starter" ] && echo "OK: Tema instalado"

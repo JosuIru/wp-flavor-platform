@@ -31,6 +31,9 @@ if (defined('FLAVOR_CHAT_IA_LOADED')) {
     return;
 }
 define('FLAVOR_CHAT_IA_LOADED', true);
+if (!defined('FLAVOR_PLATFORM_LOADED')) {
+    define('FLAVOR_PLATFORM_LOADED', true);
+}
 
 /**
  * Desactivar display de errores para feeds y REST API
@@ -60,49 +63,85 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
 }
 
 // Constantes del plugin (con checks para evitar redefinición en tests)
-if (!defined('FLAVOR_CHAT_IA_VERSION')) {
-    define('FLAVOR_CHAT_IA_VERSION', '3.5.0');
+if (!defined('FLAVOR_RUNTIME_PLUGIN_FILE')) {
+    define('FLAVOR_RUNTIME_PLUGIN_FILE', __FILE__);
 }
-if (!defined('FLAVOR_CHAT_IA_PATH')) {
-    define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
-}
-if (!defined('FLAVOR_CHAT_IA_URL')) {
-    define('FLAVOR_CHAT_IA_URL', plugin_dir_url(__FILE__));
-}
-if (!defined('FLAVOR_CHAT_IA_BASENAME')) {
-    define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
+if (!defined('FLAVOR_RUNTIME_PLUGIN_BASENAME')) {
+    define('FLAVOR_RUNTIME_PLUGIN_BASENAME', plugin_basename(FLAVOR_RUNTIME_PLUGIN_FILE));
 }
 
-// Alias de compatibilidad para el rebranding a Flavor Platform.
-// Mantienen el nombre técnico legado sin romper instalaciones existentes.
+// Constantes principales - Flavor Platform (nuevo naming)
 if (!defined('FLAVOR_PLATFORM_VERSION')) {
-    define('FLAVOR_PLATFORM_VERSION', FLAVOR_CHAT_IA_VERSION);
+    define('FLAVOR_PLATFORM_VERSION', '3.5.0');
 }
 if (!defined('FLAVOR_PLATFORM_PATH')) {
-    define('FLAVOR_PLATFORM_PATH', FLAVOR_CHAT_IA_PATH);
+    define('FLAVOR_PLATFORM_PATH', plugin_dir_path(__FILE__));
 }
 if (!defined('FLAVOR_PLATFORM_URL')) {
-    define('FLAVOR_PLATFORM_URL', FLAVOR_CHAT_IA_URL);
+    define('FLAVOR_PLATFORM_URL', plugin_dir_url(__FILE__));
 }
 if (!defined('FLAVOR_PLATFORM_BASENAME')) {
-    define('FLAVOR_PLATFORM_BASENAME', FLAVOR_CHAT_IA_BASENAME);
+    define('FLAVOR_PLATFORM_BASENAME', plugin_basename(__FILE__));
 }
-if (!defined('FLAVOR_CHAT_IA_SETTINGS_OPTION')) {
-    define('FLAVOR_CHAT_IA_SETTINGS_OPTION', 'flavor_chat_ia_settings');
+if (!defined('FLAVOR_PLATFORM_FILE')) {
+    define('FLAVOR_PLATFORM_FILE', __FILE__);
 }
+if (!defined('FLAVOR_PLATFORM_PLUGIN_SLUG')) {
+    define('FLAVOR_PLATFORM_PLUGIN_SLUG', 'flavor-platform');
+}
+if (!defined('FLAVOR_PLATFORM_MAIN_FILE')) {
+    define('FLAVOR_PLATFORM_MAIN_FILE', 'flavor-platform.php');
+}
+
+// Alias legacy - Flavor Chat IA (compatibilidad retroactiva)
+// Mantienen el nombre técnico legado sin romper instalaciones existentes.
+if (!defined('FLAVOR_CHAT_IA_VERSION')) {
+    define('FLAVOR_CHAT_IA_VERSION', FLAVOR_PLATFORM_VERSION);
+}
+if (!defined('FLAVOR_CHAT_IA_PATH')) {
+    define('FLAVOR_CHAT_IA_PATH', FLAVOR_PLATFORM_PATH);
+}
+if (!defined('FLAVOR_CHAT_IA_URL')) {
+    define('FLAVOR_CHAT_IA_URL', FLAVOR_PLATFORM_URL);
+}
+if (!defined('FLAVOR_CHAT_IA_BASENAME')) {
+    define('FLAVOR_CHAT_IA_BASENAME', FLAVOR_PLATFORM_BASENAME);
+}
+if (!defined('FLAVOR_CHAT_IA_FILE')) {
+    define('FLAVOR_CHAT_IA_FILE', FLAVOR_PLATFORM_FILE);
+}
+if (!defined('FLAVOR_CHAT_IA_PLUGIN_SLUG')) {
+    define('FLAVOR_CHAT_IA_PLUGIN_SLUG', 'flavor-platform'); // Migrado: ahora apunta al nuevo slug
+}
+if (!defined('FLAVOR_CHAT_IA_MAIN_FILE')) {
+    define('FLAVOR_CHAT_IA_MAIN_FILE', 'flavor-platform.php'); // Migrado: ahora apunta al nuevo archivo
+}
+// Constantes de configuración - principales
 if (!defined('FLAVOR_PLATFORM_SETTINGS_OPTION')) {
     define('FLAVOR_PLATFORM_SETTINGS_OPTION', 'flavor_platform_settings');
 }
 if (!defined('FLAVOR_PLATFORM_TEXT_DOMAIN')) {
     define('FLAVOR_PLATFORM_TEXT_DOMAIN', 'flavor-platform');
 }
-if (!defined('FLAVOR_CHAT_IA_TEXT_DOMAIN')) {
-    define('FLAVOR_CHAT_IA_TEXT_DOMAIN', 'flavor-platform');
+if (!defined('FLAVOR_PLATFORM_REST_NAMESPACE')) {
+    define('FLAVOR_PLATFORM_REST_NAMESPACE', 'flavor-platform/v1');
+}
+if (!defined('FLAVOR_PLATFORM_DEBUG')) {
+    define('FLAVOR_PLATFORM_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
 }
 
-// Modo debug
+// Constantes de configuración - alias legacy
+if (!defined('FLAVOR_CHAT_IA_SETTINGS_OPTION')) {
+    define('FLAVOR_CHAT_IA_SETTINGS_OPTION', 'flavor_chat_ia_settings');
+}
+if (!defined('FLAVOR_CHAT_IA_TEXT_DOMAIN')) {
+    define('FLAVOR_CHAT_IA_TEXT_DOMAIN', 'flavor-chat-ia');
+}
+if (!defined('FLAVOR_CHAT_IA_REST_NAMESPACE')) {
+    define('FLAVOR_CHAT_IA_REST_NAMESPACE', 'flavor-chat-ia/v1');
+}
 if (!defined('FLAVOR_CHAT_IA_DEBUG')) {
-    define('FLAVOR_CHAT_IA_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
+    define('FLAVOR_CHAT_IA_DEBUG', FLAVOR_PLATFORM_DEBUG);
 }
 
 // Límite máximo de posts por query (evita cargas masivas de memoria)
@@ -124,7 +163,7 @@ if (!defined('FLAVOR_MAX_POSTS_PER_QUERY')) {
  * @param string $level Nivel: 'debug', 'info', 'warning', 'error'
  * @param string $module Módulo origen (opcional, para filtrado)
  */
-function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
+function flavor_platform_log( $message, $level = 'info', $module = '' ) {
     // Niveles y su prioridad numérica
     $level_priority = [
         'debug'   => 0,
@@ -136,7 +175,7 @@ function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
     // Nivel mínimo a loguear según entorno
     // En producción (sin WP_DEBUG): solo errores
     // En desarrollo (WP_DEBUG): todo
-    // Con FLAVOR_CHAT_IA_DEBUG: nivel configurable
+    // Con FLAVOR_PLATFORM_DEBUG: nivel configurable
     $min_level = 'error'; // Default: solo errores
 
     if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
@@ -166,14 +205,148 @@ function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
 }
 
 /**
- * Alias de logging para el nombre comercial Flavor Platform.
+ * Alias legacy de logging para compatibilidad retroactiva.
  *
  * @param string $message Mensaje a loguear.
  * @param string $level Nivel: 'debug', 'info', 'warning', 'error'.
  * @param string $module Módulo origen.
  */
-function flavor_platform_log( $message, $level = 'info', $module = '' ) {
-    flavor_chat_ia_log( $message, $level, $module );
+function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
+    flavor_platform_log( $message, $level, $module );
+}
+
+/**
+ * Devuelve el option name principal para la configuración de plataforma.
+ *
+ * @return string
+ */
+function flavor_get_primary_settings_option() {
+    return FLAVOR_PLATFORM_SETTINGS_OPTION;
+}
+
+/**
+ * Devuelve el text domain principal para código nuevo.
+ *
+ * @return string
+ */
+function flavor_get_primary_text_domain() {
+    return FLAVOR_PLATFORM_TEXT_DOMAIN;
+}
+
+/**
+ * Devuelve el namespace REST principal para código nuevo.
+ *
+ * @return string
+ */
+function flavor_get_primary_rest_namespace() {
+    return FLAVOR_PLATFORM_REST_NAMESPACE;
+}
+
+/**
+ * Obtiene el slug técnico actual en runtime.
+ *
+ * Se mantiene legacy hasta migrar carpeta y archivo principal.
+ *
+ * @return string
+ */
+function flavor_get_runtime_plugin_slug() {
+    return FLAVOR_CHAT_IA_PLUGIN_SLUG;
+}
+
+/**
+ * Obtiene el slug de distribución/comercial.
+ *
+ * @return string
+ */
+function flavor_get_distribution_plugin_slug() {
+    return FLAVOR_PLATFORM_PLUGIN_SLUG;
+}
+
+/**
+ * Obtiene el basename técnico actual del plugin en runtime.
+ *
+ * @return string
+ */
+function flavor_get_runtime_plugin_basename() {
+    return FLAVOR_RUNTIME_PLUGIN_BASENAME;
+}
+
+/**
+ * Obtiene la ruta absoluta del archivo principal runtime.
+ *
+ * @return string
+ */
+function flavor_get_runtime_plugin_file() {
+    return FLAVOR_RUNTIME_PLUGIN_FILE;
+}
+
+/**
+ * Obtiene el basename previsto para artefactos de distribución.
+ *
+ * @return string
+ */
+function flavor_get_distribution_plugin_basename() {
+    return FLAVOR_PLATFORM_PLUGIN_SLUG . '/' . FLAVOR_PLATFORM_MAIN_FILE;
+}
+
+/**
+ * Resuelve el nombre de clase runtime preferido para compatibilidad dual.
+ *
+ * Cuando existe un alias o una clase canónica `Flavor_Platform_*`, la usa.
+ * Si todavía no existe, devuelve el nombre legacy `Flavor_Chat_*` para no
+ * romper integraciones durante la migración profunda.
+ *
+ * @param string $legacy_class Nombre de clase legacy.
+ * @return string
+ */
+function flavor_get_runtime_class_name( $legacy_class ) {
+    if ( ! is_string( $legacy_class ) || $legacy_class === '' ) {
+        return $legacy_class;
+    }
+
+    if ( strpos( $legacy_class, 'Flavor_Chat_' ) !== 0 ) {
+        return $legacy_class;
+    }
+
+    $platform_class = 'Flavor_Platform_' . substr( $legacy_class, strlen( 'Flavor_Chat_' ) );
+
+    if ( class_exists( $platform_class, false ) || interface_exists( $platform_class, false ) ) {
+        return $platform_class;
+    }
+
+    return $legacy_class;
+}
+
+/**
+ * Devuelve los namespaces REST soportados para un namespace dado.
+ *
+ * @param string $namespace Namespace solicitado.
+ * @return array
+ */
+function flavor_get_rest_namespaces( $namespace ) {
+    if ( $namespace === FLAVOR_CHAT_IA_REST_NAMESPACE || $namespace === FLAVOR_PLATFORM_REST_NAMESPACE ) {
+        return array(
+            FLAVOR_CHAT_IA_REST_NAMESPACE,
+            FLAVOR_PLATFORM_REST_NAMESPACE,
+        );
+    }
+
+    return array( $namespace );
+}
+
+/**
+ * Registra una ruta REST en todos los namespaces equivalentes soportados.
+ *
+ * @param string $route_namespace Namespace REST.
+ * @param string $route           Ruta.
+ * @param array  $args            Argumentos de registro.
+ * @param bool   $override        Si se permite override.
+ * @return void
+ */
+function flavor_register_rest_route( $route_namespace, $route, $args = array(), $override = false ) {
+    foreach ( flavor_get_rest_namespaces( $route_namespace ) as $namespace ) {
+        register_rest_route( $namespace, $route, $args, $override );
+    }
 }
 
 /**
@@ -209,6 +382,59 @@ function flavor_update_main_settings( array $settings, $autoload = true ) {
 }
 
 /**
+ * Devuelve los nombres de opción soportados para la configuración de un módulo.
+ *
+ * @param string $module_id ID del módulo.
+ * @return array{legacy:string,platform:string}
+ */
+function flavor_get_module_option_names( $module_id ) {
+    $normalized_module_id = str_replace( '-', '_', sanitize_key( (string) $module_id ) );
+
+    return array(
+        'legacy'   => 'flavor_chat_ia_module_' . $normalized_module_id,
+        'platform' => 'flavor_platform_module_' . $normalized_module_id,
+    );
+}
+
+/**
+ * Obtiene la configuración de un módulo con compatibilidad entre nombre legado y nuevo.
+ *
+ * @param string $module_id ID del módulo.
+ * @return array
+ */
+function flavor_get_module_settings( $module_id ) {
+    $option_names = flavor_get_module_option_names( $module_id );
+
+    $platform_settings = get_option( $option_names['platform'], null );
+    if ( is_array( $platform_settings ) ) {
+        return $platform_settings;
+    }
+
+    $legacy_settings = get_option( $option_names['legacy'], array() );
+    return is_array( $legacy_settings ) ? $legacy_settings : array();
+}
+
+/**
+ * Persiste la configuración de un módulo en la opción legacy y en la nueva.
+ *
+ * @param string $module_id ID del módulo.
+ * @param array  $settings  Configuración del módulo.
+ * @param bool   $autoload  Autoload de la opción.
+ * @return bool
+ */
+function flavor_update_module_settings( $module_id, array $settings, $autoload = true ) {
+    $option_names = flavor_get_module_option_names( $module_id );
+
+    $updated_legacy = update_option( $option_names['legacy'], $settings, $autoload );
+    update_option( $option_names['platform'], $settings, $autoload );
+
+    wp_cache_delete( $option_names['legacy'], 'options' );
+    wp_cache_delete( $option_names['platform'], 'options' );
+
+    return (bool) $updated_legacy;
+}
+
+/**
  * Sincroniza la opción nueva cuando se actualiza la legacy.
  *
  * @param array $old_value Valor anterior.
@@ -235,7 +461,7 @@ add_action( 'update_option_' . FLAVOR_CHAT_IA_SETTINGS_OPTION, 'flavor_sync_plat
  * @return void
  */
 function flavor_load_textdomains() {
-    $languages_rel_path = dirname( FLAVOR_CHAT_IA_BASENAME ) . '/languages/';
+    $languages_rel_path = dirname( FLAVOR_PLATFORM_BASENAME ) . '/languages/';
 
     load_plugin_textdomain(
         FLAVOR_CHAT_IA_TEXT_DOMAIN,
@@ -259,13 +485,13 @@ function flavor_load_textdomains() {
         return;
     }
 
-    $new_domain_mofile = FLAVOR_CHAT_IA_PATH . 'languages/' . FLAVOR_PLATFORM_TEXT_DOMAIN . '-' . $locale . '.mo';
+    $new_domain_mofile = FLAVOR_PLATFORM_PATH . 'languages/' . FLAVOR_PLATFORM_TEXT_DOMAIN . '-' . $locale . '.mo';
     if ( file_exists( $new_domain_mofile ) ) {
         load_textdomain( FLAVOR_PLATFORM_TEXT_DOMAIN, $new_domain_mofile );
         return;
     }
 
-    $legacy_domain_mofile = FLAVOR_CHAT_IA_PATH . 'languages/' . FLAVOR_CHAT_IA_TEXT_DOMAIN . '-' . $locale . '.mo';
+    $legacy_domain_mofile = FLAVOR_PLATFORM_PATH . 'languages/' . FLAVOR_CHAT_IA_TEXT_DOMAIN . '-' . $locale . '.mo';
     if ( file_exists( $legacy_domain_mofile ) ) {
         load_textdomain( FLAVOR_PLATFORM_TEXT_DOMAIN, $legacy_domain_mofile );
     }
@@ -538,20 +764,20 @@ function flavor_regenerate_vbp_api_key() {
 /**
  * Carga segura de archivos bootstrap para evitar fatales por despliegues incompletos.
  *
- * @param string $relative_path Ruta relativa desde FLAVOR_CHAT_IA_PATH.
+ * @param string $relative_path Ruta relativa desde FLAVOR_PLATFORM_PATH.
  * @param string $expected_class Clase esperada tras incluir el archivo.
  *
  * @return bool
  */
-function flavor_chat_ia_require_bootstrap_file( $relative_path, $expected_class = '' ) {
+function flavor_platform_require_bootstrap_file( $relative_path, $expected_class = '' ) {
     static $missing_files = [];
 
-    $file = FLAVOR_CHAT_IA_PATH . ltrim( $relative_path, '/' );
+    $file = FLAVOR_PLATFORM_PATH . ltrim( $relative_path, '/' );
     if ( ! file_exists( $file ) ) {
         $missing_files[] = $relative_path;
         $missing_files = array_values( array_unique( $missing_files ) );
         flavor_log_error( 'Archivo bootstrap faltante: ' . $relative_path, 'bootstrap' );
-        update_option( 'flavor_chat_ia_missing_bootstrap_files', $missing_files, false );
+        update_option( 'flavor_platform_missing_bootstrap_files', $missing_files, false );
         return false;
     }
 
@@ -569,16 +795,27 @@ function flavor_chat_ia_require_bootstrap_file( $relative_path, $expected_class 
 }
 
 /**
+ * Alias legacy para compatibilidad retroactiva.
+ */
+function flavor_chat_ia_require_bootstrap_file( $relative_path, $expected_class = '' ) {
+    return flavor_platform_require_bootstrap_file( $relative_path, $expected_class );
+}
+
+/**
  * Aviso de administración cuando faltan archivos bootstrap.
  *
  * @return void
  */
-function flavor_chat_ia_missing_bootstrap_admin_notice() {
+function flavor_platform_missing_bootstrap_admin_notice() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
 
-    $missing_files = get_option( 'flavor_chat_ia_missing_bootstrap_files', [] );
+    // Comprobar ambas opciones por compatibilidad
+    $missing_files = get_option( 'flavor_platform_missing_bootstrap_files', [] );
+    if ( empty( $missing_files ) ) {
+        $missing_files = get_option( 'flavor_chat_ia_missing_bootstrap_files', [] );
+    }
     if ( empty( $missing_files ) || ! is_array( $missing_files ) ) {
         return;
     }
@@ -590,14 +827,21 @@ function flavor_chat_ia_missing_bootstrap_admin_notice() {
 
     echo '<div class="notice notice-error"><p><strong>Flavor Platform:</strong> faltan archivos de bootstrap en el servidor. El plugin se cargó en modo degradado.</p><ul style="margin-left:1.2em;list-style:disc;">' . $items . '</ul></div>';
 }
-add_action( 'admin_notices', 'flavor_chat_ia_missing_bootstrap_admin_notice' );
+
+/**
+ * Alias legacy para compatibilidad retroactiva.
+ */
+function flavor_chat_ia_missing_bootstrap_admin_notice() {
+    flavor_platform_missing_bootstrap_admin_notice();
+}
+add_action( 'admin_notices', 'flavor_platform_missing_bootstrap_admin_notice' );
 
 // Cargar clases de bootstrap (v3.2.0+) con tolerancia a faltantes.
-flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-bootstrap-dependencies.php', 'Flavor_Bootstrap_Dependencies' );
-flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-starter-theme-manager.php', 'Flavor_Starter_Theme_Manager' );
-flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-database-setup.php', 'Flavor_Database_Setup' );
-flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-cron-manager.php', 'Flavor_Cron_Manager' );
-flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-system-initializer.php', 'Flavor_System_Initializer' );
+flavor_platform_require_bootstrap_file( 'includes/bootstrap/class-bootstrap-dependencies.php', 'Flavor_Bootstrap_Dependencies' );
+flavor_platform_require_bootstrap_file( 'includes/bootstrap/class-starter-theme-manager.php', 'Flavor_Starter_Theme_Manager' );
+flavor_platform_require_bootstrap_file( 'includes/bootstrap/class-database-setup.php', 'Flavor_Database_Setup' );
+flavor_platform_require_bootstrap_file( 'includes/bootstrap/class-cron-manager.php', 'Flavor_Cron_Manager' );
+flavor_platform_require_bootstrap_file( 'includes/bootstrap/class-system-initializer.php', 'Flavor_System_Initializer' );
 
 // Stubs de seguridad para evitar fatales si faltan archivos en producción.
 if ( ! class_exists( 'Flavor_Bootstrap_Dependencies' ) ) {
@@ -645,7 +889,7 @@ if ( ! class_exists( 'Flavor_System_Initializer' ) ) {
  *
  * Refactorizada en v3.2.0 para delegar a clases especializadas de bootstrap.
  */
-final class Flavor_Chat_IA {
+final class Flavor_Platform {
 
     /**
      * Instancia singleton
@@ -688,7 +932,7 @@ final class Flavor_Chat_IA {
     /**
      * Obtiene la instancia singleton
      *
-     * @return Flavor_Chat_IA
+     * @return Flavor_Platform
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -778,10 +1022,10 @@ final class Flavor_Chat_IA {
      */
     public function init_demo_data_generator() {
         if (is_admin()) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-demo-data-generator.php';
+            require_once FLAVOR_PLATFORM_PATH . 'includes/admin/class-demo-data-generator.php';
 
             // Herramienta de migración VBP (solo admin)
-            $migration_tool_path = FLAVOR_CHAT_IA_PATH . 'includes/tools/class-vbp-migration-tool.php';
+            $migration_tool_path = FLAVOR_PLATFORM_PATH . 'includes/tools/class-vbp-migration-tool.php';
             if (file_exists($migration_tool_path)) {
                 require_once $migration_tool_path;
             }
@@ -835,9 +1079,9 @@ final class Flavor_Chat_IA {
         if ($es_pagina_plugin) {
             wp_enqueue_style(
                 'flavor-admin-modals',
-                FLAVOR_CHAT_IA_URL . 'assets/css/admin/admin-modals.css',
+                FLAVOR_PLATFORM_URL . 'assets/css/admin/admin-modals.css',
                 [],
-                FLAVOR_CHAT_IA_VERSION
+                FLAVOR_PLATFORM_VERSION
             );
         }
     }
@@ -893,12 +1137,12 @@ final class Flavor_Chat_IA {
      */
     public function handle_modules_role_assignment($old_value, $value) {
         // Invalidar caché de metadatos de módulos cuando cambian los módulos activos
-        if (class_exists('Flavor_Chat_Module_Loader')) {
+        if (class_exists('Flavor_Platform_Module_Loader')) {
             $old_modules = isset($old_value['active_modules']) ? $old_value['active_modules'] : [];
             $new_modules = isset($value['active_modules']) ? $value['active_modules'] : [];
 
             if ($old_modules !== $new_modules) {
-                $loader = Flavor_Chat_Module_Loader::get_instance();
+                $loader = Flavor_Platform_Module_Loader::get_instance();
                 $loader->invalidate_metadata_cache();
             }
         }
@@ -933,8 +1177,8 @@ final class Flavor_Chat_IA {
      * Carga los módulos activos
      */
     public function load_modules() {
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $this->modules = $loader->load_active_modules();
         }
 
@@ -955,8 +1199,8 @@ final class Flavor_Chat_IA {
         }
 
         // Cargar dependencias para AJAX
-        if (class_exists('Flavor_Chat_Ajax')) {
-            Flavor_Chat_Ajax::register_hooks();
+        if (class_exists('Flavor_Platform_Ajax')) {
+            Flavor_Platform_Ajax::register_hooks();
         }
     }
 
@@ -1055,8 +1299,8 @@ final class Flavor_Chat_IA {
         $this->db_setup->install();
 
         // Reconstruir caché de metadatos de módulos para optimizar rendimiento
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $loader->rebuild_metadata_cache();
         }
 
@@ -1110,7 +1354,7 @@ final class Flavor_Chat_IA {
     public function load_dashboard_for_rest() {
         // Cargar archivo si no existe la clase
         if (!class_exists('Flavor_Dashboard')) {
-            $dashboard_file = FLAVOR_CHAT_IA_PATH . 'admin/class-dashboard.php';
+            $dashboard_file = FLAVOR_PLATFORM_PATH . 'admin/class-dashboard.php';
             if (file_exists($dashboard_file)) {
                 require_once $dashboard_file;
             }
@@ -1136,9 +1380,9 @@ final class Flavor_Chat_IA {
         // CSS para romper limitaciones de ancho del tema
         wp_enqueue_style(
             'flavor-container-override',
-            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/flavor-container-override.css',
+            FLAVOR_PLATFORM_URL . 'assets/css/layouts/flavor-container-override.css',
             [],
-            FLAVOR_CHAT_IA_VERSION,
+            FLAVOR_PLATFORM_VERSION,
             'all'
         );
     }
@@ -1207,22 +1451,26 @@ final class Flavor_Chat_IA {
     }
 }
 
-/**
- * Función helper para obtener la instancia del plugin
- *
- * @return Flavor_Chat_IA
- */
-function flavor_chat_ia() {
-    return Flavor_Chat_IA::get_instance();
+if (!class_exists('Flavor_Chat_IA', false)) {
+    class_alias('Flavor_Platform', 'Flavor_Chat_IA');
 }
 
 /**
- * Helper de compatibilidad para el nombre comercial Flavor Platform.
+ * Función helper para obtener la instancia del plugin
  *
- * @return Flavor_Chat_IA
+ * @return Flavor_Platform
  */
 function flavor_platform() {
-    return flavor_chat_ia();
+    return Flavor_Platform::get_instance();
+}
+
+/**
+ * Alias legacy para compatibilidad retroactiva.
+ *
+ * @return Flavor_Platform
+ */
+function flavor_chat_ia() {
+    return flavor_platform();
 }
 
 /**
@@ -1252,7 +1500,7 @@ add_filter('doing_it_wrong_trigger_error', function($trigger, $function_name) {
 }, 10, 2);
 
 // Inicializar el plugin después de cargar el textdomain
-add_action('plugins_loaded', 'flavor_chat_ia', 1);
+add_action('plugins_loaded', 'flavor_platform', 1);
 
 // DEBUG TEMPORAL - Diagnóstico del portal layout (ELIMINAR DESPUÉS DE USAR)
 // Se difiere a admin_init para no tocar capacidades antes de que WP cargue al usuario.
@@ -1276,9 +1524,9 @@ add_action('admin_init', function() {
 add_action('wp_enqueue_scripts', function() {
     wp_register_style(
         'flavor-vbp-visual-styles',
-        FLAVOR_CHAT_IA_URL . 'assets/css/vbp-visual-styles.css',
+        FLAVOR_PLATFORM_URL . 'assets/css/vbp-visual-styles.css',
         [],
-        FLAVOR_CHAT_IA_VERSION
+        FLAVOR_PLATFORM_VERSION
     );
 
     // Solo encolar si la página usa VBP o es una landing
@@ -1312,5 +1560,5 @@ if (
     function_exists( 'current_user_can' ) &&
     current_user_can( 'manage_options' )
 ) {
-    require_once FLAVOR_CHAT_IA_PATH . 'diagnostico-performance.php';
+    require_once FLAVOR_PLATFORM_PATH . 'diagnostico-performance.php';
 }
