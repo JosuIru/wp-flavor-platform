@@ -896,7 +896,8 @@ function flavor_platform_missing_bootstrap_admin_notice() {
         $items .= '<li><code>' . esc_html( $missing_file ) . '</code></li>';
     }
 
-    echo '<div class="notice notice-error"><p><strong>Flavor Platform:</strong> faltan archivos de bootstrap en el servidor. El plugin se cargó en modo degradado.</p><ul style="margin-left:1.2em;list-style:disc;">' . $items . '</ul></div>';
+    // FIX: Usar wp_kses_post para sanitización segura del HTML de salida
+    echo wp_kses_post( '<div class="notice notice-error"><p><strong>Flavor Platform:</strong> faltan archivos de bootstrap en el servidor. El plugin se cargó en modo degradado.</p><ul style="margin-left:1.2em;list-style:disc;">' . $items . '</ul></div>' );
 }
 
 /**
