@@ -184,14 +184,8 @@ onMounted(() => {
   }
 });
 
-// Watch para recargar preview cuando cambian los valores
-watch(
-  () => props.block.values,
-  () => {
-    // El store ya maneja el debounce de la preview
-  },
-  { deep: true }
-);
+// NOTA: No se necesita watcher aquí - el store maneja el debounce
+// de refreshPreview cuando se actualizan valores via updateBlock()
 
 async function loadPreview() {
   isLoadingPreview.value = true;
