@@ -37,6 +37,20 @@ class Flavor_Dashboard {
     const INTERVALO_ACTUALIZACION = 60;
 
     /**
+     * Rate limit: máximo de requests por minuto para endpoints costosos
+     *
+     * @var int
+     */
+    const RATE_LIMIT_MAX_REQUESTS = 10;
+
+    /**
+     * Rate limit: ventana de tiempo en segundos
+     *
+     * @var int
+     */
+    const RATE_LIMIT_WINDOW = 60;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Dashboard
@@ -172,6 +186,39 @@ class Flavor_Dashboard {
         return current_user_can('manage_options')
             || current_user_can('flavor_ver_dashboard')
             || current_user_can('flavor_gestor_grupos');
+    }
+
+    /**
+     * Verifica rate limiting para endpoints costosos.
+     *
+     * FIX: Añadido para prevenir abuso de endpoints de exportación y sincronización.
+     *
+     * @param string $endpoint_key Identificador único del endpoint.
+     * @return bool|WP_REST_Response True si está permitido, WP_REST_Response con error si excede límite.
+     */
+    private function check_rate_limit( $endpoint_key ) {
+        $user_id = get_current_user_id();
+        $transient_key = 'flavor_rate_limit_' . $endpoint_key . '_' . $user_id;
+
+        $requests = get_transient( $transient_key );
+        if ( false === $requests ) {
+            $requests = 0;
+        }
+
+        if ( $requests >= self::RATE_LIMIT_MAX_REQUESTS ) {
+            return new WP_REST_Response(
+                [
+                    'success' => false,
+                    'message' => __( 'Demasiadas solicitudes. Intenta de nuevo en un minuto.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'code'    => 'rate_limit_exceeded',
+                ],
+                429
+            );
+        }
+
+        set_transient( $transient_key, $requests + 1, self::RATE_LIMIT_WINDOW );
+
+        return true;
     }
 
     /**
@@ -345,6 +392,7 @@ class Flavor_Dashboard {
             'restUrl'              => rest_url('flavor/v1/admin/'),
             'nonce'                => wp_create_nonce('wp_rest'),
             'ajaxNonce'            => wp_create_nonce('flavor_dashboard_nonce'),
+            'panelStateNonce'      => wp_create_nonce('flavor_panel_state'), // FIX: Nonce para guardar estado de paneles
             'intervaloActualizacion' => self::INTERVALO_ACTUALIZACION * 1000,
             'features'             => [
                 'sortable'      => true,
@@ -1986,6 +2034,12 @@ class Flavor_Dashboard {
      * @return WP_REST_Response
      */
     public function api_sincronizar_red($peticion) {
+        // FIX: Rate limiting para prevenir abuso
+        $rate_check = $this->check_rate_limit( 'network_sync' );
+        if ( $rate_check instanceof WP_REST_Response ) {
+            return $rate_check;
+        }
+
         $resultado = $this->sincronizar_red_manual();
 
         return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 500);
@@ -2021,6 +2075,12 @@ class Flavor_Dashboard {
      * @return WP_REST_Response
      */
     public function api_exportar_estadisticas_csv($peticion) {
+        // FIX: Rate limiting para prevenir abuso de exportaciones
+        $rate_check = $this->check_rate_limit( 'export_stats' );
+        if ( $rate_check instanceof WP_REST_Response ) {
+            return $rate_check;
+        }
+
         $tipo = sanitize_text_field($peticion->get_param('tipo') ?? 'general');
 
         $datos_exportar = [];

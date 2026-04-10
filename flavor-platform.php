@@ -415,7 +415,26 @@ function flavor_update_main_settings( array $settings, $autoload = true ) {
  * @return array{legacy:string,platform:string}
  */
 function flavor_get_module_option_names( $module_id ) {
-    $normalized_module_id = str_replace( '-', '_', sanitize_key( (string) $module_id ) );
+    // FIX: Validar tipo y longitud del module_id
+    $module_id = (string) $module_id;
+
+    // Longitud máxima razonable para un ID de módulo (50 caracteres)
+    if ( empty( $module_id ) || strlen( $module_id ) > 50 ) {
+        return array(
+            'legacy'   => 'flavor_chat_ia_module_invalid',
+            'platform' => 'flavor_platform_module_invalid',
+        );
+    }
+
+    $normalized_module_id = str_replace( '-', '_', sanitize_key( $module_id ) );
+
+    // FIX: Verificar que después de sanitizar sigue siendo válido
+    if ( empty( $normalized_module_id ) ) {
+        return array(
+            'legacy'   => 'flavor_chat_ia_module_invalid',
+            'platform' => 'flavor_platform_module_invalid',
+        );
+    }
 
     return array(
         'legacy'   => 'flavor_chat_ia_module_' . $normalized_module_id,
