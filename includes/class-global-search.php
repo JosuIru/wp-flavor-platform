@@ -5,7 +5,7 @@
  * Busca simultaneamente en todos los modulos activos del sistema,
  * agregando resultados de multiples tablas con una API unificada.
  *
- * @package FlavorChatIA
+ * @package FlavorPlatform
  * @since 2.1.0
  */
 
@@ -203,9 +203,18 @@ class Flavor_Global_Search {
         $clausulas_like = [];
         $valores_like = [];
         foreach ($configuracion['campos_busqueda'] as $nombre_campo) {
-            $nombre_campo_sanitizado = sanitize_key($nombre_campo);
+            // FIX: Validar que el nombre de campo sea alfanumérico con guiones bajos
+            $nombre_campo_sanitizado = preg_replace('/[^a-z0-9_]/i', '', $nombre_campo);
+            if (empty($nombre_campo_sanitizado) || strlen($nombre_campo_sanitizado) > 64) {
+                continue;
+            }
             $clausulas_like[] = "`{$nombre_campo_sanitizado}` LIKE %s";
             $valores_like[] = '%' . $wpdb->esc_like($termino) . '%';
+        }
+
+        // FIX: Si no hay campos válidos, retornar vacío
+        if (empty($clausulas_like)) {
+            return [];
         }
 
         $clausula_busqueda = implode(' OR ', $clausulas_like);
@@ -213,17 +222,33 @@ class Flavor_Global_Search {
         // Filtro de estado si aplica
         $clausula_estado = '';
         if (!empty($configuracion['campo_estado']) && $configuracion['valor_estado_activo'] !== null) {
-            $clausula_estado = $wpdb->prepare(
-                " AND `{$configuracion['campo_estado']}` = %s",
-                $configuracion['valor_estado_activo']
-            );
+            // FIX: Sanitizar nombre de campo de estado
+            $campo_estado_sanitizado = preg_replace('/[^a-z0-9_]/i', '', $configuracion['campo_estado']);
+            if (!empty($campo_estado_sanitizado) && strlen($campo_estado_sanitizado) <= 64) {
+                $clausula_estado = $wpdb->prepare(
+                    " AND `{$campo_estado_sanitizado}` = %s",
+                    $configuracion['valor_estado_activo']
+                );
+            }
         }
 
-        $campo_titulo = $configuracion['campo_titulo'] ?: 'id';
-        $campo_descripcion = $configuracion['campo_descripcion'] ?: "''";
+        // FIX: Sanitizar campos de selección
+        $campo_titulo_raw = $configuracion['campo_titulo'] ?: 'id';
+        $campo_titulo = preg_replace('/[^a-z0-9_]/i', '', $campo_titulo_raw);
+        if (empty($campo_titulo) || strlen($campo_titulo) > 64) {
+            $campo_titulo = 'id';
+        }
+
+        $campo_descripcion_raw = $configuracion['campo_descripcion'] ?: '';
+        $campo_descripcion = preg_replace('/[^a-z0-9_]/i', '', $campo_descripcion_raw);
+        if (empty($campo_descripcion) || strlen($campo_descripcion) > 64) {
+            $campo_descripcion = "''";
+        } else {
+            $campo_descripcion = "`{$campo_descripcion}`";
+        }
 
         $consulta_sql = $wpdb->prepare(
-            "SELECT id, `{$campo_titulo}` AS titulo, `{$campo_descripcion}` AS descripcion
+            "SELECT id, `{$campo_titulo}` AS titulo, {$campo_descripcion} AS descripcion
              FROM {$nombre_tabla}
              WHERE ({$clausula_busqueda}){$clausula_estado}
              ORDER BY id DESC
@@ -279,7 +304,13 @@ class Flavor_Global_Search {
     // =========================================================================
 
     public function ajax_buscar() {
-        check_ajax_referer('flavor_chat_ia_nonce', 'nonce');
+        $nonce = $_REQUEST['nonce'] ?? '';
+        if (
+            !wp_verify_nonce($nonce, 'flavor_platform_nonce')
+            && !wp_verify_nonce($nonce, 'flavor_platform_nonce')
+        ) {
+            wp_send_json_error(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN), 403);
+        }
 
         if (!current_user_can('read')) {
             wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));

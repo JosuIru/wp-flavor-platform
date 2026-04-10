@@ -514,8 +514,15 @@ class Flavor_XLIFF_Handler {
     private function parse_xliff($xliff_content) {
         libxml_use_internal_errors(true);
 
+        // FIX: Deshabilitar entidades externas para prevenir XXE
+        $previous_value = libxml_disable_entity_loader(true);
+
         $dom = new DOMDocument();
-        $loaded = $dom->loadXML($xliff_content);
+        // FIX: Usar flags seguros que previenen XXE
+        $loaded = $dom->loadXML($xliff_content, LIBXML_NONET | LIBXML_NOENT);
+
+        // Restaurar valor anterior
+        libxml_disable_entity_loader($previous_value);
 
         if (!$loaded) {
             $errors = libxml_get_errors();
