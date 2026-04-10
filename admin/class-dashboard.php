@@ -114,12 +114,52 @@ class Flavor_Dashboard {
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_mapa_actividad'],
             'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
+            'args'                => [
+                'tipo' => [
+                    'required'          => false,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => function( $value ) {
+                        $tipos_permitidos = ['cooperativa', 'asociacion', 'comunidad', 'colectivo', 'grupo', 'red', ''];
+                        return empty( $value ) || in_array( $value, $tipos_permitidos, true );
+                    },
+                ],
+                'pais' => [
+                    'required'          => false,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => function( $value ) {
+                        // Validar código de país ISO 3166-1 alpha-2 o nombre
+                        return empty( $value ) || ( is_string( $value ) && strlen( $value ) <= 100 );
+                    },
+                ],
+                'modulo' => [
+                    'required'          => false,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_key',
+                    'validate_callback' => function( $value ) {
+                        return empty( $value ) || preg_match( '/^[a-z0-9_-]+$/', $value );
+                    },
+                ],
+            ],
         ]);
 
         register_rest_route('flavor/v1', '/admin/export-stats', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_exportar_estadisticas_csv'],
             'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
+            'args'                => [
+                'tipo' => [
+                    'required'          => false,
+                    'type'              => 'string',
+                    'default'           => 'general',
+                    'sanitize_callback' => 'sanitize_key',
+                    'validate_callback' => function( $value ) {
+                        $tipos_permitidos = ['general', 'usuarios', 'red', 'conversaciones'];
+                        return in_array( $value, $tipos_permitidos, true );
+                    },
+                ],
+            ],
         ]);
     }
 
@@ -157,8 +197,8 @@ class Flavor_Dashboard {
             return;
         }
 
-        $version = FLAVOR_CHAT_IA_VERSION;
-        $plugin_url = FLAVOR_CHAT_IA_URL;
+        $version = FLAVOR_PLATFORM_VERSION;
+        $plugin_url = FLAVOR_PLATFORM_URL;
 
         // =====================================================================
         // CSS - Sistema de Diseño Unificado (v4.1.0)
@@ -245,7 +285,7 @@ class Flavor_Dashboard {
         );
 
         // 11. Dashboard específico (legacy, si existe)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/dashboard.css')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'admin/css/dashboard.css')) {
             wp_enqueue_style(
                 'flavor-dashboard-legacy',
                 $plugin_url . 'admin/css/dashboard.css',
@@ -277,7 +317,7 @@ class Flavor_Dashboard {
         );
 
         // Dashboard Sortable (nuevo sistema)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/js/dashboard-sortable.js')) {
+        if (file_exists(FLAVOR_PLATFORM_PATH . 'assets/js/dashboard-sortable.js')) {
             wp_enqueue_script(
                 'fl-dashboard-sortable',
                 $plugin_url . 'assets/js/dashboard-sortable.js',
@@ -382,8 +422,8 @@ class Flavor_Dashboard {
             // Datos Gailu
             $configuracion_gailu = flavor_get_main_settings();
             $modulos_activos_ids = $configuracion_gailu['active_modules'] ?? [];
-            if (class_exists('Flavor_Chat_Module_Loader')) {
-                $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
+            if (class_exists('Flavor_Platform_Module_Loader')) {
+                $gailu_metricas = Flavor_Platform_Module_Loader::get_gailu_metricas($modulos_activos_ids);
             }
 
             // Addons
@@ -412,7 +452,7 @@ class Flavor_Dashboard {
         }
 
         // Incluir la vista del dashboard mejorado
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/dashboard.php';
+        include FLAVOR_PLATFORM_PATH . 'admin/views/dashboard.php';
     }
 
     /**
@@ -581,7 +621,7 @@ class Flavor_Dashboard {
         );
 
         return [
-            'version_plugin'      => FLAVOR_CHAT_IA_VERSION,
+            'version_plugin'      => FLAVOR_PLATFORM_VERSION,
             'version_php'         => PHP_VERSION,
             'version_wordpress'   => get_bloginfo('version'),
             'version_mysql'       => $wpdb->db_version(),
@@ -647,7 +687,7 @@ class Flavor_Dashboard {
         $alertas = [];
 
         // Pedidos sin procesar (si grupos_consumo activo)
-        if (class_exists('Flavor_Chat_Module_Loader') && Flavor_Chat_Module_Loader::is_module_active('grupos_consumo')) {
+        if (class_exists('Flavor_Platform_Module_Loader') && Flavor_Platform_Module_Loader::is_module_active('grupos_consumo')) {
             $pedidos_pendientes = $this->contar_pedidos_pendientes();
             if ($pedidos_pendientes > 0) {
                 $alertas[] = [
@@ -660,7 +700,7 @@ class Flavor_Dashboard {
         }
 
         // Solicitudes de socio pendientes (si socios activo)
-        if (class_exists('Flavor_Chat_Module_Loader') && Flavor_Chat_Module_Loader::is_module_active('socios')) {
+        if (class_exists('Flavor_Platform_Module_Loader') && Flavor_Platform_Module_Loader::is_module_active('socios')) {
             $solicitudes_pendientes = $this->contar_solicitudes_socios_pendientes();
             if ($solicitudes_pendientes > 0) {
                 $alertas[] = [
@@ -673,7 +713,7 @@ class Flavor_Dashboard {
         }
 
         // Ciclos proximos a cerrar (grupos_consumo)
-        if (class_exists('Flavor_Chat_Module_Loader') && Flavor_Chat_Module_Loader::is_module_active('grupos_consumo')) {
+        if (class_exists('Flavor_Platform_Module_Loader') && Flavor_Platform_Module_Loader::is_module_active('grupos_consumo')) {
             $ciclos_por_cerrar = $this->obtener_ciclos_proximos_cierre();
             if (!empty($ciclos_por_cerrar)) {
                 $alertas[] = [
@@ -686,7 +726,7 @@ class Flavor_Dashboard {
         }
 
         // Eventos proximos (si eventos activo)
-        if (class_exists('Flavor_Chat_Module_Loader') && Flavor_Chat_Module_Loader::is_module_active('eventos')) {
+        if (class_exists('Flavor_Platform_Module_Loader') && Flavor_Platform_Module_Loader::is_module_active('eventos')) {
             $eventos_proximos = $this->contar_eventos_proximos();
             if ($eventos_proximos > 0) {
                 $alertas[] = [
@@ -710,7 +750,7 @@ class Flavor_Dashboard {
         }
 
         // Incidencias sin resolver
-        if (class_exists('Flavor_Chat_Module_Loader') && Flavor_Chat_Module_Loader::is_module_active('incidencias')) {
+        if (class_exists('Flavor_Platform_Module_Loader') && Flavor_Platform_Module_Loader::is_module_active('incidencias')) {
             $incidencias_abiertas = $this->contar_incidencias_abiertas();
             if ($incidencias_abiertas > 0) {
                 $alertas[] = [
@@ -1042,8 +1082,8 @@ class Flavor_Dashboard {
         $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
         $total_modulos = 0;
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $total_modulos = count(Flavor_Chat_Module_Loader::get_instance()->get_registered_modules());
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $total_modulos = count(Flavor_Platform_Module_Loader::get_instance()->get_registered_modules());
         }
 
         // Addons activos
@@ -1569,8 +1609,9 @@ class Flavor_Dashboard {
         }
 
         // Obtener nodos con coordenadas
-        $where_clauses = ["estado = 'activo'", "latitud IS NOT NULL", "longitud IS NOT NULL"];
-        $where_values = [];
+        // FIX: Siempre usar prepare() añadiendo placeholder dummy para consistencia
+        $where_clauses = ["estado = 'activo'", "latitud IS NOT NULL", "longitud IS NOT NULL", "1 = %d"];
+        $where_values = [1]; // Placeholder dummy para forzar uso de prepare()
 
         if (!empty($filtros['tipo_entidad'])) {
             $where_clauses[] = 'tipo_entidad = %s';
@@ -1587,11 +1628,8 @@ class Flavor_Dashboard {
                 FROM {$tabla_nodos}
                 WHERE {$where_sql}";
 
-        if (!empty($where_values)) {
-            $nodos = $wpdb->get_results($wpdb->prepare($sql_query, $where_values));
-        } else {
-            $nodos = $wpdb->get_results($sql_query);
-        }
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query construida con valores literales y placeholders
+        $nodos = $wpdb->get_results($wpdb->prepare($sql_query, $where_values));
 
         // Preparar datos de nodos para el mapa
         foreach ($nodos as $nodo) {
@@ -2577,8 +2615,8 @@ class Flavor_Dashboard {
 
         // Obtener metadatos de módulos
         $modulos_info = [];
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
             $todos_modulos = $loader->get_registered_modules();
             foreach ($modulos_activos as $modulo_id) {
                 if (isset($todos_modulos[$modulo_id])) {

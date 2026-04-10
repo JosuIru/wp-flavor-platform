@@ -201,7 +201,30 @@ function flavor_platform_log( $message, $level = 'info', $module = '' ) {
         $prefix .= ' [' . $module . ']';
     }
 
-    error_log( $prefix . ' ' . $message );
+    // FIX: Sanitizar mensaje para no exponer secrets (API keys, tokens, passwords)
+    $sanitized_message = preg_replace(
+        [
+            '/([a-f0-9]{32,})/i',                           // Hashes MD5, API keys hex
+            '/([A-Za-z0-9_-]{20,})/i',                      // Tokens largos alfanuméricos
+            '/(Bearer\s+[a-zA-Z0-9._-]+)/i',                // Bearer tokens
+            '/(api[_-]?key[=:]\s*)[^\s&]+/i',               // api_key=value
+            '/(password[=:]\s*)[^\s&]+/i',                  // password=value
+            '/(secret[=:]\s*)[^\s&]+/i',                    // secret=value
+            '/(X-VBP-Key[=:]\s*)[^\s&]+/i',                 // X-VBP-Key header
+        ],
+        [
+            '[REDACTED_HASH]',
+            '[REDACTED_TOKEN]',
+            'Bearer [REDACTED]',
+            '$1[REDACTED]',
+            '$1[REDACTED]',
+            '$1[REDACTED]',
+            '$1[REDACTED]',
+        ],
+        $message
+    );
+
+    error_log( $prefix . ' ' . $sanitized_message );
 }
 
 /**
@@ -369,16 +392,20 @@ function flavor_get_main_settings() {
  *
  * @param array $settings Settings a guardar.
  * @param bool  $autoload Autoload de la opción.
- * @return bool
+ * @return bool True si AMBAS opciones se actualizaron correctamente.
  */
 function flavor_update_main_settings( array $settings, $autoload = true ) {
     $updated_legacy = update_option( FLAVOR_CHAT_IA_SETTINGS_OPTION, $settings, $autoload );
-    update_option( FLAVOR_PLATFORM_SETTINGS_OPTION, $settings, $autoload );
+    $updated_platform = update_option( FLAVOR_PLATFORM_SETTINGS_OPTION, $settings, $autoload );
 
     wp_cache_delete( FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options' );
     wp_cache_delete( FLAVOR_PLATFORM_SETTINGS_OPTION, 'options' );
 
-    return (bool) $updated_legacy;
+    // FIX: Invalidar también el cache estático
+    flavor_invalidate_settings_cache( 'main' );
+
+    // FIX: Retornar true solo si ambas opciones se actualizaron
+    return $updated_legacy && $updated_platform;
 }
 
 /**
@@ -426,12 +453,13 @@ function flavor_update_module_settings( $module_id, array $settings, $autoload =
     $option_names = flavor_get_module_option_names( $module_id );
 
     $updated_legacy = update_option( $option_names['legacy'], $settings, $autoload );
-    update_option( $option_names['platform'], $settings, $autoload );
+    $updated_platform = update_option( $option_names['platform'], $settings, $autoload );
 
     wp_cache_delete( $option_names['legacy'], 'options' );
     wp_cache_delete( $option_names['platform'], 'options' );
+    flavor_invalidate_settings_cache( $module_id );
 
-    return (bool) $updated_legacy;
+    return $updated_legacy && $updated_platform;
 }
 
 /**
@@ -519,30 +547,33 @@ function flavor_log_error( $message, $module = '' ) {
  * 2. Key única generada por instalación (usando NONCE_SALT)
  * 3. En desarrollo con FLAVOR_VBP_ALLOW_LEGACY_KEY: permite 'flavor-vbp-2024'
  *
+ * @global string|null $flavor_vbp_api_key_cache Cache de la API key.
  * @return string La API key válida
  */
 function flavor_get_vbp_api_key() {
-    static $cached_key = null;
+    global $flavor_vbp_api_key_cache;
 
-    if ( null !== $cached_key ) {
-        return $cached_key;
+    if ( null !== $flavor_vbp_api_key_cache ) {
+        return $flavor_vbp_api_key_cache;
     }
 
     $settings = flavor_get_cached_settings( 'vbp' );
 
     // Prioridad 1: Key configurada explícitamente
     if ( ! empty( $settings['api_key'] ) ) {
-        $cached_key = $settings['api_key'];
-        return $cached_key;
+        $flavor_vbp_api_key_cache = $settings['api_key'];
+        return $flavor_vbp_api_key_cache;
     }
 
     // Prioridad 2: Key única por instalación (segura)
-    $cached_key = wp_hash( 'flavor-vbp-' . NONCE_SALT );
-    return $cached_key;
+    $flavor_vbp_api_key_cache = wp_hash( 'flavor-vbp-' . NONCE_SALT );
+    return $flavor_vbp_api_key_cache;
 }
 
 /**
  * Verifica si una API key es válida para VBP
+ *
+ * FIX v3.5.1: Eliminada key legacy hardcodeada, agregado rate limiting.
  *
  * @param string $key Key a verificar.
  * @return bool True si la key es válida.
@@ -552,22 +583,42 @@ function flavor_verify_vbp_api_key( $key ) {
         return false;
     }
 
+    // Rate limiting: máximo 5 intentos fallidos por IP en 5 minutos
+    $remote_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( $_SERVER['REMOTE_ADDR'] ) : 'unknown';
+    $transient_key = 'flavor_vbp_auth_attempts_' . md5( $remote_ip );
+    $attempts = (int) get_transient( $transient_key );
+
+    if ( $attempts >= 5 ) {
+        flavor_log_warning( 'VBP API: Rate limit alcanzado para IP ' . $remote_ip, 'Security' );
+        return false;
+    }
+
     // Verificar contra key configurada
     $valid_key = flavor_get_vbp_api_key();
-    if ( $key === $valid_key ) {
+    if ( hash_equals( $valid_key, $key ) ) {
+        // Reset contador en auth exitoso
+        delete_transient( $transient_key );
         return true;
     }
 
-    // En desarrollo, permitir key legacy si está habilitado
-    if ( defined( 'FLAVOR_VBP_ALLOW_LEGACY_KEY' ) && FLAVOR_VBP_ALLOW_LEGACY_KEY ) {
-        if ( $key === 'flavor-vbp-2024' ) {
-            flavor_log_debug( 'VBP API: Key legacy usada - configure una key segura', 'Security' );
-            return true;
-        }
-    }
+    // Incrementar contador de intentos fallidos
+    set_transient( $transient_key, $attempts + 1, 5 * MINUTE_IN_SECONDS );
+    flavor_log_debug( 'VBP API: Intento de autenticación fallido desde ' . $remote_ip, 'Security' );
 
     return false;
 }
+
+/**
+ * Almacén de cache de settings compartido entre funciones.
+ *
+ * FIX: Usar variable global en lugar de static para sincronizar
+ * entre flavor_get_cached_settings() y flavor_invalidate_settings_cache().
+ *
+ * @since 3.5.1
+ * @global array $flavor_settings_cache
+ */
+global $flavor_settings_cache;
+$flavor_settings_cache = array();
 
 /**
  * Obtiene los settings del plugin con cache estático
@@ -579,23 +630,23 @@ function flavor_verify_vbp_api_key( $key ) {
  * @return array Settings cacheados.
  */
 function flavor_get_cached_settings( $option_name = 'main' ) {
-    static $cached_settings = array();
+    global $flavor_settings_cache;
 
-    if ( isset( $cached_settings[ $option_name ] ) ) {
-        return $cached_settings[ $option_name ];
+    if ( isset( $flavor_settings_cache[ $option_name ] ) ) {
+        return $flavor_settings_cache[ $option_name ];
     }
 
     switch ( $option_name ) {
         case 'vbp':
-            $cached_settings[ $option_name ] = get_option( 'flavor_vbp_settings', array() );
+            $flavor_settings_cache[ $option_name ] = get_option( 'flavor_vbp_settings', array() );
             break;
         case 'main':
         default:
-            $cached_settings[ $option_name ] = flavor_get_main_settings();
+            $flavor_settings_cache[ $option_name ] = flavor_get_main_settings();
             break;
     }
 
-    return $cached_settings[ $option_name ];
+    return $flavor_settings_cache[ $option_name ];
 }
 
 /**
@@ -604,12 +655,12 @@ function flavor_get_cached_settings( $option_name = 'main' ) {
  * @param string $option_name Nombre de la opción a invalidar, o 'all'.
  */
 function flavor_invalidate_settings_cache( $option_name = 'all' ) {
-    static $cached_settings = array();
+    global $flavor_settings_cache;
 
     if ( $option_name === 'all' ) {
-        $cached_settings = array();
+        $flavor_settings_cache = array();
     } else {
-        unset( $cached_settings[ $option_name ] );
+        unset( $flavor_settings_cache[ $option_name ] );
     }
 }
 
@@ -720,7 +771,8 @@ if ( ! function_exists( 'flavor_check_vbp_automation_access' ) ) {
 /**
  * Extrae la API key VBP de una petición REST.
  *
- * Prioriza el header `X-VBP-Key` y mantiene compatibilidad con `api_key`.
+ * FIX v3.5.1: Solo acepta header X-VBP-Key por seguridad.
+ * Las keys en URL aparecen en logs de servidor, referrer headers, y browser history.
  *
  * @param WP_REST_Request $request Petición REST.
  * @return string
@@ -731,38 +783,41 @@ if ( ! function_exists( 'flavor_get_vbp_api_key_from_request' ) ) {
             return '';
         }
 
-        $api_key = (string) $request->get_header( 'X-VBP-Key' );
-        if ( '' !== $api_key ) {
-            return $api_key;
-        }
-
-        if ( method_exists( $request, 'get_param' ) ) {
-            return (string) $request->get_param( 'api_key' );
-        }
-
-        return '';
+        // Solo aceptar API key desde header (nunca desde URL/parámetros)
+        return (string) $request->get_header( 'X-VBP-Key' );
     }
 }
 
 /**
  * Regenera la API key de VBP
  *
+ * @global string|null $flavor_vbp_api_key_cache Cache de la API key.
  * @return string Nueva API key generada.
  */
 function flavor_regenerate_vbp_api_key() {
+    global $flavor_vbp_api_key_cache;
+
     $nueva_key = wp_generate_password( 32, false, false );
     $settings = get_option( 'flavor_vbp_settings', array() );
     $settings['api_key'] = $nueva_key;
     update_option( 'flavor_vbp_settings', $settings );
 
-    // Limpiar cache
+    // Limpiar cache WP
     wp_cache_delete( 'flavor_vbp_api_key', 'flavor' );
+
+    // FIX: Limpiar cache estático de flavor_get_vbp_api_key()
+    $flavor_vbp_api_key_cache = null;
+
+    // Invalidar también el cache de settings VBP
+    flavor_invalidate_settings_cache( 'vbp' );
 
     return $nueva_key;
 }
 
 /**
  * Carga segura de archivos bootstrap para evitar fatales por despliegues incompletos.
+ *
+ * FIX: Validación de path traversal para prevenir LFI (Local File Inclusion).
  *
  * @param string $relative_path Ruta relativa desde FLAVOR_PLATFORM_PATH.
  * @param string $expected_class Clase esperada tras incluir el archivo.
@@ -772,7 +827,23 @@ function flavor_regenerate_vbp_api_key() {
 function flavor_platform_require_bootstrap_file( $relative_path, $expected_class = '' ) {
     static $missing_files = [];
 
+    // FIX: Sanitizar y prevenir path traversal
+    $relative_path = str_replace( '..', '', $relative_path );
+    $relative_path = preg_replace( '#/+#', '/', $relative_path ); // Normalizar slashes duplicados
+
     $file = FLAVOR_PLATFORM_PATH . ltrim( $relative_path, '/' );
+
+    // FIX: Verificar que el archivo resuelto está dentro del directorio del plugin
+    $real_plugin_path = realpath( FLAVOR_PLATFORM_PATH );
+    $real_file_path = realpath( dirname( $file ) );
+
+    if ( $real_file_path && $real_plugin_path ) {
+        if ( strpos( $real_file_path, $real_plugin_path ) !== 0 ) {
+            flavor_log_error( 'Path traversal detectado: ' . $relative_path, 'Security' );
+            return false;
+        }
+    }
+
     if ( ! file_exists( $file ) ) {
         $missing_files[] = $relative_path;
         $missing_files = array_values( array_unique( $missing_files ) );
@@ -1553,12 +1624,17 @@ add_action('wp_enqueue_scripts', function() {
 }, 20);
 
 // Cargar diagnóstico de performance (solo si se solicita con ?flavor_perf=1)
+// FIX: Verificar permisos PRIMERO, luego verificar parámetro GET
 if (
-    isset( $_GET['flavor_perf'] ) &&
     defined( 'WP_DEBUG' ) &&
     WP_DEBUG &&
     function_exists( 'current_user_can' ) &&
-    current_user_can( 'manage_options' )
+    current_user_can( 'manage_options' ) &&
+    isset( $_GET['flavor_perf'] ) &&
+    sanitize_key( $_GET['flavor_perf'] ) === '1'
 ) {
-    require_once FLAVOR_PLATFORM_PATH . 'diagnostico-performance.php';
+    $diagnostico_file = FLAVOR_PLATFORM_PATH . 'diagnostico-performance.php';
+    if ( file_exists( $diagnostico_file ) ) {
+        require_once $diagnostico_file;
+    }
 }
