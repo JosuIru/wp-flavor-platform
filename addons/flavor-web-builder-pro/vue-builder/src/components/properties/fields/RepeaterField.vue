@@ -1,45 +1,47 @@
 <template>
-  <div class="field repeater-field">
-    <label class="field-label">
-      {{ field.label || field.key }}
-    </label>
-
-    <!-- Items -->
-    <div class="repeater-items">
-      <div
-        v-for="(item, index) in items"
-        :key="item._id || index"
-        class="repeater-item"
-        :class="{ 'is-collapsed': collapsedItems.includes(index) }"
-      >
-        <!-- Item header -->
-        <div class="item-header" @click="toggleItem(index)">
-          <span class="item-handle" draggable="true">
-            <span class="dashicons dashicons-move"></span>
-          </span>
-          <span class="item-title">{{ getItemTitle(item, index) }}</span>
-          <div class="item-actions">
-            <button class="item-btn" @click.stop="duplicateItem(index)" title="Duplicar">
-              <span class="dashicons dashicons-admin-page"></span>
-            </button>
-            <button class="item-btn danger" @click.stop="removeItem(index)" title="Eliminar">
-              <span class="dashicons dashicons-trash"></span>
-            </button>
-            <span class="expand-icon dashicons" :class="collapsedItems.includes(index) ? 'dashicons-arrow-down-alt2' : 'dashicons-arrow-up-alt2'"></span>
-          </div>
-        </div>
-
-        <!-- Item fields -->
-        <div class="item-content" v-show="!collapsedItems.includes(index)">
-          <template v-for="subField in subFields" :key="subField.key">
-            <FieldRenderer
-              :field="subField"
-              :value="item[subField.key]"
-              @update="updateItemField(index, subField.key, $event)"
+  <FieldWrapper :field="field" field-class="repeater-field">
+    <!-- Items con virtualización para listas largas -->
+    <div class="repeater-items" ref="itemsContainer">
+      <template v-if="shouldVirtualize">
+        <VirtualList
+          :items="itemsWithIndex"
+          :item-height="collapsedItemHeight"
+          :visible-count="10"
+          class="repeater-virtual-list"
+        >
+          <template #item="{ item }">
+            <RepeaterItem
+              :item="item.data"
+              :index="item.index"
+              :item-id="item.data._id || item.index"
+              :sub-fields="subFields"
+              :is-collapsed="collapsedItems.has(item.index)"
+              :is-at-max="isAtMax"
+              @toggle="toggleItem"
+              @duplicate="duplicateItem"
+              @remove="removeItem"
+              @update-field="updateItemField"
             />
           </template>
-        </div>
-      </div>
+        </VirtualList>
+      </template>
+
+      <template v-else>
+        <RepeaterItem
+          v-for="(item, index) in items"
+          :key="item._id || index"
+          :item="item"
+          :index="index"
+          :item-id="item._id || index"
+          :sub-fields="subFields"
+          :is-collapsed="collapsedItems.has(index)"
+          :is-at-max="isAtMax"
+          @toggle="toggleItem"
+          @duplicate="duplicateItem"
+          @remove="removeItem"
+          @update-field="updateItemField"
+        />
+      </template>
     </div>
 
     <!-- Add button -->
@@ -52,15 +54,23 @@
       {{ field.addLabel || 'Añadir item' }}
     </button>
 
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
+    <!-- Stats for long lists -->
+    <p v-if="items.length > 5" class="repeater-stats">
+      {{ items.length }} {{ items.length === 1 ? 'item' : 'items' }}
+      <template v-if="field.max"> / {{ field.max }} máx.</template>
     </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import FieldRenderer from '../FieldRenderer.vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
+import FieldWrapper from './FieldWrapper.vue';
+import RepeaterItem from './RepeaterItem.vue';
+
+// Lazy load VirtualList solo si se necesita
+const VirtualList = defineAsyncComponent(() =>
+  import('../../common/VirtualList.vue')
+);
 
 const props = defineProps({
   field: {
@@ -75,10 +85,20 @@ const props = defineProps({
 
 const emit = defineEmits(['update']);
 
-const collapsedItems = ref([]);
+// Umbral para usar virtualización
+const VIRTUALIZATION_THRESHOLD = 15;
+const collapsedItemHeight = 40; // Altura de item colapsado
+
+// State
+const collapsedItems = ref(new Set());
 
 // Computed
 const items = computed(() => props.value || []);
+
+// Items con índice para virtualización
+const itemsWithIndex = computed(() =>
+  items.value.map((data, index) => ({ data, index }))
+);
 
 const subFields = computed(() => {
   if (!props.field.fields) return [];
@@ -92,11 +112,14 @@ const isAtMax = computed(() =>
   props.field.max && items.value.length >= props.field.max
 );
 
+const shouldVirtualize = computed(() =>
+  items.value.length > VIRTUALIZATION_THRESHOLD
+);
+
 // Methods
 function addItem() {
   if (isAtMax.value) return;
 
-  // Crear nuevo item con valores por defecto
   const newItem = { _id: generateId() };
 
   subFields.value.forEach(subField => {
@@ -112,9 +135,15 @@ function removeItem(index) {
   emit('update', newItems);
 
   // Actualizar collapsed items
-  collapsedItems.value = collapsedItems.value
-    .filter(i => i !== index)
-    .map(i => i > index ? i - 1 : i);
+  const newCollapsed = new Set();
+  for (const i of collapsedItems.value) {
+    if (i < index) {
+      newCollapsed.add(i);
+    } else if (i > index) {
+      newCollapsed.add(i - 1);
+    }
+  }
+  collapsedItems.value = newCollapsed;
 }
 
 function duplicateItem(index) {
@@ -141,22 +170,13 @@ function updateItemField(itemIndex, fieldKey, value) {
 }
 
 function toggleItem(index) {
-  const idx = collapsedItems.value.indexOf(index);
-  if (idx !== -1) {
-    collapsedItems.value.splice(idx, 1);
+  const newCollapsed = new Set(collapsedItems.value);
+  if (newCollapsed.has(index)) {
+    newCollapsed.delete(index);
   } else {
-    collapsedItems.value.push(index);
+    newCollapsed.add(index);
   }
-}
-
-function getItemTitle(item, index) {
-  // Intentar usar el primer campo de texto como título
-  const firstTextField = subFields.value.find(f => f.type === 'text');
-  if (firstTextField && item[firstTextField.key]) {
-    const title = item[firstTextField.key];
-    return title.length > 30 ? title.substring(0, 30) + '...' : title;
-  }
-  return `Item ${index + 1}`;
+  collapsedItems.value = newCollapsed;
 }
 
 function generateId() {
@@ -165,105 +185,13 @@ function generateId() {
 </script>
 
 <style scoped>
-.field-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
-/* Items */
+/* Items container */
 .repeater-items {
   margin-bottom: 10px;
 }
 
-.repeater-item {
-  border: 1px solid var(--pb-border);
-  border-radius: var(--pb-radius);
-  margin-bottom: 8px;
-  overflow: hidden;
-}
-
-.repeater-item:last-child {
-  margin-bottom: 0;
-}
-
-/* Item header */
-.item-header {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  background: var(--pb-bg);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.item-header:hover {
-  background: var(--pb-border-light);
-}
-
-.item-handle {
-  cursor: grab;
-  padding: 2px 6px 2px 0;
-  color: var(--pb-text-muted);
-}
-
-.item-title {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
-.item-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.item-btn {
-  padding: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
-  color: var(--pb-text-muted);
-  opacity: 0;
-  transition: all 0.2s;
-}
-
-.item-header:hover .item-btn {
-  opacity: 1;
-}
-
-.item-btn:hover {
-  background: var(--pb-bg-light);
-  color: var(--pb-text);
-}
-
-.item-btn.danger:hover {
-  color: var(--pb-error);
-}
-
-.item-btn .dashicons {
-  font-size: 12px;
-  width: 12px;
-  height: 12px;
-}
-
-.expand-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-  color: var(--pb-text-muted);
-}
-
-/* Item content */
-.item-content {
-  padding: 12px;
-  background: var(--pb-bg-light);
-  border-top: 1px solid var(--pb-border-light);
+.repeater-virtual-list {
+  max-height: 400px;
 }
 
 /* Add button */
@@ -300,9 +228,11 @@ function generateId() {
   height: 14px;
 }
 
-.field-description {
-  margin: 6px 0 0;
+/* Stats */
+.repeater-stats {
+  margin: 8px 0 0;
   font-size: 11px;
   color: var(--pb-text-muted);
+  text-align: center;
 }
 </style>
