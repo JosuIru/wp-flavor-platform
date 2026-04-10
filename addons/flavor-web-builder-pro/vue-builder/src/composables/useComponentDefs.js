@@ -212,22 +212,63 @@ export function useComponentDefs() {
   }
 
   /**
-   * Buscar componentes por término
+   * Cache de búsqueda para evitar recálculos
+   */
+  const searchCache = new Map();
+  const SEARCH_CACHE_MAX_SIZE = 20;
+
+  /**
+   * Buscar componentes por término (con memoización)
    */
   function searchComponents(term) {
     if (!term) return getAllComponents().filter(c => !c.deprecated);
 
-    const lowerTerm = term.toLowerCase();
-    return getAllComponents().filter(component => {
+    const lowerTerm = term.toLowerCase().trim();
+    if (lowerTerm.length < 2) return []; // Mínimo 2 caracteres
+
+    // Verificar cache
+    if (searchCache.has(lowerTerm)) {
+      return searchCache.get(lowerTerm);
+    }
+
+    // Realizar búsqueda
+    const results = getAllComponents().filter(component => {
       if (component.deprecated) return false;
 
-      return (
-        component.id.toLowerCase().includes(lowerTerm) ||
-        (component.label && component.label.toLowerCase().includes(lowerTerm)) ||
-        (component.description && component.description.toLowerCase().includes(lowerTerm)) ||
-        (component.category && component.category.toLowerCase().includes(lowerTerm))
-      );
+      // Búsqueda optimizada: priorizar coincidencias exactas
+      const idMatch = component.id.toLowerCase().includes(lowerTerm);
+      const labelMatch = component.label?.toLowerCase().includes(lowerTerm);
+      const descMatch = component.description?.toLowerCase().includes(lowerTerm);
+      const catMatch = component.category?.toLowerCase().includes(lowerTerm);
+
+      return idMatch || labelMatch || descMatch || catMatch;
     });
+
+    // Ordenar resultados: coincidencias en label/id primero
+    results.sort((componentA, componentB) => {
+      const aLabelMatch = componentA.label?.toLowerCase().startsWith(lowerTerm) ? -2 :
+                          componentA.label?.toLowerCase().includes(lowerTerm) ? -1 : 0;
+      const bLabelMatch = componentB.label?.toLowerCase().startsWith(lowerTerm) ? -2 :
+                          componentB.label?.toLowerCase().includes(lowerTerm) ? -1 : 0;
+      return aLabelMatch - bLabelMatch;
+    });
+
+    // Guardar en cache (con límite de tamaño)
+    if (searchCache.size >= SEARCH_CACHE_MAX_SIZE) {
+      // Eliminar la entrada más antigua
+      const firstKey = searchCache.keys().next().value;
+      searchCache.delete(firstKey);
+    }
+    searchCache.set(lowerTerm, results);
+
+    return results;
+  }
+
+  /**
+   * Limpiar cache de búsqueda (útil cuando cambian los componentes)
+   */
+  function clearSearchCache() {
+    searchCache.clear();
   }
 
   // Computed
@@ -251,6 +292,7 @@ export function useComponentDefs() {
     getVisibleFields,
     getFieldsByGroup,
     searchComponents,
+    clearSearchCache,
 
     // Computed
     categories,

@@ -54,8 +54,12 @@ export const useBuilderStore = defineStore('builder', {
     maxHistorySize: 50,          // Máximo de entradas en historial
     checkpointInterval: 10,      // Crear checkpoint cada N cambios
 
-    // Cache de HTML preview por bloque
+    // Cache de HTML preview por bloque con timestamps
+    // Formato: { [blockId]: { html: string, timestamp: number, valuesHash: string } }
     previewHtmlCache: {},
+
+    // Tiempo máximo de validez del cache (5 minutos)
+    previewCacheMaxAge: 5 * 60 * 1000,
 
     // AbortControllers para cancelar peticiones de preview obsoletas
     previewAbortControllers: {},
@@ -309,7 +313,38 @@ export const useBuilderStore = defineStore('builder', {
         window.addEventListener('beforeunload', () => {
           this.persistHistorySync();
         });
+
+        // Limpiar cache de previews expirados periódicamente (cada 2 minutos)
+        this._previewCacheCleanupInterval = setInterval(() => {
+          this.cleanupPreviewCache(true);
+        }, 2 * 60 * 1000);
       }
+    },
+
+    /**
+     * Limpiar recursos al destruir el store
+     */
+    cleanup() {
+      // Cancelar todas las peticiones pendientes
+      for (const blockId of Object.keys(this.previewAbortControllers)) {
+        this.previewAbortControllers[blockId].abort();
+      }
+      this.previewAbortControllers = {};
+
+      // Limpiar intervalo de limpieza de cache
+      if (this._previewCacheCleanupInterval) {
+        clearInterval(this._previewCacheCleanupInterval);
+        this._previewCacheCleanupInterval = null;
+      }
+
+      // Limpiar timers de debounce
+      if (this._historyDebounceTimer) {
+        clearTimeout(this._historyDebounceTimer);
+        this._historyDebounceTimer = null;
+      }
+
+      // Persistir historial antes de cerrar
+      this.persistHistorySync();
     },
 
     /**
@@ -1128,12 +1163,54 @@ export const useBuilderStore = defineStore('builder', {
     },
 
     /**
+     * Generar hash simple de valores para detectar cambios
+     */
+    hashBlockValues(values) {
+      return JSON.stringify(values || {});
+    },
+
+    /**
+     * Verificar si el cache de un bloque es válido
+     */
+    isPreviewCacheValid(blockId) {
+      const block = this.getBlockById(blockId);
+      if (!block) return false;
+
+      const cached = this.previewHtmlCache[blockId];
+      if (!cached || !cached.timestamp) return false;
+
+      const now = Date.now();
+      const isExpired = now - cached.timestamp > this.previewCacheMaxAge;
+      if (isExpired) return false;
+
+      // Verificar si los valores han cambiado
+      const currentHash = this.hashBlockValues(block.values);
+      return cached.valuesHash === currentHash;
+    },
+
+    /**
+     * Obtener preview cacheado de un bloque
+     */
+    getCachedPreview(blockId) {
+      if (this.isPreviewCacheValid(blockId)) {
+        return this.previewHtmlCache[blockId].html;
+      }
+      return null;
+    },
+
+    /**
      * Refrescar preview de un bloque via AJAX
      * Usa AbortController para cancelar peticiones obsoletas del mismo bloque
+     * Implementa cache con timestamp y hash de valores para invalidación
      */
-    async refreshPreview(blockId) {
+    async refreshPreview(blockId, forceRefresh = false) {
       const block = this.getBlockById(blockId);
       if (!block) return;
+
+      // Verificar cache antes de hacer petición (a menos que se fuerce)
+      if (!forceRefresh && this.isPreviewCacheValid(blockId)) {
+        return; // Cache válido, no necesita refresh
+      }
 
       // Cancelar petición anterior para este bloque si existe
       if (this.previewAbortControllers[blockId]) {
@@ -1165,7 +1242,12 @@ export const useBuilderStore = defineStore('builder', {
 
         const data = await response.json();
         if (data.success && data.data?.html) {
-          this.previewHtmlCache[blockId] = data.data.html;
+          // Guardar con timestamp y hash para invalidación inteligente
+          this.previewHtmlCache[blockId] = {
+            html: data.data.html,
+            timestamp: Date.now(),
+            valuesHash: this.hashBlockValues(block.values),
+          };
         }
       } catch (error) {
         // Ignorar errores de abort (son intencionales)
@@ -1248,16 +1330,22 @@ export const useBuilderStore = defineStore('builder', {
     },
 
     /**
-     * Limpiar cache de previews de bloques que ya no existen
+     * Limpiar cache de previews de bloques que ya no existen o están expirados
      * Llamar periódicamente para liberar memoria
      */
-    cleanupPreviewCache() {
+    cleanupPreviewCache(removeExpired = true) {
       const validBlockIds = new Set(this.blockIndex.keys());
+      const now = Date.now();
       let cleaned = 0;
 
       // Limpiar cache de HTML
       for (const blockId of Object.keys(this.previewHtmlCache)) {
-        if (!validBlockIds.has(blockId)) {
+        const cached = this.previewHtmlCache[blockId];
+        const shouldRemove =
+          !validBlockIds.has(blockId) || // Bloque eliminado
+          (removeExpired && cached.timestamp && now - cached.timestamp > this.previewCacheMaxAge); // Expirado
+
+        if (shouldRemove) {
           delete this.previewHtmlCache[blockId];
           cleaned++;
         }
@@ -1273,6 +1361,24 @@ export const useBuilderStore = defineStore('builder', {
       }
 
       return cleaned;
+    },
+
+    /**
+     * Invalidar cache de preview para bloques modificados
+     * Útil cuando se detectan cambios externos o se necesita forzar refresh
+     */
+    invalidatePreviewCache(blockIds = null) {
+      if (blockIds === null) {
+        // Invalidar todo el cache
+        this.previewHtmlCache = {};
+        return;
+      }
+
+      // Invalidar solo los bloques especificados
+      const idsToInvalidate = Array.isArray(blockIds) ? blockIds : [blockIds];
+      for (const blockId of idsToInvalidate) {
+        delete this.previewHtmlCache[blockId];
+      }
     },
 
     /**
@@ -1296,12 +1402,36 @@ export const useBuilderStore = defineStore('builder', {
         };
       }
 
+      // Estadísticas del cache de preview
+      const now = Date.now();
+      let validCacheCount = 0;
+      let expiredCacheCount = 0;
+      let totalCacheSize = 0;
+      for (const cached of Object.values(this.previewHtmlCache)) {
+        if (cached.timestamp) {
+          const isExpired = now - cached.timestamp > this.previewCacheMaxAge;
+          if (isExpired) {
+            expiredCacheCount++;
+          } else {
+            validCacheCount++;
+          }
+          totalCacheSize += (cached.html?.length || 0);
+        }
+      }
+
       return {
         blocks: this.blockIndex.size,
         sections: this.sectionIndex.size,
         historyEntries: this.historyDiffs.length,
         historyCheckpoints: this.historyCheckpoints.length,
-        previewsCached: Object.keys(this.previewHtmlCache).length,
+        previewCache: {
+          total: Object.keys(this.previewHtmlCache).length,
+          valid: validCacheCount,
+          expired: expiredCacheCount,
+          hitRate: this.blockIndex.size > 0
+            ? `${Math.round((validCacheCount / this.blockIndex.size) * 100)}%`
+            : 'N/A',
+        },
         pendingRequests: Object.keys(this.previewAbortControllers).length,
         features: {
           compression: this._useCompression,
