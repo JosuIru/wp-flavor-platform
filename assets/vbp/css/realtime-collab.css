@@ -1,0 +1,751 @@
+/**
+ * Visual Builder Pro - Realtime Collaboration Styles
+ *
+ * Estilos para colaboración en tiempo real: cursores remotos,
+ * indicadores de lock, avatares y notificaciones.
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.3.0
+ */
+
+/* ============================================
+ * CSS CUSTOM PROPERTIES
+ * ============================================ */
+
+:root {
+    --vbp-collab-cursor-transition: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+    --vbp-collab-lock-opacity: 0.7;
+    --vbp-collab-selection-opacity: 0.15;
+    --vbp-collab-avatar-size: 28px;
+    --vbp-collab-avatar-border: 2px;
+    --vbp-collab-toast-duration: 4s;
+}
+
+/* ============================================
+ * REMOTE CURSORS CONTAINER
+ * ============================================ */
+
+.vbp-remote-cursors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: visible;
+}
+
+/* ============================================
+ * REMOTE CURSOR
+ * ============================================ */
+
+.vbp-remote-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform var(--vbp-collab-cursor-transition),
+                opacity 0.3s ease;
+    opacity: 0;
+    will-change: transform;
+}
+
+.vbp-remote-cursor-pointer {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 12px solid var(--cursor-color, #3b82f6);
+    transform: rotate(-45deg);
+    transform-origin: top left;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.vbp-remote-cursor-label {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    background: var(--cursor-color, #3b82f6);
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    animation: vbp-cursor-label-appear 0.2s ease-out;
+}
+
+@keyframes vbp-cursor-label-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Ocultar label después de unos segundos */
+.vbp-remote-cursor.idle .vbp-remote-cursor-label {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* ============================================
+ * REMOTE SELECTION
+ * ============================================ */
+
+.vbp-remote-selected {
+    position: relative;
+}
+
+.vbp-remote-selected::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px dashed var(--remote-selection-color, #3b82f6);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 100;
+    animation: vbp-selection-pulse 2s ease-in-out infinite;
+}
+
+.vbp-remote-selected::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--remote-selection-color, #3b82f6);
+    opacity: var(--vbp-collab-selection-opacity);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 99;
+}
+
+@keyframes vbp-selection-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ============================================
+ * ELEMENT LOCKS
+ * ============================================ */
+
+.vbp-element-locked {
+    position: relative;
+    pointer-events: none !important;
+    user-select: none;
+}
+
+.vbp-element-locked::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 3px solid var(--lock-color, #ef4444);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 200;
+    opacity: var(--vbp-collab-lock-opacity);
+}
+
+.vbp-element-locked::after {
+    content: attr(data-locked-by);
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    background: var(--lock-color, #ef4444);
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 201;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Lock icon */
+.vbp-element-locked .vbp-element-lock-icon {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--lock-color, #ef4444);
+    border-radius: 50%;
+    color: white;
+    font-size: 10px;
+    z-index: 202;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Overlay con patrón de rayas para indicar bloqueo */
+.vbp-element-locked-overlay {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(239, 68, 68, 0.05) 8px,
+        rgba(239, 68, 68, 0.05) 16px
+    );
+    pointer-events: none;
+    z-index: 199;
+}
+
+/* ============================================
+ * COLLABORATION TOOLBAR
+ * ============================================ */
+
+.vbp-collab-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 20px;
+    margin-right: 12px;
+}
+
+.vbp-collab-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vbp-collab-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #9ca3af;
+    transition: background 0.3s ease;
+}
+
+.vbp-collab-status-indicator.connected {
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: vbp-status-pulse 2s ease-in-out infinite;
+}
+
+.vbp-collab-status-indicator.connecting {
+    background: #f59e0b;
+    animation: vbp-status-blink 1s ease-in-out infinite;
+}
+
+.vbp-collab-status-indicator.disconnected {
+    background: #ef4444;
+}
+
+@keyframes vbp-status-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+    }
+}
+
+@keyframes vbp-status-blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.vbp-collab-status-text {
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+}
+
+/* ============================================
+ * COLLABORATORS AVATARS
+ * ============================================ */
+
+.vbp-collab-avatars {
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
+}
+
+.vbp-collab-avatar {
+    position: relative;
+    width: var(--vbp-collab-avatar-size);
+    height: var(--vbp-collab-avatar-size);
+    margin-left: calc(var(--vbp-collab-avatar-border) * -2);
+    border-radius: 50%;
+    border: var(--vbp-collab-avatar-border) solid var(--vbp-bg-secondary);
+    cursor: pointer;
+    transition: transform 0.15s ease, z-index 0s;
+    z-index: 1;
+}
+
+.vbp-collab-avatar:first-child {
+    margin-left: 0;
+}
+
+.vbp-collab-avatar:hover {
+    transform: scale(1.15);
+    z-index: 10;
+}
+
+.vbp-collab-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Color ring around avatar */
+.vbp-collab-avatar::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--user-color, transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.vbp-collab-avatar:hover::before,
+.vbp-collab-avatar.is-active::before {
+    opacity: 1;
+}
+
+/* Activity indicator */
+.vbp-collab-avatar.is-editing::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #10b981;
+    border: 2px solid var(--vbp-bg-secondary);
+    border-radius: 50%;
+    animation: vbp-editing-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes vbp-editing-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Avatar tooltip */
+.vbp-collab-avatar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    background: var(--vbp-bg-elevated);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    box-shadow: var(--vbp-shadow);
+    white-space: nowrap;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.15s ease;
+    pointer-events: none;
+}
+
+.vbp-collab-avatar:hover .vbp-collab-avatar-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-collab-avatar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--vbp-bg-elevated);
+}
+
+.vbp-collab-avatar-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text-primary);
+}
+
+.vbp-collab-avatar-status {
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+    margin-top: 2px;
+}
+
+/* More users indicator */
+.vbp-collab-more {
+    width: var(--vbp-collab-avatar-size);
+    height: var(--vbp-collab-avatar-size);
+    margin-left: calc(var(--vbp-collab-avatar-border) * -2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--vbp-text-secondary);
+    background: var(--vbp-bg-tertiary);
+    border: var(--vbp-collab-avatar-border) solid var(--vbp-bg-secondary);
+    border-radius: 50%;
+}
+
+/* ============================================
+ * COLLABORATION TOASTS
+ * ============================================ */
+
+.vbp-collab-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--vbp-bg-elevated);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: vbp-toast-appear 0.3s ease-out;
+}
+
+.vbp-collab-toast.user-joined {
+    border-left: 3px solid #10b981;
+}
+
+.vbp-collab-toast.user-left {
+    border-left: 3px solid #f59e0b;
+}
+
+.vbp-collab-toast-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--user-color, #3b82f6);
+}
+
+.vbp-collab-toast-content {
+    flex: 1;
+}
+
+.vbp-collab-toast-message {
+    font-size: 13px;
+    color: var(--vbp-text-primary);
+}
+
+.vbp-collab-toast-time {
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+}
+
+@keyframes vbp-toast-appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================
+ * SYNC STATUS INDICATOR
+ * ============================================ */
+
+.vbp-sync-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+    background: var(--vbp-bg-tertiary);
+    border-radius: 12px;
+}
+
+.vbp-sync-status.syncing {
+    color: #3b82f6;
+}
+
+.vbp-sync-status.synced {
+    color: #10b981;
+}
+
+.vbp-sync-status.error {
+    color: #ef4444;
+}
+
+.vbp-sync-icon {
+    width: 12px;
+    height: 12px;
+}
+
+.vbp-sync-status.syncing .vbp-sync-icon {
+    animation: vbp-sync-spin 1s linear infinite;
+}
+
+@keyframes vbp-sync-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+ * PENDING CHANGES INDICATOR
+ * ============================================ */
+
+.vbp-pending-changes {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--vbp-bg-elevated);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: vbp-slide-up 0.3s ease-out;
+}
+
+.vbp-pending-changes-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    background: #f59e0b;
+    border-radius: 10px;
+}
+
+.vbp-pending-changes-text {
+    font-size: 12px;
+    color: var(--vbp-text-secondary);
+}
+
+@keyframes vbp-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+ * CONFLICT INDICATOR
+ * ============================================ */
+
+.vbp-conflict-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f59e0b;
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 300;
+    cursor: pointer;
+    animation: vbp-conflict-pulse 1s ease-in-out infinite;
+}
+
+@keyframes vbp-conflict-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+    }
+}
+
+/* ============================================
+ * FOLLOW MODE
+ * ============================================ */
+
+.vbp-follow-mode {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--vbp-bg-elevated);
+    border: 2px solid var(--follow-color, #3b82f6);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    animation: vbp-follow-appear 0.3s ease-out;
+}
+
+.vbp-follow-mode-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--follow-color, #3b82f6);
+}
+
+.vbp-follow-mode-text {
+    font-size: 12px;
+    color: var(--vbp-text-primary);
+}
+
+.vbp-follow-mode-text strong {
+    color: var(--follow-color, #3b82f6);
+}
+
+.vbp-follow-mode-close {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.15s ease;
+}
+
+.vbp-follow-mode-close:hover {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-text-primary);
+}
+
+@keyframes vbp-follow-appear {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ============================================
+ * MOBILE / RESPONSIVE
+ * ============================================ */
+
+@media (max-width: 768px) {
+    .vbp-collab-toolbar {
+        padding: 2px 6px;
+    }
+
+    .vbp-collab-status-text {
+        display: none;
+    }
+
+    .vbp-collab-avatar {
+        --vbp-collab-avatar-size: 24px;
+    }
+
+    .vbp-remote-cursor-label {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .vbp-pending-changes {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px 12px;
+    }
+}
+
+/* ============================================
+ * DARK MODE ADJUSTMENTS
+ * ============================================ */
+
+[data-vbp-theme="dark"] .vbp-collab-avatar-tooltip,
+[data-vbp-theme="dark"] .vbp-collab-toast,
+[data-vbp-theme="dark"] .vbp-pending-changes {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+[data-vbp-theme="dark"] .vbp-collab-avatar {
+    border-color: #1f2937;
+}
+
+[data-vbp-theme="dark"] .vbp-collab-more {
+    background: #374151;
+    border-color: #1f2937;
+}
+
+/* ============================================
+ * ACCESSIBILITY
+ * ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .vbp-remote-cursor,
+    .vbp-remote-cursor-label,
+    .vbp-collab-avatar,
+    .vbp-collab-toast,
+    .vbp-pending-changes {
+        transition: none;
+        animation: none;
+    }
+
+    .vbp-collab-status-indicator.connected,
+    .vbp-collab-status-indicator.connecting,
+    .vbp-collab-avatar.is-editing::after,
+    .vbp-conflict-indicator {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .vbp-element-locked::before {
+        border-width: 4px;
+        opacity: 1;
+    }
+
+    .vbp-remote-selected::before {
+        border-width: 3px;
+    }
+
+    .vbp-remote-cursor-pointer {
+        border-bottom-width: 14px;
+    }
+}
