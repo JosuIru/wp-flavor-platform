@@ -244,6 +244,21 @@ document.addEventListener('alpine:init', function() {
                         store.zoom = 200;
                         this.showZoomFeedback(200);
                         return;
+                    case 'zoomToSelection':
+                        if (window.VBPZoomUtils) {
+                            window.VBPZoomUtils.zoomToSelection();
+                        }
+                        return;
+                    case 'zoomFitAll':
+                        if (window.VBPZoomUtils) {
+                            window.VBPZoomUtils.zoomToFitAll();
+                        }
+                        return;
+                    case 'zoom100Animated':
+                        if (window.VBPZoomUtils) {
+                            window.VBPZoomUtils.zoomTo100();
+                        }
+                        return;
 
                     // === PANELES ===
                     case 'togglePanels':
@@ -437,6 +452,13 @@ document.addEventListener('alpine:init', function() {
                     return;
                 }
 
+                // Acciones de Code Components
+                var codeComponentActions = ['createCodeComponent', 'openCodeComponentLibrary', 'editCodeComponent', 'openCodeComponentsPanel'];
+                if (codeComponentActions.indexOf(action) !== -1) {
+                    this.handleCodeComponentAction(action);
+                    return;
+                }
+
                 vbpLog.warn('Acción no reconocida:', action);
             },
 
@@ -565,9 +587,10 @@ document.addEventListener('alpine:init', function() {
                 var categorias = {
                     'Archivo': { 'Ctrl+S': 'Guardar', 'Ctrl+Shift+S': 'Guardar como', 'Ctrl+P': 'Vista previa' },
                     'Edición': { 'Ctrl+Z': 'Deshacer', 'Ctrl+Y': 'Rehacer', 'Ctrl+C': 'Copiar', 'Ctrl+X': 'Cortar', 'Ctrl+V': 'Pegar', 'Ctrl+D': 'Duplicar' },
+                    'Estilos': { 'Ctrl+Alt+C': 'Copiar estilos', 'Ctrl+Alt+V': 'Pegar estilos', 'Ctrl+Shift+R': 'Resetear estilos' },
                     'Selección': { 'Escape': 'Deseleccionar', 'Ctrl+A': 'Seleccionar todo', 'Delete': 'Eliminar', 'Tab': 'Siguiente', 'Shift+Tab': 'Anterior' },
                     'Navegación': { '↑↓←→': 'Mover 1px', 'Shift+Flechas': 'Mover 10px', 'Ctrl+↑↓': 'Mover a borde' },
-                    'Alineación': { 'Alt+A/D/W/S': 'Alinear', 'Alt+H/V': 'Centrar', 'Ctrl+Alt+H/V': 'Distribuir' },
+                    'Alineación': { 'Alt+A/D/W/S': 'Alinear', 'Alt+H/V': 'Centrar', 'Ctrl+Alt+H': 'Distribuir H' },
                     'Zoom': { 'Ctrl++/-': 'Zoom in/out', 'Ctrl+0': 'Reset zoom', 'Ctrl+1/2/5': '100/200/50%' },
                     'Paneles': { 'Ctrl+B': 'Panel bloques', 'Ctrl+I': 'Inspector', 'Ctrl+L': 'Capas' },
                     'Herramientas': { 'Ctrl+K': 'Paleta comandos', 'Ctrl+F': 'Buscar', 'M': 'Medir', 'Espacio': 'Pan' }
@@ -605,6 +628,98 @@ document.addEventListener('alpine:init', function() {
                     });
                 }
                 return lista;
+            },
+
+            /**
+             * Manejar acciones de Code Components
+             * Delega a VBPCodeComponents o dispara eventos para carga lazy
+             */
+            handleCodeComponentAction: function(action) {
+                var self = this;
+
+                // Verificar si el sistema de code components está cargado
+                if (window.VBPCodeComponents && typeof window.VBPCodeComponents.init === 'function') {
+                    this.executeCodeComponentAction(action);
+                    return;
+                }
+
+                // Cargar el sistema via evento de lazy load
+                document.dispatchEvent(new CustomEvent('vbp:lazyLoad', {
+                    detail: { trigger: 'code-component-editor-open' }
+                }));
+
+                // Esperar a que cargue y luego ejecutar
+                var maxAttempts = 20;
+                var attempts = 0;
+                var waitInterval = setInterval(function() {
+                    attempts++;
+                    if (window.VBPCodeComponents) {
+                        clearInterval(waitInterval);
+                        self.executeCodeComponentAction(action);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(waitInterval);
+                        vbpLog.error('No se pudo cargar el sistema de Code Components');
+                        self.showNotification('Error cargando Code Components', 'error');
+                    }
+                }, 100);
+            },
+
+            /**
+             * Ejecutar acción específica de Code Components
+             */
+            executeCodeComponentAction: function(action) {
+                var store = Alpine.store('vbp');
+
+                switch (action) {
+                    case 'createCodeComponent':
+                        // Abrir editor para crear nuevo componente
+                        if (window.VBPCodeComponents && window.VBPCodeComponents.openEditor) {
+                            window.VBPCodeComponents.openEditor();
+                        } else {
+                            document.dispatchEvent(new CustomEvent('vbp:codeComponent:create'));
+                        }
+                        this.showNotification('Creando Code Component...');
+                        break;
+
+                    case 'openCodeComponentLibrary':
+                        // Abrir biblioteca de componentes
+                        if (window.VBPCodeComponents && window.VBPCodeComponents.openLibrary) {
+                            window.VBPCodeComponents.openLibrary();
+                        } else {
+                            document.dispatchEvent(new CustomEvent('vbp:codeComponent:openLibrary'));
+                        }
+                        break;
+
+                    case 'editCodeComponent':
+                        // Editar componente seleccionado
+                        var selectedElement = store.selection && store.selection.length > 0 ?
+                            store.elements.find(function(el) { return el.id === store.selection[0]; }) : null;
+
+                        if (selectedElement && selectedElement.type === 'code-component') {
+                            if (window.VBPCodeComponents && window.VBPCodeComponents.editComponent) {
+                                window.VBPCodeComponents.editComponent(selectedElement.props.componentId);
+                            } else {
+                                document.dispatchEvent(new CustomEvent('vbp:codeComponent:edit', {
+                                    detail: { componentId: selectedElement.props.componentId }
+                                }));
+                            }
+                        } else {
+                            this.showNotification('Selecciona un Code Component para editar', 'warning');
+                        }
+                        break;
+
+                    case 'openCodeComponentsPanel':
+                        // Abrir/toggle panel de Code Components
+                        if (window.VBPCodeComponents && window.VBPCodeComponents.togglePanel) {
+                            window.VBPCodeComponents.togglePanel();
+                        } else {
+                            document.dispatchEvent(new CustomEvent('vbp:codeComponent:togglePanel'));
+                        }
+                        break;
+
+                    default:
+                        vbpLog.warn('Acción de Code Component no reconocida:', action);
+                }
             }
         };
     });

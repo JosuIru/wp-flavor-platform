@@ -21,8 +21,8 @@
                 "ctrl+x": "cut",
                 "ctrl+v": "paste",
                 "ctrl+d": "duplicate",
-                "ctrl+shift+c": "copyStyles",
-                "ctrl+shift+v": "pasteStyles",
+                "ctrl+alt+c": "copyStyles",
+                "ctrl+alt+v": "pasteStyles",
                 "ctrl+shift+r": "resetStyles"
             }
         },
@@ -132,7 +132,7 @@
         "editors": {
             "label": "Editores",
             "shortcuts": {
-                "ctrl+alt+c": "openCSSVariables",
+                "ctrl+alt+shift+c": "openCSSVariables",
                 "ctrl+alt+d": "openVersionCompare",
                 "ctrl+alt+shift+s": "openShadowEditor",
                 "ctrl+alt+shift+x": "openGradientEditor",
@@ -195,7 +195,10 @@
                 "ctrl+0": "zoomReset",
                 "ctrl+1": "zoom100",
                 "ctrl+2": "zoom200",
-                "ctrl+5": "zoom50"
+                "ctrl+5": "zoom50",
+                "shift+0": "zoomFitAll",
+                "shift+1": "zoom100Animated",
+                "shift+2": "zoomToSelection"
             }
         },
         "panels": {
@@ -205,6 +208,14 @@
                 "ctrl+b": "toggleBlocksPanel",
                 "ctrl+i": "toggleInspectorPanel",
                 "ctrl+l": "toggleLayersPanel"
+            }
+        },
+        "prototype": {
+            "label": "Prototipado",
+            "shortcuts": {
+                "p": "togglePrototypeMode",
+                "ctrl+shift+enter": "startPrototypePreview",
+                "shift+p": "openPrototypePanel"
             }
         },
         "modals": {
@@ -230,7 +241,7 @@
                 "alt+shift+w": "alignTopEdge",
                 "alt+shift+s": "alignBottomEdge",
                 "ctrl+alt+h": "distributeH",
-                "ctrl+alt+v": "distributeV",
+                "ctrl+alt+shift+v": "distributeV",
                 "ctrl+alt+s": "distributeSpacingH",
                 "ctrl+alt+w": "distributeSpacingV"
             }
@@ -282,6 +293,25 @@
                 "ctrl+alt+shift+a": "stackHorizontal",
                 "ctrl+alt+shift+d": "stackVertical",
                 "ctrl+alt+shift+e": "swapElements"
+            }
+        },
+        "symbols": {
+            "label": "Simbolos",
+            "shortcuts": {
+                "ctrl+shift+y": "createSymbol",
+                "ctrl+alt+o": "insertSymbol",
+                "ctrl+alt+u": "detachInstance",
+                "ctrl+shift+g": "goToMaster",
+                "f8": "openSymbolsPanel"
+            }
+        },
+        "codeComponents": {
+            "label": "Code Components",
+            "shortcuts": {
+                "ctrl+shift+c": "createCodeComponent",
+                "ctrl+alt+shift+c": "openCodeComponentLibrary",
+                "ctrl+shift+e": "editCodeComponent",
+                "f9": "openCodeComponentsPanel"
             }
         }
     },

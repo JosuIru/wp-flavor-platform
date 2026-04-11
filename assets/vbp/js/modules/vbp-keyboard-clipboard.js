@@ -151,6 +151,11 @@ window.VBPKeyboardClipboard = {
         };
 
         window.vbpKeyboard.showNotification('Estilos copiados');
+
+        // Emitir evento para otros módulos
+        document.dispatchEvent(new CustomEvent('vbp:styles:copied', {
+            detail: { styles: this.styleClipboard, sourceElementId: store.selection.elementIds[0] }
+        }));
     },
 
     /**
@@ -190,6 +195,22 @@ window.VBPKeyboardClipboard = {
 
         store.isDirty = true;
         window.vbpKeyboard.showNotification('Estilos aplicados a ' + count + ' elemento(s)');
+
+        // Emitir evento para otros módulos
+        document.dispatchEvent(new CustomEvent('vbp:styles:pasted', {
+            detail: {
+                styles: this.styleClipboard,
+                targetElementIds: store.selection.elementIds.slice(),
+                count: count
+            }
+        }));
+    },
+
+    /**
+     * Verificar si hay estilos en el clipboard
+     */
+    hasStylesInClipboard: function() {
+        return this.styleClipboard && this.styleClipboard.styles && Object.keys(this.styleClipboard.styles).length > 0;
     },
 
     /**

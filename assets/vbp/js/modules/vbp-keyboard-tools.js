@@ -570,11 +570,22 @@ window.VBPKeyboardTools = {
 
     /**
      * Toggle smart guides
+     * Sincroniza con window.vbpCanvasUtils.smartGuides
      */
     toggleSmartGuides: function() {
-        this.smartGuidesEnabled = !this.smartGuidesEnabled;
+        // Usar el sistema real de smartGuides de vbpCanvasUtils
+        if (window.vbpCanvasUtils && window.vbpCanvasUtils.smartGuides) {
+            this.smartGuidesEnabled = window.vbpCanvasUtils.smartGuides.toggle();
+        } else {
+            // Fallback si vbpCanvasUtils no esta disponible
+            this.smartGuidesEnabled = !this.smartGuidesEnabled;
+        }
+
         localStorage.setItem('vbp_smart_guides', this.smartGuidesEnabled ? 'true' : 'false');
-        window.vbpKeyboard.showNotification(this.smartGuidesEnabled ? '📐 Smart guides activadas' : '📐 Smart guides desactivadas');
+
+        // Notificar con icono que indica el estado
+        var iconoEstado = this.smartGuidesEnabled ? '🟢' : '🔴';
+        window.vbpKeyboard.showNotification(iconoEstado + ' Smart guides ' + (this.smartGuidesEnabled ? 'activadas' : 'desactivadas'));
     },
 
     /**
@@ -726,7 +737,22 @@ window.VBPKeyboardTools = {
     }
 
     var smartGuides = localStorage.getItem('vbp_smart_guides');
-    if (smartGuides === 'true') {
-        window.VBPKeyboardTools.smartGuidesEnabled = true;
+    if (smartGuides !== null) {
+        var smartGuidesEnabled = smartGuides === 'true';
+        window.VBPKeyboardTools.smartGuidesEnabled = smartGuidesEnabled;
+
+        // Sincronizar con el sistema real de smartGuides cuando este disponible
+        var syncSmartGuides = function() {
+            if (window.vbpCanvasUtils && window.vbpCanvasUtils.smartGuides) {
+                window.vbpCanvasUtils.smartGuides.enabled = smartGuidesEnabled;
+            }
+        };
+
+        // Intentar sincronizar inmediatamente o esperar a que cargue
+        if (window.vbpCanvasUtils) {
+            syncSmartGuides();
+        } else {
+            document.addEventListener('DOMContentLoaded', syncSmartGuides);
+        }
     }
 })();
