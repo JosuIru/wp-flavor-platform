@@ -9,6 +9,7 @@
 window.VBPAppCollaboration = {
     // Estado de colaboración
     collaborationEnabled: false,
+    realtimeEnabled: false,
     activeUsers: [],
     currentUserCursor: { x: 0, y: 0, elementId: null },
     userCursors: {},
@@ -43,6 +44,11 @@ window.VBPAppCollaboration = {
             this.userRole = VBP_Config.collaboration.userRole || 'editor';
         }
 
+        // Verificar si realtime está habilitado
+        if (typeof VBP_Config !== 'undefined' && VBP_Config.realtime) {
+            this.realtimeEnabled = VBP_Config.realtime.enabled || false;
+        }
+
         if (!this.collaborationEnabled) {
             vbpLog.log(' Colaboración deshabilitada');
             return;
@@ -51,22 +57,59 @@ window.VBPAppCollaboration = {
         // Establecer permisos según rol
         this.setPermissions();
 
-        // Cargar usuarios activos
-        this.loadActiveUsers();
+        // Si realtime está habilitado, usarlo en lugar del sistema legacy
+        if (this.realtimeEnabled && typeof window.VBPRealtimeCollaboration !== 'undefined') {
+            vbpLog.log(' Usando sistema realtime para colaboración');
+            this.initRealtimeIntegration();
+        } else {
+            // Fallback al sistema legacy
+            this.loadActiveUsers();
+            this.startHeartbeat();
+            this.trackCursorMovement();
+            this.setupWordPressHeartbeat();
+        }
 
-        // Cargar comentarios
+        // Cargar comentarios (siempre)
         this.loadComments();
 
-        // Iniciar heartbeat para presencia
-        this.startHeartbeat();
+        vbpLog.log(' Colaboración inicializada - Rol:', this.userRole, '- Realtime:', this.realtimeEnabled);
+    },
 
-        // Escuchar movimientos del cursor
-        this.trackCursorMovement();
+    /**
+     * Integrar con el sistema de realtime
+     */
+    initRealtimeIntegration: function() {
+        var self = this;
+        var postId = this.getPostId();
 
-        // Escuchar heartbeat de WordPress
-        this.setupWordPressHeartbeat();
+        // Conectar al sistema de realtime
+        if (typeof Alpine !== 'undefined' && Alpine.store('vbpRealtime')) {
+            var realtimeStore = Alpine.store('vbpRealtime');
+            realtimeStore.connect(postId);
 
-        vbpLog.log(' Colaboración inicializada - Rol:', this.userRole);
+            // Sincronizar usuarios activos desde realtime store
+            document.addEventListener('alpine:effect', function() {
+                if (realtimeStore.users) {
+                    self.activeUsers = realtimeStore.users;
+                }
+            });
+        }
+
+        // Escuchar eventos de realtime
+        document.addEventListener('vbp:realtime:userJoined', function(event) {
+            var user = event.detail.user;
+            self.showNotification(user.name + ' se unió a la edición', 'info');
+        });
+
+        document.addEventListener('vbp:realtime:userLeft', function(event) {
+            var user = event.detail.user;
+            self.showNotification(user.name + ' salió de la edición', 'info');
+        });
+
+        document.addEventListener('vbp:realtime:lockConflict', function(event) {
+            var lockedBy = event.detail.lockedBy;
+            self.showNotification('Elemento bloqueado por ' + lockedBy, 'warning');
+        });
     },
 
     /**
@@ -557,6 +600,21 @@ window.VBPAppCollaboration = {
     },
 
     // ============ UTILIDADES ============
+
+    /**
+     * Mostrar notificación usando el sistema de toast
+     */
+    showNotification: function(message, type) {
+        type = type || 'info';
+
+        // Usar el store de toast si está disponible
+        if (typeof Alpine !== 'undefined' && Alpine.store('vbpToast')) {
+            Alpine.store('vbpToast').show(message, type);
+        } else {
+            // Fallback a console
+            console.log('[VBP Collaboration]', type + ':', message);
+        }
+    },
 
     /**
      * Obtener ID del post actual
