@@ -2,6 +2,22 @@
  * Helpers para trabajar con componentes y sus campos
  */
 
+// Iconos por tipo de campo (inmutable)
+const FIELD_TYPE_ICONS = Object.freeze({
+  text: 'dashicons-editor-textcolor',
+  textarea: 'dashicons-text',
+  number: 'dashicons-calculator',
+  toggle: 'dashicons-yes-alt',
+  color: 'dashicons-art',
+  image: 'dashicons-format-image',
+  select: 'dashicons-list-view',
+  repeater: 'dashicons-grid-view',
+  icon: 'dashicons-star-filled',
+});
+
+// Icono por defecto para campos desconocidos
+const DEFAULT_FIELD_ICON = 'dashicons-admin-generic';
+
 /**
  * Sanitizar valor según tipo de campo
  */
@@ -99,19 +115,7 @@ export function validateFieldValue(value, fieldConfig) {
  * Obtener icono por defecto para tipo de campo
  */
 export function getFieldIcon(fieldType) {
-  const icons = {
-    text: 'dashicons-editor-textcolor',
-    textarea: 'dashicons-text',
-    number: 'dashicons-calculator',
-    toggle: 'dashicons-yes-alt',
-    color: 'dashicons-art',
-    image: 'dashicons-format-image',
-    select: 'dashicons-list-view',
-    repeater: 'dashicons-grid-view',
-    icon: 'dashicons-star-filled',
-  };
-
-  return icons[fieldType] || 'dashicons-admin-generic';
+  return FIELD_TYPE_ICONS[fieldType] || DEFAULT_FIELD_ICON;
 }
 
 /**

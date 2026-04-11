@@ -7,6 +7,11 @@ const DB_NAME = 'FlavorPageBuilder';
 const DB_VERSION = 1;
 const STORE_NAME = 'history';
 
+// Configuración de tiempos (en milisegundos)
+const HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;  // 24 horas
+const CLEANUP_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;  // 7 días
+const SAVE_DEBOUNCE_DELAY_MS = 2000;  // 2 segundos
+
 let dbInstance = null;
 
 /**
@@ -100,9 +105,8 @@ export async function loadHistory(postId) {
       request.onsuccess = () => {
         const result = request.result;
         if (result) {
-          // Verificar que no sea muy antiguo (24 horas)
-          const maxAge = 24 * 60 * 60 * 1000;
-          if (Date.now() - result.timestamp > maxAge) {
+          // Verificar que no sea muy antiguo
+          if (Date.now() - result.timestamp > HISTORY_MAX_AGE_MS) {
             // Historial expirado, eliminarlo
             deleteHistory(postId);
             resolve(null);
@@ -156,9 +160,7 @@ export async function cleanupOldHistory() {
     const transaction = db.transaction([STORE_NAME], 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
     const index = store.index('timestamp');
-
-    const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 días
-    const cutoff = Date.now() - maxAge;
+    const cutoff = Date.now() - CLEANUP_MAX_AGE_MS;
     let deleted = 0;
 
     return new Promise((resolve, reject) => {
@@ -224,7 +226,7 @@ export function isIndexedDBAvailable() {
  * Guarda historial con debounce para evitar escrituras frecuentes
  */
 let saveDebounceTimer = null;
-export function saveHistoryDebounced(postId, historyData, delay = 2000) {
+export function saveHistoryDebounced(postId, historyData, delay = SAVE_DEBOUNCE_DELAY_MS) {
   if (saveDebounceTimer) {
     clearTimeout(saveDebounceTimer);
   }

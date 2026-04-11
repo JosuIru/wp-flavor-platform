@@ -1,5 +1,13 @@
 import { defineStore } from 'pinia';
 
+// Configuración del cache y peticiones (exportable para tests)
+export const PREVIEW_CONFIG = Object.freeze({
+  CACHE_MAX_AGE_MS: 5 * 60 * 1000,      // 5 minutos
+  CLEANUP_INTERVAL_MS: 2 * 60 * 1000,   // 2 minutos
+  REFRESH_DEBOUNCE_MS: 300,             // 300ms
+  CONCURRENCY_LIMIT: 3,                 // Peticiones simultáneas máximas
+});
+
 /**
  * Store para gestión de previews de bloques
  * Maneja cache, peticiones AJAX y optimizaciones
@@ -10,8 +18,8 @@ export const usePreviewStore = defineStore('preview', {
     // Formato: { [blockId]: { html: string, timestamp: number, valuesHash: string } }
     htmlCache: {},
 
-    // Tiempo máximo de validez del cache (5 minutos)
-    cacheMaxAge: 5 * 60 * 1000,
+    // Tiempo máximo de validez del cache
+    cacheMaxAge: PREVIEW_CONFIG.CACHE_MAX_AGE_MS,
 
     // AbortControllers para cancelar peticiones de preview obsoletas
     abortControllers: {},
@@ -69,11 +77,11 @@ export const usePreviewStore = defineStore('preview', {
       this.nonce = config.nonce || '';
       this.postId = config.postId || 0;
 
-      // Limpiar cache de previews expirados periódicamente (cada 2 minutos)
+      // Limpiar cache de previews expirados periódicamente
       if (typeof window !== 'undefined') {
         this._cleanupInterval = setInterval(() => {
           this.cleanupExpired();
-        }, 2 * 60 * 1000);
+        }, PREVIEW_CONFIG.CLEANUP_INTERVAL_MS);
       }
     },
 
@@ -181,7 +189,7 @@ export const usePreviewStore = defineStore('preview', {
     /**
      * Refrescar preview con debounce
      */
-    refreshDebounced(block, delay = 300) {
+    refreshDebounced(block, delay = PREVIEW_CONFIG.REFRESH_DEBOUNCE_MS) {
       if (!block) return;
 
       const blockId = block.id;
@@ -200,10 +208,8 @@ export const usePreviewStore = defineStore('preview', {
      * Refrescar todos los previews (paralelizado con límite de concurrencia)
      */
     async refreshAll(blocks) {
-      const concurrencyLimit = 3;
-
-      for (let i = 0; i < blocks.length; i += concurrencyLimit) {
-        const batch = blocks.slice(i, i + concurrencyLimit);
+      for (let i = 0; i < blocks.length; i += PREVIEW_CONFIG.CONCURRENCY_LIMIT) {
+        const batch = blocks.slice(i, i + PREVIEW_CONFIG.CONCURRENCY_LIMIT);
         await Promise.all(batch.map(block => this.refresh(block)));
       }
     },
