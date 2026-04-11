@@ -222,27 +222,90 @@ class Flavor_Network_Admin {
 
     // ─── TAB: Dashboard ───
 
-    private function render_tab_dashboard($nodo_local) {
+    /**
+     * P6 - Obtiene los contadores del dashboard con cache (5 min TTL)
+     *
+     * Optimiza las múltiples queries COUNT usando cache transient
+     * para evitar consultas N+1 en cada carga del dashboard.
+     *
+     * @param int|null $nodo_local_id ID del nodo local para mensajes sin leer
+     * @return array Contadores del dashboard
+     */
+    private function get_dashboard_counts($nodo_local_id = null) {
+        $cache_key = 'flavor_network_dashboard_counts';
+
+        // Si hay nodo local, incluirlo en la cache key
+        if ($nodo_local_id) {
+            $cache_key .= '_' . $nodo_local_id;
+        }
+
+        $cached = get_transient($cache_key);
+        if ($cached !== false) {
+            return $cached;
+        }
+
         global $wpdb;
         $prefix = Flavor_Network_Installer::get_table_name('');
 
-        $total_nodos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado = 'activo'");
-        $total_nodos_inactivos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado != 'activo'");
-        $total_conexiones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'aprobada'");
-        $total_conexiones_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'pendiente'");
-        $total_contenido = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}shared_content WHERE estado = 'activo'");
-        $total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}events WHERE estado = 'activo' AND fecha_inicio >= NOW()");
-        $total_colaboraciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}collaborations WHERE estado = 'abierta'");
-        $mensajes_sin_leer = 0;
-        $ultima_sync = $wpdb->get_var("SELECT MAX(ultima_sincronizacion) FROM {$prefix}nodes");
-        $ultima_sync_local = $nodo_local ? $nodo_local->ultima_sincronizacion : null;
+        // Obtener todos los counts en paralelo usando una sola conexión
+        $counts = [
+            'total_nodos'               => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado = 'activo'"),
+            'total_nodos_inactivos'     => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado != 'activo'"),
+            'total_conexiones'          => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'aprobada'"),
+            'total_conexiones_pendientes' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'pendiente'"),
+            'total_contenido'           => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}shared_content WHERE estado = 'activo'"),
+            'total_eventos'             => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}events WHERE estado = 'activo' AND fecha_inicio >= NOW()"),
+            'total_colaboraciones'      => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}collaborations WHERE estado = 'abierta'"),
+            'ultima_sync'               => $wpdb->get_var("SELECT MAX(ultima_sincronizacion) FROM {$prefix}nodes"),
+            'mensajes_sin_leer'         => 0,
+        ];
 
-        if ($nodo_local) {
-            $mensajes_sin_leer = (int) $wpdb->get_var($wpdb->prepare(
+        // Mensajes sin leer (requiere nodo local)
+        if ($nodo_local_id) {
+            $counts['mensajes_sin_leer'] = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$prefix}messages WHERE a_nodo_id = %d AND leido = 0",
-                $nodo_local->id
+                $nodo_local_id
             ));
         }
+
+        // Cache por 5 minutos (300 segundos)
+        set_transient($cache_key, $counts, 300);
+
+        return $counts;
+    }
+
+    /**
+     * Invalida el cache de contadores del dashboard
+     *
+     * Llamar cuando se realicen cambios que afecten los contadores.
+     */
+    public function invalidate_dashboard_counts_cache() {
+        global $wpdb;
+
+        // Eliminar todos los transients de dashboard counts
+        $wpdb->query(
+            "DELETE FROM {$wpdb->options}
+             WHERE option_name LIKE '_transient_flavor_network_dashboard_counts%'
+                OR option_name LIKE '_transient_timeout_flavor_network_dashboard_counts%'"
+        );
+    }
+
+    private function render_tab_dashboard($nodo_local) {
+        // P6 - Usar método optimizado con cache para obtener contadores
+        $nodo_local_id = $nodo_local ? $nodo_local->id : null;
+        $counts = $this->get_dashboard_counts($nodo_local_id);
+
+        // Extraer valores del array cacheado
+        $total_nodos = $counts['total_nodos'];
+        $total_nodos_inactivos = $counts['total_nodos_inactivos'];
+        $total_conexiones = $counts['total_conexiones'];
+        $total_conexiones_pendientes = $counts['total_conexiones_pendientes'];
+        $total_contenido = $counts['total_contenido'];
+        $total_eventos = $counts['total_eventos'];
+        $total_colaboraciones = $counts['total_colaboraciones'];
+        $mensajes_sin_leer = $counts['mensajes_sin_leer'];
+        $ultima_sync = $counts['ultima_sync'];
+        $ultima_sync_local = $nodo_local ? $nodo_local->ultima_sincronizacion : null;
         ?>
         <div class="flavor-network-dashboard">
             <div class="flavor-network-dashboard-header">

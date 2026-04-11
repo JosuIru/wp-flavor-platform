@@ -372,6 +372,9 @@ class Flavor_Network_Manager {
             'limite' => 20,
         ], $atts);
 
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
+
         ob_start();
         $this->enqueue_frontend_assets();
         include FLAVOR_NETWORK_PATH . 'includes/templates/network-directory.php';
@@ -404,6 +407,9 @@ class Flavor_Network_Manager {
             'limite' => 15,
         ], $atts);
 
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
+
         ob_start();
         $this->enqueue_frontend_assets();
         include FLAVOR_NETWORK_PATH . 'includes/templates/network-board.php';
@@ -418,6 +424,9 @@ class Flavor_Network_Manager {
             'limite' => 10,
         ], $atts);
 
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
+
         ob_start();
         $this->enqueue_frontend_assets();
         include FLAVOR_NETWORK_PATH . 'includes/templates/network-events.php';
@@ -431,6 +440,9 @@ class Flavor_Network_Manager {
         $atts = shortcode_atts([
             'limite' => 10,
         ], $atts);
+
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
 
         ob_start();
         $this->enqueue_frontend_assets();
@@ -462,6 +474,9 @@ class Flavor_Network_Manager {
             'limite' => 10,
         ], $atts);
 
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
+
         ob_start();
         $this->enqueue_frontend_assets();
         include FLAVOR_NETWORK_PATH . 'includes/templates/network-collaborations.php';
@@ -477,23 +492,58 @@ class Flavor_Network_Manager {
             'limite' => 10,
         ], $atts);
 
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
+
         ob_start();
         $this->enqueue_frontend_assets();
         include FLAVOR_NETWORK_PATH . 'includes/templates/network-time-offers.php';
         return ob_get_clean();
     }
 
+    /**
+     * Shortcode para mostrar el perfil de un nodo de red
+     *
+     * Uso:
+     *   [flavor_network_node_profile slug="mi-comunidad"]
+     *   [flavor_network_node_profile id="123"]
+     *
+     * También soporta query params para retrocompatibilidad:
+     *   ?nodo=mi-comunidad
+     *   ?nodo_id=123
+     *
+     * @param array $atts Atributos del shortcode:
+     *   - slug: (string) Slug del nodo a mostrar
+     *   - id: (int) ID del nodo a mostrar (alternativa al slug)
+     *
+     * @return string HTML del perfil del nodo
+     */
     public function shortcode_node_profile($atts) {
         if (!$this->is_modulo_activo('perfil_publico')) {
             return $this->render_modulo_inactivo('perfil_publico');
         }
+
         $atts = shortcode_atts([
             'slug' => '',
-        ], $atts);
+            'id'   => 0,
+        ], $atts, 'flavor_network_node_profile');
 
-        if (empty($atts['slug']) && isset($_GET['nodo'])) {
-            $atts['slug'] = sanitize_text_field($_GET['nodo']);
+        // Prioridad: atributo > query param (para retrocompatibilidad)
+        $slug_nodo = !empty($atts['slug']) ? sanitize_text_field($atts['slug']) : '';
+        $id_nodo = absint($atts['id']);
+
+        // Fallback a query params si no se pasaron atributos (retrocompatibilidad)
+        if (empty($slug_nodo) && empty($id_nodo)) {
+            if (isset($_GET['nodo'])) {
+                $slug_nodo = sanitize_text_field(wp_unslash($_GET['nodo']));
+            } elseif (isset($_GET['nodo_id'])) {
+                $id_nodo = absint($_GET['nodo_id']);
+            }
         }
+
+        // Pasar los valores limpios al template
+        $atts['slug'] = $slug_nodo;
+        $atts['id'] = $id_nodo;
 
         ob_start();
         $this->enqueue_frontend_assets();
@@ -509,6 +559,9 @@ class Flavor_Network_Manager {
             'categoria' => '',
             'limite'    => 10,
         ], $atts, 'flavor_network_questions');
+
+        // P2 - Límite máximo de seguridad para shortcodes
+        $atts['limite'] = min(100, max(1, intval($atts['limite'])));
 
         ob_start();
         $this->enqueue_frontend_assets();

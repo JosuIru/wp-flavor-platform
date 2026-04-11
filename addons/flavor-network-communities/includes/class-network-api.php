@@ -353,12 +353,160 @@ class Flavor_Network_API {
             'callback'            => [$this, 'get_network_stats'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
+
+        // ─── Opciones/constantes disponibles ───
+        register_rest_route(self::API_NAMESPACE, '/options', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_options'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // ─── Webhooks ───
+        register_rest_route(self::API_NAMESPACE, '/webhooks', [
+            ['methods' => 'GET',  'callback' => [$this, 'list_webhooks'],    'permission_callback' => [$this, 'check_admin_permission']],
+            ['methods' => 'POST', 'callback' => [$this, 'register_webhook'], 'permission_callback' => [$this, 'check_admin_permission']],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/webhooks/(?P<id>[a-f0-9]+)', [
+            ['methods' => 'DELETE', 'callback' => [$this, 'delete_webhook'], 'permission_callback' => [$this, 'check_admin_permission']],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/webhooks/(?P<id>[a-f0-9]+)/test', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'test_webhook'],
+            'permission_callback' => [$this, 'check_admin_permission'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/webhooks/stats', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_webhook_stats'],
+            'permission_callback' => [$this, 'check_admin_permission'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/webhooks/logs', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_webhook_logs'],
+            'permission_callback' => [$this, 'check_admin_permission'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/webhooks/event-types', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_webhook_event_types'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // ─── Recibir webhooks de otros nodos ───
+        register_rest_route(self::API_NAMESPACE, '/webhook/receive', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'receive_webhook'],
+            'permission_callback' => '__return_true',
+        ]);
     }
 
     // ─── Callbacks de permisos ───
 
-    public function check_admin_permission() {
-        return current_user_can('manage_options');
+    /**
+     * Permiso de admin con rate limiting para escritura
+     *
+     * @param WP_REST_Request $request
+     * @return true|WP_Error
+     */
+    public function check_admin_permission($request = null) {
+        if (!current_user_can('manage_options')) {
+            return false;
+        }
+
+        // Rate limiting para operaciones de escritura
+        if ($request && in_array($request->get_method(), ['POST', 'PUT', 'DELETE'])) {
+            if (class_exists('Flavor_Network_Rate_Limiter')) {
+                $rate_limiter = Flavor_Network_Rate_Limiter::get_instance();
+                $result = $rate_limiter->enforce_rate_limit('write');
+
+                if (is_wp_error($result)) {
+                    return $result;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Permiso público con rate limiting
+     *
+     * @param WP_REST_Request $request
+     * @return true|WP_Error
+     */
+    public function public_permission_check($request = null) {
+        // Obtener tipo de endpoint desde la ruta
+        $endpoint_type = $this->get_endpoint_type_from_request($request);
+
+        // Verificar rate limit si el rate limiter está disponible
+        if (class_exists('Flavor_Network_Rate_Limiter')) {
+            $rate_limiter = Flavor_Network_Rate_Limiter::get_instance();
+            $result = $rate_limiter->enforce_rate_limit($endpoint_type);
+
+            if (is_wp_error($result)) {
+                return $result;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determina el tipo de endpoint desde el request para rate limiting
+     */
+    private function get_endpoint_type_from_request($request) {
+        if (!$request) {
+            return 'default';
+        }
+
+        $route = $request->get_route();
+
+        // Mapear rutas a tipos de rate limit
+        $route_map = [
+            '/directory'      => 'directory',
+            '/map'            => 'map',
+            '/nearby'         => 'nearby',
+            '/board'          => 'board',
+            '/content'        => 'content',
+            '/events'         => 'events',
+            '/collaborations' => 'content',
+            '/alerts'         => 'content',
+            '/questions'      => 'content',
+            '/stats'          => 'default',
+            '/options'        => 'default',
+        ];
+
+        foreach ($route_map as $pattern => $type) {
+            if (strpos($route, $pattern) !== false) {
+                return $type;
+            }
+        }
+
+        return 'default';
+    }
+
+    // ─── CONSTANTES Y OPCIONES ───
+
+    /**
+     * Obtiene todas las opciones/constantes disponibles para formularios
+     */
+    public function get_options($request) {
+        return new WP_REST_Response([
+            'tipos_entidad'      => Flavor_Network_Node::TIPOS_ENTIDAD,
+            'niveles_consciencia' => Flavor_Network_Node::NIVELES_CONSCIENCIA,
+            'niveles_conexion'   => Flavor_Network_Node::NIVELES_CONEXION,
+            'estados'            => Flavor_Network_Node::ESTADOS,
+            'tipos_contenido'    => Flavor_Network_Node::TIPOS_CONTENIDO,
+            'tipos_colaboracion' => Flavor_Network_Node::TIPOS_COLABORACION,
+            'tipos_tablon'       => Flavor_Network_Node::TIPOS_TABLON,
+            'niveles_urgencia'   => Flavor_Network_Node::NIVELES_URGENCIA,
+            'ambitos'            => Flavor_Network_Node::AMBITOS,
+            'estados_conexion'   => Flavor_Network_Node::ESTADOS_CONEXION,
+            'modalidades'        => Flavor_Network_Node::MODALIDADES,
+        ], 200);
     }
 
     // ─── DIRECTORIO ───
@@ -594,8 +742,7 @@ class Flavor_Network_API {
             'contacto_telefono' => sanitize_text_field($request->get_param('contacto_telefono') ?: ''),
         ];
 
-        $tipos_validos = ['producto', 'servicio', 'espacio', 'recurso', 'excedente', 'necesidad', 'saber'];
-        if (!in_array($datos['tipo_contenido'], $tipos_validos)) {
+        if (!array_key_exists($datos['tipo_contenido'], Flavor_Network_Node::TIPOS_CONTENIDO)) {
             return new WP_Error('tipo_invalido', __('Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
@@ -2715,9 +2862,195 @@ class Flavor_Network_API {
         ], 200);
     }
 
-    public function public_permission_check($request) {
-        $method = strtoupper($request->get_method());
-        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
-        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    // ─── WEBHOOKS CALLBACKS ───
+
+    /**
+     * Lista todos los webhooks registrados
+     */
+    public function list_webhooks($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $webhooks = $webhooks_manager->list_webhooks();
+
+        return new WP_REST_Response([
+            'webhooks' => array_values($webhooks),
+            'total'    => count($webhooks),
+        ], 200);
+    }
+
+    /**
+     * Registra un nuevo webhook
+     */
+    public function register_webhook($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $url = esc_url_raw($request->get_param('url'));
+        $eventos = $request->get_param('events');
+        $secreto = sanitize_text_field($request->get_param('secret') ?? '');
+        $nodo_id = intval($request->get_param('node_id') ?? 0);
+
+        if (empty($url)) {
+            return new WP_Error('url_requerida', __('La URL es obligatoria', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        if (empty($eventos)) {
+            return new WP_Error('events_requeridos', __('Debes especificar al menos un evento', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $webhook_id = $webhooks_manager->register_webhook($url, $eventos, $secreto, $nodo_id ?: null);
+
+        return new WP_REST_Response([
+            'success'    => true,
+            'webhook_id' => $webhook_id,
+            'message'    => __('Webhook registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ], 201);
+    }
+
+    /**
+     * Elimina un webhook
+     */
+    public function delete_webhook($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $webhook_id = sanitize_text_field($request['id']);
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $eliminado = $webhooks_manager->unregister_webhook($webhook_id);
+
+        if (!$eliminado) {
+            return new WP_Error('not_found', __('Webhook no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => __('Webhook eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ], 200);
+    }
+
+    /**
+     * Prueba un webhook enviando un ping
+     */
+    public function test_webhook($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $webhook_id = sanitize_text_field($request['id']);
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $resultado = $webhooks_manager->test_webhook($webhook_id);
+
+        if (is_wp_error($resultado)) {
+            return $resultado;
+        }
+
+        return new WP_REST_Response([
+            'success' => $resultado['success'],
+            'result'  => $resultado,
+            'message' => $resultado['success']
+                ? __('Webhook respondió correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Error al contactar el webhook', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ], $resultado['success'] ? 200 : 502);
+    }
+
+    /**
+     * Obtiene estadísticas de webhooks
+     */
+    public function get_webhook_stats($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $estadisticas = $webhooks_manager->get_stats();
+
+        return new WP_REST_Response($estadisticas, 200);
+    }
+
+    /**
+     * Obtiene los logs de webhooks
+     */
+    public function get_webhook_logs($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_Error('webhooks_not_available', __('Sistema de webhooks no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 503]);
+        }
+
+        $limite = min(100, max(1, intval($request->get_param('limit') ?? 50)));
+
+        $webhooks_manager = Flavor_Network_Webhooks::get_instance();
+        $logs = $webhooks_manager->get_logs($limite);
+
+        return new WP_REST_Response([
+            'logs'  => $logs,
+            'total' => count($logs),
+        ], 200);
+    }
+
+    /**
+     * Obtiene los tipos de eventos disponibles para webhooks
+     */
+    public function get_webhook_event_types($request) {
+        if (!class_exists('Flavor_Network_Webhooks')) {
+            return new WP_REST_Response([
+                'event_types' => [],
+            ], 200);
+        }
+
+        return new WP_REST_Response([
+            'event_types' => Flavor_Network_Webhooks::EVENT_TYPES,
+        ], 200);
+    }
+
+    /**
+     * Recibe webhooks de otros nodos
+     */
+    public function receive_webhook($request) {
+        $cuerpo = $request->get_json_params();
+
+        if (empty($cuerpo)) {
+            return new WP_Error('invalid_payload', __('Payload inválido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        $evento = $cuerpo['event'] ?? 'unknown';
+        $origen = $cuerpo['source'] ?? null;
+        $datos = $cuerpo['data'] ?? [];
+        $timestamp = $cuerpo['timestamp'] ?? current_time('c');
+
+        // Verificar firma HMAC si hay secreto configurado
+        $firma_recibida = $request->get_header('X-Webhook-Signature');
+        if ($firma_recibida && $origen && !empty($origen['id'])) {
+            $nodo_origen = Flavor_Network_Node::find($origen['id']);
+            if ($nodo_origen && !empty($nodo_origen->api_secret)) {
+                $cuerpo_raw = $request->get_body();
+                $firma_esperada = 'sha256=' . hash_hmac('sha256', $cuerpo_raw, $nodo_origen->api_secret);
+
+                if (!hash_equals($firma_esperada, $firma_recibida)) {
+                    return new WP_Error('invalid_signature', __('Firma de webhook inválida', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
+                }
+            }
+        }
+
+        // Disparar acción para que otros componentes procesen el webhook
+        do_action('flavor_network_webhook_received', $evento, $datos, $origen, $timestamp);
+        do_action('flavor_network_webhook_' . str_replace('.', '_', $evento), $datos, $origen, $timestamp);
+
+        // Log del webhook recibido
+        if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
+            flavor_log_debug("Webhook recibido: {$evento} desde " . ($origen['url'] ?? 'desconocido'), 'NetworkWebhooks');
+        }
+
+        return new WP_REST_Response([
+            'success'   => true,
+            'received'  => $evento,
+            'processed' => true,
+        ], 200);
     }
 }

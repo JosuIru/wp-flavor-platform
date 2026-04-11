@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 // Constantes del addon
 if (!defined('FLAVOR_NETWORK_VERSION')) {
-    define('FLAVOR_NETWORK_VERSION', '1.0.0');
+    define('FLAVOR_NETWORK_VERSION', '1.5.0');
 }
 if (!defined('FLAVOR_NETWORK_PATH')) {
     define('FLAVOR_NETWORK_PATH', plugin_dir_path(__FILE__));
@@ -45,10 +45,11 @@ function flavor_network_communities_register() {
         'requires_core' => '3.0.0',
         'requires' => [
             'required' => [
-                'php' => '7.4',
+                'php' => '7.2',
                 'wordpress' => '5.8',
                 'php_extension:curl' => true,
                 'php_extension:json' => true,
+                'php_extension:sodium' => true, // Requerido para P2P/Mesh (Ed25519, CRDT)
             ],
             'optional' => [
                 'module:eventos' => [
@@ -98,6 +99,27 @@ function flavor_network_communities_init() {
         require_once FLAVOR_NETWORK_PATH . 'includes/class-network-admin.php';
     }
 
+    // Cargar Rate Limiter
+    if (!class_exists('Flavor_Network_Rate_Limiter')) {
+        require_once FLAVOR_NETWORK_PATH . 'includes/class-network-rate-limiter.php';
+    }
+
+    // Cargar Webhooks Manager
+    if (!class_exists('Flavor_Network_Webhooks')) {
+        $webhooks_file = FLAVOR_NETWORK_PATH . 'includes/class-network-webhooks.php';
+        if (file_exists($webhooks_file)) {
+            require_once $webhooks_file;
+        }
+    }
+
+    // Cargar Network Cleanup (gestión del ciclo de vida de nodos)
+    if (!class_exists('Flavor_Network_Cleanup')) {
+        $cleanup_file = FLAVOR_NETWORK_PATH . 'includes/class-network-cleanup.php';
+        if (file_exists($cleanup_file)) {
+            require_once $cleanup_file;
+        }
+    }
+
     // Crear tablas si no existen
     if (class_exists('Flavor_Network_Installer')) {
         Flavor_Network_Installer::create_tables();
@@ -117,6 +139,27 @@ function flavor_network_communities_init() {
         Flavor_Network_Admin::get_instance();
     }
 
+    // Inicializar Network Cleanup (cron de limpieza)
+    if (class_exists('Flavor_Network_Cleanup')) {
+        Flavor_Network_Cleanup::get_instance();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SISTEMA P2P/MESH (v1.5.0)
+    // Gossip Protocol, CRDTs, Peer Discovery, Mesh Topology
+    // ═══════════════════════════════════════════════════════════════════
+    $mesh_loader_file = FLAVOR_NETWORK_PATH . 'includes/mesh/class-mesh-loader.php';
+    if (file_exists($mesh_loader_file)) {
+        require_once $mesh_loader_file;
+
+        // Inicializar el sistema mesh
+        if (class_exists('Flavor_Mesh_Loader')) {
+            add_action('init', function() {
+                Flavor_Mesh_Loader::instance()->init();
+            }, 20); // Prioridad 20 para cargar después de otros componentes
+        }
+    }
+
     // Log de inicialización en modo debug
     if (defined('FLAVOR_PLATFORM_DEBUG') && FLAVOR_PLATFORM_DEBUG) {
         flavor_log_debug( 'Addon Network Communities inicializado v' . FLAVOR_NETWORK_VERSION, 'NetworkCommunities' );
@@ -133,3 +176,21 @@ add_action('init', function() {
         dirname(plugin_basename(__FILE__)) . '/languages'
     );
 });
+
+/**
+ * Limpieza al desactivar el addon
+ */
+register_deactivation_hook(__FILE__, 'flavor_network_communities_deactivate');
+
+function flavor_network_communities_deactivate() {
+    // Limpiar cron jobs de limpieza
+    if (class_exists('Flavor_Network_Cleanup')) {
+        Flavor_Network_Cleanup::deactivate();
+    }
+
+    // Limpiar cron jobs del sistema P2P/Mesh
+    wp_clear_scheduled_hook('flavor_mesh_gossip_batch');
+    wp_clear_scheduled_hook('flavor_mesh_heartbeat');
+    wp_clear_scheduled_hook('flavor_mesh_cleanup_expired');
+    wp_clear_scheduled_hook('flavor_mesh_peer_discovery');
+}
