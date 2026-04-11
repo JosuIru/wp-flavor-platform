@@ -1,0 +1,1352 @@
+/**
+ * VBP Auto Layout - Estilos para el sistema de Auto Layout nivel Figma
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.3.0
+ */
+
+/* ==========================================================================
+   Variables de Auto Layout
+   ========================================================================== */
+
+:root {
+    --vbp-auto-layout-color: #8b5cf6;
+    --vbp-auto-layout-color-active: #7c3aed;
+    --vbp-auto-layout-color-hover: #a78bfa;
+    --vbp-auto-layout-color-light: rgba(139, 92, 246, 0.1);
+    --vbp-auto-layout-color-medium: rgba(139, 92, 246, 0.3);
+    --vbp-auto-layout-indicator-color: rgba(139, 92, 246, 0.6);
+    --vbp-auto-layout-spacing-color: #f59e0b;
+    --vbp-auto-layout-padding-color: #10b981;
+    --vbp-auto-layout-panel-bg: var(--vbp-surface-secondary, #f8fafc);
+    --vbp-auto-layout-panel-border: var(--vbp-border-color, #e2e8f0);
+}
+
+/* Dark mode */
+.vbp-theme-dark {
+    --vbp-auto-layout-panel-bg: var(--vbp-surface-secondary, #1e293b);
+    --vbp-auto-layout-panel-border: var(--vbp-border-color, #334155);
+}
+
+/* ==========================================================================
+   Contenedor de Indicadores en Canvas
+   ========================================================================== */
+
+.vbp-auto-layout-indicators {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.vbp-auto-layout-indicator-wrapper {
+    position: absolute;
+    pointer-events: none;
+    border: 1px dashed var(--vbp-auto-layout-color);
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Indicador de Dirección
+   ========================================================================== */
+
+.vbp-auto-layout-direction-indicator {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--vbp-auto-layout-color);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-auto-layout-direction-indicator::after {
+    content: 'Auto Layout';
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Indicadores de Padding
+   ========================================================================== */
+
+.vbp-auto-layout-padding-indicator {
+    position: absolute;
+    background: var(--vbp-auto-layout-padding-color);
+    opacity: 0.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vbp-auto-layout-padding-indicator span {
+    background: var(--vbp-auto-layout-padding-color);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-family: var(--vbp-font-mono, monospace);
+}
+
+.vbp-auto-layout-padding-top {
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.vbp-auto-layout-padding-right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.vbp-auto-layout-padding-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.vbp-auto-layout-padding-left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+/* ==========================================================================
+   Indicadores de Spacing
+   ========================================================================== */
+
+.vbp-auto-layout-spacing-indicator {
+    position: absolute;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--vbp-auto-layout-spacing-color),
+        var(--vbp-auto-layout-spacing-color) 2px,
+        transparent 2px,
+        transparent 6px
+    );
+    opacity: 0.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vbp-auto-layout-spacing-indicator span {
+    background: var(--vbp-auto-layout-spacing-color);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-family: var(--vbp-font-mono, monospace);
+}
+
+/* ==========================================================================
+   Drop Indicator para Drag & Drop
+   ========================================================================== */
+
+.vbp-auto-layout-drop-indicator {
+    position: fixed;
+    background: var(--vbp-auto-layout-color);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 10000;
+    border-radius: 2px;
+    display: none;
+}
+
+/* ==========================================================================
+   Estados de Auto Layout en Canvas
+   ========================================================================== */
+
+.vbp-has-auto-layout {
+    position: relative;
+}
+
+.vbp-has-auto-layout.vbp-element-selected::before {
+    border-color: var(--vbp-auto-layout-color) !important;
+}
+
+.vbp-auto-layout-child {
+    position: relative;
+}
+
+.vbp-auto-layout-absolute {
+    position: absolute !important;
+}
+
+.vbp-auto-layout-dragging {
+    outline: 2px dashed var(--vbp-auto-layout-color);
+    outline-offset: 4px;
+}
+
+.vbp-auto-layout-dragging .vbp-auto-layout-child {
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+}
+
+/* ==========================================================================
+   Panel de Auto Layout en Inspector
+   ========================================================================== */
+
+.vbp-auto-layout-panel {
+    background: var(--vbp-auto-layout-panel-bg);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.vbp-auto-layout-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid var(--vbp-auto-layout-panel-border);
+    cursor: pointer;
+    user-select: none;
+}
+
+.vbp-auto-layout-panel__header:hover {
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.vbp-auto-layout-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-auto-layout-panel__title-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-panel__badge {
+    background: var(--vbp-auto-layout-color-light);
+    color: var(--vbp-auto-layout-color);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.vbp-auto-layout-panel__toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vbp-text-muted, #6b7280);
+    transition: transform 0.15s ease;
+}
+
+.vbp-auto-layout-panel__toggle.is-expanded {
+    transform: rotate(180deg);
+}
+
+.vbp-auto-layout-panel__content {
+    padding: 12px;
+}
+
+.vbp-auto-layout-panel__content.is-collapsed {
+    display: none;
+}
+
+/* ==========================================================================
+   Botón Agregar Auto Layout
+   ========================================================================== */
+
+.vbp-auto-layout-add-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--vbp-auto-layout-color-light);
+    border: 2px dashed var(--vbp-auto-layout-color);
+    border-radius: 8px;
+    color: var(--vbp-auto-layout-color);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-add-btn:hover {
+    background: var(--vbp-auto-layout-color-medium);
+    border-style: solid;
+}
+
+.vbp-auto-layout-add-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Tabs del Panel
+   ========================================================================== */
+
+.vbp-auto-layout-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    padding: 4px;
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    border-radius: 6px;
+}
+
+.vbp-auto-layout-tab {
+    flex: 1;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-tab:hover {
+    color: var(--vbp-text-primary, #1f2937);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.vbp-auto-layout-tab.is-active {
+    background: white;
+    color: var(--vbp-auto-layout-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Controles de Dirección
+   ========================================================================== */
+
+.vbp-auto-layout-direction {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-direction-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 2px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-direction-btn:hover {
+    border-color: var(--vbp-auto-layout-color-hover);
+}
+
+.vbp-auto-layout-direction-btn.is-active {
+    border-color: var(--vbp-auto-layout-color);
+    background: var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-direction-btn__icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-direction-btn.is-active .vbp-auto-layout-direction-btn__icon {
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-direction-btn__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-direction-btn.is-active .vbp-auto-layout-direction-btn__label {
+    color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Control de Spacing
+   ========================================================================== */
+
+.vbp-auto-layout-spacing {
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-spacing__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.vbp-auto-layout-spacing__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-auto-layout-spacing__row {
+    display: flex;
+    gap: 8px;
+}
+
+.vbp-auto-layout-spacing__input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 6px;
+    padding: 0 8px;
+}
+
+.vbp-auto-layout-spacing__input-group:focus-within {
+    border-color: var(--vbp-auto-layout-color);
+    box-shadow: 0 0 0 2px var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-spacing__input {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-auto-layout-spacing__input:focus {
+    outline: none;
+}
+
+.vbp-auto-layout-spacing__unit {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-spacing__mode {
+    display: flex;
+}
+
+.vbp-auto-layout-spacing__mode-btn {
+    padding: 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-spacing__mode-btn:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.vbp-auto-layout-spacing__mode-btn:last-child {
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+}
+
+.vbp-auto-layout-spacing__mode-btn:hover {
+    background: var(--vbp-auto-layout-color-light);
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-spacing__mode-btn.is-active {
+    background: var(--vbp-auto-layout-color);
+    border-color: var(--vbp-auto-layout-color);
+    color: white;
+}
+
+/* ==========================================================================
+   Control de Padding Visual
+   ========================================================================== */
+
+.vbp-auto-layout-padding {
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-padding__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.vbp-auto-layout-padding__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-auto-layout-padding__toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+    cursor: pointer;
+}
+
+.vbp-auto-layout-padding__toggle input {
+    margin: 0;
+}
+
+.vbp-auto-layout-padding__visual {
+    position: relative;
+    width: 100%;
+    max-width: 160px;
+    margin: 0 auto;
+}
+
+.vbp-auto-layout-padding__box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 2px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 8px;
+}
+
+.vbp-auto-layout-padding__inner {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background: var(--vbp-auto-layout-color);
+    border-radius: 4px;
+    opacity: 0.3;
+}
+
+.vbp-auto-layout-padding__input {
+    position: absolute;
+    width: 40px;
+    padding: 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--vbp-font-mono, monospace);
+    text-align: center;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-auto-layout-padding__input:focus {
+    outline: none;
+    border-color: var(--vbp-auto-layout-color);
+    box-shadow: 0 0 0 2px var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-padding__input--top {
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-auto-layout-padding__input--right {
+    top: 50%;
+    right: -8px;
+    transform: translateY(-50%);
+}
+
+.vbp-auto-layout-padding__input--bottom {
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-auto-layout-padding__input--left {
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+}
+
+/* Grid de padding para modo independiente */
+.vbp-auto-layout-padding__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.vbp-auto-layout-padding__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-auto-layout-padding__field-label {
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-auto-layout-padding__field-input {
+    padding: 6px 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-auto-layout-padding__field-input:focus {
+    outline: none;
+    border-color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Control de Sizing
+   ========================================================================== */
+
+.vbp-auto-layout-sizing {
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-sizing__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.vbp-auto-layout-sizing__row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.vbp-auto-layout-sizing__row:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-auto-layout-sizing__dimension {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--vbp-text-muted, #6b7280);
+    width: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.vbp-auto-layout-sizing__options {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+}
+
+.vbp-auto-layout-sizing__option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-sizing__option:hover {
+    border-color: var(--vbp-auto-layout-color-hover);
+}
+
+.vbp-auto-layout-sizing__option.is-active {
+    border-color: var(--vbp-auto-layout-color);
+    background: var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-sizing__option-icon {
+    font-size: 14px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-sizing__option.is-active .vbp-auto-layout-sizing__option-icon {
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-sizing__option-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-sizing__option.is-active .vbp-auto-layout-sizing__option-label {
+    color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Control de Alineación Visual
+   ========================================================================== */
+
+.vbp-auto-layout-alignment {
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-alignment__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.vbp-auto-layout-alignment__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-auto-layout-alignment__wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-auto-layout-alignment__wrap-checkbox {
+    margin: 0;
+}
+
+.vbp-auto-layout-alignment__wrap-label {
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-alignment__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.vbp-auto-layout-alignment__btn {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-alignment__btn:hover {
+    background: var(--vbp-auto-layout-color-light);
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-alignment__btn.is-active {
+    background: var(--vbp-auto-layout-color);
+    color: white;
+}
+
+/* ==========================================================================
+   Presets de Auto Layout
+   ========================================================================== */
+
+.vbp-auto-layout-presets {
+    margin-bottom: 16px;
+}
+
+.vbp-auto-layout-presets__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.vbp-auto-layout-presets__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.vbp-auto-layout-preset-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-preset-btn:hover {
+    border-color: var(--vbp-auto-layout-color-hover);
+    background: var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-preset-btn.is-active {
+    border-color: var(--vbp-auto-layout-color);
+    background: var(--vbp-auto-layout-color-light);
+}
+
+.vbp-auto-layout-preset-btn__icon {
+    font-size: 16px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-auto-layout-preset-btn.is-active .vbp-auto-layout-preset-btn__icon {
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-preset-btn__label {
+    font-size: 8px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.vbp-auto-layout-preset-btn.is-active .vbp-auto-layout-preset-btn__label {
+    color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Opciones Avanzadas
+   ========================================================================== */
+
+.vbp-auto-layout-advanced {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--vbp-auto-layout-panel-border);
+}
+
+.vbp-auto-layout-advanced__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.vbp-auto-layout-advanced__row:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-auto-layout-advanced__label {
+    font-size: 12px;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-auto-layout-advanced__toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: var(--vbp-surface-tertiary, #e2e8f0);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-auto-layout-advanced__toggle.is-active {
+    background: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-advanced__toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.vbp-auto-layout-advanced__toggle.is-active::after {
+    transform: translateX(16px);
+}
+
+/* ==========================================================================
+   Panel de Layout Child
+   ========================================================================== */
+
+.vbp-layout-child-panel {
+    background: var(--vbp-auto-layout-panel-bg);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.vbp-layout-child-panel__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.vbp-layout-child-panel__title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-layout-child-panel__badge {
+    background: var(--vbp-auto-layout-color-light);
+    color: var(--vbp-auto-layout-color);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.vbp-layout-child-panel__section {
+    margin-bottom: 12px;
+}
+
+.vbp-layout-child-panel__section:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-layout-child-panel__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.vbp-layout-child-panel__sizing-options {
+    display: flex;
+    gap: 4px;
+}
+
+.vbp-layout-child-panel__sizing-btn {
+    flex: 1;
+    padding: 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.vbp-layout-child-panel__sizing-btn:hover {
+    border-color: var(--vbp-auto-layout-color-hover);
+}
+
+.vbp-layout-child-panel__sizing-btn.is-active {
+    border-color: var(--vbp-auto-layout-color);
+    background: var(--vbp-auto-layout-color-light);
+}
+
+.vbp-layout-child-panel__sizing-btn-icon {
+    font-size: 14px;
+    color: var(--vbp-text-muted, #6b7280);
+    margin-bottom: 2px;
+}
+
+.vbp-layout-child-panel__sizing-btn.is-active .vbp-layout-child-panel__sizing-btn-icon {
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-layout-child-panel__sizing-btn-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-layout-child-panel__sizing-btn.is-active .vbp-layout-child-panel__sizing-btn-label {
+    color: var(--vbp-auto-layout-color);
+}
+
+/* Min/Max constraints */
+.vbp-layout-child-panel__constraints {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.vbp-layout-child-panel__constraint {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-layout-child-panel__constraint-label {
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-layout-child-panel__constraint-input {
+    padding: 6px 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-layout-child-panel__constraint-input:focus {
+    outline: none;
+    border-color: var(--vbp-auto-layout-color);
+}
+
+/* Fill ratio */
+.vbp-layout-child-panel__fill-ratio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-layout-child-panel__fill-ratio-input {
+    width: 60px;
+    padding: 6px 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--vbp-font-mono, monospace);
+    text-align: center;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-layout-child-panel__fill-ratio-hint {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+/* Align self */
+.vbp-layout-child-panel__align-options {
+    display: flex;
+    gap: 4px;
+}
+
+.vbp-layout-child-panel__align-btn {
+    flex: 1;
+    padding: 8px 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #6b7280);
+    text-align: center;
+}
+
+.vbp-layout-child-panel__align-btn:hover {
+    border-color: var(--vbp-auto-layout-color-hover);
+}
+
+.vbp-layout-child-panel__align-btn.is-active {
+    border-color: var(--vbp-auto-layout-color);
+    background: var(--vbp-auto-layout-color-light);
+    color: var(--vbp-auto-layout-color);
+}
+
+/* Absolute positioning */
+.vbp-layout-child-panel__absolute {
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 12px;
+}
+
+.vbp-layout-child-panel__absolute-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.vbp-layout-child-panel__absolute-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-layout-child-panel__absolute-toggle {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    background: var(--vbp-surface-primary, #e2e8f0);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-layout-child-panel__absolute-toggle.is-active {
+    background: var(--vbp-auto-layout-color);
+}
+
+.vbp-layout-child-panel__absolute-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.vbp-layout-child-panel__absolute-toggle.is-active::after {
+    transform: translateX(14px);
+}
+
+.vbp-layout-child-panel__absolute-positions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.vbp-layout-child-panel__absolute-position {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-layout-child-panel__absolute-position-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    width: 32px;
+}
+
+.vbp-layout-child-panel__absolute-position-input {
+    flex: 1;
+    padding: 4px 6px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-layout-child-panel__absolute-position-input:focus {
+    outline: none;
+    border-color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Botón Remover Auto Layout
+   ========================================================================== */
+
+.vbp-auto-layout-remove-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid var(--vbp-error, #ef4444);
+    border-radius: 6px;
+    color: var(--vbp-error, #ef4444);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.vbp-auto-layout-remove-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   Exportar CSS
+   ========================================================================== */
+
+.vbp-auto-layout-export {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--vbp-auto-layout-panel-border);
+}
+
+.vbp-auto-layout-export__btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-auto-layout-panel-border);
+    border-radius: 6px;
+    color: var(--vbp-text-primary, #1f2937);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-auto-layout-export__btn:hover {
+    border-color: var(--vbp-auto-layout-color);
+    color: var(--vbp-auto-layout-color);
+}
+
+.vbp-auto-layout-export__btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   Tooltips
+   ========================================================================== */
+
+.vbp-auto-layout-tooltip {
+    position: absolute;
+    background: var(--vbp-tooltip-bg, #1f2937);
+    color: var(--vbp-tooltip-color, #ffffff);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.vbp-auto-layout-tooltip.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes vbp-auto-layout-pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.vbp-auto-layout-indicator-wrapper.is-animating {
+    animation: vbp-auto-layout-pulse 1.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 300px) {
+    .vbp-auto-layout-direction {
+        flex-direction: column;
+    }
+
+    .vbp-auto-layout-presets__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vbp-auto-layout-alignment__grid {
+        gap: 2px;
+    }
+}
+
+/* ==========================================================================
+   Integración con Inspector
+   ========================================================================== */
+
+.vbp-inspector-section--auto-layout {
+    margin-top: 16px;
+}
+
+.vbp-inspector-section--auto-layout .vbp-section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vbp-inspector-section--auto-layout .vbp-section-header__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--vbp-auto-layout-color);
+}
+
+/* ==========================================================================
+   Estados Hover en Canvas
+   ========================================================================== */
+
+.vbp-has-auto-layout:hover {
+    outline: 2px solid var(--vbp-auto-layout-color-light);
+    outline-offset: 2px;
+}
+
+.vbp-auto-layout-child:hover {
+    outline: 1px dashed var(--vbp-auto-layout-color-hover);
+    outline-offset: 1px;
+}
