@@ -72,28 +72,31 @@ const builderStore = useBuilderStore();
 const uiStore = useUiStore();
 const { searchComponents, componentsByCategory } = useComponentDefs();
 
+// Definiciones estáticas de categorías (inmutables)
+const CATEGORY_DEFINITIONS = Object.freeze([
+  Object.freeze({ id: 'structure', label: 'Estructura', icon: 'dashicons-layout' }),
+  Object.freeze({ id: 'content', label: 'Contenido', icon: 'dashicons-text' }),
+  Object.freeze({ id: 'media', label: 'Medios', icon: 'dashicons-format-image' }),
+  Object.freeze({ id: 'forms', label: 'Formularios', icon: 'dashicons-feedback' }),
+  Object.freeze({ id: 'widgets', label: 'Widgets', icon: 'dashicons-screenoptions' }),
+  Object.freeze({ id: 'advanced', label: 'Avanzado', icon: 'dashicons-admin-tools' }),
+  Object.freeze({ id: 'general', label: 'General', icon: 'dashicons-admin-generic' }),
+]);
+
+// Categorías expandidas por defecto
+const DEFAULT_EXPANDED = Object.freeze(['structure', 'content', 'media']);
+
 // Local state
 const searchQuery = ref('');
-const expandedCategories = ref(['structure', 'content', 'media']);
+const expandedCategories = ref([...DEFAULT_EXPANDED]);
 
 // Computed
-const categories = computed(() => {
-  // Definir categorías con labels traducidos
-  const categoryDefs = [
-    { id: 'structure', label: 'Estructura', icon: 'dashicons-layout' },
-    { id: 'content', label: 'Contenido', icon: 'dashicons-text' },
-    { id: 'media', label: 'Medios', icon: 'dashicons-format-image' },
-    { id: 'forms', label: 'Formularios', icon: 'dashicons-feedback' },
-    { id: 'widgets', label: 'Widgets', icon: 'dashicons-screenoptions' },
-    { id: 'advanced', label: 'Avanzado', icon: 'dashicons-admin-tools' },
-    { id: 'general', label: 'General', icon: 'dashicons-admin-generic' },
-  ];
-
+const categories = computed(() =>
   // Solo mostrar categorías que tienen componentes
-  return categoryDefs.filter(category =>
+  CATEGORY_DEFINITIONS.filter(category =>
     componentsByCategory.value[category.id]?.length > 0
-  );
-});
+  )
+);
 
 const filteredComponents = computed(() => {
   if (!searchQuery.value) return [];
