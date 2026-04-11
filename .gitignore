@@ -57,9 +57,22 @@ mobile-apps/.flutter-plugins-dependencies
 .eslintcache
 coverage.xml
 reports/coverage-html/
+reports/coverage-js/
 reports/junit.xml
 reports/phpstan-cache/
 
 # Build artifacts
 dist/
 *.zip
+
+# Test artifacts
+test-results/
+playwright-report/
+tests/e2e/.auth/
+
+# Docker volumes (keep docker-compose.yml)
+docker/data/
+
+# Environment files for testing
+.env.test
+.env.test.local

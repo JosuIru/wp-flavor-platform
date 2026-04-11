@@ -223,21 +223,189 @@ Header: `X-VBP-Key: <API_KEY>` (ver sección anterior)
 Base: `/wp-json/flavor-vbp/v1/claude/`
 Header: `X-VBP-Key: <API_KEY>` (ver sección "Configuración de API Key")
 
+#### Estado y Descubrimiento
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
-| `/claude/status` | GET | Estado de VBP |
-| `/claude/capabilities` | GET | Capacidades disponibles |
-| `/claude/blocks` | GET | Listar bloques |
-| `/claude/schema` | GET | Esquema completo |
+| `/claude/status` | GET | Estado de VBP y features disponibles |
+| `/claude/capabilities` | GET | Capacidades, endpoints y workflows |
+| `/claude/schema` | GET | Schema completo (bloques, secciones, presets) |
+| `/claude/help` | GET | Listar temas de ayuda |
+| `/claude/help/{topic}` | GET | Documentación contextual |
+| `/claude/blocks` | GET | Listar bloques disponibles |
+
+#### Páginas VBP
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
 | `/claude/pages` | GET | Listar páginas VBP |
 | `/claude/pages` | POST | Crear página |
+| `/claude/pages/{id}` | GET | Obtener página |
 | `/claude/pages/{id}` | PUT | Actualizar página |
+| `/claude/pages/{id}` | DELETE | Eliminar página |
 | `/claude/pages/{id}/publish` | POST | Publicar página |
-| `/claude/pages/styled` | POST | Crear página con estilos |
-| `/claude/templates` | GET | Plantillas VBP |
+| `/claude/pages/styled` | POST | Crear página con preset/secciones |
+
+#### Plantillas y Presets
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/templates` | GET | Plantillas disponibles |
 | `/claude/section-types` | GET | Tipos de sección |
 | `/claude/design-presets` | GET | Presets de diseño |
 | `/claude/widgets` | GET | Widgets disponibles |
+
+#### Símbolos (Componentes Reutilizables)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/symbols` | GET | Listar símbolos |
+| `/claude/symbols` | POST | Crear símbolo |
+| `/claude/symbols/{id}` | GET | Obtener símbolo |
+| `/claude/symbols/{id}` | PUT | Actualizar símbolo |
+| `/claude/symbols/{id}` | DELETE | Eliminar símbolo |
+| `/claude/symbols/{id}/instances` | GET | Ver instancias del símbolo |
+| `/claude/symbols/{id}/variants` | GET | Listar variantes |
+| `/claude/symbols/{id}/variants` | POST | Crear variante |
+
+#### Animaciones
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/animations` | GET | Listar animaciones |
+| `/claude/animations` | POST | Crear animación personalizada |
+
+#### Assets (Medios)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/assets` | GET | Listar assets (images, icons, videos) |
+| `/claude/assets` | POST | Subir asset |
+
+#### Global Styles (Estilos CSS Reutilizables)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/global-styles` | GET | Listar estilos |
+| `/claude/global-styles` | POST | Crear estilo |
+| `/claude/global-styles/{id}` | GET | Obtener estilo |
+| `/claude/global-styles/{id}` | PUT | Actualizar estilo |
+| `/claude/global-styles/{id}` | DELETE | Eliminar estilo |
+
+#### Design Tokens
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/design-tokens` | GET | Obtener tokens |
+| `/claude/design-tokens` | POST | Sincronizar tokens |
+| `/claude/design-tokens/export` | GET | Exportar (json/css/scss/tailwind) |
+| `/claude/design-tokens/import` | POST | Importar tokens |
+
+#### Branching (Ramas de Diseño)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/branches/{post_id}` | GET | Listar ramas |
+| `/claude/branches/{post_id}` | POST | Crear rama |
+| `/claude/branches/{post_id}/{branch_id}/checkout` | POST | Cambiar a rama |
+| `/claude/branches/{post_id}/{branch_id}/merge` | POST | Fusionar rama |
+| `/claude/branches/{post_id}/{branch_id}/diff` | POST | Ver diferencias |
+
+#### Prototype (Interacciones)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/prototype/{page_id}` | GET | Obtener interacciones |
+| `/claude/prototype/{page_id}` | PUT | Actualizar interacciones |
+| `/claude/prototype/{page_id}/export` | GET | Exportar prototipo |
+
+#### Responsive
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/responsive/{page_id}` | GET | Obtener variantes por breakpoint |
+| `/claude/responsive/{page_id}` | PUT | Establecer variantes |
+
+#### IA (Generación Automática)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/ai/generate` | POST | Generar layout desde descripción |
+| `/claude/ai/suggest` | POST | Obtener sugerencias de mejora |
+
+#### Colaboración
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/collab/status` | GET | Estado de colaboración tiempo real |
+
+#### Configuración
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/settings` | GET | Obtener configuración VBP |
+| `/claude/settings` | PUT | Actualizar configuración |
+
+#### Batch (Operaciones Múltiples)
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/claude/batch` | POST | Ejecutar múltiples operaciones |
+
+---
+
+## Ejemplos de Uso de la API Claude
+
+### Verificar Capacidades
+
+```bash
+# Ver todas las features disponibles y workflows
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/capabilities" \
+  -H "X-VBP-Key: $API_KEY" | jq
+```
+
+### Crear Página con Preset
+
+```bash
+curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
+  -H "X-VBP-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Mi Landing",
+    "preset": "modern",
+    "sections": ["hero", "features", "testimonials", "cta"],
+    "set_as_homepage": true,
+    "status": "publish"
+  }'
+```
+
+### Crear Símbolo Reutilizable
+
+```bash
+curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/symbols" \
+  -H "X-VBP-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Card Producto",
+    "category": "components",
+    "elements": [
+      {"type": "image", "props": {"src": "", "alt": "Producto"}},
+      {"type": "heading", "props": {"level": 3, "text": "Título"}},
+      {"type": "text", "props": {"content": "Descripción"}},
+      {"type": "button", "props": {"text": "Ver más"}}
+    ]
+  }'
+```
+
+### Operaciones Batch
+
+```bash
+curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/batch" \
+  -H "X-VBP-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operations": [
+      {"id": "page1", "method": "POST", "path": "/claude/pages", "body": {"title": "Página 1"}},
+      {"id": "page2", "method": "POST", "path": "/claude/pages", "body": {"title": "Página 2"}}
+    ],
+    "stop_on_error": false
+  }'
+```
+
+### Obtener Ayuda Contextual
+
+```bash
+# Ver temas disponibles
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/help" -H "X-VBP-Key: $API_KEY"
+
+# Ver ayuda específica
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/help/getting-started" -H "X-VBP-Key: $API_KEY"
+```
 
 ---
 

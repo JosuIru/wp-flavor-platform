@@ -39,6 +39,163 @@ class Flavor_Federation_API {
      */
     private function __construct() {
         add_action('rest_api_init', [$this, 'registrar_rutas']);
+
+        // Registrar timestamp de inicio para uptime
+        if (!get_option('flavor_network_started_at')) {
+            update_option('flavor_network_started_at', time());
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // LOGGING DE EVENTOS DE FEDERACION
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Registra un evento de federacion para observabilidad
+     *
+     * @param string $level   Nivel del log: 'info', 'warning', 'error', 'critical'
+     * @param string $message Mensaje descriptivo del evento
+     * @param array  $context Contexto adicional (nodo_id, endpoint, etc.)
+     */
+    private function log_federation_event($level, $message, $context = []) {
+        if (!apply_filters('flavor_network_logging_enabled', true)) {
+            return;
+        }
+
+        $log_entry = [
+            'timestamp'  => current_time('c'),
+            'level'      => $level,
+            'message'    => $message,
+            'context'    => $context,
+            'ip'         => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+        ];
+
+        // Guardar en option (ultimos 500 logs)
+        $logs = get_option('flavor_network_federation_logs', []);
+        array_unshift($logs, $log_entry);
+        $logs = array_slice($logs, 0, 500);
+        update_option('flavor_network_federation_logs', $logs);
+
+        // Tambien a error_log si esta en modo debug
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[FederationAPI][{$level}] {$message} " . wp_json_encode($context));
+        }
+
+        // Hook para extensibilidad (alertas externas, etc.)
+        do_action('flavor_federation_event_logged', $level, $message, $context, $log_entry);
+    }
+
+    /**
+     * Obtiene los logs de federacion
+     *
+     * @param int    $limit Numero maximo de logs a devolver
+     * @param string $level Filtrar por nivel (opcional)
+     * @return array
+     */
+    public function get_federation_logs($limit = 100, $level = null) {
+        $logs = get_option('flavor_network_federation_logs', []);
+
+        if ($level) {
+            $logs = array_filter($logs, fn($log) => $log['level'] === $level);
+        }
+
+        return array_slice($logs, 0, $limit);
+    }
+
+    /**
+     * Limpia los logs de federacion
+     */
+    public function clear_federation_logs() {
+        delete_option('flavor_network_federation_logs');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // SISTEMA DE CACHE PARA QUERIES FEDERADAS
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * TTL por defecto para cache de datos federados (15 minutos)
+     */
+    const CACHE_TTL_DEFAULT = 900;
+
+    /**
+     * TTL corto para datos que cambian frecuentemente (5 minutos)
+     */
+    const CACHE_TTL_SHORT = 300;
+
+    /**
+     * TTL largo para datos estáticos (1 hora)
+     */
+    const CACHE_TTL_LONG = 3600;
+
+    /**
+     * Obtiene datos desde cache o ejecuta el callback para obtenerlos
+     *
+     * @param string   $cache_key Clave única para el cache
+     * @param callable $callback  Función que obtiene los datos si no están en cache
+     * @param int      $ttl       Tiempo de vida del cache en segundos
+     * @return mixed Datos cacheados o recién obtenidos
+     */
+    private function get_cached_federated_data($cache_key, $callback, $ttl = self::CACHE_TTL_DEFAULT) {
+        $cached_data = get_transient($cache_key);
+
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
+
+        $fresh_data = $callback();
+        set_transient($cache_key, $fresh_data, $ttl);
+
+        return $fresh_data;
+    }
+
+    /**
+     * Genera una clave de cache basada en los parámetros de búsqueda
+     *
+     * @param string $prefix     Prefijo identificador del tipo de consulta
+     * @param array  $parameters Parámetros de la consulta
+     * @return string Clave de cache única
+     */
+    private function generate_cache_key($prefix, $parameters = []) {
+        // Filtrar solo parámetros relevantes y ordenarlos
+        $filtered_params = array_filter($parameters, function($value) {
+            return $value !== null && $value !== '' && $value !== 0;
+        });
+        ksort($filtered_params);
+
+        $params_hash = md5(serialize($filtered_params));
+
+        return 'flavor_fed_' . $prefix . '_' . $params_hash;
+    }
+
+    /**
+     * Invalida cache de un tipo específico
+     *
+     * @param string $prefix Prefijo del tipo de cache a invalidar (vacío = todo)
+     */
+    public function invalidate_cache($prefix = '') {
+        global $wpdb;
+
+        if (empty($prefix)) {
+            // Invalidar todo el cache de federación
+            $wpdb->query(
+                "DELETE FROM {$wpdb->options}
+                 WHERE option_name LIKE '_transient_flavor_fed_%'
+                    OR option_name LIKE '_transient_timeout_flavor_fed_%'"
+            );
+        } else {
+            // Invalidar cache específico
+            $wpdb->query($wpdb->prepare(
+                "DELETE FROM {$wpdb->options}
+                 WHERE option_name LIKE %s
+                    OR option_name LIKE %s",
+                '_transient_flavor_fed_' . $prefix . '_%',
+                '_transient_timeout_flavor_fed_' . $prefix . '_%'
+            ));
+        }
+
+        $this->log_federation_event('info', 'Cache invalidado', ['prefix' => $prefix ?: 'all']);
     }
 
     /**
@@ -286,6 +443,186 @@ class Flavor_Federation_API {
             'callback'            => [$this, 'obtener_curso_detalle'],
             'permission_callback' => [$this, 'verificar_nodo'],
         ]);
+
+        // === Batch Sync (Sincronizacion masiva) ===
+        register_rest_route(self::API_NAMESPACE, '/federation/batch/sync', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'batch_sync'],
+            'permission_callback' => [$this, 'verificar_nodo'],
+        ]);
+
+        // === Health Check del Sistema de Federacion ===
+        register_rest_route(self::API_NAMESPACE, '/federation/system/health', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_system_health'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // === Logs de Federacion (solo admin) ===
+        register_rest_route(self::API_NAMESPACE, '/federation/system/logs', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_logs_endpoint'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'limit' => ['type' => 'integer', 'default' => 100, 'sanitize_callback' => 'absint'],
+                'level' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // HEALTH CHECK DEL SISTEMA
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Endpoint: Health check del sistema de federacion
+     *
+     * Devuelve estado general del nodo, tablas, conexiones y estadisticas.
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function get_system_health($request) {
+        global $wpdb;
+
+        // Obtener nodo local
+        $nodo_local = null;
+        $nodo_local_data = null;
+        if (class_exists('Flavor_Network_Node')) {
+            $nodo_local = Flavor_Network_Node::get_local_node();
+        }
+
+        // Prefijo de tablas de red
+        $prefix = $wpdb->prefix . 'flavor_network_';
+
+        // Verificar tablas criticas
+        $tablas_requeridas = ['nodes', 'connections', 'shared_content', 'events'];
+        $tablas_estado = [];
+        $todas_tablas_ok = true;
+
+        foreach ($tablas_requeridas as $tabla) {
+            $tabla_completa = $prefix . $tabla;
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+                DB_NAME,
+                $tabla_completa
+            ));
+            $tablas_estado[$tabla] = $existe ? 'ok' : 'missing';
+            if (!$existe) {
+                $todas_tablas_ok = false;
+            }
+        }
+
+        // Estadisticas de la red
+        $stats = [
+            'nodes_count'       => 0,
+            'connections_count' => 0,
+            'pending_webhooks'  => count(get_option('flavor_network_webhook_queue', [])),
+        ];
+
+        // Contar nodos activos
+        $tabla_nodos = $prefix . 'nodes';
+        if ($tablas_estado['nodes'] === 'ok') {
+            $stats['nodes_count'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_nodos} WHERE activo = 1"
+            );
+        }
+
+        // Contar conexiones aprobadas
+        $tabla_conexiones = $prefix . 'connections';
+        if ($tablas_estado['connections'] === 'ok') {
+            $stats['connections_count'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_conexiones} WHERE estado = 'aprobada'"
+            );
+        }
+
+        // Calcular uptime
+        $started_at = (int) get_option('flavor_network_started_at', time());
+        $uptime_seconds = time() - $started_at;
+
+        // Logs recientes (ultimas 24h con errores)
+        $logs = get_option('flavor_network_federation_logs', []);
+        $errores_recientes = 0;
+        $hace_24h = strtotime('-24 hours');
+        foreach (array_slice($logs, 0, 100) as $log) {
+            $log_time = strtotime($log['timestamp'] ?? '');
+            if ($log_time >= $hace_24h && in_array($log['level'] ?? '', ['error', 'critical'])) {
+                $errores_recientes++;
+            }
+        }
+
+        // Determinar estado general
+        $status = 'healthy';
+        $status_code = 200;
+
+        if (!$todas_tablas_ok) {
+            $status = 'degraded';
+            $status_code = 503;
+        } elseif ($errores_recientes > 10) {
+            $status = 'warning';
+        }
+
+        $health = [
+            'status'          => $status,
+            'timestamp'       => current_time('c'),
+            'version'         => defined('FLAVOR_NETWORK_VERSION') ? FLAVOR_NETWORK_VERSION : (defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0'),
+            'node_id'         => $nodo_local ? $nodo_local->id : null,
+            'node_name'       => $nodo_local ? $nodo_local->nombre : get_bloginfo('name'),
+            'node_url'        => home_url(),
+            'database'        => [
+                'status' => $todas_tablas_ok ? 'ok' : 'missing_tables',
+                'tables' => $tablas_estado,
+            ],
+            'stats'           => $stats,
+            'uptime_seconds'  => $uptime_seconds,
+            'uptime_human'    => $this->format_uptime($uptime_seconds),
+            'errors_24h'      => $errores_recientes,
+            'php_version'     => PHP_VERSION,
+            'wp_version'      => get_bloginfo('version'),
+        ];
+
+        return new WP_REST_Response($health, $status_code);
+    }
+
+    /**
+     * Formatea el uptime en formato legible
+     *
+     * @param int $seconds
+     * @return string
+     */
+    private function format_uptime($seconds) {
+        $days = floor($seconds / 86400);
+        $hours = floor(($seconds % 86400) / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+
+        $parts = [];
+        if ($days > 0) $parts[] = "{$days}d";
+        if ($hours > 0) $parts[] = "{$hours}h";
+        if ($minutes > 0) $parts[] = "{$minutes}m";
+
+        return implode(' ', $parts) ?: '< 1m';
+    }
+
+    /**
+     * Endpoint: Obtener logs de federacion
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function get_logs_endpoint($request) {
+        $limit = min(500, $request->get_param('limit') ?: 100);
+        $level = $request->get_param('level');
+
+        $logs = $this->get_federation_logs($limit, $level);
+
+        return new WP_REST_Response([
+            'logs'  => $logs,
+            'total' => count($logs),
+            'limit' => $limit,
+            'level' => $level,
+        ], 200);
     }
 
     /**
@@ -296,8 +633,12 @@ class Flavor_Federation_API {
 
         $origen = $request->get_header('X-Origin-Node');
         $token = $request->get_header('X-Node-Token');
+        $endpoint = $request->get_route();
 
         if (empty($origen)) {
+            $this->log_federation_event('warning', 'Peticion sin header X-Origin-Node', [
+                'endpoint' => $endpoint,
+            ]);
             return new WP_Error('sin_origen', 'Falta header X-Origin-Node', ['status' => 401]);
         }
 
@@ -310,13 +651,31 @@ class Flavor_Federation_API {
 
         if (!$nodo) {
             // Permitir nodos no registrados pero marcar la petición
+            $this->log_federation_event('info', 'Peticion de nodo no registrado', [
+                'origen'   => $origen,
+                'endpoint' => $endpoint,
+            ]);
             $request->set_param('_nodo_no_registrado', true);
             return true;
         }
 
         // Verificar token si existe
         if (!empty($nodo->token) && $nodo->token !== $token) {
+            $this->log_federation_event('error', 'Token de nodo invalido', [
+                'nodo_id'  => $nodo->id,
+                'origen'   => $origen,
+                'endpoint' => $endpoint,
+            ]);
             return new WP_Error('token_invalido', 'Token de nodo inválido', ['status' => 403]);
+        }
+
+        // Log de conexion exitosa (solo si debug esta activo)
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $this->log_federation_event('info', 'Nodo autenticado correctamente', [
+                'nodo_id'  => $nodo->id,
+                'origen'   => $origen,
+                'endpoint' => $endpoint,
+            ]);
         }
 
         $request->set_param('_nodo_id', $nodo->id);
@@ -325,82 +684,349 @@ class Flavor_Federation_API {
         return true;
     }
 
+    // ═══════════════════════════════════════════════════════════
+    // VALIDACIONES DE SEGURIDAD (P1, P5, P11)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * P1 - Valida coordenadas geográficas para prevenir SQL injection en fórmulas Haversine
+     *
+     * @param mixed $lat Latitud a validar
+     * @param mixed $lng Longitud a validar
+     * @return array|false Array con coordenadas validadas o false si son inválidas
+     */
+    private function validate_coordinates($lat, $lng) {
+        $lat = floatval($lat);
+        $lng = floatval($lng);
+
+        // Validar rangos geográficos válidos
+        if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+            return false;
+        }
+
+        // Validar que no sean NaN o infinitos
+        if (!is_finite($lat) || !is_finite($lng)) {
+            return false;
+        }
+
+        return ['lat' => $lat, 'lng' => $lng];
+    }
+
+    /**
+     * P5 - Valida el payload de contenido federado antes de insertar
+     *
+     * @param string $tipo Tipo de contenido (evento, productor, producto, etc.)
+     * @param array $payload Datos del contenido
+     * @return true|WP_Error True si es válido, WP_Error si hay problemas
+     */
+    private function validate_federated_payload($tipo, $payload) {
+        // Campos requeridos por tipo de contenido
+        $campos_requeridos = [
+            'evento'       => ['titulo', 'fecha_inicio'],
+            'productor'    => ['nombre'],
+            'producto'     => ['titulo'],
+            'publicacion'  => ['contenido'],
+            'taller'       => ['titulo'],
+            'espacio'      => ['nombre'],
+            'anuncio'      => ['titulo'],
+            'servicio'     => ['titulo'],
+            'curso'        => ['titulo'],
+            'viaje'        => ['origen', 'destino'],
+            'default'      => ['titulo'],
+        ];
+
+        $requeridos = $campos_requeridos[$tipo] ?? $campos_requeridos['default'];
+
+        // Verificar campos requeridos
+        foreach ($requeridos as $campo) {
+            if (empty($payload[$campo])) {
+                return new WP_Error(
+                    'campo_requerido',
+                    sprintf(__('Campo "%s" es requerido para tipo "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo, $tipo),
+                    ['status' => 400]
+                );
+            }
+        }
+
+        // Límite de tamaño: máximo 64KB por campo de texto
+        $max_field_size = 65536;
+        foreach ($payload as $key => $value) {
+            if (is_string($value) && strlen($value) > $max_field_size) {
+                return new WP_Error(
+                    'campo_muy_largo',
+                    sprintf(__('Campo "%s" excede el límite de %d bytes', FLAVOR_PLATFORM_TEXT_DOMAIN), $key, $max_field_size),
+                    ['status' => 400]
+                );
+            }
+
+            // Validar arrays/objetos anidados también
+            if (is_array($value)) {
+                $serialized_size = strlen(wp_json_encode($value));
+                if ($serialized_size > $max_field_size) {
+                    return new WP_Error(
+                        'campo_muy_largo',
+                        sprintf(__('Campo "%s" serializado excede el límite de %d bytes', FLAVOR_PLATFORM_TEXT_DOMAIN), $key, $max_field_size),
+                        ['status' => 400]
+                    );
+                }
+            }
+        }
+
+        // Validar que no haya caracteres peligrosos en campos críticos
+        $campos_criticos = ['titulo', 'nombre', 'slug'];
+        foreach ($campos_criticos as $campo) {
+            if (isset($payload[$campo]) && is_string($payload[$campo])) {
+                // Detectar posibles inyecciones de scripts
+                if (preg_match('/<script|javascript:|onclick|onerror|onload/i', $payload[$campo])) {
+                    return new WP_Error(
+                        'contenido_no_permitido',
+                        sprintf(__('Campo "%s" contiene contenido no permitido', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo),
+                        ['status' => 400]
+                    );
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * P11 - Aplica rate limiting a endpoints federados
+     *
+     * @return true|WP_Error True si se permite, WP_Error si se excede el límite
+     */
+    private function enforce_federation_rate_limit() {
+        // Usar rate limiter si está disponible
+        if (class_exists('Flavor_Network_Rate_Limiter')) {
+            $limiter = Flavor_Network_Rate_Limiter::get_instance();
+            return $limiter->enforce_rate_limit('federation');
+        }
+
+        // Fallback: rate limiting básico con transients
+        $client_ip = $this->get_client_ip();
+        $transient_key = 'flavor_fed_rate_' . md5($client_ip);
+        $current_count = (int) get_transient($transient_key);
+
+        // Límite: 100 requests por minuto
+        $max_requests = apply_filters('flavor_federation_rate_limit', 100);
+        $window_seconds = 60;
+
+        if ($current_count >= $max_requests) {
+            $this->log_federation_event('warning', 'Rate limit excedido', [
+                'ip' => $client_ip,
+                'count' => $current_count,
+            ]);
+            return new WP_Error(
+                'rate_limit_exceeded',
+                __('Demasiadas solicitudes. Por favor, espera antes de reintentar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                ['status' => 429, 'retry_after' => $window_seconds]
+            );
+        }
+
+        set_transient($transient_key, $current_count + 1, $window_seconds);
+        return true;
+    }
+
+    /**
+     * Obtiene la IP del cliente de forma segura
+     *
+     * @return string IP del cliente
+     */
+    private function get_client_ip() {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip_value = $_SERVER[$header];
+                // X-Forwarded-For puede contener múltiples IPs
+                if (strpos($ip_value, ',') !== false) {
+                    $ip_value = trim(explode(',', $ip_value)[0]);
+                }
+                if (filter_var($ip_value, FILTER_VALIDATE_IP)) {
+                    return $ip_value;
+                }
+            }
+        }
+
+        return '0.0.0.0';
+    }
+
+    /**
+     * P1 - Genera la fórmula Haversine de forma segura con coordenadas validadas
+     *
+     * @param float $lat Latitud validada
+     * @param float $lng Longitud validada
+     * @param string $lat_column Nombre de la columna de latitud en la tabla
+     * @param string $lng_column Nombre de la columna de longitud en la tabla
+     * @return string Fórmula SQL Haversine
+     */
+    private function build_haversine_formula($lat, $lng, $lat_column = 'latitud', $lng_column = 'longitud') {
+        // Las coordenadas ya deben estar validadas con validate_coordinates()
+        return sprintf(
+            "(6371 * acos(
+                cos(radians(%f)) *
+                cos(radians(%s)) *
+                cos(radians(%s) - radians(%f)) +
+                sin(radians(%f)) *
+                sin(radians(%s))
+            ))",
+            $lat,
+            esc_sql($lat_column),
+            esc_sql($lng_column),
+            $lng,
+            $lat,
+            esc_sql($lat_column)
+        );
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ENDPOINTS PÚBLICOS
+    // ═══════════════════════════════════════════════════════════
+
     /**
      * Endpoint: Recibir publicación federada
+     *
+     * Usa transacciones para garantizar integridad en operaciones críticas.
      */
     public function recibir_publicacion($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $body = $request->get_json_params();
 
         if (empty($body['tipo']) || $body['tipo'] !== 'publicacion_compartida') {
+            $this->log_federation_event('warning', 'Tipo de contenido no soportado', ['tipo' => $body['tipo'] ?? 'null']);
             return new WP_Error('tipo_invalido', 'Tipo de contenido no soportado', ['status' => 400]);
         }
 
         if (empty($body['publicacion'])) {
+            $this->log_federation_event('warning', 'Falta contenido de publicación');
             return new WP_Error('sin_contenido', 'Falta contenido de publicación', ['status' => 400]);
         }
 
-        $pub = $body['publicacion'];
+        $publicacion_datos = $body['publicacion'];
+
+        // P5 - Validar payload federado
+        $payload_validation = $this->validate_federated_payload('publicacion', $publicacion_datos);
+        if (is_wp_error($payload_validation)) {
+            $this->log_federation_event('warning', 'Payload de publicación inválido', [
+                'error' => $payload_validation->get_error_message(),
+            ]);
+            return $payload_validation;
+        }
         $origen = $body['origen'] ?? '';
         $nodo_id = $request->get_param('_nodo_id');
 
         // Verificar si ya existe esta publicación (evitar duplicados)
-        $tabla = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $enlace_url = esc_url_raw($publicacion_datos['enlace_url'] ?? '');
+
         $existe = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$tabla} WHERE enlace_url = %s",
-            $pub['enlace_url'] ?? ''
+            "SELECT id FROM {$tabla_publicaciones} WHERE enlace_url = %s",
+            $enlace_url
         ));
 
         if ($existe) {
+            $this->log_federation_event('info', 'Publicación duplicada ignorada', ['origen' => $origen, 'url' => $enlace_url]);
             return [
-                'success' => true,
-                'message' => 'Publicación ya existente',
+                'success'   => true,
+                'message'   => 'Publicación ya existente',
                 'duplicado' => true,
             ];
         }
 
         // Obtener o crear usuario "nodo federado"
-        $usuario_federado = $this->obtener_usuario_federado($origen, $pub['autor_nombre'] ?? 'Nodo Federado');
+        $nombre_autor = $publicacion_datos['autor_nombre'] ?? 'Nodo Federado';
+        $usuario_federado = $this->obtener_usuario_federado($origen, $nombre_autor);
 
-        // Insertar publicación
-        $resultado = $wpdb->insert($tabla, [
-            'usuario_id'         => $usuario_federado,
-            'contenido'          => sanitize_textarea_field($pub['contenido'] ?? ''),
-            'tipo'               => 'enlace',
-            'enlace_url'         => esc_url_raw($pub['enlace_url'] ?? ''),
-            'enlace_titulo'      => sanitize_text_field($pub['enlace_titulo'] ?? ''),
-            'enlace_descripcion' => sanitize_textarea_field($pub['enlace_descripcion'] ?? ''),
-            'enlace_imagen'      => esc_url_raw($pub['enlace_imagen'] ?? ''),
-            'privacidad'         => 'publico',
-            'estado'             => 'publicado',
-            'fecha_creacion'     => current_time('mysql'),
-        ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']);
+        // Iniciar transacción para operación crítica
+        $wpdb->query('START TRANSACTION');
 
-        if ($resultado === false) {
-            return new WP_Error('error_insercion', 'Error al guardar publicación', ['status' => 500]);
-        }
+        try {
+            // Insertar publicación principal
+            $datos_publicacion = [
+                'usuario_id'         => $usuario_federado,
+                'contenido'          => sanitize_textarea_field($publicacion_datos['contenido'] ?? ''),
+                'tipo'               => 'enlace',
+                'enlace_url'         => $enlace_url,
+                'enlace_titulo'      => sanitize_text_field($publicacion_datos['enlace_titulo'] ?? ''),
+                'enlace_descripcion' => sanitize_textarea_field($publicacion_datos['enlace_descripcion'] ?? ''),
+                'enlace_imagen'      => esc_url_raw($publicacion_datos['enlace_imagen'] ?? ''),
+                'privacidad'         => 'publico',
+                'estado'             => 'publicado',
+                'fecha_creacion'     => current_time('mysql'),
+            ];
 
-        $publicacion_id = $wpdb->insert_id;
+            $insertado = $wpdb->insert(
+                $tabla_publicaciones,
+                $datos_publicacion,
+                ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+            );
 
-        // Registrar origen federado
-        $tabla_federacion = $wpdb->prefix . 'flavor_social_federacion';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_federacion}'")) {
-            $wpdb->insert($tabla_federacion, [
+            if ($insertado === false) {
+                throw new Exception('Error al insertar datos de publicación: ' . $wpdb->last_error);
+            }
+
+            $publicacion_id = $wpdb->insert_id;
+
+            // Registrar origen federado en tabla secundaria
+            $tabla_federacion = $wpdb->prefix . 'flavor_social_federacion';
+            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_federacion}'")) {
+                $datos_federacion = [
+                    'publicacion_id' => $publicacion_id,
+                    'nodo_origen'    => $origen,
+                    'nodo_id'        => $nodo_id,
+                    'fecha_recibido' => current_time('mysql'),
+                ];
+
+                $insertado_federacion = $wpdb->insert($tabla_federacion, $datos_federacion);
+                if ($insertado_federacion === false) {
+                    throw new Exception('Error al insertar datos de federación: ' . $wpdb->last_error);
+                }
+            }
+
+            // Confirmar transacción
+            $wpdb->query('COMMIT');
+
+            $this->log_federation_event('info', 'Publicación federada recibida', [
                 'publicacion_id' => $publicacion_id,
-                'nodo_origen'    => $origen,
+                'origen'         => $origen,
                 'nodo_id'        => $nodo_id,
-                'fecha_recibido' => current_time('mysql'),
             ]);
+
+            do_action('flavor_publicacion_federada_recibida', $publicacion_id, $origen, $body);
+
+            return new WP_REST_Response([
+                'success'        => true,
+                'message'        => 'Publicación recibida',
+                'publicacion_id' => $publicacion_id,
+            ], 201);
+
+        } catch (Exception $excepcion) {
+            // Revertir transacción en caso de error
+            $wpdb->query('ROLLBACK');
+
+            $this->log_federation_event('error', 'Error al recibir publicación federada', [
+                'error'  => $excepcion->getMessage(),
+                'origen' => $origen,
+            ]);
+
+            return new WP_Error(
+                'db_error',
+                $excepcion->getMessage(),
+                ['status' => 500]
+            );
         }
-
-        do_action('flavor_publicacion_federada_recibida', $publicacion_id, $origen, $body);
-
-        return [
-            'success'        => true,
-            'message'        => 'Publicación recibida',
-            'publicacion_id' => $publicacion_id,
-        ];
     }
 
     /**
@@ -434,6 +1060,133 @@ class Flavor_Federation_API {
         update_user_meta($user_id, '_flavor_nodo_origen', $origen);
 
         return $user_id;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // HELPER GENÉRICO PARA ITEMS FEDERADOS (P3 - Refactorización)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Obtiene items federados de forma genérica
+     *
+     * Este método centraliza la lógica común de todos los endpoints
+     * que obtienen datos federados con filtros de geolocalización.
+     *
+     * @param array $config Configuración con las siguientes claves:
+     *   - tabla: (string) Nombre completo de la tabla
+     *   - campos: (string) Campos a seleccionar, default '*'
+     *   - where_base: (array) Condiciones WHERE base sin preparar
+     *   - where_prepared: (array) Condiciones WHERE con prepare [['sql' => 'col = %s', 'value' => $val], ...]
+     *   - order_by: (string) ORDER BY clause, default 'actualizado_en DESC'
+     *   - limite: (int) Límite de resultados, default 50, max 100
+     *   - lat: (float|null) Latitud para filtro geográfico
+     *   - lng: (float|null) Longitud para filtro geográfico
+     *   - radio: (float) Radio en km para filtro geográfico, default 50
+     *   - lat_col: (string) Nombre de columna de latitud, default 'latitud'
+     *   - lng_col: (string) Nombre de columna de longitud, default 'longitud'
+     *   - distancia_override: (string|null) Condición especial para filtro de distancia
+     *   - error_no_tabla: (string) Mensaje de error si la tabla no existe
+     *
+     * @return array|WP_Error Array con resultados o error si la tabla no existe
+     */
+    private function get_federated_items($config) {
+        global $wpdb;
+
+        $tabla = $config['tabla'];
+        $campos = $config['campos'] ?? '*';
+        $where_base = $config['where_base'] ?? [];
+        $where_prepared = $config['where_prepared'] ?? [];
+        $order_by = $config['order_by'] ?? 'actualizado_en DESC';
+        $limite = min(100, max(1, intval($config['limite'] ?? 50)));
+        $error_no_tabla = $config['error_no_tabla'] ?? 'Sistema federado no disponible';
+
+        // Columnas de geolocalización
+        $lat_col = $config['lat_col'] ?? 'latitud';
+        $lng_col = $config['lng_col'] ?? 'longitud';
+
+        // Validar que la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") !== $tabla) {
+            return new WP_Error('no_tabla', $error_no_tabla, ['status' => 503]);
+        }
+
+        // Validar coordenadas si se proporcionan
+        $lat = isset($config['lat']) ? floatval($config['lat']) : null;
+        $lng = isset($config['lng']) ? floatval($config['lng']) : null;
+        $radio = isset($config['radio']) ? floatval($config['radio']) : 50;
+
+        $select_distancia = '';
+        $having = '';
+        $usar_distancia = false;
+
+        if ($lat !== null && $lng !== null && $lat !== 0.0 && $lng !== 0.0) {
+            $usar_distancia = true;
+
+            // Fórmula Haversine para calcular distancia en km
+            $haversine = sprintf(
+                "(6371 * acos(cos(radians(%f)) * cos(radians(%s)) * cos(radians(%s) - radians(%f)) + sin(radians(%f)) * sin(radians(%s))))",
+                $lat,
+                $lat_col,
+                $lng_col,
+                $lng,
+                $lat,
+                $lat_col
+            );
+
+            $select_distancia = ", {$haversine} AS distancia";
+
+            // Override de condición de distancia si se proporciona
+            if (!empty($config['distancia_override'])) {
+                $having = "HAVING {$config['distancia_override']}";
+            } else {
+                $having = "HAVING distancia <= {$radio}";
+            }
+
+            $order_by = 'distancia ASC';
+        }
+
+        // Construir WHERE
+        $where_parts = $where_base;
+
+        foreach ($where_prepared as $prepared_condition) {
+            if (isset($prepared_condition['sql']) && isset($prepared_condition['value'])) {
+                $where_parts[] = $wpdb->prepare($prepared_condition['sql'], $prepared_condition['value']);
+            }
+        }
+
+        $where = !empty($where_parts) ? implode(' AND ', $where_parts) : '1=1';
+
+        // Construir y ejecutar query
+        $sql = "SELECT {$campos} {$select_distancia}
+                FROM {$tabla}
+                WHERE {$where}
+                {$having}
+                ORDER BY {$order_by}
+                LIMIT {$limite}";
+
+        $resultados = $wpdb->get_results($sql);
+
+        return $resultados ?: [];
+    }
+
+    /**
+     * Genera la fórmula Haversine para cálculo de distancia
+     *
+     * @param float  $lat      Latitud del punto de referencia
+     * @param float  $lng      Longitud del punto de referencia
+     * @param string $lat_col  Nombre de la columna de latitud en la tabla
+     * @param string $lng_col  Nombre de la columna de longitud en la tabla
+     * @return string SQL con la fórmula Haversine
+     */
+    private function build_haversine_formula($lat, $lng, $lat_col = 'latitud', $lng_col = 'longitud') {
+        return sprintf(
+            "(6371 * acos(cos(radians(%f)) * cos(radians(%s)) * cos(radians(%s) - radians(%f)) + sin(radians(%f)) * sin(radians(%s))))",
+            $lat,
+            $lat_col,
+            $lng_col,
+            $lng,
+            $lat,
+            $lat_col
+        );
     }
 
     /**
@@ -506,94 +1259,120 @@ class Flavor_Federation_API {
      * - lng: Longitud del nodo solicitante
      * - radio: Radio máximo en km (por defecto usa el del productor)
      * - mensajeria: 1 para incluir solo productores con mensajería
+     *
+     * P12 - Usa cache transient para optimizar consultas repetidas (15 min TTL)
      */
     public function obtener_productores_federados($request) {
-        global $wpdb;
-
-        $tabla_productores = $wpdb->prefix . 'flavor_network_producers';
-
-        // Verificar que la tabla existe
-        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores'") !== $tabla_productores) {
-            return new WP_Error('no_tabla', 'Sistema de productores federados no disponible', ['status' => 503]);
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $solo_mensajeria = $request->get_param('mensajeria') === '1';
         $limite = min(100, intval($request->get_param('limite')) ?: 50);
 
-        $where_clauses = ["visible_en_red = 1", "compartir_en_red = 1"];
+        // P12 - Generar clave de cache (redondear coords para agrupar consultas cercanas)
+        $cache_key = $this->generate_cache_key('productores', [
+            'lat'        => round($lat_solicitante, 2),
+            'lng'        => round($lng_solicitante, 2),
+            'mensajeria' => $solo_mensajeria,
+            'limite'     => $limite,
+        ]);
 
-        if ($solo_mensajeria) {
-            $where_clauses[] = "acepta_mensajeria = 1";
-        }
+        return $this->get_cached_federated_data($cache_key, function() use ($lat_solicitante, $lng_solicitante, $coords_validadas, $solo_mensajeria, $limite) {
+            global $wpdb;
 
-        $where = implode(' AND ', $where_clauses);
+            $tabla_productores = $wpdb->prefix . 'flavor_network_producers';
 
-        // Si tenemos coordenadas, calcular distancia
-        if ($lat_solicitante && $lng_solicitante && !$solo_mensajeria) {
-            // Fórmula Haversine para calcular distancia en km
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
-
-            $productores = $wpdb->get_results("
-                SELECT *,
-                    {$haversine} AS distancia_km
-                FROM {$tabla_productores}
-                WHERE {$where}
-                    AND latitud IS NOT NULL
-                    AND longitud IS NOT NULL
-                    AND (
-                        acepta_mensajeria = 1
-                        OR {$haversine} <= radio_entrega_km
-                    )
-                ORDER BY distancia_km ASC
-                LIMIT {$limite}
-            ");
-        } else {
-            $productores = $wpdb->get_results("
-                SELECT *
-                FROM {$tabla_productores}
-                WHERE {$where}
-                ORDER BY actualizado_en DESC
-                LIMIT {$limite}
-            ");
-        }
-
-        $resultado = [];
-        foreach ($productores as $prod) {
-            $item = [
-                'id'                => $prod->id,
-                'nodo_id'           => $prod->nodo_id,
-                'productor_id'      => $prod->productor_id,
-                'nombre'            => $prod->nombre,
-                'slug'              => $prod->slug,
-                'ubicacion'         => $prod->ubicacion,
-                'certificacion_eco' => (bool) $prod->certificacion_eco,
-                'acepta_mensajeria' => (bool) $prod->acepta_mensajeria,
-                'radio_entrega_km'  => $prod->radio_entrega_km,
-            ];
-
-            if (isset($prod->distancia_km)) {
-                $item['distancia_km'] = round($prod->distancia_km, 1);
+            // Verificar que la tabla existe
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores'") !== $tabla_productores) {
+                return new WP_Error('no_tabla', 'Sistema de productores federados no disponible', ['status' => 503]);
             }
 
-            $resultado[] = $item;
-        }
+            $where_clauses = ["visible_en_red = 1", "compartir_en_red = 1"];
 
-        return [
-            'nodo'        => home_url(),
-            'nombre'      => get_bloginfo('name'),
-            'productores' => $resultado,
-            'total'       => count($resultado),
-        ];
+            if ($solo_mensajeria) {
+                $where_clauses[] = "acepta_mensajeria = 1";
+            }
+
+            $where = implode(' AND ', $where_clauses);
+
+            // Si tenemos coordenadas validadas, calcular distancia
+            if ($coords_validadas && !$solo_mensajeria) {
+                // P1 - Fórmula Haversine segura con coordenadas validadas
+                $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
+
+                $productores = $wpdb->get_results("
+                    SELECT *,
+                        {$haversine} AS distancia_km
+                    FROM {$tabla_productores}
+                    WHERE {$where}
+                        AND latitud IS NOT NULL
+                        AND longitud IS NOT NULL
+                        AND (
+                            acepta_mensajeria = 1
+                            OR {$haversine} <= radio_entrega_km
+                        )
+                    ORDER BY distancia_km ASC
+                    LIMIT {$limite}
+                ");
+            } else {
+                $productores = $wpdb->get_results("
+                    SELECT *
+                    FROM {$tabla_productores}
+                    WHERE {$where}
+                    ORDER BY actualizado_en DESC
+                    LIMIT {$limite}
+                ");
+            }
+
+            $resultado = [];
+            foreach ($productores as $prod) {
+                $item = [
+                    'id'                => $prod->id,
+                    'nodo_id'           => $prod->nodo_id,
+                    'productor_id'      => $prod->productor_id,
+                    'nombre'            => $prod->nombre,
+                    'slug'              => $prod->slug,
+                    'ubicacion'         => $prod->ubicacion,
+                    'certificacion_eco' => (bool) $prod->certificacion_eco,
+                    'acepta_mensajeria' => (bool) $prod->acepta_mensajeria,
+                    'radio_entrega_km'  => $prod->radio_entrega_km,
+                ];
+
+                if (isset($prod->distancia_km)) {
+                    $item['distancia_km'] = round($prod->distancia_km, 1);
+                }
+
+                $resultado[] = $item;
+            }
+
+            return [
+                'nodo'        => home_url(),
+                'nombre'      => get_bloginfo('name'),
+                'productores' => $resultado,
+                'total'       => count($resultado),
+            ];
+        }, self::CACHE_TTL_DEFAULT);
     }
 
     /**
@@ -765,14 +1544,36 @@ class Flavor_Federation_API {
     public function obtener_eventos_federados($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $tabla_eventos = $wpdb->prefix . 'flavor_network_events';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") !== $tabla_eventos) {
             return new WP_Error('no_tabla', 'Sistema de eventos federados no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 100;
         $desde = $request->get_param('desde') ?: date('Y-m-d H:i:s');
         $limite = min(100, intval($request->get_param('limite')) ?: 50);
@@ -782,17 +1583,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Si tenemos coordenadas, filtrar por distancia
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // Si tenemos coordenadas validadas, filtrar por distancia
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $eventos = $wpdb->get_results($wpdb->prepare("
                 SELECT *,
@@ -920,16 +1714,54 @@ class Flavor_Federation_API {
     public function obtener_viajes_federados($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $tabla_viajes = $wpdb->prefix . 'flavor_network_carpooling';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_viajes'") !== $tabla_viajes) {
             return new WP_Error('no_tabla', 'Sistema de carpooling federado no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas de origen
         $origen_lat = floatval($request->get_param('origen_lat'));
         $origen_lng = floatval($request->get_param('origen_lng'));
+        $coords_origen = null;
+
+        if ($origen_lat || $origen_lng) {
+            $coords_origen = $this->validate_coordinates($origen_lat, $origen_lng);
+            if ($coords_origen === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas de origen no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $origen_lat = $coords_origen['lat'];
+            $origen_lng = $coords_origen['lng'];
+        }
+
+        // P1 - Validar coordenadas de destino
         $destino_lat = floatval($request->get_param('destino_lat'));
         $destino_lng = floatval($request->get_param('destino_lng'));
+        $coords_destino = null;
+
+        if ($destino_lat || $destino_lng) {
+            $coords_destino = $this->validate_coordinates($destino_lat, $destino_lng);
+            if ($coords_destino === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas de destino no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $destino_lat = $coords_destino['lat'];
+            $destino_lng = $coords_destino['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 50;
         $desde = $request->get_param('desde') ?: date('Y-m-d H:i:s');
         $limite = min(100, intval($request->get_param('limite')) ?: 50);
@@ -939,17 +1771,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Calcular distancia si tenemos coordenadas de origen
-        if ($origen_lat && $origen_lng) {
-            $haversine_origen = "
-                (6371 * acos(
-                    cos(radians({$origen_lat})) *
-                    cos(radians(origen_lat)) *
-                    cos(radians(origen_lng) - radians({$origen_lng})) +
-                    sin(radians({$origen_lat})) *
-                    sin(radians(origen_lat))
-                ))
-            ";
+        // Calcular distancia si tenemos coordenadas de origen validadas
+        if ($coords_origen) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine_origen = $this->build_haversine_formula($origen_lat, $origen_lng, 'origen_lat', 'origen_lng');
 
             $select_extra = ", {$haversine_origen} AS distancia_origen_km";
             $where_extra = " AND {$haversine_origen} <= {$radio_km}";
@@ -960,17 +1785,10 @@ class Flavor_Federation_API {
             $order = "fecha_salida ASC";
         }
 
-        // Filtrar también por destino si se proporciona
-        if ($destino_lat && $destino_lng) {
-            $haversine_destino = "
-                (6371 * acos(
-                    cos(radians({$destino_lat})) *
-                    cos(radians(destino_lat)) *
-                    cos(radians(destino_lng) - radians({$destino_lng})) +
-                    sin(radians({$destino_lat})) *
-                    sin(radians(destino_lat))
-                ))
-            ";
+        // Filtrar también por destino si tenemos coordenadas validadas
+        if ($coords_destino) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine_destino = $this->build_haversine_formula($destino_lat, $destino_lng, 'destino_lat', 'destino_lng');
             $select_extra .= ", {$haversine_destino} AS distancia_destino_km";
             $where_extra .= " AND {$haversine_destino} <= {$radio_km}";
         }
@@ -1086,14 +1904,36 @@ class Flavor_Federation_API {
     public function obtener_talleres_federados($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $tabla_talleres = $wpdb->prefix . 'flavor_network_workshops';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_talleres'") !== $tabla_talleres) {
             return new WP_Error('no_tabla', 'Sistema de talleres federados no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 100;
         $categoria = $request->get_param('categoria');
         $limite = min(100, intval($request->get_param('limite')) ?: 50);
@@ -1108,17 +1948,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Filtrar por distancia si tenemos coordenadas
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // Filtrar por distancia si tenemos coordenadas validadas
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $sql = "SELECT *, {$haversine} AS distancia_km
                     FROM {$tabla_talleres}
@@ -1276,17 +2109,25 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Filtrar por distancia si tenemos coordenadas
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // P1 - Validar coordenadas antes de usar en Haversine
+        $coords_validadas = null;
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
+        // Filtrar por distancia si tenemos coordenadas validadas
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $espacios = $wpdb->get_results("
                 SELECT *, {$haversine} AS distancia_km
@@ -1406,14 +2247,36 @@ class Flavor_Federation_API {
     public function obtener_anuncios_federados($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $tabla_anuncios = $wpdb->prefix . 'flavor_network_marketplace';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") !== $tabla_anuncios) {
             return new WP_Error('no_tabla', 'Sistema de marketplace federado no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 100;
         $tipo = $request->get_param('tipo');
         $categoria = $request->get_param('categoria');
@@ -1431,17 +2294,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Filtrar por distancia si tenemos coordenadas
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // Filtrar por distancia si tenemos coordenadas validadas
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $anuncios = $wpdb->get_results("
                 SELECT *, {$haversine} AS distancia_km
@@ -1573,8 +2429,24 @@ class Flavor_Federation_API {
             return new WP_Error('no_tabla', 'Sistema de banco de tiempo federado no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 50;
         $tipo = $request->get_param('tipo');
         $categoria = $request->get_param('categoria');
@@ -1597,17 +2469,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Filtrar por distancia si tenemos coordenadas
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // Filtrar por distancia si tenemos coordenadas validadas
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $servicios = $wpdb->get_results("
                 SELECT *, {$haversine} AS distancia_km
@@ -1731,14 +2596,36 @@ class Flavor_Federation_API {
     public function obtener_cursos_federados($request) {
         global $wpdb;
 
+        // P11 - Aplicar rate limiting
+        $rate_check = $this->enforce_federation_rate_limit();
+        if (is_wp_error($rate_check)) {
+            return $rate_check;
+        }
+
         $tabla_cursos = $wpdb->prefix . 'flavor_network_courses';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_cursos'") !== $tabla_cursos) {
             return new WP_Error('no_tabla', 'Sistema de cursos federados no disponible', ['status' => 503]);
         }
 
+        // P1 - Validar coordenadas antes de usar en Haversine
         $lat_solicitante = floatval($request->get_param('lat'));
         $lng_solicitante = floatval($request->get_param('lng'));
+        $coords_validadas = null;
+
+        if ($lat_solicitante || $lng_solicitante) {
+            $coords_validadas = $this->validate_coordinates($lat_solicitante, $lng_solicitante);
+            if ($coords_validadas === false) {
+                return new WP_Error(
+                    'coordenadas_invalidas',
+                    __('Las coordenadas proporcionadas no son válidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    ['status' => 400]
+                );
+            }
+            $lat_solicitante = $coords_validadas['lat'];
+            $lng_solicitante = $coords_validadas['lng'];
+        }
+
         $radio_km = absint($request->get_param('radio')) ?: 100;
         $categoria = $request->get_param('categoria');
         $nivel = $request->get_param('nivel');
@@ -1766,17 +2653,10 @@ class Flavor_Federation_API {
 
         $where = implode(' AND ', $where_clauses);
 
-        // Filtrar por distancia si tenemos coordenadas (solo cursos presenciales o mixtos)
-        if ($lat_solicitante && $lng_solicitante) {
-            $haversine = "
-                (6371 * acos(
-                    cos(radians({$lat_solicitante})) *
-                    cos(radians(latitud)) *
-                    cos(radians(longitud) - radians({$lng_solicitante})) +
-                    sin(radians({$lat_solicitante})) *
-                    sin(radians(latitud))
-                ))
-            ";
+        // Filtrar por distancia si tenemos coordenadas validadas (solo cursos presenciales o mixtos)
+        if ($coords_validadas) {
+            // P1 - Fórmula Haversine segura con coordenadas validadas
+            $haversine = $this->build_haversine_formula($lat_solicitante, $lng_solicitante);
 
             $cursos = $wpdb->get_results("
                 SELECT *, {$haversine} AS distancia_km
@@ -1904,6 +2784,381 @@ class Flavor_Federation_API {
                 'actualizado_en'      => $curso->actualizado_en,
             ],
         ];
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // BATCH SYNC (SINCRONIZACION MASIVA)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Endpoint: Sincronizacion masiva de items federados
+     *
+     * Permite sincronizar hasta 100 items en una sola peticion.
+     * Soporta tipos: evento, producto, productor, servicio, espacio, anuncio, curso, taller
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function batch_sync($request) {
+        global $wpdb;
+
+        $items = $request->get_param('items');
+        $nodo_id = $request->get_param('_nodo_id');
+
+        if (!is_array($items) || count($items) > 100) {
+            $this->log_federation_event('warning', 'Batch sync rechazado: items invalidos o excede limite', [
+                'items_count' => is_array($items) ? count($items) : 'no_array',
+                'nodo_id'     => $nodo_id,
+            ]);
+            return new WP_Error(
+                'invalid_batch',
+                __('Maximo 100 items por batch', 'flavor-platform'),
+                ['status' => 400]
+            );
+        }
+
+        if (empty($items)) {
+            return new WP_Error(
+                'empty_batch',
+                __('El batch no puede estar vacio', 'flavor-platform'),
+                ['status' => 400]
+            );
+        }
+
+        // Verificar permisos ACL si el nodo esta registrado
+        if ($nodo_id && class_exists('Flavor_Network_Node')) {
+            $primer_tipo = sanitize_text_field($items[0]['tipo'] ?? '');
+            if ($primer_tipo && !Flavor_Network_Node::check_permission($nodo_id, $primer_tipo, 'escribir')) {
+                $this->log_federation_event('warning', 'Batch sync: permisos denegados', [
+                    'nodo_id' => $nodo_id,
+                    'tipo'    => $primer_tipo,
+                ]);
+                return new WP_Error(
+                    'permission_denied',
+                    __('El nodo no tiene permisos de escritura para este tipo de contenido', 'flavor-platform'),
+                    ['status' => 403]
+                );
+            }
+        }
+
+        $resultados = [
+            'procesados' => 0,
+            'errores'    => [],
+            'ids'        => [],
+            'omitidos'   => 0,
+        ];
+
+        $wpdb->query('START TRANSACTION');
+
+        try {
+            foreach ($items as $indice => $item) {
+                $tipo = sanitize_text_field($item['tipo'] ?? '');
+                $datos = $item['datos'] ?? [];
+
+                // Validar que el tipo existe
+                if (empty($tipo)) {
+                    $resultados['errores'][] = [
+                        'index' => $indice,
+                        'error' => __('Tipo de contenido no especificado', 'flavor-platform'),
+                    ];
+                    continue;
+                }
+
+                // Validar payload
+                $validacion = $this->validate_federated_payload($tipo, $datos);
+                if (is_wp_error($validacion)) {
+                    $resultados['errores'][] = [
+                        'index' => $indice,
+                        'error' => $validacion->get_error_message(),
+                    ];
+                    continue;
+                }
+
+                // Verificar ACL por tipo si el nodo esta registrado
+                if ($nodo_id && class_exists('Flavor_Network_Node')) {
+                    if (!Flavor_Network_Node::check_permission($nodo_id, $tipo, 'escribir')) {
+                        $resultados['errores'][] = [
+                            'index' => $indice,
+                            'error' => sprintf(
+                                __('Sin permisos de escritura para tipo: %s', 'flavor-platform'),
+                                $tipo
+                            ),
+                        ];
+                        $resultados['omitidos']++;
+                        continue;
+                    }
+                }
+
+                // Procesar segun tipo
+                $id_insertado = $this->process_batch_item($tipo, $datos, $nodo_id);
+                if ($id_insertado) {
+                    $resultados['procesados']++;
+                    $resultados['ids'][] = [
+                        'index' => $indice,
+                        'tipo'  => $tipo,
+                        'id'    => $id_insertado,
+                    ];
+                } else {
+                    $resultados['errores'][] = [
+                        'index' => $indice,
+                        'error' => __('Error al insertar item', 'flavor-platform'),
+                    ];
+                }
+            }
+
+            $wpdb->query('COMMIT');
+
+            $this->log_federation_event('info', 'Batch sync completado', [
+                'nodo_id'    => $nodo_id,
+                'procesados' => $resultados['procesados'],
+                'errores'    => count($resultados['errores']),
+                'omitidos'   => $resultados['omitidos'],
+            ]);
+
+        } catch (Exception $excepcion) {
+            $wpdb->query('ROLLBACK');
+            $this->log_federation_event('error', 'Batch sync fallido: ' . $excepcion->getMessage(), [
+                'nodo_id' => $nodo_id,
+            ]);
+            return new WP_Error(
+                'batch_error',
+                $excepcion->getMessage(),
+                ['status' => 500]
+            );
+        }
+
+        // Hook para extensibilidad
+        do_action('flavor_batch_sync_completed', $resultados, $nodo_id);
+
+        return new WP_REST_Response($resultados, 200);
+    }
+
+    /**
+     * Valida el payload de un item federado
+     *
+     * @param string $tipo Tipo de contenido
+     * @param array $datos Datos del item
+     * @return true|WP_Error
+     */
+    private function validate_federated_payload($tipo, $datos) {
+        if (!is_array($datos) || empty($datos)) {
+            return new WP_Error(
+                'datos_invalidos',
+                __('Los datos del item deben ser un array no vacio', 'flavor-platform')
+            );
+        }
+
+        // Campos requeridos por tipo
+        $campos_requeridos = [
+            'evento'    => ['titulo', 'fecha_inicio'],
+            'producto'  => ['nombre', 'precio'],
+            'productor' => ['nombre'],
+            'servicio'  => ['titulo'],
+            'espacio'   => ['nombre'],
+            'anuncio'   => ['titulo'],
+            'curso'     => ['titulo'],
+            'taller'    => ['titulo'],
+            'viaje'     => ['origen', 'destino', 'fecha_salida'],
+        ];
+
+        $requeridos = $campos_requeridos[$tipo] ?? ['titulo'];
+
+        foreach ($requeridos as $campo) {
+            if (empty($datos[$campo])) {
+                return new WP_Error(
+                    'campo_faltante',
+                    sprintf(
+                        __('Campo requerido faltante para %s: %s', 'flavor-platform'),
+                        $tipo,
+                        $campo
+                    )
+                );
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Procesa un item individual del batch
+     *
+     * @param string $tipo Tipo de contenido
+     * @param array $datos Datos del item
+     * @param int|null $nodo_id ID del nodo origen
+     * @return int|null ID insertado o null si fallo
+     */
+    private function process_batch_item($tipo, $datos, $nodo_id = null) {
+        global $wpdb;
+
+        // Mapeo de tipos a tablas
+        $mapeo_tablas = [
+            'evento'    => 'events',
+            'producto'  => 'products',
+            'productor' => 'producers',
+            'servicio'  => 'time_bank',
+            'espacio'   => 'spaces',
+            'anuncio'   => 'marketplace',
+            'curso'     => 'courses',
+            'taller'    => 'workshops',
+            'viaje'     => 'carpooling',
+        ];
+
+        $nombre_tabla = $mapeo_tablas[$tipo] ?? null;
+        if (!$nombre_tabla) {
+            return null;
+        }
+
+        // Usar el instalador del addon si existe, si no usar prefijo generico
+        if (class_exists('Flavor_Network_Installer')) {
+            $tabla = Flavor_Network_Installer::get_table_name($nombre_tabla);
+        } else {
+            $tabla = $wpdb->prefix . 'flavor_network_' . $nombre_tabla;
+        }
+
+        // Verificar que la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") !== $tabla) {
+            return null;
+        }
+
+        // Sanitizar datos
+        $datos_sanitizados = $this->sanitize_batch_item_data($tipo, $datos);
+
+        // Anadir nodo_id si se proporciona
+        if ($nodo_id) {
+            $datos_sanitizados['nodo_id'] = $nodo_id;
+        }
+
+        // Anadir timestamp
+        $datos_sanitizados['actualizado_en'] = current_time('mysql');
+
+        // Verificar si ya existe (por nodo_id + id_original para evitar duplicados)
+        $id_original = $datos['id_original'] ?? $datos['id'] ?? null;
+        if ($id_original && $nodo_id) {
+            $campo_id_tipo = $tipo . '_id';
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla} WHERE nodo_id = %s AND {$campo_id_tipo} = %d",
+                $nodo_id,
+                $id_original
+            ));
+
+            if ($existe) {
+                // Actualizar en lugar de insertar
+                $wpdb->update($tabla, $datos_sanitizados, ['id' => $existe]);
+                return (int) $existe;
+            }
+        }
+
+        // Insertar nuevo registro
+        $resultado = $wpdb->insert($tabla, $datos_sanitizados);
+
+        if ($resultado === false) {
+            return null;
+        }
+
+        return $wpdb->insert_id;
+    }
+
+    /**
+     * Sanitiza los datos de un item del batch segun su tipo
+     *
+     * @param string $tipo Tipo de contenido
+     * @param array $datos Datos a sanitizar
+     * @return array Datos sanitizados
+     */
+    private function sanitize_batch_item_data($tipo, $datos) {
+        $sanitizados = [];
+
+        // Campos de texto comunes
+        $campos_texto = [
+            'titulo', 'nombre', 'slug', 'tipo', 'categoria',
+            'ubicacion', 'direccion', 'ciudad', 'estado', 'modalidad',
+            'organizador_nombre', 'usuario_nombre', 'instructor_nombre',
+            'conductor_nombre', 'origen', 'destino', 'notas', 'disponibilidad',
+        ];
+
+        foreach ($campos_texto as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = sanitize_text_field($datos[$campo]);
+            }
+        }
+
+        // Campos de texto largo
+        $campos_textarea = ['descripcion', 'contenido', 'requisitos', 'beneficios'];
+        foreach ($campos_textarea as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = sanitize_textarea_field($datos[$campo]);
+            }
+        }
+
+        // Campos numericos
+        $campos_numericos = [
+            'precio', 'precio_hora', 'precio_dia', 'precio_plaza',
+            'horas_estimadas', 'duracion_horas', 'valoracion_promedio',
+            'latitud', 'longitud', 'origen_lat', 'origen_lng',
+            'destino_lat', 'destino_lng', 'radio_entrega_km',
+        ];
+
+        foreach ($campos_numericos as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = floatval($datos[$campo]);
+            }
+        }
+
+        // Campos enteros
+        $campos_enteros = [
+            'aforo_maximo', 'inscritos_count', 'max_participantes',
+            'inscritos_actuales', 'numero_sesiones', 'numero_lecciones',
+            'max_alumnos', 'plazas_disponibles', 'plazas_totales',
+            'capacidad_personas', 'superficie_m2', 'intercambios_completados',
+            'evento_id', 'producto_id', 'productor_id', 'servicio_id',
+            'espacio_id', 'anuncio_id', 'curso_id', 'taller_id', 'viaje_id',
+        ];
+
+        foreach ($campos_enteros as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = absint($datos[$campo]);
+            }
+        }
+
+        // Campos booleanos
+        $campos_booleanos = [
+            'visible_en_red', 'es_online', 'es_gratuito', 'certificacion_eco',
+            'acepta_mensajeria', 'envio_disponible', 'permite_equipaje',
+            'permite_mascotas', 'compartir_en_red',
+        ];
+
+        foreach ($campos_booleanos as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = (int) (bool) $datos[$campo];
+            }
+        }
+
+        // Campos de URL
+        $campos_url = ['imagen_url', 'url_online', 'foto_principal', 'imagen_principal'];
+        foreach ($campos_url as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = esc_url_raw($datos[$campo]);
+            }
+        }
+
+        // Campos de fecha
+        $campos_fecha = [
+            'fecha_inicio', 'fecha_fin', 'fecha_salida', 'hora_salida',
+            'fecha_primera_sesion', 'fecha_limite_inscripcion',
+        ];
+
+        foreach ($campos_fecha as $campo) {
+            if (isset($datos[$campo])) {
+                $sanitizados[$campo] = sanitize_text_field($datos[$campo]);
+            }
+        }
+
+        // Asegurar visible_en_red por defecto
+        if (!isset($sanitizados['visible_en_red'])) {
+            $sanitizados['visible_en_red'] = 1;
+        }
+
+        return $sanitizados;
     }
 }
 
