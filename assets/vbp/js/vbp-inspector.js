@@ -135,7 +135,7 @@ function vbpInspector() {
                 return '';
             }
 
-            return this.isStructuralSelection ? 'Estructura' : 'Contenido';
+            return this.isStructuralSelection ? __('structure', 'Estructura') : __('content', 'Contenido');
         },
 
         get selectionContextTitle() {
@@ -152,14 +152,14 @@ function vbpInspector() {
             }
 
             if (this.isStructuralSelection) {
-                return 'Estás editando la base del layout. Ajusta distribución, columnas y espaciado; el contenido vive dentro de sus bloques hijos.';
+                return __('editingStructure', 'Estás editando la base del layout. Ajusta distribución, columnas y espaciado; el contenido vive dentro de sus bloques hijos.');
             }
 
             if (this.isSectionBlock(this.selectedElement.type)) {
-                return 'Bloque de sección listo para ajustar contenido principal, apariencia y jerarquía visual desde este panel.';
+                return __('editingSectionBlock', 'Bloque de sección listo para ajustar contenido principal, apariencia y jerarquía visual desde este panel.');
             }
 
-            return 'Elemento individual listo para edición rápida. Cambia contenido, apariencia y comportamiento sin salir del contexto actual.';
+            return __('editingElement', 'Elemento individual listo para edición rápida. Cambia contenido, apariencia y comportamiento sin salir del contexto actual.');
         },
 
         get selectedElementPath() {
@@ -174,7 +174,7 @@ function vbpInspector() {
         get selectedElementPathSummary() {
             var path = this.selectedElementPath || [];
             if (path.length <= 1) {
-                return 'Página';
+                return __('page', 'Página');
             }
 
             return path.map(function(node) {
@@ -231,8 +231,8 @@ function vbpInspector() {
             var ids = store.selection.elementIds.slice();
             var total = ids.length;
             var message = total === 1
-                ? '¿Eliminar el elemento seleccionado?'
-                : '¿Eliminar los ' + total + ' elementos seleccionados?';
+                ? __('deleteElementConfirm', '¿Eliminar el elemento seleccionado?')
+                : _s('deleteElementsConfirm', total);
 
             if (!window.confirm(message)) {
                 return;
@@ -245,15 +245,64 @@ function vbpInspector() {
             });
 
             if (typeof store.addNotification === 'function') {
-                store.addNotification(total === 1 ? 'Elemento eliminado' : total + ' elementos eliminados', 'success');
+                var notificationMessage = total === 1
+                    ? __('elementDeleted', 'Elemento eliminado')
+                    : _s('elementsDeleted', total);
+                store.addNotification(notificationMessage, 'success');
             }
         },
 
         /**
          * Obtener nombre legible del tipo
+         * Usa el sistema i18n para obtener traducciones
          */
         getTypeName: function(type) {
-            var nombres = {
+            // Mapeo de tipo a clave de traducción
+            var keyMap = {
+                'hero': 'blockHero',
+                'features': 'blockFeatures',
+                'testimonials': 'blockTestimonials',
+                'pricing': 'blockPricing',
+                'cta': 'blockCta',
+                'faq': 'blockFaq',
+                'contact': 'blockContact',
+                'team': 'blockTeam',
+                'stats': 'blockStats',
+                'gallery': 'blockGallery',
+                'blog': 'blockBlog',
+                'video-section': 'blockVideo',
+                'heading': 'blockHeading',
+                'text': 'blockText',
+                'image': 'blockImage',
+                'button': 'blockButton',
+                'divider': 'blockDivider',
+                'spacer': 'blockSpacer',
+                'icon': 'blockIcon',
+                'html': 'blockHtml',
+                'shortcode': 'blockShortcode',
+                'container': 'blockContainer',
+                'columns': 'blockColumns',
+                'row': 'blockRow',
+                'grid': 'blockGrid',
+                'video-embed': 'blockVideo',
+                'map': 'blockMap',
+                'mapa': 'blockMap',
+                'countdown': 'blockCountdown',
+                'social-icons': 'blockSocialIcons',
+                'newsletter': 'blockNewsletter',
+                'logo-grid': 'blockLogoGrid',
+                'icon-box': 'blockIconBox',
+                'accordion': 'blockAccordion',
+                'tabs': 'blockTabs',
+                'progress-bar': 'blockProgressBar',
+                'alert': 'blockAlert',
+                'before-after': 'blockBeforeAfter',
+                'timeline': 'blockTimeline',
+                'carousel': 'blockCarousel'
+            };
+
+            // Fallbacks para nombres por defecto
+            var fallbacks = {
                 'hero': 'Hero',
                 'features': 'Características',
                 'testimonials': 'Testimonios',
@@ -282,7 +331,6 @@ function vbpInspector() {
                 'video-embed': 'Video',
                 'map': 'Mapa',
                 'mapa': 'Mapa',
-                // Nuevos bloques
                 'countdown': 'Cuenta Regresiva',
                 'social-icons': 'Iconos Sociales',
                 'newsletter': 'Newsletter',
@@ -296,7 +344,12 @@ function vbpInspector() {
                 'timeline': 'Línea de Tiempo',
                 'carousel': 'Carrusel'
             };
-            return nombres[type] || type;
+
+            var key = keyMap[type];
+            if (key && typeof window.__ === 'function') {
+                return __(key, fallbacks[type] || type);
+            }
+            return fallbacks[type] || type;
         },
 
         /**
@@ -407,7 +460,10 @@ function vbpInspector() {
 
             // Mostrar notificación
             if (window.vbpApp && window.vbpApp.showNotification) {
-                window.vbpApp.showNotification('Preset "' + presetName + '" aplicado', 'success');
+                var message = typeof window._s === 'function'
+                    ? _s('presetApplied', presetName)
+                    : 'Preset "' + presetName + '" aplicado';
+                window.vbpApp.showNotification(message, 'success');
             }
         },
 
@@ -421,7 +477,7 @@ function vbpInspector() {
             Alpine.store('vbp').updateElement(this.selectedElement.id, { styles: defaultStyles });
 
             if (window.vbpApp && window.vbpApp.showNotification) {
-                window.vbpApp.showNotification('Estilos reseteados', 'info');
+                window.vbpApp.showNotification(__('stylesReset', 'Estilos reseteados'), 'info');
             }
         },
 

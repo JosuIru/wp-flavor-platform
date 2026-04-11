@@ -48,8 +48,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'redo', label: 'Rehacer', category: 'acciones', icon: '↪', action: 'redo', shortcut: 'Ctrl+Y' },
             { id: 'duplicate', label: 'Duplicar elemento', category: 'acciones', icon: '⧉', action: 'duplicate', shortcut: 'Ctrl+D' },
             { id: 'delete', label: 'Eliminar elemento', category: 'acciones', icon: '🗑', action: 'delete', shortcut: 'Del' },
-            { id: 'copy-styles', label: 'Copiar estilos', category: 'acciones', icon: '📋', action: 'copyStyles', shortcut: 'Ctrl+Shift+C' },
-            { id: 'paste-styles', label: 'Pegar estilos', category: 'acciones', icon: '📥', action: 'pasteStyles', shortcut: 'Ctrl+Shift+V' },
+            { id: 'copy-styles', label: 'Copiar estilos', category: 'acciones', icon: '📋', action: 'copyStyles', shortcut: 'Ctrl+Alt+C' },
+            { id: 'paste-styles', label: 'Pegar estilos', category: 'acciones', icon: '📥', action: 'pasteStyles', shortcut: 'Ctrl+Alt+V' },
             { id: 'reset-styles', label: 'Resetear estilos', category: 'acciones', icon: '🔄', action: 'resetStyles', shortcut: 'Ctrl+Shift+R' },
             { id: 'group', label: 'Agrupar elementos', category: 'acciones', icon: '📦', action: 'group', shortcut: 'Ctrl+G' },
             { id: 'ungroup', label: 'Desagrupar elementos', category: 'acciones', icon: '📤', action: 'ungroup', shortcut: 'Ctrl+Shift+U' },
@@ -68,7 +68,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'align-center-v', label: 'Centrar verticalmente', category: 'alineacion', icon: '↕', action: 'alignElements', value: 'centerV', shortcut: 'Alt+M' },
             { id: 'align-bottom', label: 'Alinear abajo', category: 'alineacion', icon: '⬇', action: 'alignElements', value: 'bottom', shortcut: 'Alt+B' },
             { id: 'distribute-h', label: 'Distribuir horizontalmente', category: 'alineacion', icon: '⇔', action: 'distributeElements', value: 'horizontal', shortcut: 'Ctrl+Alt+H' },
-            { id: 'distribute-v', label: 'Distribuir verticalmente', category: 'alineacion', icon: '⇕', action: 'distributeElements', value: 'vertical', shortcut: 'Ctrl+Alt+V' },
+            { id: 'distribute-v', label: 'Distribuir verticalmente', category: 'alineacion', icon: '⇕', action: 'distributeElements', value: 'vertical', shortcut: 'Ctrl+Alt+Shift+V' },
             { id: 'stack-h', label: 'Apilar horizontalmente', category: 'alineacion', icon: '📚', action: 'stackElements', value: 'horizontal', shortcut: 'Ctrl+Shift+→' },
             { id: 'stack-v', label: 'Apilar verticalmente', category: 'alineacion', icon: '📚', action: 'stackElements', value: 'vertical', shortcut: 'Ctrl+Shift+↓' },
 
@@ -80,7 +80,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'hide-others', label: 'Ocultar otros elementos', category: 'vista', icon: '👁‍🗨', action: 'hideOthers', shortcut: 'Ctrl+Alt+H' },
             { id: 'copy-html', label: 'Copiar como HTML', category: 'exportar', icon: '📄', action: 'copyAsHTML', shortcut: 'Ctrl+Shift+E' },
             { id: 'copy-json', label: 'Copiar como JSON', category: 'exportar', icon: '{ }', action: 'copyAsJSON', shortcut: 'Ctrl+Alt+E' },
-            { id: 'paste-json', label: 'Pegar desde JSON', category: 'exportar', icon: '📥', action: 'pasteFromJSON', shortcut: 'Ctrl+Alt+V' },
+            { id: 'paste-json', label: 'Pegar desde JSON', category: 'exportar', icon: '📥', action: 'pasteFromJSON', shortcut: 'Ctrl+Alt+Shift+J' },
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
@@ -90,6 +90,9 @@ document.addEventListener('alpine:init', function() {
             { id: 'zoom-100', label: 'Zoom 100%', category: 'vista', icon: '1️⃣', action: 'zoom', value: '100', shortcut: 'Ctrl+1' },
             { id: 'zoom-50', label: 'Zoom 50%', category: 'vista', icon: '5️⃣', action: 'zoom', value: '50', shortcut: 'Ctrl+5' },
             { id: 'zoom-200', label: 'Zoom 200%', category: 'vista', icon: '2️⃣', action: 'zoom', value: '200', shortcut: 'Ctrl+2' },
+            { id: 'zoom-to-selection', label: 'Zoom a seleccion', category: 'vista', icon: '🎯', action: 'zoomToSelection', shortcut: 'Shift+2' },
+            { id: 'zoom-fit-all', label: 'Ajustar todo', category: 'vista', icon: '📐', action: 'zoomFitAll', shortcut: 'Shift+0' },
+            { id: 'zoom-100-animated', label: 'Zoom 100% (animado)', category: 'vista', icon: '🎬', action: 'zoom100Animated', shortcut: 'Shift+1' },
 
             // Orden y transformación
             { id: 'bring-forward', label: 'Traer adelante', category: 'orden', icon: '⬆', action: 'bringForward', shortcut: 'Ctrl+]' },
@@ -133,7 +136,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'measure-tool', label: 'Herramienta de medición', category: 'herramientas', icon: '📏', action: 'toggleMeasureTool', shortcut: 'M' },
             { id: 'save-favorite', label: 'Guardar como favorito', category: 'herramientas', icon: '⭐', action: 'saveAsFavorite', shortcut: 'Ctrl+Alt+K' },
             { id: 'open-favorites', label: 'Abrir favoritos', category: 'herramientas', icon: '⭐', action: 'openFavorites', shortcut: 'Ctrl+Alt+Shift+K' },
-            { id: 'css-variables', label: 'Editor de variables CSS', category: 'herramientas', icon: '🎨', action: 'openCSSVariables', shortcut: 'Ctrl+Alt+C' },
+            { id: 'css-variables', label: 'Editor de variables CSS', category: 'herramientas', icon: '🎨', action: 'openCSSVariables', shortcut: 'Ctrl+Alt+Shift+C' },
             { id: 'version-compare', label: 'Comparar versiones', category: 'herramientas', icon: '📜', action: 'openVersionCompare', shortcut: 'Ctrl+Alt+D' },
 
             // Rotación
@@ -318,11 +321,15 @@ document.addEventListener('alpine:init', function() {
                     break;
 
                 case 'copyStyles':
-                    Alpine.store('vbpClipboard').copyStyles();
+                    if (window.VBPKeyboardClipboard) {
+                        window.VBPKeyboardClipboard.copyStyles();
+                    }
                     break;
 
                 case 'pasteStyles':
-                    Alpine.store('vbpClipboard').pasteStyles();
+                    if (window.VBPKeyboardClipboard) {
+                        window.VBPKeyboardClipboard.pasteStyles();
+                    }
                     break;
 
                 case 'resetStyles':

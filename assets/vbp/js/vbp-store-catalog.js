@@ -336,6 +336,18 @@ window.VBPStoreCatalog = {
                 loopAnimation: '',
                 parallaxEnabled: false,
                 parallaxSpeed: 0.5
+            },
+            constraints: {
+                top: false,
+                right: false,
+                bottom: false,
+                left: false,
+                centerH: false,
+                centerV: false,
+                topValue: 'auto',
+                rightValue: 'auto',
+                bottomValue: 'auto',
+                leftValue: 'auto'
             }
         };
     },

@@ -872,3 +872,38 @@
     font-size: 12px;
     line-height: 1.2;
 }
+
+/* ============================================
+   Prototype Mode Button
+   ============================================ */
+.vbp-prototype-mode-btn {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.vbp-prototype-mode-btn.active {
+    background: var(--vbp-prototype-primary, #6366f1) !important;
+    color: #fff !important;
+}
+
+.vbp-prototype-mode-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--vbp-prototype-primary, #6366f1);
+    border-radius: 50%;
+}
+
+.vbp-prototype-preview-btn {
+    background: var(--vbp-prototype-success, #10b981) !important;
+    color: #fff !important;
+}
+
+.vbp-prototype-preview-btn:hover {
+    background: #059669 !important;
+    transform: scale(1.05);
+}

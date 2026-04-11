@@ -111,6 +111,14 @@ document.addEventListener('alpine:init', () => {
             mobile: { min: 0, max: 768, label: 'Mobile', icon: '📲' }
         },
 
+        // Responsive Variants - Sistema de overrides por breakpoint
+        responsive: {
+            currentBreakpoint: 'desktop',
+            canvasWidth: 1200,
+            showBreakpointRuler: true,
+            highlightOverrides: true
+        },
+
         // Selección
         selection: { elementIds: [], multiSelect: false },
 
@@ -126,13 +134,15 @@ document.addEventListener('alpine:init', () => {
         get undoDescription() {
             if (this.history.past.length > 0) {
                 var lastEntry = this.history.past[this.history.past.length - 1];
-                return lastEntry.description || 'Cambio';
+                var defaultLabel = typeof window.__ === 'function' ? __('actionChange', 'Cambio') : 'Cambio';
+                return lastEntry.description || defaultLabel;
             }
             return '';
         },
         get redoDescription() {
             if (this.history.future.length > 0) {
-                return this.history.future[0].description || 'Cambio';
+                var defaultLabel = typeof window.__ === 'function' ? __('actionChange', 'Cambio') : 'Cambio';
+                return this.history.future[0].description || defaultLabel;
             }
             return '';
         },
@@ -1058,6 +1068,412 @@ document.addEventListener('alpine:init', () => {
         // ============================================
         // Inspector Mode (Basic/Advanced)
         // ============================================
+
+        // ============================================
+        // Sistema de Lógica y Variables
+        // ============================================
+
+        /**
+         * Verificar si un elemento tiene bindings configurados
+         * @param {string} elementId - ID del elemento
+         * @returns {boolean}
+         */
+        hasBindings: function(elementId) {
+            return window.VBPBindings && window.VBPBindings.hasBindings(elementId);
+        },
+
+        /**
+         * Obtener bindings de un elemento
+         * @param {string} elementId - ID del elemento
+         * @returns {object}
+         */
+        getElementBindings: function(elementId) {
+            return window.VBPBindings ? window.VBPBindings.getBindings(elementId) : {};
+        },
+
+        /**
+         * Verificar si un elemento tiene loop configurado
+         * @param {string} elementId - ID del elemento
+         * @returns {boolean}
+         */
+        hasLoop: function(elementId) {
+            return window.VBPLoops && window.VBPLoops.hasLoop(elementId);
+        },
+
+        /**
+         * Obtener configuración de loop de un elemento
+         * @param {string} elementId - ID del elemento
+         * @returns {object|null}
+         */
+        getElementLoop: function(elementId) {
+            return window.VBPLoops ? window.VBPLoops.getConfig(elementId) : null;
+        },
+
+        /**
+         * Verificar si un elemento tiene eventos/acciones configurados
+         * @param {string} elementId - ID del elemento
+         * @returns {boolean}
+         */
+        hasEvents: function(elementId) {
+            return window.VBPActions && window.VBPActions.hasEvents(elementId);
+        },
+
+        /**
+         * Obtener eventos de un elemento
+         * @param {string} elementId - ID del elemento
+         * @returns {object}
+         */
+        getElementEvents: function(elementId) {
+            return window.VBPActions ? window.VBPActions.getEvents(elementId) : {};
+        },
+
+        /**
+         * Verificar si un elemento tiene condiciones
+         * @param {string} elementId - ID del elemento
+         * @returns {boolean}
+         */
+        hasConditions: function(elementId) {
+            var element = this.getElementDeep(elementId);
+            return element && element.logic && element.logic.conditions && element.logic.conditions.length > 0;
+        },
+
+        /**
+         * Obtener condiciones de un elemento
+         * @param {string} elementId - ID del elemento
+         * @returns {array}
+         */
+        getElementConditions: function(elementId) {
+            var element = this.getElementDeep(elementId);
+            if (!element || !element.logic) return [];
+            return element.logic.conditions || [];
+        },
+
+        /**
+         * Verificar si un elemento tiene estados de componente
+         * @param {string} elementId - ID del elemento
+         * @returns {boolean}
+         */
+        hasComponentStates: function(elementId) {
+            return window.VBPComponentStates && window.VBPComponentStates.hasStates(elementId);
+        },
+
+        /**
+         * Obtener estados de un componente
+         * @param {string} elementId - ID del elemento
+         * @returns {array}
+         */
+        getElementStates: function(elementId) {
+            return window.VBPComponentStates ? window.VBPComponentStates.listStates(elementId) : [];
+        },
+
+        /**
+         * Verificar si un elemento tiene cualquier tipo de lógica
+         * @param {string} elementId - ID del elemento
+         * @returns {object} Objeto con flags por tipo de lógica
+         */
+        getElementLogicSummary: function(elementId) {
+            return {
+                hasBindings: this.hasBindings(elementId),
+                hasConditions: this.hasConditions(elementId),
+                hasLoop: this.hasLoop(elementId),
+                hasEvents: this.hasEvents(elementId),
+                hasStates: this.hasComponentStates(elementId),
+                hasAnyLogic: this.hasBindings(elementId) ||
+                            this.hasConditions(elementId) ||
+                            this.hasLoop(elementId) ||
+                            this.hasEvents(elementId) ||
+                            this.hasComponentStates(elementId)
+            };
+        },
+
+        /**
+         * Guardar toda la configuración de lógica de un elemento
+         * @param {string} elementId - ID del elemento
+         * @param {object} logicConfig - Configuración de lógica
+         */
+        saveElementLogic: function(elementId, logicConfig) {
+            var element = this.getElementDeep(elementId);
+            if (!element) return;
+
+            this.updateElement(elementId, { logic: logicConfig });
+
+            // Restaurar en los sistemas correspondientes
+            if (logicConfig.bindings && window.VBPBindings) {
+                for (var prop in logicConfig.bindings) {
+                    window.VBPBindings.bind(elementId, prop, logicConfig.bindings[prop]);
+                }
+            }
+
+            if (logicConfig.loop && window.VBPLoops) {
+                window.VBPLoops.configure(elementId, logicConfig.loop);
+            }
+
+            if (logicConfig.events && window.VBPActions) {
+                window.VBPActions.configure(elementId, logicConfig.events);
+            }
+
+            if (logicConfig.states && window.VBPComponentStates) {
+                window.VBPComponentStates.configure(elementId, logicConfig.states);
+            }
+        },
+
+        /**
+         * Exportar configuración de lógica completa de un elemento
+         * @param {string} elementId - ID del elemento
+         * @returns {object}
+         */
+        exportElementLogic: function(elementId) {
+            var element = this.getElementDeep(elementId);
+            var logic = element && element.logic ? JSON.parse(JSON.stringify(element.logic)) : {};
+
+            // Añadir datos de sistemas externos
+            if (window.VBPBindings) {
+                logic.bindings = window.VBPBindings.getBindings(elementId);
+            }
+            if (window.VBPLoops) {
+                logic.loop = window.VBPLoops.getConfig(elementId);
+            }
+            if (window.VBPActions) {
+                logic.events = window.VBPActions.getEvents(elementId);
+            }
+            if (window.VBPComponentStates) {
+                var states = {};
+                window.VBPComponentStates.listStates(elementId).forEach(function(stateName) {
+                    states[stateName] = window.VBPComponentStates.getStateDefinition(elementId, stateName);
+                });
+                logic.states = states;
+            }
+
+            return logic;
+        },
+
+        // ============================================
+        // Sistema de Animaciones Integrado
+        // ============================================
+
+        /**
+         * Namespace de animaciones en el store
+         * Se inicializa vacio y se extiende por vbp-scroll-animations.js
+         * y vbp-advanced-animations.js
+         */
+        animations: {
+            // Las propiedades scroll y advanced se agregan dinamicamente
+            // por sus respectivos modulos
+
+            /**
+             * Obtiene todas las animaciones de un elemento
+             * @param {string} elementId - ID del elemento
+             * @returns {object} Animaciones del elemento
+             */
+            getElementAnimations: function(elementId) {
+                var vbpStore = Alpine.store('vbp');
+                var element = vbpStore.getElementDeep ? vbpStore.getElementDeep(elementId) : vbpStore.getElement(elementId);
+
+                if (!element || !element.data) {
+                    return { basic: [], scroll: [], advanced: [] };
+                }
+
+                return {
+                    basic: element.data.animations || [],
+                    scroll: element.data.scrollAnimations || [],
+                    advanced: element.data.advancedAnimations || []
+                };
+            },
+
+            /**
+             * Cuenta total de animaciones de un elemento
+             * @param {string} elementId - ID del elemento
+             * @returns {number} Total de animaciones
+             */
+            getAnimationCount: function(elementId) {
+                var animations = this.getElementAnimations(elementId);
+                return animations.basic.length + animations.scroll.length + animations.advanced.length;
+            },
+
+            /**
+             * Verifica si un elemento tiene animaciones
+             * @param {string} elementId - ID del elemento
+             * @returns {boolean}
+             */
+            hasAnimations: function(elementId) {
+                return this.getAnimationCount(elementId) > 0;
+            }
+        },
+
+        /**
+         * Abre el panel de Animation Builder para el elemento seleccionado
+         */
+        openAnimationBuilder: function() {
+            document.dispatchEvent(new CustomEvent('vbp:open-animation-builder', {
+                detail: { elementId: this.selection.elementIds[0] }
+            }));
+        },
+
+        /**
+         * Abre el panel de Scroll Animations
+         */
+        openScrollAnimationsPanel: function() {
+            document.dispatchEvent(new CustomEvent('vbp:open-scroll-animations-panel', {
+                detail: { elementId: this.selection.elementIds[0] }
+            }));
+        },
+
+        /**
+         * Abre el panel de Advanced Animations
+         */
+        openAdvancedAnimationsPanel: function() {
+            document.dispatchEvent(new CustomEvent('vbp:open-advanced-animations-panel', {
+                detail: { elementId: this.selection.elementIds[0] }
+            }));
+        },
+
+        // ========================================
+        // AUTO LAYOUT - Sistema nivel Figma
+        // ========================================
+
+        /**
+         * Namespace de Auto Layout
+         */
+        autoLayout: {
+            /**
+             * Agrega auto layout a un elemento
+             * @param {string} elementId - ID del elemento
+             * @param {Object} config - Configuración inicial
+             */
+            add: function(elementId, config) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.addAutoLayout(elementId, config);
+                }
+            },
+
+            /**
+             * Remueve auto layout de un elemento
+             * @param {string} elementId - ID del elemento
+             */
+            remove: function(elementId) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.removeAutoLayout(elementId);
+                }
+            },
+
+            /**
+             * Actualiza la configuración de auto layout
+             * @param {string} elementId - ID del elemento
+             * @param {Object} changes - Cambios a aplicar
+             */
+            update: function(elementId, changes) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.updateAutoLayout(elementId, changes);
+                }
+            },
+
+            /**
+             * Verifica si un elemento tiene auto layout
+             * @param {string} elementId - ID del elemento
+             * @returns {boolean}
+             */
+            has: function(elementId) {
+                if (window.VBPAutoLayout) {
+                    return window.VBPAutoLayout.hasAutoLayout(elementId);
+                }
+                return false;
+            },
+
+            /**
+             * Obtiene la configuración de auto layout
+             * @param {string} elementId - ID del elemento
+             * @returns {Object|null}
+             */
+            get: function(elementId) {
+                if (window.VBPAutoLayout) {
+                    return window.VBPAutoLayout.getAutoLayout(elementId);
+                }
+                return null;
+            },
+
+            /**
+             * Aplica un preset de auto layout
+             * @param {string} elementId - ID del elemento
+             * @param {string} presetName - Nombre del preset
+             */
+            applyPreset: function(elementId, presetName) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.applyPreset(elementId, presetName);
+                }
+            },
+
+            /**
+             * Actualiza la configuración de un hijo de auto layout
+             * @param {string} elementId - ID del elemento hijo
+             * @param {Object} changes - Cambios a aplicar
+             */
+            updateChild: function(elementId, changes) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.updateLayoutChild(elementId, changes);
+                }
+            },
+
+            /**
+             * Reordena los hijos de un elemento con auto layout
+             * @param {string} parentId - ID del elemento padre
+             * @param {Array} newOrder - Nuevo orden de IDs de hijos
+             */
+            reorderChildren: function(parentId, newOrder) {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.reorderChildren(parentId, newOrder);
+                }
+            },
+
+            /**
+             * Obtiene los presets disponibles
+             * @returns {Object}
+             */
+            getPresets: function() {
+                if (window.VBPAutoLayout) {
+                    return window.VBPAutoLayout.getPresets();
+                }
+                return {};
+            },
+
+            /**
+             * Exporta el CSS de un elemento con auto layout
+             * @param {string} elementId - ID del elemento
+             * @returns {string}
+             */
+            exportCSS: function(elementId) {
+                if (window.VBPAutoLayout) {
+                    return window.VBPAutoLayout.exportCSS(elementId);
+                }
+                return '';
+            },
+
+            /**
+             * Recalcula todos los layouts
+             */
+            recalculateAll: function() {
+                if (window.VBPAutoLayout) {
+                    window.VBPAutoLayout.recalculateAllLayouts();
+                }
+            }
+        },
+
+        /**
+         * Agrega auto layout al elemento seleccionado (acceso rápido)
+         */
+        addAutoLayoutToSelected: function() {
+            if (this.selection.elementIds.length === 1) {
+                this.autoLayout.add(this.selection.elementIds[0]);
+            }
+        },
+
+        /**
+         * Remueve auto layout del elemento seleccionado (acceso rápido)
+         */
+        removeAutoLayoutFromSelected: function() {
+            if (this.selection.elementIds.length === 1) {
+                this.autoLayout.remove(this.selection.elementIds[0]);
+            }
+        }
 
     });
 });

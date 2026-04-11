@@ -108,7 +108,7 @@ document.addEventListener('alpine:init', function() {
         withUndo: function(message, undoCallback, options) {
             options = options || {};
             options.action = undoCallback;
-            options.actionLabel = options.actionLabel || 'Deshacer';
+            options.actionLabel = options.actionLabel || (typeof window.__ === 'function' ? __('undoAction', 'Deshacer') : 'Deshacer');
             options.duration = options.duration || 5000;
             return this.show(message, 'info', options);
         }
@@ -154,3 +154,26 @@ document.addEventListener('vbp:toast', function(e) {
     var detail = e.detail || {};
     Alpine.store('vbpToast').show(detail.message, detail.type, detail);
 });
+
+// Exponer API global para uso fuera de Alpine
+window.VBPToast = {
+    show: function(message, type, options) {
+        if (typeof Alpine !== 'undefined' && Alpine.store('vbpToast')) {
+            return Alpine.store('vbpToast').show(message, type, options);
+        }
+        // Fallback
+        console.log('[VBP Toast]', type || 'info', ':', message);
+    },
+    success: function(message, options) {
+        return this.show(message, 'success', options);
+    },
+    error: function(message, options) {
+        return this.show(message, 'error', options);
+    },
+    warning: function(message, options) {
+        return this.show(message, 'warning', options);
+    },
+    info: function(message, options) {
+        return this.show(message, 'info', options);
+    }
+};
