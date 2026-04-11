@@ -559,6 +559,17 @@ function flavor_log_error( $message, $module = '' ) {
 }
 
 /**
+ * Shorthand para log de warning (siempre se loguea)
+ *
+ * @since 3.5.1
+ * @param string $message Mensaje a loguear.
+ * @param string $module  Módulo opcional.
+ */
+function flavor_log_warning( $message, $module = '' ) {
+    flavor_chat_ia_log( $message, 'warning', $module );
+}
+
+/**
  * Obtiene la API key de VBP de forma segura
  *
  * Prioridad:
@@ -1644,17 +1655,18 @@ add_action('wp_enqueue_scripts', function() {
 }, 20);
 
 // Cargar diagnóstico de performance (solo si se solicita con ?flavor_perf=1)
-// FIX: Verificar permisos PRIMERO, luego verificar parámetro GET
-if (
-    defined( 'WP_DEBUG' ) &&
-    WP_DEBUG &&
-    function_exists( 'current_user_can' ) &&
-    current_user_can( 'manage_options' ) &&
-    isset( $_GET['flavor_perf'] ) &&
-    sanitize_key( $_GET['flavor_perf'] ) === '1'
-) {
-    $diagnostico_file = FLAVOR_PLATFORM_PATH . 'diagnostico-performance.php';
-    if ( file_exists( $diagnostico_file ) ) {
-        require_once $diagnostico_file;
+// FIX: Usar hook 'init' para que current_user_can() esté disponible
+add_action( 'init', function() {
+    if (
+        defined( 'WP_DEBUG' ) &&
+        WP_DEBUG &&
+        current_user_can( 'manage_options' ) &&
+        isset( $_GET['flavor_perf'] ) &&
+        sanitize_key( $_GET['flavor_perf'] ) === '1'
+    ) {
+        $diagnostico_file = FLAVOR_PLATFORM_PATH . 'diagnostico-performance.php';
+        if ( file_exists( $diagnostico_file ) ) {
+            require_once $diagnostico_file;
+        }
     }
-}
+}, 1 );
