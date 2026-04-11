@@ -27,6 +27,28 @@ class Flavor_App_Config_Admin {
     private $page_slug = 'flavor-platform-apps';
 
     /**
+     * Cache en memoria de la configuración de apps
+     *
+     * @var array|null
+     */
+    private $config_cache = null;
+
+    /**
+     * Obtiene la configuración de apps con cache en memoria
+     *
+     * Evita múltiples llamadas a get_option() durante la misma request.
+     *
+     * @param bool $force_refresh Forzar lectura desde BD.
+     * @return array
+     */
+    private function get_config($force_refresh = false) {
+        if (null === $this->config_cache || $force_refresh) {
+            $this->config_cache = $this->get_config();
+        }
+        return $this->config_cache;
+    }
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -231,7 +253,7 @@ class Flavor_App_Config_Admin {
             true
         );
 
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $logo_id = isset($config['app_logo']) ? $config['app_logo'] : get_theme_mod('custom_logo');
         $logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
 
@@ -273,7 +295,7 @@ class Flavor_App_Config_Admin {
         }
 
         $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $logo_id = isset($config['app_logo']) ? $config['app_logo'] : get_theme_mod('custom_logo');
         $logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
         $primary_color = isset($config['primary_color']) ? $config['primary_color'] : '#4CAF50';
@@ -439,7 +461,7 @@ class Flavor_App_Config_Admin {
 
                             <!-- Bottom Navigation -->
                         <?php
-                        $config = get_option('flavor_apps_config', []);
+                        $config = $this->get_config();
                         $navigation_style = isset($config['navigation_style']) ? $config['navigation_style'] : 'auto';
                         $show_bottom_nav = in_array($navigation_style, ['auto', 'bottom', 'hybrid'], true);
                         $show_drawer = in_array($navigation_style, ['hamburger', 'hybrid'], true);
@@ -565,7 +587,7 @@ class Flavor_App_Config_Admin {
      * Campo: Nombre de la App
      */
     public function render_app_name_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $value = isset($config['app_name']) ? $config['app_name'] : get_bloginfo('name');
         ?>
         <input type="text"
@@ -582,7 +604,7 @@ class Flavor_App_Config_Admin {
      * Campo: Descripción
      */
     public function render_app_description_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $value = isset($config['app_description']) ? $config['app_description'] : get_bloginfo('description');
         ?>
         <textarea name="flavor_apps_config[app_description]"
@@ -633,7 +655,7 @@ class Flavor_App_Config_Admin {
      * @return array Datos del QR
      */
     public static function get_admin_qr_data() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         return [
             'url' => home_url(),
             'server_url' => home_url(),
@@ -653,7 +675,7 @@ class Flavor_App_Config_Admin {
      * @return array Datos del QR
      */
     public static function get_client_qr_data() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         return [
             'url' => home_url(),
             'server_url' => home_url(),
@@ -792,7 +814,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Branding
      */
     private function render_branding_tab() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $theme_mode = isset($config['theme_mode']) ? $config['theme_mode'] : 'light';
         $dark_primary = isset($config['dark_primary_color']) ? $config['dark_primary_color'] : '#1976D2';
         $dark_secondary = isset($config['dark_secondary_color']) ? $config['dark_secondary_color'] : '#424242';
@@ -1106,7 +1128,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Navegación
      */
     private function render_navigation_tab() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $navigation_style = isset($config['navigation_style']) ? $config['navigation_style'] : 'auto';
         $hybrid_show_appbar = isset($config['hybrid_show_appbar']) ? (bool) $config['hybrid_show_appbar'] : true;
         $map_provider = isset($config['map_provider']) ? $config['map_provider'] : 'osm';
@@ -2007,7 +2029,7 @@ class Flavor_App_Config_Admin {
      * Campo: Logo
      */
     public function render_app_logo_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $logo_id = isset($config['app_logo']) ? $config['app_logo'] : get_theme_mod('custom_logo');
         $logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
         ?>
@@ -2045,7 +2067,7 @@ class Flavor_App_Config_Admin {
      * Campo: Color Primario
      */
     public function render_primary_color_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $value = isset($config['primary_color']) ? $config['primary_color'] : '#4CAF50';
         ?>
         <input type="text"
@@ -2062,7 +2084,7 @@ class Flavor_App_Config_Admin {
      * Campo: Color Secundario
      */
     public function render_secondary_color_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $value = isset($config['secondary_color']) ? $config['secondary_color'] : '#8BC34A';
         ?>
         <input type="text"
@@ -2079,7 +2101,7 @@ class Flavor_App_Config_Admin {
      * Campo: Color de Acento
      */
     public function render_accent_color_field() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $value = isset($config['accent_color']) ? $config['accent_color'] : '#FF9800';
         ?>
         <input type="text"
@@ -2217,7 +2239,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Directorio
      */
     private function render_directory_tab() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $is_public = isset($config['public_in_directory']) && $config['public_in_directory'];
         $is_registered = get_option('flavor_business_registered', false);
         $last_sync = get_option('flavor_business_last_sync', 0);
@@ -2566,7 +2588,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Módulos
      */
     private function render_modules_tab() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $enabled_modules = isset($config['modules']) ? $config['modules'] : [];
         $plugin_settings = flavor_get_main_settings();
         $active_modules = $plugin_settings['active_modules'] ?? [];
@@ -3630,7 +3652,7 @@ class Flavor_App_Config_Admin {
         flavor_update_main_settings($settings);
         // Eliminado: update_option('flavor_active_modules') - fuente única de verdad
 
-        $apps_config = get_option('flavor_apps_config', []);
+        $apps_config = $this->get_config();
         if (!isset($apps_config['modules']) || !is_array($apps_config['modules'])) {
             $apps_config['modules'] = [];
         }
@@ -3655,7 +3677,7 @@ class Flavor_App_Config_Admin {
      */
     public function sanitize_config($input) {
         // Get existing config to merge with (avoid losing data between tabs)
-        $existing_config = get_option('flavor_apps_config', []);
+        $existing_config = $this->get_config();
         $sanitized = $existing_config;
 
         if (isset($input['app_name'])) {
@@ -4217,7 +4239,7 @@ class Flavor_App_Config_Admin {
             'version' => FLAVOR_PLATFORM_VERSION ?? '2.0.0',
             'exported_at' => current_time('mysql'),
             'site_url' => get_site_url(),
-            'flavor_apps_config' => get_option('flavor_apps_config', []),
+            'flavor_apps_config' => $this->get_config(),
             'flavor_app_active_modules' => get_option('flavor_app_active_modules', []),
             'flavor_app_navigation' => get_option('flavor_app_navigation', []),
             'flavor_app_push_settings' => get_option('flavor_app_push_settings', []),
@@ -4852,7 +4874,7 @@ class Flavor_App_Config_Admin {
         $active_web_modules = $plugin_settings['active_modules'] ?? [];
 
         // Obtener configuración actual de apps
-        $apps_config = get_option('flavor_apps_config', []);
+        $apps_config = $this->get_config();
         if (!isset($apps_config['modules']) || !is_array($apps_config['modules'])) {
             $apps_config['modules'] = [];
         }
@@ -5779,7 +5801,7 @@ class Flavor_App_Config_Admin {
             $companies = $wpdb->get_results("SELECT * FROM $table_name ORDER BY nombre ASC", ARRAY_A);
         }
 
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $deep_link_domain = isset($config['deep_link_domain']) ? $config['deep_link_domain'] : '';
         $app_scheme = isset($config['app_scheme']) ? $config['app_scheme'] : 'flavorapp';
         ?>
@@ -5981,7 +6003,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Idiomas
      */
     private function render_languages_tab() {
-        $config = get_option('flavor_apps_config', []);
+        $config = $this->get_config();
         $default_language = isset($config['default_language']) ? $config['default_language'] : 'es';
         $supported_languages = isset($config['supported_languages']) ? $config['supported_languages'] : ['es'];
         $auto_detect = isset($config['language_auto_detect']) ? (bool) $config['language_auto_detect'] : true;
