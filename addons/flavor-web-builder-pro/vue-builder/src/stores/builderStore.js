@@ -3,6 +3,19 @@ import { useHistoryStore } from './historyStore';
 import { usePreviewStore } from './previewStore';
 import { createSnapshot } from '../utils/historyDiff';
 
+// Valores por defecto para cada tipo de campo (inmutable)
+const FIELD_DEFAULT_VALUES = Object.freeze({
+  text: '',
+  textarea: '',
+  color: '',
+  image: '',
+  select: '',
+  icon: '',
+  number: 0,
+  toggle: false,
+  repeater: [],
+});
+
 /**
  * Store principal del Page Builder
  * Gestiona layout, selección y operaciones de bloques
@@ -459,27 +472,10 @@ export const useBuilderStore = defineStore('builder', {
         if (fieldDef.default !== undefined) {
           values[fieldKey] = fieldDef.default;
         } else {
-          switch (fieldDef.type) {
-            case 'text':
-            case 'textarea':
-            case 'color':
-            case 'image':
-            case 'select':
-            case 'icon':
-              values[fieldKey] = '';
-              break;
-            case 'number':
-              values[fieldKey] = 0;
-              break;
-            case 'toggle':
-              values[fieldKey] = false;
-              break;
-            case 'repeater':
-              values[fieldKey] = [];
-              break;
-            default:
-              values[fieldKey] = '';
-          }
+          // Usar mapeo de valores por defecto, con '' como fallback
+          const defaultValue = FIELD_DEFAULT_VALUES[fieldDef.type];
+          // Para arrays, crear nueva instancia para evitar referencias compartidas
+          values[fieldKey] = Array.isArray(defaultValue) ? [] : (defaultValue ?? '');
         }
       }
       return values;

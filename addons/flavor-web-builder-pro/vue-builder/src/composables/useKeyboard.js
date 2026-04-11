@@ -2,6 +2,9 @@ import { onMounted, onUnmounted } from 'vue';
 import { useBuilderStore } from '../stores/builderStore';
 import { useUiStore } from '../stores/uiStore';
 
+// Tags de elementos de entrada que capturan eventos de teclado (inmutable)
+const INPUT_ELEMENT_TAGS = Object.freeze(new Set(['input', 'textarea', 'select']));
+
 /**
  * Composable para gestionar atajos de teclado
  */
@@ -117,13 +120,7 @@ export function useKeyboard() {
    */
   function isInputElement(element) {
     if (!element) return false;
-    const tagName = element.tagName.toLowerCase();
-    return (
-      tagName === 'input' ||
-      tagName === 'textarea' ||
-      tagName === 'select' ||
-      element.isContentEditable
-    );
+    return INPUT_ELEMENT_TAGS.has(element.tagName.toLowerCase()) || element.isContentEditable;
   }
 
   /**
