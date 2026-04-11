@@ -1,0 +1,922 @@
+/**
+ * Visual Builder Pro - Accessibility CSS
+ * Estilos de accesibilidad, focus management, reduced motion, high contrast
+ *
+ * @package Flavor_Chat_IA
+ * @since 3.5.1
+ */
+
+/* ============================================
+   CSS CUSTOM PROPERTIES FOR ACCESSIBILITY
+   ============================================ */
+
+:root {
+    /* Focus colors */
+    --vbp-focus-color: #6366f1;
+    --vbp-focus-color-contrast: #3730a3;
+    --vbp-focus-width: 2px;
+    --vbp-focus-offset: 2px;
+
+    /* High contrast colors */
+    --vbp-hc-bg: #000000;
+    --vbp-hc-text: #ffffff;
+    --vbp-hc-link: #ffff00;
+    --vbp-hc-border: #ffffff;
+    --vbp-hc-focus: #00ffff;
+}
+
+/* ============================================
+   SCREEN READER ONLY (visually hidden)
+   ============================================ */
+
+.vbp-sr-only,
+.vbp-visually-hidden,
+.screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Allow screen reader only content to be focusable */
+.vbp-sr-only:focus,
+.vbp-sr-only:active,
+.vbp-visually-hidden:focus,
+.vbp-visually-hidden:active {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: inherit !important;
+    margin: inherit !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+}
+
+/* ============================================
+   SKIP LINKS
+   ============================================ */
+
+.vbp-skip-links {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100000;
+    padding: 0;
+    margin: 0;
+}
+
+.vbp-skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    display: block;
+    padding: 12px 24px;
+    background: var(--vbp-bg-primary, #1e1e2e);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid var(--vbp-focus-color);
+    border-radius: 0 0 8px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: top 0.2s ease;
+    z-index: 100000;
+}
+
+.vbp-skip-link:focus {
+    top: 0;
+    outline: none;
+}
+
+.vbp-skip-link:hover {
+    background: var(--vbp-accent-color, #6366f1);
+    color: #fff;
+}
+
+/* ============================================
+   FOCUS VISIBLE - Enhanced Focus Styles
+   ============================================ */
+
+/* Default focus-visible for all interactive elements */
+:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+}
+
+/* Remove default focus ring for mouse users */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* VBP specific focus styles */
+.vbp-editor-body :focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+    border-radius: 2px;
+}
+
+/* Buttons */
+.vbp-toolbar-btn:focus-visible,
+.vbp-btn:focus-visible,
+button:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Input fields */
+.vbp-field-input:focus-visible,
+.vbp-field-select:focus-visible,
+.vbp-field-textarea:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: 0;
+    border-color: var(--vbp-focus-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Links */
+a:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+    border-radius: 2px;
+}
+
+/* Canvas elements */
+.vbp-element:focus-visible {
+    outline: 3px solid var(--vbp-focus-color);
+    outline-offset: -3px;
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.25);
+}
+
+/* Layer items */
+.vbp-layer-item:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: -2px;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Block items */
+.vbp-block-item:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: -2px;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Tabs */
+.vbp-inspector-tab:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: -2px;
+}
+
+/* Color picker swatches */
+.vbp-color-recent-item:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+    transform: scale(1.1);
+}
+
+/* Modal close buttons */
+.vbp-modal-close:focus-visible,
+.vbp-dialog-close:focus-visible {
+    outline: var(--vbp-focus-width) solid var(--vbp-focus-color);
+    outline-offset: var(--vbp-focus-offset);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Disable specific VBP animations */
+    .vbp-toast,
+    .vbp-notification,
+    .vbp-element,
+    .vbp-modal,
+    .vbp-dialog,
+    .vbp-dropdown,
+    .vbp-panel {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* Keep essential state changes visible */
+    .vbp-element.selected,
+    .vbp-layer-item.selected,
+    .vbp-block-item:hover {
+        transition: none !important;
+    }
+
+    /* Disable hover animations */
+    .vbp-btn:hover,
+    .vbp-toolbar-btn:hover {
+        transform: none !important;
+    }
+
+    /* Disable loading spinners animation but keep them visible */
+    .vbp-spinner,
+    .vbp-loading {
+        animation: none !important;
+    }
+
+    /* Canvas zoom indicator - instant show/hide */
+    .vbp-zoom-indicator {
+        transition: none !important;
+    }
+
+    /* Preset applied feedback - no animation */
+    .vbp-preset-applied {
+        animation: none !important;
+    }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: more) {
+    :root {
+        --vbp-focus-color: var(--vbp-hc-focus);
+        --vbp-focus-width: 3px;
+    }
+
+    /* Increase border visibility */
+    .vbp-panel,
+    .vbp-modal,
+    .vbp-dialog,
+    .vbp-dropdown,
+    .vbp-toolbar {
+        border: 2px solid var(--vbp-hc-border) !important;
+    }
+
+    /* Stronger focus indicators */
+    :focus-visible {
+        outline: 3px solid var(--vbp-hc-focus) !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Increase text contrast */
+    .vbp-editor-body {
+        background: var(--vbp-hc-bg);
+        color: var(--vbp-hc-text);
+    }
+
+    /* Links */
+    a {
+        color: var(--vbp-hc-link) !important;
+        text-decoration: underline !important;
+    }
+
+    /* Buttons */
+    .vbp-btn,
+    .vbp-toolbar-btn,
+    button {
+        border: 2px solid currentColor !important;
+    }
+
+    /* Selected states */
+    .vbp-element.selected,
+    .vbp-layer-item.selected,
+    .vbp-inspector-tab.active {
+        outline: 3px solid var(--vbp-hc-focus) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* Input fields */
+    input,
+    select,
+    textarea {
+        border: 2px solid var(--vbp-hc-border) !important;
+        background: var(--vbp-hc-bg) !important;
+        color: var(--vbp-hc-text) !important;
+    }
+
+    /* Disabled states */
+    [disabled],
+    .disabled {
+        opacity: 0.5 !important;
+        border-style: dashed !important;
+    }
+}
+
+/* Windows High Contrast Mode */
+@media (forced-colors: active) {
+    /* Use system colors */
+    .vbp-btn,
+    .vbp-toolbar-btn,
+    button {
+        border: 1px solid ButtonText;
+        background: ButtonFace;
+        color: ButtonText;
+    }
+
+    .vbp-btn:hover,
+    .vbp-toolbar-btn:hover,
+    button:hover {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    :focus-visible {
+        outline: 2px solid Highlight;
+    }
+
+    /* Selected states */
+    .vbp-element.selected,
+    .vbp-layer-item.selected,
+    [aria-selected="true"] {
+        outline: 2px solid Highlight;
+        background: Mark;
+    }
+
+    /* Links */
+    a {
+        color: LinkText;
+    }
+
+    a:visited {
+        color: VisitedText;
+    }
+
+    /* Disabled elements */
+    [disabled],
+    .disabled {
+        color: GrayText;
+        border-color: GrayText;
+    }
+}
+
+/* ============================================
+   KEYBOARD HELP PANEL
+   ============================================ */
+
+.vbp-keyboard-help-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100001;
+    padding: 20px;
+}
+
+.vbp-keyboard-help-panel.is-open {
+    display: flex;
+}
+
+.vbp-keyboard-help-content {
+    background: var(--vbp-bg-primary, #1e1e2e);
+    color: var(--vbp-text-primary, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 800px;
+    max-height: 80vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.vbp-keyboard-help-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vbp-keyboard-help-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.vbp-keyboard-help-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-secondary, #a0a0a0);
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.vbp-keyboard-help-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-text-primary, #ffffff);
+}
+
+.vbp-keyboard-help-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+.vbp-keyboard-help-search {
+    margin-bottom: 20px;
+}
+
+.vbp-keyboard-help-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--vbp-text-primary, #ffffff);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.vbp-keyboard-help-input::placeholder {
+    color: var(--vbp-text-muted, #666666);
+}
+
+.vbp-keyboard-help-input:focus {
+    border-color: var(--vbp-accent-color, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.vbp-keyboard-help-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.vbp-keyboard-category {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.vbp-keyboard-category-title {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vbp-accent-color, #6366f1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vbp-keyboard-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vbp-keyboard-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vbp-keyboard-item:last-child {
+    border-bottom: none;
+}
+
+.vbp-keyboard-kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text-primary, #ffffff);
+    white-space: nowrap;
+}
+
+.vbp-keyboard-action {
+    color: var(--vbp-text-secondary, #a0a0a0);
+    font-size: 13px;
+    text-align: right;
+}
+
+/* ============================================
+   CONFIRM DIALOG ACCESSIBILITY
+   ============================================ */
+
+.vbp-confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100002;
+    padding: 20px;
+}
+
+.vbp-confirm-dialog.is-open {
+    display: flex;
+}
+
+.vbp-confirm-dialog-content {
+    background: var(--vbp-bg-primary, #1e1e2e);
+    color: var(--vbp-text-primary, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
+    padding: 32px;
+    text-align: center;
+}
+
+.vbp-confirm-dialog-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.vbp-confirm-dialog-title {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.vbp-confirm-dialog-message {
+    margin: 0 0 24px 0;
+    color: var(--vbp-text-secondary, #a0a0a0);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.vbp-confirm-dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.vbp-confirm-dialog-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-confirm-dialog-btn--cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-text-primary, #ffffff);
+}
+
+.vbp-confirm-dialog-btn--cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.vbp-confirm-dialog-btn--confirm {
+    background: var(--vbp-accent-color, #6366f1);
+    color: #ffffff;
+}
+
+.vbp-confirm-dialog-btn--confirm:hover {
+    filter: brightness(1.1);
+}
+
+/* ============================================
+   SPACING CONTROL ACCESSIBILITY
+   ============================================ */
+
+.vbp-spacing-control {
+    position: relative;
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    grid-template-rows: auto 1fr auto;
+    gap: 8px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.vbp-spacing-input {
+    width: 100%;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--vbp-text-primary, #ffffff);
+    font-size: 12px;
+    text-align: center;
+}
+
+.vbp-spacing-input:focus {
+    border-color: var(--vbp-accent-color, #6366f1);
+    outline: none;
+}
+
+.vbp-spacing-input--top {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.vbp-spacing-input--right {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: center;
+}
+
+.vbp-spacing-input--bottom {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.vbp-spacing-input--left {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+}
+
+.vbp-spacing-box {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.1);
+    border: 2px dashed rgba(99, 102, 241, 0.3);
+    border-radius: 4px;
+    color: var(--vbp-text-muted, #666666);
+    font-size: 11px;
+    text-transform: uppercase;
+    min-height: 60px;
+}
+
+.vbp-spacing-link {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--vbp-text-muted, #666666);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-spacing-link .material-icons {
+    font-size: 14px;
+}
+
+.vbp-spacing-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--vbp-text-secondary, #a0a0a0);
+}
+
+.vbp-spacing-link.is-linked {
+    background: var(--vbp-accent-color, #6366f1);
+    border-color: var(--vbp-accent-color, #6366f1);
+    color: #ffffff;
+}
+
+/* ============================================
+   LIVE REGION STYLES (hidden but accessible)
+   ============================================ */
+
+#vbp-live-region-polite,
+#vbp-live-region-assertive {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* ============================================
+   ZOOM INDICATOR ACCESSIBILITY
+   ============================================ */
+
+.vbp-zoom-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 16px 32px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.vbp-zoom-indicator.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Reduced motion - instant visibility */
+@media (prefers-reduced-motion: reduce) {
+    .vbp-zoom-indicator {
+        transition: none;
+    }
+}
+
+/* ============================================
+   BREAKPOINT INDICATOR ACCESSIBILITY
+   ============================================ */
+
+.vbp-breakpoint-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #a0a0a0);
+}
+
+.vbp-breakpoint-indicator .material-icons {
+    font-size: 16px;
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="desktop"] {
+    color: #10b981;
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="tablet"] {
+    color: #f59e0b;
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="mobile"] {
+    color: #ef4444;
+}
+
+/* ============================================
+   SEARCH RESULTS ACCESSIBILITY
+   ============================================ */
+
+.vbp-search-results {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #a0a0a0);
+    margin-top: 8px;
+}
+
+.vbp-search-results-count {
+    font-weight: 600;
+    color: var(--vbp-accent-color, #6366f1);
+}
+
+.vbp-search-clear {
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted, #666666);
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.vbp-search-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-text-primary, #ffffff);
+}
+
+/* ============================================
+   FOCUS TRAP OVERLAY (when modal is open)
+   ============================================ */
+
+.vbp-focus-trap-active body > *:not(.vbp-modal):not(.vbp-dialog):not(.vbp-keyboard-help-panel):not(.vbp-confirm-dialog) {
+    pointer-events: none;
+}
+
+/* ============================================
+   PRINT STYLES FOR ACCESSIBILITY
+   ============================================ */
+
+@media print {
+    /* Hide non-essential elements */
+    .vbp-toolbar,
+    .vbp-statusbar,
+    .vbp-skip-links,
+    .vbp-zoom-indicator,
+    .vbp-breakpoint-indicator,
+    .vbp-toast-container,
+    .vbp-notifications {
+        display: none !important;
+    }
+
+    /* Ensure text is readable */
+    body {
+        color: #000 !important;
+        background: #fff !important;
+    }
+
+    /* Show link URLs */
+    a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .vbp-toolbar-btn,
+    .vbp-btn,
+    button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Larger focus indicators for touch */
+    :focus-visible {
+        outline-width: 3px;
+        outline-offset: 4px;
+    }
+
+    /* Disable hover states on touch */
+    .vbp-toolbar-btn:hover,
+    .vbp-btn:hover {
+        background: inherit;
+    }
+}
+
+/* ============================================
+   DARK MODE FOCUS ADJUSTMENTS
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --vbp-focus-color: #818cf8;
+    }
+}
+
+/* ============================================
+   ENSURE MINIMUM TOUCH TARGET SIZE
+   ============================================ */
+
+/* Interactive elements should be at least 44x44px for accessibility */
+.vbp-layer-control,
+.vbp-color-recent-item {
+    min-width: 28px;
+    min-height: 28px;
+}
+
+@media (pointer: coarse) {
+    .vbp-layer-control,
+    .vbp-color-recent-item {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
