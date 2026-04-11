@@ -1,0 +1,667 @@
+/**
+ * VBP Constraints - Estilos para el panel de constraints y los indicadores en canvas
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.2.6
+ */
+
+/* ==========================================================================
+   Variables de Constraints
+   ========================================================================== */
+
+:root {
+    --vbp-constraint-color: #3b82f6;
+    --vbp-constraint-color-active: #2563eb;
+    --vbp-constraint-color-hover: #60a5fa;
+    --vbp-constraint-line-color: rgba(59, 130, 246, 0.6);
+    --vbp-constraint-line-width: 1px;
+    --vbp-constraint-label-bg: #3b82f6;
+    --vbp-constraint-label-color: #ffffff;
+    --vbp-constraint-panel-bg: var(--vbp-surface-secondary, #f8fafc);
+    --vbp-constraint-panel-border: var(--vbp-border-color, #e2e8f0);
+}
+
+/* Dark mode */
+.vbp-theme-dark {
+    --vbp-constraint-panel-bg: var(--vbp-surface-secondary, #1e293b);
+    --vbp-constraint-panel-border: var(--vbp-border-color, #334155);
+}
+
+/* ==========================================================================
+   Contenedor de Indicadores en Canvas
+   ========================================================================== */
+
+.vbp-constraints-indicators {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Lineas de Constraint en Canvas
+   ========================================================================== */
+
+.vbp-constraint-line {
+    position: absolute;
+    background-color: var(--vbp-constraint-line-color);
+    pointer-events: none;
+    z-index: 101;
+}
+
+/* Lineas verticales */
+.vbp-constraint-line--top,
+.vbp-constraint-line--bottom,
+.vbp-constraint-line--centerV {
+    width: var(--vbp-constraint-line-width);
+}
+
+/* Lineas horizontales */
+.vbp-constraint-line--left,
+.vbp-constraint-line--right,
+.vbp-constraint-line--centerH {
+    height: var(--vbp-constraint-line-width);
+}
+
+/* Estilo punteado para centrado */
+.vbp-constraint-line--centerH,
+.vbp-constraint-line--centerV {
+    background-color: transparent;
+    border: 1px dashed var(--vbp-constraint-color);
+}
+
+/* Label de distancia */
+.vbp-constraint-label {
+    position: absolute;
+    background-color: var(--vbp-constraint-label-bg);
+    color: var(--vbp-constraint-label-color);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    line-height: 1;
+    font-family: var(--vbp-font-mono, monospace);
+}
+
+/* Posicion de labels segun direccion */
+.vbp-constraint-line--top .vbp-constraint-label,
+.vbp-constraint-line--bottom .vbp-constraint-label {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-constraint-line--top .vbp-constraint-label {
+    top: 50%;
+    transform: translate(-50%, -50%) translateX(8px);
+}
+
+.vbp-constraint-line--bottom .vbp-constraint-label {
+    top: 50%;
+    transform: translate(-50%, -50%) translateX(8px);
+}
+
+.vbp-constraint-line--left .vbp-constraint-label,
+.vbp-constraint-line--right .vbp-constraint-label {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.vbp-constraint-line--left .vbp-constraint-label {
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-10px);
+}
+
+.vbp-constraint-line--right .vbp-constraint-label {
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-10px);
+}
+
+.vbp-constraint-line--centerH .vbp-constraint-label,
+.vbp-constraint-line--centerV .vbp-constraint-label {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--vbp-constraint-color-active);
+}
+
+/* ==========================================================================
+   Panel de Constraints en Inspector
+   ========================================================================== */
+
+.vbp-constraints-panel {
+    padding: 12px;
+    background: var(--vbp-constraint-panel-bg);
+    border-radius: 8px;
+    border: 1px solid var(--vbp-constraint-panel-border);
+    margin-bottom: 16px;
+}
+
+.vbp-constraints-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.vbp-constraints-panel__title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-constraints-panel__reset {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.vbp-constraints-panel__reset:hover {
+    color: var(--vbp-error, #ef4444);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* ==========================================================================
+   Control Visual tipo Figma
+   ========================================================================== */
+
+.vbp-constraints-visual {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* Cuadrado de constraints */
+.vbp-constraints-box {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 2px solid var(--vbp-constraint-panel-border);
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+/* Elemento interno representando el objeto */
+.vbp-constraints-box__inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: var(--vbp-constraint-color);
+    border-radius: 4px;
+    opacity: 0.8;
+}
+
+/* Puntos de constraint en los bordes */
+.vbp-constraints-box__point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 2px solid var(--vbp-constraint-panel-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    z-index: 2;
+}
+
+.vbp-constraints-box__point:hover {
+    border-color: var(--vbp-constraint-color-hover);
+    transform: scale(1.2);
+}
+
+.vbp-constraints-box__point.is-active {
+    background: var(--vbp-constraint-color);
+    border-color: var(--vbp-constraint-color);
+}
+
+.vbp-constraints-box__point.is-active:hover {
+    background: var(--vbp-constraint-color-active);
+    border-color: var(--vbp-constraint-color-active);
+}
+
+/* Posiciones de los puntos */
+.vbp-constraints-box__point--top {
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-constraints-box__point--top:hover,
+.vbp-constraints-box__point--top.is-active {
+    transform: translateX(-50%) scale(1.2);
+}
+
+.vbp-constraints-box__point--right {
+    top: 50%;
+    right: -5px;
+    transform: translateY(-50%);
+}
+
+.vbp-constraints-box__point--right:hover,
+.vbp-constraints-box__point--right.is-active {
+    transform: translateY(-50%) scale(1.2);
+}
+
+.vbp-constraints-box__point--bottom {
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-constraints-box__point--bottom:hover,
+.vbp-constraints-box__point--bottom.is-active {
+    transform: translateX(-50%) scale(1.2);
+}
+
+.vbp-constraints-box__point--left {
+    top: 50%;
+    left: -5px;
+    transform: translateY(-50%);
+}
+
+.vbp-constraints-box__point--left:hover,
+.vbp-constraints-box__point--left.is-active {
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Puntos de centro */
+.vbp-constraints-box__point--centerH {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateX(-16px);
+    width: 8px;
+    height: 8px;
+}
+
+.vbp-constraints-box__point--centerH:hover,
+.vbp-constraints-box__point--centerH.is-active {
+    transform: translate(-50%, -50%) translateX(-16px) scale(1.2);
+}
+
+.vbp-constraints-box__point--centerV {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-16px);
+    width: 8px;
+    height: 8px;
+}
+
+.vbp-constraints-box__point--centerV:hover,
+.vbp-constraints-box__point--centerV.is-active {
+    transform: translate(-50%, -50%) translateY(-16px) scale(1.2);
+}
+
+/* Lineas de constraint dentro del cuadrado */
+.vbp-constraints-box__line {
+    position: absolute;
+    background: var(--vbp-constraint-color);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 1;
+}
+
+.vbp-constraints-box__line.is-active {
+    opacity: 0.6;
+}
+
+.vbp-constraints-box__line--top {
+    top: 5px;
+    left: 50%;
+    width: 2px;
+    height: calc(50% - 17px);
+    transform: translateX(-50%);
+}
+
+.vbp-constraints-box__line--right {
+    top: 50%;
+    right: 5px;
+    width: calc(50% - 17px);
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.vbp-constraints-box__line--bottom {
+    bottom: 5px;
+    left: 50%;
+    width: 2px;
+    height: calc(50% - 17px);
+    transform: translateX(-50%);
+}
+
+.vbp-constraints-box__line--left {
+    top: 50%;
+    left: 5px;
+    width: calc(50% - 17px);
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+/* Lineas de centro */
+.vbp-constraints-box__line--centerH {
+    top: 50%;
+    left: 5px;
+    right: 5px;
+    width: auto;
+    height: 1px;
+    transform: translateY(-50%);
+    background: var(--vbp-constraint-color);
+    opacity: 0;
+    border: none;
+    border-top: 1px dashed var(--vbp-constraint-color);
+    background: transparent;
+}
+
+.vbp-constraints-box__line--centerH.is-active {
+    opacity: 0.8;
+}
+
+.vbp-constraints-box__line--centerV {
+    top: 5px;
+    bottom: 5px;
+    left: 50%;
+    height: auto;
+    width: 1px;
+    transform: translateX(-50%);
+    background: transparent;
+    border: none;
+    border-left: 1px dashed var(--vbp-constraint-color);
+}
+
+.vbp-constraints-box__line--centerV.is-active {
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   Info Panel de Constraints
+   ========================================================================== */
+
+.vbp-constraints-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-constraints-info__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-constraints-info__label {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    width: 70px;
+    flex-shrink: 0;
+}
+
+.vbp-constraints-info__value {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text-primary, #1f2937);
+    font-family: var(--vbp-font-mono, monospace);
+}
+
+.vbp-constraints-info__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.vbp-constraints-info__status--none {
+    color: var(--vbp-text-muted, #6b7280);
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+}
+
+.vbp-constraints-info__status--active {
+    color: var(--vbp-constraint-color);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* ==========================================================================
+   Presets de Constraints
+   ========================================================================== */
+
+.vbp-constraints-presets {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--vbp-constraint-panel-border);
+}
+
+.vbp-constraints-presets__label {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.vbp-constraints-presets__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.vbp-constraints-preset-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-constraint-panel-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-constraints-preset-btn:hover {
+    border-color: var(--vbp-constraint-color-hover);
+    color: var(--vbp-constraint-color);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.vbp-constraints-preset-btn.is-active {
+    border-color: var(--vbp-constraint-color);
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--vbp-constraint-color);
+}
+
+.vbp-constraints-preset-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Iconos especificos de presets */
+.vbp-constraints-preset-btn--fill {
+    font-size: 12px;
+}
+
+.vbp-constraints-preset-btn--stretch {
+    font-size: 12px;
+}
+
+/* ==========================================================================
+   Seccion Avanzada: Valores de Distancia
+   ========================================================================== */
+
+.vbp-constraints-values {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--vbp-constraint-panel-border);
+}
+
+.vbp-constraints-values__label {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.vbp-constraints-values__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.vbp-constraints-value-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-constraints-value-field__label {
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-constraints-value-field__input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-family: var(--vbp-font-mono, monospace);
+    border: 1px solid var(--vbp-constraint-panel-border);
+    border-radius: 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    color: var(--vbp-text-primary, #1f2937);
+    transition: border-color 0.15s ease;
+}
+
+.vbp-constraints-value-field__input:focus {
+    outline: none;
+    border-color: var(--vbp-constraint-color);
+}
+
+.vbp-constraints-value-field__input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Tooltip para Constraints
+   ========================================================================== */
+
+.vbp-constraints-tooltip {
+    position: absolute;
+    background: var(--vbp-tooltip-bg, #1f2937);
+    color: var(--vbp-tooltip-color, #ffffff);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.vbp-constraints-tooltip.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Estado Vacio / Sin Constraints
+   ========================================================================== */
+
+.vbp-constraints-empty {
+    text-align: center;
+    padding: 16px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-constraints-empty__icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+}
+
+.vbp-constraints-empty__text {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.vbp-constraints-empty__hint {
+    font-size: 11px;
+    margin-top: 8px;
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   Responsive / Modo Compacto
+   ========================================================================== */
+
+@media (max-width: 300px) {
+    .vbp-constraints-visual {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .vbp-constraints-info {
+        width: 100%;
+    }
+
+    .vbp-constraints-presets__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes vbp-constraint-pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.vbp-constraint-line.is-animating {
+    animation: vbp-constraint-pulse 1s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Integracion con Inspector Tabs
+   ========================================================================== */
+
+.vbp-inspector-section--constraints {
+    margin-top: 16px;
+}
+
+.vbp-inspector-section--constraints .vbp-section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vbp-inspector-section--constraints .vbp-section-header__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--vbp-constraint-color);
+}
