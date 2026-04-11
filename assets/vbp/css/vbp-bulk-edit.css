@@ -1,0 +1,444 @@
+/**
+ * VBP Bulk Edit Styles
+ *
+ * Estilos para la edicion masiva de propiedades en multiples elementos.
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.2.5
+ */
+
+/* ==========================================================================
+   Bulk Mode Indicator
+   ========================================================================== */
+
+.vbp-bulk-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, var(--vbp-accent, #8b5cf6) 0%, var(--vbp-primary, #6366f1) 100%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.vbp-bulk-indicator__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.vbp-bulk-indicator__icon svg {
+    opacity: 0.9;
+}
+
+.vbp-bulk-indicator__text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-bulk-indicator__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.vbp-bulk-indicator__clear:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.vbp-bulk-indicator__clear:active {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   Mixed Value Field Styling
+   ========================================================================== */
+
+.vbp-mixed-value {
+    position: relative;
+}
+
+/* Input fields with mixed values */
+.vbp-inspector.vbp-bulk-mode input.vbp-mixed-value,
+.vbp-inspector.vbp-bulk-mode select.vbp-mixed-value,
+.vbp-inspector.vbp-bulk-mode textarea.vbp-mixed-value {
+    background-color: rgba(139, 92, 246, 0.08) !important;
+    border-color: var(--vbp-accent, #8b5cf6) !important;
+    border-style: dashed !important;
+}
+
+.vbp-inspector.vbp-bulk-mode input.vbp-mixed-value::placeholder {
+    color: var(--vbp-accent, #8b5cf6);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Color inputs with mixed values */
+.vbp-inspector.vbp-bulk-mode input[type="color"].vbp-mixed-value {
+    opacity: 0.5;
+}
+
+/* Select fields - mixed option styling */
+.vbp-inspector.vbp-bulk-mode select.vbp-mixed-value option[value="__mixed__"] {
+    color: var(--vbp-accent, #8b5cf6);
+    font-style: italic;
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+/* ==========================================================================
+   Inspector Sections in Bulk Mode
+   ========================================================================== */
+
+/* Section titles with bulk indicator */
+.vbp-inspector.vbp-bulk-mode .vbp-inspector-section-title::after,
+.vbp-inspector.vbp-bulk-mode .vbp-inspector__section-title::after {
+    content: ' (bulk)';
+    color: var(--vbp-accent, #8b5cf6);
+    font-size: 10px;
+    font-weight: 400;
+    margin-left: 4px;
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   Focus States in Bulk Mode
+   ========================================================================== */
+
+/* Non-mixed fields when focused */
+.vbp-inspector.vbp-bulk-mode input:not(.vbp-mixed-value):focus,
+.vbp-inspector.vbp-bulk-mode select:not(.vbp-mixed-value):focus,
+.vbp-inspector.vbp-bulk-mode textarea:not(.vbp-mixed-value):focus {
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    border-color: var(--vbp-accent, #8b5cf6);
+}
+
+/* Mixed fields when focused - ready to override */
+.vbp-inspector.vbp-bulk-mode input.vbp-mixed-value:focus,
+.vbp-inspector.vbp-bulk-mode select.vbp-mixed-value:focus,
+.vbp-inspector.vbp-bulk-mode textarea.vbp-mixed-value:focus {
+    background-color: rgba(139, 92, 246, 0.12) !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+    border-style: solid !important;
+}
+
+/* ==========================================================================
+   Visual Feedback for Changes
+   ========================================================================== */
+
+/* Highlight changed fields briefly */
+@keyframes vbp-bulk-change-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+    }
+}
+
+.vbp-inspector.vbp-bulk-mode .vbp-bulk-changed {
+    animation: vbp-bulk-change-pulse 0.4s ease-out;
+}
+
+/* ==========================================================================
+   Disabled Elements Warning
+   ========================================================================== */
+
+/* Some fields may not support bulk edit */
+.vbp-inspector.vbp-bulk-mode .vbp-no-bulk-edit {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.vbp-inspector.vbp-bulk-mode .vbp-no-bulk-edit::after {
+    content: 'No disponible en bulk edit';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    color: var(--vbp-text-muted, #6b7280);
+    background: var(--vbp-bg, #fff);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+}
+
+.vbp-inspector.vbp-bulk-mode .vbp-no-bulk-edit:hover::after {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Bulk Edit Badge for Inspector Header
+   ========================================================================== */
+
+.vbp-bulk-edit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--vbp-accent, #8b5cf6);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Dark Theme Adjustments
+   ========================================================================== */
+
+.vbp-theme-dark .vbp-bulk-indicator {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(99, 102, 241, 0.9) 100%);
+}
+
+.vbp-theme-dark .vbp-inspector.vbp-bulk-mode input.vbp-mixed-value,
+.vbp-theme-dark .vbp-inspector.vbp-bulk-mode select.vbp-mixed-value,
+.vbp-theme-dark .vbp-inspector.vbp-bulk-mode textarea.vbp-mixed-value {
+    background-color: rgba(139, 92, 246, 0.15) !important;
+}
+
+.vbp-theme-dark .vbp-inspector.vbp-bulk-mode input.vbp-mixed-value::placeholder {
+    color: rgba(167, 139, 250, 0.9);
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .vbp-bulk-indicator {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .vbp-bulk-indicator__icon svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* ==========================================================================
+   Animation for Indicator Entrance
+   ========================================================================== */
+
+@keyframes vbp-bulk-indicator-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vbp-bulk-indicator {
+    animation: vbp-bulk-indicator-enter 0.2s ease-out;
+}
+
+/* ==========================================================================
+   Bulk Edit Panel
+   ========================================================================== */
+
+.vbp-bulk-edit-panel {
+    padding: 0;
+    background: var(--vbp-bg, #fff);
+    border-top: 1px solid var(--vbp-border, #e5e7eb);
+}
+
+.vbp-bulk-edit-panel__header {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(99, 102, 241, 0.05) 100%);
+    border-bottom: 1px solid var(--vbp-border, #e5e7eb);
+}
+
+.vbp-bulk-edit-panel__title {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text, #1f2937);
+    margin-bottom: 4px;
+}
+
+.vbp-bulk-edit-panel__hint {
+    display: block;
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+/* Sections */
+.vbp-bulk-edit-section {
+    border-bottom: 1px solid var(--vbp-border, #e5e7eb);
+}
+
+.vbp-bulk-edit-section:last-child {
+    border-bottom: none;
+}
+
+.vbp-bulk-edit-section__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--vbp-bg-alt, #f9fafb);
+    cursor: pointer;
+    user-select: none;
+}
+
+.vbp-bulk-edit-section__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vbp-accent, #8b5cf6);
+}
+
+.vbp-bulk-edit-section__title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text, #1f2937);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vbp-bulk-edit-section__content {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Fields */
+.vbp-bulk-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-bulk-field__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+}
+
+.vbp-bulk-field__input,
+.vbp-bulk-field__select {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid var(--vbp-border, #d1d5db);
+    border-radius: 6px;
+    background: var(--vbp-bg, #fff);
+    color: var(--vbp-text, #1f2937);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vbp-bulk-field__input:focus,
+.vbp-bulk-field__select:focus {
+    outline: none;
+    border-color: var(--vbp-accent, #8b5cf6);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+}
+
+.vbp-bulk-field__input.vbp-mixed-value,
+.vbp-bulk-field__select.vbp-mixed-value {
+    border-style: dashed;
+    border-color: var(--vbp-accent, #8b5cf6);
+    background-color: rgba(139, 92, 246, 0.05);
+}
+
+.vbp-bulk-field__input.vbp-mixed-value::placeholder {
+    color: var(--vbp-accent, #8b5cf6);
+    font-style: italic;
+}
+
+/* Color field wrapper */
+.vbp-bulk-field__color-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.vbp-bulk-field__color-wrapper.vbp-mixed-value {
+    padding: 2px;
+    border: 1px dashed var(--vbp-accent, #8b5cf6);
+    border-radius: 6px;
+    background-color: rgba(139, 92, 246, 0.05);
+}
+
+.vbp-bulk-field__color {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--vbp-border, #d1d5db);
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vbp-bulk-field__color::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+.vbp-bulk-field__color::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+
+.vbp-bulk-field__input--color {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Dark Theme for Bulk Edit Panel
+   ========================================================================== */
+
+.vbp-theme-dark .vbp-bulk-edit-panel {
+    background: var(--vbp-bg-dark, #1f2937);
+}
+
+.vbp-theme-dark .vbp-bulk-edit-panel__header {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+}
+
+.vbp-theme-dark .vbp-bulk-edit-section__header {
+    background: var(--vbp-bg-alt-dark, #374151);
+}
+
+.vbp-theme-dark .vbp-bulk-field__input,
+.vbp-theme-dark .vbp-bulk-field__select {
+    background: var(--vbp-bg-dark, #1f2937);
+    border-color: var(--vbp-border-dark, #4b5563);
+    color: var(--vbp-text-light, #f3f4f6);
+}
+
+.vbp-theme-dark .vbp-bulk-field__color {
+    border-color: var(--vbp-border-dark, #4b5563);
+}

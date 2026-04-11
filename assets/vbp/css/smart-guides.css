@@ -1,0 +1,310 @@
+/**
+ * VBP Smart Guides - Alignment guide lines
+ *
+ * Visual guides for drag & drop alignment:
+ * - Red lines: center/middle alignment
+ * - Blue lines: edge alignment (top, right, bottom, left)
+ * - Distance indicators: show spacing values
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.2.5
+ */
+
+/* ==========================================================================
+   Guide Container
+   ========================================================================== */
+
+.vbp-smart-guides-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: visible;
+}
+
+/* ==========================================================================
+   Guide Lines - Base Styles
+   ========================================================================== */
+
+.vbp-smart-guide {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1002;
+    transition: opacity 0.1s ease-out;
+}
+
+/* Horizontal guide (spans full width) */
+.vbp-smart-guide--horizontal {
+    left: 0;
+    right: 0;
+    height: 1px;
+}
+
+/* Vertical guide (spans full height) */
+.vbp-smart-guide--vertical {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+}
+
+/* ==========================================================================
+   Guide Colors
+   - Center alignment: Red (#ef4444)
+   - Edge alignment: Blue (#3b82f6)
+   ========================================================================== */
+
+/* Center/Middle alignment - RED */
+.vbp-smart-guide--center {
+    background-color: #ef4444;
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+}
+
+.vbp-smart-guide--center::before {
+    background-color: #ef4444;
+}
+
+/* Edge alignment (top, right, bottom, left) - BLUE */
+.vbp-smart-guide--edge {
+    background-color: #3b82f6;
+    box-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
+}
+
+.vbp-smart-guide--edge::before {
+    background-color: #3b82f6;
+}
+
+/* ==========================================================================
+   Dashed Pattern (Optional - for visual distinction)
+   ========================================================================== */
+
+.vbp-smart-guide--dashed.vbp-smart-guide--horizontal {
+    background: none;
+    border: none;
+}
+
+.vbp-smart-guide--dashed.vbp-smart-guide--horizontal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: repeating-linear-gradient(
+        90deg,
+        currentColor,
+        currentColor 4px,
+        transparent 4px,
+        transparent 8px
+    );
+}
+
+.vbp-smart-guide--dashed.vbp-smart-guide--vertical {
+    background: none;
+    border: none;
+}
+
+.vbp-smart-guide--dashed.vbp-smart-guide--vertical::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(
+        0deg,
+        currentColor,
+        currentColor 4px,
+        transparent 4px,
+        transparent 8px
+    );
+}
+
+/* ==========================================================================
+   Distance Indicators
+   ========================================================================== */
+
+.vbp-smart-guide-distance {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1003;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #ffffff;
+    background-color: #1f2937;
+    border-radius: 3px;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    animation: vbp-distance-fade-in 0.15s ease-out;
+}
+
+/* Horizontal distance indicator */
+.vbp-smart-guide-distance--horizontal {
+    transform: translate(-50%, -100%);
+    margin-top: -4px;
+}
+
+/* Vertical distance indicator */
+.vbp-smart-guide-distance--vertical {
+    transform: translate(-100%, -50%);
+    margin-left: -4px;
+}
+
+/* Distance indicator with arrow */
+.vbp-smart-guide-distance::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 4px solid transparent;
+}
+
+.vbp-smart-guide-distance--horizontal::before {
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: #1f2937;
+}
+
+.vbp-smart-guide-distance--vertical::before {
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left-color: #1f2937;
+}
+
+/* Animation */
+@keyframes vbp-distance-fade-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.vbp-smart-guide-distance--horizontal {
+    animation-name: vbp-distance-fade-in-h;
+}
+
+@keyframes vbp-distance-fade-in-h {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -100%) scale(1);
+    }
+}
+
+.vbp-smart-guide-distance--vertical {
+    animation-name: vbp-distance-fade-in-v;
+}
+
+@keyframes vbp-distance-fade-in-v {
+    from {
+        opacity: 0;
+        transform: translate(-100%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-100%, -50%) scale(1);
+    }
+}
+
+/* ==========================================================================
+   Snap Line (Legacy/Ruler-based snapping)
+   ========================================================================== */
+
+.vbp-snap-line {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.vbp-snap-line--horizontal {
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #10b981;
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
+}
+
+.vbp-snap-line--vertical {
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #10b981;
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+.vbp-editor--dark .vbp-smart-guide-distance {
+    background-color: #374151;
+    border: 1px solid #4b5563;
+}
+
+.vbp-editor--dark .vbp-smart-guide-distance--horizontal::before {
+    border-top-color: #374151;
+}
+
+.vbp-editor--dark .vbp-smart-guide-distance--vertical::before {
+    border-left-color: #374151;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .vbp-smart-guide-distance,
+    .vbp-smart-guide-distance--horizontal,
+    .vbp-smart-guide-distance--vertical {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Toggle Button for Smart Guides
+   ========================================================================== */
+
+.vbp-smart-guides-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #6b7280);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-smart-guides-toggle:hover {
+    background: var(--vbp-bg-hover, rgba(0, 0, 0, 0.05));
+    border-color: var(--vbp-border, #e5e7eb);
+}
+
+.vbp-smart-guides-toggle.is-active {
+    color: var(--vbp-primary, #3b82f6);
+    background: var(--vbp-primary-alpha, rgba(59, 130, 246, 0.1));
+    border-color: var(--vbp-primary, #3b82f6);
+}
+
+.vbp-smart-guides-toggle .material-icons-outlined {
+    font-size: 16px;
+}

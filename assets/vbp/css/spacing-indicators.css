@@ -1,0 +1,254 @@
+/**
+ * VBP Spacing Indicators - Estilos
+ *
+ * Estilos para los indicadores de distancia entre elementos.
+ * Color naranja para diferenciarse de las guias de alineacion (verde/rosa).
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.2.5
+ */
+
+/* ==========================================================================
+   Contenedor de Indicadores
+   ========================================================================== */
+
+.vbp-spacing-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 999;
+    overflow: visible;
+}
+
+/* ==========================================================================
+   Indicador Base
+   ========================================================================== */
+
+.vbp-spacing-indicator {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Indicador Horizontal
+   ========================================================================== */
+
+.vbp-spacing-horizontal {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        #f97316 5%,
+        #f97316 95%,
+        transparent 100%
+    );
+}
+
+/* Flechas bidireccionales horizontales */
+.vbp-spacing-horizontal::before,
+.vbp-spacing-horizontal::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* Flecha izquierda (apuntando hacia la izquierda) */
+.vbp-spacing-horizontal::before {
+    left: 0;
+    border-width: 4px 6px 4px 0;
+    border-color: transparent #f97316 transparent transparent;
+}
+
+/* Flecha derecha (apuntando hacia la derecha) */
+.vbp-spacing-horizontal::after {
+    right: 0;
+    border-width: 4px 0 4px 6px;
+    border-color: transparent transparent transparent #f97316;
+}
+
+/* Lineas verticales en los extremos */
+.vbp-spacing-horizontal .vbp-spacing-cap-left,
+.vbp-spacing-horizontal .vbp-spacing-cap-right {
+    position: absolute;
+    width: 1px;
+    height: 12px;
+    background-color: #f97316;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.vbp-spacing-horizontal .vbp-spacing-cap-left {
+    left: 0;
+}
+
+.vbp-spacing-horizontal .vbp-spacing-cap-right {
+    right: 0;
+}
+
+/* ==========================================================================
+   Indicador Vertical
+   ========================================================================== */
+
+.vbp-spacing-vertical {
+    width: 1px;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        #f97316 5%,
+        #f97316 95%,
+        transparent 100%
+    );
+}
+
+/* Flechas bidireccionales verticales */
+.vbp-spacing-vertical::before,
+.vbp-spacing-vertical::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* Flecha superior (apuntando hacia arriba) */
+.vbp-spacing-vertical::before {
+    top: 0;
+    border-width: 0 4px 6px 4px;
+    border-color: transparent transparent #f97316 transparent;
+}
+
+/* Flecha inferior (apuntando hacia abajo) */
+.vbp-spacing-vertical::after {
+    bottom: 0;
+    border-width: 6px 4px 0 4px;
+    border-color: #f97316 transparent transparent transparent;
+}
+
+/* Lineas horizontales en los extremos */
+.vbp-spacing-vertical .vbp-spacing-cap-top,
+.vbp-spacing-vertical .vbp-spacing-cap-bottom {
+    position: absolute;
+    height: 1px;
+    width: 12px;
+    background-color: #f97316;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-spacing-vertical .vbp-spacing-cap-top {
+    top: 0;
+}
+
+.vbp-spacing-vertical .vbp-spacing-cap-bottom {
+    bottom: 0;
+}
+
+/* ==========================================================================
+   Etiqueta con Valor
+   ========================================================================== */
+
+.vbp-spacing-label {
+    position: absolute;
+    background-color: #f97316;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    line-height: 1.2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Posicion de la etiqueta en indicadores horizontales */
+.vbp-spacing-horizontal .vbp-spacing-label {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-14px);
+}
+
+/* Posicion de la etiqueta en indicadores verticales */
+.vbp-spacing-vertical .vbp-spacing-label {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateX(12px);
+}
+
+/* ==========================================================================
+   Estados y Variantes
+   ========================================================================== */
+
+/* Indicador durante drag (mas prominente) */
+.vbp-dragging .vbp-spacing-indicator {
+    opacity: 1;
+}
+
+/* Animacion sutil de entrada */
+.vbp-spacing-indicator {
+    animation: vbp-spacing-fade-in 0.15s ease-out;
+}
+
+@keyframes vbp-spacing-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   Indicadores de Distancias Muy Pequenas (< 10px)
+   ========================================================================== */
+
+/* Para distancias pequenas, usar etiqueta mas compacta */
+.vbp-spacing-indicator[data-value-small] .vbp-spacing-label {
+    font-size: 9px;
+    padding: 1px 4px;
+}
+
+/* ==========================================================================
+   Tema Oscuro
+   ========================================================================== */
+
+.vbp-theme-dark .vbp-spacing-label {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Accesibilidad - Reducir Movimiento
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .vbp-spacing-indicator {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Estados de Alta Densidad (muchos indicadores)
+   ========================================================================== */
+
+/* Cuando hay muchos indicadores, reducir opacidad de los menos importantes */
+.vbp-spacing-container.vbp-many-indicators .vbp-spacing-indicator:nth-child(n+5) {
+    opacity: 0.7;
+}
+
+.vbp-spacing-container.vbp-many-indicators .vbp-spacing-indicator:nth-child(n+7) {
+    opacity: 0.5;
+}
