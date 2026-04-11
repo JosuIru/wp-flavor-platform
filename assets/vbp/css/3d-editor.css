@@ -1,0 +1,998 @@
+/**
+ * VBP 3D Editor - Estilos para el editor 3D/WebGL
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.4.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+:root {
+    /* Colores 3D */
+    --vbp-3d-primary: #6366f1;
+    --vbp-3d-secondary: #8b5cf6;
+    --vbp-3d-success: #10b981;
+    --vbp-3d-warning: #f59e0b;
+    --vbp-3d-danger: #ef4444;
+    --vbp-3d-info: #3b82f6;
+
+    /* Ejes 3D */
+    --vbp-3d-axis-x: #ef4444;
+    --vbp-3d-axis-y: #22c55e;
+    --vbp-3d-axis-z: #3b82f6;
+
+    /* Canvas */
+    --vbp-3d-canvas-bg: #1a1a2e;
+    --vbp-3d-grid-color: rgba(255, 255, 255, 0.1);
+
+    /* Inspector */
+    --vbp-3d-inspector-bg: #1e1e2e;
+    --vbp-3d-inspector-border: #2d2d3d;
+    --vbp-3d-inspector-text: #e4e4e7;
+    --vbp-3d-inspector-text-muted: #71717a;
+    --vbp-3d-inspector-input-bg: #27273a;
+    --vbp-3d-inspector-input-border: #3d3d52;
+    --vbp-3d-inspector-hover: #2d2d42;
+
+    /* Sombras */
+    --vbp-3d-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --vbp-3d-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --vbp-3d-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Contenedor de escena 3D
+   ========================================================================== */
+
+.vbp-3d-scene-container {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    background: var(--vbp-3d-canvas-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--vbp-3d-shadow-lg);
+}
+
+.vbp-3d-scene-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Loading state */
+.vbp-3d-scene-container--loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.9);
+    z-index: 10;
+}
+
+.vbp-3d-scene-container--loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid var(--vbp-3d-inspector-border);
+    border-top-color: var(--vbp-3d-primary);
+    border-radius: 50%;
+    animation: vbp-3d-spin 0.8s linear infinite;
+    z-index: 11;
+}
+
+@keyframes vbp-3d-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Overlay de controles */
+.vbp-3d-overlay-controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+.vbp-3d-overlay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(30, 30, 46, 0.9);
+    border: 1px solid var(--vbp-3d-inspector-border);
+    border-radius: 8px;
+    color: var(--vbp-3d-inspector-text);
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+}
+
+.vbp-3d-overlay-btn:hover {
+    background: var(--vbp-3d-hover);
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-3d-overlay-btn.active {
+    background: var(--vbp-3d-primary);
+    border-color: var(--vbp-3d-primary);
+}
+
+/* Info del viewport */
+.vbp-3d-viewport-info {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    display: flex;
+    gap: 16px;
+    padding: 8px 12px;
+    background: rgba(30, 30, 46, 0.9);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--vbp-3d-inspector-text-muted);
+    backdrop-filter: blur(8px);
+    z-index: 5;
+}
+
+.vbp-3d-viewport-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-3d-viewport-info .label {
+    color: var(--vbp-3d-inspector-text);
+}
+
+/* ==========================================================================
+   Inspector 3D
+   ========================================================================== */
+
+.vbp-3d-inspector {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    max-height: 100%;
+    background: var(--vbp-3d-inspector-bg);
+    border-left: 1px solid var(--vbp-3d-inspector-border);
+    color: var(--vbp-3d-inspector-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+/* Header */
+.vbp-3d-inspector__header {
+    padding: 16px;
+    border-bottom: 1px solid var(--vbp-3d-inspector-border);
+}
+
+.vbp-3d-inspector__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--vbp-3d-inspector-text);
+}
+
+/* Tabs */
+.vbp-3d-inspector__tabs {
+    display: flex;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--vbp-3d-inspector-border);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.vbp-3d-inspector__tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--vbp-3d-inspector-text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vbp-3d-inspector__tab:hover {
+    color: var(--vbp-3d-inspector-text);
+}
+
+.vbp-3d-inspector__tab.active {
+    color: var(--vbp-3d-primary);
+    border-bottom-color: var(--vbp-3d-primary);
+}
+
+.vbp-3d-inspector__tab .icon {
+    font-size: 14px;
+}
+
+.vbp-3d-inspector__tab .label {
+    display: none;
+}
+
+@media (min-width: 380px) {
+    .vbp-3d-inspector__tab .label {
+        display: inline;
+    }
+}
+
+/* Panels container */
+.vbp-3d-inspector__panels {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+/* Panel */
+.vbp-3d-inspector__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Section */
+.vbp-3d-inspector__section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.vbp-3d-inspector__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--vbp-3d-inspector-border);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vbp-3d-inspector-text-muted);
+}
+
+.vbp-3d-inspector__section-header .icon {
+    margin-right: 6px;
+}
+
+/* Mode buttons */
+.vbp-3d-inspector__mode-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+/* Axes inputs */
+.vbp-3d-inspector__axes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-3d-inspector__axis-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-3d-inspector__axis-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.vbp-3d-inspector__axis-label.axis-x {
+    background: var(--vbp-3d-axis-x);
+}
+
+.vbp-3d-inspector__axis-label.axis-y {
+    background: var(--vbp-3d-axis-y);
+}
+
+.vbp-3d-inspector__axis-label.axis-z {
+    background: var(--vbp-3d-axis-z);
+}
+
+.vbp-3d-inspector__axis-input {
+    flex: 1;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    color: var(--vbp-3d-inspector-text);
+    font-size: 13px;
+    font-family: 'SF Mono', Monaco, monospace;
+}
+
+.vbp-3d-inspector__axis-input:focus {
+    outline: none;
+    border-color: var(--vbp-3d-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.vbp-3d-inspector__unit {
+    font-size: 11px;
+    color: var(--vbp-3d-inspector-text-muted);
+    min-width: 20px;
+}
+
+/* Uniform scale toggle */
+.vbp-3d-inspector__uniform-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--vbp-3d-inspector-text-muted);
+    cursor: pointer;
+}
+
+.vbp-3d-inspector__uniform-toggle input {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--vbp-3d-primary);
+}
+
+/* Property rows */
+.vbp-3d-inspector__prop-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.vbp-3d-inspector__prop-row:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-3d-inspector__prop-label {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--vbp-3d-inspector-text-muted);
+}
+
+/* Input types */
+.vbp-3d-inspector__color-input {
+    width: 48px;
+    height: 32px;
+    padding: 2px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.vbp-3d-inspector__color-input::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+.vbp-3d-inspector__color-input::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+
+.vbp-3d-inspector__range-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.vbp-3d-inspector__range-input {
+    flex: 1;
+    height: 4px;
+    background: var(--vbp-3d-inspector-input-border);
+    border-radius: 2px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.vbp-3d-inspector__range-input::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--vbp-3d-primary);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.vbp-3d-inspector__range-value {
+    min-width: 40px;
+    font-size: 11px;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--vbp-3d-inspector-text);
+    text-align: right;
+}
+
+.vbp-3d-inspector__checkbox-input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--vbp-3d-primary);
+}
+
+.vbp-3d-inspector__select {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    color: var(--vbp-3d-inspector-text);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.vbp-3d-inspector__select:focus {
+    outline: none;
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-3d-inspector__number-input,
+.vbp-3d-inspector__text-input {
+    width: 80px;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    color: var(--vbp-3d-inspector-text);
+    font-size: 13px;
+}
+
+/* Texture slots */
+.vbp-3d-inspector__texture-slots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.vbp-3d-inspector__texture-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border-radius: 6px;
+}
+
+.vbp-3d-inspector__texture-slot label {
+    font-size: 11px;
+    color: var(--vbp-3d-inspector-text-muted);
+}
+
+/* Light buttons */
+.vbp-3d-inspector__light-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+/* Lights list */
+.vbp-3d-inspector__lights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vbp-3d-inspector__light-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vbp-3d-inspector__light-item:hover {
+    background: var(--vbp-3d-hover);
+}
+
+.vbp-3d-inspector__light-item.selected {
+    border: 1px solid var(--vbp-3d-primary);
+}
+
+/* Camera presets */
+.vbp-3d-inspector__camera-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+/* Control options */
+.vbp-3d-inspector__control-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-3d-inspector__control-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--vbp-3d-inspector-text);
+    cursor: pointer;
+}
+
+/* Background options */
+.vbp-3d-inspector__background-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vbp-3d-inspector__bg-colors {
+    display: flex;
+    gap: 12px;
+}
+
+.vbp-3d-inspector__bg-colors label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+/* Scene presets */
+.vbp-3d-inspector__scene-presets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+/* Render options */
+.vbp-3d-inspector__render-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-3d-inspector__render-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.vbp-3d-inspector__render-options input[type="number"] {
+    width: 60px;
+    height: 28px;
+    padding: 0 8px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 4px;
+    color: var(--vbp-3d-inspector-text);
+    font-size: 12px;
+}
+
+/* Objects tree */
+.vbp-3d-inspector__objects-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.vbp-3d-inspector__object-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vbp-3d-inspector__object-item:hover {
+    background: var(--vbp-3d-hover);
+}
+
+.vbp-3d-inspector__object-item.selected {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid var(--vbp-3d-primary);
+}
+
+.vbp-3d-inspector__object-item .icon {
+    font-size: 16px;
+}
+
+.vbp-3d-inspector__object-item .name {
+    flex: 1;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-3d-inspector__object-item .type {
+    font-size: 10px;
+    color: var(--vbp-3d-inspector-text-muted);
+    text-transform: uppercase;
+}
+
+/* Export buttons */
+.vbp-3d-inspector__export-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+/* Empty state */
+.vbp-3d-inspector__empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--vbp-3d-inspector-text-muted);
+}
+
+/* Footer */
+.vbp-3d-inspector__footer {
+    padding: 12px;
+    border-top: 1px solid var(--vbp-3d-inspector-border);
+}
+
+.vbp-3d-inspector__quick-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+
+.vbp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    color: var(--vbp-3d-inspector-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vbp-btn:hover {
+    background: var(--vbp-3d-hover);
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-btn.active {
+    background: var(--vbp-3d-primary);
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-btn--sm {
+    padding: 6px 10px;
+    font-size: 11px;
+}
+
+.vbp-btn--icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+.vbp-btn--primary {
+    background: var(--vbp-3d-primary);
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-btn--primary:hover {
+    background: #5558e3;
+}
+
+.vbp-btn--danger {
+    color: var(--vbp-3d-danger);
+}
+
+.vbp-btn--danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--vbp-3d-danger);
+}
+
+/* ==========================================================================
+   Gizmos de transformación
+   ========================================================================== */
+
+.vbp-3d-gizmo {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.vbp-3d-gizmo__axis {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.vbp-3d-gizmo__axis--x {
+    background: var(--vbp-3d-axis-x);
+}
+
+.vbp-3d-gizmo__axis--y {
+    background: var(--vbp-3d-axis-y);
+}
+
+.vbp-3d-gizmo__axis--z {
+    background: var(--vbp-3d-axis-z);
+}
+
+.vbp-3d-gizmo__axis:hover {
+    filter: brightness(1.2);
+}
+
+/* ==========================================================================
+   Panel de primitivas
+   ========================================================================== */
+
+.vbp-3d-primitives-panel {
+    position: absolute;
+    top: 60px;
+    left: 12px;
+    width: 200px;
+    padding: 12px;
+    background: rgba(30, 30, 46, 0.95);
+    border: 1px solid var(--vbp-3d-inspector-border);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+}
+
+.vbp-3d-primitives-panel__title {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-3d-inspector-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vbp-3d-primitives-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.vbp-3d-primitive-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    background: var(--vbp-3d-inspector-input-bg);
+    border: 1px solid var(--vbp-3d-inspector-input-border);
+    border-radius: 6px;
+    color: var(--vbp-3d-inspector-text);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vbp-3d-primitive-btn:hover {
+    background: var(--vbp-3d-hover);
+    border-color: var(--vbp-3d-primary);
+}
+
+.vbp-3d-primitive-btn .icon {
+    font-size: 20px;
+}
+
+.vbp-3d-primitive-btn .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================================================
+   Tooltips
+   ========================================================================== */
+
+.vbp-3d-tooltip {
+    position: absolute;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 11px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.vbp-3d-tooltip::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+}
+
+.vbp-3d-tooltip--top::after {
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* ==========================================================================
+   Progress indicators
+   ========================================================================== */
+
+.vbp-3d-progress {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    background: rgba(30, 30, 46, 0.95);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    z-index: 20;
+}
+
+.vbp-3d-progress__text {
+    font-size: 12px;
+    color: var(--vbp-3d-inspector-text);
+}
+
+.vbp-3d-progress__bar {
+    width: 200px;
+    height: 4px;
+    background: var(--vbp-3d-inspector-input-border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.vbp-3d-progress__fill {
+    height: 100%;
+    background: var(--vbp-3d-primary);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .vbp-3d-inspector {
+        width: 100%;
+        max-height: 50vh;
+        border-left: none;
+        border-top: 1px solid var(--vbp-3d-inspector-border);
+    }
+
+    .vbp-3d-inspector__tab .label {
+        display: none;
+    }
+
+    .vbp-3d-inspector__tab .icon {
+        font-size: 16px;
+    }
+}
+
+/* ==========================================================================
+   Dark mode adjustments (si el tema del editor es claro)
+   ========================================================================== */
+
+.vbp-editor--light .vbp-3d-inspector {
+    --vbp-3d-inspector-bg: #f8fafc;
+    --vbp-3d-inspector-border: #e2e8f0;
+    --vbp-3d-inspector-text: #1e293b;
+    --vbp-3d-inspector-text-muted: #64748b;
+    --vbp-3d-inspector-input-bg: #ffffff;
+    --vbp-3d-inspector-input-border: #cbd5e1;
+    --vbp-3d-inspector-hover: #f1f5f9;
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes vbp-3d-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes vbp-3d-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.vbp-3d-animate-pulse {
+    animation: vbp-3d-pulse 1.5s ease-in-out infinite;
+}
+
+.vbp-3d-animate-bounce {
+    animation: vbp-3d-bounce 0.5s ease;
+}
+
+/* ==========================================================================
+   Efectos de selección
+   ========================================================================== */
+
+.vbp-3d-selection-outline {
+    position: absolute;
+    border: 2px dashed var(--vbp-3d-primary);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 50;
+    animation: vbp-3d-selection-dash 0.5s linear infinite;
+}
+
+@keyframes vbp-3d-selection-dash {
+    to { stroke-dashoffset: -8px; }
+}
+
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+
+.vbp-3d-hidden {
+    display: none !important;
+}
+
+.vbp-3d-invisible {
+    visibility: hidden;
+}
+
+.vbp-3d-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-3d-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--vbp-3d-inspector-border) transparent;
+}
+
+.vbp-3d-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vbp-3d-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.vbp-3d-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--vbp-3d-inspector-border);
+    border-radius: 3px;
+}
+
+.vbp-3d-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--vbp-3d-inspector-text-muted);
+}
