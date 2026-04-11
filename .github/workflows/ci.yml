@@ -1,0 +1,309 @@
+# CI Pipeline for Flavor Platform
+# Runs on push to master/develop and on pull requests to master
+#
+# Jobs:
+# - php-lint: PHP syntax check and PHPCS
+# - js-lint: ESLint and Stylelint
+# - php-tests: PHPUnit tests with MySQL
+# - js-tests: Jest tests with coverage
+# - e2e-tests: Playwright E2E tests (optional)
+# - build: Build assets for production
+
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+
+# Cancel previous runs on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PHP_VERSION: '8.1'
+  NODE_VERSION: '20'
+
+jobs:
+  # ===========================================================================
+  # PHP Linting
+  # ===========================================================================
+  php-lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: phpcs, phpstan
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHP Syntax Check
+        run: |
+          find includes admin addons -name "*.php" -print0 | xargs -0 -n 1 php -l
+
+      - name: Run PHPCS
+        run: composer lint
+        continue-on-error: true
+
+      - name: Run PHPStan
+        run: composer analyze
+        continue-on-error: true
+
+  # ===========================================================================
+  # JavaScript/CSS Linting
+  # ===========================================================================
+  js-lint:
+    name: JS/CSS Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint:js
+        continue-on-error: true
+
+      - name: Run Stylelint
+        run: npm run lint:css
+        continue-on-error: true
+
+  # ===========================================================================
+  # PHP Unit Tests
+  # ===========================================================================
+  php-tests:
+    name: PHP Tests
+    runs-on: ubuntu-latest
+    needs: php-lint
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mysqli, pdo_mysql, intl, zip
+          coverage: xdebug
+          tools: phpunit
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Install WordPress Test Suite
+        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest true
+
+      - name: Run PHPUnit (Unit Tests)
+        run: vendor/bin/phpunit --testsuite unit --coverage-clover coverage-unit.xml
+
+      - name: Run PHPUnit (Integration Tests)
+        run: vendor/bin/phpunit --testsuite integration --no-coverage
+        continue-on-error: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage-unit.xml
+          flags: php
+          name: php-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  # ===========================================================================
+  # JavaScript Tests
+  # ===========================================================================
+  js-tests:
+    name: JS Tests
+    runs-on: ubuntu-latest
+    needs: js-lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest tests
+        run: npm run test:js -- --coverage --coverageReporters=lcov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: reports/coverage-js/lcov.info
+          flags: javascript
+          name: js-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  # ===========================================================================
+  # E2E Tests (Optional - requires Docker setup)
+  # ===========================================================================
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [php-tests, js-tests]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start WordPress with Docker
+        run: |
+          docker-compose -f docker-compose.yml up -d
+          sleep 30
+
+      - name: Wait for WordPress
+        run: |
+          timeout 60 bash -c 'until curl -s http://localhost:8080 > /dev/null; do sleep 2; done'
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=chromium
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Stop Docker
+        if: always()
+        run: docker-compose -f docker-compose.yml down
+
+  # ===========================================================================
+  # Build
+  # ===========================================================================
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [php-lint, js-lint, php-tests, js-tests]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build:prod
+
+      - name: Build VBP assets
+        run: npm run build:vbp
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            assets/js/*.min.js
+            assets/css/*.min.css
+            assets/vbp/dist/
+          retention-days: 7
+
+  # ===========================================================================
+  # Status Check (for branch protection)
+  # ===========================================================================
+  ci-status:
+    name: CI Status
+    runs-on: ubuntu-latest
+    needs: [php-lint, js-lint, php-tests, js-tests, build]
+    if: always()
+
+    steps:
+      - name: Check CI status
+        run: |
+          if [[ "${{ needs.php-lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.js-lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.php-tests.result }}" == "failure" ]] || \
+             [[ "${{ needs.js-tests.result }}" == "failure" ]] || \
+             [[ "${{ needs.build.result }}" == "failure" ]]; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI passed"

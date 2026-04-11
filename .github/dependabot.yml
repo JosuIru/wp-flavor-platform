@@ -1,0 +1,100 @@
+# Dependabot configuration for Flavor Platform
+# Automatically creates PRs for dependency updates
+
+version: 2
+
+updates:
+  # ==========================================================================
+  # NPM Dependencies
+  # ==========================================================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "gailu-labs"
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Group all minor and patch updates together
+      npm-minor-patches:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Keep major updates separate
+      npm-major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    ignore:
+      # Ignore major updates that might break compatibility
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+
+  # ==========================================================================
+  # Composer Dependencies
+  # ==========================================================================
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "gailu-labs"
+    labels:
+      - "dependencies"
+      - "php"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Group dev dependencies
+      composer-dev:
+        patterns:
+          - "*"
+        dependency-type: "development"
+      # Keep production deps separate
+      composer-prod:
+        patterns:
+          - "*"
+        dependency-type: "production"
+    ignore:
+      # PHPUnit major versions need careful testing
+      - dependency-name: "phpunit/phpunit"
+        update-types: ["version-update:semver-major"]
+
+  # ==========================================================================
+  # GitHub Actions
+  # ==========================================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "gailu-labs"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      # Group all action updates
+      actions:
+        patterns:
+          - "*"

@@ -1,0 +1,164 @@
+# Deploy Preview Pipeline for Flavor Platform
+# Creates preview environments for pull requests
+
+name: Deploy Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # ===========================================================================
+  # Build Preview
+  # ===========================================================================
+  build-preview:
+    name: Build Preview
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-url: ${{ steps.upload.outputs.artifact-url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-dev --optimize-autoloader
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: |
+          npm run build:prod
+          npm run build:vbp
+
+      - name: Create preview package
+        run: |
+          mkdir -p preview/flavor-platform
+
+          # Copy essential files
+          cp -r includes preview/flavor-platform/
+          cp -r admin preview/flavor-platform/
+          cp -r addons preview/flavor-platform/
+          cp -r assets preview/flavor-platform/
+          cp -r templates preview/flavor-platform/
+          cp -r languages preview/flavor-platform/
+          cp -r vendor preview/flavor-platform/
+          cp flavor-platform.php preview/flavor-platform/
+          cp uninstall.php preview/flavor-platform/
+
+          # Clean up
+          find preview/flavor-platform/assets -name "*.map" -delete 2>/dev/null || true
+
+          # Create ZIP
+          cd preview
+          zip -r ../flavor-platform-preview-pr${{ github.event.pull_request.number }}.zip flavor-platform
+
+      - name: Upload preview artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-pr${{ github.event.pull_request.number }}
+          path: flavor-platform-preview-pr${{ github.event.pull_request.number }}.zip
+          retention-days: 7
+
+  # ===========================================================================
+  # Comment on PR
+  # ===========================================================================
+  comment:
+    name: Comment PR
+    runs-on: ubuntu-latest
+    needs: build-preview
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Preview Build
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ## Preview Build Ready
+
+            A preview build has been created for this pull request.
+
+            ### Download
+
+            You can download the preview plugin from the [Actions artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+            **Artifact name**: `preview-pr${{ github.event.pull_request.number }}`
+
+            ### Installation
+
+            1. Download the ZIP from the link above
+            2. Go to WordPress Admin > Plugins > Add New > Upload Plugin
+            3. Upload the ZIP file
+            4. Activate and test
+
+            ### Changes in this PR
+
+            - **Branch**: `${{ github.head_ref }}`
+            - **Commit**: `${{ github.event.pull_request.head.sha }}`
+            - **Updated**: ${{ github.event.pull_request.updated_at }}
+
+            ---
+            *This comment is automatically updated on each push to this PR.*
+
+  # ===========================================================================
+  # Run Preview Tests
+  # ===========================================================================
+  preview-tests:
+    name: Preview Tests
+    runs-on: ubuntu-latest
+    needs: build-preview
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run quick validation
+        run: |
+          # Basic validation tests
+          echo "Running quick validation..."
+
+          # Check PHP syntax
+          find includes admin -name "*.php" -print0 | xargs -0 -n 1 php -l 2>&1 | grep -v "No syntax errors" || true
+
+          # Check for common issues
+          echo "Checking for debug statements..."
+          grep -rn "var_dump\|print_r\|console\.log" --include="*.php" --include="*.js" includes/ admin/ assets/js/ 2>/dev/null | head -10 || echo "No debug statements found"
+
+          echo "Validation complete"
