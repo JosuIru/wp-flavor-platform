@@ -13,7 +13,7 @@ class VbpAutomationTest extends Flavor_TestCase {
         parent::setUp();
 
         // Cargar funciones del plugin
-        require_once FLAVOR_PLUGIN_DIR . '/flavor-chat-ia.php';
+        require_once FLAVOR_PLUGIN_DIR . '/flavor-platform.php';
     }
 
     public function test_flavor_check_vbp_automation_access_with_valid_key_and_scope() {
@@ -86,7 +86,7 @@ class LoggingFunctionsTest extends Flavor_TestCase {
     protected function setUp(): void {
         parent::setUp();
 
-        require_once FLAVOR_PLUGIN_DIR . '/flavor-chat-ia.php';
+        require_once FLAVOR_PLUGIN_DIR . '/flavor-platform.php';
     }
 
     public function test_flavor_chat_ia_log_does_not_throw() {

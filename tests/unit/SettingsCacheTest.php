@@ -13,7 +13,7 @@ class SettingsCacheTest extends Flavor_TestCase {
         parent::setUp();
 
         // Cargar funciones del plugin
-        require_once FLAVOR_PLUGIN_DIR . '/flavor-chat-ia.php';
+        require_once FLAVOR_PLUGIN_DIR . '/flavor-platform.php';
 
         // Limpiar cache antes de cada test
         if (function_exists('flavor_invalidate_settings_cache')) {

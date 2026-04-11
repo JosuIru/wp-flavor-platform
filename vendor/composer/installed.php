@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'gailu/flavor-chat-ia',
+        'name' => 'gailu/flavor-platform',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '6b3686305d7bb55238323c79eee4e5fda0ede0f3',
+        'reference' => 'f6057198baa8e16bccbfeadc9c576a7d677b62db',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -50,18 +50,18 @@
             'dev_requirement' => true,
         ),
         'doctrine/instantiator' => array(
-            'pretty_version' => '2.1.0',
-            'version' => '2.1.0.0',
-            'reference' => '23da848e1a2308728fe5fdddabf4be17ff9720c7',
+            'pretty_version' => '2.0.0',
+            'version' => '2.0.0.0',
+            'reference' => 'c6222283fa3f4ac679f8b9ced9a4e23f163e80d0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../doctrine/instantiator',
             'aliases' => array(),
             'dev_requirement' => true,
         ),
-        'gailu/flavor-chat-ia' => array(
+        'gailu/flavor-platform' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '6b3686305d7bb55238323c79eee4e5fda0ede0f3',
+            'reference' => 'f6057198baa8e16bccbfeadc9c576a7d677b62db',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
