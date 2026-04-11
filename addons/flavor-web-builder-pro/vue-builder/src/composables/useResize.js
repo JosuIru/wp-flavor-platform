@@ -1,5 +1,20 @@
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import { useBuilderStore } from '../stores/builderStore';
+
+// Mapeo de handles a cursores CSS (inmutable)
+const HANDLE_CURSORS = Object.freeze({
+  n: 'ns-resize',
+  s: 'ns-resize',
+  e: 'ew-resize',
+  w: 'ew-resize',
+  ne: 'nesw-resize',
+  sw: 'nesw-resize',
+  nw: 'nwse-resize',
+  se: 'nwse-resize',
+});
+
+// Handles de esquinas que mantienen aspect ratio
+const CORNER_HANDLES = Object.freeze(['se', 'sw', 'ne', 'nw']);
 
 /**
  * Composable para redimensionar elementos (imágenes, secciones)
@@ -109,7 +124,7 @@ export function useResize() {
     newHeight = Math.max(data.minHeight, Math.min(data.maxHeight, newHeight));
 
     // Mantener proporción si es necesario
-    if (data.maintainAspectRatio && ['se', 'sw', 'ne', 'nw'].includes(data.handle)) {
+    if (data.maintainAspectRatio && CORNER_HANDLES.includes(data.handle)) {
       // Usar el cambio mayor para determinar las dimensiones
       const widthRatio = newWidth / data.startWidth;
       const heightRatio = newHeight / data.startHeight;
@@ -182,17 +197,7 @@ export function useResize() {
    * Obtener cursor según handle
    */
   function getCursorForHandle(handle) {
-    const cursors = {
-      n: 'ns-resize',
-      s: 'ns-resize',
-      e: 'ew-resize',
-      w: 'ew-resize',
-      ne: 'nesw-resize',
-      sw: 'nesw-resize',
-      nw: 'nwse-resize',
-      se: 'nwse-resize',
-    };
-    return cursors[handle] || 'default';
+    return HANDLE_CURSORS[handle] || 'default';
   }
 
   /**
