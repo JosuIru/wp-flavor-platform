@@ -1,0 +1,1292 @@
+/**
+ * VBP Advanced Animations - Estilos CSS
+ *
+ * Estilos para el sistema de animaciones avanzadas incluyendo:
+ * - Editor de curvas bezier mejorado
+ * - Timeline con tracks multiples
+ * - Indicadores de scroll trigger
+ * - Preview de motion path
+ * - Presets avanzados
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.4.0
+ */
+
+/* ============================================
+   Variables CSS para animaciones
+   ============================================ */
+:root {
+    --vbp-anim-primary: #6366f1;
+    --vbp-anim-secondary: #8b5cf6;
+    --vbp-anim-accent: #f59e0b;
+    --vbp-anim-success: #22c55e;
+    --vbp-anim-warning: #f59e0b;
+    --vbp-anim-error: #ef4444;
+    --vbp-anim-bg: #1e1e2e;
+    --vbp-anim-surface: #2a2a3e;
+    --vbp-anim-border: #333346;
+    --vbp-anim-text: #e0e0e0;
+    --vbp-anim-text-muted: #888;
+    --vbp-anim-track-height: 32px;
+    --vbp-anim-timeline-height: 200px;
+}
+
+/* ============================================
+   Animation Panel Container
+   ============================================ */
+.vbp-advanced-animations-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--vbp-anim-bg);
+    color: var(--vbp-anim-text);
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.vbp-advanced-animations-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--vbp-anim-border);
+    background: var(--vbp-anim-surface);
+}
+
+.vbp-advanced-animations-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.vbp-advanced-animations-panel__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-advanced-animations-panel__tab {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-anim-text-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-advanced-animations-panel__tab:hover {
+    color: var(--vbp-anim-text);
+}
+
+.vbp-advanced-animations-panel__tab--active {
+    color: var(--vbp-anim-primary);
+    border-bottom-color: var(--vbp-anim-primary);
+}
+
+/* ============================================
+   Timeline Multi-Track
+   ============================================ */
+.vbp-timeline-advanced {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.vbp-timeline-advanced__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-timeline-advanced__controls {
+    display: flex;
+    gap: 6px;
+}
+
+.vbp-timeline-advanced__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 6px;
+    color: var(--vbp-anim-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-timeline-advanced__btn:hover {
+    background: var(--vbp-anim-border);
+    border-color: var(--vbp-anim-primary);
+}
+
+.vbp-timeline-advanced__btn--play {
+    background: var(--vbp-anim-success);
+    border-color: var(--vbp-anim-success);
+    color: #fff;
+}
+
+.vbp-timeline-advanced__btn--play:hover {
+    background: #16a34a;
+}
+
+.vbp-timeline-advanced__btn--pause {
+    background: var(--vbp-anim-warning);
+    border-color: var(--vbp-anim-warning);
+    color: #fff;
+}
+
+.vbp-timeline-advanced__time {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    color: var(--vbp-anim-text-muted);
+    min-width: 80px;
+}
+
+.vbp-timeline-advanced__duration {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-timeline-advanced__duration-input {
+    width: 60px;
+    padding: 6px 8px;
+    font-size: 12px;
+    text-align: center;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 4px;
+    color: var(--vbp-anim-text);
+}
+
+/* Timeline Container */
+.vbp-timeline-advanced__container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Track Labels Sidebar */
+.vbp-timeline-advanced__labels {
+    width: 180px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--vbp-anim-border);
+    background: var(--vbp-anim-surface);
+    overflow-y: auto;
+}
+
+.vbp-timeline-track-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--vbp-anim-track-height);
+    padding: 0 12px;
+    border-bottom: 1px solid var(--vbp-anim-border);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-timeline-track-label:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.vbp-timeline-track-label--selected {
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid var(--vbp-anim-primary);
+}
+
+.vbp-timeline-track-label__icon {
+    font-size: 14px;
+}
+
+.vbp-timeline-track-label__name {
+    flex: 1;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-timeline-track-label__actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.vbp-timeline-track-label:hover .vbp-timeline-track-label__actions {
+    opacity: 1;
+}
+
+.vbp-timeline-track-label__action {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-anim-text-muted);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.vbp-timeline-track-label__action:hover {
+    background: var(--vbp-anim-border);
+    color: var(--vbp-anim-text);
+}
+
+/* Timeline Tracks Area */
+.vbp-timeline-advanced__tracks {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: relative;
+}
+
+/* Timeline Ruler */
+.vbp-timeline-ruler {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    height: 24px;
+    background: var(--vbp-anim-surface);
+    border-bottom: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-timeline-ruler__tick {
+    flex-shrink: 0;
+    width: 100px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    font-size: 9px;
+    color: var(--vbp-anim-text-muted);
+    border-right: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-timeline-ruler__tick--major {
+    font-weight: 600;
+    color: var(--vbp-anim-text);
+}
+
+/* Timeline Track */
+.vbp-timeline-track {
+    position: relative;
+    height: var(--vbp-anim-track-height);
+    border-bottom: 1px solid var(--vbp-anim-border);
+    background: var(--vbp-anim-bg);
+}
+
+.vbp-timeline-track--selected {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.vbp-timeline-track__grid {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 99px,
+        var(--vbp-anim-border) 99px,
+        var(--vbp-anim-border) 100px
+    );
+    pointer-events: none;
+}
+
+/* Keyframes on Track */
+.vbp-timeline-keyframe {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: var(--vbp-anim-primary);
+    border: 2px solid var(--vbp-anim-secondary);
+    border-radius: 2px;
+    cursor: pointer;
+    z-index: 5;
+    transition: all 0.15s ease;
+}
+
+.vbp-timeline-keyframe:hover {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.2);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.vbp-timeline-keyframe--selected {
+    background: var(--vbp-anim-accent);
+    border-color: #fbbf24;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.vbp-timeline-keyframe--first,
+.vbp-timeline-keyframe--last {
+    background: var(--vbp-anim-success);
+    border-color: #4ade80;
+}
+
+/* Keyframe Connection Line */
+.vbp-timeline-track__line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, var(--vbp-anim-primary), var(--vbp-anim-accent));
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Timeline Playhead */
+.vbp-timeline-playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--vbp-anim-error);
+    z-index: 20;
+    pointer-events: none;
+}
+
+.vbp-timeline-playhead::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--vbp-anim-error);
+}
+
+/* Timeline Markers */
+.vbp-timeline-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--vbp-anim-accent);
+    z-index: 15;
+}
+
+.vbp-timeline-marker__label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    font-size: 9px;
+    background: var(--vbp-anim-accent);
+    color: #000;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+/* Loop Region */
+.vbp-timeline-loop-region {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 2px solid var(--vbp-anim-primary);
+    border-right: 2px solid var(--vbp-anim-primary);
+    z-index: 8;
+}
+
+/* ============================================
+   Bezier Editor Avanzado
+   ============================================ */
+.vbp-bezier-editor-advanced {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    background: var(--vbp-anim-bg);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+}
+
+.vbp-bezier-editor-advanced__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-bezier-editor-advanced__content {
+    padding: 20px;
+}
+
+/* Bezier Canvas Avanzado */
+.vbp-bezier-canvas-advanced {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    background: var(--vbp-anim-surface);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.vbp-bezier-canvas-advanced__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 26px 26px;
+}
+
+.vbp-bezier-canvas-advanced__diagonal {
+    position: absolute;
+    inset: 20px;
+    background: linear-gradient(
+        to top right,
+        transparent calc(50% - 0.5px),
+        rgba(255, 255, 255, 0.1) calc(50% - 0.5px),
+        rgba(255, 255, 255, 0.1) calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+    );
+}
+
+.vbp-bezier-canvas-advanced svg {
+    position: absolute;
+    inset: 20px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+}
+
+.vbp-bezier-canvas-advanced__control-line {
+    fill: none;
+    stroke: rgba(99, 102, 241, 0.4);
+    stroke-width: 1;
+    stroke-dasharray: 4, 4;
+}
+
+.vbp-bezier-canvas-advanced__curve {
+    fill: none;
+    stroke: var(--vbp-anim-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.vbp-bezier-canvas-advanced__handle {
+    fill: var(--vbp-anim-accent);
+    stroke: #fff;
+    stroke-width: 2;
+    cursor: grab;
+    transition: r 0.15s ease;
+}
+
+.vbp-bezier-canvas-advanced__handle:hover {
+    r: 10;
+}
+
+.vbp-bezier-canvas-advanced__handle:active {
+    cursor: grabbing;
+}
+
+.vbp-bezier-canvas-advanced__point {
+    fill: var(--vbp-anim-success);
+    stroke: #fff;
+    stroke-width: 2;
+}
+
+/* Bezier Presets */
+.vbp-bezier-presets {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.vbp-bezier-preset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-bezier-preset:hover {
+    background: var(--vbp-anim-border);
+    border-color: var(--vbp-anim-primary);
+}
+
+.vbp-bezier-preset--selected {
+    border-color: var(--vbp-anim-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.vbp-bezier-preset__curve {
+    width: 40px;
+    height: 30px;
+}
+
+.vbp-bezier-preset__curve path {
+    fill: none;
+    stroke: var(--vbp-anim-text-muted);
+    stroke-width: 2;
+}
+
+.vbp-bezier-preset:hover .vbp-bezier-preset__curve path,
+.vbp-bezier-preset--selected .vbp-bezier-preset__curve path {
+    stroke: var(--vbp-anim-primary);
+}
+
+.vbp-bezier-preset__label {
+    font-size: 9px;
+    color: var(--vbp-anim-text-muted);
+    text-align: center;
+}
+
+/* Bezier Values Grid */
+.vbp-bezier-values-advanced {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.vbp-bezier-value-advanced {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-bezier-value-advanced__label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--vbp-anim-text-muted);
+    text-align: center;
+}
+
+.vbp-bezier-value-advanced__input {
+    width: 100%;
+    padding: 8px;
+    font-size: 12px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    text-align: center;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 6px;
+    color: var(--vbp-anim-text);
+    outline: none;
+}
+
+.vbp-bezier-value-advanced__input:focus {
+    border-color: var(--vbp-anim-primary);
+}
+
+/* Bezier Preview Animation */
+.vbp-bezier-preview {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--vbp-anim-surface);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.vbp-bezier-preview__track {
+    flex: 1;
+    height: 8px;
+    background: var(--vbp-anim-border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.vbp-bezier-preview__ball {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background: var(--vbp-anim-primary);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: left 1s;
+}
+
+.vbp-bezier-preview--playing .vbp-bezier-preview__ball {
+    left: calc(100% - 24px);
+}
+
+.vbp-bezier-preview__btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    background: var(--vbp-anim-primary);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ============================================
+   Scroll Trigger Indicators
+   ============================================ */
+.vbp-scroll-indicator {
+    position: fixed;
+    left: 0;
+    width: 4px;
+    background: var(--vbp-anim-primary);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.vbp-scroll-indicator__label {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px 8px;
+    font-size: 10px;
+    background: var(--vbp-anim-primary);
+    color: #fff;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* Canvas Scroll Trigger Overlay */
+[data-vbp-scroll-trigger] {
+    position: relative;
+}
+
+[data-vbp-scroll-trigger]::before {
+    content: attr(data-vbp-scroll-type);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2px 6px;
+    font-size: 9px;
+    background: var(--vbp-anim-primary);
+    color: #fff;
+    border-radius: 0 0 4px 0;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+[data-vbp-scroll-trigger]:hover::before {
+    opacity: 1;
+}
+
+/* ============================================
+   Motion Path Preview
+   ============================================ */
+.vbp-motion-path-editor {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.vbp-motion-path-editor svg {
+    width: 100%;
+    height: 100%;
+}
+
+.vbp-motion-path-editor__path {
+    fill: none;
+    stroke: var(--vbp-anim-primary);
+    stroke-width: 2;
+    stroke-dasharray: 8, 4;
+}
+
+.vbp-motion-path-editor__path-fill {
+    fill: rgba(99, 102, 241, 0.1);
+    stroke: none;
+}
+
+.vbp-motion-path-editor__point {
+    fill: var(--vbp-anim-accent);
+    stroke: #fff;
+    stroke-width: 2;
+    cursor: grab;
+}
+
+.vbp-motion-path-editor__point:hover {
+    r: 8;
+}
+
+.vbp-motion-path-editor__preview-element {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: var(--vbp-anim-success);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    transition: transform 0.1s linear;
+}
+
+.vbp-motion-path-editor__toolbar {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+}
+
+/* ============================================
+   Stagger Configuration Panel
+   ============================================ */
+.vbp-stagger-config {
+    padding: 16px;
+}
+
+.vbp-stagger-config__section {
+    margin-bottom: 20px;
+}
+
+.vbp-stagger-config__label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--vbp-anim-text-muted);
+    letter-spacing: 0.5px;
+}
+
+.vbp-stagger-config__options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.vbp-stagger-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-stagger-option:hover {
+    border-color: var(--vbp-anim-primary);
+}
+
+.vbp-stagger-option--selected {
+    border-color: var(--vbp-anim-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.vbp-stagger-option__preview {
+    display: flex;
+    gap: 3px;
+    height: 20px;
+}
+
+.vbp-stagger-option__dot {
+    width: 4px;
+    height: 100%;
+    background: var(--vbp-anim-border);
+    border-radius: 2px;
+    transform-origin: bottom;
+}
+
+.vbp-stagger-option:hover .vbp-stagger-option__dot,
+.vbp-stagger-option--selected .vbp-stagger-option__dot {
+    background: var(--vbp-anim-primary);
+}
+
+/* Animacion de preview para stagger 'start' */
+.vbp-stagger-option[data-stagger="start"] .vbp-stagger-option__dot:nth-child(1) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0s; }
+.vbp-stagger-option[data-stagger="start"] .vbp-stagger-option__dot:nth-child(2) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.1s; }
+.vbp-stagger-option[data-stagger="start"] .vbp-stagger-option__dot:nth-child(3) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.2s; }
+.vbp-stagger-option[data-stagger="start"] .vbp-stagger-option__dot:nth-child(4) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.3s; }
+.vbp-stagger-option[data-stagger="start"] .vbp-stagger-option__dot:nth-child(5) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.4s; }
+
+@keyframes stagger-preview-start {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Stagger 'center' */
+.vbp-stagger-option[data-stagger="center"] .vbp-stagger-option__dot:nth-child(3) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0s; }
+.vbp-stagger-option[data-stagger="center"] .vbp-stagger-option__dot:nth-child(2) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.1s; }
+.vbp-stagger-option[data-stagger="center"] .vbp-stagger-option__dot:nth-child(4) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.1s; }
+.vbp-stagger-option[data-stagger="center"] .vbp-stagger-option__dot:nth-child(1) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.2s; }
+.vbp-stagger-option[data-stagger="center"] .vbp-stagger-option__dot:nth-child(5) { animation: stagger-preview-start 1s ease infinite; animation-delay: 0.2s; }
+
+.vbp-stagger-option__label {
+    font-size: 10px;
+    color: var(--vbp-anim-text-muted);
+}
+
+/* ============================================
+   Spring Physics Panel
+   ============================================ */
+.vbp-spring-config {
+    padding: 16px;
+}
+
+.vbp-spring-config__preview {
+    position: relative;
+    height: 80px;
+    background: var(--vbp-anim-surface);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.vbp-spring-config__ball {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    background: var(--vbp-anim-primary);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.vbp-spring-config__sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vbp-spring-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vbp-spring-slider__label {
+    width: 80px;
+    font-size: 12px;
+    color: var(--vbp-anim-text-muted);
+}
+
+.vbp-spring-slider__input {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    background: var(--vbp-anim-border);
+    border-radius: 3px;
+    outline: none;
+}
+
+.vbp-spring-slider__input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--vbp-anim-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.vbp-spring-slider__input::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.vbp-spring-slider__value {
+    width: 50px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-family: monospace;
+    text-align: center;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 4px;
+    color: var(--vbp-anim-text);
+}
+
+/* ============================================
+   Animation Presets Gallery
+   ============================================ */
+.vbp-anim-presets-gallery {
+    padding: 16px;
+}
+
+.vbp-anim-presets-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.vbp-anim-preset-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-anim-preset-card:hover {
+    border-color: var(--vbp-anim-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.vbp-anim-preset-card__preview {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-anim-bg);
+}
+
+.vbp-anim-preset-card__element {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--vbp-anim-primary), var(--vbp-anim-secondary));
+    border-radius: 6px;
+}
+
+.vbp-anim-preset-card:hover .vbp-anim-preset-card__element {
+    animation: var(--preset-animation, pulse) 1s ease infinite;
+}
+
+.vbp-anim-preset-card__info {
+    padding: 10px;
+    border-top: 1px solid var(--vbp-anim-border);
+}
+
+.vbp-anim-preset-card__name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-anim-text);
+    margin-bottom: 2px;
+}
+
+.vbp-anim-preset-card__type {
+    font-size: 10px;
+    color: var(--vbp-anim-text-muted);
+}
+
+/* Preset Animations for preview */
+@keyframes preset-fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes preset-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes preset-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes preset-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes preset-flip {
+    0% { transform: rotateY(0); }
+    100% { transform: rotateY(180deg); }
+}
+
+/* ============================================
+   Export Panel
+   ============================================ */
+.vbp-anim-export {
+    padding: 16px;
+}
+
+.vbp-anim-export__tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.vbp-anim-export__tab {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    border-radius: 6px;
+    color: var(--vbp-anim-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-anim-export__tab:hover {
+    border-color: var(--vbp-anim-primary);
+    color: var(--vbp-anim-text);
+}
+
+.vbp-anim-export__tab--active {
+    background: var(--vbp-anim-primary);
+    border-color: var(--vbp-anim-primary);
+    color: #fff;
+}
+
+.vbp-anim-export__code {
+    padding: 12px;
+    background: var(--vbp-anim-surface);
+    border-radius: 8px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--vbp-anim-text);
+    max-height: 300px;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+.vbp-anim-export__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.vbp-anim-export__btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-anim-export__btn--copy {
+    background: var(--vbp-anim-primary);
+    color: #fff;
+}
+
+.vbp-anim-export__btn--copy:hover {
+    background: #5558e8;
+}
+
+.vbp-anim-export__btn--download {
+    background: var(--vbp-anim-surface);
+    border: 1px solid var(--vbp-anim-border);
+    color: var(--vbp-anim-text);
+}
+
+.vbp-anim-export__btn--download:hover {
+    border-color: var(--vbp-anim-primary);
+}
+
+/* ============================================
+   Onion Skinning
+   ============================================ */
+.vbp-onion-skin {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+.vbp-onion-skin--previous {
+    filter: hue-rotate(-30deg);
+}
+
+.vbp-onion-skin--next {
+    filter: hue-rotate(30deg);
+}
+
+/* ============================================
+   Typewriter Cursor
+   ============================================ */
+@keyframes vbp-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.vbp-typewriter-cursor {
+    display: inline-block;
+    animation: vbp-cursor-blink 0.7s infinite;
+}
+
+/* ============================================
+   Animation Character/Word Elements
+   ============================================ */
+.vbp-anim-char,
+.vbp-anim-word {
+    display: inline-block;
+}
+
+/* ============================================
+   Drag/Gesture Elements
+   ============================================ */
+[data-vbp-draggable] {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+}
+
+[data-vbp-draggable]:active {
+    cursor: grabbing;
+}
+
+[data-vbp-dragging] {
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+/* ============================================
+   Magnetic Effect Indicators
+   ============================================ */
+[data-vbp-magnetic] {
+    will-change: transform;
+}
+
+/* ============================================
+   Sticky Animation States
+   ============================================ */
+.vbp-is-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* ============================================
+   Canvas Animation Preview Indicators
+   ============================================ */
+[data-vbp-anim-preview] {
+    outline: 2px dashed var(--vbp-anim-primary);
+    outline-offset: 2px;
+}
+
+[data-vbp-anim-preview]::after {
+    content: attr(data-vbp-anim-name);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    font-size: 10px;
+    background: var(--vbp-anim-primary);
+    color: #fff;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* ============================================
+   Scroll Progress Indicator
+   ============================================ */
+.vbp-scroll-progress-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--vbp-anim-surface);
+    z-index: 9999;
+}
+
+.vbp-scroll-progress-indicator__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--vbp-anim-primary), var(--vbp-anim-accent));
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* ============================================
+   Parallax Elements
+   ============================================ */
+[data-vbp-parallax] {
+    will-change: transform;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 600px) {
+    .vbp-timeline-advanced__labels {
+        width: 120px;
+    }
+
+    .vbp-anim-presets-gallery__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vbp-bezier-editor-advanced {
+        width: calc(100% - 32px);
+    }
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .vbp-stagger-option__dot,
+    .vbp-anim-preset-card:hover .vbp-anim-preset-card__element,
+    .vbp-typewriter-cursor,
+    .vbp-bezier-preview__ball {
+        animation: none !important;
+    }
+}
+
+.vbp-advanced-animations-panel *:focus-visible {
+    outline: 2px solid var(--vbp-anim-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Dark/Light Theme Adjustments
+   ============================================ */
+.vbp-theme-light .vbp-advanced-animations-panel {
+    --vbp-anim-bg: #f8f9fa;
+    --vbp-anim-surface: #ffffff;
+    --vbp-anim-border: #e0e0e0;
+    --vbp-anim-text: #333;
+    --vbp-anim-text-muted: #666;
+}
