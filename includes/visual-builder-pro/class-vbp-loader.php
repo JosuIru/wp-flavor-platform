@@ -93,16 +93,27 @@ class Flavor_VBP_Loader {
             'class-vbp-popup-builder.php',
             'class-vbp-ab-testing.php',
             'class-vbp-version-history.php',
+            'class-vbp-branching.php',
             'class-vbp-single-templates.php',
             'class-vbp-component-library.php',
             'class-vbp-design-presets.php',
             'class-vbp-comments.php',
             'class-vbp-collaboration-api.php',
+            'class-vbp-realtime-server.php',
             'class-vbp-audit-log.php',
             'class-vbp-workflows.php',
             'class-vbp-multisite.php',
             'class-vbp-settings.php',
+            'class-vbp-symbols.php',
+            'class-vbp-symbols-api.php',
+            'class-vbp-asset-manager.php',
+            'class-vbp-global-styles.php',
+            'class-vbp-plugin-system.php',
+            'class-vbp-figma-tokens.php',
+            'class-vbp-claude-api.php',
+            'class-vbp-code-components.php',
             'ai/class-vbp-ai-content.php',
+            'ai/class-vbp-ai-layout.php',
         );
 
         foreach ( $archivos as $archivo ) {
@@ -143,6 +154,41 @@ class Flavor_VBP_Loader {
 
         // Inicializar en el momento adecuado
         add_action( 'init', array( $this, 'inicializar' ), 5 );
+
+        // Añadir headers de seguridad a respuestas REST de VBP
+        add_filter( 'rest_post_dispatch', array( $this, 'add_security_headers' ), 10, 3 );
+    }
+
+    /**
+     * Añade headers de seguridad a las respuestas REST de VBP
+     *
+     * @since 3.5.1
+     * @param WP_REST_Response $response Response REST.
+     * @param WP_REST_Server   $server   Server REST.
+     * @param WP_REST_Request  $request  Request REST.
+     * @return WP_REST_Response Response modificado.
+     */
+    public function add_security_headers( $response, $server, $request ) {
+        $route = $request->get_route();
+
+        // Solo añadir headers a rutas de VBP
+        if ( strpos( $route, '/flavor-vbp/' ) !== false ||
+             strpos( $route, '/flavor-site-builder/' ) !== false ) {
+
+            // Prevenir MIME-type sniffing
+            $response->header( 'X-Content-Type-Options', 'nosniff' );
+
+            // Prevenir clickjacking (solo SAMEORIGIN, no bloquear iframes del editor)
+            $response->header( 'X-Frame-Options', 'SAMEORIGIN' );
+
+            // Desactivar caché para datos sensibles
+            if ( strpos( $route, '/claude/' ) !== false ) {
+                $response->header( 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0' );
+                $response->header( 'Pragma', 'no-cache' );
+            }
+        }
+
+        return $response;
     }
 
     /**
@@ -203,6 +249,11 @@ class Flavor_VBP_Loader {
             Flavor_VBP_Version_History::get_instance();
         }
 
+        // Branching System (ramas de diseño)
+        if ( class_exists( 'Flavor_VBP_Branching' ) ) {
+            Flavor_VBP_Branching::get_instance();
+        }
+
         // Herramienta de migración de landings legacy (solo admin)
         if ( is_admin() && class_exists( 'Flavor_VBP_Migration_Tool' ) ) {
             Flavor_VBP_Migration_Tool::get_instance();
@@ -233,6 +284,11 @@ class Flavor_VBP_Loader {
             Flavor_VBP_Collaboration_API::get_instance();
         }
 
+        // Servidor de colaboración en tiempo real (WebSockets/Heartbeat)
+        if ( class_exists( 'Flavor_VBP_Realtime_Server' ) ) {
+            Flavor_VBP_Realtime_Server::get_instance();
+        }
+
         // Audit Log (Enterprise)
         if ( class_exists( 'Flavor_VBP_Audit_Log' ) ) {
             Flavor_VBP_Audit_Log::get_instance();
@@ -256,6 +312,46 @@ class Flavor_VBP_Loader {
         // Figma Importer (importación de diseños)
         if ( class_exists( 'Flavor_VBP_Figma_Importer' ) ) {
             Flavor_VBP_Figma_Importer::get_instance();
+        }
+
+        // Sistema de Símbolos con Instancias Sincronizadas
+        if ( class_exists( 'Flavor_VBP_Symbols' ) ) {
+            Flavor_VBP_Symbols::get_instance();
+        }
+
+        // API REST de Símbolos
+        if ( class_exists( 'Flavor_VBP_Symbols_API' ) ) {
+            Flavor_VBP_Symbols_API::get_instance();
+        }
+
+        // Asset Manager (gestión centralizada de medios)
+        if ( class_exists( 'Flavor_VBP_Asset_Manager' ) ) {
+            Flavor_VBP_Asset_Manager::get_instance();
+        }
+
+        // Global Styles (estilos reutilizables)
+        if ( class_exists( 'Flavor_VBP_Global_Styles' ) ) {
+            Flavor_VBP_Global_Styles::get_instance();
+        }
+
+        // Plugin System (sistema de extensiones)
+        if ( class_exists( 'Flavor_VBP_Plugin_System' ) ) {
+            Flavor_VBP_Plugin_System::get_instance();
+        }
+
+        // Figma Tokens Sync (sincronizacion de Design Tokens)
+        if ( class_exists( 'VBP_Figma_Tokens' ) ) {
+            VBP_Figma_Tokens::instance();
+        }
+
+        // Claude API (endpoints optimizados para automatizacion)
+        if ( class_exists( 'Flavor_VBP_Claude_API' ) ) {
+            Flavor_VBP_Claude_API::get_instance();
+        }
+
+        // Code Components (React/Vue/Svelte/Vanilla)
+        if ( class_exists( 'Flavor_VBP_Code_Components' ) ) {
+            Flavor_VBP_Code_Components::get_instance();
         }
 
         // Registrar CPT de templates

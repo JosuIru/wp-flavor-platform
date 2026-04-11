@@ -469,9 +469,25 @@ class Flavor_VBP_Editor {
             'vbp-design-tokens'      => 'vbp-design-tokens.css',
             'vbp-mobile'             => 'vbp-mobile.css',
             'vbp-blocks-enhanced'    => 'vbp-blocks-enhanced.css',
+            'smart-guides'           => 'smart-guides.css',
             'editor-preview-sections' => 'editor-preview-sections.css',
             'editor-ux-improvements' => 'editor-ux-improvements.css',
             'editor-help-system'     => 'editor-help-system.css',
+            'instance-inspector'     => 'instance-inspector.css', // Estilos de inspector e instancias de símbolos
+            'vbp-swap-modal'         => 'vbp-swap-modal.css', // Modal de swap de instancias
+            'vbp-bulk-edit'          => 'vbp-bulk-edit.css', // Edicion masiva de propiedades
+            'spacing-indicators'     => 'spacing-indicators.css', // Indicadores de distancia entre elementos (Alt+hover)
+            'animation-builder'      => 'animation-builder.css', // Panel de construccion de animaciones CSS
+            'constraints'            => 'constraints.css', // Panel e indicadores de constraints/pinning tipo Figma
+            'global-styles-panel'    => 'global-styles-panel.css', // Panel de estilos globales reutilizables
+            'asset-manager'          => 'asset-manager.css', // Panel centralizado de gestión de medios
+            'responsive-variants'    => 'responsive-variants.css', // Sistema de variantes responsive por breakpoint
+            'prototype-mode'         => 'prototype-mode.css', // Sistema de prototipado interactivo
+            'branching'              => 'branching.css', // Sistema de ramas de diseño
+            'offline'                => 'offline.css', // Modo offline y sincronizacion
+            'editor-themes'          => 'editor-themes.css', // Sistema de temas del editor (claro, oscuro, etc.)
+            'plugins-themes-panel'   => 'plugins-themes-panel.css', // Panel de plugins y temas
+            'performance-monitor'    => 'performance-monitor.css', // Panel de monitoreo de rendimiento
         );
 
         if ( ! empty( $editor_features['minimap'] ) ) {
@@ -480,10 +496,13 @@ class Flavor_VBP_Editor {
 
         if ( ! empty( $editor_features['ai'] ) ) {
             $archivos_css['editor-ai-assistant'] = 'editor-ai-assistant.css';
+            $archivos_css['ai-layout'] = 'ai-layout.css';
         }
 
         if ( ! empty( $editor_features['collaboration'] ) ) {
-            $archivos_css['vbp-collaboration'] = 'vbp-collaboration.css';
+            $archivos_css['vbp-collaboration']      = 'vbp-collaboration.css';
+            $archivos_css['realtime-collab']        = 'realtime-collab.css';
+            $archivos_css['collaboration-advanced'] = 'collaboration-advanced.css'; // Estilos avanzados de colaboracion v2.5
         }
 
         if ( ! empty( $editor_features['audit_log'] ) ) {
@@ -561,8 +580,9 @@ class Flavor_VBP_Editor {
         // 2. Alpine.js (depende de los anteriores para encontrar los componentes)
         // 3. Scripts que usan Alpine.store() se registran en el evento 'alpine:init'
         $archivos_js = array(
-            'theme'        => array( 'vbp-theme.js', array() ), // Gestión de tema claro/oscuro (primero para evitar flash)
-            'performance'  => array( 'vbp-performance.js', array() ), // Utilidades de performance primero
+            'i18n'         => array( 'vbp-i18n.js', array() ), // Sistema de internacionalización (cargar primero)
+            'theme'        => array( 'vbp-theme.js', array( 'vbp-i18n' ) ), // Gestión de tema claro/oscuro (primero para evitar flash)
+            'performance'  => array( 'vbp-performance.js', array( 'vbp-i18n' ) ), // Utilidades de performance primero
             'store-catalog'=> array( 'vbp-store-catalog.js', array() ),
             'store-style-helpers' => array( 'vbp-store-style-helpers.js', array() ),
             'store-tree-helpers' => array( 'vbp-store-tree-helpers.js', array() ),
@@ -577,6 +597,8 @@ class Flavor_VBP_Editor {
             'app-page-settings'  => array( 'modules/vbp-app-page-settings.js', array( 'vbp-app-modular' ) ),
             'app-templates'      => array( 'modules/vbp-app-templates.js', array( 'vbp-app-modular' ) ),
             'app-version-history'=> array( 'modules/vbp-app-version-history.js', array( 'vbp-app-modular' ) ),
+            'app-branching'      => array( 'modules/vbp-app-branching.js', array( 'vbp-app-modular', 'vbp-app-version-history' ) ),
+            'branch-panel'       => array( 'modules/vbp-branch-panel.js', array( 'vbp-app-branching' ) ),
             'app-unsplash'       => array( 'modules/vbp-app-unsplash.js', array( 'vbp-app-modular' ) ),
             'app-revisions'      => array( 'modules/vbp-app-revisions.js', array( 'vbp-app-modular' ) ),
             'app-import-export'  => array( 'modules/vbp-app-import-export.js', array( 'vbp-app-modular' ) ),
@@ -603,11 +625,37 @@ class Flavor_VBP_Editor {
             'module-preview' => array( 'vbp-module-preview.js', array() ), // Sistema de preview de módulos en canvas
             'inline-editor' => array( 'vbp-inline-editor.js', array() ), // WYSIWYG inline editing en canvas
             'accessibility' => array( 'vbp-accessibility.js', array() ), // Mejoras UX: teclado, ARIA, confirm dialog, indicadores
+            'instance-inspector' => array( 'vbp-instance-inspector.js', array( 'vbp-inspector' ) ), // Inspector de instancias de símbolos
+            'instance-renderer'  => array( 'vbp-instance-renderer.js', array( 'vbp-canvas' ) ), // Renderer de instancias en canvas
+            'symbols'           => array( 'vbp-symbols.js', array( 'vbp-store' ) ), // Sistema de símbolos (instancias sincronizadas)
+            'symbols-panel'     => array( 'vbp-symbols-panel.js', array( 'vbp-symbols' ) ), // Panel UI de símbolos
+            'symbols-commands'  => array( 'vbp-symbols-commands.js', array( 'vbp-symbols', 'vbp-command-palette' ) ), // Comandos y atajos de símbolos
+            'swap-modal'        => array( 'vbp-swap-modal.js', array( 'vbp-symbols' ) ), // Modal de swap de instancias
+            'zoom-utils'        => array( 'vbp-zoom-utils.js', array( 'vbp-store' ) ), // Utilidades de zoom: zoom to selection, fit all
+            'bulk-edit'         => array( 'vbp-bulk-edit.js', array( 'vbp-store', 'vbp-inspector' ) ), // Edicion masiva de propiedades
+            'spacing-indicators' => array( 'vbp-spacing-indicators.js', array( 'vbp-canvas-utils' ) ), // Indicadores de distancia entre elementos
+            'animation-builder' => array( 'vbp-animation-builder.js', array( 'vbp-store', 'vbp-command-palette' ) ), // Constructor de animaciones CSS
+            'constraints'       => array( 'vbp-constraints.js', array( 'vbp-store', 'vbp-canvas-utils' ) ), // Sistema de constraints/pinning tipo Figma
+            'global-styles'     => array( 'vbp-global-styles.js', array( 'vbp-store', 'vbp-store-catalog' ) ), // Sistema de estilos globales reutilizables
+            'global-styles-panel' => array( 'vbp-global-styles-panel.js', array( 'vbp-global-styles', 'vbp-inspector' ) ), // Panel UI de estilos globales
+            'asset-manager'     => array( 'vbp-asset-manager.js', array( 'vbp-store', 'vbp-inspector-media' ) ), // Panel centralizado de gestión de medios
+            'responsive-variants' => array( 'vbp-responsive-variants.js', array( 'vbp-store', 'vbp-canvas', 'vbp-constraints' ) ), // Sistema de variantes responsive por breakpoint
+            'responsive-panel'    => array( 'vbp-responsive-panel.js', array( 'vbp-responsive-variants', 'vbp-inspector' ) ), // Panel UI de variantes responsive
+            'prototype-mode'      => array( 'vbp-prototype-mode.js', array( 'vbp-store', 'vbp-command-palette', 'vbp-animation-builder' ) ), // Sistema de prototipado interactivo
+            'prototype-panel'     => array( 'vbp-prototype-panel.js', array( 'vbp-prototype-mode', 'vbp-inspector' ) ), // Panel UI de interacciones de prototipo
+            'indexed-db'          => array( 'vbp-indexed-db.js', array() ), // Almacenamiento offline con IndexedDB
+            'offline-sync'        => array( 'vbp-offline-sync.js', array( 'vbp-indexed-db', 'vbp-toast' ) ), // Sincronizacion offline con Service Worker
+            'editor-themes'       => array( 'vbp-editor-themes.js', array( 'vbp-theme', 'vbp-toast' ) ), // Sistema de temas del editor
+            'plugin-api'          => array( 'vbp-plugin-api.js', array( 'vbp-store', 'vbp-command-palette' ) ), // API de plugins para extensiones
+            'plugins-panel'       => array( 'vbp-plugins-panel.js', array( 'vbp-plugin-api', 'vbp-editor-themes' ) ), // Panel de gestion de plugins y temas
+            'performance-monitor' => array( 'vbp-performance-monitor.js', array( 'vbp-store', 'vbp-toast' ) ), // Store de monitoreo de rendimiento
+            'performance-panel'   => array( 'vbp-performance-panel.js', array( 'vbp-performance-monitor' ) ), // Panel UI de rendimiento
         );
 
         if ( ! empty( $editor_features['collaboration'] ) ) {
             $archivos_js['app-collaboration'] = array( 'modules/vbp-app-collaboration.js', array( 'vbp-app-modular' ) );
             $archivos_js['comments']          = array( 'vbp-comments.js', array() );
+            $archivos_js['realtime-collab']   = array( 'vbp-realtime-collab.js', array( 'vbp-store', 'vbp-toast' ) );
         }
 
         if ( ! empty( $editor_features['audit_log'] ) ) {
@@ -701,26 +749,13 @@ class Flavor_VBP_Editor {
                 'helpSystem'       => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-help-system.min.js' ) ? 'vbp-help-system.min.js' : 'vbp-help-system.js' ),
                 'designTokens'     => FLAVOR_PLATFORM_URL . 'assets/vbp/js/modules/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/modules/vbp-app-design-tokens.min.js' ) ? 'vbp-app-design-tokens.min.js' : 'vbp-app-design-tokens.js' ),
                 'aiAssistant'      => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-ai-assistant.min.js' ) ? 'vbp-ai-assistant.min.js' : 'vbp-ai-assistant.js' ),
+                'aiLayout'         => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-ai-layout.min.js' ) ? 'vbp-ai-layout.min.js' : 'vbp-ai-layout.js' ),
+                'aiLayoutPanel'    => FLAVOR_PLATFORM_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_PLATFORM_PATH . 'assets/vbp/js/vbp-ai-layout-panel.min.js' ) ? 'vbp-ai-layout-panel.min.js' : 'vbp-ai-layout-panel.js' ),
             ),
             'designSettings' => $design_settings,
             'blocks'         => $bloques_categorias,
             'templates'      => $templates_libreria,
-            'strings'        => array(
-                'saved'                  => __( 'Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'saving'                 => __( 'Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'error'                  => __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'unsavedChanges'         => __( 'Tienes cambios sin guardar. ¿Seguro que quieres salir?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'deleteConfirm'          => __( '¿Eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'duplicated'             => __( 'Elemento duplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'noSelection'            => __( 'Nada seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'confirmApplyTemplate'   => __( '¿Aplicar este template? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'confirmDeleteTemplate'  => __( '¿Eliminar este template? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'confirmImport'          => __( '¿Importar este diseño? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'templateSaved'          => __( 'Template guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'templateApplied'        => __( 'Template aplicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'exportSuccess'          => __( 'Exportación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'importSuccess'          => __( 'Importación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-            ),
+            'strings'        => $this->obtener_strings_i18n(),
             'breakpoints'    => array(
                 'mobile'  => 480,
                 'tablet'  => 768,
@@ -824,9 +859,135 @@ class Flavor_VBP_Editor {
                 'enabled'  => ! empty( $editor_features['collaboration'] ),
                 'userRole' => current_user_can( 'edit_post', $post_id ) ? 'editor' : ( current_user_can( 'read_post', $post_id ) ? 'viewer' : 'viewer' ),
             ),
+            // Configuración de colaboración en tiempo real
+            'realtime'       => array(
+                'enabled'   => ! empty( $editor_features['collaboration'] ) && class_exists( 'Flavor_VBP_Realtime_Server' ),
+                'endpoints' => array(
+                    'status'   => rest_url( 'flavor-vbp/v1/realtime/status/' . $post_id ),
+                    'join'     => rest_url( 'flavor-vbp/v1/realtime/join' ),
+                    'leave'    => rest_url( 'flavor-vbp/v1/realtime/leave' ),
+                    'presence' => rest_url( 'flavor-vbp/v1/realtime/presence' ),
+                    'lock'     => rest_url( 'flavor-vbp/v1/realtime/lock' ),
+                    'unlock'   => rest_url( 'flavor-vbp/v1/realtime/unlock' ),
+                    'sync'     => rest_url( 'flavor-vbp/v1/realtime/sync' ),
+                    'poll'     => rest_url( 'flavor-vbp/v1/realtime/poll/' . $post_id ),
+                ),
+                'config'    => array(
+                    'heartbeatInterval'    => 5000,
+                    'cursorThrottle'       => 50,
+                    'lockTimeout'          => 30000,
+                    'lockRenewInterval'    => 20000,
+                    'reconnectDelay'       => 3000,
+                    'maxReconnectAttempts' => 10,
+                    'syncDebounce'         => 500,
+                ),
+                'strings'   => array(
+                    'connected'      => __( 'Colaboración activada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'disconnected'   => __( 'Colaboración desconectada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'userJoined'     => __( '%s se unió a la edición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'userLeft'       => __( '%s salió de la edición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'elementLocked'  => __( 'Elemento bloqueado por %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lockAcquired'   => __( 'Elemento bloqueado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lockReleased'   => __( 'Bloqueo liberado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'syncError'      => __( 'Error de sincronización', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'reconnecting'   => __( 'Reconectando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+            ),
+            'userName'       => wp_get_current_user()->display_name,
+            // Configuración de modo offline y Service Worker
+            'offline'        => array(
+                'enabled'         => true,
+                'serviceWorkerUrl' => FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-service-worker.js',
+                'syncEndpoint'    => rest_url( 'flavor-vbp/v1/claude/pages' ),
+                'healthEndpoint'  => rest_url( 'flavor-vbp/v1/claude/status' ),
+                'config'          => array(
+                    'connectionCheckInterval' => 30000,
+                    'syncCooldown'            => 5000,
+                    'maxSyncAttempts'         => 5,
+                    'offlineDebounce'         => 2000,
+                ),
+                'strings'         => array(
+                    'offline'           => __( 'Sin conexion', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'online'            => __( 'Conectado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'syncing'           => __( 'Sincronizando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'syncComplete'      => __( 'Sincronizacion completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'syncFailed'        => __( 'Error de sincronizacion', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'pendingChanges'    => __( '%d cambio(s) pendiente(s)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'savedLocally'      => __( 'Guardado localmente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'connectionLost'    => __( 'Conexion perdida - Los cambios se guardaran localmente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'connectionRestored' => __( 'Conexion restaurada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'conflictDetected'  => __( 'Conflicto detectado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'resolveConflict'   => __( 'Resolver conflicto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'keepLocal'         => __( 'Mantener version local', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'keepServer'        => __( 'Usar version del servidor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+            ),
+            // Configuración de estilos globales reutilizables
+            'globalStyles'   => $this->obtener_config_global_styles(),
+            // Configuración del sistema de ramas de diseño
+            'branching'      => array(
+                'enabled'   => class_exists( 'Flavor_VBP_Branching' ),
+                'endpoints' => array(
+                    'list'     => rest_url( 'flavor-vbp/v1/branches/' . $post_id ),
+                    'create'   => rest_url( 'flavor-vbp/v1/branches' ),
+                    'checkout' => rest_url( 'flavor-vbp/v1/branches/checkout' ),
+                    'merge'    => rest_url( 'flavor-vbp/v1/branches/merge' ),
+                    'diff'     => rest_url( 'flavor-vbp/v1/branches/diff' ),
+                    'delete'   => rest_url( 'flavor-vbp/v1/branches' ),
+                    'history'  => rest_url( 'flavor-vbp/v1/branches/history' ),
+                ),
+                'strings'   => array(
+                    'branchCreated'     => __( 'Rama creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'branchDeleted'     => __( 'Rama eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'checkoutSuccess'   => __( 'Cambio de rama completado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'mergeSuccess'      => __( 'Merge completado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'mergeConflicts'    => __( 'Se encontraron conflictos que requieren resolución', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'conflictResolved'  => __( 'Conflicto resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'confirmDelete'     => __( '¿Eliminar esta rama? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'confirmCheckout'   => __( 'Tienes cambios sin guardar. ¿Cambiar de rama descartará los cambios?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'loading'           => __( 'Cargando ramas...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'error'             => __( 'Error en operación de rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+            ),
         );
 
         wp_localize_script( 'vbp-store', 'VBP_Config', $datos_localizados );
+
+        // Pasar traducciones al sistema i18n de JavaScript
+        // VBP_Translations se carga automáticamente en vbp-i18n.js
+        wp_localize_script( 'vbp-i18n', 'VBP_Translations', $this->obtener_strings_i18n() );
+
+        // Registrar Service Worker para modo offline
+        // Se ejecuta despues de que todos los scripts VBP esten cargados
+        $service_worker_registration = "
+            // VBP Service Worker Registration
+            (function() {
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', function() {
+                        var swUrl = '" . esc_js( FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-service-worker.js' ) . "';
+                        navigator.serviceWorker.register(swUrl, { scope: '/wp-admin/' })
+                            .then(function(registration) {
+                                console.log('[VBP] Service Worker registered:', registration.scope);
+
+                                // Notificar cuando hay actualizacion
+                                registration.addEventListener('updatefound', function() {
+                                    var installingWorker = registration.installing;
+                                    installingWorker.addEventListener('statechange', function() {
+                                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                            // Hay una nueva version disponible
+                                            window.dispatchEvent(new CustomEvent('vbp:sw-update-available'));
+                                        }
+                                    });
+                                });
+                            })
+                            .catch(function(error) {
+                                console.warn('[VBP] Service Worker registration failed:', error);
+                            });
+                    });
+                }
+            })();
+        ";
+        wp_add_inline_script( 'vbp-offline-sync', $service_worker_registration, 'after' );
     }
 
     /**
@@ -845,6 +1006,7 @@ class Flavor_VBP_Editor {
             'audit_log'         => class_exists( 'Flavor_VBP_Audit_Log' ) && current_user_can( 'manage_options' ),
             'workflows'         => class_exists( 'Flavor_VBP_Workflows' ) && current_user_can( 'edit_others_posts' ),
             'multisite'         => is_multisite() && class_exists( 'Flavor_VBP_Multisite' ),
+            'branching'         => class_exists( 'Flavor_VBP_Branching' ) && current_user_can( 'edit_post', $post_id ),
         );
     }
 
@@ -945,6 +1107,57 @@ class Flavor_VBP_Editor {
     private function figma_esta_configurado() {
         $settings = flavor_get_main_settings();
         return ! empty( $settings['figma_personal_token'] );
+    }
+
+    /**
+     * Obtiene la configuración de Global Styles para JavaScript
+     *
+     * @return array
+     */
+    private function obtener_config_global_styles() {
+        $global_styles_data = array(
+            'enabled'    => true,
+            'cssPrefix'  => 'vbp-gs-',
+            'endpoints'  => array(
+                'list'       => rest_url( 'flavor-vbp/v1/global-styles' ),
+                'create'     => rest_url( 'flavor-vbp/v1/global-styles' ),
+                'update'     => rest_url( 'flavor-vbp/v1/global-styles/{id}' ),
+                'delete'     => rest_url( 'flavor-vbp/v1/global-styles/{id}' ),
+                'categories' => rest_url( 'flavor-vbp/v1/global-styles/categories' ),
+                'css'        => rest_url( 'flavor-vbp/v1/global-styles/css' ),
+            ),
+            'strings'    => array(
+                'panelTitle'        => __( 'Estilos Globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'createNew'         => __( 'Crear estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'editStyle'         => __( 'Editar estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'deleteStyle'       => __( 'Eliminar estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'applyStyle'        => __( 'Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'detachStyle'       => __( 'Desenlazar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'createFromElement' => __( 'Crear desde elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'noGlobalStyle'     => __( 'Sin estilo global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'confirmDelete'     => __( '¿Eliminar este estilo? Los elementos que lo usan mantendrán sus estilos.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'styleSaved'        => __( 'Estilo guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'styleDeleted'      => __( 'Estilo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'styleApplied'      => __( 'Estilo aplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'styleDetached'     => __( 'Estilo desenlazado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'noStyles'          => __( 'No hay estilos en esta categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'linkedStyle'       => __( 'Estilo enlazado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'hasOverrides'      => __( 'Con modificaciones locales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'resetOverrides'    => __( 'Restablecer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            ),
+        );
+
+        // Obtener estilos y categorías si la clase existe
+        if ( class_exists( 'Flavor_VBP_Global_Styles' ) ) {
+            $global_styles_instance = Flavor_VBP_Global_Styles::get_instance();
+            if ( method_exists( $global_styles_instance, 'obtener_datos_localizacion' ) ) {
+                $localized_data = $global_styles_instance->obtener_datos_localizacion();
+                // Combinar con datos base, respetando strings
+                $global_styles_data = array_merge( $global_styles_data, $localized_data );
+            }
+        }
+
+        return $global_styles_data;
     }
 
     /**
@@ -1675,5 +1888,415 @@ class Flavor_VBP_Editor {
         }
 
         wp_send_json_success( array() );
+    }
+
+    /**
+     * Obtener todos los strings de internacionalización para JavaScript
+     *
+     * Esta función centraliza todos los strings traducibles del editor VBP.
+     * Los strings se pasan a JavaScript vía wp_localize_script.
+     *
+     * @since 2.3.0
+     * @return array Array asociativo de strings traducidos
+     */
+    private function obtener_strings_i18n() {
+        return array(
+            // === ACCIONES GENERALES ===
+            'save'                   => __( 'Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'saved'                  => __( 'Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'saving'                 => __( 'Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'cancel'                 => __( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'delete'                 => __( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'duplicate'              => __( 'Duplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'duplicated'             => __( 'Elemento duplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'copy'                   => __( 'Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'paste'                  => __( 'Pegar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'cut'                    => __( 'Cortar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'undo'                   => __( 'Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'redo'                   => __( 'Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'apply'                  => __( 'Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'close'                  => __( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'edit'                   => __( 'Editar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'preview'                => __( 'Vista previa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'publish'                => __( 'Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'update'                 => __( 'Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'create'                 => __( 'Crear', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'add'                    => __( 'Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'remove'                 => __( 'Quitar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'reset'                  => __( 'Resetear', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'search'                 => __( 'Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'filter'                 => __( 'Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'select'                 => __( 'Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'selectAll'              => __( 'Seleccionar todo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'clear'                  => __( 'Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'confirm'                => __( 'Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'change'                 => __( 'Cambiar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ERRORES ===
+            'error'                  => __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorGeneric'           => __( 'Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorLoading'           => __( 'Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorNetwork'           => __( 'Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorPermission'        => __( 'No tienes permisos para esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorNotFound'          => __( 'Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'errorInvalid'           => __( 'Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === CONFIRMACIONES ===
+            'unsavedChanges'         => __( 'Tienes cambios sin guardar. ¿Seguro que quieres salir?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteConfirm'          => __( '¿Eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteElementConfirm'   => __( '¿Eliminar el elemento seleccionado?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteElementsConfirm'  => __( '¿Eliminar los %d elementos seleccionados?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'confirmApplyTemplate'   => __( '¿Aplicar este template? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'confirmDeleteTemplate'  => __( '¿Eliminar este template? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'confirmImport'          => __( '¿Importar este diseño? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'confirmReset'           => __( '¿Restaurar valores por defecto?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ESTADOS ===
+            'loading'                => __( 'Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'processing'             => __( 'Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'uploading'              => __( 'Subiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'ready'                  => __( 'Listo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'empty'                  => __( 'Vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === SELECCION ===
+            'noSelection'            => __( 'Nada seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'selectedCount'          => __( '%d elementos seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'elementDeleted'         => __( 'Elemento eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'elementsDeleted'        => __( '%d elementos eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === TEMPLATES ===
+            'templateSaved'          => __( 'Template guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'templateApplied'        => __( 'Template aplicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'templateDeleted'        => __( 'Template eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noTemplates'            => __( 'No hay templates disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'searchTemplates'        => __( 'Buscar templates...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === IMPORTAR/EXPORTAR ===
+            'exportSuccess'          => __( 'Exportación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'importSuccess'          => __( 'Importación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'exportFailed'           => __( 'Error en la exportación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'importFailed'           => __( 'Error en la importación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === INSPECTOR ===
+            'content'                => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'style'                  => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'design'                 => __( 'Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'settings'               => __( 'Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'advanced'               => __( 'Avanzado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'layout'                 => __( 'Layout', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'spacing'                => __( 'Espaciado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'margin'                 => __( 'Margen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'padding'                => __( 'Relleno', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'border'                 => __( 'Borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'borderRadius'           => __( 'Radio de borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shadow'                 => __( 'Sombra', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'colors'                 => __( 'Colores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'background'             => __( 'Fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'textColor'              => __( 'Color de texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'typography'             => __( 'Tipografía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'fontSize'               => __( 'Tamaño de fuente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'fontWeight'             => __( 'Peso de fuente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'lineHeight'             => __( 'Altura de línea', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'letterSpacing'          => __( 'Espaciado de letras', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'alignment'              => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'position'               => __( 'Posición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'size'                   => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'width'                  => __( 'Ancho', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'height'                 => __( 'Alto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'minWidth'               => __( 'Ancho mínimo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'maxWidth'               => __( 'Ancho máximo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'minHeight'              => __( 'Alto mínimo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'maxHeight'              => __( 'Alto máximo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'opacity'                => __( 'Opacidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'visibility'             => __( 'Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'hidden'                 => __( 'Oculto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'visible'                => __( 'Visible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animation'              => __( 'Animación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'transform'              => __( 'Transformación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'effects'                => __( 'Efectos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === CONTEXTO DE SELECCION ===
+            'structure'              => __( 'Estructura', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'page'                   => __( 'Página', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'editingStructure'       => __( 'Estás editando la base del layout. Ajusta distribución, columnas y espaciado; el contenido vive dentro de sus bloques hijos.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'editingSectionBlock'    => __( 'Bloque de sección listo para ajustar contenido principal, apariencia y jerarquía visual desde este panel.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'editingElement'         => __( 'Elemento individual listo para edición rápida. Cambia contenido, apariencia y comportamiento sin salir del contexto actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === TIPOS DE BLOQUES ===
+            'blockHero'              => __( 'Hero', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockFeatures'          => __( 'Características', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockTestimonials'      => __( 'Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockPricing'           => __( 'Precios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockCta'               => __( 'CTA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockFaq'               => __( 'FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockContact'           => __( 'Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockTeam'              => __( 'Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockStats'             => __( 'Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockGallery'           => __( 'Galería', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockBlog'              => __( 'Blog', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockVideo'             => __( 'Video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockHeading'           => __( 'Encabezado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockText'              => __( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockImage'             => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockButton'            => __( 'Botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockDivider'           => __( 'Separador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockSpacer'            => __( 'Espaciador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockIcon'              => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockHtml'              => __( 'HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockShortcode'         => __( 'Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockContainer'         => __( 'Contenedor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockColumns'           => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockRow'               => __( 'Fila', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockGrid'              => __( 'Grid', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockMap'               => __( 'Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockCountdown'         => __( 'Cuenta Regresiva', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockSocialIcons'       => __( 'Iconos Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockNewsletter'        => __( 'Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockLogoGrid'          => __( 'Grid de Logos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockIconBox'           => __( 'Caja de Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockAccordion'         => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockTabs'              => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockProgressBar'       => __( 'Barra de Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockAlert'             => __( 'Alerta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockBeforeAfter'       => __( 'Antes/Después', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockTimeline'          => __( 'Línea de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'blockCarousel'          => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === PRESETS DE ESTILO ===
+            'presetModern'           => __( 'Moderno', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetMinimal'          => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetBold'             => __( 'Audaz', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetOutlined'         => __( 'Contorneado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetGradient'         => __( 'Degradado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetGlassmorphism'    => __( 'Glassmorphism', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'presetApplied'          => __( 'Preset "%s" aplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'stylesReset'            => __( 'Estilos reseteados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === SIMBOLOS ===
+            'symbolCreate'           => __( 'Crear símbolo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolCreated'          => __( 'Símbolo creado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolUpdated'          => __( 'Símbolo actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolDeleted'          => __( 'Símbolo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolDetach'           => __( 'Desenlazar símbolo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolDetached'         => __( 'Instancia desenlazada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolSync'             => __( 'Sincronizar con maestro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolSynced'           => __( 'Instancia sincronizada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'symbolLoadError'        => __( 'Error al cargar símbolos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noSymbols'              => __( 'No hay símbolos creados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'searchSymbols'          => __( 'Buscar símbolos...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === CATEGORIAS DE SIMBOLOS ===
+            'categoryLayout'         => __( 'Layout', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'categoryContent'        => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'categoryNavigation'     => __( 'Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'categoryForms'          => __( 'Formularios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'categoryMedia'          => __( 'Media', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'categoryCustom'         => __( 'Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === CAPAS ===
+            'layers'                 => __( 'Capas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noLayers'               => __( 'No hay elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'hideElement'            => __( 'Ocultar elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'showElement'            => __( 'Mostrar elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'lockElement'            => __( 'Bloquear elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'unlockElement'          => __( 'Desbloquear elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'moveUp'                 => __( 'Mover arriba', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'moveDown'               => __( 'Mover abajo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'moveToTop'              => __( 'Enviar al frente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'moveToBottom'           => __( 'Enviar al fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === RESPONSIVE ===
+            'desktop'                => __( 'Escritorio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'tablet'                 => __( 'Tablet', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'mobile'                 => __( 'Móvil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'breakpoint'             => __( 'Punto de quiebre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'responsiveOverride'     => __( 'Sobrescribir para este dispositivo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'inheritFromDesktop'     => __( 'Heredar de escritorio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === HISTORIAL ===
+            'historyTitle'           => __( 'Historial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noHistory'              => __( 'No hay acciones en el historial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionChange'           => __( 'Cambio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionAdd'              => __( 'Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionDelete'           => __( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionMove'             => __( 'Mover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionStyle'            => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === PALETA DE COMANDOS ===
+            'commandPaletteTitle'    => __( 'Paleta de comandos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'commandSearch'          => __( 'Buscar comandos...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noCommandsFound'        => __( 'No se encontraron comandos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === MEDIOS ===
+            'selectImage'            => __( 'Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'selectVideo'            => __( 'Seleccionar video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'uploadImage'            => __( 'Subir imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'uploadVideo'            => __( 'Subir video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'removeImage'            => __( 'Quitar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'removeVideo'            => __( 'Quitar video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'altText'                => __( 'Texto alternativo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'imageUrl'               => __( 'URL de imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'videoUrl'               => __( 'URL de video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ENLACES ===
+            'linkUrl'                => __( 'URL del enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'linkText'               => __( 'Texto del enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'linkTarget'             => __( 'Abrir en nueva pestaña', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'linkNofollow'           => __( 'Añadir nofollow', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'searchPages'            => __( 'Buscar páginas...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === BLOQUES DINAMICOS ===
+            'blocks'                 => __( 'Bloques', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'searchBlocks'           => __( 'Buscar bloques...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noBlocksFound'          => __( 'No se encontraron bloques', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'dragToAdd'              => __( 'Arrastra para añadir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ATAJOS DE TECLADO ===
+            'keyboardShortcuts'      => __( 'Atajos de teclado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutSave'           => __( 'Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutUndo'           => __( 'Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutRedo'           => __( 'Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutDuplicate'      => __( 'Duplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutDelete'         => __( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutCopy'           => __( 'Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutPaste'          => __( 'Pegar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutSelectAll'      => __( 'Seleccionar todo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutEscape'         => __( 'Deseleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutZoomIn'         => __( 'Acercar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutZoomOut'        => __( 'Alejar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutZoomFit'        => __( 'Ajustar a pantalla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutTogglePanels'   => __( 'Mostrar/ocultar paneles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'shortcutCommandPalette' => __( 'Abrir paleta de comandos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ZOOM ===
+            'zoomIn'                 => __( 'Acercar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'zoomOut'                => __( 'Alejar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'zoomFit'                => __( 'Ajustar a pantalla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'zoomToSelection'        => __( 'Zoom a selección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'zoom100'                => __( 'Zoom 100%', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ACCESIBILIDAD ===
+            'a11yLabel'              => __( 'Etiqueta de accesibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'a11yRole'               => __( 'Rol ARIA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'a11yDescription'        => __( 'Descripción accesible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'a11yHidden'             => __( 'Ocultar para lectores de pantalla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ANIMACIONES ===
+            'animationNone'          => __( 'Sin animación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationFadeIn'        => __( 'Aparecer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationSlideIn'       => __( 'Deslizar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationBounce'        => __( 'Rebotar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationZoom'          => __( 'Zoom', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationDuration'      => __( 'Duración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationDelay'         => __( 'Retardo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationTrigger'       => __( 'Disparador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationOnScroll'      => __( 'Al hacer scroll', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationOnLoad'        => __( 'Al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'animationOnHover'       => __( 'Al pasar el ratón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === CONSTRAINTS (Figma-like) ===
+            'constraints'            => __( 'Restricciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintLeft'         => __( 'Izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintRight'        => __( 'Derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintTop'          => __( 'Arriba', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintBottom'       => __( 'Abajo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintCenter'       => __( 'Centro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'constraintScale'        => __( 'Escalar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === RAMAS DE DISEÑO ===
+            'branches'               => __( 'Ramas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'mainBranch'             => __( 'Rama principal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'createBranch'           => __( 'Crear rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'switchBranch'           => __( 'Cambiar rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'mergeBranch'            => __( 'Fusionar rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteBranch'           => __( 'Eliminar rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'branchName'             => __( 'Nombre de rama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noBranches'             => __( 'No hay ramas adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === COLABORACION ===
+            'collaborators'          => __( 'Colaboradores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noCollaborators'        => __( 'Nadie más está editando', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'editingBy'              => __( 'Siendo editado por %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'lockedBy'               => __( 'Bloqueado por %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === COMENTARIOS ===
+            'comments'               => __( 'Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'addComment'             => __( 'Añadir comentario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'replyComment'           => __( 'Responder', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'resolveComment'         => __( 'Resolver', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteComment'          => __( 'Eliminar comentario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noComments'             => __( 'No hay comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'commentPlaceholder'     => __( 'Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === PROTOTIPADO ===
+            'prototype'              => __( 'Prototipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'interactions'           => __( 'Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'addInteraction'         => __( 'Añadir interacción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'trigger'                => __( 'Disparador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'action'                 => __( 'Acción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'destination'            => __( 'Destino', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'onClick'                => __( 'Al hacer clic', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'onHover'                => __( 'Al pasar el ratón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'navigateTo'             => __( 'Navegar a', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'openOverlay'            => __( 'Abrir overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'closeOverlay'           => __( 'Cerrar overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'scrollTo'               => __( 'Desplazar a', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'playAnimation'          => __( 'Reproducir animación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === ESTILOS GLOBALES ===
+            'globalStyles'           => __( 'Estilos globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'createStyle'            => __( 'Crear estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'applyStyle'             => __( 'Aplicar estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'editStyle'              => __( 'Editar estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'deleteStyle'            => __( 'Eliminar estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'styleName'              => __( 'Nombre del estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noGlobalStyles'         => __( 'No hay estilos globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === TEMAS DEL EDITOR ===
+            'editorTheme'            => __( 'Tema del editor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'themeLight'             => __( 'Claro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'themeDark'              => __( 'Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'themeSystem'            => __( 'Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === MODO OFFLINE ===
+            'offlineMode'            => __( 'Modo sin conexión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'workingOffline'         => __( 'Trabajando sin conexión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'changesWillSync'        => __( 'Los cambios se sincronizarán cuando vuelvas a conectarte', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'pendingSync'            => __( '%d cambios pendientes de sincronizar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === PLUGINS ===
+            'plugins'                => __( 'Plugins', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'enablePlugin'           => __( 'Activar plugin', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'disablePlugin'          => __( 'Desactivar plugin', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'pluginSettings'         => __( 'Ajustes del plugin', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'noPlugins'              => __( 'No hay plugins instalados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === RENDIMIENTO ===
+            'performance'            => __( 'Rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'loadTime'               => __( 'Tiempo de carga', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'renderTime'             => __( 'Tiempo de renderizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'memoryUsage'            => __( 'Uso de memoria', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'elementCount'           => __( 'Número de elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === AYUDA ===
+            'help'                   => __( 'Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'documentation'          => __( 'Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'support'                => __( 'Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'feedback'               => __( 'Enviar feedback', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'whatsNew'               => __( 'Novedades', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'tips'                   => __( 'Consejos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === TIEMPO Y FECHAS ===
+            'justNow'                => __( 'Ahora mismo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'minutesAgo'             => __( 'Hace %d minutos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'hoursAgo'               => __( 'Hace %d horas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'daysAgo'                => __( 'Hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'today'                  => __( 'Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'yesterday'              => __( 'Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+
+            // === DESHACER ACCIONES ===
+            'undoAction'             => __( 'Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'actionUndone'           => __( 'Acción deshecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+        );
     }
 }

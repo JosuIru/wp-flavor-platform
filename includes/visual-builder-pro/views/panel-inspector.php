@@ -3577,6 +3577,83 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
 
+                <!-- Panel de Responsive Variants (integrado con VBPResponsiveVariants) -->
+                <div class="vbp-responsive-variants-panel vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'" x-data="{ showOverrides: false }">
+                    <div class="vbp-responsive-variants-header">
+                        <h4 class="vbp-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <rect x="7" y="9" width="10" height="8" rx="1"/>
+                            </svg>
+                            <?php esc_html_e( 'Variantes Responsive', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                        </h4>
+                        <button type="button"
+                                @click="showOverrides = !showOverrides"
+                                class="vbp-btn-link vbp-btn-xs"
+                                x-show="window.VBPResponsiveVariants && window.VBPResponsiveVariants.hasOverrides(selectedElement.id, $store.vbp.activeBreakpoint)">
+                            <span x-text="showOverrides ? '<?php echo esc_js( __( 'Ocultar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>' : '<?php echo esc_js( __( 'Ver cambios', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>'"></span>
+                        </button>
+                    </div>
+
+                    <!-- Lista de overrides del breakpoint actual -->
+                    <template x-if="showOverrides && window.VBPResponsiveVariants && $store.vbp.activeBreakpoint !== 'desktop'">
+                        <div class="vbp-responsive-overrides-list">
+                            <div class="vbp-responsive-overrides-info">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 20V10M6 20V16M18 20V4"/>
+                                </svg>
+                                <span><?php esc_html_e( 'Propiedades modificadas en este breakpoint:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                            </div>
+                            <div class="vbp-responsive-overrides-items">
+                                <template x-for="prop in (window.VBPResponsiveVariants ? window.VBPResponsiveVariants.getOverriddenProps(selectedElement.id, $store.vbp.activeBreakpoint) : [])" :key="prop">
+                                    <div class="vbp-responsive-override-item">
+                                        <span class="vbp-responsive-override-prop" x-text="prop.replace(/\./g, ' > ').replace(/([A-Z])/g, ' $1').toLowerCase()"></span>
+                                        <button type="button"
+                                                @click="window.VBPResponsiveVariants && window.VBPResponsiveVariants.clearOverride(selectedElement.id, $store.vbp.activeBreakpoint, prop)"
+                                                class="vbp-btn-icon-xs"
+                                                title="<?php esc_attr_e( 'Eliminar override', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M18 6L6 18M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="vbp-responsive-overrides-actions">
+                                <button type="button"
+                                        @click="window.VBPResponsiveVariants && window.VBPResponsiveVariants.copyLayout(selectedElement.id, 'desktop', $store.vbp.activeBreakpoint)"
+                                        class="vbp-btn vbp-btn-sm vbp-btn-secondary">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                                    </svg>
+                                    <?php esc_html_e( 'Copiar de Desktop', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button"
+                                        @click="window.VBPResponsiveVariants && window.VBPResponsiveVariants.clearAllOverrides(selectedElement.id, $store.vbp.activeBreakpoint)"
+                                        class="vbp-btn vbp-btn-sm vbp-btn-danger">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                    </svg>
+                                    <?php esc_html_e( 'Limpiar todos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Indicador cuando no hay overrides -->
+                    <template x-if="$store.vbp.activeBreakpoint !== 'desktop' && window.VBPResponsiveVariants && !window.VBPResponsiveVariants.hasOverrides(selectedElement.id, $store.vbp.activeBreakpoint)">
+                        <div class="vbp-responsive-no-overrides">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 8v8M8 12h8"/>
+                            </svg>
+                            <span><?php esc_html_e( 'Este breakpoint hereda los estilos de Desktop.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                            <small><?php esc_html_e( 'Modifica cualquier propiedad para crear un override.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></small>
+                        </div>
+                    </template>
+                </div>
+
                 <!-- Selector de Estados Interactivos -->
                 <div class="vbp-state-selector" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <div class="vbp-state-header">
@@ -4585,6 +4662,177 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
                     </template>
                 </div>
+
+                <!-- Constraints / Pinning -->
+                <div class="vbp-inspector-section vbp-inspector-section--constraints" x-data="vbpConstraintsPanel()">
+                    <h4 class="vbp-section-title">
+                        <svg class="vbp-section-header__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <line x1="12" y1="3" x2="12" y2="10"/>
+                            <line x1="12" y1="14" x2="12" y2="21"/>
+                            <line x1="3" y1="12" x2="10" y2="12"/>
+                            <line x1="14" y1="12" x2="21" y2="12"/>
+                        </svg>
+                        <?php esc_html_e( 'Constraints', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </h4>
+
+                    <div class="vbp-constraints-panel">
+                        <div class="vbp-constraints-panel__header">
+                            <span class="vbp-constraints-panel__title"><?php esc_html_e( 'Anclaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                            <button type="button" class="vbp-constraints-panel__reset" x-show="hasAnyConstraint" @click="resetConstraints()">
+                                <?php esc_html_e( 'Resetear', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </button>
+                        </div>
+
+                        <div class="vbp-constraints-visual">
+                            <!-- Cuadrado visual tipo Figma -->
+                            <div class="vbp-constraints-box">
+                                <!-- Elemento interno -->
+                                <div class="vbp-constraints-box__inner"></div>
+
+                                <!-- Lineas de constraint -->
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--top" :class="{ 'is-active': isConstraintActive('top') }"></div>
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--right" :class="{ 'is-active': isConstraintActive('right') }"></div>
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--bottom" :class="{ 'is-active': isConstraintActive('bottom') }"></div>
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--left" :class="{ 'is-active': isConstraintActive('left') }"></div>
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--centerH" :class="{ 'is-active': isConstraintActive('centerH') }"></div>
+                                <div class="vbp-constraints-box__line vbp-constraints-box__line--centerV" :class="{ 'is-active': isConstraintActive('centerV') }"></div>
+
+                                <!-- Puntos de constraint clickeables -->
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--top"
+                                        :class="{ 'is-active': isConstraintActive('top') }"
+                                        @click="toggleConstraint('top')"
+                                        title="<?php esc_attr_e( 'Anclar arriba', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--right"
+                                        :class="{ 'is-active': isConstraintActive('right') }"
+                                        @click="toggleConstraint('right')"
+                                        title="<?php esc_attr_e( 'Anclar derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--bottom"
+                                        :class="{ 'is-active': isConstraintActive('bottom') }"
+                                        @click="toggleConstraint('bottom')"
+                                        title="<?php esc_attr_e( 'Anclar abajo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--left"
+                                        :class="{ 'is-active': isConstraintActive('left') }"
+                                        @click="toggleConstraint('left')"
+                                        title="<?php esc_attr_e( 'Anclar izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--centerH"
+                                        :class="{ 'is-active': isConstraintActive('centerH') }"
+                                        @click="toggleConstraint('centerH')"
+                                        title="<?php esc_attr_e( 'Centrar horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                                <button type="button"
+                                        class="vbp-constraints-box__point vbp-constraints-box__point--centerV"
+                                        :class="{ 'is-active': isConstraintActive('centerV') }"
+                                        @click="toggleConstraint('centerV')"
+                                        title="<?php esc_attr_e( 'Centrar vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                </button>
+                            </div>
+
+                            <!-- Info panel -->
+                            <div class="vbp-constraints-info">
+                                <div class="vbp-constraints-info__row">
+                                    <span class="vbp-constraints-info__label"><?php esc_html_e( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                    <span class="vbp-constraints-info__status"
+                                          :class="isConstraintActive('left') || isConstraintActive('right') || isConstraintActive('centerH') ? 'vbp-constraints-info__status--active' : 'vbp-constraints-info__status--none'"
+                                          x-text="getHorizontalStatusText()">
+                                    </span>
+                                </div>
+                                <div class="vbp-constraints-info__row">
+                                    <span class="vbp-constraints-info__label"><?php esc_html_e( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                    <span class="vbp-constraints-info__status"
+                                          :class="isConstraintActive('top') || isConstraintActive('bottom') || isConstraintActive('centerV') ? 'vbp-constraints-info__status--active' : 'vbp-constraints-info__status--none'"
+                                          x-text="getVerticalStatusText()">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Presets de constraints -->
+                        <div class="vbp-constraints-presets">
+                            <span class="vbp-constraints-presets__label"><?php esc_html_e( 'Presets', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                            <div class="vbp-constraints-presets__grid">
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'top-left' }"
+                                        @click="applyPreset('top-left')"
+                                        title="<?php esc_attr_e( 'Superior izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2196;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'top-center' }"
+                                        @click="applyPreset('top-center')"
+                                        title="<?php esc_attr_e( 'Superior centro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2191;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'top-right' }"
+                                        @click="applyPreset('top-right')"
+                                        title="<?php esc_attr_e( 'Superior derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2197;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn vbp-constraints-preset-btn--stretch"
+                                        :class="{ 'is-active': activePreset === 'stretch-horizontal' }"
+                                        @click="applyPreset('stretch-horizontal')"
+                                        title="<?php esc_attr_e( 'Estirar horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2194;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'center-left' }"
+                                        @click="applyPreset('center-left')"
+                                        title="<?php esc_attr_e( 'Centro izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2190;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'center' }"
+                                        @click="applyPreset('center')"
+                                        title="<?php esc_attr_e( 'Centro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2B55;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'center-right' }"
+                                        @click="applyPreset('center-right')"
+                                        title="<?php esc_attr_e( 'Centro derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2192;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn vbp-constraints-preset-btn--stretch"
+                                        :class="{ 'is-active': activePreset === 'stretch-vertical' }"
+                                        @click="applyPreset('stretch-vertical')"
+                                        title="<?php esc_attr_e( 'Estirar vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2195;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'bottom-left' }"
+                                        @click="applyPreset('bottom-left')"
+                                        title="<?php esc_attr_e( 'Inferior izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2199;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'bottom-center' }"
+                                        @click="applyPreset('bottom-center')"
+                                        title="<?php esc_attr_e( 'Inferior centro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2193;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn"
+                                        :class="{ 'is-active': activePreset === 'bottom-right' }"
+                                        @click="applyPreset('bottom-right')"
+                                        title="<?php esc_attr_e( 'Inferior derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2198;</button>
+                                <button type="button"
+                                        class="vbp-constraints-preset-btn vbp-constraints-preset-btn--fill"
+                                        :class="{ 'is-active': activePreset === 'fill' }"
+                                        @click="applyPreset('fill')"
+                                        title="<?php esc_attr_e( 'Rellenar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">&#x2B1C;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <?php
+                // Panel de Auto Layout - Sistema nivel Figma
+                $autoLayoutPanelPath = __DIR__ . '/panel-auto-layout.php';
+                if ( file_exists( $autoLayoutPanelPath ) ) {
+                    include $autoLayoutPanelPath;
+                }
+                ?>
 
                 <div class="vbp-inspector-section">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Atributos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>

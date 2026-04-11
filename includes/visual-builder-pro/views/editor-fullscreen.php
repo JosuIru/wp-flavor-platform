@@ -109,6 +109,84 @@ $datos_json = wp_json_encode( $datos );
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
                 </button>
             </div>
+
+            <!-- Branch Selector -->
+            <div class="vbp-branch-selector" x-data="vbpBranchSelector()" x-show="$store.vbp.inspectorMode === 'advanced'" x-cloak>
+                <button
+                    type="button"
+                    class="vbp-branch-selector-trigger"
+                    :class="{ 'is-open': isOpen }"
+                    @click="toggle()"
+                    @click.away="close()"
+                    data-tooltip="<?php esc_attr_e( 'Cambiar rama de diseño', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                    data-tooltip-position="bottom"
+                >
+                    <svg class="vbp-branch-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                        <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                    </svg>
+                    <span class="vbp-branch-name" x-text="$store.vbpBranching?.currentBranch?.nombre || 'main'">main</span>
+                    <svg class="vbp-branch-arrow" viewBox="0 0 20 20" fill="currentColor" width="12" height="12">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </button>
+
+                <!-- Branch Dropdown -->
+                <div
+                    class="vbp-branch-dropdown"
+                    x-show="isOpen"
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 transform scale-95"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-95"
+                >
+                    <div class="vbp-branch-dropdown-header">
+                        <input
+                            type="text"
+                            class="vbp-branch-search"
+                            placeholder="<?php esc_attr_e( 'Buscar rama...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                            x-model="searchQuery"
+                            @keydown.escape="close()"
+                        >
+                    </div>
+                    <div class="vbp-branch-dropdown-list">
+                        <template x-for="branch in filteredBranches" :key="branch.id">
+                            <button
+                                type="button"
+                                class="vbp-branch-item"
+                                :class="{ 'is-active': branch.id === $store.vbpBranching?.currentBranch?.id }"
+                                @click="selectBranch(branch)"
+                            >
+                                <span class="vbp-branch-item-icon" :class="'status-' + branch.status">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                                        <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                                    </svg>
+                                </span>
+                                <span class="vbp-branch-item-name" x-text="branch.nombre"></span>
+                                <span class="vbp-branch-item-badge" x-show="branch.is_default"><?php esc_html_e( 'default', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                            </button>
+                        </template>
+                        <div class="vbp-branch-empty" x-show="filteredBranches.length === 0">
+                            <?php esc_html_e( 'No se encontraron ramas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                        </div>
+                    </div>
+                    <div class="vbp-branch-dropdown-footer">
+                        <button type="button" class="vbp-branch-action" @click="$store.vbpBranching.openCreateModal(); close()">
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                            </svg>
+                            <?php esc_html_e( 'Nueva rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                        </button>
+                        <button type="button" class="vbp-branch-action" @click="$store.vbpBranching.openBranchesPanel(); close()">
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                            </svg>
+                            <?php esc_html_e( 'Gestionar ramas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="vbp-toolbar-center">
@@ -210,6 +288,37 @@ $datos_json = wp_json_encode( $datos );
                 </div>
                 <span class="vbp-users-count" x-show="activeUsers.length > 4" x-text="'+' + (activeUsers.length - 4)"></span>
             </div>
+
+            <!-- Botón de Modo Prototipo -->
+            <button type="button"
+                    @click="window.VBPPrototypeMode && window.VBPPrototypeMode.toggleMode()"
+                    class="vbp-btn vbp-btn-icon vbp-prototype-mode-btn"
+                    :class="{ 'active': $store.vbp.prototype && $store.vbp.prototype.enabled }"
+                    data-tooltip="<?php esc_attr_e( 'Modo Prototipo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                    data-shortcut="P"
+                    data-tooltip-position="bottom"
+                    x-show="$store.vbp.inspectorMode === 'advanced'"
+                    aria-label="<?php esc_attr_e( 'Activar modo prototipo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="5" cy="12" r="3"/>
+                    <circle cx="19" cy="12" r="3"/>
+                    <path d="M8 12h8"/>
+                    <path d="M16 9l3 3-3 3"/>
+                </svg>
+            </button>
+
+            <!-- Botón de Preview Prototipo -->
+            <button type="button"
+                    @click="window.VBPPrototypeMode && window.VBPPrototypeMode.startPreview()"
+                    class="vbp-btn vbp-btn-icon vbp-prototype-preview-btn"
+                    data-tooltip="<?php esc_attr_e( 'Previsualizar Prototipo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                    data-tooltip-position="bottom"
+                    x-show="$store.vbp.inspectorMode === 'advanced' && $store.vbp.prototype && $store.vbp.prototype.enabled"
+                    aria-label="<?php esc_attr_e( 'Previsualizar prototipo interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+            </button>
 
             <!-- Botón de Comentarios -->
             <button type="button" @click="openCommentsPanel()" class="vbp-btn vbp-btn-icon" :class="{ 'has-badge': getUnresolvedCount() > 0 }" data-tooltip="<?php esc_attr_e( 'Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" data-shortcut="C" data-tooltip-position="bottom" x-show="$store.vbp.inspectorMode === 'advanced' && (collaborationEnabled || comments.length > 0)">
@@ -2047,6 +2156,357 @@ $datos_json = wp_json_encode( $datos );
             <path d="M6 20v-4"/>
         </svg>
     </button>
+
+    <!-- ============================================
+         BRANCHING MODALS
+         ============================================ -->
+
+    <!-- Modal: Crear Nueva Rama -->
+    <div class="vbp-modal vbp-branch-create-modal" x-show="$store.vbpBranching?.showCreateModal" x-cloak @click.self="$store.vbpBranching.closeCreateModal()" @keydown.escape.window="$store.vbpBranching?.showCreateModal && $store.vbpBranching.closeCreateModal()">
+        <div class="vbp-modal-content vbp-modal-sm">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                    </svg>
+                    <?php esc_html_e( 'Crear Nueva Rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeCreateModal()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body">
+                <div class="vbp-form-group">
+                    <label class="vbp-form-label"><?php esc_html_e( 'Nombre de la rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                    <input type="text" class="vbp-form-input" x-model="$store.vbpBranching.newBranchName" placeholder="<?php esc_attr_e( 'ej: rediseno-header', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" @keydown.enter="$store.vbpBranching.createBranch()">
+                    <p class="vbp-form-hint"><?php esc_html_e( 'Usa nombres descriptivos sin espacios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+                </div>
+                <div class="vbp-form-group">
+                    <label class="vbp-form-label"><?php esc_html_e( 'Descripción (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                    <textarea class="vbp-form-textarea" x-model="$store.vbpBranching.newBranchDescription" rows="2" placeholder="<?php esc_attr_e( 'Describe el propósito de esta rama...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"></textarea>
+                </div>
+                <div class="vbp-form-group">
+                    <label class="vbp-form-label"><?php esc_html_e( 'Crear desde', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                    <select class="vbp-form-select" x-model="$store.vbpBranching.createFromBranch">
+                        <option value="current"><?php esc_html_e( 'Estado actual', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                        <template x-for="branch in $store.vbpBranching?.branches || []" :key="branch.id">
+                            <option :value="branch.id" x-text="branch.nombre"></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeCreateModal()"><?php esc_html_e( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                <button type="button" class="vbp-btn vbp-btn-primary" @click="$store.vbpBranching.createBranch()" :disabled="!$store.vbpBranching?.newBranchName?.trim()">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                    </svg>
+                    <?php esc_html_e( 'Crear Rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Gestión de Ramas -->
+    <div class="vbp-modal vbp-branch-panel-modal" x-show="$store.vbpBranching?.showBranchesPanel" x-cloak @click.self="$store.vbpBranching.closeBranchesPanel()" @keydown.escape.window="$store.vbpBranching?.showBranchesPanel && $store.vbpBranching.closeBranchesPanel()">
+        <div class="vbp-modal-content vbp-modal-lg">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                    </svg>
+                    <?php esc_html_e( 'Gestión de Ramas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeBranchesPanel()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body vbp-branch-panel-body">
+                <!-- Branch List -->
+                <div class="vbp-branch-list">
+                    <template x-for="branch in $store.vbpBranching?.branches || []" :key="branch.id">
+                        <div class="vbp-branch-list-item" :class="{ 'is-active': branch.id === $store.vbpBranching?.currentBranch?.id, 'is-merged': branch.status === 'merged', 'is-archived': branch.status === 'archived' }">
+                            <div class="vbp-branch-list-item-info">
+                                <div class="vbp-branch-list-item-header">
+                                    <span class="vbp-branch-list-item-name" x-text="branch.nombre"></span>
+                                    <span class="vbp-branch-list-item-status" :class="'status-' + branch.status" x-text="branch.status"></span>
+                                    <span class="vbp-branch-list-item-badge" x-show="branch.is_default"><?php esc_html_e( 'default', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                </div>
+                                <div class="vbp-branch-list-item-meta">
+                                    <span x-text="branch.descripcion || '<?php esc_attr_e( 'Sin descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
+                                    <span class="vbp-branch-list-item-author">
+                                        <?php esc_html_e( 'por', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?> <span x-text="branch.autor_nombre"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="vbp-branch-list-item-actions">
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-primary" @click="$store.vbpBranching.checkout(branch.id)" x-show="branch.id !== $store.vbpBranching?.currentBranch?.id && branch.status === 'active'" :disabled="$store.vbpBranching?.loading">
+                                    <?php esc_html_e( 'Checkout', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-secondary" @click="$store.vbpBranching.openMergeModal(branch)" x-show="branch.id !== $store.vbpBranching?.currentBranch?.id && branch.status === 'active'" :disabled="$store.vbpBranching?.loading">
+                                    <?php esc_html_e( 'Merge', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-ghost" @click="$store.vbpBranching.openDiffModal(branch)" x-show="branch.id !== $store.vbpBranching?.currentBranch?.id" :disabled="$store.vbpBranching?.loading">
+                                    <?php esc_html_e( 'Diff', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-ghost" @click="$store.vbpBranching.openHistoryModal(branch)">
+                                    <?php esc_html_e( 'Historial', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-danger" @click="$store.vbpBranching.deleteBranch(branch.id)" x-show="!branch.is_default && branch.status !== 'merged'" :disabled="$store.vbpBranching?.loading">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="vbp-branch-list-empty" x-show="!$store.vbpBranching?.branches?.length">
+                        <?php esc_html_e( 'No hay ramas creadas aún.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeBranchesPanel()"><?php esc_html_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                <button type="button" class="vbp-btn vbp-btn-primary" @click="$store.vbpBranching.openCreateModal()">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                    </svg>
+                    <?php esc_html_e( 'Nueva Rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Merge de Ramas -->
+    <div class="vbp-modal vbp-branch-merge-modal" x-show="$store.vbpBranching?.showMergeModal" x-cloak @click.self="$store.vbpBranching.closeMergeModal()" @keydown.escape.window="$store.vbpBranching?.showMergeModal && $store.vbpBranching.closeMergeModal()">
+        <div class="vbp-modal-content vbp-modal-md">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm9 4a1 1 0 10-2 0v6a1 1 0 102 0V7zm-3 2a1 1 0 10-2 0v4a1 1 0 102 0V9zm-3 2a1 1 0 10-2 0v2a1 1 0 102 0v-2z"/>
+                    </svg>
+                    <?php esc_html_e( 'Merge de Rama', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeMergeModal()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body">
+                <div class="vbp-merge-preview">
+                    <div class="vbp-merge-branch vbp-merge-source">
+                        <span class="vbp-merge-label"><?php esc_html_e( 'Origen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                        <span class="vbp-merge-name" x-text="$store.vbpBranching?.mergingBranch?.nombre || ''"></span>
+                    </div>
+                    <div class="vbp-merge-arrow">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="24" height="24">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+                        </svg>
+                    </div>
+                    <div class="vbp-merge-branch vbp-merge-target">
+                        <span class="vbp-merge-label"><?php esc_html_e( 'Destino', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                        <span class="vbp-merge-name" x-text="$store.vbpBranching?.currentBranch?.nombre || 'main'"></span>
+                    </div>
+                </div>
+                <div class="vbp-merge-options">
+                    <label class="vbp-checkbox">
+                        <input type="checkbox" x-model="$store.vbpBranching.mergeDeleteAfter">
+                        <span><?php esc_html_e( 'Eliminar rama de origen después del merge', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                    </label>
+                </div>
+                <div class="vbp-merge-warning" x-show="$store.vbpBranching?.mergeConflicts?.length > 0">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+                    </svg>
+                    <span><?php esc_html_e( 'Se detectaron conflictos que necesitan resolución manual.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeMergeModal()"><?php esc_html_e( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                <button type="button" class="vbp-btn vbp-btn-primary" @click="$store.vbpBranching.merge()" :disabled="$store.vbpBranching?.loading">
+                    <span x-show="!$store.vbpBranching?.loading"><?php esc_html_e( 'Hacer Merge', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                    <span x-show="$store.vbpBranching?.loading"><?php esc_html_e( 'Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Resolución de Conflictos -->
+    <div class="vbp-modal vbp-branch-conflict-modal" x-show="$store.vbpBranching?.showConflictModal" x-cloak @keydown.escape.window="$store.vbpBranching?.showConflictModal && $store.vbpBranching.closeConflictModal()">
+        <div class="vbp-modal-content vbp-modal-xl">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20" class="text-warning">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+                    </svg>
+                    <?php esc_html_e( 'Resolver Conflictos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeConflictModal()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body vbp-conflict-body">
+                <div class="vbp-conflict-list">
+                    <template x-for="(conflict, index) in $store.vbpBranching?.mergeConflicts || []" :key="conflict.path">
+                        <div class="vbp-conflict-item" :class="{ 'is-resolved': conflict.resolved }">
+                            <div class="vbp-conflict-header">
+                                <span class="vbp-conflict-path" x-text="conflict.path"></span>
+                                <span class="vbp-conflict-type" x-text="conflict.type"></span>
+                            </div>
+                            <div class="vbp-conflict-content">
+                                <div class="vbp-conflict-side vbp-conflict-ours">
+                                    <div class="vbp-conflict-side-header">
+                                        <span><?php esc_html_e( 'Actual (ours)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-primary" @click="$store.vbpBranching.resolveConflict(index, 'ours')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                                    </div>
+                                    <pre class="vbp-conflict-code" x-text="JSON.stringify(conflict.ours, null, 2)"></pre>
+                                </div>
+                                <div class="vbp-conflict-side vbp-conflict-theirs">
+                                    <div class="vbp-conflict-side-header">
+                                        <span><?php esc_html_e( 'Entrante (theirs)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-secondary" @click="$store.vbpBranching.resolveConflict(index, 'theirs')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                                    </div>
+                                    <pre class="vbp-conflict-code" x-text="JSON.stringify(conflict.theirs, null, 2)"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeConflictModal()"><?php esc_html_e( 'Cancelar Merge', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                <button type="button" class="vbp-btn vbp-btn-primary" @click="$store.vbpBranching.completeMerge()" :disabled="!$store.vbpBranching?.allConflictsResolved">
+                    <?php esc_html_e( 'Completar Merge', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Diff de Ramas -->
+    <div class="vbp-modal vbp-branch-diff-modal" x-show="$store.vbpBranching?.showDiffModal" x-cloak @click.self="$store.vbpBranching.closeDiffModal()" @keydown.escape.window="$store.vbpBranching?.showDiffModal && $store.vbpBranching.closeDiffModal()">
+        <div class="vbp-modal-content vbp-modal-xl">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                    </svg>
+                    <?php esc_html_e( 'Comparar Ramas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeDiffModal()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body vbp-diff-body">
+                <div class="vbp-diff-header">
+                    <div class="vbp-diff-branch">
+                        <span class="vbp-diff-label"><?php esc_html_e( 'Base', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                        <span class="vbp-diff-name" x-text="$store.vbpBranching?.currentBranch?.nombre || 'main'"></span>
+                    </div>
+                    <span class="vbp-diff-vs"><?php esc_html_e( 'vs', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                    <div class="vbp-diff-branch">
+                        <span class="vbp-diff-label"><?php esc_html_e( 'Comparando', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                        <span class="vbp-diff-name" x-text="$store.vbpBranching?.diffBranch?.nombre || ''"></span>
+                    </div>
+                </div>
+                <div class="vbp-diff-stats" x-show="$store.vbpBranching?.diffData">
+                    <span class="vbp-diff-stat vbp-diff-added">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                        </svg>
+                        <span x-text="$store.vbpBranching?.diffData?.added?.length || 0"></span> <?php esc_html_e( 'añadidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </span>
+                    <span class="vbp-diff-stat vbp-diff-removed">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                        </svg>
+                        <span x-text="$store.vbpBranching?.diffData?.removed?.length || 0"></span> <?php esc_html_e( 'eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </span>
+                    <span class="vbp-diff-stat vbp-diff-modified">
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                        </svg>
+                        <span x-text="$store.vbpBranching?.diffData?.modified?.length || 0"></span> <?php esc_html_e( 'modificados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </span>
+                </div>
+                <div class="vbp-diff-content">
+                    <template x-for="change in $store.vbpBranching?.diffData?.changes || []" :key="change.path">
+                        <div class="vbp-diff-change" :class="'vbp-diff-change--' + change.type">
+                            <div class="vbp-diff-change-header">
+                                <span class="vbp-diff-change-type" x-text="change.type"></span>
+                                <span class="vbp-diff-change-path" x-text="change.path"></span>
+                            </div>
+                            <div class="vbp-diff-change-content" x-show="change.type === 'modified'">
+                                <div class="vbp-diff-change-old">
+                                    <span class="vbp-diff-change-label"><?php esc_html_e( 'Antes', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                    <pre x-text="JSON.stringify(change.old, null, 2)"></pre>
+                                </div>
+                                <div class="vbp-diff-change-new">
+                                    <span class="vbp-diff-change-label"><?php esc_html_e( 'Después', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                    <pre x-text="JSON.stringify(change.new, null, 2)"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="vbp-diff-empty" x-show="!$store.vbpBranching?.diffData?.changes?.length">
+                        <?php esc_html_e( 'No hay diferencias entre las ramas.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeDiffModal()"><?php esc_html_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Historial de Rama -->
+    <div class="vbp-modal vbp-branch-history-modal" x-show="$store.vbpBranching?.showHistoryModal" x-cloak @click.self="$store.vbpBranching.closeHistoryModal()" @keydown.escape.window="$store.vbpBranching?.showHistoryModal && $store.vbpBranching.closeHistoryModal()">
+        <div class="vbp-modal-content vbp-modal-lg">
+            <div class="vbp-modal-header">
+                <h3 class="vbp-modal-title">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                    </svg>
+                    <?php esc_html_e( 'Historial de Rama:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?> <span x-text="$store.vbpBranching?.historyBranch?.nombre || ''"></span>
+                </h3>
+                <button type="button" class="vbp-modal-close" @click="$store.vbpBranching.closeHistoryModal()" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="vbp-modal-body vbp-history-body">
+                <div class="vbp-history-list">
+                    <template x-for="version in $store.vbpBranching?.branchHistory || []" :key="version.id">
+                        <div class="vbp-history-item">
+                            <div class="vbp-history-item-dot"></div>
+                            <div class="vbp-history-item-content">
+                                <div class="vbp-history-item-header">
+                                    <span class="vbp-history-item-title" x-text="version.descripcion || '<?php esc_attr_e( 'Sin descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
+                                    <span class="vbp-history-item-hash" x-text="version.content_hash?.substring(0, 7) || ''"></span>
+                                </div>
+                                <div class="vbp-history-item-meta">
+                                    <img :src="version.autor_avatar" class="vbp-history-item-avatar" :alt="version.autor_nombre">
+                                    <span x-text="version.autor_nombre"></span>
+                                    <span class="vbp-history-item-date" x-text="version.created_at_human"></span>
+                                </div>
+                            </div>
+                            <div class="vbp-history-item-actions">
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-ghost" @click="$store.vbpBranching.previewVersion(version)">
+                                    <?php esc_html_e( 'Preview', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-secondary" @click="$store.vbpBranching.restoreVersion(version)">
+                                    <?php esc_html_e( 'Restaurar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="vbp-history-empty" x-show="!$store.vbpBranching?.branchHistory?.length">
+                        <?php esc_html_e( 'No hay versiones en el historial de esta rama.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="vbp-modal-footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="$store.vbpBranching.closeHistoryModal()"><?php esc_html_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+            </div>
+        </div>
+    </div>
 
     <?php wp_footer(); ?>
 
