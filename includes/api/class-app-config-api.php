@@ -785,7 +785,7 @@ class Flavor_App_Config_API {
      * @return bool Resultado de update_option.
      */
     private function update_cached_config( array $config ) {
-        $result = $this->update_cached_config( $config );
+        $result = update_option( 'flavor_app_config', $config );
         if ( $result ) {
             $this->config_cache = $config;
         }
