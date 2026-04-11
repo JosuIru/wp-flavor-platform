@@ -59,6 +59,8 @@ class Chat_IA_Mobile_API {
         add_action('rest_api_init', [$this, 'add_cors_headers'], 15);
         // Header de version de contrato
         add_filter('rest_post_dispatch', [$this, 'add_version_header'], 10, 3);
+        // Flush de estadísticas pendientes al cerrar (solo si hay batch acumulado)
+        add_action('shutdown', [__CLASS__, 'force_flush_stats']);
     }
 
     /**
@@ -219,7 +221,11 @@ class Chat_IA_Mobile_API {
     }
 
     /**
-     * Registra uso de la API móvil para estadísticas
+     * Registra uso de la API móvil para estadísticas (OPTIMIZADO)
+     *
+     * Usa batching con transient para evitar writes a BD en cada request.
+     * Los datos se acumulan en un transient y se escriben cada 60 segundos
+     * o cuando hay más de 50 requests pendientes.
      *
      * @param string $endpoint Endpoint llamado
      * @param string $platform android/ios
@@ -227,6 +233,56 @@ class Chat_IA_Mobile_API {
      * @param string $device_id ID del dispositivo (opcional)
      */
     private function track_mobile_usage($endpoint, $platform = 'unknown', $app_type = 'client', $device_id = '') {
+        $batch_key = 'chat_ia_mobile_stats_batch';
+        $last_flush_key = 'chat_ia_mobile_stats_last_flush';
+
+        // Obtener batch acumulado (transient es más rápido que option)
+        $batch = get_transient($batch_key);
+        if (false === $batch) {
+            $batch = [
+                'requests' => [],
+                'count' => 0,
+            ];
+        }
+
+        $today = date('Y-m-d');
+
+        // Añadir request al batch
+        $batch['requests'][] = [
+            'endpoint'  => $endpoint,
+            'platform'  => $platform,
+            'app_type'  => $app_type,
+            'device_id' => $device_id ? md5($device_id) : '',
+            'timestamp' => time(),
+            'date'      => $today,
+        ];
+        $batch['count']++;
+
+        // Verificar si hay que hacer flush
+        $last_flush = get_transient($last_flush_key) ?: 0;
+        $should_flush = ($batch['count'] >= 50) || ((time() - $last_flush) > 60);
+
+        if ($should_flush) {
+            // Flush: escribir a BD
+            $this->flush_mobile_stats_batch($batch);
+            delete_transient($batch_key);
+            set_transient($last_flush_key, time(), HOUR_IN_SECONDS);
+        } else {
+            // Guardar batch en transient (TTL 5 minutos como seguridad)
+            set_transient($batch_key, $batch, 5 * MINUTE_IN_SECONDS);
+        }
+    }
+
+    /**
+     * Escribe el batch de estadísticas acumuladas a la base de datos
+     *
+     * @param array $batch Datos acumulados
+     */
+    private function flush_mobile_stats_batch(array $batch) {
+        if (empty($batch['requests'])) {
+            return;
+        }
+
         $stats = get_option('chat_ia_mobile_stats', [
             'total_requests' => 0,
             'by_platform' => ['android' => 0, 'ios' => 0, 'unknown' => 0],
@@ -237,40 +293,46 @@ class Chat_IA_Mobile_API {
             'last_activity' => null,
         ]);
 
-        $today = date('Y-m-d');
+        foreach ($batch['requests'] as $request_data) {
+            $endpoint = $request_data['endpoint'];
+            $platform = $request_data['platform'];
+            $app_type = $request_data['app_type'];
+            $device_key = $request_data['device_id'];
+            $today = $request_data['date'];
 
-        // Incrementar contadores
-        $stats['total_requests']++;
-        $stats['by_platform'][$platform] = ($stats['by_platform'][$platform] ?? 0) + 1;
-        $stats['by_app_type'][$app_type] = ($stats['by_app_type'][$app_type] ?? 0) + 1;
-        $stats['by_endpoint'][$endpoint] = ($stats['by_endpoint'][$endpoint] ?? 0) + 1;
+            // Incrementar contadores
+            $stats['total_requests']++;
+            $stats['by_platform'][$platform] = ($stats['by_platform'][$platform] ?? 0) + 1;
+            $stats['by_app_type'][$app_type] = ($stats['by_app_type'][$app_type] ?? 0) + 1;
+            $stats['by_endpoint'][$endpoint] = ($stats['by_endpoint'][$endpoint] ?? 0) + 1;
+
+            // Stats diarias
+            if (!isset($stats['daily_stats'][$today])) {
+                $stats['daily_stats'][$today] = ['requests' => 0, 'devices' => []];
+            }
+            $stats['daily_stats'][$today]['requests']++;
+
+            // Registrar dispositivo único
+            if (!empty($device_key)) {
+                if (!isset($stats['devices'][$device_key])) {
+                    $stats['devices'][$device_key] = [
+                        'platform' => $platform,
+                        'app_type' => $app_type,
+                        'first_seen' => $today,
+                        'requests' => 0,
+                    ];
+                }
+                $stats['devices'][$device_key]['requests']++;
+                $stats['devices'][$device_key]['last_seen'] = $today;
+
+                // Dispositivos únicos del día
+                if (!in_array($device_key, $stats['daily_stats'][$today]['devices'])) {
+                    $stats['daily_stats'][$today]['devices'][] = $device_key;
+                }
+            }
+        }
+
         $stats['last_activity'] = current_time('mysql');
-
-        // Stats diarias
-        if (!isset($stats['daily_stats'][$today])) {
-            $stats['daily_stats'][$today] = ['requests' => 0, 'devices' => []];
-        }
-        $stats['daily_stats'][$today]['requests']++;
-
-        // Registrar dispositivo único
-        if (!empty($device_id)) {
-            $device_key = md5($device_id);
-            if (!isset($stats['devices'][$device_key])) {
-                $stats['devices'][$device_key] = [
-                    'platform' => $platform,
-                    'app_type' => $app_type,
-                    'first_seen' => $today,
-                    'requests' => 0,
-                ];
-            }
-            $stats['devices'][$device_key]['requests']++;
-            $stats['devices'][$device_key]['last_seen'] = $today;
-
-            // Dispositivos únicos del día
-            if (!in_array($device_key, $stats['daily_stats'][$today]['devices'])) {
-                $stats['daily_stats'][$today]['devices'][] = $device_key;
-            }
-        }
 
         // Limpiar stats antiguas (más de 30 días)
         $cutoff = date('Y-m-d', strtotime('-30 days'));
@@ -281,6 +343,19 @@ class Chat_IA_Mobile_API {
         }
 
         update_option('chat_ia_mobile_stats', $stats);
+    }
+
+    /**
+     * Fuerza el flush de estadísticas pendientes (útil para cron o shutdown)
+     */
+    public static function force_flush_stats() {
+        $batch = get_transient('chat_ia_mobile_stats_batch');
+        if ($batch && !empty($batch['requests'])) {
+            $instance = self::get_instance();
+            $instance->flush_mobile_stats_batch($batch);
+            delete_transient('chat_ia_mobile_stats_batch');
+            set_transient('chat_ia_mobile_stats_last_flush', time(), HOUR_IN_SECONDS);
+        }
     }
 
     /**

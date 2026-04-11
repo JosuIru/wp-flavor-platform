@@ -33,6 +33,11 @@ class Flavor_App_Config_API {
     const NAMESPACE = 'flavor-vbp/v1';
 
     /**
+     * TTL para transients de cache (5 minutos)
+     */
+    const CACHE_TTL = 300;
+
+    /**
      * Clave de API para autenticación
      *
      * @var string
@@ -45,6 +50,48 @@ class Flavor_App_Config_API {
      * @var string
      */
     private $mobile_apps_path = '';
+
+    /**
+     * Cache en memoria de la configuración de la app
+     *
+     * @var array|null
+     */
+    private $config_cache = null;
+
+    /**
+     * Cache en memoria de la versión de Flutter
+     *
+     * @var string|null
+     */
+    private $flutter_version_cache = null;
+
+    /**
+     * Cache en memoria de iconos disponibles
+     *
+     * @var array|null
+     */
+    private $icons_cache = null;
+
+    /**
+     * Módulos de app (constante estática para evitar recrear en cada llamada)
+     *
+     * @var array
+     */
+    private static $app_modules = null;
+
+    /**
+     * Presets de temas (constante estática)
+     *
+     * @var array
+     */
+    private static $theme_presets = null;
+
+    /**
+     * Layouts disponibles (constante estática)
+     *
+     * @var array
+     */
+    private static $layouts = null;
 
     /**
      * Obtiene la instancia singleton
@@ -288,7 +335,7 @@ class Flavor_App_Config_API {
      * Obtener configuración actual de la app
      */
     public function get_app_config( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'config' => $config,
@@ -303,12 +350,12 @@ class Flavor_App_Config_API {
      */
     public function update_app_config( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         // Merge recursivo
         $config = $this->array_merge_recursive_distinct( $config, $this->sanitize_config( $params ) );
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -320,7 +367,7 @@ class Flavor_App_Config_API {
      * Obtener configuración de branding
      */
     public function get_branding( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'branding' => $config['branding'] ?? $this->get_default_branding(),
@@ -334,7 +381,7 @@ class Flavor_App_Config_API {
      */
     public function update_branding( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         $allowed_fields = array(
             'app_name', 'app_id', 'app_description',
@@ -350,7 +397,7 @@ class Flavor_App_Config_API {
             }
         }
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -362,7 +409,7 @@ class Flavor_App_Config_API {
      * Obtener tema actual
      */
     public function get_theme( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'theme' => $config['theme'] ?? $this->get_default_theme(),
@@ -376,7 +423,7 @@ class Flavor_App_Config_API {
      */
     public function update_theme( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         // Tema claro
         if ( isset( $params['theme'] ) && is_array( $params['theme'] ) ) {
@@ -405,7 +452,7 @@ class Flavor_App_Config_API {
             }
         }
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -429,7 +476,7 @@ class Flavor_App_Config_API {
      * Obtener módulos disponibles para app
      */
     public function get_app_modules( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $active_modules = $config['modules'] ?? array();
 
         $all_modules = $this->get_all_app_modules();
@@ -456,13 +503,13 @@ class Flavor_App_Config_API {
             return new WP_Error( 'invalid_modules', 'Se requiere un array de módulos', array( 'status' => 400 ) );
         }
 
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $valid_modules = array_column( $this->get_all_app_modules(), 'id' );
 
         // Filtrar solo módulos válidos
         $config['modules'] = array_values( array_intersect( $modules, $valid_modules ) );
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -475,7 +522,7 @@ class Flavor_App_Config_API {
      * Obtener permisos requeridos
      */
     public function get_permissions( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'android' => $config['permissions']['android'] ?? $this->get_default_android_permissions(),
@@ -490,7 +537,7 @@ class Flavor_App_Config_API {
      */
     public function set_permissions( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         if ( isset( $params['android'] ) && is_array( $params['android'] ) ) {
             $config['permissions']['android'] = array_map( 'sanitize_text_field', $params['android'] );
@@ -500,7 +547,7 @@ class Flavor_App_Config_API {
             $config['permissions']['ios'] = array_map( 'sanitize_text_field', $params['ios'] );
         }
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -512,7 +559,7 @@ class Flavor_App_Config_API {
      * Obtener configuración de build
      */
     public function get_build_settings( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'build' => $config['build'] ?? $this->get_default_build_settings(),
@@ -525,7 +572,7 @@ class Flavor_App_Config_API {
      */
     public function update_build_settings( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         $allowed_fields = array(
             'version_name', 'version_code',
@@ -541,7 +588,7 @@ class Flavor_App_Config_API {
             }
         }
 
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -553,7 +600,7 @@ class Flavor_App_Config_API {
      * Generar archivo de configuración Flutter
      */
     public function generate_flutter_config( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         $dart_config = "// Configuración generada automáticamente\n";
         $dart_config .= "// Generado: " . current_time( 'c' ) . "\n\n";
@@ -597,7 +644,7 @@ class Flavor_App_Config_API {
      * Generar colores Dart
      */
     public function generate_dart_colors( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $theme = $config['theme'] ?? $this->get_default_theme();
         $dark_theme = $config['dark_theme'] ?? $this->get_default_dark_theme();
 
@@ -643,7 +690,7 @@ class Flavor_App_Config_API {
      * Exportar configuración completa
      */
     public function export_full_config( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'config' => $config,
@@ -684,7 +731,7 @@ class Flavor_App_Config_API {
      * Obtener layouts disponibles
      */
     public function get_layouts( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
 
         return rest_ensure_response( array(
             'current_layout' => $config['layout'] ?? 'default',
@@ -703,9 +750,9 @@ class Flavor_App_Config_API {
             return new WP_Error( 'invalid_layout', "Layout '$layout' no existe", array( 'status' => 400 ) );
         }
 
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $config['layout'] = $layout;
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         return rest_ensure_response( array(
             'success' => true,
@@ -715,6 +762,35 @@ class Flavor_App_Config_API {
     }
 
     // ============ HELPERS ============
+
+    /**
+     * Obtiene la configuración de la app con cache en memoria
+     *
+     * Evita múltiples llamadas a get_option() en una misma request.
+     *
+     * @param bool $force_refresh Forzar lectura desde BD.
+     * @return array
+     */
+    private function get_cached_config( $force_refresh = false ) {
+        if ( null === $this->config_cache || $force_refresh ) {
+            $this->config_cache = get_option( 'flavor_app_config', $this->get_default_config() );
+        }
+        return $this->config_cache;
+    }
+
+    /**
+     * Actualiza la configuración y refresca el cache
+     *
+     * @param array $config Nueva configuración.
+     * @return bool Resultado de update_option.
+     */
+    private function update_cached_config( array $config ) {
+        $result = $this->update_cached_config( $config );
+        if ( $result ) {
+            $this->config_cache = $config;
+        }
+        return $result;
+    }
 
     /**
      * Configuración por defecto
@@ -894,10 +970,14 @@ class Flavor_App_Config_API {
     }
 
     /**
-     * Todos los módulos de app
+     * Todos los módulos de app (con cache estática)
      */
     private function get_all_app_modules() {
-        return array(
+        if ( null !== self::$app_modules ) {
+            return self::$app_modules;
+        }
+
+        self::$app_modules = array(
             // Comunidad
             array( 'id' => 'eventos', 'name' => 'Eventos', 'category' => 'comunidad', 'icon' => '📅' ),
             array( 'id' => 'foros', 'name' => 'Foros', 'category' => 'comunidad', 'icon' => '💬' ),
@@ -943,13 +1023,19 @@ class Flavor_App_Config_API {
             array( 'id' => 'radio', 'name' => 'Radio', 'category' => 'cultura', 'icon' => '📻' ),
             array( 'id' => 'podcast', 'name' => 'Podcast', 'category' => 'cultura', 'icon' => '🎙️' ),
         );
+
+        return self::$app_modules;
     }
 
     /**
-     * Todos los presets de temas
+     * Todos los presets de temas (con cache estática)
      */
     private function get_all_theme_presets() {
-        return array(
+        if ( null !== self::$theme_presets ) {
+            return self::$theme_presets;
+        }
+
+        self::$theme_presets = array(
             'modern-blue' => array(
                 'name' => 'Azul Moderno',
                 'light' => array(
@@ -1199,13 +1285,19 @@ class Flavor_App_Config_API {
                 ),
             ),
         );
+
+        return self::$theme_presets;
     }
 
     /**
-     * Todos los layouts de app
+     * Todos los layouts de app (con cache estática)
      */
     private function get_all_layouts() {
-        return array(
+        if ( null !== self::$layouts ) {
+            return self::$layouts;
+        }
+
+        self::$layouts = array(
             'default' => array(
                 'name' => 'Por defecto',
                 'description' => 'Bottom navigation con 4-5 tabs',
@@ -1232,12 +1324,18 @@ class Flavor_App_Config_API {
                 'max_drawer_items' => 8,
             ),
         );
+
+        return self::$layouts;
     }
 
     /**
-     * Obtener iconos disponibles
+     * Obtener iconos disponibles (con cache en memoria)
      */
     private function get_available_icons() {
+        if ( null !== $this->icons_cache ) {
+            return $this->icons_cache;
+        }
+
         $icons_path = $this->mobile_apps_path . 'assets/icons/';
         $icons = array();
 
@@ -1248,23 +1346,43 @@ class Flavor_App_Config_API {
             }
         }
 
-        return $icons;
+        $this->icons_cache = $icons;
+        return $this->icons_cache;
     }
 
     /**
-     * Detectar versión de Flutter
+     * Detectar versión de Flutter (con cache en memoria y transient)
      */
     private function detect_flutter_version() {
+        // Cache en memoria primero
+        if ( null !== $this->flutter_version_cache ) {
+            return $this->flutter_version_cache;
+        }
+
+        // Intentar transient
+        $transient_key = 'flavor_flutter_version';
+        $cached_version = get_transient( $transient_key );
+        if ( false !== $cached_version ) {
+            $this->flutter_version_cache = $cached_version;
+            return $this->flutter_version_cache;
+        }
+
+        // Leer del filesystem
         $pubspec_path = $this->mobile_apps_path . 'pubspec.yaml';
+        $version = 'unknown';
 
         if ( file_exists( $pubspec_path ) ) {
             $content = file_get_contents( $pubspec_path );
             if ( preg_match( '/sdk:\s*["\']?>=?(\d+\.\d+\.\d+)/i', $content, $matches ) ) {
-                return $matches[1];
+                $version = $matches[1];
             }
         }
 
-        return 'unknown';
+        // Guardar en transient (1 hora)
+        set_transient( $transient_key, $version, HOUR_IN_SECONDS );
+        $this->flutter_version_cache = $version;
+
+        return $this->flutter_version_cache;
     }
 
     /**
@@ -1404,7 +1522,7 @@ class Flavor_App_Config_API {
      * @return WP_REST_Response|WP_Error
      */
     public function sync_app_from_site( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $site_settings = get_option( 'flavor_chat_ia_settings', array() );
         $changes = array();
 
@@ -1460,7 +1578,7 @@ class Flavor_App_Config_API {
         $changes['app_profile'] = $app_profile;
 
         // Guardar configuración
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         // Actualizar timestamp de sincronización
         update_option( 'flavor_app_last_sync', array(
@@ -1488,7 +1606,7 @@ class Flavor_App_Config_API {
      */
     public function configure_app_full( $request ) {
         $params = $request->get_json_params();
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $results = array();
 
         // 1. Sincronizar módulos si se solicita
@@ -1623,7 +1741,7 @@ class Flavor_App_Config_API {
         }
 
         // Guardar configuración
-        update_option( 'flavor_app_config', $config );
+        $this->update_cached_config( $config );
 
         // Actualizar timestamp de sincronización
         update_option( 'flavor_app_last_sync', array(
@@ -1649,7 +1767,7 @@ class Flavor_App_Config_API {
      * @return WP_REST_Response
      */
     public function get_sync_status( $request ) {
-        $config = get_option( 'flavor_app_config', $this->get_default_config() );
+        $config = $this->get_cached_config();
         $last_sync = get_option( 'flavor_app_last_sync', array() );
         $site_settings = get_option( 'flavor_chat_ia_settings', array() );
 
