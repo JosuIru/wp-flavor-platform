@@ -61,7 +61,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useBuilderStore } from '../../stores/builderStore';
-import { useUiStore } from '../../stores/uiStore';
+import { useUiStore, ZOOM_CONFIG } from '../../stores/uiStore';
 
 import DeviceToggle from './DeviceToggle.vue';
 import UndoRedoButtons from './UndoRedoButtons.vue';
@@ -72,8 +72,8 @@ const builderStore = useBuilderStore();
 const uiStore = useUiStore();
 
 // Computed
-const cannotZoomIn = computed(() => uiStore.canvasZoom >= 200);
-const cannotZoomOut = computed(() => uiStore.canvasZoom <= 25);
+const cannotZoomIn = computed(() => uiStore.canvasZoom >= ZOOM_CONFIG.MAX);
+const cannotZoomOut = computed(() => uiStore.canvasZoom <= ZOOM_CONFIG.MIN);
 
 // Methods
 function openAddComponent() {

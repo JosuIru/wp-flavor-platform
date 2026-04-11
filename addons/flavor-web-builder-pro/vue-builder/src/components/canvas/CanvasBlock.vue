@@ -66,6 +66,9 @@ import '../../styles/preview-tailwind.css';
 import BlockToolbar from '../toolbar/BlockToolbar.vue';
 import ResizeHandles from '../inline-editing/ResizeHandles.vue';
 
+// Tipos de campo que permiten redimensionado (inmutable)
+const RESIZABLE_FIELD_TYPES = Object.freeze(['image', 'gallery', 'video']);
+
 const props = defineProps({
   block: {
     type: Object,
@@ -124,9 +127,8 @@ const canResize = computed(() => {
   // Determinar si el bloque puede redimensionarse basado en sus campos
   if (!componentDef.value?.fields) return false;
 
-  const resizableFields = ['image', 'gallery', 'video'];
   return Object.values(componentDef.value.fields).some(field =>
-    resizableFields.includes(field.type)
+    RESIZABLE_FIELD_TYPES.includes(field.type)
   );
 });
 

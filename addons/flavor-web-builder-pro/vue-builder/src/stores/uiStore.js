@@ -1,5 +1,16 @@
 import { defineStore } from 'pinia';
 
+// Constantes de zoom (exportadas para uso en componentes)
+export const ZOOM_CONFIG = Object.freeze({
+  MIN: 25,
+  MAX: 200,
+  DEFAULT: 100,
+  STEP: 10,
+});
+
+// Dispositivos de preview válidos
+export const PREVIEW_DEVICES = Object.freeze(['desktop', 'tablet', 'mobile']);
+
 /**
  * Store para estado de UI
  * Gestiona modales, toasts, paneles y estado visual
@@ -110,7 +121,7 @@ export const useUiStore = defineStore('ui', {
      * Cambiar dispositivo de preview
      */
     setPreviewDevice(device) {
-      if (['desktop', 'tablet', 'mobile'].includes(device)) {
+      if (PREVIEW_DEVICES.includes(device)) {
         this.previewDevice = device;
       }
     },
@@ -255,28 +266,28 @@ export const useUiStore = defineStore('ui', {
      * Establecer zoom del canvas
      */
     setCanvasZoom(zoom) {
-      this.canvasZoom = Math.max(25, Math.min(200, zoom));
+      this.canvasZoom = Math.max(ZOOM_CONFIG.MIN, Math.min(ZOOM_CONFIG.MAX, zoom));
     },
 
     /**
      * Zoom in
      */
     zoomIn() {
-      this.setCanvasZoom(this.canvasZoom + 10);
+      this.setCanvasZoom(this.canvasZoom + ZOOM_CONFIG.STEP);
     },
 
     /**
      * Zoom out
      */
     zoomOut() {
-      this.setCanvasZoom(this.canvasZoom - 10);
+      this.setCanvasZoom(this.canvasZoom - ZOOM_CONFIG.STEP);
     },
 
     /**
      * Reset zoom
      */
     resetZoom() {
-      this.canvasZoom = 100;
+      this.canvasZoom = ZOOM_CONFIG.DEFAULT;
     },
 
     /**

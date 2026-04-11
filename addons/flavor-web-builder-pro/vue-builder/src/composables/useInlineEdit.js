@@ -2,6 +2,9 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useBuilderStore } from '../stores/builderStore';
 import { useUiStore } from '../stores/uiStore';
 
+// Tipos de campo editables inline (inmutable)
+const INLINE_EDITABLE_TYPES = Object.freeze(['text', 'textarea', 'image']);
+
 /**
  * Composable para edición inline de texto e imágenes
  */
@@ -159,9 +162,8 @@ export function useInlineEdit() {
     const field = componentDef.fields[fieldName];
     if (!field) return false;
 
-    // Campos de texto y textarea son editables inline
-    const inlineEditableTypes = ['text', 'textarea', 'image'];
-    return inlineEditableTypes.includes(field.type) && field.inlineEditable !== false;
+    // Campos de texto, textarea e imagen son editables inline
+    return INLINE_EDITABLE_TYPES.includes(field.type) && field.inlineEditable !== false;
   }
 
   /**
@@ -172,9 +174,8 @@ export function useInlineEdit() {
     if (!componentDef || !componentDef.fields) return [];
 
     return Object.entries(componentDef.fields)
-      .filter(([fieldName, field]) => {
-        const editableTypes = ['text', 'textarea', 'image'];
-        return editableTypes.includes(field.type) && field.inlineEditable !== false;
+      .filter(([, field]) => {
+        return INLINE_EDITABLE_TYPES.includes(field.type) && field.inlineEditable !== false;
       })
       .map(([fieldName, field]) => ({
         name: fieldName,
