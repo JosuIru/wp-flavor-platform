@@ -200,6 +200,13 @@ class Flavor_Global_Search {
     private function buscar_en_entidad($nombre_tabla, $configuracion, $termino, $limite, $offset = 0) {
         global $wpdb;
 
+        // OPTIMIZACIÓN: Cache de búsquedas frecuentes (5 minutos)
+        $cache_key = 'flavor_search_' . md5( $nombre_tabla . '_' . $termino . '_' . $limite . '_' . $offset );
+        $cached_result = wp_cache_get( $cache_key, 'flavor_global_search' );
+        if ( false !== $cached_result ) {
+            return $cached_result;
+        }
+
         $clausulas_like = [];
         $valores_like = [];
         foreach ($configuracion['campos_busqueda'] as $nombre_campo) {
@@ -272,6 +279,9 @@ class Flavor_Global_Search {
             ];
         }
 
+        // OPTIMIZACIÓN: Guardar en cache (5 minutos)
+        wp_cache_set( $cache_key, $resultados_formateados, 'flavor_global_search', 300 );
+
         return $resultados_formateados;
     }
 
@@ -281,6 +291,16 @@ class Flavor_Global_Search {
         }
 
         global $wpdb;
+
+        // OPTIMIZACIÓN: Usar transient para evitar SHOW TABLES en cada request
+        $transient_key = 'flavor_existing_tables_' . md5( $wpdb->prefix );
+        $cached_tables = get_transient( $transient_key );
+
+        if ( false !== $cached_tables ) {
+            $this->cache_tablas_existentes = $cached_tables;
+            return $this->cache_tablas_existentes;
+        }
+
         $tablas_flavor = $wpdb->get_col(
             $wpdb->prepare(
                 "SHOW TABLES LIKE %s",
@@ -289,6 +309,10 @@ class Flavor_Global_Search {
         );
 
         $this->cache_tablas_existentes = $tablas_flavor ?: [];
+
+        // Guardar en transient por 1 hora
+        set_transient( $transient_key, $this->cache_tablas_existentes, HOUR_IN_SECONDS );
+
         return $this->cache_tablas_existentes;
     }
 

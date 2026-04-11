@@ -31,6 +31,39 @@ class Flavor_Network_Manager {
     private $modulos_registrados = [];
 
     /**
+     * Cache de tablas existentes
+     */
+    private $tablas_cache = [];
+
+    /**
+     * OPTIMIZACIÓN: Verificar existencia de tabla con cache
+     *
+     * @param string $tabla Nombre completo de la tabla
+     * @return bool
+     */
+    private function tabla_existe( $tabla ) {
+        if ( isset( $this->tablas_cache[ $tabla ] ) ) {
+            return $this->tablas_cache[ $tabla ];
+        }
+
+        $transient_key = 'flavor_table_exists_' . md5( $tabla );
+        $cached = get_transient( $transient_key );
+
+        if ( false !== $cached ) {
+            $this->tablas_cache[ $tabla ] = ( 'yes' === $cached );
+            return $this->tablas_cache[ $tabla ];
+        }
+
+        global $wpdb;
+        $existe = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla ) ) === $tabla );
+
+        $this->tablas_cache[ $tabla ] = $existe;
+        set_transient( $transient_key, $existe ? 'yes' : 'no', HOUR_IN_SECONDS );
+
+        return $existe;
+    }
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -114,6 +147,13 @@ class Flavor_Network_Manager {
     }
 
     public function sync_with_peers() {
+        // OPTIMIZACIÓN: Limitar frecuencia de sincronización (máx 1 por hora)
+        $last_sync = get_transient( 'flavor_network_last_sync' );
+        if ( false !== $last_sync ) {
+            return; // Ya se sincronizó recientemente
+        }
+        set_transient( 'flavor_network_last_sync', time(), HOUR_IN_SECONDS );
+
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('nodes');
 
@@ -205,8 +245,8 @@ class Flavor_Network_Manager {
         $tabla_productores = $wpdb->prefix . 'flavor_network_producers';
         $tabla_productos = $wpdb->prefix . 'flavor_network_producer_products';
 
-        // Verificar que las tablas existen
-        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores'") !== $tabla_productores) {
+        // OPTIMIZACIÓN: Verificar tabla con cache
+        if ( ! $this->tabla_existe( $tabla_productores ) ) {
             return;
         }
 

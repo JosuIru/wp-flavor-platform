@@ -3,8 +3,8 @@ import { useHistoryStore } from './historyStore';
 import { usePreviewStore } from './previewStore';
 import { createSnapshot } from '../utils/historyDiff';
 
-// Valores por defecto para cada tipo de campo (inmutable)
-const FIELD_DEFAULT_VALUES = Object.freeze({
+// Valores por defecto para cada tipo de campo (inmutable, exportado para reutilización)
+export const FIELD_DEFAULT_VALUES = Object.freeze({
   text: '',
   textarea: '',
   color: '',

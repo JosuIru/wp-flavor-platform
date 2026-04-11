@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { useBuilderStore } from '../stores/builderStore';
+import { useBuilderStore, FIELD_DEFAULT_VALUES } from '../stores/builderStore';
 
 /**
  * Composable para trabajar con definiciones de componentes
@@ -103,27 +103,14 @@ export function useComponentDefs() {
         if (field.default !== undefined) {
           defaultValues[key] = field.default;
         } else {
-          // Valores por defecto según tipo
-          switch (field.type) {
-            case 'text':
-            case 'textarea':
-            case 'color':
-            case 'image':
-            case 'select':
-            case 'icon':
-              defaultValues[key] = '';
-              break;
-            case 'number':
-              defaultValues[key] = field.min || 0;
-              break;
-            case 'toggle':
-              defaultValues[key] = false;
-              break;
-            case 'repeater':
-              defaultValues[key] = [];
-              break;
-            default:
-              defaultValues[key] = '';
+          // Usar mapeo centralizado de valores por defecto
+          const fieldDefault = FIELD_DEFAULT_VALUES[field.type];
+          // Para number, preferir field.min si está definido
+          if (field.type === 'number' && field.min !== undefined) {
+            defaultValues[key] = field.min;
+          } else {
+            // Para arrays, crear nueva instancia para evitar referencias compartidas
+            defaultValues[key] = Array.isArray(fieldDefault) ? [] : (fieldDefault ?? '');
           }
         }
       }
