@@ -341,12 +341,25 @@ final class Flavor_Bootstrap_Dependencies {
      * @return void
      */
     private function load_network_system() {
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-installer.php';
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-node.php';
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-api.php';
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-manager.php';
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-webhooks.php';
-        require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-federation-shortcodes.php';
+        // Evitar redeclaración si el addon ya cargó estas clases
+        if ( ! class_exists( 'Flavor_Network_Installer' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-installer.php';
+        }
+        if ( ! class_exists( 'Flavor_Network_Node' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-node.php';
+        }
+        if ( ! class_exists( 'Flavor_Network_API' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-api.php';
+        }
+        if ( ! class_exists( 'Flavor_Network_Manager' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-manager.php';
+        }
+        if ( ! class_exists( 'Flavor_Network_Webhooks' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-webhooks.php';
+        }
+        if ( ! class_exists( 'Flavor_Network_Federation_Shortcodes' ) ) {
+            require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-federation-shortcodes.php';
+        }
 
         // Crear tablas de red si no existen
         Flavor_Network_Installer::create_tables();

@@ -1169,27 +1169,6 @@ class Flavor_Federation_API {
     }
 
     /**
-     * Genera la fórmula Haversine para cálculo de distancia
-     *
-     * @param float  $lat      Latitud del punto de referencia
-     * @param float  $lng      Longitud del punto de referencia
-     * @param string $lat_col  Nombre de la columna de latitud en la tabla
-     * @param string $lng_col  Nombre de la columna de longitud en la tabla
-     * @return string SQL con la fórmula Haversine
-     */
-    private function build_haversine_formula($lat, $lng, $lat_col = 'latitud', $lng_col = 'longitud') {
-        return sprintf(
-            "(6371 * acos(cos(radians(%f)) * cos(radians(%s)) * cos(radians(%s) - radians(%f)) + sin(radians(%f)) * sin(radians(%s))))",
-            $lat,
-            $lat_col,
-            $lng_col,
-            $lng,
-            $lat,
-            $lat_col
-        );
-    }
-
-    /**
      * Endpoint: Ping para verificar disponibilidad
      */
     public function ping($request) {
@@ -2931,52 +2910,6 @@ class Flavor_Federation_API {
         do_action('flavor_batch_sync_completed', $resultados, $nodo_id);
 
         return new WP_REST_Response($resultados, 200);
-    }
-
-    /**
-     * Valida el payload de un item federado
-     *
-     * @param string $tipo Tipo de contenido
-     * @param array $datos Datos del item
-     * @return true|WP_Error
-     */
-    private function validate_federated_payload($tipo, $datos) {
-        if (!is_array($datos) || empty($datos)) {
-            return new WP_Error(
-                'datos_invalidos',
-                __('Los datos del item deben ser un array no vacio', 'flavor-platform')
-            );
-        }
-
-        // Campos requeridos por tipo
-        $campos_requeridos = [
-            'evento'    => ['titulo', 'fecha_inicio'],
-            'producto'  => ['nombre', 'precio'],
-            'productor' => ['nombre'],
-            'servicio'  => ['titulo'],
-            'espacio'   => ['nombre'],
-            'anuncio'   => ['titulo'],
-            'curso'     => ['titulo'],
-            'taller'    => ['titulo'],
-            'viaje'     => ['origen', 'destino', 'fecha_salida'],
-        ];
-
-        $requeridos = $campos_requeridos[$tipo] ?? ['titulo'];
-
-        foreach ($requeridos as $campo) {
-            if (empty($datos[$campo])) {
-                return new WP_Error(
-                    'campo_faltante',
-                    sprintf(
-                        __('Campo requerido faltante para %s: %s', 'flavor-platform'),
-                        $tipo,
-                        $campo
-                    )
-                );
-            }
-        }
-
-        return true;
     }
 
     /**

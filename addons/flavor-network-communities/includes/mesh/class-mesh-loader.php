@@ -189,8 +189,13 @@ class Flavor_Mesh_Loader {
      * Asegura que existe el peer local
      */
     private function ensure_local_peer() {
-        require_once dirname($this->base_dir) . '/class-network-installer.php';
-        Flavor_Network_Installer::ensure_local_peer_exists();
+        if ( ! class_exists( 'Flavor_Network_Installer' ) ) {
+            require_once dirname($this->base_dir) . '/class-network-installer.php';
+        }
+        // Solo llamar si el método existe (versión del addon tiene el método, core no)
+        if ( method_exists( 'Flavor_Network_Installer', 'ensure_local_peer_exists' ) ) {
+            Flavor_Network_Installer::ensure_local_peer_exists();
+        }
     }
 
     /**
