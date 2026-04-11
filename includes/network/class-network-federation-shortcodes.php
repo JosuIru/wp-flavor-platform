@@ -194,13 +194,23 @@ class Flavor_Network_Federation_Shortcodes {
             'orden' => 'DESC',
             'order_by' => 'actualizado_en',
             'where' => [],
+            'fields' => '*', // OPTIMIZACIÓN: Permitir especificar campos
         ];
         $args = wp_parse_args($args, $defaults);
 
         $tabla = $wpdb->prefix . 'flavor_network_' . $table_suffix;
         $nodo_local = get_option('flavor_network_node_id', '');
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") !== $tabla) {
+        // OPTIMIZACIÓN: Cache de verificación de tabla
+        $table_cache_key = 'flavor_table_exists_' . md5( $tabla );
+        $table_exists = get_transient( $table_cache_key );
+
+        if ( false === $table_exists ) {
+            $table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla ) ) === $tabla ) ? 'yes' : 'no';
+            set_transient( $table_cache_key, $table_exists, HOUR_IN_SECONDS );
+        }
+
+        if ( 'yes' !== $table_exists ) {
             return [];
         }
 
@@ -208,15 +218,25 @@ class Flavor_Network_Federation_Shortcodes {
         $params = [$nodo_local];
 
         foreach ($args['where'] as $col => $val) {
-            $where_sql .= " AND {$col} = %s";
-            $params[] = $val;
+            // OPTIMIZACIÓN: Sanitizar nombre de columna
+            $col_safe = preg_replace( '/[^a-z0-9_]/i', '', $col );
+            if ( ! empty( $col_safe ) ) {
+                $where_sql .= " AND {$col_safe} = %s";
+                $params[] = $val;
+            }
         }
 
         $order_by = sanitize_sql_orderby($args['order_by'] . ' ' . $args['orden']) ?: 'actualizado_en DESC';
+
+        // OPTIMIZACIÓN: Límite mínimo 1, máximo 100
         $limite = absint($args['limite']);
+        $limite = max( 1, min( $limite, 100 ) );
+
+        // OPTIMIZACIÓN: Usar campos específicos si se proporcionan
+        $fields = ( '*' === $args['fields'] ) ? '*' : esc_sql( $args['fields'] );
 
         $query = $wpdb->prepare(
-            "SELECT * FROM {$tabla} WHERE {$where_sql} ORDER BY {$order_by} LIMIT %d",
+            "SELECT {$fields} FROM {$tabla} WHERE {$where_sql} ORDER BY {$order_by} LIMIT %d",
             array_merge($params, [$limite])
         );
 

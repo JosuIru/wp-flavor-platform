@@ -151,8 +151,9 @@ class Flavor_Reputation_Manager {
 
         $tabla_reputacion = $this->prefix . 'social_reputacion';
 
+        // OPTIMIZACIÓN: Seleccionar solo campos necesarios
         $registro_existente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_reputacion WHERE usuario_id = %d",
+            "SELECT id, puntos_totales, puntos_semana, puntos_mes, nivel FROM $tabla_reputacion WHERE usuario_id = %d",
             $usuario_id
         ));
 

@@ -62,6 +62,39 @@ class Flavor_WP_Module_Integrations {
     private $capability_gestionar = 'manage_options';
 
     /**
+     * Cache local de tablas existentes
+     */
+    private $tablas_cache = [];
+
+    /**
+     * OPTIMIZACIÓN: Verificar existencia de tabla con cache
+     *
+     * @param string $tabla Nombre completo de la tabla
+     * @return bool
+     */
+    private function tabla_existe_cached( $tabla ) {
+        if ( isset( $this->tablas_cache[ $tabla ] ) ) {
+            return $this->tablas_cache[ $tabla ];
+        }
+
+        $transient_key = 'flavor_table_exists_' . md5( $tabla );
+        $cached = get_transient( $transient_key );
+
+        if ( false !== $cached ) {
+            $this->tablas_cache[ $tabla ] = ( 'yes' === $cached );
+            return $this->tablas_cache[ $tabla ];
+        }
+
+        global $wpdb;
+        $existe = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla ) ) === $tabla );
+
+        $this->tablas_cache[ $tabla ] = $existe;
+        set_transient( $transient_key, $existe ? 'yes' : 'no', HOUR_IN_SECONDS );
+
+        return $existe;
+    }
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -1589,12 +1622,15 @@ class Flavor_WP_Module_Integrations {
         foreach ($tablas as $modulo => $config) {
             $tabla_relacion = $prefix . $config['tabla'];
 
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_relacion}'") !== $tabla_relacion) {
+            // OPTIMIZACIÓN: Cache de verificación de tabla
+            if ( ! $this->tabla_existe_cached( $tabla_relacion ) ) {
                 continue;
             }
 
+            // OPTIMIZACIÓN: Solo seleccionar el campo necesario
+            $campo_seleccion = preg_replace( '/[^a-z0-9_]/i', '', $config['campo'] );
             $relaciones = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM {$tabla_relacion} WHERE post_id = %d",
+                "SELECT {$campo_seleccion} FROM {$tabla_relacion} WHERE post_id = %d",
                 $post_id
             ));
 
@@ -1606,7 +1642,8 @@ class Flavor_WP_Module_Integrations {
                     // Obtener nombre del elemento
                     if ($elemento_id) {
                         $tabla_elemento = $prefix . $config['nombre_tabla'];
-                        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_elemento}'") === $tabla_elemento) {
+                        // OPTIMIZACIÓN: Cache de verificación de tabla
+                        if ( $this->tabla_existe_cached( $tabla_elemento ) ) {
                             $campo_nombre = in_array($modulo, ['comunidades', 'colectivos', 'biblioteca']) ? 'nombre' : 'titulo';
                             $nombre_elemento = $wpdb->get_var($wpdb->prepare(
                                 "SELECT {$campo_nombre} FROM {$tabla_elemento} WHERE id = %d",
