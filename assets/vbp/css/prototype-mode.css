@@ -1,0 +1,981 @@
+/**
+ * VBP Prototype Mode - Estilos del sistema de prototipado interactivo
+ *
+ * Incluye estilos para:
+ * - Flechas de conexion (SVG)
+ * - Hotspots e indicadores visuales
+ * - Panel de interacciones
+ * - Overlay de preview
+ * - Transiciones entre frames
+ * - Editor de interacciones
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.4.0
+ */
+
+/* ============================================
+   Variables CSS
+   ============================================ */
+:root {
+    --vbp-prototype-primary: #6366f1;
+    --vbp-prototype-primary-hover: #5558e8;
+    --vbp-prototype-secondary: #f59e0b;
+    --vbp-prototype-success: #10b981;
+    --vbp-prototype-error: #ef4444;
+    --vbp-prototype-connection-color: #6366f1;
+    --vbp-prototype-hotspot-color: rgba(99, 102, 241, 0.3);
+    --vbp-prototype-hotspot-border: #6366f1;
+}
+
+/* ============================================
+   Canvas en Modo Prototipo
+   ============================================ */
+.vbp-canvas.vbp-prototype-mode {
+    position: relative;
+}
+
+.vbp-canvas.vbp-prototype-mode::after {
+    content: 'PROTOTYPE MODE';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    background: var(--vbp-prototype-primary);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+/* ============================================
+   SVG de Conexiones
+   ============================================ */
+.vbp-prototype-connections-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: visible;
+}
+
+.vbp-connection-path {
+    fill: none;
+    stroke: var(--vbp-prototype-connection-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: stroke;
+    cursor: pointer;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.vbp-connection-path:hover {
+    stroke: var(--vbp-prototype-primary-hover);
+    stroke-width: 3;
+}
+
+.vbp-connection-path--selected {
+    stroke: var(--vbp-prototype-secondary);
+    stroke-width: 3;
+    stroke-dasharray: 5, 3;
+    animation: vbp-dash-animate 0.5s linear infinite;
+}
+
+@keyframes vbp-dash-animate {
+    to {
+        stroke-dashoffset: -8;
+    }
+}
+
+/* Marker de flecha */
+#vbp-arrow-marker path {
+    fill: var(--vbp-prototype-connection-color);
+}
+
+/* ============================================
+   Hotspots / Indicadores de Interaccion
+   ============================================ */
+.vbp-has-interaction {
+    position: relative;
+}
+
+.vbp-has-interaction::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    bottom: -4px;
+    left: -4px;
+    border: 2px dashed var(--vbp-prototype-hotspot-border);
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0.6;
+    z-index: 100;
+}
+
+.vbp-has-interaction:hover::before {
+    opacity: 1;
+    border-style: solid;
+}
+
+.vbp-interaction-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--vbp-prototype-primary);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 9px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 101;
+    pointer-events: none;
+}
+
+/* ============================================
+   Panel de Interacciones
+   ============================================ */
+.vbp-prototype-panel {
+    display: none;
+    flex-direction: column;
+    background: var(--vbp-panel-bg, #1e1e2e);
+    border-top: 1px solid var(--vbp-border, #333346);
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+}
+
+.vbp-prototype-panel--visible {
+    display: flex;
+    max-height: 500px;
+}
+
+.vbp-prototype-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--vbp-border, #333346);
+    background: var(--vbp-panel-header-bg, #252535);
+}
+
+.vbp-prototype-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #fff);
+}
+
+.vbp-prototype-panel__icon {
+    font-size: 16px;
+}
+
+.vbp-prototype-panel__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vbp-prototype-panel__preview-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--vbp-prototype-primary);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.vbp-prototype-panel__preview-btn:hover {
+    background: var(--vbp-prototype-primary-hover);
+    transform: scale(1.05);
+}
+
+.vbp-prototype-panel__content {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+}
+
+.vbp-prototype-panel__element-info {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: var(--vbp-input-bg, #2a2a3e);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #888);
+}
+
+.vbp-prototype-panel__element-id {
+    font-family: monospace;
+    color: var(--vbp-prototype-primary);
+}
+
+.vbp-prototype-panel__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    text-align: center;
+}
+
+.vbp-prototype-panel__empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.vbp-prototype-panel__empty-text {
+    font-size: 13px;
+    color: var(--vbp-text-muted, #888);
+    line-height: 1.5;
+}
+
+.vbp-prototype-panel__interactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.vbp-prototype-panel__no-interactions {
+    padding: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #888);
+    font-style: italic;
+}
+
+.vbp-prototype-panel__add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 2px dashed var(--vbp-border, #333346);
+    border-radius: 8px;
+    color: var(--vbp-text-muted, #888);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-prototype-panel__add-btn:hover {
+    border-color: var(--vbp-prototype-primary);
+    color: var(--vbp-prototype-primary);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+/* ============================================
+   Items de Interaccion
+   ============================================ */
+.vbp-interaction-item {
+    background: var(--vbp-input-bg, #2a2a3e);
+    border: 1px solid var(--vbp-border, #333346);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+}
+
+.vbp-interaction-item:hover {
+    border-color: var(--vbp-prototype-primary);
+}
+
+.vbp-interaction-item--expanded {
+    border-color: var(--vbp-prototype-primary);
+}
+
+.vbp-interaction-item__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+}
+
+.vbp-interaction-item__trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text, #e0e0e0);
+}
+
+.vbp-interaction-item__icon {
+    font-size: 14px;
+}
+
+.vbp-interaction-item__actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.vbp-interaction-item:hover .vbp-interaction-item__actions {
+    opacity: 1;
+}
+
+.vbp-interaction-item__edit,
+.vbp-interaction-item__delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-interaction-item__edit:hover {
+    background: var(--vbp-hover-bg, #333346);
+}
+
+.vbp-interaction-item__delete:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.vbp-interaction-item__body {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--vbp-text-muted, #888);
+}
+
+.vbp-interaction-item__action {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-interaction-item__arrow {
+    color: var(--vbp-prototype-primary);
+    font-weight: bold;
+}
+
+.vbp-interaction-item__target {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--vbp-prototype-secondary);
+}
+
+.vbp-interaction-item__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 10px;
+    color: var(--vbp-text-muted, #888);
+}
+
+.vbp-interaction-item__transition {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ============================================
+   Preview Mode Overlay
+   ============================================ */
+.vbp-prototype-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #1a1a2e;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+}
+
+.vbp-preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: #252535;
+    border-bottom: 1px solid #333346;
+}
+
+.vbp-preview-toolbar__left,
+.vbp-preview-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-preview-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-preview-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.vbp-preview-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.vbp-preview-frame-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+.vbp-preview-viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: auto;
+}
+
+.vbp-preview-frame-container {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.vbp-preview-frame {
+    position: relative;
+    min-width: 320px;
+    min-height: 400px;
+}
+
+.vbp-preview-frame--entering {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Overlay dentro del preview */
+.vbp-preview-overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100000;
+    backdrop-filter: blur(4px);
+}
+
+.vbp-preview-overlay-container.vbp-preview-overlay--visible {
+    display: flex;
+}
+
+.vbp-preview-overlay-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.vbp-preview-overlay-content {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    z-index: 1;
+}
+
+/* ============================================
+   Transiciones entre Frames
+   ============================================ */
+.vbp-transition-dissolve-enter {
+    opacity: 0;
+}
+
+.vbp-transition-dissolve-enter-active {
+    opacity: 1;
+    transition: opacity var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-dissolve-exit {
+    opacity: 1;
+}
+
+.vbp-transition-dissolve-exit-active {
+    opacity: 0;
+    transition: opacity var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-slide-left-enter {
+    transform: translateX(100%);
+}
+
+.vbp-transition-slide-left-enter-active {
+    transform: translateX(0);
+    transition: transform var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-slide-left-exit {
+    transform: translateX(0);
+}
+
+.vbp-transition-slide-left-exit-active {
+    transform: translateX(-100%);
+    transition: transform var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-slide-right-enter {
+    transform: translateX(-100%);
+}
+
+.vbp-transition-slide-right-enter-active {
+    transform: translateX(0);
+    transition: transform var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-slide-right-exit {
+    transform: translateX(0);
+}
+
+.vbp-transition-slide-right-exit-active {
+    transform: translateX(100%);
+    transition: transform var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-zoom-in-enter {
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+.vbp-transition-zoom-in-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    transition: all var(--transition-duration, 300ms) ease-out;
+}
+
+.vbp-transition-zoom-out-enter {
+    transform: scale(1.2);
+    opacity: 0;
+}
+
+.vbp-transition-zoom-out-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    transition: all var(--transition-duration, 300ms) ease-out;
+}
+
+/* ============================================
+   Modal del Editor de Interacciones
+   ============================================ */
+.vbp-modal.vbp-interaction-editor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.vbp-modal.vbp-interaction-editor.vbp-modal--visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.vbp-modal.vbp-interaction-editor.vbp-modal--picking {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.vbp-modal__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.vbp-modal__content {
+    position: relative;
+    width: 90%;
+    max-width: 480px;
+    background: var(--vbp-panel-bg, #1e1e2e);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.2s ease;
+}
+
+.vbp-modal--visible .vbp-modal__content {
+    transform: scale(1) translateY(0);
+}
+
+.vbp-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--vbp-panel-header-bg, #252535);
+    border-bottom: 1px solid var(--vbp-border, #333346);
+}
+
+.vbp-modal__header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #fff);
+    margin: 0;
+}
+
+.vbp-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--vbp-text-muted, #888);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-modal__close:hover {
+    background: var(--vbp-hover-bg, #333346);
+    color: var(--vbp-text, #e0e0e0);
+}
+
+.vbp-modal__body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.vbp-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--vbp-border, #333346);
+}
+
+/* Secciones del editor */
+.vbp-interaction-editor__section {
+    margin-bottom: 20px;
+}
+
+.vbp-interaction-editor__section:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-interaction-editor__section h4 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vbp-text-muted, #888);
+    border-bottom: 1px solid var(--vbp-border, #333346);
+}
+
+.vbp-interaction-editor__field {
+    margin-bottom: 12px;
+}
+
+.vbp-interaction-editor__field:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-interaction-editor__field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text, #e0e0e0);
+}
+
+.vbp-interaction-editor__target-field {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.vbp-interaction-editor__target-field label {
+    width: 100%;
+}
+
+.vbp-interaction-editor__target-field .vbp-select {
+    flex: 1;
+}
+
+.vbp-interaction-editor__pick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: var(--vbp-input-bg, #2a2a3e);
+    border: 1px solid var(--vbp-border, #333346);
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-interaction-editor__pick-btn:hover {
+    border-color: var(--vbp-prototype-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Inputs y selects */
+.vbp-select,
+.vbp-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--vbp-input-bg, #2a2a3e);
+    border: 1px solid var(--vbp-border, #333346);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--vbp-text, #e0e0e0);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.vbp-select:focus,
+.vbp-input:focus {
+    border-color: var(--vbp-prototype-primary);
+}
+
+.vbp-select {
+    appearance: none;
+    padding-right: 32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    cursor: pointer;
+}
+
+.vbp-select option {
+    background: var(--vbp-panel-bg, #1e1e2e);
+    color: var(--vbp-text, #e0e0e0);
+}
+
+/* Botones */
+.vbp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-btn--primary {
+    background: var(--vbp-prototype-primary);
+    color: #fff;
+}
+
+.vbp-btn--primary:hover {
+    background: var(--vbp-prototype-primary-hover);
+}
+
+.vbp-btn--secondary {
+    background: transparent;
+    border: 1px solid var(--vbp-border, #333346);
+    color: var(--vbp-text, #e0e0e0);
+}
+
+.vbp-btn--secondary:hover {
+    background: var(--vbp-hover-bg, #333346);
+}
+
+/* ============================================
+   Modo Picking Target
+   ============================================ */
+.vbp-canvas.vbp-picking-target [data-vbp-id] {
+    cursor: crosshair !important;
+    transition: outline 0.15s ease;
+}
+
+.vbp-canvas.vbp-picking-target [data-vbp-id]:hover {
+    outline: 3px solid var(--vbp-prototype-secondary) !important;
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Linea Temporal de Conexion (Drag)
+   ============================================ */
+.vbp-temp-connection-line {
+    position: fixed;
+    height: 2px;
+    background: var(--vbp-prototype-primary);
+    transform-origin: left center;
+    pointer-events: none;
+    z-index: 100001;
+}
+
+.vbp-temp-connection-line::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-left-color: var(--vbp-prototype-primary);
+}
+
+body.vbp-dragging-connection {
+    cursor: crosshair !important;
+}
+
+body.vbp-dragging-connection * {
+    cursor: crosshair !important;
+}
+
+/* ============================================
+   Preview Mode - Body
+   ============================================ */
+body.vbp-prototype-preview-mode {
+    overflow: hidden;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .vbp-modal__content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .vbp-modal__body {
+        max-height: 50vh;
+    }
+
+    .vbp-prototype-panel {
+        max-height: 300px;
+    }
+}
+
+/* ============================================
+   Animaciones
+   ============================================ */
+@keyframes vbp-hotspot-pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.vbp-has-interaction::before {
+    animation: vbp-hotspot-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vbp-connection-flow {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+.vbp-connection-path--animated {
+    stroke-dasharray: 10, 5;
+    animation: vbp-connection-flow 1s linear infinite;
+}
+
+/* ============================================
+   Dark Mode Adjustments
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    .vbp-preview-frame-container {
+        background: #fff;
+    }
+}
+
+/* ============================================
+   Print - Ocultar elementos de prototipo
+   ============================================ */
+@media print {
+    .vbp-prototype-connections-svg,
+    .vbp-interaction-badge,
+    .vbp-prototype-panel,
+    .vbp-prototype-preview-overlay {
+        display: none !important;
+    }
+}
