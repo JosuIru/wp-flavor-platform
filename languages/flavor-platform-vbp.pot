@@ -1,0 +1,1437 @@
+# Visual Builder Pro - Translation Template
+# Copyright (C) 2026 Gailu Labs
+# This file is distributed under the GPL v2 or later.
+#
+# This file contains strings specific to Visual Builder Pro.
+# Merge with the main flavor-platform.pot for complete translations.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Flavor Platform - Visual Builder Pro 2.3.0\n"
+"Report-Msgid-Bugs-To: https://github.com/gailu-labs/flavor-platform/issues\n"
+"POT-Creation-Date: 2026-04-11T12:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Gailu Labs <soporte@gailu.net>\n"
+"Language-Team: Gailu Labs <soporte@gailu.net>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Flavor Platform i18n\n"
+"X-Domain: flavor-platform\n"
+
+# ============================================
+# GENERAL ACTIONS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Save"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Saved"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Saving..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Cancel"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Duplicate"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Element duplicated"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Copy"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Paste"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Cut"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Undo"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Redo"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Apply"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Close"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Edit"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Preview"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Publish"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Update"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Create"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Add"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Remove"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Reset"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Filter"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Select"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Select all"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Clear"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Confirm"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Change"
+msgstr ""
+
+# ============================================
+# ERRORS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Error saving"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "An error occurred"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Error loading"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Connection error"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "You do not have permission for this action"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Element not found"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Invalid data"
+msgstr ""
+
+# ============================================
+# CONFIRMATIONS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "You have unsaved changes. Are you sure you want to leave?"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete this element?"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete the selected element?"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "Delete the %d selected elements?"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Apply this template? Current content will be replaced."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete this template? This action cannot be undone."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Import this design? Current content will be replaced."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Restore default values?"
+msgstr ""
+
+# ============================================
+# STATES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Loading..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Processing..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Uploading..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Ready"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Empty"
+msgstr ""
+
+# ============================================
+# SELECTION
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Nothing selected"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d elements selected"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Element deleted"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d elements deleted"
+msgstr ""
+
+# ============================================
+# TEMPLATES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Template saved successfully"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Template applied successfully"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Template deleted"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No templates available"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search templates..."
+msgstr ""
+
+# ============================================
+# IMPORT/EXPORT
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Export completed"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Import completed"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Export error"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Import error"
+msgstr ""
+
+# ============================================
+# INSPECTOR TABS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Content"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Style"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Design"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Settings"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Advanced"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Layout"
+msgstr ""
+
+# ============================================
+# STYLING PROPERTIES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Spacing"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Margin"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Padding"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Border"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Border radius"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Shadow"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Colors"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Background"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Text color"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Typography"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Font size"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Font weight"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Line height"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Letter spacing"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Alignment"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Position"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Size"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Width"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Height"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Min width"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Max width"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Min height"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Max height"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Opacity"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Visibility"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Hidden"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Visible"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Animation"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Transform"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Effects"
+msgstr ""
+
+# ============================================
+# SELECTION CONTEXT
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Structure"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Page"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "You are editing the base layout. Adjust distribution, columns, and spacing; content lives inside child blocks."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Section block ready for adjusting main content, appearance, and visual hierarchy from this panel."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Individual element ready for quick editing. Change content, appearance, and behavior without leaving the current context."
+msgstr ""
+
+# ============================================
+# BLOCK TYPES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Hero"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Features"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Testimonials"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Pricing"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "CTA"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "FAQ"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Contact"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Team"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Statistics"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Gallery"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Blog"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Video"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Heading"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Text"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Image"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Button"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Divider"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Spacer"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Icon"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "HTML"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Shortcode"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Container"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Columns"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Row"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Grid"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Map"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Countdown"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Social Icons"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Newsletter"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Logo Grid"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Icon Box"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Accordion"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Tabs"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Progress Bar"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Alert"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Before/After"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Timeline"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Carousel"
+msgstr ""
+
+# ============================================
+# STYLE PRESETS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Modern"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Minimal"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Bold"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Outlined"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Gradient"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Glassmorphism"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "Preset \"%s\" applied"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Styles reset"
+msgstr ""
+
+# ============================================
+# SYMBOLS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Create symbol"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "Symbol created: %s"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Symbol updated"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Symbol deleted"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Detach symbol"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Instance detached"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Sync with master"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Instance synced"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Error loading symbols"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No symbols created"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search symbols..."
+msgstr ""
+
+# ============================================
+# SYMBOL CATEGORIES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Layout"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Content"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Navigation"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Forms"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Media"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "symbol category"
+msgid "Custom"
+msgstr ""
+
+# ============================================
+# LAYERS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Layers"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No elements"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Hide element"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Show element"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Lock element"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Unlock element"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Move up"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Move down"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Bring to front"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Send to back"
+msgstr ""
+
+# ============================================
+# RESPONSIVE
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Desktop"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Tablet"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Mobile"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Breakpoint"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Override for this device"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Inherit from desktop"
+msgstr ""
+
+# ============================================
+# HISTORY
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "History"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No actions in history"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "history action"
+msgid "Change"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "history action"
+msgid "Add"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "history action"
+msgid "Delete"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "history action"
+msgid "Move"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "history action"
+msgid "Style"
+msgstr ""
+
+# ============================================
+# COMMAND PALETTE
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Command palette"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search commands..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No commands found"
+msgstr ""
+
+# ============================================
+# MEDIA
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Select image"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Select video"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Upload image"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Upload video"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Remove image"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Remove video"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Alt text"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Image URL"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Video URL"
+msgstr ""
+
+# ============================================
+# LINKS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Link URL"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Link text"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Open in new tab"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Add nofollow"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search pages..."
+msgstr ""
+
+# ============================================
+# BLOCKS PANEL
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Blocks"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Search blocks..."
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No blocks found"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Drag to add"
+msgstr ""
+
+# ============================================
+# KEYBOARD SHORTCUTS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Keyboard shortcuts"
+msgstr ""
+
+# ============================================
+# ZOOM
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Zoom in"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Zoom out"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Fit to screen"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Zoom to selection"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Zoom 100%"
+msgstr ""
+
+# ============================================
+# ACCESSIBILITY
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Accessibility label"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "ARIA role"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Accessible description"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Hide from screen readers"
+msgstr ""
+
+# ============================================
+# ANIMATIONS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No animation"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Fade in"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Slide in"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Bounce"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Zoom"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Duration"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delay"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Trigger"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "On scroll"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "On load"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "On hover"
+msgstr ""
+
+# ============================================
+# CONSTRAINTS (Figma-like)
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Constraints"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Left"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Right"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Top"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Bottom"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Center"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "constraint"
+msgid "Scale"
+msgstr ""
+
+# ============================================
+# BRANCHES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Branches"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Main branch"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Create branch"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Switch branch"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Merge branch"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete branch"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Branch name"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No additional branches"
+msgstr ""
+
+# ============================================
+# COLLABORATION
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Collaborators"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No one else is editing"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "Being edited by %s"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "Locked by %s"
+msgstr ""
+
+# ============================================
+# COMMENTS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Comments"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Add comment"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Reply"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Resolve"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete comment"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No comments"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Write a comment..."
+msgstr ""
+
+# ============================================
+# PROTOTYPING
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Prototype"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Interactions"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Add interaction"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "interaction"
+msgid "Trigger"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "interaction"
+msgid "Action"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Destination"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "On click"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Navigate to"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Open overlay"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Close overlay"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Scroll to"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Play animation"
+msgstr ""
+
+# ============================================
+# GLOBAL STYLES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Global styles"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Create style"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Apply style"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Edit style"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Delete style"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Style name"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No global styles"
+msgstr ""
+
+# ============================================
+# EDITOR THEMES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Editor theme"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Light"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Dark"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "System"
+msgstr ""
+
+# ============================================
+# OFFLINE MODE
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Offline mode"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Working offline"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Changes will sync when you reconnect"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d changes pending sync"
+msgstr ""
+
+# ============================================
+# PLUGINS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Plugins"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Enable plugin"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Disable plugin"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Plugin settings"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "No plugins installed"
+msgstr ""
+
+# ============================================
+# PERFORMANCE
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Performance"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Load time"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Render time"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Memory usage"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Element count"
+msgstr ""
+
+# ============================================
+# HELP
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Help"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Documentation"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Support"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Send feedback"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "What's new"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Tips"
+msgstr ""
+
+# ============================================
+# TIME AND DATES
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Just now"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d minutes ago"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d hours ago"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+#, php-format
+msgid "%d days ago"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Today"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Yesterday"
+msgstr ""
+
+# ============================================
+# UNDO ACTIONS
+# ============================================
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgctxt "undo button"
+msgid "Undo"
+msgstr ""
+
+#: includes/visual-builder-pro/class-vbp-editor.php
+msgid "Action undone"
+msgstr ""

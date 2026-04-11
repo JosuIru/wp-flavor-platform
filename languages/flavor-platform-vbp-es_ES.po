@@ -1,0 +1,1126 @@
+# Visual Builder Pro - Spanish (Spain) Translation
+# Copyright (C) 2026 Gailu Labs
+# This file is distributed under the GPL v2 or later.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Flavor Platform - Visual Builder Pro 2.3.0\n"
+"Report-Msgid-Bugs-To: https://github.com/gailu-labs/flavor-platform/issues\n"
+"POT-Creation-Date: 2026-04-11T12:00:00+00:00\n"
+"PO-Revision-Date: 2026-04-11T12:00:00+00:00\n"
+"Last-Translator: Gailu Labs <soporte@gailu.net>\n"
+"Language-Team: Gailu Labs <soporte@gailu.net>\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Flavor Platform i18n\n"
+"X-Domain: flavor-platform\n"
+
+# ============================================
+# GENERAL ACTIONS
+# ============================================
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Saved"
+msgstr "Guardado"
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Element duplicated"
+msgstr "Elemento duplicado"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Paste"
+msgstr "Pegar"
+
+msgid "Cut"
+msgstr "Cortar"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Publish"
+msgstr "Publicar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Remove"
+msgstr "Quitar"
+
+msgid "Reset"
+msgstr "Resetear"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Select all"
+msgstr "Seleccionar todo"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Change"
+msgstr "Cambiar"
+
+# ============================================
+# ERRORS
+# ============================================
+
+msgid "Error saving"
+msgstr "Error al guardar"
+
+msgid "An error occurred"
+msgstr "Ha ocurrido un error"
+
+msgid "Error loading"
+msgstr "Error al cargar"
+
+msgid "Connection error"
+msgstr "Error de conexión"
+
+msgid "You do not have permission for this action"
+msgstr "No tienes permisos para esta acción"
+
+msgid "Element not found"
+msgstr "Elemento no encontrado"
+
+msgid "Invalid data"
+msgstr "Datos inválidos"
+
+# ============================================
+# CONFIRMATIONS
+# ============================================
+
+msgid "You have unsaved changes. Are you sure you want to leave?"
+msgstr "Tienes cambios sin guardar. ¿Seguro que quieres salir?"
+
+msgid "Delete this element?"
+msgstr "¿Eliminar este elemento?"
+
+msgid "Delete the selected element?"
+msgstr "¿Eliminar el elemento seleccionado?"
+
+#, php-format
+msgid "Delete the %d selected elements?"
+msgstr "¿Eliminar los %d elementos seleccionados?"
+
+msgid "Apply this template? Current content will be replaced."
+msgstr "¿Aplicar este template? Se reemplazará el contenido actual."
+
+msgid "Delete this template? This action cannot be undone."
+msgstr "¿Eliminar este template? Esta acción no se puede deshacer."
+
+msgid "Import this design? Current content will be replaced."
+msgstr "¿Importar este diseño? Se reemplazará el contenido actual."
+
+msgid "Restore default values?"
+msgstr "¿Restaurar valores por defecto?"
+
+# ============================================
+# STATES
+# ============================================
+
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgid "Processing..."
+msgstr "Procesando..."
+
+msgid "Uploading..."
+msgstr "Subiendo..."
+
+msgid "Ready"
+msgstr "Listo"
+
+msgid "Empty"
+msgstr "Vacío"
+
+# ============================================
+# SELECTION
+# ============================================
+
+msgid "Nothing selected"
+msgstr "Nada seleccionado"
+
+#, php-format
+msgid "%d elements selected"
+msgstr "%d elementos seleccionados"
+
+msgid "Element deleted"
+msgstr "Elemento eliminado"
+
+#, php-format
+msgid "%d elements deleted"
+msgstr "%d elementos eliminados"
+
+# ============================================
+# TEMPLATES
+# ============================================
+
+msgid "Template saved successfully"
+msgstr "Template guardado correctamente"
+
+msgid "Template applied successfully"
+msgstr "Template aplicado correctamente"
+
+msgid "Template deleted"
+msgstr "Template eliminado"
+
+msgid "No templates available"
+msgstr "No hay templates disponibles"
+
+msgid "Search templates..."
+msgstr "Buscar templates..."
+
+# ============================================
+# IMPORT/EXPORT
+# ============================================
+
+msgid "Export completed"
+msgstr "Exportación completada"
+
+msgid "Import completed"
+msgstr "Importación completada"
+
+msgid "Export error"
+msgstr "Error en la exportación"
+
+msgid "Import error"
+msgstr "Error en la importación"
+
+# ============================================
+# INSPECTOR TABS
+# ============================================
+
+msgid "Content"
+msgstr "Contenido"
+
+msgid "Style"
+msgstr "Estilo"
+
+msgid "Design"
+msgstr "Diseño"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgid "Layout"
+msgstr "Layout"
+
+# ============================================
+# STYLING PROPERTIES
+# ============================================
+
+msgid "Spacing"
+msgstr "Espaciado"
+
+msgid "Margin"
+msgstr "Margen"
+
+msgid "Padding"
+msgstr "Relleno"
+
+msgid "Border"
+msgstr "Borde"
+
+msgid "Border radius"
+msgstr "Radio de borde"
+
+msgid "Shadow"
+msgstr "Sombra"
+
+msgid "Colors"
+msgstr "Colores"
+
+msgid "Background"
+msgstr "Fondo"
+
+msgid "Text color"
+msgstr "Color de texto"
+
+msgid "Typography"
+msgstr "Tipografía"
+
+msgid "Font size"
+msgstr "Tamaño de fuente"
+
+msgid "Font weight"
+msgstr "Peso de fuente"
+
+msgid "Line height"
+msgstr "Altura de línea"
+
+msgid "Letter spacing"
+msgstr "Espaciado de letras"
+
+msgid "Alignment"
+msgstr "Alineación"
+
+msgid "Position"
+msgstr "Posición"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Height"
+msgstr "Alto"
+
+msgid "Min width"
+msgstr "Ancho mínimo"
+
+msgid "Max width"
+msgstr "Ancho máximo"
+
+msgid "Min height"
+msgstr "Alto mínimo"
+
+msgid "Max height"
+msgstr "Alto máximo"
+
+msgid "Opacity"
+msgstr "Opacidad"
+
+msgid "Visibility"
+msgstr "Visibilidad"
+
+msgid "Hidden"
+msgstr "Oculto"
+
+msgid "Visible"
+msgstr "Visible"
+
+msgid "Animation"
+msgstr "Animación"
+
+msgid "Transform"
+msgstr "Transformación"
+
+msgid "Effects"
+msgstr "Efectos"
+
+# ============================================
+# SELECTION CONTEXT
+# ============================================
+
+msgid "Structure"
+msgstr "Estructura"
+
+msgid "Page"
+msgstr "Página"
+
+msgid "You are editing the base layout. Adjust distribution, columns, and spacing; content lives inside child blocks."
+msgstr "Estás editando la base del layout. Ajusta distribución, columnas y espaciado; el contenido vive dentro de sus bloques hijos."
+
+msgid "Section block ready for adjusting main content, appearance, and visual hierarchy from this panel."
+msgstr "Bloque de sección listo para ajustar contenido principal, apariencia y jerarquía visual desde este panel."
+
+msgid "Individual element ready for quick editing. Change content, appearance, and behavior without leaving the current context."
+msgstr "Elemento individual listo para edición rápida. Cambia contenido, apariencia y comportamiento sin salir del contexto actual."
+
+# ============================================
+# BLOCK TYPES
+# ============================================
+
+msgid "Hero"
+msgstr "Hero"
+
+msgid "Features"
+msgstr "Características"
+
+msgid "Testimonials"
+msgstr "Testimonios"
+
+msgid "Pricing"
+msgstr "Precios"
+
+msgid "CTA"
+msgstr "CTA"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "Team"
+msgstr "Equipo"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Gallery"
+msgstr "Galería"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Video"
+msgstr "Video"
+
+msgid "Heading"
+msgstr "Encabezado"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Image"
+msgstr "Imagen"
+
+msgid "Button"
+msgstr "Botón"
+
+msgid "Divider"
+msgstr "Separador"
+
+msgid "Spacer"
+msgstr "Espaciador"
+
+msgid "Icon"
+msgstr "Icono"
+
+msgid "HTML"
+msgstr "HTML"
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Container"
+msgstr "Contenedor"
+
+msgid "Columns"
+msgstr "Columnas"
+
+msgid "Row"
+msgstr "Fila"
+
+msgid "Grid"
+msgstr "Grid"
+
+msgid "Map"
+msgstr "Mapa"
+
+msgid "Countdown"
+msgstr "Cuenta Regresiva"
+
+msgid "Social Icons"
+msgstr "Iconos Sociales"
+
+msgid "Newsletter"
+msgstr "Newsletter"
+
+msgid "Logo Grid"
+msgstr "Grid de Logos"
+
+msgid "Icon Box"
+msgstr "Caja de Icono"
+
+msgid "Accordion"
+msgstr "Acordeón"
+
+msgid "Tabs"
+msgstr "Pestañas"
+
+msgid "Progress Bar"
+msgstr "Barra de Progreso"
+
+msgid "Alert"
+msgstr "Alerta"
+
+msgid "Before/After"
+msgstr "Antes/Después"
+
+msgid "Timeline"
+msgstr "Línea de Tiempo"
+
+msgid "Carousel"
+msgstr "Carrusel"
+
+# ============================================
+# STYLE PRESETS
+# ============================================
+
+msgid "Modern"
+msgstr "Moderno"
+
+msgid "Minimal"
+msgstr "Minimalista"
+
+msgid "Bold"
+msgstr "Audaz"
+
+msgid "Outlined"
+msgstr "Contorneado"
+
+msgid "Gradient"
+msgstr "Degradado"
+
+msgid "Glassmorphism"
+msgstr "Glassmorphism"
+
+#, php-format
+msgid "Preset \"%s\" applied"
+msgstr "Preset \"%s\" aplicado"
+
+msgid "Styles reset"
+msgstr "Estilos reseteados"
+
+# ============================================
+# SYMBOLS
+# ============================================
+
+msgid "Create symbol"
+msgstr "Crear símbolo"
+
+#, php-format
+msgid "Symbol created: %s"
+msgstr "Símbolo creado: %s"
+
+msgid "Symbol updated"
+msgstr "Símbolo actualizado"
+
+msgid "Symbol deleted"
+msgstr "Símbolo eliminado"
+
+msgid "Detach symbol"
+msgstr "Desenlazar símbolo"
+
+msgid "Instance detached"
+msgstr "Instancia desenlazada"
+
+msgid "Sync with master"
+msgstr "Sincronizar con maestro"
+
+msgid "Instance synced"
+msgstr "Instancia sincronizada"
+
+msgid "Error loading symbols"
+msgstr "Error al cargar símbolos"
+
+msgid "No symbols created"
+msgstr "No hay símbolos creados"
+
+msgid "Search symbols..."
+msgstr "Buscar símbolos..."
+
+# ============================================
+# SYMBOL CATEGORIES
+# ============================================
+
+msgctxt "symbol category"
+msgid "Layout"
+msgstr "Layout"
+
+msgctxt "symbol category"
+msgid "Content"
+msgstr "Contenido"
+
+msgctxt "symbol category"
+msgid "Navigation"
+msgstr "Navegación"
+
+msgctxt "symbol category"
+msgid "Forms"
+msgstr "Formularios"
+
+msgctxt "symbol category"
+msgid "Media"
+msgstr "Media"
+
+msgctxt "symbol category"
+msgid "Custom"
+msgstr "Personalizado"
+
+# ============================================
+# LAYERS
+# ============================================
+
+msgid "Layers"
+msgstr "Capas"
+
+msgid "No elements"
+msgstr "No hay elementos"
+
+msgid "Hide element"
+msgstr "Ocultar elemento"
+
+msgid "Show element"
+msgstr "Mostrar elemento"
+
+msgid "Lock element"
+msgstr "Bloquear elemento"
+
+msgid "Unlock element"
+msgstr "Desbloquear elemento"
+
+msgid "Move up"
+msgstr "Mover arriba"
+
+msgid "Move down"
+msgstr "Mover abajo"
+
+msgid "Bring to front"
+msgstr "Enviar al frente"
+
+msgid "Send to back"
+msgstr "Enviar al fondo"
+
+# ============================================
+# RESPONSIVE
+# ============================================
+
+msgid "Desktop"
+msgstr "Escritorio"
+
+msgid "Tablet"
+msgstr "Tablet"
+
+msgid "Mobile"
+msgstr "Móvil"
+
+msgid "Breakpoint"
+msgstr "Punto de quiebre"
+
+msgid "Override for this device"
+msgstr "Sobrescribir para este dispositivo"
+
+msgid "Inherit from desktop"
+msgstr "Heredar de escritorio"
+
+# ============================================
+# HISTORY
+# ============================================
+
+msgid "History"
+msgstr "Historial"
+
+msgid "No actions in history"
+msgstr "No hay acciones en el historial"
+
+msgctxt "history action"
+msgid "Change"
+msgstr "Cambio"
+
+msgctxt "history action"
+msgid "Add"
+msgstr "Añadir"
+
+msgctxt "history action"
+msgid "Delete"
+msgstr "Eliminar"
+
+msgctxt "history action"
+msgid "Move"
+msgstr "Mover"
+
+msgctxt "history action"
+msgid "Style"
+msgstr "Estilo"
+
+# ============================================
+# COMMAND PALETTE
+# ============================================
+
+msgid "Command palette"
+msgstr "Paleta de comandos"
+
+msgid "Search commands..."
+msgstr "Buscar comandos..."
+
+msgid "No commands found"
+msgstr "No se encontraron comandos"
+
+# ============================================
+# MEDIA
+# ============================================
+
+msgid "Select image"
+msgstr "Seleccionar imagen"
+
+msgid "Select video"
+msgstr "Seleccionar video"
+
+msgid "Upload image"
+msgstr "Subir imagen"
+
+msgid "Upload video"
+msgstr "Subir video"
+
+msgid "Remove image"
+msgstr "Quitar imagen"
+
+msgid "Remove video"
+msgstr "Quitar video"
+
+msgid "Alt text"
+msgstr "Texto alternativo"
+
+msgid "Image URL"
+msgstr "URL de imagen"
+
+msgid "Video URL"
+msgstr "URL de video"
+
+# ============================================
+# LINKS
+# ============================================
+
+msgid "Link URL"
+msgstr "URL del enlace"
+
+msgid "Link text"
+msgstr "Texto del enlace"
+
+msgid "Open in new tab"
+msgstr "Abrir en nueva pestaña"
+
+msgid "Add nofollow"
+msgstr "Añadir nofollow"
+
+msgid "Search pages..."
+msgstr "Buscar páginas..."
+
+# ============================================
+# BLOCKS PANEL
+# ============================================
+
+msgid "Blocks"
+msgstr "Bloques"
+
+msgid "Search blocks..."
+msgstr "Buscar bloques..."
+
+msgid "No blocks found"
+msgstr "No se encontraron bloques"
+
+msgid "Drag to add"
+msgstr "Arrastra para añadir"
+
+# ============================================
+# KEYBOARD SHORTCUTS
+# ============================================
+
+msgid "Keyboard shortcuts"
+msgstr "Atajos de teclado"
+
+# ============================================
+# ZOOM
+# ============================================
+
+msgid "Zoom in"
+msgstr "Acercar"
+
+msgid "Zoom out"
+msgstr "Alejar"
+
+msgid "Fit to screen"
+msgstr "Ajustar a pantalla"
+
+msgid "Zoom to selection"
+msgstr "Zoom a selección"
+
+msgid "Zoom 100%"
+msgstr "Zoom 100%"
+
+# ============================================
+# ACCESSIBILITY
+# ============================================
+
+msgid "Accessibility label"
+msgstr "Etiqueta de accesibilidad"
+
+msgid "ARIA role"
+msgstr "Rol ARIA"
+
+msgid "Accessible description"
+msgstr "Descripción accesible"
+
+msgid "Hide from screen readers"
+msgstr "Ocultar para lectores de pantalla"
+
+# ============================================
+# ANIMATIONS
+# ============================================
+
+msgid "No animation"
+msgstr "Sin animación"
+
+msgid "Fade in"
+msgstr "Aparecer"
+
+msgid "Slide in"
+msgstr "Deslizar"
+
+msgid "Bounce"
+msgstr "Rebotar"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Delay"
+msgstr "Retardo"
+
+msgid "Trigger"
+msgstr "Disparador"
+
+msgid "On scroll"
+msgstr "Al hacer scroll"
+
+msgid "On load"
+msgstr "Al cargar"
+
+msgid "On hover"
+msgstr "Al pasar el ratón"
+
+# ============================================
+# CONSTRAINTS (Figma-like)
+# ============================================
+
+msgid "Constraints"
+msgstr "Restricciones"
+
+msgctxt "constraint"
+msgid "Left"
+msgstr "Izquierda"
+
+msgctxt "constraint"
+msgid "Right"
+msgstr "Derecha"
+
+msgctxt "constraint"
+msgid "Top"
+msgstr "Arriba"
+
+msgctxt "constraint"
+msgid "Bottom"
+msgstr "Abajo"
+
+msgctxt "constraint"
+msgid "Center"
+msgstr "Centro"
+
+msgctxt "constraint"
+msgid "Scale"
+msgstr "Escalar"
+
+# ============================================
+# BRANCHES
+# ============================================
+
+msgid "Branches"
+msgstr "Ramas"
+
+msgid "Main branch"
+msgstr "Rama principal"
+
+msgid "Create branch"
+msgstr "Crear rama"
+
+msgid "Switch branch"
+msgstr "Cambiar rama"
+
+msgid "Merge branch"
+msgstr "Fusionar rama"
+
+msgid "Delete branch"
+msgstr "Eliminar rama"
+
+msgid "Branch name"
+msgstr "Nombre de rama"
+
+msgid "No additional branches"
+msgstr "No hay ramas adicionales"
+
+# ============================================
+# COLLABORATION
+# ============================================
+
+msgid "Collaborators"
+msgstr "Colaboradores"
+
+msgid "No one else is editing"
+msgstr "Nadie más está editando"
+
+#, php-format
+msgid "Being edited by %s"
+msgstr "Siendo editado por %s"
+
+#, php-format
+msgid "Locked by %s"
+msgstr "Bloqueado por %s"
+
+# ============================================
+# COMMENTS
+# ============================================
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "Add comment"
+msgstr "Añadir comentario"
+
+msgid "Reply"
+msgstr "Responder"
+
+msgid "Resolve"
+msgstr "Resolver"
+
+msgid "Delete comment"
+msgstr "Eliminar comentario"
+
+msgid "No comments"
+msgstr "No hay comentarios"
+
+msgid "Write a comment..."
+msgstr "Escribe un comentario..."
+
+# ============================================
+# PROTOTYPING
+# ============================================
+
+msgid "Prototype"
+msgstr "Prototipo"
+
+msgid "Interactions"
+msgstr "Interacciones"
+
+msgid "Add interaction"
+msgstr "Añadir interacción"
+
+msgctxt "interaction"
+msgid "Trigger"
+msgstr "Disparador"
+
+msgctxt "interaction"
+msgid "Action"
+msgstr "Acción"
+
+msgid "Destination"
+msgstr "Destino"
+
+msgid "On click"
+msgstr "Al hacer clic"
+
+msgid "Navigate to"
+msgstr "Navegar a"
+
+msgid "Open overlay"
+msgstr "Abrir overlay"
+
+msgid "Close overlay"
+msgstr "Cerrar overlay"
+
+msgid "Scroll to"
+msgstr "Desplazar a"
+
+msgid "Play animation"
+msgstr "Reproducir animación"
+
+# ============================================
+# GLOBAL STYLES
+# ============================================
+
+msgid "Global styles"
+msgstr "Estilos globales"
+
+msgid "Create style"
+msgstr "Crear estilo"
+
+msgid "Apply style"
+msgstr "Aplicar estilo"
+
+msgid "Edit style"
+msgstr "Editar estilo"
+
+msgid "Delete style"
+msgstr "Eliminar estilo"
+
+msgid "Style name"
+msgstr "Nombre del estilo"
+
+msgid "No global styles"
+msgstr "No hay estilos globales"
+
+# ============================================
+# EDITOR THEMES
+# ============================================
+
+msgid "Editor theme"
+msgstr "Tema del editor"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "System"
+msgstr "Sistema"
+
+# ============================================
+# OFFLINE MODE
+# ============================================
+
+msgid "Offline mode"
+msgstr "Modo sin conexión"
+
+msgid "Working offline"
+msgstr "Trabajando sin conexión"
+
+msgid "Changes will sync when you reconnect"
+msgstr "Los cambios se sincronizarán cuando vuelvas a conectarte"
+
+#, php-format
+msgid "%d changes pending sync"
+msgstr "%d cambios pendientes de sincronizar"
+
+# ============================================
+# PLUGINS
+# ============================================
+
+msgid "Plugins"
+msgstr "Plugins"
+
+msgid "Enable plugin"
+msgstr "Activar plugin"
+
+msgid "Disable plugin"
+msgstr "Desactivar plugin"
+
+msgid "Plugin settings"
+msgstr "Ajustes del plugin"
+
+msgid "No plugins installed"
+msgstr "No hay plugins instalados"
+
+# ============================================
+# PERFORMANCE
+# ============================================
+
+msgid "Performance"
+msgstr "Rendimiento"
+
+msgid "Load time"
+msgstr "Tiempo de carga"
+
+msgid "Render time"
+msgstr "Tiempo de renderizado"
+
+msgid "Memory usage"
+msgstr "Uso de memoria"
+
+msgid "Element count"
+msgstr "Número de elementos"
+
+# ============================================
+# HELP
+# ============================================
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Documentation"
+msgstr "Documentación"
+
+msgid "Support"
+msgstr "Soporte"
+
+msgid "Send feedback"
+msgstr "Enviar feedback"
+
+msgid "What's new"
+msgstr "Novedades"
+
+msgid "Tips"
+msgstr "Consejos"
+
+# ============================================
+# TIME AND DATES
+# ============================================
+
+msgid "Just now"
+msgstr "Ahora mismo"
+
+#, php-format
+msgid "%d minutes ago"
+msgstr "Hace %d minutos"
+
+#, php-format
+msgid "%d hours ago"
+msgstr "Hace %d horas"
+
+#, php-format
+msgid "%d days ago"
+msgstr "Hace %d días"
+
+msgid "Today"
+msgstr "Hoy"
+
+msgid "Yesterday"
+msgstr "Ayer"
+
+# ============================================
+# UNDO ACTIONS
+# ============================================
+
+msgctxt "undo button"
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Action undone"
+msgstr "Acción deshecha"
