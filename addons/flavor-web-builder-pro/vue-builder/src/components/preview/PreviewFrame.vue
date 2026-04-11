@@ -51,10 +51,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useBuilderStore } from '../../stores/builderStore';
 import { useUiStore } from '../../stores/uiStore';
 import { usePreview } from '../../composables/usePreview';
+import { getPreviewBridgeScript } from '../../scripts/preview-iframe-bridge';
 import PreviewOverlay from './PreviewOverlay.vue';
 
 const builderStore = useBuilderStore();
@@ -63,7 +64,6 @@ const {
   setIframeRef,
   previewUrl,
   isIframeReady,
-  sendLayoutToPreview,
   setPreviewDevice,
 } = usePreview();
 
@@ -72,12 +72,26 @@ const iframeRef = ref(null);
 const isLoading = ref(true);
 const isRefreshing = ref(false);
 
-// Device dimensions
-const deviceDimensions = {
-  desktop: { width: '100%', height: '100%' },
-  tablet: { width: '768px', height: '1024px' },
-  mobile: { width: '375px', height: '667px' },
-};
+// Device dimensions (immutable)
+const DEVICE_DIMENSIONS = Object.freeze({
+  desktop: Object.freeze({ width: '100%', height: '100%' }),
+  tablet: Object.freeze({ width: '768px', height: '1024px' }),
+  mobile: Object.freeze({ width: '375px', height: '667px' }),
+});
+
+// Device icons (immutable)
+const DEVICE_ICONS = Object.freeze({
+  desktop: 'dashicons-desktop',
+  tablet: 'dashicons-tablet',
+  mobile: 'dashicons-smartphone',
+});
+
+// Device labels (immutable)
+const DEVICE_LABELS = Object.freeze({
+  desktop: 'Escritorio',
+  tablet: 'Tablet',
+  mobile: 'Móvil',
+});
 
 // Computed
 const containerClasses = computed(() => ({
@@ -85,23 +99,13 @@ const containerClasses = computed(() => ({
   [`device-${uiStore.previewDevice}`]: true,
 }));
 
-const deviceIcon = computed(() => {
-  const icons = {
-    desktop: 'dashicons-desktop',
-    tablet: 'dashicons-tablet',
-    mobile: 'dashicons-smartphone',
-  };
-  return icons[uiStore.previewDevice] || icons.desktop;
-});
+const deviceIcon = computed(() =>
+  DEVICE_ICONS[uiStore.previewDevice] || DEVICE_ICONS.desktop
+);
 
-const deviceLabel = computed(() => {
-  const labels = {
-    desktop: 'Escritorio',
-    tablet: 'Tablet',
-    mobile: 'Móvil',
-  };
-  return labels[uiStore.previewDevice] || labels.desktop;
-});
+const deviceLabel = computed(() =>
+  DEVICE_LABELS[uiStore.previewDevice] || DEVICE_LABELS.desktop
+);
 
 const showOverlay = computed(() => {
   return !uiStore.isPreviewMode && isIframeReady.value;
@@ -111,21 +115,21 @@ const frameWrapperStyle = computed(() => {
   if (uiStore.previewDevice === 'desktop') {
     return {};
   }
-  const dims = deviceDimensions[uiStore.previewDevice];
+  const dimensions = DEVICE_DIMENSIONS[uiStore.previewDevice];
   return {
-    maxWidth: dims.width,
+    maxWidth: dimensions.width,
     margin: '0 auto',
   };
 });
 
 const iframeStyle = computed(() => {
-  const dims = deviceDimensions[uiStore.previewDevice];
+  const dimensions = DEVICE_DIMENSIONS[uiStore.previewDevice];
   if (uiStore.previewDevice === 'desktop') {
     return { width: '100%', height: '100%' };
   }
   return {
-    width: dims.width,
-    height: dims.height,
+    width: dimensions.width,
+    height: dimensions.height,
     maxHeight: '100%',
   };
 });
@@ -144,116 +148,10 @@ function injectPreviewScript() {
 
   try {
     const script = iframeRef.value.contentDocument.createElement('script');
-    script.textContent = `
-      (function() {
-        // Notificar que el iframe está listo
-        window.parent.postMessage({
-          type: 'PREVIEW_READY',
-          source: 'flavor-preview-frame'
-        }, '*');
-
-        // Escuchar mensajes del builder
-        window.addEventListener('message', function(event) {
-          if (!event.data || event.data.source !== 'flavor-page-builder') return;
-
-          var type = event.data.type;
-          var payload = event.data.payload;
-
-          switch (type) {
-            case 'UPDATE_LAYOUT':
-              // Recargar la página con el nuevo layout
-              // En una implementación más avanzada, actualizar solo las secciones afectadas
-              break;
-
-            case 'UPDATE_BLOCK':
-              // Actualizar un bloque específico
-              var blockId = payload.blockId;
-              var html = payload.html;
-              var blockEl = document.querySelector('[data-block-id="' + blockId + '"]');
-              if (blockEl) {
-                blockEl.innerHTML = html;
-              }
-              break;
-
-            case 'HIGHLIGHT_BLOCK':
-              // Resaltar bloque
-              var el = document.querySelector('[data-block-id="' + payload.blockId + '"]');
-              if (el) {
-                el.style.outline = '2px solid #0073aa';
-                el.style.outlineOffset = '2px';
-              }
-              break;
-
-            case 'UNHIGHLIGHT_BLOCK':
-              // Quitar resaltado
-              var el = document.querySelector('[data-block-id="' + payload.blockId + '"]');
-              if (el) {
-                el.style.outline = '';
-                el.style.outlineOffset = '';
-              }
-              break;
-
-            case 'SCROLL_TO_BLOCK':
-              // Scroll al bloque
-              var el = document.querySelector('[data-block-id="' + payload.blockId + '"]');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-              break;
-
-            case 'SET_DEVICE':
-              // El builder maneja esto, el iframe solo recibe la notificación
-              break;
-          }
-        });
-
-        // Detectar clics en bloques
-        document.addEventListener('click', function(e) {
-          var blockEl = e.target.closest('[data-block-id]');
-          if (blockEl) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.parent.postMessage({
-              type: 'BLOCK_CLICKED',
-              source: 'flavor-preview-frame',
-              payload: { blockId: blockEl.getAttribute('data-block-id') }
-            }, '*');
-          }
-        });
-
-        // Detectar hover en bloques
-        document.addEventListener('mouseover', function(e) {
-          var blockEl = e.target.closest('[data-block-id]');
-          if (blockEl) {
-            window.parent.postMessage({
-              type: 'BLOCK_HOVER',
-              source: 'flavor-preview-frame',
-              payload: {
-                blockId: blockEl.getAttribute('data-block-id'),
-                isHovering: true
-              }
-            }, '*');
-          }
-        });
-
-        document.addEventListener('mouseout', function(e) {
-          var blockEl = e.target.closest('[data-block-id]');
-          if (blockEl) {
-            window.parent.postMessage({
-              type: 'BLOCK_HOVER',
-              source: 'flavor-preview-frame',
-              payload: {
-                blockId: blockEl.getAttribute('data-block-id'),
-                isHovering: false
-              }
-            }, '*');
-          }
-        });
-      })();
-    `;
+    script.textContent = getPreviewBridgeScript();
     iframeRef.value.contentDocument.body.appendChild(script);
-  } catch (e) {
-    console.warn('No se pudo inyectar script en iframe:', e);
+  } catch (error) {
+    console.warn('No se pudo inyectar script en iframe:', error);
   }
 }
 
