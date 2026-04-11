@@ -19,11 +19,12 @@ import { useUiStore } from '../../stores/uiStore';
 
 const uiStore = useUiStore();
 
-const devices = [
-  { id: 'desktop', label: 'Escritorio', icon: 'dashicons-desktop', shortcut: '1' },
-  { id: 'tablet', label: 'Tablet', icon: 'dashicons-tablet', shortcut: '2' },
-  { id: 'mobile', label: 'Móvil', icon: 'dashicons-smartphone', shortcut: '3' },
-];
+// Definición estática de dispositivos (inmutable)
+const devices = Object.freeze([
+  Object.freeze({ id: 'desktop', label: 'Escritorio', icon: 'dashicons-desktop', shortcut: '1' }),
+  Object.freeze({ id: 'tablet', label: 'Tablet', icon: 'dashicons-tablet', shortcut: '2' }),
+  Object.freeze({ id: 'mobile', label: 'Móvil', icon: 'dashicons-smartphone', shortcut: '3' }),
+]);
 
 const currentDevice = computed(() => uiStore.previewDevice);
 
