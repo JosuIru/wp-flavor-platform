@@ -1,0 +1,689 @@
+/**
+ * Visual Builder Pro - Offline Mode Styles
+ *
+ * Estilos para el estado offline del editor:
+ * - Indicador de conexion en toolbar
+ * - Badge de cambios pendientes
+ * - Overlay cuando offline
+ * - Animacion de sincronizacion
+ * - Modal de resolucion de conflictos
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.3.0
+ */
+
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES
+   ========================================================================== */
+
+:root {
+    /* Colores de estado */
+    --vbp-offline-color: #f59e0b;
+    --vbp-offline-bg: #fef3c7;
+    --vbp-online-color: #10b981;
+    --vbp-online-bg: #d1fae5;
+    --vbp-syncing-color: #3b82f6;
+    --vbp-syncing-bg: #dbeafe;
+    --vbp-conflict-color: #ef4444;
+    --vbp-conflict-bg: #fee2e2;
+
+    /* Espaciado */
+    --vbp-offline-indicator-size: 32px;
+    --vbp-badge-size: 18px;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+    --vbp-offline-color: #fbbf24;
+    --vbp-offline-bg: #451a03;
+    --vbp-online-color: #34d399;
+    --vbp-online-bg: #064e3b;
+    --vbp-syncing-color: #60a5fa;
+    --vbp-syncing-bg: #1e3a8a;
+    --vbp-conflict-color: #f87171;
+    --vbp-conflict-bg: #7f1d1d;
+}
+
+/* ==========================================================================
+   INDICADOR DE CONEXION (TOOLBAR)
+   ========================================================================== */
+
+.vbp-connection-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: default;
+    user-select: none;
+}
+
+/* Estado Online */
+.vbp-connection-indicator--online {
+    background: var(--vbp-online-bg);
+    color: var(--vbp-online-color);
+}
+
+.vbp-connection-indicator--online .vbp-connection-icon {
+    color: var(--vbp-online-color);
+}
+
+/* Estado Offline */
+.vbp-connection-indicator--offline {
+    background: var(--vbp-offline-bg);
+    color: var(--vbp-offline-color);
+    animation: vbp-pulse-warning 2s infinite;
+}
+
+.vbp-connection-indicator--offline .vbp-connection-icon {
+    color: var(--vbp-offline-color);
+}
+
+/* Estado Sincronizando */
+.vbp-connection-indicator--syncing {
+    background: var(--vbp-syncing-bg);
+    color: var(--vbp-syncing-color);
+}
+
+.vbp-connection-indicator--syncing .vbp-connection-icon {
+    animation: vbp-spin 1s linear infinite;
+    color: var(--vbp-syncing-color);
+}
+
+/* Icono de conexion */
+.vbp-connection-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Texto de estado */
+.vbp-connection-text {
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   BADGE DE CAMBIOS PENDIENTES
+   ========================================================================== */
+
+.vbp-pending-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--vbp-badge-size);
+    height: var(--vbp-badge-size);
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--vbp-offline-color);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    animation: vbp-badge-pulse 2s infinite;
+}
+
+.vbp-pending-badge:empty {
+    display: none;
+}
+
+.vbp-pending-badge--syncing {
+    background: var(--vbp-syncing-color);
+    animation: vbp-badge-spin 1s linear infinite;
+}
+
+.vbp-pending-badge--conflict {
+    background: var(--vbp-conflict-color);
+    animation: vbp-badge-shake 0.5s ease-in-out;
+}
+
+/* Badge en el toolbar */
+.vbp-toolbar-save .vbp-pending-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    transform: scale(0.9);
+}
+
+/* ==========================================================================
+   OVERLAY OFFLINE
+   ========================================================================== */
+
+.vbp-offline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.vbp-offline-overlay--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-offline-overlay__content {
+    background: var(--vbp-panel-bg, #fff);
+    border-radius: 16px;
+    padding: 32px 40px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: vbp-slide-up 0.3s ease;
+}
+
+.vbp-offline-overlay__icon {
+    font-size: 64px;
+    color: var(--vbp-offline-color);
+    margin-bottom: 16px;
+    animation: vbp-float 3s ease-in-out infinite;
+}
+
+.vbp-offline-overlay__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    margin: 0 0 8px 0;
+}
+
+.vbp-offline-overlay__message {
+    font-size: 14px;
+    color: var(--vbp-text-secondary, #6b7280);
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+}
+
+.vbp-offline-overlay__status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--vbp-offline-bg);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--vbp-offline-color);
+}
+
+.vbp-offline-overlay__status-icon {
+    animation: vbp-pulse-icon 1.5s infinite;
+}
+
+/* ==========================================================================
+   BARRA DE SINCRONIZACION
+   ========================================================================== */
+
+.vbp-sync-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--vbp-syncing-bg);
+    z-index: 100001;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: all 0.3s ease;
+}
+
+.vbp-sync-bar--active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.vbp-sync-bar__progress {
+    height: 100%;
+    background: var(--vbp-syncing-color);
+    width: 30%;
+    animation: vbp-sync-progress 1.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   NOTIFICACION DE CONEXION
+   ========================================================================== */
+
+.vbp-connection-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    z-index: 100002;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vbp-connection-toast--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.vbp-connection-toast--online {
+    background: var(--vbp-online-color);
+    color: white;
+}
+
+.vbp-connection-toast--offline {
+    background: var(--vbp-offline-color);
+    color: white;
+}
+
+.vbp-connection-toast__icon {
+    font-size: 20px;
+}
+
+/* ==========================================================================
+   MODAL DE CONFLICTOS
+   ========================================================================== */
+
+.vbp-conflict-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100003;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.vbp-conflict-modal--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-conflict-modal__content {
+    background: var(--vbp-panel-bg, #fff);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+    animation: vbp-modal-appear 0.3s ease;
+}
+
+.vbp-conflict-modal__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--vbp-border-color, #e5e7eb);
+    background: var(--vbp-conflict-bg);
+}
+
+.vbp-conflict-modal__header-icon {
+    font-size: 24px;
+    color: var(--vbp-conflict-color);
+}
+
+.vbp-conflict-modal__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    margin: 0;
+}
+
+.vbp-conflict-modal__body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(80vh - 160px);
+}
+
+.vbp-conflict-item {
+    border: 1px solid var(--vbp-border-color, #e5e7eb);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.vbp-conflict-item:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-conflict-item__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--vbp-bg-secondary, #f9fafb);
+    border-bottom: 1px solid var(--vbp-border-color, #e5e7eb);
+}
+
+.vbp-conflict-item__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-conflict-item__time {
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #6b7280);
+}
+
+.vbp-conflict-versions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+}
+
+.vbp-conflict-version {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-conflict-version:hover {
+    background: var(--vbp-bg-secondary, #f9fafb);
+}
+
+.vbp-conflict-version--selected {
+    border-color: var(--vbp-primary, #3b82f6);
+    background: var(--vbp-syncing-bg);
+}
+
+.vbp-conflict-version__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    margin-bottom: 8px;
+}
+
+.vbp-conflict-version__label-icon {
+    font-size: 16px;
+}
+
+.vbp-conflict-version--local .vbp-conflict-version__label {
+    color: var(--vbp-offline-color);
+}
+
+.vbp-conflict-version--server .vbp-conflict-version__label {
+    color: var(--vbp-online-color);
+}
+
+.vbp-conflict-version__preview {
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #6b7280);
+    line-height: 1.4;
+}
+
+.vbp-conflict-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--vbp-border-color, #e5e7eb);
+    background: var(--vbp-bg-secondary, #f9fafb);
+}
+
+.vbp-conflict-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.vbp-conflict-btn--secondary {
+    background: var(--vbp-bg-tertiary, #e5e7eb);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-conflict-btn--secondary:hover {
+    background: var(--vbp-border-color, #d1d5db);
+}
+
+.vbp-conflict-btn--primary {
+    background: var(--vbp-primary, #3b82f6);
+    color: white;
+}
+
+.vbp-conflict-btn--primary:hover {
+    background: var(--vbp-primary-hover, #2563eb);
+}
+
+.vbp-conflict-btn--primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   INDICADORES EN CANVAS
+   ========================================================================== */
+
+/* Indicador de elemento guardado localmente */
+.vbp-element--local-only::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background: var(--vbp-offline-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--vbp-panel-bg, #fff);
+    z-index: 10;
+}
+
+/* Indicador de sincronizando */
+.vbp-element--syncing::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background: var(--vbp-syncing-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--vbp-panel-bg, #fff);
+    z-index: 10;
+    animation: vbp-pulse-icon 1s infinite;
+}
+
+/* ==========================================================================
+   ANIMACIONES
+   ========================================================================== */
+
+@keyframes vbp-pulse-warning {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes vbp-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes vbp-badge-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes vbp-badge-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes vbp-badge-shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+@keyframes vbp-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vbp-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes vbp-pulse-icon {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes vbp-sync-progress {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(200%);
+    }
+    100% {
+        transform: translateX(400%);
+    }
+}
+
+@keyframes vbp-modal-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .vbp-connection-indicator {
+        padding: 4px 8px;
+    }
+
+    .vbp-connection-text {
+        display: none;
+    }
+
+    .vbp-conflict-versions {
+        grid-template-columns: 1fr;
+    }
+
+    .vbp-offline-overlay__content {
+        margin: 16px;
+        padding: 24px;
+    }
+
+    .vbp-conflict-modal__content {
+        width: 95%;
+        margin: 16px;
+    }
+}
+
+/* ==========================================================================
+   UTILIDADES
+   ========================================================================== */
+
+/* Ocultar elementos cuando online */
+.vbp-hide-online .vbp-connection-indicator--online,
+.vbp-hide-online[data-online="true"] {
+    display: none;
+}
+
+/* Ocultar elementos cuando offline */
+.vbp-hide-offline .vbp-connection-indicator--offline,
+.vbp-hide-offline[data-online="false"] {
+    display: none;
+}
+
+/* Deshabilitar interacciones cuando offline */
+.vbp-disabled-offline[data-online="false"] {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Modo solo lectura offline */
+.vbp-readonly-offline[data-online="false"] {
+    pointer-events: none;
+}
+
+.vbp-readonly-offline[data-online="false"]::after {
+    content: 'Solo lectura (sin conexion)';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--vbp-offline-bg);
+    color: var(--vbp-offline-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 1000;
+}
