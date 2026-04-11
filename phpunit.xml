@@ -30,6 +30,31 @@
         <!-- Tests PHP generales -->
         <testsuite name="php">
             <directory suffix="Test.php">tests/php</directory>
+            <directory suffix=".php">tests/php</directory>
+        </testsuite>
+
+        <!-- Tests VBP -->
+        <testsuite name="VBP">
+            <file>tests/php/test-class-vbp-symbols.php</file>
+            <file>tests/php/test-class-vbp-branching.php</file>
+            <file>tests/php/test-class-vbp-rest-api.php</file>
+            <file>tests/php/test-class-vbp-global-styles.php</file>
+        </testsuite>
+
+        <testsuite name="VBP-Symbols">
+            <file>tests/php/test-class-vbp-symbols.php</file>
+        </testsuite>
+
+        <testsuite name="VBP-Branching">
+            <file>tests/php/test-class-vbp-branching.php</file>
+        </testsuite>
+
+        <testsuite name="VBP-API">
+            <file>tests/php/test-class-vbp-rest-api.php</file>
+        </testsuite>
+
+        <testsuite name="VBP-GlobalStyles">
+            <file>tests/php/test-class-vbp-global-styles.php</file>
         </testsuite>
 
         <!-- Todos los tests -->
@@ -37,6 +62,7 @@
             <directory suffix="Test.php">tests/unit</directory>
             <directory suffix="Test.php">tests/integration</directory>
             <directory suffix="Test.php">tests/php</directory>
+            <directory suffix=".php">tests/php</directory>
         </testsuite>
     </testsuites>
 

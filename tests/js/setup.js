@@ -1,5 +1,5 @@
 /**
- * Jest Setup File para Flavor Platform
+ * Jest/Vitest Setup File para Flavor Platform
  *
  * Configura el entorno global para tests de JavaScript
  *
@@ -7,8 +7,38 @@
  * @since 3.3.0
  */
 
-// Mock de jQuery
-global.jQuery = global.$ = require('jquery');
+// Detect test framework (Jest or Vitest)
+const isVitest = typeof vi !== 'undefined';
+const mockFn = isVitest ? vi.fn : (typeof jest !== 'undefined' ? jest.fn : () => () => {});
+
+// Mock de jQuery (conditional require for Node.js environment)
+if (typeof require !== 'undefined') {
+    try {
+        global.jQuery = global.$ = require('jquery');
+    } catch (e) {
+        // jQuery not available, create minimal mock
+        global.jQuery = global.$ = mockFn(() => ({
+            on: mockFn(),
+            off: mockFn(),
+            trigger: mockFn(),
+            find: mockFn(() => global.$()),
+            addClass: mockFn(() => global.$()),
+            removeClass: mockFn(() => global.$()),
+            toggleClass: mockFn(() => global.$()),
+            attr: mockFn(),
+            css: mockFn(),
+            html: mockFn(),
+            text: mockFn(),
+            val: mockFn(),
+            append: mockFn(),
+            prepend: mockFn(),
+            remove: mockFn(),
+            empty: mockFn(),
+            each: mockFn(),
+            length: 0,
+        }));
+    }
+}
 
 // Mock de WordPress globals
 global.wp = {
@@ -159,12 +189,75 @@ global.MutationObserver = class MutationObserver {
     takeRecords() { return []; }
 };
 
+// Mock de vbpData (VBP specific)
+global.vbpData = {
+    ajaxUrl: '/wp-admin/admin-ajax.php',
+    restUrl: '/wp-json/flavor-vbp/v1/',
+    nonce: 'test-nonce-12345',
+    postId: 1,
+    userId: 1,
+    isAdmin: true,
+    capabilities: {
+        canEdit: true,
+        canPublish: true,
+        canDelete: true,
+    },
+    settings: {
+        autosaveInterval: 60000,
+        maxUndoSteps: 50,
+    },
+    i18n: {
+        save: 'Save',
+        publish: 'Publish',
+        cancel: 'Cancel',
+        undo: 'Undo',
+        redo: 'Redo',
+        delete: 'Delete',
+        duplicate: 'Duplicate',
+        loading: 'Loading...',
+        saved: 'Saved',
+        error: 'Error',
+    },
+};
+
+// Mock Alpine.js
+global.Alpine = {
+    data: mockFn(),
+    store: mockFn((name, data) => {
+        if (data === undefined) {
+            return global.Alpine._stores[name] || {};
+        }
+        global.Alpine._stores[name] = data;
+    }),
+    _stores: {},
+    start: mockFn(),
+    reactive: mockFn((obj) => obj),
+    effect: mockFn((fn) => fn()),
+    nextTick: mockFn((callback) => Promise.resolve().then(callback)),
+};
+
+// Mock requestAnimationFrame
+global.requestAnimationFrame = mockFn((callback) => setTimeout(callback, 0));
+global.cancelAnimationFrame = mockFn((id) => clearTimeout(id));
+
 // Limpiar mocks despues de cada test
 afterEach(() => {
-    jest.clearAllMocks();
+    if (isVitest && typeof vi !== 'undefined') {
+        vi.clearAllMocks();
+    } else if (typeof jest !== 'undefined') {
+        jest.clearAllMocks();
+    }
+    // Clean Alpine stores
+    if (global.Alpine && global.Alpine._stores) {
+        global.Alpine._stores = {};
+    }
 });
 
 // Restaurar mocks despues de todos los tests
 afterAll(() => {
-    jest.restoreAllMocks();
+    if (isVitest && typeof vi !== 'undefined') {
+        vi.restoreAllMocks();
+    } else if (typeof jest !== 'undefined') {
+        jest.restoreAllMocks();
+    }
 });

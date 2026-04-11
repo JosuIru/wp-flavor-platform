@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="VBP">
+            <directory suffix=".php">tests/php</directory>
+        </testsuite>
+        <testsuite name="VBP-Symbols">
+            <file>tests/php/test-class-vbp-symbols.php</file>
+        </testsuite>
+        <testsuite name="VBP-Branching">
+            <file>tests/php/test-class-vbp-branching.php</file>
+        </testsuite>
+        <testsuite name="VBP-API">
+            <file>tests/php/test-class-vbp-rest-api.php</file>
+        </testsuite>
+        <testsuite name="VBP-GlobalStyles">
+            <file>tests/php/test-class-vbp-global-styles.php</file>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">includes/visual-builder-pro</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">tests</directory>
+            <directory suffix=".php">vendor</directory>
+        </exclude>
+        <report>
+            <html outputDirectory="tests/coverage/html"/>
+            <text outputFile="tests/coverage/coverage.txt" showOnlySummary="true"/>
+        </report>
+    </coverage>
+
+    <php>
+        <const name="WP_TESTS_MULTISITE" value="0"/>
+        <const name="WP_TESTS_DOMAIN" value="localhost"/>
+        <const name="WP_TESTS_EMAIL" value="admin@example.org"/>
+        <const name="WP_TESTS_TITLE" value="Test Blog"/>
+        <const name="WP_PHP_BINARY" value="php"/>
+    </php>
+</phpunit>

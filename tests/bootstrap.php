@@ -529,6 +529,22 @@ if (!function_exists('flavor_check_vbp_automation_access')) {
 // (después de que todos los mocks estén definidos)
 require_once FLAVOR_PLUGIN_DIR . '/includes/api/class-module-compatibility-api.php';
 
+// Cargar clases VBP para tests
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-symbols.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-symbols.php';
+}
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-branching.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-branching.php';
+}
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-global-styles.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-global-styles.php';
+}
+
+// Cargar clase base para tests VBP
+if ( file_exists( FLAVOR_TEST_DIR . '/class-vbp-unit-test-case.php' ) ) {
+    require_once FLAVOR_TEST_DIR . '/class-vbp-unit-test-case.php';
+}
+
 // Clase base para tests
 class Flavor_Test_REST_Server {
     public function get_routes( $namespace = null ) {
