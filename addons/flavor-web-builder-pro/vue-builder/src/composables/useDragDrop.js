@@ -1,6 +1,23 @@
 import { ref, computed } from 'vue';
 import { useBuilderStore } from '../stores/builderStore';
 
+// Estilos del elemento ghost durante drag (inmutable)
+const DRAG_GHOST_STYLES = Object.freeze({
+  position: 'fixed',
+  top: '-1000px',
+  left: '-1000px',
+  padding: '8px 12px',
+  background: '#0073aa',
+  color: 'white',
+  borderRadius: '4px',
+  fontSize: '13px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+  zIndex: '100000',
+});
+
 /**
  * Composable para gestionar drag & drop
  * Soporta arrastrar componentes desde sidebar y reordenar en canvas
@@ -225,21 +242,9 @@ export function useDragDrop() {
       <span class="dashicons ${componentDef.icon || 'dashicons-layout'}"></span>
       <span class="ghost-label">${componentDef.label || componentId}</span>
     `;
-    ghostElement.style.cssText = `
-      position: fixed;
-      top: -1000px;
-      left: -1000px;
-      padding: 8px 12px;
-      background: #0073aa;
-      color: white;
-      border-radius: 4px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 100000;
-    `;
+
+    // Aplicar estilos desde constante inmutable
+    Object.assign(ghostElement.style, DRAG_GHOST_STYLES);
 
     return ghostElement;
   }
