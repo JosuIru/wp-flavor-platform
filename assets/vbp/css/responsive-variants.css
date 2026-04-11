@@ -1,0 +1,1161 @@
+/**
+ * VBP Responsive Variants - Estilos para el sistema de variantes responsive
+ *
+ * @package Flavor_Platform
+ * @subpackage Visual_Builder_Pro
+ * @since 2.3.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+:root {
+    /* Colores base */
+    --vbp-responsive-primary: #8b5cf6;
+    --vbp-responsive-primary-hover: #7c3aed;
+    --vbp-responsive-primary-light: rgba(139, 92, 246, 0.1);
+    --vbp-responsive-primary-border: rgba(139, 92, 246, 0.3);
+
+    /* Colores por breakpoint */
+    --vbp-breakpoint-desktop: #3b82f6;
+    --vbp-breakpoint-laptop: #06b6d4;
+    --vbp-breakpoint-tablet: #10b981;
+    --vbp-breakpoint-mobile: #f59e0b;
+
+    /* Indicadores */
+    --vbp-override-indicator-size: 16px;
+    --vbp-override-outline-width: 2px;
+
+    /* Ruler */
+    --vbp-ruler-height: 24px;
+    --vbp-ruler-bg: var(--vbp-surface-secondary, #f8fafc);
+    --vbp-ruler-border: var(--vbp-border-color, #e2e8f0);
+}
+
+/* Dark mode */
+.vbp-theme-dark {
+    --vbp-ruler-bg: var(--vbp-surface-secondary, #1e293b);
+    --vbp-ruler-border: var(--vbp-border-color, #334155);
+}
+
+/* ==========================================================================
+   Selector de Breakpoints en Toolbar
+   ========================================================================== */
+
+.vbp-breakpoint-selector {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    border-radius: 8px;
+    margin: 0 8px;
+}
+
+.vbp-breakpoint-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--vbp-text-muted, #6b7280);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.vbp-breakpoint-btn:hover {
+    background: var(--vbp-surface-primary, #ffffff);
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-breakpoint-btn.is-active {
+    background: var(--vbp-surface-primary, #ffffff);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Colores por breakpoint activo */
+.vbp-breakpoint-btn[data-breakpoint="desktop"].is-active {
+    color: var(--vbp-breakpoint-desktop);
+}
+
+.vbp-breakpoint-btn[data-breakpoint="laptop"].is-active {
+    color: var(--vbp-breakpoint-laptop);
+}
+
+.vbp-breakpoint-btn[data-breakpoint="tablet"].is-active {
+    color: var(--vbp-breakpoint-tablet);
+}
+
+.vbp-breakpoint-btn[data-breakpoint="mobile"].is-active {
+    color: var(--vbp-breakpoint-mobile);
+}
+
+.vbp-breakpoint-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Indicador de overrides en boton */
+.vbp-breakpoint-btn__override-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--vbp-responsive-primary);
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+.vbp-breakpoint-btn.has-overrides .vbp-breakpoint-btn__override-dot {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ==========================================================================
+   Indicador de Breakpoint (Notificacion temporal)
+   ========================================================================== */
+
+.vbp-breakpoint-indicator {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    animation: vbp-breakpoint-indicator-in 0.3s ease;
+}
+
+.vbp-breakpoint-indicator.is-fading {
+    animation: vbp-breakpoint-indicator-out 0.3s ease forwards;
+}
+
+@keyframes vbp-breakpoint-indicator-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes vbp-breakpoint-indicator-out {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+.vbp-breakpoint-indicator__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--vbp-responsive-primary-light);
+    border-radius: 8px;
+    color: var(--vbp-responsive-primary);
+}
+
+.vbp-breakpoint-indicator__icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.vbp-breakpoint-indicator__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+/* ==========================================================================
+   Sugerencia de Cambio de Breakpoint
+   ========================================================================== */
+
+.vbp-breakpoint-suggestion {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-responsive-primary-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+    z-index: 10000;
+    animation: vbp-suggestion-in 0.3s ease;
+}
+
+@keyframes vbp-suggestion-in {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.vbp-breakpoint-suggestion span {
+    font-size: 13px;
+    color: var(--vbp-text-secondary, #4b5563);
+}
+
+.vbp-breakpoint-suggestion strong {
+    color: var(--vbp-responsive-primary);
+}
+
+.vbp-breakpoint-suggestion__btn {
+    padding: 6px 14px;
+    background: var(--vbp-responsive-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-breakpoint-suggestion__btn:hover {
+    background: var(--vbp-responsive-primary-hover);
+}
+
+.vbp-breakpoint-suggestion__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted, #9ca3af);
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.vbp-breakpoint-suggestion__close:hover {
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    color: var(--vbp-text-secondary, #4b5563);
+}
+
+/* ==========================================================================
+   Indicadores de Override en Elementos
+   ========================================================================== */
+
+.vbp-responsive-indicators {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 90;
+    overflow: hidden;
+}
+
+/* Outline en elementos con overrides */
+.vbp-element--has-overrides {
+    outline: var(--vbp-override-outline-width) dashed var(--vbp-responsive-primary-border) !important;
+    outline-offset: -2px;
+}
+
+.vbp-element--has-overrides.is-selected {
+    outline-color: var(--vbp-responsive-primary) !important;
+}
+
+/* Badge de override en esquina */
+.vbp-responsive-override-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--vbp-override-indicator-size);
+    height: var(--vbp-override-indicator-size);
+    background: var(--vbp-responsive-primary);
+    border-radius: 50%;
+    color: white;
+    pointer-events: auto;
+    cursor: help;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+}
+
+.vbp-responsive-override-indicator svg {
+    width: 10px;
+    height: 10px;
+}
+
+/* ==========================================================================
+   Ruler de Breakpoints
+   ========================================================================== */
+
+.vbp-breakpoint-ruler {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1920px;
+    height: var(--vbp-ruler-height);
+    background: var(--vbp-ruler-bg);
+    border-bottom: 1px solid var(--vbp-ruler-border);
+    z-index: 50;
+    pointer-events: none;
+}
+
+.vbp-breakpoint-ruler__track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.vbp-breakpoint-ruler__mark {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(-50%);
+    padding: 0 8px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.15s ease;
+    border-left: 2px solid transparent;
+}
+
+.vbp-breakpoint-ruler__mark:hover {
+    background: var(--vbp-responsive-primary-light);
+}
+
+.vbp-breakpoint-ruler__mark.is-active {
+    border-left-color: var(--vbp-responsive-primary);
+    background: var(--vbp-responsive-primary-light);
+}
+
+.vbp-breakpoint-ruler__mark.is-snapping {
+    border-left-color: var(--vbp-success, #10b981);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+/* Colores por breakpoint */
+.vbp-breakpoint-ruler__mark[data-breakpoint="desktop"] {
+    --mark-color: var(--vbp-breakpoint-desktop);
+}
+
+.vbp-breakpoint-ruler__mark[data-breakpoint="laptop"] {
+    --mark-color: var(--vbp-breakpoint-laptop);
+}
+
+.vbp-breakpoint-ruler__mark[data-breakpoint="tablet"] {
+    --mark-color: var(--vbp-breakpoint-tablet);
+}
+
+.vbp-breakpoint-ruler__mark[data-breakpoint="mobile"] {
+    --mark-color: var(--vbp-breakpoint-mobile);
+}
+
+.vbp-breakpoint-ruler__mark.is-active {
+    border-left-color: var(--mark-color);
+}
+
+.vbp-breakpoint-ruler__label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--vbp-text-muted, #6b7280);
+    text-transform: uppercase;
+}
+
+.vbp-breakpoint-ruler__mark.is-active .vbp-breakpoint-ruler__label {
+    color: var(--mark-color);
+}
+
+.vbp-breakpoint-ruler__width {
+    font-size: 9px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-muted, #9ca3af);
+}
+
+/* ==========================================================================
+   Handle de Resize del Canvas
+   ========================================================================== */
+
+.vbp-canvas-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -12px;
+    width: 24px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vbp-canvas-resize-handle__grip {
+    width: 4px;
+    height: 40px;
+    max-height: 100%;
+    background: var(--vbp-border-color, #e2e8f0);
+    border-radius: 2px;
+    transition: all 0.15s ease;
+}
+
+.vbp-canvas-resize-handle:hover .vbp-canvas-resize-handle__grip {
+    background: var(--vbp-responsive-primary);
+    height: 60px;
+}
+
+body.vbp-resizing-canvas {
+    cursor: ew-resize !important;
+    user-select: none;
+}
+
+body.vbp-resizing-canvas * {
+    cursor: ew-resize !important;
+}
+
+/* ==========================================================================
+   Tooltip de Resize
+   ========================================================================== */
+
+.vbp-canvas-resize-tooltip {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 20px;
+    background: var(--vbp-surface-elevated, #1f2937);
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.vbp-canvas-resize-tooltip.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-canvas-resize-tooltip__width {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: var(--vbp-font-mono, monospace);
+    color: white;
+}
+
+.vbp-canvas-resize-tooltip__breakpoint {
+    font-size: 12px;
+    color: var(--vbp-responsive-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   Panel de Responsive en Inspector
+   ========================================================================== */
+
+.vbp-responsive-panel {
+    padding: 12px;
+    background: var(--vbp-surface-secondary, #f8fafc);
+    border-radius: 10px;
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    margin-bottom: 16px;
+}
+
+.vbp-responsive-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vbp-responsive-panel__title-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--vbp-responsive-primary);
+}
+
+/* Selector de breakpoints inline */
+.vbp-responsive-panel__breakpoints {
+    display: flex;
+    gap: 4px;
+}
+
+.vbp-responsive-panel__bp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--vbp-text-muted, #9ca3af);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.vbp-responsive-panel__bp-btn:hover {
+    color: var(--vbp-text-secondary, #4b5563);
+    background: var(--vbp-surface-primary, #ffffff);
+}
+
+.vbp-responsive-panel__bp-btn.is-active {
+    color: var(--vbp-responsive-primary);
+    background: var(--vbp-surface-primary, #ffffff);
+    border-color: var(--vbp-responsive-primary-border);
+}
+
+.vbp-responsive-panel__bp-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Dot de overrides en boton */
+.vbp-responsive-panel__bp-btn::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--vbp-responsive-primary);
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.15s ease;
+}
+
+.vbp-responsive-panel__bp-btn.has-overrides::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Estado actual */
+.vbp-responsive-panel__status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-panel__status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--vbp-responsive-primary-light);
+    border-radius: 6px;
+    color: var(--vbp-responsive-primary);
+}
+
+.vbp-responsive-panel__status-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.vbp-responsive-panel__status-info {
+    flex: 1;
+}
+
+.vbp-responsive-panel__status-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-responsive-panel__status-value {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    font-family: var(--vbp-font-mono, monospace);
+}
+
+/* Indicador de base */
+.vbp-responsive-panel__base-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 6px;
+    font-size: 11px;
+    color: #3b82f6;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-panel__base-indicator svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Lista de overrides */
+.vbp-responsive-panel__overrides {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--vbp-border-color, #e2e8f0);
+}
+
+.vbp-responsive-panel__overrides-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-muted, #6b7280);
+    margin-bottom: 8px;
+}
+
+.vbp-responsive-panel__override-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-responsive-panel__override-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.vbp-responsive-panel__override-prop {
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-secondary, #4b5563);
+}
+
+.vbp-responsive-panel__override-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted, #9ca3af);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-responsive-panel__override-clear:hover {
+    background: var(--vbp-error-light, rgba(239, 68, 68, 0.1));
+    color: var(--vbp-error, #ef4444);
+}
+
+/* Acciones */
+.vbp-responsive-panel__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.vbp-responsive-panel__action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--vbp-text-secondary, #4b5563);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-responsive-panel__action-btn:hover {
+    border-color: var(--vbp-responsive-primary-border);
+    color: var(--vbp-responsive-primary);
+}
+
+.vbp-responsive-panel__action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vbp-responsive-panel__action-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+.vbp-responsive-panel__action-btn--danger:hover {
+    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--vbp-error, #ef4444);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+/* ==========================================================================
+   Indicador de Override en Campos del Inspector
+   ========================================================================== */
+
+.vbp-field--has-override {
+    position: relative;
+}
+
+.vbp-field--has-override::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 3px;
+    height: 100%;
+    background: var(--vbp-responsive-primary);
+    border-radius: 2px;
+}
+
+.vbp-field__override-badge {
+    position: absolute;
+    top: 50%;
+    right: -24px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: var(--vbp-responsive-primary-light);
+    border-radius: 4px;
+    cursor: help;
+}
+
+.vbp-field__override-badge svg {
+    width: 10px;
+    height: 10px;
+    color: var(--vbp-responsive-primary);
+}
+
+/* Tooltip de override */
+.vbp-field__override-tooltip {
+    position: absolute;
+    top: 100%;
+    right: -24px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--vbp-surface-elevated, #1f2937);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 160px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.15s ease;
+}
+
+.vbp-field__override-badge:hover + .vbp-field__override-tooltip,
+.vbp-field__override-tooltip:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.vbp-field__override-tooltip-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+}
+
+.vbp-field__override-tooltip-values {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vbp-field__override-tooltip-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+}
+
+.vbp-field__override-tooltip-bp {
+    font-weight: 500;
+    color: var(--vbp-responsive-primary);
+}
+
+.vbp-field__override-tooltip-val {
+    font-family: var(--vbp-font-mono, monospace);
+    color: white;
+}
+
+/* ==========================================================================
+   Panel de Comparacion de Breakpoints
+   ========================================================================== */
+
+.vbp-responsive-compare {
+    padding: 12px;
+    background: var(--vbp-surface-secondary, #f8fafc);
+    border-radius: 10px;
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+}
+
+.vbp-responsive-compare__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-compare__title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+}
+
+.vbp-responsive-compare__selectors {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-responsive-compare__select {
+    padding: 4px 8px;
+    font-size: 11px;
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 4px;
+    background: var(--vbp-surface-primary, #ffffff);
+    color: var(--vbp-text-secondary, #4b5563);
+}
+
+.vbp-responsive-compare__vs {
+    font-size: 10px;
+    color: var(--vbp-text-muted, #9ca3af);
+}
+
+.vbp-responsive-compare__diff {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-responsive-compare__diff-item {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.vbp-responsive-compare__diff-prop {
+    grid-column: 1 / -1;
+    font-family: var(--vbp-font-mono, monospace);
+    font-weight: 500;
+    color: var(--vbp-text-secondary, #4b5563);
+    margin-bottom: 4px;
+}
+
+.vbp-responsive-compare__diff-value {
+    padding: 4px 8px;
+    background: var(--vbp-surface-tertiary, #f1f5f9);
+    border-radius: 4px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-primary, #1f2937);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-responsive-compare__diff-value--left {
+    text-align: right;
+}
+
+.vbp-responsive-compare__diff-arrow {
+    color: var(--vbp-text-muted, #9ca3af);
+}
+
+/* Sin diferencias */
+.vbp-responsive-compare__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.vbp-responsive-compare__empty-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--vbp-success, #10b981);
+    margin-bottom: 8px;
+}
+
+.vbp-responsive-compare__empty-text {
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #4b5563);
+}
+
+/* ==========================================================================
+   Responsive - Ocultar en pantallas pequenas
+   ========================================================================== */
+
+@media (max-width: 992px) {
+    .vbp-breakpoint-ruler {
+        display: none;
+    }
+
+    .vbp-canvas-resize-handle {
+        display: none;
+    }
+
+    .vbp-breakpoint-selector {
+        order: 10;
+    }
+}
+
+@media (max-width: 768px) {
+    .vbp-breakpoint-indicator {
+        bottom: 100px;
+        padding: 10px 16px;
+    }
+
+    .vbp-breakpoint-suggestion {
+        bottom: 100px;
+        right: 16px;
+        left: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Panel de Variantes Responsive en Inspector
+   ========================================================================== */
+
+.vbp-responsive-variants-panel {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--vbp-border-color, #e2e8f0);
+}
+
+.vbp-responsive-variants-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-variants-header .vbp-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text-primary, #1f2937);
+    margin: 0;
+}
+
+.vbp-responsive-variants-header .vbp-section-title svg {
+    color: var(--vbp-responsive-primary);
+}
+
+/* Lista de overrides */
+.vbp-responsive-overrides-list {
+    background: var(--vbp-surface-secondary, #f8fafc);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.vbp-responsive-overrides-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--vbp-text-muted, #6b7280);
+    margin-bottom: 10px;
+}
+
+.vbp-responsive-overrides-info svg {
+    color: var(--vbp-responsive-primary);
+    flex-shrink: 0;
+}
+
+.vbp-responsive-overrides-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.vbp-responsive-override-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: var(--vbp-surface-primary, #ffffff);
+    border-radius: 6px;
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+}
+
+.vbp-responsive-override-prop {
+    font-size: 11px;
+    font-family: var(--vbp-font-mono, monospace);
+    color: var(--vbp-text-secondary, #4b5563);
+    text-transform: capitalize;
+}
+
+.vbp-responsive-override-item .vbp-btn-icon-xs {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted, #9ca3af);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-responsive-override-item .vbp-btn-icon-xs:hover {
+    background: var(--vbp-error-light, rgba(239, 68, 68, 0.1));
+    color: var(--vbp-error, #ef4444);
+}
+
+.vbp-responsive-overrides-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vbp-responsive-overrides-actions .vbp-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.vbp-responsive-overrides-actions .vbp-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Estado sin overrides */
+.vbp-responsive-no-overrides {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px;
+    background: var(--vbp-surface-secondary, #f8fafc);
+    border-radius: 8px;
+}
+
+.vbp-responsive-no-overrides svg {
+    color: var(--vbp-success, #10b981);
+    margin-bottom: 8px;
+}
+
+.vbp-responsive-no-overrides span {
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #4b5563);
+    margin-bottom: 4px;
+}
+
+.vbp-responsive-no-overrides small {
+    font-size: 11px;
+    color: var(--vbp-text-muted, #9ca3af);
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes vbp-override-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 var(--vbp-responsive-primary-border);
+    }
+    50% {
+        box-shadow: 0 0 0 4px transparent;
+    }
+}
+
+.vbp-element--has-overrides.is-selected {
+    animation: vbp-override-pulse 2s ease infinite;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .vbp-breakpoint-indicator,
+    .vbp-breakpoint-suggestion,
+    .vbp-element--has-overrides.is-selected {
+        animation: none;
+    }
+
+    .vbp-breakpoint-indicator.is-fading {
+        animation: none;
+        opacity: 0;
+    }
+}
