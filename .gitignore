@@ -1,6 +1,7 @@
-# Dependencias
-node_modules/
-vendor/
+# Dependencias (en cualquier subdirectorio)
+**/node_modules/
+**/vendor/
+!vendor/
 
 # Scripts de desarrollo
 dev-scripts/

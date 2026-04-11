@@ -1,8 +1,5 @@
 <template>
-  <div class="field color-field">
-    <label class="field-label">
-      {{ field.label || field.key }}
-    </label>
+  <FieldWrapper :field="field" field-class="color-field">
     <div class="color-input-wrapper">
       <div
         class="color-preview"
@@ -25,7 +22,7 @@
       </button>
     </div>
 
-    <!-- Color picker nativo -->
+    <!-- Color picker nativo (oculto) -->
     <input
       ref="colorPicker"
       type="color"
@@ -33,15 +30,12 @@
       :value="value || '#000000'"
       @input="handlePickerInput"
     />
-
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
-    </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import FieldWrapper from './FieldWrapper.vue';
 
 defineProps({
   field: {
@@ -83,14 +77,6 @@ function clearColor() {
 </script>
 
 <style scoped>
-.field-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
 .color-input-wrapper {
   display: flex;
   align-items: center;
@@ -172,11 +158,5 @@ function clearColor() {
   width: 0;
   height: 0;
   pointer-events: none;
-}
-
-.field-description {
-  margin: 6px 0 0;
-  font-size: 11px;
-  color: var(--pb-text-muted);
 }
 </style>

@@ -1,9 +1,5 @@
 <template>
-  <div class="field image-field">
-    <label class="field-label">
-      {{ field.label || field.key }}
-    </label>
-
+  <FieldWrapper :field="field" field-class="image-field">
     <!-- Preview -->
     <div class="image-preview" v-if="value">
       <img :src="value" :alt="field.label" @error="handleImageError" />
@@ -35,15 +31,12 @@
         @input="handleUrlInput"
       />
     </div>
-
-    <p v-if="field.description" class="field-description">
-      {{ field.description }}
-    </p>
-  </div>
+  </FieldWrapper>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import FieldWrapper from './FieldWrapper.vue';
 
 const props = defineProps({
   field: {
@@ -100,14 +93,6 @@ function handleImageError() {
 </script>
 
 <style scoped>
-.field-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--pb-text);
-}
-
 /* Preview */
 .image-preview {
   position: relative;
@@ -214,11 +199,5 @@ function handleImageError() {
 .url-text:focus {
   outline: none;
   border-color: var(--pb-primary);
-}
-
-.field-description {
-  margin: 6px 0 0;
-  font-size: 11px;
-  color: var(--pb-text-muted);
 }
 </style>
