@@ -1,0 +1,472 @@
+{
+    "version": "1.0.0",
+    "description": "Visual Builder Pro Asset Manifest - Configura bundles y lazy loading",
+    "generated": "manual",
+    "bundles": {
+        "js": {
+            "vbp-core": {
+                "files": [
+                    "js/vbp-theme.js",
+                    "js/vbp-performance.js",
+                    "js/vbp-store-catalog.js",
+                    "js/vbp-store-style-helpers.js",
+                    "js/vbp-store-tree-helpers.js",
+                    "js/vbp-store-mutation-helpers.js",
+                    "js/vbp-store-history-helpers.js",
+                    "js/vbp-store.js",
+                    "js/vbp-store-modals.js",
+                    "js/vbp-toast.js",
+                    "js/vbp-api.js",
+                    "js/vbp-history.js"
+                ],
+                "priority": "critical",
+                "preload": true,
+                "description": "Estado central, API y utilidades esenciales"
+            },
+            "vbp-editor": {
+                "files": [
+                    "js/vbp-canvas-utils.js",
+                    "js/vbp-canvas.js",
+                    "js/vbp-canvas-resize.js",
+                    "js/vbp-layers.js",
+                    "js/vbp-inspector.js",
+                    "js/vbp-inspector-utils.js",
+                    "js/vbp-inspector-modals.js",
+                    "js/vbp-inspector-media.js",
+                    "js/vbp-rulers.js",
+                    "js/vbp-text-editor.js",
+                    "js/vbp-inline-editor.js",
+                    "js/vbp-richtext.js",
+                    "js/vbp-breadcrumbs.js",
+                    "js/vbp-link-search.js",
+                    "js/vbp-zoom-utils.js",
+                    "js/vbp-auto-layout.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "priority": "high",
+                "preload": true,
+                "description": "Canvas, inspector, herramientas de edicion y auto layout"
+            },
+            "vbp-keyboard": {
+                "files": [
+                    "js/vbp-keyboard-modular.js",
+                    "js/vbp-keyboard-loader.js",
+                    "js/vbp-command-palette.js",
+                    "js/vbp-accessibility.js",
+                    "js/modules/vbp-keyboard-clipboard.js",
+                    "js/modules/vbp-keyboard-selection.js",
+                    "js/modules/vbp-keyboard-tools.js",
+                    "js/modules/vbp-keyboard-transform.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "priority": "high",
+                "preload": true,
+                "description": "Sistema de atajos de teclado"
+            },
+            "vbp-symbols": {
+                "files": [
+                    "js/vbp-symbols.js",
+                    "js/vbp-symbols-panel.js",
+                    "js/vbp-symbols-commands.js",
+                    "js/vbp-instance-inspector.js",
+                    "js/vbp-instance-renderer.js",
+                    "js/vbp-swap-modal.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "symbols-panel-open",
+                "description": "Sistema de simbolos reutilizables"
+            },
+            "vbp-animation": {
+                "files": [
+                    "js/vbp-animations.js",
+                    "js/vbp-animation-builder.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "animation-panel-open",
+                "description": "Constructor de animaciones CSS"
+            },
+            "vbp-responsive": {
+                "files": [
+                    "js/vbp-constraints.js",
+                    "js/vbp-auto-layout.js",
+                    "js/vbp-responsive-variants.js",
+                    "js/vbp-responsive-panel.js",
+                    "js/vbp-spacing-indicators.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "responsive-mode-active",
+                "description": "Sistema responsive, constraints y auto layout"
+            },
+            "vbp-prototype": {
+                "files": [
+                    "js/vbp-prototype-mode.js",
+                    "js/vbp-prototype-panel.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-animation"],
+                "lazy": true,
+                "trigger": "prototype-mode-enabled",
+                "description": "Modo de prototipado interactivo"
+            },
+            "vbp-logic": {
+                "files": [
+                    "js/vbp-variables.js",
+                    "js/vbp-variables-panel.js",
+                    "js/vbp-logic-inspector.js",
+                    "js/vbp-logic-integration.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "logic-panel-open",
+                "description": "Sistema de variables, bindings y logica"
+            },
+            "vbp-logic-runtime": {
+                "files": [
+                    "js/vbp-logic-runtime.js"
+                ],
+                "context": "frontend",
+                "priority": "high",
+                "description": "Runtime de logica para frontend"
+            },
+            "vbp-collab": {
+                "files": [
+                    "js/vbp-realtime-collab.js",
+                    "js/vbp-comments.js",
+                    "js/modules/vbp-app-collaboration.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "lazy": true,
+                "trigger": "collaboration-enabled",
+                "featureFlag": "collaboration",
+                "description": "Colaboracion en tiempo real"
+            },
+            "vbp-ai": {
+                "files": [
+                    "js/vbp-ai-assistant.js",
+                    "js/vbp-ai-layout.js",
+                    "js/vbp-ai-layout-panel.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "ai-panel-open",
+                "featureFlag": "ai",
+                "description": "Asistente de IA"
+            },
+            "vbp-branching": {
+                "files": [
+                    "js/modules/vbp-app-branching.js",
+                    "js/modules/vbp-branch-panel.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "lazy": true,
+                "trigger": "branching-panel-open",
+                "featureFlag": "branching",
+                "description": "Sistema de ramas de diseno"
+            },
+            "vbp-app": {
+                "files": [
+                    "js/vbp-app.js",
+                    "js/vbp-app-modular.js",
+                    "js/modules/vbp-app-commands.js",
+                    "js/modules/vbp-app-page-settings.js",
+                    "js/modules/vbp-app-templates.js",
+                    "js/modules/vbp-app-import-export.js",
+                    "js/modules/vbp-app-revisions.js",
+                    "js/modules/vbp-app-version-history.js",
+                    "js/modules/vbp-app-unsplash.js",
+                    "js/modules/vbp-app-split-screen.js",
+                    "js/modules/vbp-app-mobile.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "priority": "high",
+                "preload": true,
+                "description": "Modulos de aplicacion"
+            },
+            "vbp-advanced": {
+                "files": [
+                    "js/vbp-global-styles.js",
+                    "js/vbp-global-styles-panel.js",
+                    "js/vbp-asset-manager.js",
+                    "js/vbp-bulk-edit.js",
+                    "js/vbp-minimap.js",
+                    "js/vbp-module-preview.js",
+                    "js/vbp-component-library.js",
+                    "js/vbp-help-system.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "advanced-features-used",
+                "description": "Funciones avanzadas"
+            },
+            "vbp-export": {
+                "files": [
+                    "js/modules/vbp-keyboard-export.js",
+                    "js/modules/vbp-keyboard-figma.js",
+                    "js/modules/vbp-app-design-tokens.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "lazy": true,
+                "trigger": "export-panel-open",
+                "description": "Exportacion de codigo"
+            },
+            "vbp-admin": {
+                "files": [
+                    "js/modules/vbp-app-audit-log.js",
+                    "js/modules/vbp-app-workflows.js",
+                    "js/modules/vbp-app-multisite.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "lazy": true,
+                "trigger": "admin-features-enabled",
+                "featureFlag": "audit_log",
+                "description": "Funciones de administrador"
+            },
+            "vbp-3d": {
+                "files": [
+                    "js/vbp-3d-scene.js",
+                    "js/vbp-3d-inspector.js",
+                    "js/vbp-3d-store.js",
+                    "js/vbp-3d-blocks.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "3d-scene-used",
+                "featureFlag": "webgl",
+                "description": "Soporte 3D/WebGL con Three.js"
+            },
+            "vbp-dev-mode": {
+                "files": [
+                    "js/vbp-dev-mode.js",
+                    "js/vbp-dev-panel.js",
+                    "js/vbp-dev-store.js",
+                    "js/vbp-dev-panel-template.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "dev-mode-enabled",
+                "description": "Dev Mode / Handoff para desarrolladores"
+            },
+            "vbp-code-components": {
+                "files": [
+                    "js/vbp-code-components.js",
+                    "js/vbp-code-editor.js"
+                ],
+                "dependencies": ["vbp-core", "vbp-editor"],
+                "lazy": true,
+                "trigger": "code-component-editor-open",
+                "description": "Sistema de Code Components (React/Vue/Svelte)"
+            },
+            "vbp-whiteboard": {
+                "files": [
+                    "js/vbp-whiteboard.js",
+                    "js/vbp-whiteboard-tools.js",
+                    "js/vbp-whiteboard-elements.js",
+                    "js/vbp-whiteboard-collaboration.js",
+                    "js/vbp-whiteboard-ui.js"
+                ],
+                "dependencies": ["vbp-core"],
+                "lazy": true,
+                "trigger": "whiteboard-mode-enabled",
+                "description": "Modo Whiteboard / FigJam para brainstorming y colaboracion"
+            }
+        },
+        "css": {
+            "vbp-core": {
+                "files": [
+                    "css/editor-core.css",
+                    "css/editor-toolbar.css",
+                    "css/editor-statusbar.css",
+                    "css/editor-tooltips.css",
+                    "css/editor-toast.css",
+                    "css/vbp-design-tokens.css",
+                    "css/accessibility.css"
+                ],
+                "priority": "critical",
+                "preload": true
+            },
+            "vbp-editor": {
+                "files": [
+                    "css/editor-canvas.css",
+                    "css/editor-panels.css",
+                    "css/editor-rulers.css",
+                    "css/editor-responsive.css",
+                    "css/editor-selectors.css",
+                    "css/editor-richtext.css",
+                    "css/editor-command-palette.css",
+                    "css/editor-ux-improvements.css",
+                    "css/editor-preview-sections.css",
+                    "css/vbp-blocks-enhanced.css",
+                    "css/vbp-mobile.css",
+                    "css/auto-layout.css"
+                ],
+                "dependencies": ["vbp-core"],
+                "priority": "high",
+                "preload": true,
+                "description": "Editor visual con Auto Layout"
+            },
+            "vbp-symbols": {
+                "files": [
+                    "css/symbols-panel.css",
+                    "css/instance-inspector.css",
+                    "css/vbp-swap-modal.css"
+                ],
+                "lazy": true,
+                "trigger": "symbols-panel-open"
+            },
+            "vbp-animation": {
+                "files": [
+                    "css/animations.css",
+                    "css/animation-builder.css"
+                ],
+                "lazy": true,
+                "trigger": "animation-panel-open"
+            },
+            "vbp-responsive": {
+                "files": [
+                    "css/constraints.css",
+                    "css/auto-layout.css",
+                    "css/responsive-variants.css",
+                    "css/smart-guides.css",
+                    "css/spacing-indicators.css"
+                ],
+                "lazy": true,
+                "trigger": "responsive-mode-active"
+            },
+            "vbp-prototype": {
+                "files": [
+                    "css/prototype-mode.css"
+                ],
+                "lazy": true,
+                "trigger": "prototype-mode-enabled"
+            },
+            "vbp-logic": {
+                "files": [
+                    "css/variables-panel.css",
+                    "css/logic-inspector.css"
+                ],
+                "lazy": true,
+                "trigger": "logic-panel-open"
+            },
+            "vbp-collab": {
+                "files": [
+                    "css/vbp-collaboration.css",
+                    "css/realtime-collab.css"
+                ],
+                "lazy": true,
+                "trigger": "collaboration-enabled",
+                "featureFlag": "collaboration"
+            },
+            "vbp-ai": {
+                "files": [
+                    "css/editor-ai-assistant.css",
+                    "css/ai-layout.css"
+                ],
+                "lazy": true,
+                "trigger": "ai-panel-open",
+                "featureFlag": "ai"
+            },
+            "vbp-branching": {
+                "files": [
+                    "css/branching.css"
+                ],
+                "lazy": true,
+                "trigger": "branching-panel-open",
+                "featureFlag": "branching"
+            },
+            "vbp-advanced": {
+                "files": [
+                    "css/global-styles-panel.css",
+                    "css/asset-manager.css",
+                    "css/vbp-bulk-edit.css",
+                    "css/editor-minimap.css",
+                    "css/editor-help-system.css"
+                ],
+                "lazy": true,
+                "trigger": "advanced-features-used"
+            },
+            "vbp-admin": {
+                "files": [
+                    "css/vbp-audit-log.css",
+                    "css/vbp-workflows.css",
+                    "css/vbp-multisite.css"
+                ],
+                "lazy": true,
+                "trigger": "admin-features-enabled",
+                "featureFlag": "audit_log"
+            },
+            "vbp-3d": {
+                "files": [
+                    "css/3d-editor.css"
+                ],
+                "lazy": true,
+                "trigger": "3d-scene-used",
+                "featureFlag": "webgl"
+            },
+            "vbp-dev-mode": {
+                "files": [
+                    "css/dev-mode.css"
+                ],
+                "lazy": true,
+                "trigger": "dev-mode-enabled"
+            },
+            "vbp-code-components": {
+                "files": [
+                    "css/code-components.css"
+                ],
+                "lazy": true,
+                "trigger": "code-component-editor-open"
+            },
+            "vbp-whiteboard": {
+                "files": [
+                    "css/whiteboard.css"
+                ],
+                "lazy": true,
+                "trigger": "whiteboard-mode-enabled"
+            },
+            "vbp-frontend": {
+                "files": [
+                    "css/frontend-components.css",
+                    "css/popup-frontend.css"
+                ],
+                "context": "frontend",
+                "priority": "high"
+            }
+        }
+    },
+    "lazyLoad": {
+        "triggers": {
+            "symbols-panel-open": ["vbp-symbols"],
+            "animation-panel-open": ["vbp-animation"],
+            "responsive-mode-active": ["vbp-responsive"],
+            "prototype-mode-enabled": ["vbp-prototype"],
+            "collaboration-enabled": ["vbp-collab"],
+            "ai-panel-open": ["vbp-ai"],
+            "branching-panel-open": ["vbp-branching"],
+            "advanced-features-used": ["vbp-advanced"],
+            "export-panel-open": ["vbp-export"],
+            "admin-features-enabled": ["vbp-admin"],
+            "3d-scene-used": ["vbp-3d"],
+            "logic-panel-open": ["vbp-logic"],
+            "dev-mode-enabled": ["vbp-dev-mode"],
+            "code-component-editor-open": ["vbp-code-components"],
+            "whiteboard-mode-enabled": ["vbp-whiteboard"]
+        },
+        "featureFlags": {
+            "collaboration": ["vbp-collab"],
+            "ai": ["vbp-ai"],
+            "branching": ["vbp-branching"],
+            "audit_log": ["vbp-admin"],
+            "webgl": ["vbp-3d"]
+        }
+    },
+    "preload": [
+        {"type": "script", "bundle": "vbp-core"},
+        {"type": "script", "bundle": "vbp-editor"},
+        {"type": "script", "bundle": "vbp-keyboard"},
+        {"type": "script", "bundle": "vbp-app"},
+        {"type": "style", "bundle": "vbp-core"},
+        {"type": "style", "bundle": "vbp-editor"}
+    ]
+}
