@@ -588,10 +588,6 @@ ESTRUCTURA DEL PLUGIN:
                 'nombre' => 'Admin Assistant',
                 'descripcion' => 'Asistente IA avanzado para administradores con atajos y comandos',
             ],
-            'flavor-web-builder-pro' => [
-                'nombre' => 'Web Builder Pro',
-                'descripcion' => 'Constructor visual de páginas con bloques personalizados',
-            ],
             'flavor-network-communities' => [
                 'nombre' => 'Network Communities',
                 'descripcion' => 'Red de comunidades conectadas (multisite)',
