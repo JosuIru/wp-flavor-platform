@@ -44,9 +44,26 @@
             systemPrefersDark: true,
 
             /**
+             * Control de inicialización y cleanup
+             */
+            _initialized: false,
+            _mediaQuery: null,
+            _mediaQueryHandler: null,
+
+            /**
              * Inicializar tema
              */
             init: function() {
+                if (this._initialized) return;
+                this._initialized = true;
+
+                // Si vbpEditorThemes está activo, no interferir con su gestión del tema
+                var editorThemesStore = typeof Alpine !== 'undefined' ? Alpine.store('vbpEditorThemes') : null;
+                if (editorThemesStore) {
+                    // El sistema vbpEditorThemes tiene prioridad
+                    return;
+                }
+
                 var self = this;
 
                 // Detectar preferencia del sistema
@@ -60,15 +77,28 @@
 
                 // Escuchar cambios en preferencia del sistema
                 if (window.matchMedia) {
-                    var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-                    mediaQuery.addEventListener('change', function(e) {
+                    this._mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                    this._mediaQueryHandler = function(e) {
                         self.systemPrefersDark = e.matches;
                         if (self.current === THEMES.SYSTEM) {
                             self.resolveTheme();
                             self.applyTheme();
                         }
-                    });
+                    };
+                    this._mediaQuery.addEventListener('change', this._mediaQueryHandler);
                 }
+            },
+
+            /**
+             * Destruir y limpiar recursos
+             */
+            destroy: function() {
+                if (this._mediaQuery && this._mediaQueryHandler) {
+                    this._mediaQuery.removeEventListener('change', this._mediaQueryHandler);
+                    this._mediaQuery = null;
+                    this._mediaQueryHandler = null;
+                }
+                this._initialized = false;
             },
 
             /**
@@ -246,9 +276,24 @@
     /**
      * Inicialización temprana (antes de Alpine)
      * Previene flash de tema incorrecto
+     *
+     * NOTA: Si vbp-editor-themes.js está presente, ese sistema tiene prioridad.
+     * Este early init solo actúa si no hay configuración del editor themes.
      */
     (function earlyInit() {
         try {
+            // Si el sistema de editor themes ya configuró el tema, no interferir
+            var editorThemeKey = localStorage.getItem('vbp_editor_theme');
+            if (editorThemeKey) {
+                // El sistema vbp-editor-themes.js manejará el tema
+                return;
+            }
+
+            // Si ya hay un atributo data-vbp-theme aplicado, no sobrescribir
+            if (document.documentElement.hasAttribute('data-vbp-theme')) {
+                return;
+            }
+
             var savedTheme = localStorage.getItem(STORAGE_KEY);
             var theme = THEMES.DARK;
 
@@ -263,14 +308,24 @@
 
             document.documentElement.setAttribute('data-vbp-theme', theme);
         } catch (e) {
-            document.documentElement.setAttribute('data-vbp-theme', THEMES.DARK);
+            if (!document.documentElement.hasAttribute('data-vbp-theme')) {
+                document.documentElement.setAttribute('data-vbp-theme', THEMES.DARK);
+            }
         }
     })();
 
     /**
      * Inicializar store después de que Alpine esté listo
+     * Solo si vbpEditorThemes no está disponible
      */
     document.addEventListener('alpine:initialized', function() {
+        // Si vbpEditorThemes está activo, ese sistema tiene prioridad
+        var editorThemesStore = Alpine.store('vbpEditorThemes');
+        if (editorThemesStore) {
+            // vbpEditorThemes maneja el tema, vbpTheme es solo fallback
+            return;
+        }
+
         var store = Alpine.store('vbpTheme');
         if (store && typeof store.init === 'function') {
             store.init();

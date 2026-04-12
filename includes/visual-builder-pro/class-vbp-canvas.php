@@ -1331,7 +1331,21 @@ class Flavor_VBP_Canvas {
 
         // Transition
         if ( ! empty( $estilos['transition'] ) ) {
-            $css[] = 'transition: ' . esc_attr( $estilos['transition'] );
+            if ( is_string( $estilos['transition'] ) ) {
+                $css[] = 'transition: ' . esc_attr( $estilos['transition'] );
+            } elseif ( is_array( $estilos['transition'] ) ) {
+                // Construir transition desde objeto {property, duration, timing, delay}
+                $transition_config = $estilos['transition'];
+                $transition_prop   = isset( $transition_config['property'] ) ? $transition_config['property'] : 'all';
+                $transition_dur    = isset( $transition_config['duration'] ) ? $transition_config['duration'] : '0.3s';
+                $transition_timing = isset( $transition_config['timing'] ) ? $transition_config['timing'] : 'ease';
+                $transition_delay  = isset( $transition_config['delay'] ) ? $transition_config['delay'] : '';
+                $transition_value  = esc_attr( $transition_prop ) . ' ' . esc_attr( $transition_dur ) . ' ' . esc_attr( $transition_timing );
+                if ( $transition_delay && '0s' !== $transition_delay ) {
+                    $transition_value .= ' ' . esc_attr( $transition_delay );
+                }
+                $css[] = 'transition: ' . $transition_value;
+            }
         }
 
         // Background gradient/image

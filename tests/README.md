@@ -28,6 +28,17 @@ tests/
 │   ├── collaboration.spec.js           # Tests de Colaboracion
 │   └── prototype.spec.js               # Tests de Prototype Mode
 │
+├── stress/                        # Tests de Estres y Fiabilidad (NEW)
+│   ├── stress-tests.js                 # Tests de carga y rendimiento
+│   ├── plugin-compatibility.js         # Compatibilidad con plugins
+│   ├── data-consistency.js             # Integridad de datos
+│   ├── error-recovery.js               # Recuperacion de errores
+│   ├── limits-test.js                  # Limites del sistema
+│   ├── run-stress-tests.js             # Runner principal
+│   ├── index.js                        # Entry point
+│   ├── RELIABILITY-REPORT.md           # Reporte de fiabilidad
+│   └── README.md                       # Documentacion stress tests
+│
 ├── bootstrap.php                  # Bootstrap PHPUnit
 ├── class-vbp-unit-test-case.php   # Clase base para tests PHP
 ├── mock-wp-test-framework.php     # Framework mock WordPress
@@ -45,6 +56,9 @@ npm test
 
 # Tests PHP + JS + E2E
 npm run test:all
+
+# Tests de estres y fiabilidad
+npm run test:stress
 ```
 
 ### Tests PHP (PHPUnit)
@@ -107,6 +121,29 @@ npm run test:e2e:firefox
 npm run test:e2e:webkit
 ```
 
+### Tests de Estres y Fiabilidad (NEW)
+
+```bash
+# Ejecutar todos los stress tests
+cd tests/stress && node run-stress-tests.js
+
+# Modo rapido (iteraciones reducidas)
+node run-stress-tests.js --quick
+
+# Con salida detallada
+node run-stress-tests.js --verbose
+
+# Categoria especifica
+node run-stress-tests.js --category stress
+node run-stress-tests.js --category compatibility
+node run-stress-tests.js --category consistency
+node run-stress-tests.js --category recovery
+node run-stress-tests.js --category limits
+
+# Test individual
+node run-stress-tests.js --category stress --test massive-elements
+```
+
 ### Variables de Entorno E2E
 
 ```bash
@@ -147,6 +184,18 @@ export WP_ADMIN_PASS=admin
 | `symbols.spec.js` | Crear symbols, insertar instancias |
 | `collaboration.spec.js` | Comentarios, historial de versiones |
 | `prototype.spec.js` | Modo prototipo, interacciones, animaciones |
+
+### Stress Tests (NEW)
+
+| Archivo | Descripcion |
+|---------|-------------|
+| `stress-tests.js` | Tests de carga: elementos masivos, operaciones rapidas, usuarios concurrentes |
+| `plugin-compatibility.js` | Compatibilidad con 30+ plugins populares (WooCommerce, Yoast, etc.) |
+| `data-consistency.js` | Integridad de datos: save/load, undo/redo, symbols, snapshots |
+| `error-recovery.js` | Recuperacion: fallos de red, conflictos, crash, validacion |
+| `limits-test.js` | Limites del sistema: max elementos, anidamiento, throughput |
+
+Ver `tests/stress/README.md` para documentacion completa.
 
 ## Agregar Nuevos Tests
 
@@ -246,18 +295,21 @@ test.describe('My Feature', () => {
 
 ## Cobertura
 
-| Componente | PHP | JS | E2E |
-|------------|-----|----|----|
-| Store | - | OK | OK |
-| Symbols | OK | OK | OK |
-| Branching | OK | - | - |
-| Global Styles | OK | - | - |
-| REST API | OK | - | - |
-| Responsive | - | OK | - |
-| Constraints | - | OK | - |
-| Animations | - | OK | - |
-| Collaboration | - | - | OK |
-| Prototype Mode | - | - | OK |
+| Componente | PHP | JS | E2E | Stress |
+|------------|-----|----|----|--------|
+| Store | - | OK | OK | OK |
+| Symbols | OK | OK | OK | OK |
+| Branching | OK | - | - | - |
+| Global Styles | OK | - | - | - |
+| REST API | OK | - | - | OK |
+| Responsive | - | OK | - | - |
+| Constraints | - | OK | - | - |
+| Animations | - | OK | - | - |
+| Collaboration | - | - | OK | OK |
+| Prototype Mode | - | - | OK | - |
+| Plugin Compatibility | - | - | - | OK |
+| Error Recovery | - | - | - | OK |
+| System Limits | - | - | - | OK |
 
 ## CI Integration
 
@@ -297,6 +349,11 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
+
+      - name: Run Stress Tests
+        run: |
+          cd tests/stress
+          node run-stress-tests.js --quick
 ```
 
 ## Notas
@@ -306,3 +363,5 @@ jobs:
 - Los tests E2E requieren una instalacion WordPress accesible
 - Los mocks de Alpine.js y WordPress estan en `tests/js/setup.js`
 - La autenticacion E2E se maneja en `tests/e2e/auth.setup.js`
+- Los stress tests usan mocks propios para aislamiento completo
+- El reporte de fiabilidad se genera en `tests/stress/RELIABILITY-REPORT.md`

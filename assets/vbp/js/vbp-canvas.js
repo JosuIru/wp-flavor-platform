@@ -32,6 +32,13 @@ document.addEventListener('alpine:init', function() {
             draggedType: null,
 
             /**
+             * Referencias para cleanup de event listeners y timers
+             */
+            _eventHandlers: {},
+            _inputDebounceMap: null,
+            _zoomIndicatorTimer: null,
+
+            /**
              * Inicialización
              */
             init: function() {
@@ -54,7 +61,8 @@ document.addEventListener('alpine:init', function() {
 
                 var self = this;
 
-                canvas.addEventListener('wheel', function(e) {
+                // Guardar referencia para cleanup
+                this._eventHandlers.wheelZoom = function(e) {
                     // Solo si se mantiene Ctrl o Cmd presionado
                     if (!e.ctrlKey && !e.metaKey) return;
 
@@ -70,8 +78,9 @@ document.addEventListener('alpine:init', function() {
                         store.zoom = newZoom;
                         self.showZoomIndicator(newZoom);
                     }
-                }, { passive: false });
+                };
 
+                canvas.addEventListener('wheel', this._eventHandlers.wheelZoom, { passive: false });
                 canvas.dataset.vbpWheelZoomBound = 'true';
             },
 
@@ -79,9 +88,15 @@ document.addEventListener('alpine:init', function() {
              * Mostrar indicador visual de zoom
              */
             showZoomIndicator: function(zoomLevel) {
+                var self = this;
                 var existingIndicator = document.getElementById('vbp-zoom-indicator');
                 if (existingIndicator) {
                     existingIndicator.remove();
+                }
+
+                // Cancelar timer anterior si existe
+                if (this._zoomIndicatorTimer) {
+                    clearTimeout(this._zoomIndicatorTimer);
                 }
 
                 var indicator = document.createElement('div');
@@ -90,10 +105,13 @@ document.addEventListener('alpine:init', function() {
                 indicator.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 8px 16px; background: rgba(30, 30, 46, 0.9); color: #cdd6f4; border-radius: 6px; font-size: 14px; font-weight: 500; z-index: 10000; pointer-events: none; transition: opacity 0.3s;';
                 document.body.appendChild(indicator);
 
-                setTimeout(function() {
+                this._zoomIndicatorTimer = setTimeout(function() {
                     indicator.style.opacity = '0';
-                    setTimeout(function() {
-                        indicator.remove();
+                    self._zoomIndicatorTimer = setTimeout(function() {
+                        if (indicator.parentNode) {
+                            indicator.remove();
+                        }
+                        self._zoomIndicatorTimer = null;
                     }, 300);
                 }, 1000);
             },
@@ -128,14 +146,18 @@ document.addEventListener('alpine:init', function() {
                         self.isDragging = true;
                         document.body.classList.add('vbp-dragging');
 
-                        // Iniciar guías inteligentes
+                        // Iniciar guías inteligentes (con verificación de existencia)
                         var elementId = evt.item.dataset.elementId;
-                        window.vbpCanvasUtils.smartGuides.startDrag(elementId);
+                        if (window.vbpCanvasUtils && window.vbpCanvasUtils.smartGuides) {
+                            window.vbpCanvasUtils.smartGuides.startDrag(elementId);
+                        }
 
                         // Alt+Drag para duplicar
                         if (evt.originalEvent && evt.originalEvent.altKey) {
                             document.body.classList.add('vbp-dragging-alt');
-                            window.vbpCanvasUtils.altDragDuplicate.start(elementId, evt.originalEvent);
+                            if (window.vbpCanvasUtils && window.vbpCanvasUtils.altDragDuplicate) {
+                                window.vbpCanvasUtils.altDragDuplicate.start(elementId, evt.originalEvent);
+                            }
                         }
                     },
 
@@ -143,8 +165,8 @@ document.addEventListener('alpine:init', function() {
                         // Aplicar snap a guías durante el arrastre
                         self.applySnapDuringDrag(originalEvent);
 
-                        // Verificar guías inteligentes
-                        if (evt.dragged) {
+                        // Verificar guías inteligentes (con verificación de existencia)
+                        if (evt.dragged && window.vbpCanvasUtils && window.vbpCanvasUtils.smartGuides) {
                             var rect = evt.dragged.getBoundingClientRect();
                             window.vbpCanvasUtils.smartGuides.checkSnap(rect);
                         }
@@ -153,9 +175,19 @@ document.addEventListener('alpine:init', function() {
                     onEnd: function(evt) {
                         self.isDragging = false;
                         document.body.classList.remove('vbp-dragging', 'vbp-dragging-alt');
-                        window.vbpCanvasUtils.hideSnapLines();
-                        window.vbpCanvasUtils.smartGuides.endDrag();
-                        window.vbpCanvasUtils.altDragDuplicate.end();
+
+                        // Limpiar guías y estado de drag (con verificación de existencia)
+                        if (window.vbpCanvasUtils) {
+                            if (typeof window.vbpCanvasUtils.hideSnapLines === 'function') {
+                                window.vbpCanvasUtils.hideSnapLines();
+                            }
+                            if (window.vbpCanvasUtils.smartGuides && typeof window.vbpCanvasUtils.smartGuides.endDrag === 'function') {
+                                window.vbpCanvasUtils.smartGuides.endDrag();
+                            }
+                            if (window.vbpCanvasUtils.altDragDuplicate && typeof window.vbpCanvasUtils.altDragDuplicate.end === 'function') {
+                                window.vbpCanvasUtils.altDragDuplicate.end();
+                            }
+                        }
 
                         if (evt.oldIndex !== evt.newIndex) {
                             Alpine.store('vbp').moveElement(evt.oldIndex, evt.newIndex);
@@ -169,6 +201,7 @@ document.addEventListener('alpine:init', function() {
              */
             applySnapDuringDrag: function(event) {
                 if (!event) return;
+                if (!window.vbpCanvasUtils) return;
 
                 var canvas = document.querySelector('.vbp-canvas');
                 if (!canvas) return;
@@ -183,18 +216,18 @@ document.addEventListener('alpine:init', function() {
 
                 // Verificar snap horizontal (posición Y)
                 var snapH = window.vbpCanvasUtils.snapToGuides(posY, 'horizontal');
-                if (snapH.snapped) {
+                if (snapH.snapped && typeof window.vbpCanvasUtils.showSnapLine === 'function') {
                     window.vbpCanvasUtils.showSnapLine(snapH.position, 'horizontal');
                 }
 
                 // Verificar snap vertical (posición X)
                 var snapV = window.vbpCanvasUtils.snapToGuides(posX, 'vertical');
-                if (snapV.snapped) {
+                if (snapV.snapped && typeof window.vbpCanvasUtils.showSnapLine === 'function') {
                     window.vbpCanvasUtils.showSnapLine(snapV.position, 'vertical');
                 }
 
                 // Si no hay snap, ocultar líneas
-                if (!snapH.snapped && !snapV.snapped) {
+                if (!snapH.snapped && !snapV.snapped && typeof window.vbpCanvasUtils.hideSnapLines === 'function') {
                     window.vbpCanvasUtils.hideSnapLines();
                 }
             },
@@ -275,8 +308,10 @@ document.addEventListener('alpine:init', function() {
                         },
 
                         onAdd: function(evt) {
-                            // Ocultar líneas de snap
-                            window.vbpCanvasUtils.hideSnapLines();
+                            // Ocultar líneas de snap (con verificación)
+                            if (window.vbpCanvasUtils && typeof window.vbpCanvasUtils.hideSnapLines === 'function') {
+                                window.vbpCanvasUtils.hideSnapLines();
+                            }
 
                             // Obtener el tipo de bloque
                             var blockType = evt.item.dataset.blockType;
@@ -426,7 +461,11 @@ document.addEventListener('alpine:init', function() {
 
                 if (!canvas || canvas.dataset.vbpClickHandlerBound === 'true') return;
 
-                canvas.addEventListener('click', function(e) {
+                // Inicializar Map para debounce de inputs
+                this._inputDebounceMap = new Map();
+
+                // Crear handlers con referencias para cleanup
+                this._eventHandlers.canvasClick = function(e) {
                     var element = e.target.closest('.vbp-element');
                     var store = Alpine.store('vbp');
 
@@ -440,7 +479,10 @@ document.addEventListener('alpine:init', function() {
                             var newId = store.duplicateElement(elementId);
                             if (newId) {
                                 store.setSelection([newId]);
-                                window.vbpCanvasUtils.altDragDuplicate.showDuplicateIndicator();
+                                // Mostrar indicador de duplicación (con verificación)
+                                if (window.vbpCanvasUtils && window.vbpCanvasUtils.altDragDuplicate && typeof window.vbpCanvasUtils.altDragDuplicate.showDuplicateIndicator === 'function') {
+                                    window.vbpCanvasUtils.altDragDuplicate.showDuplicateIndicator();
+                                }
                             }
                             return;
                         }
@@ -458,10 +500,12 @@ document.addEventListener('alpine:init', function() {
                         // Click en canvas vacío - deseleccionar
                         store.clearSelection();
                     }
-                });
+                };
+
+                canvas.addEventListener('click', this._eventHandlers.canvasClick);
 
                 // Doble click para edición rápida
-                canvas.addEventListener('dblclick', function(e) {
+                this._eventHandlers.canvasDblClick = function(e) {
                     var editableContent = e.target.closest('[contenteditable]');
                     if (editableContent) {
                         // Ya es editable, seleccionar todo el texto
@@ -471,10 +515,12 @@ document.addEventListener('alpine:init', function() {
                         selection.removeAllRanges();
                         selection.addRange(range);
                     }
-                });
+                };
+
+                canvas.addEventListener('dblclick', this._eventHandlers.canvasDblClick);
 
                 // Sincronizar contenido editable con el store al perder el foco
-                canvas.addEventListener('blur', function(e) {
+                this._eventHandlers.canvasBlur = function(e) {
                     var editableContent = e.target;
                     if (!editableContent.hasAttribute('contenteditable')) return;
 
@@ -502,13 +548,13 @@ document.addEventListener('alpine:init', function() {
                             store.updateElement(elementId, { data: data });
                         }
                     }
-                }, true); // Usar captura para detectar blur en elementos anidados
+                };
+
+                canvas.addEventListener('blur', this._eventHandlers.canvasBlur, true); // Usar captura para detectar blur en elementos anidados
 
                 // También sincronizar en input para feedback en tiempo real
-                // Optimizado: usar Map centralizado para debounce en lugar de propiedades DOM
-                var inputDebounceMap = new Map();
-
-                canvas.addEventListener('input', function(e) {
+                // Usar Map de la instancia para cleanup apropiado
+                this._eventHandlers.canvasInput = function(e) {
                     var editableContent = e.target;
                     if (!editableContent.hasAttribute('contenteditable')) return;
 
@@ -522,8 +568,8 @@ document.addEventListener('alpine:init', function() {
                     var debounceKey = elementId + '_' + field;
 
                     // Cancelar timeout anterior si existe
-                    if (inputDebounceMap.has(debounceKey)) {
-                        clearTimeout(inputDebounceMap.get(debounceKey));
+                    if (self._inputDebounceMap.has(debounceKey)) {
+                        clearTimeout(self._inputDebounceMap.get(debounceKey));
                     }
 
                     // Capturar valores actuales para el closure
@@ -534,7 +580,7 @@ document.addEventListener('alpine:init', function() {
 
                     // Debounce: actualizar store después de 200ms de inactividad
                     var timeoutId = setTimeout(function() {
-                        inputDebounceMap.delete(debounceKey);
+                        self._inputDebounceMap.delete(debounceKey);
                         var store = Alpine.store('vbp');
                         var storeElement = store.getElement(elementId);
 
@@ -545,8 +591,10 @@ document.addEventListener('alpine:init', function() {
                         }
                     }, 200);
 
-                    inputDebounceMap.set(debounceKey, timeoutId);
-                }, true);
+                    self._inputDebounceMap.set(debounceKey, timeoutId);
+                };
+
+                canvas.addEventListener('input', this._eventHandlers.canvasInput, true);
 
                 canvas.dataset.vbpClickHandlerBound = 'true';
             },
@@ -623,6 +671,7 @@ document.addEventListener('alpine:init', function() {
              * Limpiar al destruir componente
              */
             destroy: function() {
+                // Limpiar Sortables
                 if (this.canvasSortable) {
                     this.canvasSortable.destroy();
                     this.canvasSortable = null;
@@ -639,6 +688,48 @@ document.addEventListener('alpine:init', function() {
                     this.containerObserver.disconnect();
                     this.containerObserver = null;
                 }
+
+                // Limpiar timers
+                if (this._zoomIndicatorTimer) {
+                    clearTimeout(this._zoomIndicatorTimer);
+                    this._zoomIndicatorTimer = null;
+                }
+
+                // Limpiar debounce timers de input
+                if (this._inputDebounceMap) {
+                    this._inputDebounceMap.forEach(function(timerId) {
+                        clearTimeout(timerId);
+                    });
+                    this._inputDebounceMap.clear();
+                    this._inputDebounceMap = null;
+                }
+
+                // Limpiar event listeners
+                var canvas = document.querySelector('.vbp-canvas');
+                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+
+                if (canvas) {
+                    if (this._eventHandlers.canvasClick) {
+                        canvas.removeEventListener('click', this._eventHandlers.canvasClick);
+                    }
+                    if (this._eventHandlers.canvasDblClick) {
+                        canvas.removeEventListener('dblclick', this._eventHandlers.canvasDblClick);
+                    }
+                    if (this._eventHandlers.canvasBlur) {
+                        canvas.removeEventListener('blur', this._eventHandlers.canvasBlur, true);
+                    }
+                    if (this._eventHandlers.canvasInput) {
+                        canvas.removeEventListener('input', this._eventHandlers.canvasInput, true);
+                    }
+                    canvas.dataset.vbpClickHandlerBound = 'false';
+                }
+
+                if (canvasWrapper && this._eventHandlers.wheelZoom) {
+                    canvasWrapper.removeEventListener('wheel', this._eventHandlers.wheelZoom);
+                    canvasWrapper.dataset.vbpWheelZoomBound = 'false';
+                }
+
+                this._eventHandlers = {};
             }
         };
     });

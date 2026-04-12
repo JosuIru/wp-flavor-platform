@@ -6,6 +6,8 @@
  * @since 2.0.0
  */
 
+/* global VBPAppToast, vbpLog */
+
 window.VBPAppSplitScreen = {
     // Estado
     splitScreenMode: false,
@@ -13,7 +15,36 @@ window.VBPAppSplitScreen = {
     splitScreenDevices: ['desktop', 'mobile'],
     _splitScrollHandler: null,
     _splitSyncIndicator: null,
+    _splitSyncIndicatorHandler: null,
     _isSyncingScroll: false,
+    _originalCanvasParent: null,
+    _originalCanvas: null,
+
+    // ============ HELPERS ============
+
+    /**
+     * Muestra una notificación
+     */
+    showNotification: function(message, type) {
+        if (typeof VBPAppToast !== 'undefined' && VBPAppToast.show) {
+            VBPAppToast.show(message, type);
+        } else if (window.showNotification) {
+            window.showNotification(message, type);
+        } else {
+            vbpLog.log('[VBP SplitScreen] ' + type + ': ' + message);
+        }
+    },
+
+    /**
+     * Ejecuta una función en el próximo tick
+     */
+    $nextTick: function(callback) {
+        if (typeof Alpine !== 'undefined' && Alpine.$nextTick) {
+            Alpine.$nextTick(callback);
+        } else {
+            requestAnimationFrame(callback);
+        }
+    },
 
     /**
      * Activa/desactiva el modo split-screen
@@ -92,10 +123,14 @@ window.VBPAppSplitScreen = {
             syncIndicator.className = 'vbp-split-sync-indicator' + (self.splitScreenSyncScroll ? ' active' : '');
             syncIndicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> <span>Scroll sincronizado</span>';
             syncIndicator.style.cursor = 'pointer';
-            syncIndicator.addEventListener('click', function() {
+
+            // Guardar referencia al handler para poder removerlo
+            self._splitSyncIndicatorHandler = function() {
                 self.toggleSplitScreenSyncScroll();
                 syncIndicator.classList.toggle('active', self.splitScreenSyncScroll);
-            });
+            };
+            syncIndicator.addEventListener('click', self._splitSyncIndicatorHandler);
+
             document.body.appendChild(syncIndicator);
             self._splitSyncIndicator = syncIndicator;
         });
@@ -125,9 +160,18 @@ window.VBPAppSplitScreen = {
 
         // Remover indicador de sincronización
         if (this._splitSyncIndicator) {
+            // Remover event listener antes de eliminar el elemento
+            if (this._splitSyncIndicatorHandler) {
+                this._splitSyncIndicator.removeEventListener('click', this._splitSyncIndicatorHandler);
+                this._splitSyncIndicatorHandler = null;
+            }
             this._splitSyncIndicator.remove();
             this._splitSyncIndicator = null;
         }
+
+        // Limpiar referencias a canvas original
+        this._originalCanvasParent = null;
+        this._originalCanvas = null;
 
         // Remover listeners de scroll
         this.removeSplitScreenScrollSync();
@@ -240,5 +284,23 @@ window.VBPAppSplitScreen = {
             mobile: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>'
         };
         return icons[device] || icons.desktop;
+    },
+
+    /**
+     * Destruye el módulo y limpia todos los recursos
+     */
+    destroy: function() {
+        // Desactivar split screen si está activo
+        if (this.splitScreenMode) {
+            this.destroySplitScreen();
+        }
+
+        // Resetear estado
+        this.splitScreenMode = false;
+        this.splitScreenSyncScroll = true;
+        this.splitScreenDevices = ['desktop', 'mobile'];
+        this._isSyncingScroll = false;
+
+        vbpLog.info('VBP SplitScreen: Destruido');
     }
 };

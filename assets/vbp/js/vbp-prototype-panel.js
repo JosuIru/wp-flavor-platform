@@ -658,15 +658,25 @@
          * Guarda la interaccion desde el editor
          */
         saveInteraction: function(modalElement, existingInteraction) {
-            var triggerValue = modalElement.querySelector('#interaction-trigger').value;
-            var actionValue = modalElement.querySelector('#interaction-action').value;
-            var targetValue = modalElement.querySelector('#interaction-target').value;
-            var animationValue = modalElement.querySelector('#interaction-animation').value;
-            var durationValue = parseInt(modalElement.querySelector('#interaction-duration').value) || 300;
-            var delayValue = parseInt(modalElement.querySelector('#interaction-delay').value) || 0;
-            var urlValue = modalElement.querySelector('#interaction-url').value;
-            var variableValue = modalElement.querySelector('#interaction-variable').value;
-            var variableValueValue = modalElement.querySelector('#interaction-variable-value').value;
+            var triggerEl = modalElement.querySelector('#interaction-trigger');
+            var actionEl = modalElement.querySelector('#interaction-action');
+            var targetEl = modalElement.querySelector('#interaction-target');
+            var animationEl = modalElement.querySelector('#interaction-animation');
+            var durationEl = modalElement.querySelector('#interaction-duration');
+            var delayEl = modalElement.querySelector('#interaction-delay');
+            var urlEl = modalElement.querySelector('#interaction-url');
+            var variableEl = modalElement.querySelector('#interaction-variable');
+            var variableValueEl = modalElement.querySelector('#interaction-variable-value');
+
+            var triggerValue = triggerEl ? triggerEl.value : '';
+            var actionValue = actionEl ? actionEl.value : '';
+            var targetValue = targetEl ? targetEl.value : '';
+            var animationValue = animationEl ? animationEl.value : '';
+            var durationValue = parseInt(durationEl ? durationEl.value : '300') || 300;
+            var delayValue = parseInt(delayEl ? delayEl.value : '0') || 0;
+            var urlValue = urlEl ? urlEl.value : '';
+            var variableValue = variableEl ? variableEl.value : '';
+            var variableValueValue = variableValueEl ? variableValueEl.value : '';
 
             var interactionData = {
                 trigger: triggerValue,

@@ -259,6 +259,10 @@ window.VBPKeyboardTools = {
      */
     setBookmark: function(index) {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un elemento para marcar', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona un elemento para marcar', 'warning');
@@ -308,6 +312,10 @@ window.VBPKeyboardTools = {
      */
     quickRename: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un elemento para renombrar', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length !== 1) {
             window.vbpKeyboard.showNotification('Selecciona un elemento para renombrar', 'warning');
@@ -333,6 +341,10 @@ window.VBPKeyboardTools = {
      */
     toggleAspectRatioLock: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un elemento', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona un elemento', 'warning');
@@ -355,8 +367,7 @@ window.VBPKeyboardTools = {
      */
     toggleCollapse: function() {
         var store = Alpine.store('vbp');
-
-        if (store.selection.elementIds.length === 0) return;
+        if (!store || !store.selection || !store.selection.elementIds || store.selection.elementIds.length === 0) return;
 
         store.selection.elementIds.forEach(function(id) {
             var element = store.getElement(id);
@@ -374,6 +385,10 @@ window.VBPKeyboardTools = {
      */
     toggleConstraint: function(side) {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un elemento', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona un elemento', 'warning');
@@ -397,6 +412,10 @@ window.VBPKeyboardTools = {
      */
     saveAsFavorite: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona elementos para guardar como favorito', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona elementos para guardar como favorito', 'warning');
@@ -633,6 +652,10 @@ window.VBPKeyboardTools = {
      */
     toggleAutoLayout: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un contenedor', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona un contenedor', 'warning');
@@ -666,8 +689,7 @@ window.VBPKeyboardTools = {
      */
     adjustAutoLayoutGap: function(delta) {
         var store = Alpine.store('vbp');
-
-        if (store.selection.elementIds.length === 0) return;
+        if (!store || !store.selection || !store.selection.elementIds || store.selection.elementIds.length === 0) return;
 
         store.saveToHistory();
 

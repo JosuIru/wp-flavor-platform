@@ -222,8 +222,12 @@
                 // Cargar tema guardado
                 this.loadSavedTheme();
 
-                // Aplicar tema inicial
-                this.applyTheme();
+                // Solo aplicar tema si es diferente al actual para evitar flashing
+                var currentApplied = document.documentElement.getAttribute('data-vbp-theme');
+                if (currentApplied !== this.resolvedThemeId) {
+                    // Sin transición durante init para evitar parpadeo
+                    this.applyTheme(false);
+                }
 
                 // Escuchar cambios en preferencia del sistema
                 if (window.matchMedia) {
@@ -345,20 +349,23 @@
 
             /**
              * Aplicar tema al DOM
+             * @param {boolean} withTransition - Si true, añade clase de transición (default: true)
              */
-            applyTheme: function() {
+            applyTheme: function(withTransition) {
                 var root = document.documentElement;
 
-                // Añadir clase de transición
-                root.classList.add('vbp-theme-transitioning');
+                // Solo añadir transición si se solicita explícitamente (cambios de usuario)
+                if (withTransition !== false) {
+                    root.classList.add('vbp-theme-transitioning');
+
+                    // Quitar clase de transición después de la animación
+                    setTimeout(function() {
+                        root.classList.remove('vbp-theme-transitioning');
+                    }, 50);
+                }
 
                 // Aplicar atributo de tema
                 root.setAttribute('data-vbp-theme', this.resolvedThemeId);
-
-                // Quitar clase de transición después de la animación
-                setTimeout(function() {
-                    root.classList.remove('vbp-theme-transitioning');
-                }, 50);
 
                 // Actualizar meta theme-color
                 this.updateMetaThemeColor();

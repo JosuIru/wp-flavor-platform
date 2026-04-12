@@ -500,7 +500,7 @@
             var domElement = document.querySelector('[data-element-id="' + element.id + '"]');
             if (!domElement) return;
 
-            var constraints = element.styles.constraints;
+            var constraints = element.styles && element.styles.constraints;
             if (!constraints) return;
 
             var parentRect = parentElement.getBoundingClientRect();
@@ -647,7 +647,8 @@
             var store = window.Alpine && Alpine.store('vbp');
             var zoomLevel = (store && store.zoom ? store.zoom : 100) / 100;
 
-            var constraints = element.styles.constraints;
+            var constraints = element.styles && element.styles.constraints;
+            if (!constraints) return;
 
             // Calcular posicion relativa al canvas
             var elementBounds = {
@@ -980,5 +981,24 @@
     } else {
         window.VBPConstraints.init();
     }
+
+    /**
+     * Registrar componente en Alpine
+     */
+    function registerConstraintsComponent() {
+        if (typeof Alpine === 'undefined') return false;
+        Alpine.data('vbpConstraintsPanel', window.vbpConstraintsPanel);
+        return true;
+    }
+
+    // Registrar inmediatamente si Alpine ya existe
+    if (typeof Alpine !== 'undefined') {
+        registerConstraintsComponent();
+    }
+
+    // También escuchar el evento por si Alpine se carga después
+    document.addEventListener('alpine:init', function() {
+        registerConstraintsComponent();
+    });
 
 })();

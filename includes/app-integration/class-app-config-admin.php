@@ -43,7 +43,7 @@ class Flavor_App_Config_Admin {
      */
     private function get_config($force_refresh = false) {
         if (null === $this->config_cache || $force_refresh) {
-            $this->config_cache = $this->get_config();
+            $this->config_cache = get_option('flavor_apps_config', []);
         }
         return $this->config_cache;
     }
@@ -655,7 +655,7 @@ class Flavor_App_Config_Admin {
      * @return array Datos del QR
      */
     public static function get_admin_qr_data() {
-        $config = $this->get_config();
+        $config = self::get_instance()->get_config();
         return [
             'url' => home_url(),
             'server_url' => home_url(),
@@ -675,7 +675,7 @@ class Flavor_App_Config_Admin {
      * @return array Datos del QR
      */
     public static function get_client_qr_data() {
-        $config = $this->get_config();
+        $config = self::get_instance()->get_config();
         return [
             'url' => home_url(),
             'server_url' => home_url(),

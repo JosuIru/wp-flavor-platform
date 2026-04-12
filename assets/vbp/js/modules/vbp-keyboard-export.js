@@ -258,8 +258,12 @@ window.VBPKeyboardExport = {
 
             if (element.styles.spacing) {
                 var sp = element.styles.spacing;
-                if (sp.padding) css += '      padding: ' + sp.padding.top + 'px ' + sp.padding.right + 'px ' + sp.padding.bottom + 'px ' + sp.padding.left + 'px;\n';
-                if (sp.margin) css += '      margin: ' + sp.margin.top + 'px ' + sp.margin.right + 'px ' + sp.margin.bottom + 'px ' + sp.margin.left + 'px;\n';
+                if (sp.padding && (sp.padding.top || sp.padding.right || sp.padding.bottom || sp.padding.left)) {
+                    css += '      padding: ' + (sp.padding.top || 0) + 'px ' + (sp.padding.right || 0) + 'px ' + (sp.padding.bottom || 0) + 'px ' + (sp.padding.left || 0) + 'px;\n';
+                }
+                if (sp.margin && (sp.margin.top || sp.margin.right || sp.margin.bottom || sp.margin.left)) {
+                    css += '      margin: ' + (sp.margin.top || 0) + 'px ' + (sp.margin.right || 0) + 'px ' + (sp.margin.bottom || 0) + 'px ' + (sp.margin.left || 0) + 'px;\n';
+                }
             }
 
             if (element.styles.typography) {
@@ -279,9 +283,9 @@ window.VBPKeyboardExport = {
 
             if (element.styles.border) {
                 var border = element.styles.border;
-                if (border.radius) {
+                if (border.radius && (border.radius.tl || border.radius.tr || border.radius.br || border.radius.bl)) {
                     var r = border.radius;
-                    css += '      border-radius: ' + r.tl + 'px ' + r.tr + 'px ' + r.br + 'px ' + r.bl + 'px;\n';
+                    css += '      border-radius: ' + (r.tl || 0) + 'px ' + (r.tr || 0) + 'px ' + (r.br || 0) + 'px ' + (r.bl || 0) + 'px;\n';
                 }
                 if (border.width) css += '      border-width: ' + border.width + 'px;\n';
                 if (border.color) css += '      border-color: ' + border.color + ';\n';

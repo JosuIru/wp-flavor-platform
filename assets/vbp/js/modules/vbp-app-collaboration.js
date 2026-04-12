@@ -6,6 +6,8 @@
  * @since 2.2.0
  */
 
+/* global VBP_Config, vbpLog */
+
 window.VBPAppCollaboration = {
     // Estado de colaboración
     collaborationEnabled: false,
@@ -30,12 +32,33 @@ window.VBPAppCollaboration = {
     heartbeatInterval: null,
     lastHeartbeat: null,
 
+    // Control de inicialización
+    _initialized: false,
+    _cursorThrottleTimer: null,
+
+    // Referencias a handlers para cleanup (evitar memory leaks)
+    _handlers: {
+        beforeUnload: null,
+        mouseMove: null,
+        alpineEffect: null,
+        realtimeUserJoined: null,
+        realtimeUserLeft: null,
+        realtimeLockConflict: null
+    },
+
     // ============ INICIALIZACIÓN ============
 
     /**
      * Inicializar sistema de colaboración
      */
     initCollaboration: function() {
+        // Evitar inicialización duplicada
+        if (this._initialized) {
+            vbpLog.log(' Colaboración ya inicializada, ignorando');
+            return;
+        }
+        this._initialized = true;
+
         var self = this;
 
         // Verificar si la colaboración está habilitada
@@ -88,28 +111,32 @@ window.VBPAppCollaboration = {
             realtimeStore.connect(postId);
 
             // Sincronizar usuarios activos desde realtime store
-            document.addEventListener('alpine:effect', function() {
+            this._handlers.alpineEffect = function() {
                 if (realtimeStore.users) {
                     self.activeUsers = realtimeStore.users;
                 }
-            });
+            };
+            document.addEventListener('alpine:effect', this._handlers.alpineEffect);
         }
 
-        // Escuchar eventos de realtime
-        document.addEventListener('vbp:realtime:userJoined', function(event) {
+        // Escuchar eventos de realtime (guardar referencias para cleanup)
+        this._handlers.realtimeUserJoined = function(event) {
             var user = event.detail.user;
             self.showNotification(user.name + ' se unió a la edición', 'info');
-        });
+        };
+        document.addEventListener('vbp:realtime:userJoined', this._handlers.realtimeUserJoined);
 
-        document.addEventListener('vbp:realtime:userLeft', function(event) {
+        this._handlers.realtimeUserLeft = function(event) {
             var user = event.detail.user;
             self.showNotification(user.name + ' salió de la edición', 'info');
-        });
+        };
+        document.addEventListener('vbp:realtime:userLeft', this._handlers.realtimeUserLeft);
 
-        document.addEventListener('vbp:realtime:lockConflict', function(event) {
+        this._handlers.realtimeLockConflict = function(event) {
             var lockedBy = event.detail.lockedBy;
             self.showNotification('Elemento bloqueado por ' + lockedBy, 'warning');
-        });
+        };
+        document.addEventListener('vbp:realtime:lockConflict', this._handlers.realtimeLockConflict);
     },
 
     /**
@@ -175,10 +202,15 @@ window.VBPAppCollaboration = {
         // Enviar presencia inicial
         this.sendPresence();
 
-        // Limpiar al cerrar
-        window.addEventListener('beforeunload', function() {
+        // Limpiar al cerrar (guardar referencia para cleanup)
+        this._handlers.beforeUnload = function() {
+            if (self.heartbeatInterval) {
+                clearInterval(self.heartbeatInterval);
+                self.heartbeatInterval = null;
+            }
             self.removePresence();
-        });
+        };
+        window.addEventListener('beforeunload', this._handlers.beforeUnload);
     },
 
     /**
@@ -243,8 +275,8 @@ window.VBPAppCollaboration = {
             return;
         }
 
-        // Enviar datos en heartbeat
-        jQuery(document).on('heartbeat-send', function(event, data) {
+        // Enviar datos en heartbeat (usar namespace para cleanup)
+        jQuery(document).on('heartbeat-send.vbpCollab', function(event, data) {
             data.vbp_presence = {
                 post_id: self.getPostId(),
                 cursor: self.currentUserCursor,
@@ -252,8 +284,8 @@ window.VBPAppCollaboration = {
             };
         });
 
-        // Recibir datos de heartbeat
-        jQuery(document).on('heartbeat-tick', function(event, data) {
+        // Recibir datos de heartbeat (usar namespace para cleanup)
+        jQuery(document).on('heartbeat-tick.vbpCollab', function(event, data) {
             if (data.vbp_presence) {
                 self.activeUsers = data.vbp_presence.users || [];
                 self.userCursors = data.vbp_presence.cursors || {};
@@ -269,12 +301,12 @@ window.VBPAppCollaboration = {
      */
     trackCursorMovement: function() {
         var self = this;
-        var throttleTimer = null;
 
-        document.addEventListener('mousemove', function(event) {
-            if (throttleTimer) return;
+        // Guardar referencia para cleanup
+        this._handlers.mouseMove = function(event) {
+            if (self._cursorThrottleTimer) return;
 
-            throttleTimer = setTimeout(function() {
+            self._cursorThrottleTimer = setTimeout(function() {
                 var canvas = document.querySelector('.vbp-canvas');
                 if (canvas) {
                     var rect = canvas.getBoundingClientRect();
@@ -283,9 +315,10 @@ window.VBPAppCollaboration = {
                         y: event.clientY - rect.top
                     };
                 }
-                throttleTimer = null;
+                self._cursorThrottleTimer = null;
             }, 100);
-        });
+        };
+        document.addEventListener('mousemove', this._handlers.mouseMove);
     },
 
     // ============ COMENTARIOS ============
@@ -642,9 +675,66 @@ window.VBPAppCollaboration = {
      * Limpiar al destruir
      */
     destroyCollaboration: function() {
+        // Limpiar heartbeat interval
         if (this.heartbeatInterval) {
             clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
         }
+
+        // Limpiar cursor throttle timer
+        if (this._cursorThrottleTimer) {
+            clearTimeout(this._cursorThrottleTimer);
+            this._cursorThrottleTimer = null;
+        }
+
+        // Limpiar handler de beforeunload
+        if (this._handlers.beforeUnload) {
+            window.removeEventListener('beforeunload', this._handlers.beforeUnload);
+            this._handlers.beforeUnload = null;
+        }
+
+        // Limpiar handler de mousemove
+        if (this._handlers.mouseMove) {
+            document.removeEventListener('mousemove', this._handlers.mouseMove);
+            this._handlers.mouseMove = null;
+        }
+
+        // Limpiar handlers de realtime
+        if (this._handlers.alpineEffect) {
+            document.removeEventListener('alpine:effect', this._handlers.alpineEffect);
+            this._handlers.alpineEffect = null;
+        }
+
+        if (this._handlers.realtimeUserJoined) {
+            document.removeEventListener('vbp:realtime:userJoined', this._handlers.realtimeUserJoined);
+            this._handlers.realtimeUserJoined = null;
+        }
+
+        if (this._handlers.realtimeUserLeft) {
+            document.removeEventListener('vbp:realtime:userLeft', this._handlers.realtimeUserLeft);
+            this._handlers.realtimeUserLeft = null;
+        }
+
+        if (this._handlers.realtimeLockConflict) {
+            document.removeEventListener('vbp:realtime:lockConflict', this._handlers.realtimeLockConflict);
+            this._handlers.realtimeLockConflict = null;
+        }
+
+        // Desconectar jQuery heartbeat si se usó
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).off('heartbeat-send.vbpCollab');
+            jQuery(document).off('heartbeat-tick.vbpCollab');
+        }
+
+        // Remover presencia del servidor
         this.removePresence();
+
+        // Resetear estado
+        this.collaborationEnabled = false;
+        this.activeUsers = [];
+        this.comments = [];
+        this._initialized = false;
+
+        vbpLog.info('VBP Collaboration: Destruido');
     }
 };

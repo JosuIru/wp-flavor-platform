@@ -1056,7 +1056,7 @@
     };
 
     // Registrar como módulo de app si está disponible
-    if (typeof window.VBPAppModular !== 'undefined') {
+    if (typeof window.VBPAppModular !== 'undefined' && typeof window.VBPAppModular.register === 'function') {
         window.VBPAppModular.register('assetManager', window.VBPAssetManager);
     }
 

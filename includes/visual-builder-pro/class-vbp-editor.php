@@ -369,6 +369,9 @@ class Flavor_VBP_Editor {
         $this->post_id_actual = $post_id;
         $editor_features      = $this->obtener_feature_flags_editor( $post_id );
 
+        // El editor usa wp.media en varios paneles y modales.
+        wp_enqueue_media();
+
         // Obtener URLs base
         $url_css    = FLAVOR_PLATFORM_URL . 'assets/vbp/css/';
         $url_js     = FLAVOR_PLATFORM_URL . 'assets/vbp/js/';
@@ -631,6 +634,10 @@ class Flavor_VBP_Editor {
             'symbols-panel'     => array( 'vbp-symbols-panel.js', array( 'vbp-symbols' ) ), // Panel UI de símbolos
             'symbols-commands'  => array( 'vbp-symbols-commands.js', array( 'vbp-symbols', 'vbp-command-palette' ) ), // Comandos y atajos de símbolos
             'swap-modal'        => array( 'vbp-swap-modal.js', array( 'vbp-symbols' ) ), // Modal de swap de instancias
+            '3d-blocks'         => array( 'vbp-3d-blocks.js', array( 'vbp-store-catalog' ) ), // Definiciones de bloques 3D
+            '3d-scene'          => array( 'vbp-3d-scene.js', array() ), // Runtime de escenas 3D
+            '3d-store'          => array( 'vbp-3d-store.js', array( 'vbp-store', 'vbp-3d-scene', 'vbp-3d-blocks' ) ), // Integración store/canvas 3D
+            '3d-inspector'      => array( 'vbp-3d-inspector.js', array( 'vbp-3d-store' ) ), // Inspector especializado 3D
             'zoom-utils'        => array( 'vbp-zoom-utils.js', array( 'vbp-store' ) ), // Utilidades de zoom: zoom to selection, fit all
             'bulk-edit'         => array( 'vbp-bulk-edit.js', array( 'vbp-store', 'vbp-inspector' ) ), // Edicion masiva de propiedades
             'spacing-indicators' => array( 'vbp-spacing-indicators.js', array( 'vbp-canvas-utils' ) ), // Indicadores de distancia entre elementos

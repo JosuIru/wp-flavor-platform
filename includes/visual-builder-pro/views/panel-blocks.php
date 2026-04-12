@@ -277,7 +277,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </button>
 
                 <div class="vbp-category-blocks" x-show="openCategories.includes(category.id)" x-collapse :id="'vbp-cat-' + category.id" role="group" :aria-label="category.name">
-                    <template x-for="block in category.blocks" :key="block.type">
+                    <template x-for="(block, blockIndex) in category.blocks" :key="category.id + '-block-' + blockIndex">
                         <div
                             class="vbp-block-item"
                             :data-block-type="block.type"
@@ -512,9 +512,14 @@ document.addEventListener('alpine:init', () => {
             return this.categories.reduce((sum, cat) => sum + cat.blocks.length, 0);
         },
 
-        // Total de bloques filtrados
+        // Total de bloques filtrados (incluyendo widgets globales cuando hay búsqueda)
         get totalFilteredBlocks() {
-            return this.displayedCategories.reduce((sum, cat) => sum + cat.blocks.length, 0);
+            let total = this.displayedCategories.reduce((sum, cat) => sum + cat.blocks.length, 0);
+            // Incluir widgets globales filtrados cuando hay búsqueda activa
+            if (this.searchQuery && this.globalWidgetsLoaded) {
+                total += this.filteredGlobalWidgets.length;
+            }
+            return total;
         },
 
         // Categorías a mostrar según filtros
@@ -735,12 +740,56 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.loadRecentBlocks();
             this.loadFavorites();
+            this.merge3DBlocks();
+            setTimeout(() => this.merge3DBlocks(), 250);
 
             // Cargar preferencias de vista
             const savedViewMode = localStorage.getItem('vbp_blocks_view_mode');
             if (savedViewMode) {
                 this.viewMode = savedViewMode;
             }
+        },
+
+        merge3DBlocks() {
+            if (!window.VBP3DBlocks || typeof window.VBP3DBlocks.getAllBlocks !== 'function') {
+                return;
+            }
+
+            const blocks3d = window.VBP3DBlocks.getAllBlocks().map(function(block) {
+                return {
+                    type: block.type,
+                    name: block.name,
+                    icon: block.icon || '🎲',
+                    shortcode: '',
+                    module: '',
+                    category: '3d'
+                };
+            });
+
+            const category3d = {
+                id: '3d',
+                name: '3D / WebGL',
+                icon: '🎲',
+                blocks: blocks3d
+            };
+
+            const existingIndex = this.categories.findIndex(function(cat) {
+                return cat.id === '3d';
+            });
+
+            if (existingIndex === -1) {
+                this.categories.push(category3d);
+            } else {
+                this.categories.splice(existingIndex, 1, category3d);
+            }
+
+            this.blockDescriptions['3d-scene'] = 'Escena 3D con cámara, luces y objetos interactivos';
+            this.blockDescriptions['3d-object'] = 'Primitiva 3D como cubo, esfera o cilindro';
+            this.blockDescriptions['3d-model'] = 'Modelo 3D externo en formato GLB o GLTF';
+            this.blockDescriptions['3d-text'] = 'Texto 3D extruido';
+            this.blockDescriptions['3d-particles'] = 'Sistema de partículas 3D';
+            this.blockDescriptions['3d-light'] = 'Luz 3D para iluminar la escena';
+            this.blockDescriptions['3d-group'] = 'Agrupación de objetos 3D';
         },
 
         get filteredGlobalWidgets() {

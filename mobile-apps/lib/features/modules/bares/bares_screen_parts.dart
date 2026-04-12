@@ -444,7 +444,7 @@ class _BarDetalleScreenState extends ConsumerState<_BarDetalleScreen>
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withValues(alpha: 0.7),
+                            Colors.black.withOpacity(0.7),
                           ],
                         ),
                       ),

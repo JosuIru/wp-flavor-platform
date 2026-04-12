@@ -769,3 +769,25 @@ window.vbpToolbarEditor = vbpToolbarEditor;
 window.vbpLinkModal = vbpLinkModal;
 window.vbpSlashCommand = vbpSlashCommand;
 window.vbpMentionAutocomplete = vbpMentionAutocomplete;
+
+/**
+ * Registrar componentes en Alpine
+ */
+function registerRichtextComponents() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpToolbarEditor', vbpToolbarEditor);
+    Alpine.data('vbpLinkModal', vbpLinkModal);
+    Alpine.data('vbpSlashCommand', vbpSlashCommand);
+    Alpine.data('vbpMentionAutocomplete', vbpMentionAutocomplete);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerRichtextComponents();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerRichtextComponents();
+});

@@ -11,6 +11,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (class_exists('Flavor_Network_Installer', false)) {
+    return;
+}
+
 class Flavor_Network_Installer {
 
     /**

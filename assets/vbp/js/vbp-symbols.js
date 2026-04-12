@@ -48,6 +48,12 @@
         saveOverridesTimer: null,
         saveOverridesDelay: 500,
 
+        // Timer de reintentos de carga
+        _loadRetryTimer: null,
+
+        // Referencias a handlers de eventos para cleanup
+        _eventHandlers: {},
+
         /**
          * Inicializar el sistema de simbolos
          */
@@ -80,7 +86,7 @@
 
             if (typeof VBP_Config === 'undefined' || !VBP_Config.restUrl) {
                 vbpLog.warn('[VBPSymbols] VBP_Config no disponible, reintentando...');
-                setTimeout(function() { self.cargarSimbolos(); }, 500);
+                this._loadRetryTimer = setTimeout(function() { self.cargarSimbolos(); }, 500);
                 return;
             }
 
@@ -901,6 +907,11 @@
             return true;
         },
 
+        // Alias de compatibilidad para consumidores legacy.
+        setOverride: function(elementId, propPath, value) {
+            return this.aplicarOverride(elementId, propPath, value);
+        },
+
         /**
          * Resetear un override especifico
          */
@@ -926,6 +937,11 @@
             return true;
         },
 
+        // Alias de compatibilidad para consumidores legacy.
+        removeOverride: function(elementId, propPath) {
+            return this.resetearOverride(elementId, propPath);
+        },
+
         /**
          * Resetear todos los overrides de una instancia
          */
@@ -949,6 +965,11 @@
             }));
 
             return true;
+        },
+
+        // Alias de compatibilidad para consumidores legacy.
+        resetAllOverrides: function(elementId) {
+            return this.resetearTodosOverrides(elementId);
         },
 
         /**
@@ -1015,6 +1036,11 @@
                 store.markAsDirty();
                 return true;
             });
+        },
+
+        // Alias de compatibilidad para consumidores legacy.
+        detachInstance: function(elementId) {
+            return this.detachInstancia(elementId);
         },
 
         /**
@@ -1223,6 +1249,11 @@
             });
         },
 
+        // Alias de compatibilidad para consumidores legacy.
+        syncInstance: function(elementId) {
+            return this.sincronizarInstancia(elementId);
+        },
+
         /**
          * Sincronizar todas las instancias de un simbolo en el documento
          */
@@ -1367,6 +1398,11 @@
             // Abrir en nueva pestana para editar el post del simbolo
             var editUrl = VBP_Config.adminUrl + 'post.php?post=' + symbol.id + '&action=edit';
             window.open(editUrl, '_blank');
+        },
+
+        // Alias de compatibilidad para consumidores legacy.
+        openSymbolEditor: function(symbolId) {
+            return this.editarSimboloMaestro(symbolId);
         },
 
         // =============================================
@@ -2746,7 +2782,8 @@
                 confirmBtn.disabled = true;
                 confirmBtn.textContent = 'Importando...';
 
-                var selectedMode = document.querySelector('input[name="vbp-import-mode"]:checked').value;
+                var selectedModeInput = document.querySelector('input[name="vbp-import-mode"]:checked');
+                var selectedMode = selectedModeInput ? selectedModeInput.value : 'merge';
 
                 self.importSymbols(pendingImportData, { mode: selectedMode })
                     .then(function(importResultData) {
@@ -2805,14 +2842,13 @@
         configurarEventos: function() {
             var self = this;
 
-            // Escuchar cuando se guarda el documento para sincronizar instancias
-            document.addEventListener('vbp:afterSave', function(e) {
+            // Crear handlers con referencias para poder limpiarlos después
+            this._eventHandlers.afterSave = function(e) {
                 // Limpiar cola de pendientes ya que el documento se guardo
                 self.pendingSync = [];
-            });
+            };
 
-            // Escuchar cuando se actualiza un simbolo para notificar instancias
-            document.addEventListener('vbp:symbol:updated', function(e) {
+            this._eventHandlers.symbolUpdated = function(e) {
                 var detail = e.detail || {};
                 if (detail.symbol) {
                     // Marcar instancias como desactualizadas si la version cambio
@@ -2829,15 +2865,13 @@
                     // Notificar a simbolos padre que un hijo cambio (nested symbols)
                     self.notificarCambioSimbolo(detail.symbol.id);
                 }
-            });
+            };
 
-            // Escuchar solicitudes de recarga de simbolos
-            document.addEventListener('vbp:symbols:reload', function() {
+            this._eventHandlers.symbolsReload = function() {
                 self.recargarSimbolos();
-            });
+            };
 
-            // Escuchar cambios en simbolos anidados para actualizar padres
-            document.addEventListener('vbp:symbol:nested-changed', function(e) {
+            this._eventHandlers.nestedChanged = function(e) {
                 var detail = e.detail || {};
                 vbpLog.log('[VBPSymbols] Simbolo padre necesita actualizar por cambio en hijo:', detail);
 
@@ -2848,7 +2882,54 @@
                         self.sincronizarInstancia(inst.id);
                     });
                 }
-            });
+            };
+
+            // Registrar eventos
+            document.addEventListener('vbp:afterSave', this._eventHandlers.afterSave);
+            document.addEventListener('vbp:symbol:updated', this._eventHandlers.symbolUpdated);
+            document.addEventListener('vbp:symbols:reload', this._eventHandlers.symbolsReload);
+            document.addEventListener('vbp:symbol:nested-changed', this._eventHandlers.nestedChanged);
+        },
+
+        /**
+         * Destruir el sistema de símbolos y limpiar recursos
+         */
+        destroy: function() {
+            // Limpiar timer de reintentos
+            if (this._loadRetryTimer) {
+                clearTimeout(this._loadRetryTimer);
+                this._loadRetryTimer = null;
+            }
+
+            // Limpiar timer de guardar overrides
+            if (this.saveOverridesTimer) {
+                clearTimeout(this.saveOverridesTimer);
+                this.saveOverridesTimer = null;
+            }
+
+            // Limpiar event listeners
+            if (this._eventHandlers.afterSave) {
+                document.removeEventListener('vbp:afterSave', this._eventHandlers.afterSave);
+            }
+            if (this._eventHandlers.symbolUpdated) {
+                document.removeEventListener('vbp:symbol:updated', this._eventHandlers.symbolUpdated);
+            }
+            if (this._eventHandlers.symbolsReload) {
+                document.removeEventListener('vbp:symbols:reload', this._eventHandlers.symbolsReload);
+            }
+            if (this._eventHandlers.nestedChanged) {
+                document.removeEventListener('vbp:symbol:nested-changed', this._eventHandlers.nestedChanged);
+            }
+            this._eventHandlers = {};
+
+            // Limpiar cache y estado
+            this.symbols = [];
+            this.instances = {};
+            this.variantCache = {};
+            this.pendingSync = [];
+            this.inicializado = false;
+
+            vbpLog.log('[VBPSymbols] Sistema de simbolos destruido');
         }
     };
 

@@ -11,6 +11,11 @@ window.VBPStoreStyleHelpers = {
     ensureStylesComplete: function(element, defaults) {
         if (!element) return element;
 
+        // Asegurar que data existe
+        if (!element.data) {
+            element.data = {};
+        }
+
         if (!element.styles) {
             element.styles = defaults;
             return element;

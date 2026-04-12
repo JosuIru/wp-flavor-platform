@@ -405,10 +405,17 @@
     VBP3DScene.prototype.init = function() {
         var self = this;
 
+        // Mostrar indicador de carga mientras se carga Three.js
+        this._showLoadingIndicator();
+
         return loadThreeJS().then(function(THREE) {
             if (!self.container) {
+                self._hideLoadingIndicator();
                 throw new Error('Contenedor no encontrado: ' + self.containerId);
             }
+
+            // Ocultar indicador de carga
+            self._hideLoadingIndicator();
 
             self._setupRenderer(THREE);
             self._setupScene(THREE);
@@ -432,7 +439,116 @@
             }));
 
             return self;
+        }).catch(function(error) {
+            self._hideLoadingIndicator();
+            self._showErrorIndicator(error.message);
+            throw error;
         });
+    };
+
+    /**
+     * Mostrar indicador de carga en el contenedor
+     * @private
+     */
+    VBP3DScene.prototype._showLoadingIndicator = function() {
+        if (!this.container) return;
+
+        var loadingEl = document.createElement('div');
+        loadingEl.className = 'vbp-3d-loading';
+        loadingEl.innerHTML = [
+            '<div class="vbp-3d-loading__spinner">',
+            '  <svg viewBox="0 0 50 50" width="40" height="40">',
+            '    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="90,150" stroke-dashoffset="0">',
+            '      <animateTransform attributeName="transform" type="rotate" dur="1s" values="0 25 25;360 25 25" repeatCount="indefinite"/>',
+            '    </circle>',
+            '  </svg>',
+            '</div>',
+            '<div class="vbp-3d-loading__text">Cargando escena 3D...</div>'
+        ].join('');
+
+        loadingEl.style.cssText = [
+            'position: absolute',
+            'top: 0',
+            'left: 0',
+            'right: 0',
+            'bottom: 0',
+            'display: flex',
+            'flex-direction: column',
+            'align-items: center',
+            'justify-content: center',
+            'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+            'color: #a0aec0',
+            'font-family: -apple-system, BlinkMacSystemFont, sans-serif',
+            'font-size: 14px',
+            'gap: 12px',
+            'z-index: 10'
+        ].join('; ');
+
+        // Asegurar posición relativa en contenedor
+        if (getComputedStyle(this.container).position === 'static') {
+            this.container.style.position = 'relative';
+        }
+
+        this.container.appendChild(loadingEl);
+        this._loadingElement = loadingEl;
+    };
+
+    /**
+     * Ocultar indicador de carga
+     * @private
+     */
+    VBP3DScene.prototype._hideLoadingIndicator = function() {
+        if (this._loadingElement && this._loadingElement.parentNode) {
+            this._loadingElement.remove();
+            this._loadingElement = null;
+        }
+    };
+
+    /**
+     * Mostrar indicador de error
+     * @private
+     */
+    VBP3DScene.prototype._showErrorIndicator = function(message) {
+        if (!this.container) return;
+
+        var errorEl = document.createElement('div');
+        errorEl.className = 'vbp-3d-error';
+        errorEl.innerHTML = [
+            '<div class="vbp-3d-error__icon">⚠️</div>',
+            '<div class="vbp-3d-error__text">Error cargando escena 3D</div>',
+            '<div class="vbp-3d-error__details">' + this._escapeHtml(message) + '</div>'
+        ].join('');
+
+        errorEl.style.cssText = [
+            'position: absolute',
+            'top: 0',
+            'left: 0',
+            'right: 0',
+            'bottom: 0',
+            'display: flex',
+            'flex-direction: column',
+            'align-items: center',
+            'justify-content: center',
+            'background: #1a1a2e',
+            'color: #fc8181',
+            'font-family: -apple-system, BlinkMacSystemFont, sans-serif',
+            'text-align: center',
+            'padding: 20px',
+            'gap: 8px',
+            'z-index: 10'
+        ].join('; ');
+
+        this.container.appendChild(errorEl);
+    };
+
+    /**
+     * Escapar HTML para prevenir XSS
+     * @private
+     */
+    VBP3DScene.prototype._escapeHtml = function(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     };
 
     /**

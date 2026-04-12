@@ -474,7 +474,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<template x-if="change.type === 'modified' && change.changes">
 									<div class="vbp-diff-change-body">
 										<div class="vbp-diff-properties">
-											<template x-for="prop in change.changes" :key="prop.property">
+											<template x-for="(prop, propIndex) in change.changes" :key="'prop-' + propIndex">
 												<div class="vbp-diff-property">
 													<span class="vbp-diff-property-name" x-text="prop.property"></span>
 													<span class="vbp-diff-property-old" x-text="JSON.stringify(prop.old_value)"></span>

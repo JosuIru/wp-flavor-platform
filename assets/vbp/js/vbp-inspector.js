@@ -520,7 +520,19 @@ function vbpInspector() {
         updateElementData: function(field, value) {
             if (!this.selectedElement) return;
             var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
-            data[field] = value;
+            if (typeof field === 'string' && field.indexOf('.') !== -1) {
+                var parts = field.split('.');
+                var target = data;
+                for (var i = 0; i < parts.length - 1; i++) {
+                    if (!target[parts[i]] || typeof target[parts[i]] !== 'object') {
+                        target[parts[i]] = {};
+                    }
+                    target = target[parts[i]];
+                }
+                target[parts[parts.length - 1]] = value;
+            } else {
+                data[field] = value;
+            }
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
         },
 
@@ -1067,10 +1079,47 @@ function vbpInspector() {
         getItemsProperty: function() {
             if (!this.selectedElement) return 'items';
             var type = this.selectedElement.type;
-            if (type === 'timeline') return 'eventos';
+            if (type === 'timeline') {
+                if (this.selectedElement.data && Array.isArray(this.selectedElement.data.eventos)) return 'eventos';
+                if (this.selectedElement.data && Array.isArray(this.selectedElement.data.items)) return 'items';
+                return 'eventos';
+            }
             if (type === 'social-icons') return 'redes';
             if (type === 'form') return 'campos';
             return 'items';
+        },
+
+        /**
+         * Obtener una colección editable de forma segura.
+         * Devuelve siempre un array aunque el dato llegue incompleto/importado.
+         */
+        getEditableCollection: function(prop) {
+            if (!this.selectedElement || !this.selectedElement.data) {
+                return [];
+            }
+
+            var collection = this.selectedElement.data[prop];
+            if (Array.isArray(collection)) {
+                return collection;
+            }
+
+            if (this.selectedElement.type === 'timeline') {
+                if (prop === 'eventos' && Array.isArray(this.selectedElement.data.items)) {
+                    return this.selectedElement.data.items;
+                }
+                if (prop === 'items' && Array.isArray(this.selectedElement.data.eventos)) {
+                    return this.selectedElement.data.eventos;
+                }
+            }
+
+            return Array.isArray(collection) ? collection : [];
+        },
+
+        /**
+         * Obtener longitud segura de una colección editable.
+         */
+        getEditableCollectionLength: function(prop) {
+            return this.getEditableCollection(prop).length;
         },
 
         /**
@@ -1078,11 +1127,24 @@ function vbpInspector() {
          */
         updateItem: function(index, field, value) {
             var itemsProp = this.getItemsProperty();
-            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
+            if (!this.selectedElement) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data[itemsProp])) {
+                data[itemsProp] = [];
+            }
+
             if (data[itemsProp][index]) {
                 data[itemsProp][index][field] = value;
+
+                if (this.selectedElement.type === 'accordion' && field === 'abierto' && value && !data.multiples_abiertos) {
+                    for (var ai = 0; ai < data[itemsProp].length; ai++) {
+                        if (ai !== index && data[itemsProp][ai]) {
+                            data[itemsProp][ai].abierto = false;
+                        }
+                    }
+                }
+
                 Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
             }
         },
@@ -1092,17 +1154,31 @@ function vbpInspector() {
          */
         moveItem: function(index, direction) {
             var itemsProp = this.getItemsProperty();
-            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
+            if (!this.selectedElement) return;
 
             var nuevoIndex = index + direction;
-            var items = this.selectedElement.data[itemsProp];
+            var items = this.getEditableCollection(itemsProp);
 
             if (nuevoIndex < 0 || nuevoIndex >= items.length) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data[itemsProp])) {
+                data[itemsProp] = [];
+            }
             var temp = data[itemsProp][index];
             data[itemsProp][index] = data[itemsProp][nuevoIndex];
             data[itemsProp][nuevoIndex] = temp;
+
+            if (this.selectedElement.type === 'tabs') {
+                var activeTab = parseInt(data.tab_activa, 10);
+                if (!isNaN(activeTab)) {
+                    if (activeTab === index) {
+                        data.tab_activa = nuevoIndex;
+                    } else if (activeTab === nuevoIndex) {
+                        data.tab_activa = index;
+                    }
+                }
+            }
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
 
@@ -1119,10 +1195,24 @@ function vbpInspector() {
          */
         removeItem: function(index) {
             var itemsProp = this.getItemsProperty();
-            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
+            if (!this.selectedElement) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data[itemsProp])) {
+                data[itemsProp] = [];
+            }
             data[itemsProp].splice(index, 1);
+
+            if (this.selectedElement.type === 'tabs') {
+                var activeTab = parseInt(data.tab_activa, 10);
+                if (isNaN(activeTab)) {
+                    data.tab_activa = 0;
+                } else if (activeTab === index) {
+                    data.tab_activa = Math.max(0, Math.min(index, data[itemsProp].length - 1));
+                } else if (activeTab > index) {
+                    data.tab_activa = activeTab - 1;
+                }
+            }
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
 
@@ -1365,9 +1455,12 @@ function vbpInspector() {
          * Actualizar campo de red social
          */
         updateSocialItem: function(index, field, value) {
-            if (!this.selectedElement || !this.selectedElement.data.redes) return;
+            if (!this.selectedElement) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data.redes)) {
+                data.redes = [];
+            }
             if (data.redes[index]) {
                 data.redes[index][field] = value;
                 Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
@@ -1378,9 +1471,12 @@ function vbpInspector() {
          * Eliminar red social
          */
         removeSocialItem: function(index) {
-            if (!this.selectedElement || !this.selectedElement.data.redes) return;
+            if (!this.selectedElement) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data.redes)) {
+                data.redes = [];
+            }
             data.redes.splice(index, 1);
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
@@ -1480,6 +1576,7 @@ function vbpInspector() {
             }
 
             if (typeof wp !== 'undefined' && wp.media) {
+                var self = this;
                 var frame = wp.media({
                     title: 'Seleccionar logos',
                     button: { text: 'Añadir logos' },
@@ -1518,9 +1615,12 @@ function vbpInspector() {
          * Eliminar logo del grid
          */
         removeLogoItem: function(index) {
-            if (!this.selectedElement || !this.selectedElement.data.logos) return;
+            if (!this.selectedElement) return;
 
-            var data = JSON.parse(JSON.stringify(this.selectedElement.data));
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            if (!Array.isArray(data.logos)) {
+                data.logos = [];
+            }
             data.logos.splice(index, 1);
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
@@ -1943,6 +2043,10 @@ function vbpInspector() {
             // Cargar estado de secciones colapsadas desde localStorage
             this.loadCollapsedSections();
 
+            this.$nextTick(function() {
+                document.dispatchEvent(new CustomEvent('vbp:inspector:init'));
+            });
+
             document.addEventListener('vbp:editElement', function() {
                 self.activeTab = 'content';
 
@@ -2107,3 +2211,25 @@ function vbpInspector() {
 
     return inspector;
 }
+
+// Exportar a window para acceso global
+window.vbpInspector = vbpInspector;
+
+/**
+ * Registrar componente en Alpine
+ */
+function registerInspectorComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpInspector', vbpInspector);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerInspectorComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerInspectorComponent();
+});

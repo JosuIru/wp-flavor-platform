@@ -39,33 +39,63 @@ if (!window.vbpLog) {
         renderDebounceTimers: {},
 
         /**
+         * Flag para prevenir inicialización duplicada
+         */
+        _initialized: false,
+
+        /**
+         * Referencias a event handlers para cleanup
+         */
+        _eventHandlers: {},
+
+        /**
+         * Escapar HTML para prevenir XSS
+         * @param {string} text - Texto a escapar
+         * @returns {string} Texto escapado
+         */
+        escapeHtml: function(text) {
+            if (typeof text !== 'string') return String(text);
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+
+        /**
          * Inicializar el renderer
          */
         init: function() {
+            // Prevenir inicialización duplicada
+            if (this._initialized) {
+                vbpLog.log('InstanceRenderer: ya inicializado, ignorando');
+                return;
+            }
+            this._initialized = true;
+
             var self = this;
 
             // Registrar renderer custom para '__symbol_instance__' en el canvas
             this.registerCustomRenderer();
 
-            // Escuchar eventos de símbolo actualizado
-            document.addEventListener('vbp:symbol:updated', function(evento) {
+            // Crear handlers con referencias para poder limpiarlos después
+            this._eventHandlers.symbolUpdated = function(evento) {
                 self.handleSymbolUpdated(evento);
-            });
-
-            // Escuchar eventos de instancia actualizada
-            document.addEventListener('vbp:instance:updated', function(evento) {
+            };
+            this._eventHandlers.instanceUpdated = function(evento) {
                 self.handleInstanceUpdated(evento);
-            });
-
-            // Escuchar eventos de override cambiado
-            document.addEventListener('vbp:instance:override-changed', function(evento) {
+            };
+            this._eventHandlers.overrideChanged = function(evento) {
                 self.handleOverrideChanged(evento);
-            });
+            };
+            this._eventHandlers.instanceDetached = function(evento) {
+                var detail = evento.detail || {};
+                self.invalidateCache(detail.instanceId || detail.elementId);
+            };
 
-            // Escuchar eventos de instancia separada
-            document.addEventListener('vbp:instance:detached', function(evento) {
-                self.invalidateCache(evento.detail.instanceId);
-            });
+            // Escuchar eventos
+            document.addEventListener('vbp:symbol:updated', this._eventHandlers.symbolUpdated);
+            document.addEventListener('vbp:instance:updated', this._eventHandlers.instanceUpdated);
+            document.addEventListener('vbp:instance:override-changed', this._eventHandlers.overrideChanged);
+            document.addEventListener('vbp:instance:detached', this._eventHandlers.instanceDetached);
 
             // Inicializar observador de mutaciones
             this.initMutationObserver();
@@ -243,8 +273,13 @@ if (!window.vbpLog) {
          * @returns {object|null}
          */
         obtenerSymbolMaestro: function(symbolId) {
-            if (window.VBPSymbols && typeof window.VBPSymbols.obtenerSymbol === 'function') {
-                return window.VBPSymbols.obtenerSymbol(symbolId);
+            if (window.VBPSymbols) {
+                if (typeof window.VBPSymbols.obtenerSimbolo === 'function') {
+                    return window.VBPSymbols.obtenerSimbolo(symbolId);
+                }
+                if (typeof window.VBPSymbols.obtenerSymbol === 'function') {
+                    return window.VBPSymbols.obtenerSymbol(symbolId);
+                }
             }
 
             // Fallback: intentar desde store de Alpine
@@ -384,8 +419,67 @@ if (!window.vbpLog) {
                     div.appendChild(btn);
                     break;
 
+                case 'code-component':
+                    // Intentar renderizar Code Component usando VBPCodeComponents
+                    var componentData = bloque.data || {};
+                    var componentId = componentData.componentId || componentData.id;
+                    var componentProps = componentData.props || {};
+
+                    if (componentId && window.VBPCodeComponents && typeof window.VBPCodeComponents.previewComponent === 'function') {
+                        // Crear contenedor para el iframe de preview
+                        var previewContainer = document.createElement('div');
+                        previewContainer.className = 'vbp-code-component-preview';
+                        previewContainer.dataset.componentId = componentId;
+                        div.appendChild(previewContainer);
+
+                        // previewComponent devuelve un iframe; algunos callers legacy esperan promesa
+                        try {
+                            var previewResult = window.VBPCodeComponents.previewComponent(componentId, componentProps);
+
+                            if (previewResult && typeof previewResult.then === 'function') {
+                                previewResult.then(function(previewHtml) {
+                                    if (previewHtml && previewContainer.isConnected) {
+                                        previewContainer.innerHTML = previewHtml;
+                                    }
+                                }).catch(function() {
+                                    previewContainer.innerHTML = '<div class="vbp-block-placeholder">Code Component</div>';
+                                });
+                            } else if (previewResult && previewResult.nodeType === 1 && previewContainer.isConnected) {
+                                previewContainer.innerHTML = '';
+                                previewContainer.appendChild(previewResult);
+                            } else {
+                                previewContainer.innerHTML = '<div class="vbp-block-placeholder">Code Component</div>';
+                            }
+                        } catch (previewError) {
+                            previewContainer.innerHTML = '<div class="vbp-block-placeholder">Code Component</div>';
+                        }
+                    } else {
+                        // Fallback si VBPCodeComponents no está disponible
+                        var placeholder = document.createElement('div');
+                        placeholder.className = 'vbp-block-placeholder vbp-code-component-placeholder';
+                        placeholder.innerHTML = '<span class="vbp-placeholder-icon">⚡</span>' +
+                            '<span class="vbp-placeholder-text">Code Component' +
+                            (componentData.name ? ': ' + this.escapeHtml(componentData.name) : '') +
+                            '</span>';
+                        div.appendChild(placeholder);
+                    }
+                    break;
+
+                case 'module':
+                case 'shortcode':
+                    // Renderizar placeholder para módulos/shortcodes
+                    var moduleData = bloque.data || {};
+                    var modulePlaceholder = document.createElement('div');
+                    modulePlaceholder.className = 'vbp-block-placeholder vbp-module-placeholder';
+                    modulePlaceholder.innerHTML = '<span class="vbp-placeholder-icon">📦</span>' +
+                        '<span class="vbp-placeholder-text">' +
+                        this.escapeHtml(moduleData.shortcode || moduleData.module || 'Module') +
+                        '</span>';
+                    div.appendChild(modulePlaceholder);
+                    break;
+
                 default:
-                    div.innerHTML = '<div class="vbp-block-placeholder">' + bloque.type + '</div>';
+                    div.innerHTML = '<div class="vbp-block-placeholder">' + this.escapeHtml(bloque.type) + '</div>';
             }
 
             // Renderizar hijos si existen
@@ -507,9 +601,10 @@ if (!window.vbpLog) {
          */
         refreshInstancesOfSymbol: function(symbolId) {
             var self = this;
+            var normalizedSymbolId = String(symbolId);
 
             this.renderCache.forEach(function(entry, instanceId) {
-                if (entry.symbolId === symbolId) {
+                if (String(entry.symbolId) === normalizedSymbolId) {
                     // Usar debounce para evitar múltiples re-renders
                     self.debouncedRefresh(instanceId);
                 }
@@ -579,7 +674,8 @@ if (!window.vbpLog) {
          * @param {CustomEvent} evento
          */
         handleSymbolUpdated: function(evento) {
-            var symbolId = evento.detail && evento.detail.symbolId;
+            var detail = evento.detail || {};
+            var symbolId = detail.symbolId || (detail.symbol && detail.symbol.id);
             if (symbolId) {
                 this.refreshInstancesOfSymbol(symbolId);
             }
@@ -684,6 +780,21 @@ if (!window.vbpLog) {
             }
             this.renderDebounceTimers = {};
 
+            // Limpiar event listeners
+            if (this._eventHandlers.symbolUpdated) {
+                document.removeEventListener('vbp:symbol:updated', this._eventHandlers.symbolUpdated);
+            }
+            if (this._eventHandlers.instanceUpdated) {
+                document.removeEventListener('vbp:instance:updated', this._eventHandlers.instanceUpdated);
+            }
+            if (this._eventHandlers.overrideChanged) {
+                document.removeEventListener('vbp:instance:override-changed', this._eventHandlers.overrideChanged);
+            }
+            if (this._eventHandlers.instanceDetached) {
+                document.removeEventListener('vbp:instance:detached', this._eventHandlers.instanceDetached);
+            }
+            this._eventHandlers = {};
+
             // Desconectar observador
             if (this.mutationObserver) {
                 this.mutationObserver.disconnect();
@@ -692,6 +803,9 @@ if (!window.vbpLog) {
 
             // Limpiar cache
             this.clearCache();
+
+            // Resetear flag de inicialización
+            this._initialized = false;
 
             vbpLog.log('InstanceRenderer: destruido');
         }

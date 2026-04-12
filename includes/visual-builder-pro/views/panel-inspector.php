@@ -384,7 +384,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </label>
                             <input type="text" x-model="selectedElement.data.text" @input="updateElementData('text', $event.target.value)" class="vbp-field-input">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-init="field = 'url'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -392,7 +392,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @input="searchQuery = $event.target.value; updateElementData('url', $event.target.value)"
                                        @keydown="handleKeydown($event)"
                                        @blur="closeDropdown()"
-                                       @link-selected.window="updateElementData('url', $event.detail.url)"
+                                       @link-selected.window="if ($event.detail.field === 'url') updateElementData('url', $event.detail.url)"
                                        class="vbp-field-input"
                                        :class="getValidationClass()"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar o pega URL...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
@@ -503,7 +503,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="vbp-color-section">
                                             <span class="vbp-color-section-label"><?php esc_html_e( 'Colores del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                                             <div class="vbp-color-picker-grid vbp-site-colors">
-                                                <template x-for="item in siteColors" :key="item.label">
+                                                <template x-for="(item, siteColorIndex) in siteColors" :key="'site-color-' + siteColorIndex">
                                                     <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(item.color) }" :style="{ backgroundColor: item.color }" :title="item.label" @click="selectColor(item.color); updateElementData('titulo_color', item.color)"></button>
                                                 </template>
                                             </div>
@@ -511,7 +511,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="vbp-color-section">
                                             <span class="vbp-color-section-label"><?php esc_html_e( 'Colores comunes', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                                             <div class="vbp-color-picker-grid">
-                                                <template x-for="color in presetColors" :key="color">
+                                                <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                     <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(color) }" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('titulo_color', color)"></button>
                                                 </template>
                                             </div>
@@ -529,7 +529,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="vbp-color-section">
                                             <span class="vbp-color-section-label"><?php esc_html_e( 'Colores del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                                             <div class="vbp-color-picker-grid vbp-site-colors">
-                                                <template x-for="item in siteColors" :key="item.label">
+                                                <template x-for="(item, siteColorIndex) in siteColors" :key="'site-color-' + siteColorIndex">
                                                     <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(item.color) }" :style="{ backgroundColor: item.color }" :title="item.label" @click="selectColor(item.color); updateElementData('subtitulo_color', item.color)"></button>
                                                 </template>
                                             </div>
@@ -537,7 +537,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="vbp-color-section">
                                             <span class="vbp-color-section-label"><?php esc_html_e( 'Colores comunes', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                                             <div class="vbp-color-picker-grid">
-                                                <template x-for="color in presetColors" :key="color">
+                                                <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                     <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(color) }" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('subtitulo_color', color)"></button>
                                                 </template>
                                             </div>
@@ -553,7 +553,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_texto" @input="updateElementData('boton_texto', $event.target.value)" class="vbp-field-input">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-init="field = 'boton_url'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -561,7 +561,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @input="searchQuery = $event.target.value; updateElementData('boton_url', $event.target.value)"
                                        @keydown="handleKeydown($event)"
                                        @blur="closeDropdown()"
-                                       @link-selected.window="updateElementData('boton_url', $event.detail.url)"
+                                       @link-selected.window="if ($event.detail.field === 'boton_url') updateElementData('boton_url', $event.detail.url)"
                                        class="vbp-field-input"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                                 <div class="vbp-autocomplete-dropdown" x-show="isOpen" x-cloak>
@@ -589,7 +589,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_fondo', color)"></button>
                                             </template>
                                         </div>
@@ -603,7 +603,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_texto', color)"></button>
                                             </template>
                                         </div>
@@ -618,7 +618,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_2_texto" @input="updateElementData('boton_2_texto', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Dejar vacío para ocultar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-init="field = 'boton_2_url'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -626,7 +626,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @input="searchQuery = $event.target.value; updateElementData('boton_2_url', $event.target.value)"
                                        @keydown="handleKeydown($event)"
                                        @blur="closeDropdown()"
-                                       @link-selected.window="updateElementData('boton_2_url', $event.detail.url)"
+                                       @link-selected.window="if ($event.detail.field === 'boton_2_url') updateElementData('boton_2_url', $event.detail.url)"
                                        class="vbp-field-input"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                             </div>
@@ -639,7 +639,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_fondo', color)"></button>
                                             </template>
                                         </div>
@@ -653,7 +653,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_texto', color)"></button>
                                             </template>
                                         </div>
@@ -668,7 +668,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_borde', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_borde', color)"></button>
                                         </template>
                                     </div>
@@ -810,7 +810,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('color_fondo', color)"></button>
                                         </template>
                                     </div>
@@ -825,7 +825,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('overlay_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('overlay_color', color)"></button>
                                             </template>
                                         </div>
@@ -891,7 +891,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto botón', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_texto" @input="updateElementData('boton_texto', $event.target.value)" class="vbp-field-input">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-init="field = 'boton_url'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL botón', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -899,7 +899,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @input="searchQuery = $event.target.value; updateElementData('boton_url', $event.target.value)"
                                        @keydown="handleKeydown($event)"
                                        @blur="closeDropdown()"
-                                       @link-selected.window="updateElementData('boton_url', $event.detail.url)"
+                                       @link-selected.window="if ($event.detail.field === 'boton_url') updateElementData('boton_url', $event.detail.url)"
                                        class="vbp-field-input"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                                 <div class="vbp-autocomplete-dropdown" x-show="isOpen" x-cloak>
@@ -936,19 +936,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Añade características una a una. En modo básico te centras en título y descripción; el icono queda en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon" x-text="item.icono || '✨'"></span>
                                         <span class="vbp-item-title" x-text="item.titulo || '<?php esc_attr_e( 'Característica', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -993,14 +993,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-avatar" x-text="(item.autor || 'U').charAt(0)"></span>
                                         <span class="vbp-item-title" x-text="item.autor || '<?php esc_attr_e( 'Autor', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1055,19 +1055,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Crea los planes que quieras mostrar. Los ajustes comerciales finos, como destacado o período, quedan en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index, 'highlighted': item.destacado }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-price">$<span x-text="item.precio || '0'"></span></span>
                                         <span class="vbp-item-title" x-text="item.nombre || '<?php esc_attr_e( 'Plan', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1117,19 +1117,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Añade preguntas y respuestas. En básico solo editas el contenido; el comportamiento por defecto vive en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon">❓</span>
                                         <span class="vbp-item-title vbp-item-title-truncate" x-text="item.pregunta || '<?php esc_attr_e( 'Pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1173,7 +1173,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(campo, index) in selectedElement.data.campos" :key="index">
+                            <template x-for="(campo, index) in getEditableCollection('campos')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon" x-text="campo.tipo === 'textarea' ? '📝' : (campo.tipo === 'email' ? '📧' : (campo.tipo === 'tel' ? '📞' : (campo.tipo === 'select' ? '📋' : (campo.tipo === 'checkbox' ? '☑️' : '📄'))))"></span>
@@ -1181,7 +1181,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <span class="vbp-item-badge" x-show="campo.requerido">*</span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveCampo(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveCampo(index, 1)" :disabled="index === selectedElement.data.campos.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveCampo(index, 1)" :disabled="index === getEditableCollectionLength('campos') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeCampo(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1239,14 +1239,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-avatar" x-text="(item.nombre || 'M').charAt(0)"></span>
                                         <span class="vbp-item-title" x-text="item.nombre || '<?php esc_attr_e( 'Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1292,7 +1292,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card vbp-item-card-inline" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-stat" x-text="item.numero || '0'"></span>
@@ -1333,12 +1333,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Empieza añadiendo imágenes. Después podrás reordenarlas o eliminarlas desde la cuadrícula.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
 
                         <div class="vbp-gallery-grid">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-gallery-item">
                                     <img :src="item.src" :alt="item.alt || ''" class="vbp-gallery-thumb">
                                     <button type="button" @click="removeItem(index)" class="vbp-gallery-remove">×</button>
@@ -1535,11 +1535,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.redes || selectedElement.data.redes.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('redes') === 0">
                             <p><?php esc_html_e( 'Añade cada red con su nombre y URL. El estilo visual y la alineación están en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(red, index) in selectedElement.data.redes" :key="index">
+                            <template x-for="(red, index) in getEditableCollection('redes')" :key="index">
                                 <div class="vbp-item-card vbp-item-card-inline" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon" x-text="red.icono || '🔗'"></span>
@@ -1639,7 +1639,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </button>
                         </div>
                         <div class="vbp-gallery-grid vbp-logo-grid-preview">
-                            <template x-for="(logo, index) in selectedElement.data.logos" :key="index">
+                            <template x-for="(logo, index) in getEditableCollection('logos')" :key="index">
                                 <div class="vbp-gallery-item">
                                     <img :src="logo.src" :alt="logo.alt || 'Logo'" class="vbp-gallery-thumb">
                                     <button type="button" @click="removeLogoItem(index)" class="vbp-gallery-remove">×</button>
@@ -1689,7 +1689,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" x-model="selectedElement.data.enlace_texto" @input="updateElementData('enlace_texto', $event.target.value)" class="vbp-field-input" placeholder="Saber más">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-show="$store.vbp.inspectorMode === 'advanced'">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-init="field = 'enlace_url'" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -1697,7 +1697,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @input="searchQuery = $event.target.value; updateElementData('enlace_url', $event.target.value)"
                                        @keydown="handleKeydown($event)"
                                        @blur="closeDropdown()"
-                                       @link-selected.window="updateElementData('enlace_url', $event.detail.url)"
+                                       @link-selected.window="if ($event.detail.field === 'enlace_url') updateElementData('enlace_url', $event.detail.url)"
                                        class="vbp-field-input"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                                 <div class="vbp-autocomplete-dropdown" x-show="isOpen" x-cloak>
@@ -1763,18 +1763,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Añade bloques desplegables de pregunta y respuesta. El estado inicial de apertura está en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon" x-text="item.abierto ? '▼' : '▶'"></span>
                                         <span class="vbp-item-title vbp-item-title-truncate" x-text="item.titulo || '<?php esc_attr_e( 'Elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1844,11 +1844,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
                         </div>
-                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                        <div class="vbp-inline-help" x-show="getEditableCollectionLength('items') === 0">
                             <p><?php esc_html_e( 'Añade pestañas con su título y contenido. La orientación general del componente está en avanzado.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index, 'highlighted': selectedElement.data.tab_activa === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon">📑</span>
@@ -1929,7 +1929,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </button>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.eventos" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('eventos')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon">📍</span>
@@ -1939,7 +1939,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.eventos.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('eventos') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -1958,7 +1958,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                         <div class="vbp-field-group">
                                             <label class="vbp-field-label"><?php esc_html_e( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                                            <input type="text" x-model="item.icono" @input="updateItem(index, 'icono', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Nombre del icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                            <div class="vbp-selector-field">
+                                                <input type="text" x-model="item.icono" @input="updateItem(index, 'icono', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Nombre del icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                                <button type="button" @click="openIconSelectorForTimeline(index, 'icono')" class="vbp-selector-trigger" title="<?php esc_attr_e( 'Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                                    <span class="material-icons" style="font-size: 18px;">apps</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2042,14 +2047,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </button>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-icon">🖼️</span>
                                         <span class="vbp-item-title vbp-item-title-truncate" x-text="item.titulo || '<?php esc_attr_e( 'Slide', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?> ' + (index + 1)"></span>
                                         <div class="vbp-item-actions">
                                             <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
-                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === getEditableCollectionLength('items') - 1" class="vbp-btn-icon-xs">↓</button>
                                             <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
                                         </div>
                                     </div>
@@ -2113,7 +2118,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </button>
                         </div>
                         <div class="vbp-items-list">
-                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                            <template x-for="(item, index) in getEditableCollection('items')" :key="index">
                                 <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
                                     <div class="vbp-item-header" @click="toggleItemEdit(index)">
                                         <span class="vbp-item-stat" x-text="(item.porcentaje || 0) + '%'"></span>
@@ -2655,7 +2660,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('titulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('titulo_color', color)"></button>
                                             </template>
                                         </div>
@@ -2669,7 +2674,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('subtitulo_color', color)"></button>
                                             </template>
                                         </div>
@@ -2684,7 +2689,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('texto_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('texto_color', color)"></button>
                                         </template>
                                     </div>
@@ -2702,7 +2707,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_fondo', color)"></button>
                                             </template>
                                         </div>
@@ -2716,7 +2721,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_texto', color)"></button>
                                             </template>
                                         </div>
@@ -2731,7 +2736,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_hover', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_hover', color)"></button>
                                         </template>
                                     </div>
@@ -2757,7 +2762,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_color', color)"></button>
                                         </template>
                                     </div>
@@ -2774,7 +2779,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_gradiente_inicio', $event.target.value)" class="vbp-field-input vbp-color-input">
                                         <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                             <div class="vbp-color-picker-grid">
-                                                <template x-for="color in presetColors" :key="color">
+                                                <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                     <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_gradiente_inicio', color)"></button>
                                                 </template>
                                             </div>
@@ -2788,7 +2793,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_gradiente_fin', $event.target.value)" class="vbp-field-input vbp-color-input">
                                         <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                             <div class="vbp-color-picker-grid">
-                                                <template x-for="color in presetColors" :key="color">
+                                                <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                     <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_gradiente_fin', color)"></button>
                                                 </template>
                                             </div>
@@ -2817,7 +2822,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_overlay_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_overlay_color', color)"></button>
                                         </template>
                                     </div>
@@ -2845,7 +2850,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_fondo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_fondo_color', color)"></button>
                                             </template>
                                         </div>
@@ -2859,7 +2864,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_borde_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_borde_color', color)"></button>
                                             </template>
                                         </div>
@@ -2875,7 +2880,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_titulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_titulo_color', color)"></button>
                                             </template>
                                         </div>
@@ -2889,7 +2894,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_texto_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_texto_color', color)"></button>
                                             </template>
                                         </div>
@@ -2904,7 +2909,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_icono_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_icono_color', color)"></button>
                                         </template>
                                     </div>
@@ -2921,7 +2926,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('acento_color', $event.target.value)" class="vbp-field-input vbp-color-input">
                                 <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                     <div class="vbp-color-picker-grid">
-                                        <template x-for="color in presetColors" :key="color">
+                                        <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                             <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('acento_color', color)"></button>
                                         </template>
                                     </div>
@@ -2936,7 +2941,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('destacado_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('destacado_fondo', color)"></button>
                                             </template>
                                         </div>
@@ -2950,7 +2955,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('destacado_borde', $event.target.value)" class="vbp-field-input vbp-color-input">
                                     <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
                                         <div class="vbp-color-picker-grid">
-                                            <template x-for="color in presetColors" :key="color">
+                                            <template x-for="(color, colorIndex) in presetColors" :key="colorIndex + '-' + color">
                                                 <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('destacado_borde', color)"></button>
                                             </template>
                                         </div>
@@ -3137,7 +3142,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <?php esc_html_e( 'Columna Izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </h4>
 
-                            <div class="vbp-field-group">
+                            <div class="vbp-field-group" x-init="if (!selectedElement.data.columna_izquierda) initColumnContent('columna_izquierda', 'contact_info')">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Tipo de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <select x-model="selectedElement.data.columna_izquierda.type" @change="initColumnContent('columna_izquierda', $event.target.value)" class="vbp-field-select">
                                     <option value="contact_info"><?php esc_html_e( 'Información de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
@@ -3165,6 +3170,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <div class="vbp-item-card vbp-item-card-compact">
                                                 <div class="vbp-item-row">
                                                     <input type="text" x-model="item.icono" @input="updateColumnItem('columna_izquierda', idx, 'icono', $event.target.value)" class="vbp-field-input vbp-field-icon" placeholder="📧" style="width: 50px; text-align: center;">
+                                                    <button type="button" @click="openIconSelectorForColumnItem('columna_izquierda', idx, 'icono')" class="vbp-selector-trigger" title="<?php esc_attr_e( 'Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                                        <span class="material-icons" style="font-size: 18px;">apps</span>
+                                                    </button>
                                                     <input type="text" x-model="item.titulo" @input="updateColumnItem('columna_izquierda', idx, 'titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" style="flex: 1;">
                                                     <button type="button" @click="removeColumnItem('columna_izquierda', idx)" class="vbp-btn-icon-xs vbp-btn-danger" title="<?php esc_attr_e( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">×</button>
                                                 </div>
@@ -3259,7 +3267,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <?php esc_html_e( 'Columna Derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </h4>
 
-                            <div class="vbp-field-group">
+                            <div class="vbp-field-group" x-init="if (!selectedElement.data.columna_derecha) initColumnContent('columna_derecha', 'contact_info')">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Tipo de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <select x-model="selectedElement.data.columna_derecha.type" @change="initColumnContent('columna_derecha', $event.target.value)" class="vbp-field-select">
                                     <option value="contact_info"><?php esc_html_e( 'Información de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
@@ -3287,6 +3295,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <div class="vbp-item-card vbp-item-card-compact">
                                                 <div class="vbp-item-row">
                                                     <input type="text" x-model="item.icono" @input="updateColumnItem('columna_derecha', idx, 'icono', $event.target.value)" class="vbp-field-input vbp-field-icon" placeholder="📧" style="width: 50px; text-align: center;">
+                                                    <button type="button" @click="openIconSelectorForColumnItem('columna_derecha', idx, 'icono')" class="vbp-selector-trigger" title="<?php esc_attr_e( 'Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                                                        <span class="material-icons" style="font-size: 18px;">apps</span>
+                                                    </button>
                                                     <input type="text" x-model="item.titulo" @input="updateColumnItem('columna_derecha', idx, 'titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" style="flex: 1;">
                                                     <button type="button" @click="removeColumnItem('columna_derecha', idx)" class="vbp-btn-icon-xs vbp-btn-danger" title="<?php esc_attr_e( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">×</button>
                                                 </div>
@@ -3475,12 +3486,144 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </template>
 
+                <template x-if="selectedElement.type === '3d-scene'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Preset 3D</label>
+                            <select x-model="selectedElement.data.preset" @change="updateElementData('preset', $event.target.value)" class="vbp-field-select">
+                                <option value="minimal">Minimalista</option>
+                                <option value="product-showcase">Showcase de Producto</option>
+                                <option value="floating-cards">Tarjetas Flotantes</option>
+                                <option value="particle-background">Fondo de Partículas</option>
+                                <option value="hero-3d">Hero 3D</option>
+                                <option value="gallery-3d">Galería 3D</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Ancho</label>
+                                <input type="text" x-model="selectedElement.data.width" @input="updateElementData('width', $event.target.value)" class="vbp-field-input">
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Alto</label>
+                                <input type="text" x-model="selectedElement.data.height" @input="updateElementData('height', $event.target.value)" class="vbp-field-input">
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Controles</label>
+                            <select x-model="selectedElement.data.controls" @change="updateElementData('controls', $event.target.value)" class="vbp-field-select">
+                                <option value="orbit">Órbita</option>
+                                <option value="fly">Vuelo</option>
+                                <option value="none">Sin controles</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-row">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.autoRotate === true" @change="updateElementData('autoRotate', $event.target.checked)">
+                                Auto-rotar
+                            </label>
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.shadows === true" @change="updateElementData('shadows', $event.target.checked)">
+                                Sombras
+                            </label>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-object'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Forma</label>
+                            <select x-model="selectedElement.data.primitive" @change="updateElementData('primitive', $event.target.value)" class="vbp-field-select">
+                                <option value="box">Cubo</option>
+                                <option value="sphere">Esfera</option>
+                                <option value="cylinder">Cilindro</option>
+                                <option value="cone">Cono</option>
+                                <option value="torus">Toro</option>
+                                <option value="plane">Plano</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">X</label><input type="number" step="0.1" :value="selectedElement.data.position?.x ?? 0" @input="updateElementData('position.x', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Y</label><input type="number" step="0.1" :value="selectedElement.data.position?.y ?? 0" @input="updateElementData('position.y', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Z</label><input type="number" step="0.1" :value="selectedElement.data.position?.z ?? 0" @input="updateElementData('position.z', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Color</label><input type="color" :value="selectedElement.data.material?.color || '#6366f1'" @input="updateElementData('material.color', $event.target.value)" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Material</label><select x-model="selectedElement.data.material.type" @change="updateElementData('material.type', $event.target.value)" class="vbp-field-select"><option value="standard">Estándar</option><option value="basic">Básico</option><option value="phong">Phong</option><option value="lambert">Lambert</option><option value="physical">Físico</option><option value="toon">Cartoon</option></select></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-model'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Archivo 3D</label>
+                            <input type="text" x-model="selectedElement.data.src" @input="updateElementData('src', $event.target.value)" class="vbp-field-input" placeholder="/ruta/modelo.glb o https://...">
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Escala</label><input type="number" step="0.1" :value="selectedElement.data.scale ?? 1" @input="updateElementData('scale', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Velocidad</label><input type="number" step="0.1" :value="selectedElement.data.autoRotateSpeed ?? 1" @input="updateElementData('autoRotateSpeed', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-text'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Texto</label>
+                            <textarea x-model="selectedElement.data.text" @input="updateElementData('text', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Tamaño</label><input type="number" step="0.1" :value="selectedElement.data.size ?? 1" @input="updateElementData('size', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Profundidad</label><input type="number" step="0.01" :value="selectedElement.data.depth ?? 0.2" @input="updateElementData('depth', parseFloat($event.target.value || 0.2))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Color</label><input type="color" :value="selectedElement.data.material?.color || '#ffffff'" @input="updateElementData('material.color', $event.target.value)" class="vbp-field-input"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-particles'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Cantidad</label><input type="number" step="100" :value="selectedElement.data.count ?? 1000" @input="updateElementData('count', parseInt($event.target.value || 1000, 10))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Tamaño</label><input type="number" step="0.001" :value="selectedElement.data.size ?? 0.02" @input="updateElementData('size', parseFloat($event.target.value || 0.02))" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Color</label><input type="color" :value="selectedElement.data.color || '#ffffff'" @input="updateElementData('color', $event.target.value)" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Movimiento</label><select x-model="selectedElement.data.movement" @change="updateElementData('movement', $event.target.value)" class="vbp-field-select"><option value="float">Flotante</option><option value="rise">Ascendente</option><option value="fall">Descendente</option><option value="orbit">Orbital</option><option value="static">Estático</option></select></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-light'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Tipo</label><select x-model="selectedElement.data.lightType" @change="updateElementData('lightType', $event.target.value)" class="vbp-field-select"><option value="ambient">Ambiental</option><option value="directional">Direccional</option><option value="point">Puntual</option><option value="spot">Spot</option><option value="hemisphere">Hemisférica</option></select></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Color</label><input type="color" :value="selectedElement.data.color || '#ffffff'" @input="updateElementData('color', $event.target.value)" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Intensidad</label><input type="number" step="0.1" :value="selectedElement.data.intensity ?? 1" @input="updateElementData('intensity', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Posición X</label><input type="number" step="0.1" :value="selectedElement.data.position?.x ?? 1" @input="updateElementData('position.x', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-group'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos X</label><input type="number" step="0.1" :value="selectedElement.data.position?.x ?? 0" @input="updateElementData('position.x', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Y</label><input type="number" step="0.1" :value="selectedElement.data.position?.y ?? 0" @input="updateElementData('position.y', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Z</label><input type="number" step="0.1" :value="selectedElement.data.position?.z ?? 0" @input="updateElementData('position.z', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                        </div>
+                    </div>
+                </template>
+
             </div>
 
             <!-- ============================================ -->
             <!-- Tab: Estilos -->
             <!-- ============================================ -->
-            <div x-show="activeTab === 'styles' && hasCompleteStyles()" class="vbp-inspector-panel">
+            <div x-show="activeTab === 'styles'" class="vbp-inspector-panel">
 
                 <!-- Presets Rápidos de Estilos -->
                 <div class="vbp-inspector-section vbp-style-presets">
@@ -3605,7 +3748,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <span><?php esc_html_e( 'Propiedades modificadas en este breakpoint:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </div>
                             <div class="vbp-responsive-overrides-items">
-                                <template x-for="prop in (window.VBPResponsiveVariants ? window.VBPResponsiveVariants.getOverriddenProps(selectedElement.id, $store.vbp.activeBreakpoint) : [])" :key="prop">
+                                <template x-for="(prop, propIndex) in (window.VBPResponsiveVariants ? window.VBPResponsiveVariants.getOverriddenProps(selectedElement.id, $store.vbp.activeBreakpoint) : [])" :key="'override-' + propIndex">
                                     <div class="vbp-responsive-override-item">
                                         <span class="vbp-responsive-override-prop" x-text="prop.replace(/\./g, ' > ').replace(/([A-Z])/g, ' $1').toLowerCase()"></span>
                                         <button type="button"
@@ -4027,7 +4170,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div class="vbp-field-group">
                         <span class="vbp-color-palette-label"><?php esc_html_e( 'Paleta del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                         <div class="vbp-color-palette">
-                            <template x-for="swatch in getSitePalette()" :key="swatch.label">
+                            <template x-for="(swatch, swatchIndex) in (getSitePalette() || [])" :key="'swatch-' + swatchIndex">
                                 <button type="button"
                                         class="vbp-color-swatch"
                                         :style="{ backgroundColor: swatch.color }"
@@ -5049,7 +5192,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                    @input="updateColorFromInput($event)">
         </div>
         <div class="vbp-mini-color-picker__presets">
-            <template x-for="color in colorPresets" :key="color">
+            <template x-for="(color, colorIndex) in colorPresets" :key="colorIndex + '-' + color">
                 <button type="button"
                         class="vbp-mini-color-picker__swatch"
                         :class="{ 'vbp-mini-color-picker__swatch--active': color === colorPickerCurrentColor }"

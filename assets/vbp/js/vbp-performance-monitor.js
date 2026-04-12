@@ -57,6 +57,12 @@ document.addEventListener('alpine:init', function() {
         isPanelOpen: false,
         isCollapsed: false,
 
+        // Control de inicialización y cleanup
+        _initialized: false,
+        _fpsAnimationFrameId: null,
+        _monitoringIntervalId: null,
+        _eventHandlers: {},
+
         // Metricas principales
         metrics: {
             renderTime: 0,
@@ -99,6 +105,9 @@ document.addEventListener('alpine:init', function() {
          * Inicializar el monitor de rendimiento
          */
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             var self = this;
 
             // Medir tiempo de carga inicial
@@ -120,42 +129,95 @@ document.addEventListener('alpine:init', function() {
         },
 
         /**
+         * Destruir y limpiar recursos
+         */
+        destroy: function() {
+            // Cancelar FPS animation frame
+            if (this._fpsAnimationFrameId) {
+                cancelAnimationFrame(this._fpsAnimationFrameId);
+                this._fpsAnimationFrameId = null;
+            }
+
+            // Cancelar interval de monitoreo
+            if (this._monitoringIntervalId) {
+                clearInterval(this._monitoringIntervalId);
+                this._monitoringIntervalId = null;
+            }
+
+            // Remover event listeners
+            var handlers = this._eventHandlers;
+            if (handlers.elementAdded) {
+                document.removeEventListener('vbp:element:added', handlers.elementAdded);
+            }
+            if (handlers.elementRemoved) {
+                document.removeEventListener('vbp:element:removed', handlers.elementRemoved);
+            }
+            if (handlers.elementUpdated) {
+                document.removeEventListener('vbp:element:updated', handlers.elementUpdated);
+            }
+            if (handlers.beforeSave) {
+                document.removeEventListener('vbp:beforeSave', handlers.beforeSave);
+            }
+            if (handlers.afterSave) {
+                document.removeEventListener('vbp:afterSave', handlers.afterSave);
+            }
+            if (handlers.undo) {
+                document.removeEventListener('vbp:undo', handlers.undo);
+            }
+            if (handlers.redo) {
+                document.removeEventListener('vbp:redo', handlers.redo);
+            }
+            this._eventHandlers = {};
+
+            // Limpiar buffers
+            fpsBuffer = [];
+            metricsHistory.fps = [];
+            metricsHistory.renderTime = [];
+            metricsHistory.elementCount = [];
+            metricsHistory.memoryUsage = [];
+
+            this._initialized = false;
+            vbpLog.log('Performance Monitor destruido');
+        },
+
+        /**
          * Adjuntar listeners de eventos del editor
          */
         attachEventListeners: function() {
             var self = this;
 
-            // Eventos de elementos
-            document.addEventListener('vbp:element:added', function() {
+            // Guardar referencias para cleanup
+            this._eventHandlers.elementAdded = function() {
                 self.updateElementMetrics();
-            });
-
-            document.addEventListener('vbp:element:removed', function() {
+            };
+            this._eventHandlers.elementRemoved = function() {
                 self.updateElementMetrics();
-            });
-
-            document.addEventListener('vbp:element:updated', function() {
+            };
+            this._eventHandlers.elementUpdated = function() {
                 self.measureRenderTime();
-            });
-
-            // Eventos de guardado
-            document.addEventListener('vbp:beforeSave', function() {
+            };
+            this._eventHandlers.beforeSave = function() {
                 self.measureSaveStart();
-            });
-
-            document.addEventListener('vbp:afterSave', function() {
+            };
+            this._eventHandlers.afterSave = function() {
                 self.measureSaveEnd();
                 self.sessionStats.totalSaves++;
-            });
-
-            // Eventos de historial
-            document.addEventListener('vbp:undo', function() {
+            };
+            this._eventHandlers.undo = function() {
                 self.sessionStats.totalUndos++;
-            });
-
-            document.addEventListener('vbp:redo', function() {
+            };
+            this._eventHandlers.redo = function() {
                 self.sessionStats.totalRedos++;
-            });
+            };
+
+            // Registrar eventos
+            document.addEventListener('vbp:element:added', this._eventHandlers.elementAdded);
+            document.addEventListener('vbp:element:removed', this._eventHandlers.elementRemoved);
+            document.addEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+            document.addEventListener('vbp:beforeSave', this._eventHandlers.beforeSave);
+            document.addEventListener('vbp:afterSave', this._eventHandlers.afterSave);
+            document.addEventListener('vbp:undo', this._eventHandlers.undo);
+            document.addEventListener('vbp:redo', this._eventHandlers.redo);
         },
 
         // ============ MONITOREO DE FPS ============
@@ -169,8 +231,9 @@ document.addEventListener('alpine:init', function() {
             var frameCount = 0;
 
             function measureFPS() {
+                // Si está deshabilitado, no continuar el loop
                 if (!self.isEnabled) {
-                    requestAnimationFrame(measureFPS);
+                    self._fpsAnimationFrameId = null;
                     return;
                 }
 
@@ -204,10 +267,19 @@ document.addEventListener('alpine:init', function() {
                     self.checkFPSWarnings();
                 }
 
-                requestAnimationFrame(measureFPS);
+                self._fpsAnimationFrameId = requestAnimationFrame(measureFPS);
             }
 
-            requestAnimationFrame(measureFPS);
+            this._fpsAnimationFrameId = requestAnimationFrame(measureFPS);
+        },
+
+        /**
+         * Reanudar monitor de FPS si fue detenido
+         */
+        resumeFPSMonitor: function() {
+            if (this.isEnabled && !this._fpsAnimationFrameId) {
+                this.startFPSMonitor();
+            }
         },
 
         /**
@@ -232,7 +304,12 @@ document.addEventListener('alpine:init', function() {
         startPeriodicMonitoring: function() {
             var self = this;
 
-            setInterval(function() {
+            // Cancelar si ya existe
+            if (this._monitoringIntervalId) {
+                clearInterval(this._monitoringIntervalId);
+            }
+
+            this._monitoringIntervalId = setInterval(function() {
                 if (!self.isEnabled) return;
 
                 self.updateElementMetrics();
@@ -754,7 +831,13 @@ document.addEventListener('alpine:init', function() {
          * Habilitar/deshabilitar monitoreo
          */
         setEnabled: function(enabled) {
+            var wasEnabled = this.isEnabled;
             this.isEnabled = enabled;
+
+            // Reanudar FPS monitor si se habilita después de estar deshabilitado
+            if (enabled && !wasEnabled) {
+                this.resumeFPSMonitor();
+            }
         },
 
         // ============ UTILIDADES ============

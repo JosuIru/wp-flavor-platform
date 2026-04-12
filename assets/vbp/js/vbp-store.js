@@ -74,6 +74,24 @@ document.addEventListener('alpine:init', () => {
         }));
     }
 
+    function dispatchSelectionEvents(ids) {
+        var elementIds = Array.isArray(ids) ? ids.slice() : [];
+
+        document.dispatchEvent(new CustomEvent('vbp:selection:changed', {
+            detail: { elementIds: elementIds }
+        }));
+
+        document.dispatchEvent(new CustomEvent('vbp:selection-changed', {
+            detail: { elementIds: elementIds }
+        }));
+
+        if (elementIds.length === 1) {
+            document.dispatchEvent(new CustomEvent('vbp:element:selected', {
+                detail: { elementId: elementIds[0] }
+            }));
+        }
+    }
+
     Alpine.store('vbp', {
         // Documento
         postId: 0,
@@ -231,6 +249,9 @@ document.addEventListener('alpine:init', () => {
          */
         getBlockFromConfig(type) {
             if (typeof VBP_Config === 'undefined' || !VBP_Config.blocks) {
+                if (window.VBP3DBlocks && typeof window.VBP3DBlocks.getBlock === 'function') {
+                    return window.VBP3DBlocks.getBlock(type);
+                }
                 return null;
             }
 
@@ -244,6 +265,10 @@ document.addEventListener('alpine:init', () => {
                         }
                     }
                 }
+            }
+
+            if (window.VBP3DBlocks && typeof window.VBP3DBlocks.getBlock === 'function') {
+                return window.VBP3DBlocks.getBlock(type);
             }
 
             return null;
@@ -260,7 +285,7 @@ document.addEventListener('alpine:init', () => {
             if (!container) return null;
 
             // Verificar que sea un tipo de contenedor válido
-            var containerTypes = ['container', 'columns', 'row', 'grid'];
+            var containerTypes = ['container', 'columns', 'row', 'grid', '3d-scene', '3d-group'];
             if (containerTypes.indexOf(container.type) === -1) return null;
 
             this.saveToHistory();
@@ -571,7 +596,10 @@ document.addEventListener('alpine:init', () => {
 
         // Selección
         setSelection(ids) {
-            this.selection.elementIds = ids;
+            var normalizedIds = Array.isArray(ids) ? ids.slice() : [];
+            this.selection.elementIds = normalizedIds;
+            this.selection.multiSelect = normalizedIds.length > 1;
+            dispatchSelectionEvents(normalizedIds);
         },
 
         toggleSelection(id) {
@@ -581,10 +609,14 @@ document.addEventListener('alpine:init', () => {
             } else {
                 this.selection.elementIds.splice(index, 1);
             }
+            this.selection.multiSelect = this.selection.elementIds.length > 1;
+            dispatchSelectionEvents(this.selection.elementIds);
         },
 
         clearSelection() {
             this.selection.elementIds = [];
+            this.selection.multiSelect = false;
+            dispatchSelectionEvents([]);
         },
 
         // Inspector Mode

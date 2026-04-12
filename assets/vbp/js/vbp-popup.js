@@ -13,8 +13,16 @@
     var VBPPopup = {
         popups: [],
         shownPopups: [],
+        _initialized: false,
+        _keydownHandler: null,
+        _timers: [],
+        _scrollHandlers: [],
+        _exitHandlers: [],
 
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             var self = this;
             var overlays = document.querySelectorAll('.vbp-popup-overlay');
 
@@ -24,12 +32,47 @@
                 self.setupTrigger(popupData);
             });
 
-            // Event listeners globales
-            document.addEventListener('keydown', function(e) {
+            // Event listeners globales (guardar referencia)
+            this._keydownHandler = function(e) {
                 if (e.key === 'Escape') {
                     self.closeAllPopups();
                 }
+            };
+            document.addEventListener('keydown', this._keydownHandler);
+        },
+
+        destroy: function() {
+            // Limpiar timers
+            this._timers.forEach(function(timerId) {
+                clearTimeout(timerId);
             });
+            this._timers = [];
+
+            // Limpiar scroll handlers
+            this._scrollHandlers.forEach(function(handler) {
+                window.removeEventListener('scroll', handler);
+            });
+            this._scrollHandlers = [];
+
+            // Limpiar exit handlers
+            this._exitHandlers.forEach(function(handler) {
+                document.removeEventListener('mouseout', handler);
+            });
+            this._exitHandlers = [];
+
+            // Limpiar keydown handler
+            if (this._keydownHandler) {
+                document.removeEventListener('keydown', this._keydownHandler);
+                this._keydownHandler = null;
+            }
+
+            // Cerrar todos los popups
+            this.closeAllPopups();
+
+            // Resetear estado
+            this.popups = [];
+            this.shownPopups = [];
+            this._initialized = false;
         },
 
         getPopupData: function(overlay) {
@@ -59,9 +102,10 @@
 
             switch (popupData.trigger) {
                 case 'time':
-                    setTimeout(function() {
+                    var timerId = setTimeout(function() {
                         self.showPopup(popupData);
                     }, popupData.triggerDelay * 1000);
+                    this._timers.push(timerId);
                     break;
 
                 case 'scroll':
@@ -78,9 +122,10 @@
 
                 default:
                     // Por defecto, mostrar después de 3 segundos
-                    setTimeout(function() {
+                    var defaultTimerId = setTimeout(function() {
                         self.showPopup(popupData);
                     }, 3000);
+                    this._timers.push(defaultTimerId);
             }
         },
 
@@ -100,6 +145,8 @@
                 }
             };
 
+            // Guardar referencia para cleanup
+            this._scrollHandlers.push(scrollHandler);
             window.addEventListener('scroll', scrollHandler, { passive: true });
         },
 
@@ -118,6 +165,8 @@
                 }
             };
 
+            // Guardar referencia para cleanup
+            this._exitHandlers.push(exitHandler);
             document.addEventListener('mouseout', exitHandler);
         },
 

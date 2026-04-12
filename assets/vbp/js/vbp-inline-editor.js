@@ -43,29 +43,35 @@
         clickTimer: null,
         clickCount: 0,
 
+        // Control de inicialización y cleanup
+        _initialized: false,
+        _eventHandlers: {},
+        _inputHandler: null,
+
         /**
          * Inicializar sistema de edición inline
          */
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             var self = this;
 
             // Crear toolbar flotante
             this.createToolbar();
 
-            // Escuchar doble clic en elementos editables
-            document.addEventListener('dblclick', function(e) {
+            // Guardar referencias a handlers para cleanup
+            this._eventHandlers.dblclick = function(e) {
                 self.handleDoubleClick(e);
-            });
+            };
 
-            // Escuchar clicks fuera para cerrar edición
-            document.addEventListener('click', function(e) {
+            this._eventHandlers.click = function(e) {
                 if (self.activeElement && !self.isInsideEditor(e.target)) {
                     self.finishEditing();
                 }
-            });
+            };
 
-            // Escuchar Escape para cancelar edición
-            document.addEventListener('keydown', function(e) {
+            this._eventHandlers.keydown = function(e) {
                 if (e.key === 'Escape' && self.activeElement) {
                     self.cancelEditing();
                 }
@@ -77,16 +83,61 @@
                         self.finishEditing();
                     }
                 }
-            });
+            };
 
-            // Escuchar cambios de selección para toolbar
-            document.addEventListener('selectionchange', function() {
+            this._eventHandlers.selectionchange = function() {
                 if (self.activeElement) {
                     self.updateToolbarPosition();
                 }
-            });
+            };
+
+            // Registrar event listeners
+            document.addEventListener('dblclick', this._eventHandlers.dblclick);
+            document.addEventListener('click', this._eventHandlers.click);
+            document.addEventListener('keydown', this._eventHandlers.keydown);
+            document.addEventListener('selectionchange', this._eventHandlers.selectionchange);
 
             vbpLog.log('InlineEditor: Sistema de edición inline inicializado');
+        },
+
+        /**
+         * Destruir y limpiar recursos
+         */
+        destroy: function() {
+            // Cancelar edición activa
+            if (this.activeElement) {
+                this.cancelEditing();
+            }
+
+            // Limpiar timers
+            if (this.saveTimer) {
+                clearTimeout(this.saveTimer);
+                this.saveTimer = null;
+            }
+
+            // Remover event listeners
+            if (this._eventHandlers.dblclick) {
+                document.removeEventListener('dblclick', this._eventHandlers.dblclick);
+            }
+            if (this._eventHandlers.click) {
+                document.removeEventListener('click', this._eventHandlers.click);
+            }
+            if (this._eventHandlers.keydown) {
+                document.removeEventListener('keydown', this._eventHandlers.keydown);
+            }
+            if (this._eventHandlers.selectionchange) {
+                document.removeEventListener('selectionchange', this._eventHandlers.selectionchange);
+            }
+
+            // Remover toolbar del DOM
+            if (this.toolbar && this.toolbar.parentNode) {
+                this.toolbar.parentNode.removeChild(this.toolbar);
+                this.toolbar = null;
+            }
+
+            // Resetear estado
+            this._eventHandlers = {};
+            this._initialized = false;
         },
 
         /**
@@ -228,11 +279,12 @@
             // Mostrar toolbar
             this.showToolbar();
 
-            // Escuchar cambios
+            // Escuchar cambios (guardar referencia para cleanup)
             var self = this;
-            textElement.addEventListener('input', function() {
+            this._inputHandler = function() {
                 self.handleInput();
-            });
+            };
+            textElement.addEventListener('input', this._inputHandler);
 
             // Notificar que se inició edición
             document.dispatchEvent(new CustomEvent('vbp:inline:start', {
@@ -248,6 +300,12 @@
 
             var newContent = this.activeElement.innerHTML;
             var elementId = this.activeElementId;
+
+            // Remover input handler
+            if (this._inputHandler) {
+                this.activeElement.removeEventListener('input', this._inputHandler);
+                this._inputHandler = null;
+            }
 
             // Quitar editable
             this.activeElement.contentEditable = 'false';
@@ -285,6 +343,12 @@
          */
         cancelEditing: function() {
             if (!this.activeElement) return;
+
+            // Remover input handler
+            if (this._inputHandler) {
+                this.activeElement.removeEventListener('input', this._inputHandler);
+                this._inputHandler = null;
+            }
 
             // Restaurar contenido original
             this.activeElement.innerHTML = this.originalContent;

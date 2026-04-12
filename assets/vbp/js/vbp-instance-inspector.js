@@ -860,25 +860,21 @@ if (!window.vbpLog) {
             vbpLog.log('InstanceInspector: separando instancia', instanceId);
 
             if (window.VBPSymbols && typeof window.VBPSymbols.detachInstance === 'function') {
-                var resultado = window.VBPSymbols.detachInstance(instanceId);
+                var self = this;
+                window.VBPSymbols.detachInstance(instanceId)
+                    .then(function() {
+                        self.ocultarInspectorInstancia();
 
-                if (resultado) {
-                    // Ocultar inspector de instancia
-                    this.ocultarInspectorInstancia();
-
-                    // Notificación
-                    if (typeof VBPToast !== 'undefined') {
-                        VBPToast.success('Instancia separada correctamente');
-                    }
-
-                    // Emitir evento
-                    document.dispatchEvent(new CustomEvent('vbp:instance:detached', {
-                        detail: {
-                            instanceId: instanceId,
-                            newElements: resultado.elements
+                        if (typeof VBPToast !== 'undefined') {
+                            VBPToast.success('Instancia separada correctamente');
                         }
-                    }));
-                }
+                    })
+                    .catch(function(error) {
+                        vbpLog.error('InstanceInspector: Error separando instancia', error);
+                        if (typeof VBPToast !== 'undefined') {
+                            VBPToast.error('Error al separar instancia');
+                        }
+                    });
             } else {
                 vbpLog.warn('InstanceInspector: VBPSymbols.detachInstance no disponible');
             }
@@ -917,20 +913,21 @@ if (!window.vbpLog) {
             vbpLog.log('InstanceInspector: sincronizando instancia', instanceId);
 
             if (window.VBPSymbols && typeof window.VBPSymbols.syncInstance === 'function') {
-                window.VBPSymbols.syncInstance(instanceId);
+                var self = this;
+                window.VBPSymbols.syncInstance(instanceId)
+                    .then(function() {
+                        self.refreshInspector();
 
-                // Refrescar inspector
-                this.refreshInspector();
-
-                // Notificación
-                if (typeof VBPToast !== 'undefined') {
-                    VBPToast.success('Instancia sincronizada');
-                }
-
-                // Emitir evento
-                document.dispatchEvent(new CustomEvent('vbp:instance:synced', {
-                    detail: { instanceId: instanceId }
-                }));
+                        if (typeof VBPToast !== 'undefined') {
+                            VBPToast.success('Instancia sincronizada');
+                        }
+                    })
+                    .catch(function(error) {
+                        vbpLog.error('InstanceInspector: Error sincronizando instancia', error);
+                        if (typeof VBPToast !== 'undefined') {
+                            VBPToast.error('Error al sincronizar instancia');
+                        }
+                    });
             }
         },
 

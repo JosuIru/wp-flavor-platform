@@ -11,6 +11,7 @@ document.addEventListener('alpine:init', function() {
         notifications: [],
         maxNotifications: 5,
         defaultDuration: 3000,
+        _timers: {},
 
         /**
          * Mostrar notificación
@@ -42,10 +43,10 @@ document.addEventListener('alpine:init', function() {
                 this.notifications = this.notifications.slice(0, this.maxNotifications);
             }
 
-            // Auto-dismiss
+            // Auto-dismiss (guardar referencia del timer)
             if (notification.duration > 0) {
                 var self = this;
-                setTimeout(function() {
+                this._timers[notification.id] = setTimeout(function() {
                     self.dismiss(notification.id);
                 }, notification.duration);
             }
@@ -57,6 +58,12 @@ document.addEventListener('alpine:init', function() {
          * Cerrar notificación
          */
         dismiss: function(id) {
+            // Cancelar timer si existe
+            if (this._timers[id]) {
+                clearTimeout(this._timers[id]);
+                delete this._timers[id];
+            }
+
             var index = this.notifications.findIndex(function(n) { return n.id === id; });
             if (index !== -1) {
                 this.notifications.splice(index, 1);
@@ -67,6 +74,13 @@ document.addEventListener('alpine:init', function() {
          * Cerrar todas las notificaciones
          */
         dismissAll: function() {
+            // Cancelar todos los timers
+            var self = this;
+            Object.keys(this._timers).forEach(function(id) {
+                clearTimeout(self._timers[id]);
+            });
+            this._timers = {};
+
             this.notifications = [];
         },
 
@@ -142,6 +156,25 @@ function vbpToastContainer() {
 }
 
 window.vbpToastContainer = vbpToastContainer;
+
+/**
+ * Registrar componente en Alpine
+ */
+function registerToastComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpToastContainer', vbpToastContainer);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerToastComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerToastComponent();
+});
 
 // Escuchar eventos de notificación globales
 document.addEventListener('vbp:notification', function(e) {

@@ -245,10 +245,7 @@ class WebRTCService {
 
   /// Cambiar salida de audio (altavoz/auricular)
   Future<void> toggleSpeaker(bool speakerOn) async {
-    final audioTracks = _localStream?.getAudioTracks();
-    if (audioTracks != null && audioTracks.isNotEmpty) {
-      await audioTracks.first.enableSpeakerphone(speakerOn);
-    }
+    await Helper.setSpeakerphoneOn(speakerOn);
   }
 
   /// Obtener stream de cámara/micrófono

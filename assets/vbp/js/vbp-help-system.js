@@ -13,6 +13,8 @@
         modal: null,
         searchInput: null,
         isOpen: false,
+        _initialized: false,
+        _eventHandlers: {},
 
         // Definición de todos los atajos
         shortcuts: {
@@ -88,8 +90,43 @@
         },
 
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             this.createModal();
             this.bindEvents();
+        },
+
+        destroy: function() {
+            // Remover event listeners
+            if (this._eventHandlers.closeClick && this.modal) {
+                var closeBtn = this.modal.querySelector('.vbp-shortcuts-close');
+                if (closeBtn) closeBtn.removeEventListener('click', this._eventHandlers.closeClick);
+            }
+            if (this._eventHandlers.modalClick && this.modal) {
+                this.modal.removeEventListener('click', this._eventHandlers.modalClick);
+            }
+            if (this._eventHandlers.modalKeydown && this.modal) {
+                this.modal.removeEventListener('keydown', this._eventHandlers.modalKeydown);
+            }
+            if (this._eventHandlers.searchInput && this.searchInput) {
+                this.searchInput.removeEventListener('input', this._eventHandlers.searchInput);
+            }
+            if (this._eventHandlers.globalKeydown) {
+                document.removeEventListener('keydown', this._eventHandlers.globalKeydown);
+            }
+
+            // Remover elementos del DOM
+            if (this.modal && this.modal.parentNode) {
+                this.modal.parentNode.removeChild(this.modal);
+            }
+
+            // Resetear estado
+            this.modal = null;
+            this.searchInput = null;
+            this.isOpen = false;
+            this._eventHandlers = {};
+            this._initialized = false;
         },
 
         createModal: function() {
@@ -158,35 +195,41 @@
             var self = this;
 
             // Cerrar con botón
-            this.modal.querySelector('.vbp-shortcuts-close').addEventListener('click', function() {
+            this._eventHandlers.closeClick = function() {
                 self.close();
-            });
+            };
+            this.modal.querySelector('.vbp-shortcuts-close').addEventListener('click', this._eventHandlers.closeClick);
 
-            // Cerrar con Escape o click fuera
-            this.modal.addEventListener('click', function(e) {
+            // Cerrar con click fuera
+            this._eventHandlers.modalClick = function(e) {
                 if (e.target === self.modal) {
                     self.close();
                 }
-            });
+            };
+            this.modal.addEventListener('click', this._eventHandlers.modalClick);
 
-            this.modal.addEventListener('keydown', function(e) {
+            // Cerrar con Escape
+            this._eventHandlers.modalKeydown = function(e) {
                 if (e.key === 'Escape') {
                     self.close();
                 }
-            });
+            };
+            this.modal.addEventListener('keydown', this._eventHandlers.modalKeydown);
 
             // Búsqueda
-            this.searchInput.addEventListener('input', function() {
-                self.filterShortcuts(this.value);
-            });
+            this._eventHandlers.searchInput = function() {
+                self.filterShortcuts(self.searchInput.value);
+            };
+            this.searchInput.addEventListener('input', this._eventHandlers.searchInput);
 
             // Atajo global para abrir (?)
-            document.addEventListener('keydown', function(e) {
+            this._eventHandlers.globalKeydown = function(e) {
                 if (e.key === '?' && !self.isInputFocused()) {
                     e.preventDefault();
                     self.toggle();
                 }
-            });
+            };
+            document.addEventListener('keydown', this._eventHandlers.globalKeydown);
         },
 
         filterShortcuts: function(query) {
@@ -838,12 +881,54 @@
         lastChangeTime: null,
         changeCount: 0,
         autoSaveInterval: null,
+        _initialized: false,
+        _eventHandlers: {},
 
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             this.createIndicator();
             this.createLeaveConfirm();
             this.bindEvents();
             this.startAutoSaveTimer();
+        },
+
+        destroy: function() {
+            // Limpiar interval
+            if (this.autoSaveInterval) {
+                clearInterval(this.autoSaveInterval);
+                this.autoSaveInterval = null;
+            }
+
+            // Remover event listeners
+            if (this._eventHandlers.contentChange) {
+                document.removeEventListener('vbp:content-change', this._eventHandlers.contentChange);
+            }
+            if (this._eventHandlers.saved) {
+                document.removeEventListener('vbp:saved', this._eventHandlers.saved);
+            }
+            if (this._eventHandlers.beforeUnload) {
+                window.removeEventListener('beforeunload', this._eventHandlers.beforeUnload);
+            }
+            if (this._eventHandlers.keydown) {
+                document.removeEventListener('keydown', this._eventHandlers.keydown);
+            }
+
+            // Remover elementos del DOM
+            if (this.indicator && this.indicator.parentNode) {
+                this.indicator.parentNode.removeChild(this.indicator);
+            }
+            if (this.leaveConfirm && this.leaveConfirm.parentNode) {
+                this.leaveConfirm.parentNode.removeChild(this.leaveConfirm);
+            }
+
+            // Resetear estado
+            this.indicator = null;
+            this.leaveConfirm = null;
+            this.hasChanges = false;
+            this._eventHandlers = {};
+            this._initialized = false;
         },
 
         createIndicator: function() {
@@ -914,23 +999,26 @@
                 self.hideLeaveConfirm();
             });
 
-            // Detectar cambios
-            document.addEventListener('vbp:content-change', function() {
+            // Detectar cambios (guardar referencia para cleanup)
+            this._eventHandlers.contentChange = function() {
                 self.markChanged();
-            });
+            };
+            document.addEventListener('vbp:content-change', this._eventHandlers.contentChange);
 
-            document.addEventListener('vbp:saved', function() {
+            this._eventHandlers.saved = function() {
                 self.markSaved();
-            });
+            };
+            document.addEventListener('vbp:saved', this._eventHandlers.saved);
 
             // Prevenir salir sin guardar
-            window.addEventListener('beforeunload', function(e) {
+            this._eventHandlers.beforeUnload = function(e) {
                 if (self.hasChanges) {
                     e.preventDefault();
                     e.returnValue = 'Tienes cambios sin guardar. ¿Seguro que quieres salir?';
                     return e.returnValue;
                 }
-            });
+            };
+            window.addEventListener('beforeunload', this._eventHandlers.beforeUnload);
 
             // Detectar cambios en Alpine store si existe
             document.addEventListener('alpine:init', function() {
@@ -946,12 +1034,13 @@
             });
 
             // Escuchar Ctrl+S
-            document.addEventListener('keydown', function(e) {
+            this._eventHandlers.keydown = function(e) {
                 if (e.ctrlKey && e.key === 's') {
                     e.preventDefault();
                     self.save();
                 }
-            });
+            };
+            document.addEventListener('keydown', this._eventHandlers.keydown);
         },
 
         markChanged: function() {
@@ -1043,11 +1132,18 @@
     // ============================================
     // INICIALIZACIÓN
     // ============================================
+    var helpSystemInitialized = false;
+
     function initHelpSystem() {
+        // Evitar doble inicialización
+        if (helpSystemInitialized) return;
+
         // Solo inicializar si estamos en el editor VBP
         if (!document.querySelector('.vbp-editor')) {
             return;
         }
+
+        helpSystemInitialized = true;
 
         vbpShortcutsModal.init();
         vbpOnboarding.init();
@@ -1056,6 +1152,13 @@
 
         console.log('[VBP] Help System initialized');
     }
+
+    // Función para destruir todo el sistema de ayuda
+    window.vbpHelpSystemDestroy = function() {
+        if (vbpShortcutsModal.destroy) vbpShortcutsModal.destroy();
+        if (vbpUnsavedChanges.destroy) vbpUnsavedChanges.destroy();
+        helpSystemInitialized = false;
+    };
 
     // Inicializar cuando el DOM esté listo
     if (document.readyState === 'loading') {

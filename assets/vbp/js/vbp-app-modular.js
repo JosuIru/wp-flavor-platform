@@ -119,6 +119,28 @@
     window.VBPAppModular = {
         modules: {},
         loaded: false,
+        registeredModules: {},
+
+        /**
+         * Registrar un módulo externo
+         * @param {string} name - Nombre del módulo
+         * @param {object} module - Objeto del módulo
+         */
+        register: function(name, module) {
+            if (name && module && typeof module === 'object') {
+                this.registeredModules[name] = module;
+                vbpLog.log('Módulo registrado:', name);
+            }
+        },
+
+        /**
+         * Obtener un módulo registrado
+         * @param {string} name - Nombre del módulo
+         * @returns {object|null}
+         */
+        get: function(name) {
+            return this.registeredModules[name] || this.modules[name] || null;
+        },
 
         /**
          * Cargar e inicializar todos los módulos

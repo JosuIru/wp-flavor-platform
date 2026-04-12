@@ -15,6 +15,9 @@ window.VBPKeyboardClipboard = {
      */
     copySelection: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             return;
@@ -75,6 +78,9 @@ window.VBPKeyboardClipboard = {
      */
     duplicateSelection: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            return;
+        }
         var count = 0;
 
         store.selection.elementIds.forEach(function(id) {
@@ -93,6 +99,10 @@ window.VBPKeyboardClipboard = {
      */
     duplicateInPlace: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona elementos para duplicar', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona elementos para duplicar', 'warning');
@@ -131,6 +141,10 @@ window.VBPKeyboardClipboard = {
      */
     copyStyles: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona un elemento para copiar estilos', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length !== 1) {
             window.vbpKeyboard.showNotification('Selecciona un elemento para copiar estilos', 'warning');
@@ -170,7 +184,7 @@ window.VBPKeyboardClipboard = {
             return;
         }
 
-        if (store.selection.elementIds.length === 0) {
+        if (!store || !store.selection || !store.selection.elementIds || store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona elementos para aplicar estilos', 'warning');
             return;
         }
@@ -218,6 +232,10 @@ window.VBPKeyboardClipboard = {
      */
     resetStyles: function() {
         var store = Alpine.store('vbp');
+        if (!store || !store.selection || !store.selection.elementIds) {
+            window.vbpKeyboard.showNotification('Selecciona elementos para resetear estilos', 'warning');
+            return;
+        }
 
         if (store.selection.elementIds.length === 0) {
             window.vbpKeyboard.showNotification('Selecciona elementos para resetear estilos', 'warning');

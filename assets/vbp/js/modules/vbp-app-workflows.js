@@ -6,6 +6,8 @@
  * @since 2.3.0
  */
 
+/* global VBP_Config, VBPAppToast, vbpLog */
+
 window.VBPAppWorkflows = {
     // Estado del workflow
     showWorkflowPanel: false,
@@ -18,6 +20,41 @@ window.VBPAppWorkflows = {
     showScheduleModal: false,
     scheduledDate: '',
     transitionComment: '',
+
+    // Control de inicialización
+    _initialized: false,
+
+    // ============ HELPERS ============
+
+    /**
+     * Obtiene el ID del post actual
+     */
+    getPostId: function() {
+        return (typeof VBP_Config !== 'undefined' && VBP_Config.postId) ? VBP_Config.postId : null;
+    },
+
+    /**
+     * Muestra una notificación
+     */
+    showNotification: function(message, type) {
+        if (typeof VBPAppToast !== 'undefined' && VBPAppToast.show) {
+            VBPAppToast.show(message, type);
+        } else if (window.showNotification) {
+            window.showNotification(message, type);
+        } else {
+            vbpLog.log('[VBP Workflows] ' + type + ': ' + message);
+        }
+    },
+
+    /**
+     * Sanitiza un parámetro para URL
+     */
+    sanitizeUrlParam: function(param) {
+        if (typeof param !== 'string') {
+            return '';
+        }
+        return encodeURIComponent(param.replace(/[^a-zA-Z0-9_-]/g, ''));
+    },
 
     // ============ CARGA DE DATOS ============
 
@@ -82,7 +119,7 @@ window.VBPAppWorkflows = {
      */
     loadWorkflowUsers: function(role) {
         var self = this;
-        var roleParam = role || 'reviewers';
+        var roleParam = this.sanitizeUrlParam(role || 'reviewers');
 
         fetch(VBP_Config.restUrl + 'workflow/users?role=' + roleParam, {
             method: 'GET',
@@ -326,6 +363,13 @@ window.VBPAppWorkflows = {
      * Inicializar workflow
      */
     initWorkflow: function() {
+        // Evitar inicialización duplicada
+        if (this._initialized) {
+            vbpLog.log('VBP Workflows: ya inicializado, ignorando');
+            return;
+        }
+        this._initialized = true;
+
         // Cargar estado inicial si estamos editando
         if (this.getPostId()) {
             this.loadWorkflowStatus();
@@ -334,5 +378,27 @@ window.VBPAppWorkflows = {
                 this.loadPendingReviews();
             }
         }
+
+        vbpLog.info('VBP Workflows: Inicializado');
+    },
+
+    /**
+     * Destruye el módulo y limpia recursos
+     */
+    destroy: function() {
+        // Resetear estado
+        this.showWorkflowPanel = false;
+        this.workflowStatus = null;
+        this.workflowHistory = [];
+        this.workflowLoading = false;
+        this.workflowUsers = [];
+        this.pendingReviews = [];
+        this.pendingReviewsCount = 0;
+        this.showScheduleModal = false;
+        this.scheduledDate = '';
+        this.transitionComment = '';
+        this._initialized = false;
+
+        vbpLog.info('VBP Workflows: Destruido');
     }
 };

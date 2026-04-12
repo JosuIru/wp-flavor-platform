@@ -21,6 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.4.0
  */
+if ( class_exists( 'Flavor_VBP_Claude_API', false ) ) {
+	return;
+}
+
 class Flavor_VBP_Claude_API {
 
 	/**

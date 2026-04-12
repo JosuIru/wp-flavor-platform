@@ -56,4 +56,10 @@ class FlavorContactLauncher {
       errorMessage: errorMessage,
     );
   }
+
+  /// Alias para email (compatibilidad)
+  static Future<bool> launchEmail(String emailAddress) async {
+    final uri = Uri(scheme: 'mailto', path: emailAddress);
+    return FlavorUrlLauncher.openExternalUriRaw(uri);
+  }
 }

@@ -881,7 +881,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
 
   Future<void> _addParticipant() async {
     // Obtener IDs de participantes actuales
-    final currentParticipantIds = _participantStates.map((p) => p.member.id).toSet();
+    final currentParticipantIds = _participantStates.map((p) => p.member.userId).toSet();
 
     final selectedContacts = await Navigator.push<List<ChatUser>>(
       context,
@@ -899,9 +899,11 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
         for (final contact in selectedContacts) {
           _participantStates.add(_ParticipantState(
             member: GroupMember(
-              id: contact.id,
+              odp: contact.id,
               name: contact.name,
               avatarUrl: contact.avatarUrl,
+              role: GroupRole.member,
+              joinedAt: DateTime.now(),
             ),
             isConnected: false,
           ));

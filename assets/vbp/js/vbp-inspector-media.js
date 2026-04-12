@@ -459,15 +459,29 @@ window.extendVBPInspector = (function(previousExtendInspector) {
                     return;
                 }
 
-                var url = prompt('Introduce la URL de la imagen:');
-                if (url && this.isValidUrl(url)) {
-                    this.addItem('gallery');
-                    var items = this.selectedElement.data.items || [];
-                    var lastIndex = items.length - 1;
-                    if (lastIndex >= 0) {
-                        this.updateItem(lastIndex, 'src', url);
+                var self = this;
+                this.urlModal.callback = function(url) {
+                    if (!url || !self.isValidUrl(url)) return;
+
+                    var data = JSON.parse(JSON.stringify(self.selectedElement.data || {}));
+                    if (!Array.isArray(data.items)) {
+                        data.items = [];
                     }
-                }
+
+                    data.items.push({
+                        src: url,
+                        alt: '',
+                        attachment_id: null,
+                        width: null,
+                        height: null
+                    });
+
+                    Alpine.store('vbp').updateElement(self.selectedElement.id, { data: data });
+
+                    if (window.vbpApp && window.vbpApp.showNotification) {
+                        window.vbpApp.showNotification('Imagen añadida correctamente', 'success');
+                    }
+                };
             },
 
             addLogoImage: function() {
@@ -490,15 +504,29 @@ window.extendVBPInspector = (function(previousExtendInspector) {
                     return;
                 }
 
-                var url = prompt('Introduce la URL del logo:');
-                if (url && this.isValidUrl(url)) {
-                    var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+                var self = this;
+                this.urlModal.callback = function(url) {
+                    if (!url || !self.isValidUrl(url)) return;
+
+                    var data = JSON.parse(JSON.stringify(self.selectedElement.data || {}));
                     if (!Array.isArray(data.logos)) {
                         data.logos = [];
                     }
-                    data.logos.push({ src: url, alt: 'Logo' });
-                    Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
-                }
+
+                    data.logos.push({
+                        src: url,
+                        alt: 'Logo',
+                        attachment_id: null,
+                        width: null,
+                        height: null
+                    });
+
+                    Alpine.store('vbp').updateElement(self.selectedElement.id, { data: data });
+
+                    if (window.vbpApp && window.vbpApp.showNotification) {
+                        window.vbpApp.showNotification('Logo añadido correctamente', 'success');
+                    }
+                };
             },
 
             openFileLibrary: function(field) {
@@ -539,6 +567,48 @@ window.extendVBPInspector = (function(previousExtendInspector) {
                 Alpine.store('vbpModals').openIconSelector(
                     function(type, value) {
                         self.updateItem(itemIndex, field, value);
+                    },
+                    currentValue,
+                    field,
+                    itemIndex
+                );
+            },
+
+            openIconSelectorForTimeline: function(itemIndex, field) {
+                var self = this;
+                if (!this.selectedElement || !this.selectedElement.data) return;
+
+                field = field || 'icono';
+                var timelineItems = typeof this.getEditableCollection === 'function'
+                    ? this.getEditableCollection('eventos')
+                    : (Array.isArray(this.selectedElement.data.eventos) ? this.selectedElement.data.eventos : []);
+                var currentValue = timelineItems[itemIndex]
+                    ? timelineItems[itemIndex][field] || ''
+                    : '';
+
+                Alpine.store('vbpModals').openIconSelector(
+                    function(type, value) {
+                        self.updateItem(itemIndex, field, value);
+                    },
+                    currentValue,
+                    field,
+                    itemIndex
+                );
+            },
+
+            openIconSelectorForColumnItem: function(columna, itemIndex, field) {
+                var self = this;
+                if (!this.selectedElement || !this.selectedElement.data || !this.selectedElement.data[columna] || !this.selectedElement.data[columna].data) {
+                    return;
+                }
+
+                field = field || 'icono';
+                var items = this.selectedElement.data[columna].data.items || [];
+                var currentValue = items[itemIndex] ? items[itemIndex][field] || '' : '';
+
+                Alpine.store('vbpModals').openIconSelector(
+                    function(type, value) {
+                        self.updateColumnItem(columna, itemIndex, field, value);
                     },
                     currentValue,
                     field,

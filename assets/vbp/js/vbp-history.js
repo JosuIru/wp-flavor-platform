@@ -13,26 +13,63 @@ window.vbpHistory = {
     maxSnapshots: 50,
     saveTimeout: null,
     lastState: null,
+    _initialized: false,
+    _eventHandlers: {},
 
     /**
      * Inicializar el gestor de historial
      */
     init: function() {
+        // Evitar inicialización duplicada
+        if (this._initialized) return;
+        this._initialized = true;
+
         var self = this;
 
-        // Escuchar eventos de cambios
-        document.addEventListener('vbp:elementChanged', function(e) {
+        // Guardar referencias a handlers para cleanup
+        this._eventHandlers.elementChanged = function(e) {
             self.onElementChanged(e.detail);
-        });
+        };
 
-        document.addEventListener('vbp:beforeSave', function(e) {
+        this._eventHandlers.beforeSave = function() {
             self.createCheckpoint('Antes de guardar');
-        });
+        };
 
-        // Capturar estado inicial
-        document.addEventListener('alpine:initialized', function() {
+        this._eventHandlers.alpineInitialized = function() {
             self.captureInitialState();
-        });
+        };
+
+        // Escuchar eventos de cambios
+        document.addEventListener('vbp:elementChanged', this._eventHandlers.elementChanged);
+        document.addEventListener('vbp:beforeSave', this._eventHandlers.beforeSave);
+        document.addEventListener('alpine:initialized', this._eventHandlers.alpineInitialized);
+    },
+
+    /**
+     * Destruir el gestor de historial
+     */
+    destroy: function() {
+        // Limpiar timeout pendiente
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = null;
+        }
+
+        // Remover event listeners
+        if (this._eventHandlers.elementChanged) {
+            document.removeEventListener('vbp:elementChanged', this._eventHandlers.elementChanged);
+        }
+        if (this._eventHandlers.beforeSave) {
+            document.removeEventListener('vbp:beforeSave', this._eventHandlers.beforeSave);
+        }
+        if (this._eventHandlers.alpineInitialized) {
+            document.removeEventListener('alpine:initialized', this._eventHandlers.alpineInitialized);
+        }
+
+        // Resetear estado
+        this.lastState = null;
+        this._eventHandlers = {};
+        this._initialized = false;
     },
 
     /**

@@ -86,23 +86,40 @@
          * Registrar tab de lógica en el inspector
          */
         _registerInspectorTab: function() {
-            // Agregar tab de lógica al inspector
-            document.addEventListener('vbp:inspector:init', function() {
-                var inspectorTabs = document.querySelector('.vbp-inspector__tabs');
-                if (!inspectorTabs) return;
+            var self = this;
 
-                // Verificar si ya existe
-                if (inspectorTabs.querySelector('[data-tab="logic"]')) return;
+            function ensureLogicTab() {
+                var inspectorTabs = document.querySelector('.vbp-inspector-tabs');
+                if (!inspectorTabs) return false;
 
-                // Crear tab de lógica
+                if (inspectorTabs.querySelector('[data-tab="logic"]')) return true;
+
                 var logicTab = document.createElement('button');
-                logicTab.className = 'vbp-inspector__tab';
+                logicTab.type = 'button';
+                logicTab.className = 'vbp-inspector-tab';
                 logicTab.setAttribute('data-tab', 'logic');
                 logicTab.setAttribute('title', 'Lógica y Variables');
-                logicTab.innerHTML = '<span class="vbp-inspector__tab-icon">⚡</span>';
+                logicTab.innerHTML = '<span>Logic</span>';
+                logicTab.addEventListener('click', function() {
+                    self._openVariablesPanel();
+                });
 
                 inspectorTabs.appendChild(logicTab);
-            });
+                return true;
+            }
+
+            var attempts = 0;
+            var maxAttempts = 20;
+            var tryRegister = function() {
+                if (ensureLogicTab() || attempts >= maxAttempts) {
+                    return;
+                }
+                attempts++;
+                setTimeout(tryRegister, 250);
+            };
+
+            document.addEventListener('vbp:inspector:init', tryRegister);
+            tryRegister();
         },
 
         /**
@@ -116,6 +133,13 @@
                 var elementId = event.detail.elementId;
                 if (elementId) {
                     self._loadElementLogic(elementId);
+                }
+            });
+
+            document.addEventListener('vbp:selection:changed', function(event) {
+                var elementIds = event.detail && event.detail.elementIds;
+                if (Array.isArray(elementIds) && elementIds.length === 1) {
+                    self._loadElementLogic(elementIds[0]);
                 }
             });
 
@@ -148,6 +172,14 @@
             // Abrir panel de variables
             document.addEventListener('vbp:logic:openPanel', function() {
                 self._openVariablesPanel();
+            });
+
+            document.addEventListener('click', function(event) {
+                var tabButton = event.target.closest('[data-tab="logic"]');
+                if (tabButton) {
+                    event.preventDefault();
+                    self._openVariablesPanel();
+                }
             });
 
             // Trigger para lazy load del bundle de lógica
@@ -279,11 +311,13 @@
          * Abrir panel de variables
          */
         _openVariablesPanel: function() {
-            // Disparar evento para que el panel responda
-            document.dispatchEvent(new CustomEvent('vbp:variablesPanel:open'));
-
             // Cargar bundle de lógica si no está cargado
             this._loadLogicBundle();
+
+            // Disparar apertura después de solicitar el bundle para no perder el evento
+            setTimeout(function() {
+                document.dispatchEvent(new CustomEvent('vbp:variablesPanel:open'));
+            }, 0);
         },
 
         /**

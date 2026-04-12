@@ -884,20 +884,6 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
     }
   }
 
-  void _openChatWithUser(ChatUser user) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatMainScreen(
-          conversationId: 'user_${user.id}',
-          name: user.name,
-          avatarUrl: user.avatarUrl,
-          isGroup: false,
-        ),
-      ),
-    );
-  }
-
   void _scanQRCode() {
     // Mostrar mensaje informativo mientras se implementa el scanner
     ScaffoldMessenger.of(context).showSnackBar(

@@ -99,7 +99,27 @@ function vbpIconSelector() {
 
         openMediaLibrarySvg: function() {
             var self = this;
-            if (typeof wp === 'undefined' || !wp.media) return;
+            var isValidSvgUrl = function(url) {
+                if (!url || typeof url !== 'string') return false;
+
+                var normalized = url.trim().toLowerCase();
+                if (!(normalized.startsWith('/') || normalized.startsWith('http://') || normalized.startsWith('https://'))) {
+                    return false;
+                }
+
+                return /\.svg(\?.*)?(#.*)?$/.test(normalized);
+            };
+
+            if (typeof wp === 'undefined' || !wp.media) {
+                var url = prompt('La biblioteca de medios no está disponible. Introduce la URL del SVG:');
+                if (isValidSvgUrl(url)) {
+                    self.customSvgUrl = url;
+                    self.selectedType = 'svg';
+                    self.selectedIcon = '';
+                    self.activeTab = 'svg';
+                }
+                return;
+            }
 
             var frame = wp.media({
                 title: 'Seleccionar SVG',
@@ -256,8 +276,24 @@ window.vbpIconSelector = vbpIconSelector;
 window.vbpEmojiSelector = vbpEmojiSelector;
 window.vbpColorPicker = vbpColorPicker;
 
-document.addEventListener('alpine:init', function() {
+/**
+ * Registrar componentes Alpine - tanto inmediatamente si Alpine existe,
+ * como en el evento alpine:init por si se carga después
+ */
+function registerInspectorModalComponents() {
+    if (typeof Alpine === 'undefined') return false;
     Alpine.data('vbpIconSelector', vbpIconSelector);
     Alpine.data('vbpEmojiSelector', vbpEmojiSelector);
     Alpine.data('vbpColorPicker', vbpColorPicker);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerInspectorModalComponents();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerInspectorModalComponents();
 });

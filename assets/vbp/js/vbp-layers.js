@@ -356,3 +356,25 @@ function vbpLayersComponent() {
         }
     };
 }
+
+// Exportar a window para acceso global
+window.vbpLayersComponent = vbpLayersComponent;
+
+/**
+ * Registrar componente en Alpine
+ */
+function registerLayersComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpLayersComponent', vbpLayersComponent);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerLayersComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerLayersComponent();
+});

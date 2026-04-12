@@ -24,6 +24,13 @@
         },
 
         /**
+         * Control de inicialización y cleanup
+         */
+        _initialized: false,
+        _observers: [],
+        _scrollHandler: null,
+
+        /**
          * Available entrance animations
          */
         entranceAnimations: [
@@ -83,9 +90,31 @@
          * Initialize all animations
          */
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             this.initScrollReveal();
             this.initParallax();
             this.initEntranceAnimations();
+        },
+
+        /**
+         * Destroy and cleanup resources
+         */
+        destroy: function() {
+            // Disconnect all observers
+            this._observers.forEach(function(observer) {
+                observer.disconnect();
+            });
+            this._observers = [];
+
+            // Remove scroll handler
+            if (this._scrollHandler) {
+                window.removeEventListener('scroll', this._scrollHandler);
+                this._scrollHandler = null;
+            }
+
+            this._initialized = false;
         },
 
         /**
@@ -117,6 +146,9 @@
                     threshold: self.config.threshold,
                     rootMargin: self.config.rootMargin
                 });
+
+                // Guardar referencia para cleanup
+                self._observers.push(observer);
 
                 revealElements.forEach(function(el) {
                     observer.observe(el);
@@ -162,6 +194,8 @@
          * Observe element for scroll-triggered animation
          */
         observeForAnimation: function(element, animation) {
+            var self = this;
+
             if ('IntersectionObserver' in window) {
                 var observer = new IntersectionObserver(function(entries) {
                     entries.forEach(function(entry) {
@@ -173,6 +207,9 @@
                 }, {
                     threshold: 0.1
                 });
+
+                // Guardar referencia para cleanup
+                self._observers.push(observer);
 
                 observer.observe(element);
             } else {
@@ -211,7 +248,7 @@
 
             // Throttle scroll events
             var ticking = false;
-            window.addEventListener('scroll', function() {
+            this._scrollHandler = function() {
                 if (!ticking) {
                     window.requestAnimationFrame(function() {
                         updateParallax();
@@ -219,7 +256,8 @@
                     });
                     ticking = true;
                 }
-            }, { passive: true });
+            };
+            window.addEventListener('scroll', this._scrollHandler, { passive: true });
 
             // Initial update
             updateParallax();

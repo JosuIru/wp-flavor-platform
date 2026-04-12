@@ -493,11 +493,29 @@ class Flavor_VBP_Code_Components {
         }
 
         // Generar ID unico si no se proporciona.
-        $component_id = isset( $data['id'] ) ? sanitize_key( $data['id'] ) : 'cc-' . wp_generate_uuid4();
+        // Usar UUID v4 que tiene suficiente entropía para evitar colisiones
+        $component_id = isset( $data['id'] ) ? sanitize_key( $data['id'] ) : '';
 
-        // Verificar que no exista.
-        if ( $this->get_component( $component_id ) ) {
-            $component_id = 'cc-' . wp_generate_uuid4();
+        if ( empty( $component_id ) ) {
+            // Generar ID único con timestamp + UUID para máxima unicidad
+            $component_id = 'cc-' . time() . '-' . substr( wp_generate_uuid4(), 0, 8 );
+        }
+
+        // Verificar que no exista (con retry para evitar race conditions)
+        $max_retries = 3;
+        $retry_count = 0;
+        while ( $this->get_component( $component_id ) && $retry_count < $max_retries ) {
+            $component_id = 'cc-' . time() . '-' . substr( wp_generate_uuid4(), 0, 8 );
+            $retry_count++;
+        }
+
+        if ( $retry_count >= $max_retries ) {
+            return rest_ensure_response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Could not generate unique component ID', 'flavor-platform' ),
+                )
+            );
         }
 
         // Validar y filtrar dependencias.
@@ -1150,6 +1168,22 @@ class Flavor_VBP_Code_Components {
     }
 
     /**
+     * Eliminar comentarios del código para validación
+     *
+     * @param string $code Codigo a limpiar.
+     * @return string Codigo sin comentarios.
+     */
+    private function strip_comments( $code ) {
+        // Eliminar comentarios de bloque /* */
+        $code = preg_replace( '/\/\*[\s\S]*?\*\//m', '', $code );
+        // Eliminar comentarios de línea //
+        $code = preg_replace( '/\/\/[^\n]*/m', '', $code );
+        // Eliminar comentarios HTML <!-- -->
+        $code = preg_replace( '/<!--[\s\S]*?-->/m', '', $code );
+        return $code;
+    }
+
+    /**
      * Validar codigo del componente
      *
      * @param string $code      Codigo del componente.
@@ -1159,32 +1193,46 @@ class Flavor_VBP_Code_Components {
     public function validate_code( $code, $framework ) {
         $warnings = array();
 
-        // Validaciones basicas de seguridad.
-        $dangerous_patterns = array(
-            '/eval\s*\(/i',
-            '/new\s+Function\s*\(/i',
-            '/document\.write\s*\(/i',
-            '/innerHTML\s*=/i',
-            '/outerHTML\s*=/i',
-            '/<script[^>]*>/i',
-            '/document\.cookie/i',
-            '/localStorage\[/i',
-            '/sessionStorage\[/i',
-            '/XMLHttpRequest/i',
-            '/fetch\s*\(/i',
-            '/import\s*\(/i', // Dynamic imports.
+        // Limpiar comentarios antes de validar para evitar falsos positivos
+        $code_without_comments = $this->strip_comments( $code );
+
+        // Patrones peligrosos que deben bloquear (errores)
+        $blocking_patterns = array(
+            '/\beval\s*\(/i'          => 'eval() is not allowed',
+            '/\bnew\s+Function\s*\(/i' => 'new Function() is not allowed',
+            '/document\.write\s*\(/i'  => 'document.write() is not allowed',
+            '/document\.cookie\b/i'    => 'document.cookie access is not allowed',
         );
 
-        foreach ( $dangerous_patterns as $pattern ) {
-            if ( preg_match( $pattern, $code ) ) {
-                // Algunos patrones generan warnings, no errores.
-                if ( preg_match( '/fetch|XMLHttpRequest/', $pattern ) ) {
-                    $warnings[] = __( 'Network requests detected. Ensure proper CORS handling.', 'flavor-platform' );
-                } elseif ( preg_match( '/localStorage|sessionStorage/', $pattern ) ) {
-                    $warnings[] = __( 'Storage access detected. Verify user consent.', 'flavor-platform' );
-                } else {
-                    return new WP_Error( 'security_error', __( 'Potentially dangerous code detected', 'flavor-platform' ) );
-                }
+        // Patrones que generan advertencias pero no bloquean
+        $warning_patterns = array(
+            '/\.innerHTML\s*=/i'       => 'innerHTML assignment detected. Consider using textContent for safety.',
+            '/\.outerHTML\s*=/i'       => 'outerHTML assignment detected. Use with caution.',
+            '/\bfetch\s*\(/i'          => 'Network requests detected. Ensure proper CORS handling.',
+            '/XMLHttpRequest/i'        => 'XMLHttpRequest detected. Ensure proper CORS handling.',
+            '/localStorage\./i'        => 'localStorage access detected. Verify user consent.',
+            '/sessionStorage\./i'      => 'sessionStorage access detected. Verify user consent.',
+            '/import\s*\(/i'           => 'Dynamic import detected. Only allowed dependencies will load.',
+        );
+
+        // Verificar patrones bloqueantes
+        foreach ( $blocking_patterns as $pattern => $message ) {
+            if ( preg_match( $pattern, $code_without_comments ) ) {
+                return new WP_Error( 'security_error', $message );
+            }
+        }
+
+        // Verificar patrones de advertencia
+        foreach ( $warning_patterns as $pattern => $message ) {
+            if ( preg_match( $pattern, $code_without_comments ) ) {
+                $warnings[] = $message;
+            }
+        }
+
+        // Verificar <script> tags (solo en Vue/Svelte es válido)
+        if ( ! in_array( $framework, array( 'vue', 'svelte' ), true ) ) {
+            if ( preg_match( '/<script[^>]*>/i', $code_without_comments ) ) {
+                return new WP_Error( 'security_error', __( 'Script tags are not allowed in this framework', 'flavor-platform' ) );
             }
         }
 

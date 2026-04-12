@@ -313,8 +313,10 @@
              * @param {string} message Mensaje a mostrar
              */
             showToast: function(message) {
-                if (window.vbpToast && typeof window.vbpToast.show === 'function') {
-                    window.vbpToast.show(message, 'success');
+                if (window.VBPToast && typeof window.VBPToast.show === 'function') {
+                    window.VBPToast.show(message, 'success');
+                } else if (typeof Alpine !== 'undefined' && Alpine.store && Alpine.store('vbpToast')) {
+                    Alpine.store('vbpToast').show(message, 'success');
                 } else {
                     console.log('[VBP Responsive]', message);
                 }

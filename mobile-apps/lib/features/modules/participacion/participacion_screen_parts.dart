@@ -753,6 +753,7 @@ class _PropuestaDetalleScreenState
       final api = ref.read(apiClientProvider);
       final respuesta = await api.post(
         '/participacion/propuestas/${widget.propuestaId}/apoyar',
+        data: {},
       );
       if (!mounted) return;
 

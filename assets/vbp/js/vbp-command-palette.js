@@ -309,13 +309,13 @@ document.addEventListener('alpine:init', function() {
                     break;
 
                 case 'duplicate':
-                    if (store.selection.elementIds.length === 1) {
+                    if (store && store.selection && store.selection.elementIds && store.selection.elementIds.length === 1) {
                         store.duplicateElement(store.selection.elementIds[0]);
                     }
                     break;
 
                 case 'delete':
-                    if (store.selection.elementIds.length > 0) {
+                    if (store && store.selection && store.selection.elementIds && store.selection.elementIds.length > 0) {
                         store.deleteElements(store.selection.elementIds);
                     }
                     break;
@@ -725,6 +725,42 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'openTypographyEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openTypographyEditor' }
+                    }));
+                    break;
+
+                case 'openBorderEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openBorderEditor' }
+                    }));
+                    break;
+
+                case 'openSpacingEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openSpacingEditor' }
+                    }));
+                    break;
+
+                case 'openHoverStatesEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openHoverStatesEditor' }
+                    }));
+                    break;
+
+                case 'openAnimationEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openAnimationEditor' }
+                    }));
+                    break;
+
+                case 'openScrollAnimationEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openScrollAnimationEditor' }
+                    }));
+                    break;
+
                 // Auto-layout
                 case 'toggleAutoLayout':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
@@ -760,16 +796,29 @@ document.addEventListener('alpine:init', function() {
 
                 // Biblioteca de Componentes
                 case 'saveAsComponent':
-                    if (typeof window.VBPComponentLibrary !== 'undefined') {
+                    var appForSaveComponent = document.querySelector('[x-data="vbpApp()"]');
+                    if (appForSaveComponent && appForSaveComponent.__x &&
+                        typeof appForSaveComponent.__x.$data.setActiveLeftTab === 'function') {
+                        appForSaveComponent.__x.$data.setActiveLeftTab('components')
+                            .then(function(loaded) {
+                                if (loaded && typeof window.VBPComponentLibrary !== 'undefined') {
+                                    window.VBPComponentLibrary.guardarSeleccionComoComponente();
+                                }
+                            })
+                            .catch(function() {});
+                    } else if (typeof window.VBPComponentLibrary !== 'undefined') {
                         window.VBPComponentLibrary.guardarSeleccionComoComponente();
                     }
                     break;
 
                 case 'openComponentsLibrary':
-                    // Abrir pestaña de componentes en el panel izquierdo
                     var appElement = document.querySelector('[x-data="vbpApp()"]');
                     if (appElement && appElement.__x) {
-                        appElement.__x.$data.activeLeftTab = 'components';
+                        if (typeof appElement.__x.$data.setActiveLeftTab === 'function') {
+                            appElement.__x.$data.setActiveLeftTab('components');
+                        } else {
+                            appElement.__x.$data.activeLeftTab = 'components';
+                        }
                     }
                     break;
 
@@ -1068,3 +1117,22 @@ function vbpCommandPaletteModal() {
 }
 
 window.vbpCommandPaletteModal = vbpCommandPaletteModal;
+
+/**
+ * Registrar componente en Alpine
+ */
+function registerCommandPaletteComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpCommandPaletteModal', vbpCommandPaletteModal);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerCommandPaletteComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerCommandPaletteComponent();
+});

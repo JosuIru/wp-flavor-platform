@@ -62,6 +62,14 @@ Nota de compatibilidad: el nombre comercial es `Flavor Platform`, pero el slug t
 | `../CLAUDE.md` | **Reglas obligatorias** (raíz) |
 | `../CLAUDE-APK.md` | **Reglas para APKs** (raíz) |
 
+## UX y Calidad
+
+| Documento | Descripción |
+|-----------|-------------|
+| [UX-AUDIT-CHECKLIST.md](UX-AUDIT-CHECKLIST.md) | Checklist de auditoria UX |
+| [MICRO-INTERACTIONS.md](MICRO-INTERACTIONS.md) | Guia de micro-interacciones |
+| [POLISH-TASKS.md](POLISH-TASKS.md) | Tareas de pulido pendientes |
+
 ## Estado del Proyecto
 
 | Documento | Descripción |
@@ -70,12 +78,20 @@ Nota de compatibilidad: el nombre comercial es `Flavor Platform`, pero el slug t
 | [PLUGIN-COMPLETO.md](PLUGIN-COMPLETO.md) | Visión general completa |
 | [FILOSOFIA-PLUGIN.md](FILOSOFIA-PLUGIN.md) | Principios de diseño |
 
+## Herramientas
+
+| Script | Descripción |
+|--------|-------------|
+| `tools/ux-audit.js` | Auditoria UX automatizada |
+| `tools/ux-score.js` | Calculadora de UX score |
+
 ## Subdirectorios
 
 ```
 docs/
 ├── api/           # Endpoints REST
 ├── modulos/       # Doc por módulo
+├── vbp/           # Visual Builder Pro
 └── claude-code/   # Guías IA
 ```
 

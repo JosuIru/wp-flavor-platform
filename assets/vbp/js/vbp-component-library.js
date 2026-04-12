@@ -31,6 +31,28 @@
         filtroCategoria: '',
         filtroBusqueda: '',
 
+        escapeHtml: function(value) {
+            if (value === null || value === undefined) return '';
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        },
+
+        escapeAttribute: function(value) {
+            return this.escapeHtml(value).replace(/"/g, '&quot;');
+        },
+
+        sanitizeUrl: function(value) {
+            if (!value || typeof value !== 'string') return '';
+            var url = value.trim();
+            if (!url) return '';
+            if (/^(https?:)?\/\//i.test(url) || url.startsWith('/')) {
+                return url.replace(/"/g, '%22').replace(/</g, '%3C').replace(/>/g, '%3E');
+            }
+            return '';
+        },
+
         /**
          * Iconos SVG para las categorías
          */
@@ -253,6 +275,10 @@
          * Insertar un bloque en el store
          */
         insertarBloque: function(bloque, store) {
+            if (!store || !Array.isArray(store.elements)) {
+                return null;
+            }
+
             // Generar nuevo ID para evitar duplicados
             var nuevoBloque = JSON.parse(JSON.stringify(bloque));
             nuevoBloque.id = (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9);
@@ -262,9 +288,30 @@
                 this.regenerarIdsHijos(nuevoBloque.children);
             }
 
+            if (typeof store.saveToHistory === 'function') {
+                store.saveToHistory('Insertar componente');
+            }
+
             store.elements.push(nuevoBloque);
+
+            if (typeof store.initElements === 'function') {
+                store.initElements(store.elements);
+            }
+
             store.markAsDirty();
             store.setSelection([nuevoBloque.id]);
+
+            if (typeof document !== 'undefined') {
+                document.dispatchEvent(new CustomEvent('vbp:element:added', {
+                    detail: {
+                        element: nuevoBloque,
+                        parentId: null,
+                        source: 'component-library'
+                    }
+                }));
+            }
+
+            return nuevoBloque;
         },
 
         /**
@@ -392,6 +439,7 @@
         mostrarModalGuardar: function(elementos) {
             var self = this;
             var nombrePorDefecto = elementos.length === 1 ? elementos[0].name : 'Mi Componente';
+            var nombreEscapado = self.escapeAttribute(nombrePorDefecto);
 
             // Crear modal
             var modalHtml = '<div class="vbp-save-component-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center;">' +
@@ -402,13 +450,13 @@
                 '<div class="vbp-modal-body" style="padding: 20px;">' +
                 '<div style="margin-bottom: 16px;">' +
                 '<label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: var(--vbp-text-primary, #111);">Nombre</label>' +
-                '<input type="text" id="vbp-component-name" value="' + nombrePorDefecto + '" style="width: 100%; padding: 10px 12px; border: 1px solid var(--vbp-border-color, #e5e7eb); border-radius: 8px; font-size: 14px; box-sizing: border-box;">' +
+                '<input type="text" id="vbp-component-name" value="' + nombreEscapado + '" style="width: 100%; padding: 10px 12px; border: 1px solid var(--vbp-border-color, #e5e7eb); border-radius: 8px; font-size: 14px; box-sizing: border-box;">' +
                 '</div>' +
                 '<div style="margin-bottom: 16px;">' +
                 '<label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: var(--vbp-text-primary, #111);">Categoría</label>' +
                 '<select id="vbp-component-category" style="width: 100%; padding: 10px 12px; border: 1px solid var(--vbp-border-color, #e5e7eb); border-radius: 8px; font-size: 14px; box-sizing: border-box;">' +
                 self.categorias.map(function(cat) {
-                    return '<option value="' + cat.id + '">' + cat.name + '</option>';
+                    return '<option value="' + self.escapeAttribute(cat.id) + '">' + self.escapeHtml(cat.name) + '</option>';
                 }).join('') +
                 '</select>' +
                 '</div>' +
@@ -491,10 +539,10 @@
 
             self.categorias.forEach(function(cat) {
                 var isActive = self.filtroCategoria === cat.id;
-                html += '<button class="vbp-category-btn' + (isActive ? ' active' : '') + '" data-category="' + cat.id + '" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: none; background: ' + (isActive ? 'var(--vbp-accent-color, #6366f1)' : 'transparent') + '; color: ' + (isActive ? 'white' : 'var(--vbp-text-primary, #111)') + '; border-radius: 6px; cursor: pointer; width: 100%; text-align: left; font-size: 13px;">' +
+                html += '<button class="vbp-category-btn' + (isActive ? ' active' : '') + '" data-category="' + self.escapeAttribute(cat.id) + '" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: none; background: ' + (isActive ? 'var(--vbp-accent-color, #6366f1)' : 'transparent') + '; color: ' + (isActive ? 'white' : 'var(--vbp-text-primary, #111)') + '; border-radius: 6px; cursor: pointer; width: 100%; text-align: left; font-size: 13px;">' +
                     '<span style="display: flex; align-items: center;">' + (self.iconos[cat.icon] || '') + '</span>' +
-                    '<span>' + cat.name + '</span>' +
-                    '<span style="margin-left: auto; opacity: 0.7;">' + cat.count + '</span>' +
+                    '<span>' + self.escapeHtml(cat.name) + '</span>' +
+                    '<span style="margin-left: auto; opacity: 0.7;">' + self.escapeHtml(cat.count) + '</span>' +
                     '</button>';
             });
 
@@ -531,16 +579,19 @@
             var html = '<div class="vbp-components-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 4px;">';
 
             self.componentes.forEach(function(componente) {
-                var thumbnail = componente.thumbnail || '';
+                var thumbnail = self.sanitizeUrl(componente.thumbnail);
                 var placeholderBg = 'linear-gradient(135deg, var(--vbp-accent-color, #6366f1), #8b5cf6)';
+                var componentName = self.escapeHtml(componente.name);
+                var categoryName = self.escapeHtml(self.obtenerNombreCategoria(componente.category));
+                var componentId = self.escapeAttribute(componente.id);
 
-                html += '<div class="vbp-component-card" data-component-id="' + componente.id + '" style="background: var(--vbp-bg-secondary, #f9fafb); border: 1px solid var(--vbp-border-color, #e5e7eb); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">' +
+                html += '<div class="vbp-component-card" data-component-id="' + componentId + '" style="position: relative; background: var(--vbp-bg-secondary, #f9fafb); border: 1px solid var(--vbp-border-color, #e5e7eb); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">' +
                     '<div class="vbp-component-preview" style="height: 80px; background: ' + (thumbnail ? 'url(' + thumbnail + ') center/cover' : placeholderBg) + '; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">' +
                     (thumbnail ? '' : '📦') +
                     '</div>' +
                     '<div class="vbp-component-info" style="padding: 10px;">' +
-                    '<div style="font-weight: 500; font-size: 13px; color: var(--vbp-text-primary, #111); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + componente.name + '</div>' +
-                    '<div style="font-size: 11px; color: var(--vbp-text-secondary, #6b7280); margin-top: 2px;">' + self.obtenerNombreCategoria(componente.category) + '</div>' +
+                    '<div style="font-weight: 500; font-size: 13px; color: var(--vbp-text-primary, #111); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + componentName + '</div>' +
+                    '<div style="font-size: 11px; color: var(--vbp-text-secondary, #6b7280); margin-top: 2px;">' + categoryName + '</div>' +
                     '</div>' +
                     '<div class="vbp-component-actions" style="display: none; position: absolute; top: 4px; right: 4px; gap: 4px;">' +
                     '<button class="vbp-action-export" title="Exportar" style="padding: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer;">' + self.iconos.download + '</button>' +

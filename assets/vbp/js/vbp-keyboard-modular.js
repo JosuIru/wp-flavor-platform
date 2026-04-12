@@ -692,10 +692,11 @@ document.addEventListener('alpine:init', function() {
 
                     case 'editCodeComponent':
                         // Editar componente seleccionado
-                        var selectedElement = store.selection && store.selection.length > 0 ?
-                            store.elements.find(function(el) { return el.id === store.selection[0]; }) : null;
+                        var selectedElementIds = store.selection && store.selection.elementIds ? store.selection.elementIds : [];
+                        var selectedElement = selectedElementIds.length > 0 ?
+                            store.elements.find(function(el) { return el.id === selectedElementIds[0]; }) : null;
 
-                        if (selectedElement && selectedElement.type === 'code-component') {
+                        if (selectedElement && selectedElement.type === 'code-component' && selectedElement.props && selectedElement.props.componentId) {
                             if (window.VBPCodeComponents && window.VBPCodeComponents.editComponent) {
                                 window.VBPCodeComponents.editComponent(selectedElement.props.componentId);
                             } else {

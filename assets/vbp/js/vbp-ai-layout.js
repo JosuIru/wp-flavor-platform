@@ -339,6 +339,10 @@ function initVbpAILayout() {
         calculateAutoSpacing: function() {
             var self = this;
             var store = Alpine.store('vbp');
+            if (!store || !store.selection || !store.selection.elementIds) {
+                this.error = 'Selecciona elementos para calcular spacing';
+                return;
+            }
 
             var selectedIds = store.selection.elementIds;
             if (selectedIds.length === 0) {
@@ -683,6 +687,10 @@ function initVbpAILayout() {
          */
         applyColorToSelection: function(color, property) {
             var store = Alpine.store('vbp');
+            if (!store || !store.selection || !store.selection.elementIds) {
+                this.error = 'Selecciona un elemento para aplicar el color';
+                return;
+            }
             var selectedIds = store.selection.elementIds;
 
             if (selectedIds.length === 0) {
@@ -721,6 +729,10 @@ function initVbpAILayout() {
         generateVariants: function() {
             var self = this;
             var store = Alpine.store('vbp');
+            if (!store || !store.selection || !store.selection.elementIds) {
+                this.error = 'Selecciona exactamente un elemento';
+                return;
+            }
 
             var selectedIds = store.selection.elementIds;
             if (selectedIds.length !== 1) {
@@ -819,6 +831,10 @@ function initVbpAILayout() {
             }
 
             var store = Alpine.store('vbp');
+            if (!store || !store.selection || !store.selection.elementIds) {
+                this.error = 'Selecciona exactamente un elemento';
+                return;
+            }
             var selectedIds = store.selection.elementIds;
 
             if (selectedIds.length !== 1) {
@@ -1013,7 +1029,7 @@ function initVbpAILayout() {
 
             var pageContext = this.getPageContext();
             var store = Alpine.store('vbp');
-            var selectedIds = store.selection.elementIds;
+            var selectedIds = (store && store.selection && store.selection.elementIds) ? store.selection.elementIds : [];
 
             fetch(VBP_Config.restUrl + 'ai/layout/command', {
                 method: 'POST',

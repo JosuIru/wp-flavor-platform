@@ -495,7 +495,12 @@ function vbpApp() {
 
         // Stubs para Design Tokens (se sobrescriben cuando el módulo carga)
         getTokenCategories: function() {
-            return ['colors', 'typography', 'spacing', 'shadows'];
+            return [
+                { id: 'colors', label: 'Colores', icon: '🎨' },
+                { id: 'typography', label: 'Tipografía', icon: '🔤' },
+                { id: 'spacing', label: 'Espaciado', icon: '↔️' },
+                { id: 'shadows', label: 'Sombras', icon: '🌑' }
+            ];
         },
 
         getFilteredTokens: function(category) {
@@ -503,7 +508,16 @@ function vbpApp() {
         },
 
         getQuickColorPalette: function() {
-            return ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#000000', '#ffffff'];
+            return [
+                { key: 'primary', value: '#3b82f6', label: 'Primario' },
+                { key: 'danger', value: '#ef4444', label: 'Peligro' },
+                { key: 'success', value: '#10b981', label: 'Éxito' },
+                { key: 'warning', value: '#f59e0b', label: 'Advertencia' },
+                { key: 'purple', value: '#8b5cf6', label: 'Púrpura' },
+                { key: 'pink', value: '#ec4899', label: 'Rosa' },
+                { key: 'black', value: '#000000', label: 'Negro' },
+                { key: 'white', value: '#ffffff', label: 'Blanco' }
+            ];
         },
 
         getAuditActionTypes: function() {
@@ -2123,6 +2137,73 @@ function vbpApp() {
                     '</div></div></section>';
             }
 
+            var isMediaIconValue = function(iconValue) {
+                return typeof iconValue === 'string' &&
+                    /^(https?:\/\/|\/)/.test(iconValue) &&
+                    /\.(svg|png|jpe?g|gif|webp)(\?.*)?(#.*)?$/i.test(iconValue);
+            };
+
+            var renderIconValue = function(iconValue, fallback, size, extraStyle) {
+                var value = iconValue || fallback;
+                var style = extraStyle || '';
+
+                if (isMediaIconValue(value)) {
+                    return '<img src="' + value + '" alt="" style="width: ' + (size || '1em') + '; height: ' + (size || '1em') + '; object-fit: contain; display: inline-block; vertical-align: middle; ' + style + '">';
+                }
+
+                if (typeof value === 'string' && /^[a-z_]+$/.test(value)) {
+                    return '<span class="material-icons" style="font-size: ' + (size || '1em') + '; line-height: 1; ' + style + '">' + value + '</span>';
+                }
+
+                return value;
+            };
+
+            var get3DChildConfigs = function(children) {
+                if (!Array.isArray(children)) {
+                    return [];
+                }
+
+                return children.map(function(child) {
+                    var childConfig = JSON.parse(JSON.stringify(child.data || {}));
+                    childConfig.id = child.id;
+
+                    switch (child.type) {
+                        case '3d-object':
+                            childConfig.type = 'primitive';
+                            break;
+                        case '3d-model':
+                            childConfig.type = 'model';
+                            break;
+                        case '3d-text':
+                            childConfig.type = 'text';
+                            break;
+                        case '3d-particles':
+                            childConfig.type = 'particles';
+                            break;
+                        case '3d-light':
+                            childConfig.type = 'light';
+                            break;
+                        case '3d-group':
+                            childConfig.type = 'group';
+                            childConfig.children = get3DChildConfigs(child.children || []);
+                            break;
+                        default:
+                            childConfig.type = child.type;
+                            break;
+                    }
+
+                    return childConfig;
+                });
+            };
+
+            var encodeRuntimePayload = function(payload) {
+                try {
+                    return encodeURIComponent(JSON.stringify(payload || {}));
+                } catch (error) {
+                    return '';
+                }
+            };
+
             if (type === 'features') {
                 var featuresVariant = element.variant || 'grid';
                 var items = data.items || [
@@ -2164,7 +2245,7 @@ function vbpApp() {
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         featuresHtml += '<div class="vbp-feature-card flavor-card" style="padding: ' + cardPadding + '; background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); text-align: center;">' +
-                            '<div style="font-size: 48px; margin-bottom: 16px; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<div style="font-size: 48px; margin-bottom: 16px; color: ' + cardIcono + ';">' + renderIconValue(item.icono, '✨', '48px') + '</div>' +
                             '<h3 contenteditable="true" style="font-size: 20px; margin: 0 0 12px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">' + (item.titulo || 'Característica') + '</h3>' +
                             '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + '; line-height: var(--flavor-line-height-base);">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
@@ -2177,7 +2258,7 @@ function vbpApp() {
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         featuresHtml += '<div style="display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-bottom: 1px solid ' + cardBorde + ';">' +
-                            '<div style="font-size: 32px; flex-shrink: 0; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<div style="font-size: 32px; flex-shrink: 0; color: ' + cardIcono + ';">' + renderIconValue(item.icono, '✨', '32px') + '</div>' +
                             '<div style="flex: 1;"><h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
                             '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + ';">' + (item.descripcion || 'Descripción') + '</p></div></div>';
                     }
@@ -2190,7 +2271,7 @@ function vbpApp() {
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         featuresHtml += '<div style="text-align: center; flex: 0 0 200px;">' +
-                            '<div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">' + (item.icono || '✨') + '</div>' +
+                            '<div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">' + renderIconValue(item.icono, '✨', '36px') + '</div>' +
                             '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
                             '<p contenteditable="true" style="margin: 0; font-size: 14px; color: ' + cardTexto + ';">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
@@ -2203,7 +2284,7 @@ function vbpApp() {
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         featuresHtml += '<div style="padding: ' + cardPadding + '; background: ' + cardFondo + '; border: 2px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; text-align: left; transition: border-color 0.2s;">' +
-                            '<div style="width: 48px; height: 48px; background: ' + acentoColor + '15; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<div style="width: 48px; height: 48px; background: ' + acentoColor + '15; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; color: ' + cardIcono + ';">' + renderIconValue(item.icono, '✨', '24px') + '</div>' +
                             '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
                             '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + '; font-size: 14px;">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
@@ -2466,7 +2547,7 @@ function vbpApp() {
                     '<input type="text" placeholder="Nombre" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
                     '<input type="email" placeholder="Email" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
                     '<textarea placeholder="Mensaje" rows="4" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base); resize: vertical;"></textarea>' +
-                    '<button type="submit" class="flavor-button flavor-button-primary" style="padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">Enviar mensaje</button>' +
+                    '<button type="submit" class="flavor-button flavor-button-primary" style="padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Enviar mensaje') + '</button>' +
                     '</form></div></section>';
             }
 
@@ -2734,7 +2815,7 @@ function vbpApp() {
 
             if (type === 'icon') {
                 return '<div style="padding: 16px; text-align: center; ' + customStyle + '">' +
-                    '<span style="font-size: ' + (data.size || '48px') + ';">' + (data.icon || '⭐') + '</span></div>';
+                    '<span style="font-size: ' + (data.size || '48px') + ';">' + renderIconValue(data.icon, '⭐', data.size || '48px') + '</span></div>';
             }
 
             if (type === 'html') {
@@ -2812,6 +2893,58 @@ function vbpApp() {
                     '<div style="font-size: 14px; opacity: 0.9;">Pega tu código embed</div>' +
                     '<div style="font-size: 11px; opacity: 0.7; margin-top: 8px;">YouTube, Vimeo, Spotify, etc.</div>' +
                     '</div></div>';
+            }
+
+            if (type === '3d-scene') {
+                var sceneHeight = data.height || '400px';
+                var sceneWidth = data.width || '100%';
+                var scenePreset = data.preset || 'minimal';
+                var sceneChildren = Array.isArray(element.children) ? element.children : [];
+                var sceneObjects = get3DChildConfigs(sceneChildren);
+                var runtimeSceneConfig = JSON.parse(JSON.stringify(data || {}));
+                runtimeSceneConfig.preset = scenePreset;
+                runtimeSceneConfig.shadows = data.shadows === true;
+                runtimeSceneConfig.antialiasing = data.antialiasing !== false;
+                var runtimeSignature = encodeRuntimePayload({
+                    config: runtimeSceneConfig,
+                    objects: sceneObjects
+                });
+                var helperText = sceneChildren.length > 0
+                    ? sceneChildren.length + ' objeto(s) 3D en esta escena'
+                    : 'Arrastra objetos 3D dentro de la escena';
+
+                return '<div class="vbp-3d-scene-block flavor-component" style="padding: 16px; ' + customStyle + '">' +
+                    '<div class="vbp-3d-scene-runtime" ' +
+                        'data-vbp-3d-scene="1" ' +
+                        'data-vbp-element-id="' + element.id + '" ' +
+                        'data-vbp-scene-config="' + encodeRuntimePayload(runtimeSceneConfig) + '" ' +
+                        'data-vbp-scene-objects="' + encodeRuntimePayload(sceneObjects) + '" ' +
+                        'data-vbp-scene-signature="' + runtimeSignature + '" ' +
+                        'style="position: relative; width: ' + sceneWidth + '; height: ' + sceneHeight + '; min-height: 260px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #0b1220, #111827); border: 1px solid rgba(148,163,184,0.2);">' +
+                        '<div class="vbp-3d-scene-overlay" style="position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; z-index: 2;">' +
+                            '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
+                                '<span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(15,23,42,0.72); color: #e5e7eb; font-size: 12px; font-weight: 600;">🎲 Escena 3D</span>' +
+                                '<span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(15,23,42,0.5); color: #cbd5e1; font-size: 12px;">Preset: ' + scenePreset + '</span>' +
+                            '</div>' +
+                            '<div style="align-self: flex-start; padding: 8px 10px; border-radius: 10px; background: rgba(15,23,42,0.6); color: #cbd5e1; font-size: 12px;">' + helperText + '</div>' +
+                        '</div>' +
+                        '<div class="vbp-container-dropzone" data-container-id="' + element.id + '" data-column-index="0" style="position: absolute; inset: 0; border: 1px dashed transparent; z-index: 1;"></div>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            if (['3d-object', '3d-model', '3d-text', '3d-particles', '3d-light', '3d-group'].indexOf(type) !== -1) {
+                var labelMap = {
+                    '3d-object': 'Objeto 3D',
+                    '3d-model': 'Modelo 3D',
+                    '3d-text': 'Texto 3D',
+                    '3d-particles': 'Partículas 3D',
+                    '3d-light': 'Luz 3D',
+                    '3d-group': 'Grupo 3D'
+                };
+                return '<div class="vbp-3d-child-placeholder" style="padding: 12px 14px; border-radius: 12px; border: 1px dashed rgba(99,102,241,0.35); background: rgba(99,102,241,0.08); color: #4338ca; font-size: 13px; font-weight: 600; ' + customStyle + '">' +
+                    '🎲 ' + labelMap[type] +
+                '</div>';
             }
 
             // ============ LAYOUT ============
@@ -3134,16 +3267,18 @@ function vbpApp() {
 
             if (type === 'social-icons') {
                 var redes = data.redes || [{ red: 'facebook', icono: '📘' }, { red: 'twitter', icono: '🐦' }, { red: 'instagram', icono: '📸' }, { red: 'linkedin', icono: '💼' }];
-                var html = '<div class="vbp-social-icons flavor-component" style="padding: 24px; text-align: ' + (data.alineacion || 'center') + '; ' + customStyle + '">';
+                var socialAlign = data.alineacion || 'center';
+                var socialTextAlign = socialAlign === 'flex-start' ? 'left' : (socialAlign === 'flex-end' ? 'right' : socialAlign);
+                var html = '<div class="vbp-social-icons flavor-component" style="padding: 24px; text-align: ' + socialTextAlign + '; ' + customStyle + '">';
                 if (data.titulo) {
                     html += '<p contenteditable="true" data-field="titulo" style="margin: 0 0 16px; color: ' + textMutedColor + ';">' + data.titulo + '</p>';
                 }
-                html += '<div style="display: flex; gap: 12px; justify-content: ' + (data.alineacion || 'center') + '; flex-wrap: wrap;">';
+                html += '<div style="display: flex; gap: 12px; justify-content: ' + socialAlign + '; flex-wrap: wrap;">';
                 for (var si = 0; si < redes.length; si++) {
                     var red = redes[si];
                     var btnSize = data.tamano === 'large' ? '56px' : (data.tamano === 'small' ? '36px' : '44px');
                     var fontSize = data.tamano === 'large' ? '28px' : (data.tamano === 'small' ? '16px' : '22px');
-                    html += '<a href="' + (red.url || '#') + '" style="display: flex; align-items: center; justify-content: center; width: ' + btnSize + '; height: ' + btnSize + '; background: ' + primaryColor + '; border-radius: ' + (data.estilo === 'square' ? '8px' : '50%') + '; text-decoration: none; font-size: ' + fontSize + '; transition: transform 0.2s;">' + (red.icono || '🔗') + '</a>';
+                    html += '<a href="' + (red.url || '#') + '" style="display: flex; align-items: center; justify-content: center; width: ' + btnSize + '; height: ' + btnSize + '; background: ' + primaryColor + '; border-radius: ' + (data.estilo === 'square' ? '8px' : '50%') + '; text-decoration: none; font-size: ' + fontSize + '; transition: transform 0.2s;">' + renderIconValue(red.icono, '🔗', fontSize) + '</a>';
                 }
                 html += '</div></div>';
                 return html;
@@ -3229,7 +3364,7 @@ function vbpApp() {
                 // Variante: Vertical (default)
                 if (iconBoxVariant === 'vertical' || iconBoxVariant === 'default') {
                     return '<div class="vbp-icon-box vbp-icon-box--vertical flavor-card" style="padding: ' + cardPadding + '; background: white; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); text-align: center; ' + customStyle + '">' +
-                        '<div style="font-size: 48px; margin-bottom: 16px;">' + (data.icono || '🚀') + '</div>' +
+                        '<div style="font-size: 48px; margin-bottom: 16px;">' + renderIconValue(data.icono, '🚀', '48px') + '</div>' +
                         '<h3 contenteditable="true" data-field="titulo" style="font-size: 20px; margin: 0 0 12px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título') + '</h3>' +
                         '<p contenteditable="true" data-field="descripcion" style="color: ' + textMutedColor + '; margin: 0 0 16px; line-height: var(--flavor-line-height-base);">' + (data.descripcion || 'Descripción') + '</p>' +
                         iconBoxLink + '</div>';
@@ -3238,7 +3373,7 @@ function vbpApp() {
                 // Variante: Horizontal
                 if (iconBoxVariant === 'horizontal') {
                     return '<div class="vbp-icon-box vbp-icon-box--horizontal flavor-card" style="padding: ' + cardPadding + '; background: white; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); display: flex; align-items: flex-start; gap: 20px; ' + customStyle + '">' +
-                        '<div style="font-size: 40px; flex-shrink: 0; width: 64px; height: 64px; background: ' + primaryColor + '15; border-radius: 16px; display: flex; align-items: center; justify-content: center;">' + (data.icono || '🚀') + '</div>' +
+                        '<div style="font-size: 40px; flex-shrink: 0; width: 64px; height: 64px; background: ' + primaryColor + '15; border-radius: 16px; display: flex; align-items: center; justify-content: center;">' + renderIconValue(data.icono, '🚀', '40px') + '</div>' +
                         '<div style="flex: 1;">' +
                         '<h3 contenteditable="true" data-field="titulo" style="font-size: 18px; margin: 0 0 8px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título') + '</h3>' +
                         '<p contenteditable="true" data-field="descripcion" style="color: ' + textMutedColor + '; margin: 0 0 12px; line-height: var(--flavor-line-height-base); font-size: 14px;">' + (data.descripcion || 'Descripción') + '</p>' +
@@ -3248,7 +3383,7 @@ function vbpApp() {
                 // Variante: Izquierda con borde
                 if (iconBoxVariant === 'left') {
                     return '<div class="vbp-icon-box vbp-icon-box--left" style="padding: ' + cardPadding + '; background: white; border-left: 4px solid ' + primaryColor + '; display: flex; align-items: flex-start; gap: 16px; ' + customStyle + '">' +
-                        '<div style="font-size: 32px; flex-shrink: 0;">' + (data.icono || '🚀') + '</div>' +
+                        '<div style="font-size: 32px; flex-shrink: 0;">' + renderIconValue(data.icono, '🚀', '32px') + '</div>' +
                         '<div style="flex: 1;">' +
                         '<h3 contenteditable="true" data-field="titulo" style="font-size: 18px; margin: 0 0 8px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título') + '</h3>' +
                         '<p contenteditable="true" data-field="descripcion" style="color: ' + textMutedColor + '; margin: 0; line-height: var(--flavor-line-height-base); font-size: 14px;">' + (data.descripcion || 'Descripción') + '</p>' +
@@ -3257,7 +3392,7 @@ function vbpApp() {
 
                 // Fallback
                 return '<div class="vbp-icon-box flavor-card" style="padding: ' + cardPadding + '; background: white; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); text-align: center; ' + customStyle + '">' +
-                    '<div style="font-size: 48px; margin-bottom: 16px;">' + (data.icono || '🚀') + '</div>' +
+                    '<div style="font-size: 48px; margin-bottom: 16px;">' + renderIconValue(data.icono, '🚀', '48px') + '</div>' +
                     '<h3 contenteditable="true" data-field="titulo" style="font-size: 20px; margin: 0 0 12px;">' + (data.titulo || 'Título') + '</h3>' +
                     '<p contenteditable="true" data-field="descripcion" style="color: ' + textMutedColor + '; margin: 0;">' + (data.descripcion || 'Descripción') + '</p></div>';
             }
@@ -3323,7 +3458,16 @@ function vbpApp() {
 
                 var tabsVariant = element.variant || 'horizontal';
                 var tabItems = data.items || [{ titulo: 'Tab 1', contenido: 'Contenido de la pestaña 1' }];
-                var activeTab = data.tab_activa || 0;
+                var activeTab = parseInt(data.tab_activa, 10);
+                if (isNaN(activeTab)) {
+                    activeTab = 0;
+                }
+                if (activeTab < 0) {
+                    activeTab = 0;
+                }
+                if (activeTab >= tabItems.length) {
+                    activeTab = Math.max(0, tabItems.length - 1);
+                }
 
                 // Variante: Horizontal (default)
                 if (tabsVariant === 'horizontal' || tabsVariant === 'default') {
@@ -3450,7 +3594,7 @@ function vbpApp() {
                 for (var si = 0; si < redes.length; si++) {
                     var red = redes[si];
                     html += '<a href="' + (red.url || '#') + '" style="display: flex; align-items: center; justify-content: center; width: ' + iconSize + '; height: ' + iconSize + '; background: ' + iconColor + '20; border-radius: 50%; text-decoration: none; font-size: calc(' + iconSize + ' * 0.5); transition: transform 0.2s, background 0.2s;" onmouseover="this.style.transform=\'scale(1.1)\'; this.style.background=\'' + iconColor + '30\';" onmouseout="this.style.transform=\'scale(1)\'; this.style.background=\'' + iconColor + '20\';">' +
-                        (red.icono || '🔗') + '</a>';
+                    renderIconValue(red.icono, '🔗', iconSize) + '</a>';
                 }
 
                 html += '</div></div>';
@@ -3502,7 +3646,7 @@ function vbpApp() {
             }
 
             if (type === 'icon-box') {
-                var ibIcon = data.icono || '⭐';
+                var ibIcon = renderIconValue(data.icono, '⭐', data.icono_tamano || '48px');
                 var ibTitle = data.titulo || 'Título';
                 var ibDesc = data.descripcion || 'Descripción del elemento';
                 var ibLayout = data.layout || 'vertical';
@@ -3531,8 +3675,11 @@ function vbpApp() {
                 ];
                 var carouselAutoplay = data.autoplay !== false;
                 var carouselDots = data.mostrar_dots !== false;
-                var carouselNavigation = data.mostrar_navegacion !== false;
-                var carouselInterval = data.intervalo || 5000;
+                var carouselNavigation = data.mostrar_flechas !== false && data.mostrar_navegacion !== false;
+                var carouselInterval = parseInt(data.intervalo, 10) || 5;
+                if (carouselInterval < 100) {
+                    carouselInterval = carouselInterval * 1000;
+                }
 
                 var carouselBgColor = data.fondo_color || '#1a1a2e';
                 var carouselTextColor = data.texto_color || '#ffffff';
@@ -3581,14 +3728,14 @@ function vbpApp() {
             // ============ TIMELINE ============
             if (type === 'timeline') {
                 var timelineVariant = element.variant || 'alternating';
-                var timelineItems = data.items || [
+                var timelineItems = data.eventos || data.items || [
                     { fecha: '2024', titulo: 'Evento 1', descripcion: 'Descripción del primer evento', icono: '🚀' },
                     { fecha: '2023', titulo: 'Evento 2', descripcion: 'Descripción del segundo evento', icono: '⭐' },
                     { fecha: '2022', titulo: 'Evento 3', descripcion: 'Descripción del tercer evento', icono: '🎯' }
                 ];
 
-                var timelineLineColor = data.linea_color || '#e5e7eb';
-                var timelineMarkerColor = data.marcador_color || primaryColor;
+                var timelineLineColor = data.color_linea || data.linea_color || '#e5e7eb';
+                var timelineMarkerColor = data.color_marcador || data.marcador_color || primaryColor;
                 var timelineCardBg = data.card_fondo_color || '#ffffff';
                 var timelineCardBorder = data.card_borde_color || '#e5e7eb';
                 var timelineTitleColor = data.titulo_color || textColor;
@@ -3612,7 +3759,7 @@ function vbpApp() {
                         var textAlign = isOdd ? 'text-align: right;' : 'text-align: left;';
 
                         timelineHtml += '<div class="vbp-timeline__item" style="position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: start; margin-bottom: 32px;">' +
-                            '<div class="vbp-timeline__marker" style="position: absolute; top: 8px; left: ' + timelineMarkerLeft + '; transform: translateX(-50%); width: 44px; height: 44px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 0 4px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; top: 8px; left: ' + timelineMarkerLeft + '; transform: translateX(-50%); width: 44px; height: 44px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 0 4px ' + timelineMarkerColor + '30; z-index: 1;">' + renderIconValue(tItem.icono, '📌', '18px') + '</div>' +
                             '<div class="vbp-timeline__content" style="grid-column: ' + columnStart + '; background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); ' + textAlign + '">' +
                             '<div class="vbp-timeline__date" style="font-size: 14px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 8px;">' + (tItem.fecha || '') + '</div>' +
                             '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 18px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 8px;">' + (tItem.titulo || 'Título') + '</h4>' +
@@ -3621,7 +3768,7 @@ function vbpApp() {
                     } else {
                         // Variante vertical (izquierda)
                         timelineHtml += '<div class="vbp-timeline__item" style="position: relative; margin-bottom: 32px; padding-left: 64px;">' +
-                            '<div class="vbp-timeline__marker" style="position: absolute; left: ' + timelineMarkerLeft + '; top: 8px; transform: translateX(-50%); width: 36px; height: 36px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 3px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; left: ' + timelineMarkerLeft + '; top: 8px; transform: translateX(-50%); width: 36px; height: 36px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 3px ' + timelineMarkerColor + '30; z-index: 1;">' + renderIconValue(tItem.icono, '📌', '14px') + '</div>' +
                             '<div class="vbp-timeline__content" style="background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">' +
                             '<div class="vbp-timeline__date" style="font-size: 13px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 6px;">' + (tItem.fecha || '') + '</div>' +
                             '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 16px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 6px;">' + (tItem.titulo || 'Título') + '</h4>' +
@@ -3745,9 +3892,10 @@ function vbpApp() {
 
         /**
          * Renderiza el contenido de una columna en un bloque two_columns
-         * Soporta tipos: contact_info, contact_form, text, image, etc.
+         * Soporta renderizado recursivo de cualquier tipo de bloque
          */
         renderTwoColumnContent: function(colData, lado) {
+            var self = this;
             var ds = (typeof VBP_Config !== 'undefined' && VBP_Config.designSettings) ? VBP_Config.designSettings : {};
             var primaryColor = ds.primary_color || '#3b82f6';
             var textColor = ds.text_color || '#1f2937';
@@ -3761,6 +3909,20 @@ function vbpApp() {
             var colType = colData.type;
             var colContent = colData.data || {};
 
+            // Si tiene un ID, intentar renderizar como elemento completo usando renderElement
+            if (colData.id) {
+                return this.renderElement(colData);
+            }
+
+            // Si tiene hijos, renderizarlos recursivamente
+            if (colData.children && colData.children.length > 0) {
+                var childrenHtml = '';
+                for (var i = 0; i < colData.children.length; i++) {
+                    childrenHtml += '<div class="vbp-column-child">' + self.renderElement(colData.children[i]) + '</div>';
+                }
+                return childrenHtml;
+            }
+
             // Renderizar contact_info
             if (colType === 'contact_info') {
                 var titulo = colContent.titulo || 'Información';
@@ -3772,7 +3934,7 @@ function vbpApp() {
                     var item = items[i];
                     html += '<li style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">';
                     if (item.icono) {
-                        html += '<span style="font-size: 18px; flex-shrink: 0;">' + item.icono + '</span>';
+                        html += '<span style="font-size: 18px; flex-shrink: 0;">' + renderIconValue(item.icono, '📌', '18px') + '</span>';
                     }
                     html += '<div>';
                     if (item.titulo) {
@@ -3838,9 +4000,108 @@ function vbpApp() {
                 return '<div style="padding: 32px; text-align: center; color: ' + textMutedColor + '; border: 2px dashed #ddd; border-radius: ' + buttonRadius + '; font-size: 12px;">🖼️ Añade una imagen</div>';
             }
 
-            // Fallback: tipo desconocido
+            // Renderizar benefits (lista de beneficios)
+            if (colType === 'benefits') {
+                var benefitsTitulo = colContent.titulo || 'Beneficios';
+                var benefitsItems = colContent.items || [];
+                var benefitsHtml = '<div class="vbp-benefits" style="padding: 16px;">';
+                benefitsHtml += '<h3 contenteditable="true" data-field="titulo" style="font-size: 20px; font-weight: 600; margin: 0 0 20px; color: ' + textColor + ';">' + benefitsTitulo + '</h3>';
+                benefitsHtml += '<ul style="list-style: none; padding: 0; margin: 0;">';
+                if (benefitsItems.length === 0) {
+                    benefitsItems = [
+                        { icono: '✓', texto: 'Beneficio 1' },
+                        { icono: '✓', texto: 'Beneficio 2' },
+                        { icono: '✓', texto: 'Beneficio 3' }
+                    ];
+                }
+                for (var bi = 0; bi < benefitsItems.length; bi++) {
+                    var benefit = benefitsItems[bi];
+                    var benefitIcono = benefit.icono || '✓';
+                    var benefitTexto = benefit.texto || benefit.titulo || 'Beneficio';
+                    var benefitDesc = benefit.descripcion || '';
+                    benefitsHtml += '<li style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; padding: 12px; background: rgba(255,255,255,0.5); border-radius: ' + buttonRadius + ';">';
+                    benefitsHtml += '<span style="font-size: 20px; color: ' + primaryColor + '; flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: ' + primaryColor + '20; border-radius: 50%;">' + renderIconValue(benefitIcono, '✓', '20px') + '</span>';
+                    benefitsHtml += '<div style="flex: 1;">';
+                    benefitsHtml += '<span contenteditable="true" style="display: block; font-weight: 500; color: ' + textColor + '; font-size: 15px;">' + benefitTexto + '</span>';
+                    if (benefitDesc) {
+                        benefitsHtml += '<span contenteditable="true" style="display: block; color: ' + textMutedColor + '; font-size: 13px; margin-top: 4px;">' + benefitDesc + '</span>';
+                    }
+                    benefitsHtml += '</div></li>';
+                }
+                benefitsHtml += '</ul></div>';
+                return benefitsHtml;
+            }
+
+            // Renderizar registration_form (formulario de registro)
+            if (colType === 'registration_form') {
+                var regTitulo = colContent.titulo || 'Únete ahora';
+                var regSubtitulo = colContent.subtitulo || '';
+                var regCampos = colContent.campos || [
+                    { nombre: 'nombre', label: 'Nombre completo', tipo: 'text', requerido: true },
+                    { nombre: 'email', label: 'Email', tipo: 'email', requerido: true },
+                    { nombre: 'telefono', label: 'Teléfono', tipo: 'tel' }
+                ];
+                var regBotonTexto = colContent.boton_texto || 'Registrarme';
+                var regBotonColor = colContent.boton_color || primaryColor;
+                var regFondoColor = colContent.fondo_color || '#ffffff';
+
+                var regHtml = '<div class="vbp-registration-form" style="padding: 24px; background: ' + regFondoColor + '; border-radius: ' + buttonRadius + '; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+                regHtml += '<h3 contenteditable="true" data-field="titulo" style="font-size: 22px; font-weight: 600; margin: 0 0 8px; color: ' + textColor + '; text-align: center;">' + regTitulo + '</h3>';
+                if (regSubtitulo) {
+                    regHtml += '<p contenteditable="true" data-field="subtitulo" style="margin: 0 0 20px; color: ' + textMutedColor + '; text-align: center; font-size: 14px;">' + regSubtitulo + '</p>';
+                }
+                regHtml += '<form style="display: flex; flex-direction: column; gap: 14px;">';
+                for (var ri = 0; ri < regCampos.length; ri++) {
+                    var regCampo = regCampos[ri];
+                    var regLabel = regCampo.label || regCampo.nombre || 'Campo';
+                    var regTipo = regCampo.tipo || 'text';
+                    var regRequerido = regCampo.requerido ? ' *' : '';
+                    var regPlaceholder = regCampo.placeholder || regLabel;
+                    regHtml += '<div style="display: flex; flex-direction: column; gap: 6px;">';
+                    regHtml += '<label style="font-size: 13px; font-weight: 500; color: ' + textColor + ';">' + regLabel + regRequerido + '</label>';
+                    if (regTipo === 'textarea') {
+                        regHtml += '<textarea placeholder="' + regPlaceholder + '" style="padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: 14px; resize: vertical; min-height: 80px; transition: border-color 0.2s;"></textarea>';
+                    } else if (regTipo === 'select') {
+                        regHtml += '<select style="padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: 14px; background: white;">';
+                        regHtml += '<option>Selecciona...</option>';
+                        var regOpciones = regCampo.opciones || [];
+                        for (var ro = 0; ro < regOpciones.length; ro++) {
+                            regHtml += '<option>' + regOpciones[ro] + '</option>';
+                        }
+                        regHtml += '</select>';
+                    } else {
+                        regHtml += '<input type="' + regTipo + '" placeholder="' + regPlaceholder + '" style="padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: 14px; transition: border-color 0.2s;">';
+                    }
+                    regHtml += '</div>';
+                }
+                regHtml += '<button type="button" style="padding: 14px 24px; background: ' + regBotonColor + '; color: white; border: none; border-radius: ' + buttonRadius + '; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; transition: opacity 0.2s;">' + regBotonTexto + '</button>';
+                regHtml += '</form>';
+                if (colContent.nota_legal) {
+                    regHtml += '<p style="margin: 16px 0 0; font-size: 11px; color: ' + textMutedColor + '; text-align: center;">' + colContent.nota_legal + '</p>';
+                }
+                regHtml += '</div>';
+                return regHtml;
+            }
+
+            // Fallback: intentar renderizar como elemento genérico
             if (colType && colContent) {
-                return '<div style="padding: 16px; text-align: center; color: ' + textMutedColor + '; font-size: 12px;">📦 ' + colType + '</div>';
+                // Crear un elemento temporal para intentar renderizarlo
+                var tempElement = {
+                    id: 'temp_' + Date.now(),
+                    type: colType,
+                    data: colContent,
+                    styles: colData.styles || {}
+                };
+                var rendered = this.renderElement(tempElement);
+                // Si se renderizó algo diferente al placeholder genérico, usarlo
+                if (rendered && rendered.indexOf('vbp-unknown-block') === -1) {
+                    return rendered;
+                }
+                // Si no, mostrar placeholder con info del tipo
+                return '<div style="padding: 16px; text-align: center; color: ' + textMutedColor + '; font-size: 12px; border: 1px dashed #ddd; border-radius: 8px; background: #f9f9f9;">' +
+                    '<div style="font-size: 24px; margin-bottom: 8px;">' + this.getTypeIcon(colType) + '</div>' +
+                    '<div style="font-weight: 500;">' + (this.getTypeLabel(colType) || colType) + '</div>' +
+                '</div>';
             }
 
             return '<div style="text-align: center; color: #6b7280; padding: 20px; font-size: 12px;">📥 Columna ' + lado + '</div>';
@@ -4435,6 +4696,23 @@ function vbpApp() {
                 css += 'opacity: ' + styles.opacity + '; ';
             }
 
+            // Transition
+            if (styles.transition) {
+                if (typeof styles.transition === 'string') {
+                    css += 'transition: ' + styles.transition + '; ';
+                } else if (typeof styles.transition === 'object') {
+                    var transitionProp = styles.transition.property || 'all';
+                    var transitionDuration = styles.transition.duration || '0.3s';
+                    var transitionTiming = styles.transition.timing || 'ease';
+                    var transitionDelay = styles.transition.delay || '';
+                    var transitionValue = transitionProp + ' ' + transitionDuration + ' ' + transitionTiming;
+                    if (transitionDelay && transitionDelay !== '0s') {
+                        transitionValue += ' ' + transitionDelay;
+                    }
+                    css += 'transition: ' + transitionValue + '; ';
+                }
+            }
+
             return css;
         },
 
@@ -4918,6 +5196,25 @@ function vbpApp() {
                 this.destroySplitScreen();
             }
 
+            if (window.VBPResponsiveVariants && typeof window.VBPResponsiveVariants.setBreakpoint === 'function') {
+                window.VBPResponsiveVariants.setBreakpoint(device);
+            } else {
+                var breakpointDetail = {
+                    breakpoint: device,
+                    previousBreakpoint: null,
+                    canvasWidth: null,
+                    config: null
+                };
+
+                document.dispatchEvent(new CustomEvent('vbp:responsive:breakpointChanged', {
+                    detail: breakpointDetail
+                }));
+
+                document.dispatchEvent(new CustomEvent('vbp:breakpoint:changed', {
+                    detail: breakpointDetail
+                }));
+            }
+
             // Aplicar clases al canvas
             var canvasArea = document.querySelector('.vbp-canvas-area');
             if (canvasArea) {
@@ -4943,6 +5240,28 @@ function vbpApp() {
 
     return app;
 }
+
+// Exponer vbpApp globalmente
+window.vbpApp = vbpApp;
+
+/**
+ * Registrar vbpApp con Alpine.data
+ */
+function registerVbpAppComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpApp', vbpApp);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerVbpAppComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerVbpAppComponent();
+});
 
 /**
  * VBP Module Preview - Carga previsualizaciones en tiempo real de módulos
@@ -5355,3 +5674,22 @@ function vbpMinimap() {
 
 // Exponer globalmente
 window.vbpMinimap = vbpMinimap;
+
+/**
+ * Registrar vbpMinimap con Alpine.data
+ */
+function registerVbpMinimapComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpMinimap', vbpMinimap);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerVbpMinimapComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerVbpMinimapComponent();
+});

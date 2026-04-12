@@ -838,7 +838,12 @@ customElements.define('vbp-counter', Component);`,
             .then(function(data) {
                 if (data.success && data.components) {
                     data.components.forEach(function(comp) {
-                        self.components[comp.id] = comp;
+                        // Normalizar: backend usa component_id, frontend usa id
+                        var componentId = comp.component_id || comp.id;
+                        if (componentId) {
+                            comp.id = componentId; // Asegurar que id esté disponible
+                            self.components[componentId] = comp;
+                        }
                     });
                     vbpLog.log('VBPCodeComponents: Loaded ' + Object.keys(self.components).length + ' components');
                 }
@@ -1292,36 +1297,104 @@ customElements.define('vbp-counter', Component);`,
         },
 
         /**
-         * Generar preview para Svelte (limitado sin compilador)
+         * Generar preview para Svelte
+         * Usa interpretación básica del código Svelte para mostrar preview estático
          */
         generateSveltePreview: function(component, props) {
-            // Svelte requiere compilacion, mostrar mensaje informativo
-            return 'document.getElementById("root").innerHTML = \n' +
-                '    "<div style=\\"padding:16px;background:#fef3c7;color:#92400e;\\">" +\n' +
-                '    "Svelte preview requires compilation. Use the export feature to test." +\n' +
-                '    "</div>";\n';
+            // Extraer el template HTML de Svelte (todo después del último </script> o si no hay script)
+            var code = component.code || '';
+            var propsJson = JSON.stringify(props || {});
+
+            // Extraer parte HTML (después de </script> o todo si no hay script)
+            var scriptEndMatch = code.lastIndexOf('</script>');
+            var htmlPart = scriptEndMatch !== -1 ? code.substring(scriptEndMatch + 9).trim() : code;
+
+            // Si no hay HTML, mostrar mensaje
+            if (!htmlPart || htmlPart.length < 5) {
+                return 'document.getElementById("root").innerHTML = \n' +
+                    '    "<div style=\\"padding:16px;background:#fef3c7;color:#92400e;\\">" +\n' +
+                    '    "<strong>Svelte Preview</strong><br/>" +\n' +
+                    '    "Full preview requires compilation. Showing static structure." +\n' +
+                    '    "</div>";\n';
+            }
+
+            // Escapar el HTML para insertarlo de forma segura
+            var escapedHtml = htmlPart
+                .replace(/\\/g, '\\\\')
+                .replace(/`/g, '\\`')
+                .replace(/\$/g, '\\$');
+
+            // Generar preview estático interpretando variables básicas
+            return '(function() {\n' +
+                '    try {\n' +
+                '        var props = ' + propsJson + ';\n' +
+                '        var template = `' + escapedHtml + '`;\n' +
+                '        \n' +
+                '        // Reemplazar interpolaciones básicas de Svelte {variable}\n' +
+                '        template = template.replace(/\\{([a-zA-Z_][a-zA-Z0-9_]*)\\}/g, function(match, varName) {\n' +
+                '            if (props.hasOwnProperty(varName)) {\n' +
+                '                var val = props[varName];\n' +
+                '                if (typeof val === "string") {\n' +
+                '                    return val.replace(/</g, "&lt;").replace(/>/g, "&gt;");\n' +
+                '                }\n' +
+                '                return String(val);\n' +
+                '            }\n' +
+                '            return match;\n' +
+                '        });\n' +
+                '        \n' +
+                '        // Mostrar aviso de preview estático + el template\n' +
+                '        var notice = "<div style=\\"padding:8px;background:#dbeafe;color:#1e40af;margin-bottom:8px;border-radius:4px;font-size:12px;\\">" +\n' +
+                '            "<strong>\u26A1 Svelte Static Preview</strong> - Full reactivity requires build" +\n' +
+                '            "</div>";\n' +
+                '        document.getElementById("root").innerHTML = notice + template;\n' +
+                '    } catch (e) {\n' +
+                '        document.getElementById("root").innerHTML = \n' +
+                '            "<div style=\\"color:red;padding:16px;\\">Error: " + e.message + "</div>";\n' +
+                '        console.error(e);\n' +
+                '    }\n' +
+                '})();\n';
         },
 
         /**
          * Generar preview para Vanilla JS
          */
         generateVanillaPreview: function(component, props) {
+            var self = this;
             var propsAttrs = '';
             Object.keys(props || {}).forEach(function(key) {
                 var value = props[key];
+                // Sanitizar nombre de atributo (solo letras, números y guiones)
                 var attrName = key.replace(/[A-Z]/g, function(letterMayuscula) { return '-' + letterMayuscula.toLowerCase(); });
-                propsAttrs += ' ' + attrName + '="' + String(value).replace(/"/g, '&quot;') + '"';
+                attrName = attrName.replace(/[^a-z0-9-]/gi, '');
+                // Escapar valor de atributo de forma segura
+                var safeValue = String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                propsAttrs += ' ' + attrName + '="' + safeValue + '"';
             });
 
             return '(function() {\n' +
                 '    try {\n' +
                 '        ' + component.code + '\n' +
                 '        \n' +
-                '        document.getElementById("root").innerHTML = \n' +
-                '            "<vbp-component' + propsAttrs.replace(/"/g, '\\"') + '></vbp-component>";\n' +
+                '        var container = document.getElementById("root");\n' +
+                '        var el = document.createElement("vbp-component");\n' +
+                '        var props = ' + JSON.stringify(props || {}) + ';\n' +
+                '        Object.keys(props).forEach(function(k) {\n' +
+                '            var attrName = k.replace(/[A-Z]/g, function(l) { return "-" + l.toLowerCase(); });\n' +
+                '            el.setAttribute(attrName, String(props[k]));\n' +
+                '        });\n' +
+                '        container.innerHTML = "";\n' +
+                '        container.appendChild(el);\n' +
                 '    } catch (e) {\n' +
-                '        document.getElementById("root").innerHTML = \n' +
-                '            "<div style=\\"color:red;padding:16px;\\">Error: " + e.message + "</div>";\n' +
+                '        var errDiv = document.createElement("div");\n' +
+                '        errDiv.style.cssText = "color:red;padding:16px;";\n' +
+                '        errDiv.textContent = "Error: " + e.message;\n' +
+                '        document.getElementById("root").innerHTML = "";\n' +
+                '        document.getElementById("root").appendChild(errDiv);\n' +
                 '        console.error(e);\n' +
                 '    }\n' +
                 '})();\n';
@@ -1342,29 +1415,57 @@ customElements.define('vbp-counter', Component);`,
                 return null;
             }
 
-            // Obtener o crear iframe
-            var iframe = this.previewIframes.get(componentId);
             var container = document.getElementById('vbp-code-preview-' + componentId);
 
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.className = 'vbp-code-preview-iframe';
-                iframe.sandbox = 'allow-scripts';
-                iframe.setAttribute('title', 'Component Preview: ' + component.name);
-                this.previewIframes.set(componentId, iframe);
+            // Limpiar iframe anterior completamente para evitar memory leaks
+            var existingIframe = this.previewIframes.get(componentId);
+            if (existingIframe) {
+                // Limpiar contenido del iframe antes de removerlo
+                try {
+                    existingIframe.srcdoc = '';
+                    if (existingIframe.contentWindow) {
+                        existingIframe.contentWindow.location.replace('about:blank');
+                    }
+                } catch (cleanupError) {
+                    // Ignorar errores de cross-origin
+                }
+                if (existingIframe.parentNode) {
+                    existingIframe.parentNode.removeChild(existingIframe);
+                }
+                this.previewIframes.delete(componentId);
             }
+
+            // Crear nuevo iframe
+            var iframe = document.createElement('iframe');
+            iframe.className = 'vbp-code-preview-iframe';
+            iframe.sandbox = 'allow-scripts';
+            iframe.setAttribute('title', 'Component Preview: ' + this.escapeHtml(component.name));
+            this.previewIframes.set(componentId, iframe);
 
             // Generar HTML del preview
             var previewHTML = this.generatePreviewHTML(component, props || this.getDefaultProps(component));
             iframe.srcdoc = previewHTML;
 
             // Agregar al contenedor si existe
-            if (container && !container.contains(iframe)) {
+            if (container) {
                 container.innerHTML = '';
                 container.appendChild(iframe);
             }
 
             return iframe;
+        },
+
+        /**
+         * Escapar HTML para prevenir XSS
+         *
+         * @param {string} str - String a escapar
+         * @returns {string}
+         */
+        escapeHtml: function(str) {
+            if (typeof str !== 'string') return '';
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         },
 
         /**

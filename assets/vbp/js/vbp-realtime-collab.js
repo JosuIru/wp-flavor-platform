@@ -17,9 +17,19 @@
 (function() {
     'use strict';
 
-    // Verificar dependencias
+    // Función de inicialización que se ejecutará cuando Alpine esté disponible
+    function initRealtimeCollab() {
+        // Código del módulo se inicializa aquí
+    }
+
+    // Verificar dependencias - si Alpine no está disponible, esperar al evento
     if (typeof Alpine === 'undefined') {
-        console.warn('[VBP Realtime] Alpine.js no esta disponible');
+        document.addEventListener('alpine:init', function() {
+            // Re-ejecutar cuando Alpine esté listo
+            if (typeof Alpine !== 'undefined') {
+                window.VBPRealtimeReady = true;
+            }
+        });
         return;
     }
 
@@ -1449,18 +1459,32 @@
 
             if (this.cursorThrottleTimer) {
                 clearTimeout(this.cursorThrottleTimer);
+                this.cursorThrottleTimer = null;
             }
 
             if (this.lockRenewInterval) {
                 clearInterval(this.lockRenewInterval);
+                this.lockRenewInterval = null;
             }
 
             if (this.pollTimeout) {
                 clearTimeout(this.pollTimeout);
+                this.pollTimeout = null;
             }
 
             if (this.syncDebounceTimer) {
                 clearTimeout(this.syncDebounceTimer);
+                this.syncDebounceTimer = null;
+            }
+
+            // Limpiar sistema de awareness
+            if (this.awareness && typeof this.awareness.stop === 'function') {
+                this.awareness.stop();
+            }
+
+            // Limpiar interpolador de cursores
+            if (this.cursorInterpolator && typeof this.cursorInterpolator.clear === 'function') {
+                this.cursorInterpolator.clear();
             }
 
             // Remover heartbeat listener

@@ -6,11 +6,131 @@
  * @since 2.0.0
  */
 
+/* global VBP_Config */
+
 window.VBPAppImportExport = {
     // Estado
     showExportModal: false,
     importDragOver: false,
     importJsonText: '',
+
+    // ============ UTILIDADES ============
+
+    /**
+     * Obtener título del documento
+     */
+    getDocumentTitle: function() {
+        if (typeof Alpine !== 'undefined' && Alpine.store('vbp')) {
+            return Alpine.store('vbp').documentTitle || 'documento';
+        }
+        return 'documento';
+    },
+
+    /**
+     * Sanitizar elementos importados para prevenir XSS
+     * @param {Array} elements - Elementos a sanitizar
+     * @returns {Array} Elementos sanitizados
+     */
+    sanitizeElements: function(elements) {
+        if (!Array.isArray(elements)) {
+            return [];
+        }
+
+        var self = this;
+        return elements.map(function(element) {
+            if (!element || typeof element !== 'object') {
+                return null;
+            }
+
+            var sanitizedElement = {};
+
+            // Copiar propiedades básicas seguras
+            if (element.id) sanitizedElement.id = String(element.id);
+            if (element.type) sanitizedElement.type = String(element.type);
+            if (element.parentId) sanitizedElement.parentId = String(element.parentId);
+
+            // Sanitizar estilos (solo permitir propiedades CSS válidas)
+            if (element.styles && typeof element.styles === 'object') {
+                sanitizedElement.styles = self.sanitizeStyles(element.styles);
+            }
+
+            // Sanitizar props (escapar HTML en valores de texto)
+            if (element.props && typeof element.props === 'object') {
+                sanitizedElement.props = self.sanitizeProps(element.props);
+            }
+
+            // Recursivamente sanitizar children
+            if (Array.isArray(element.children)) {
+                sanitizedElement.children = self.sanitizeElements(element.children);
+            }
+
+            return sanitizedElement;
+        }).filter(Boolean);
+    },
+
+    /**
+     * Sanitizar estilos CSS
+     */
+    sanitizeStyles: function(styles) {
+        var validCssProperties = [
+            'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight',
+            'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+            'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+            'color', 'backgroundColor', 'background', 'backgroundImage',
+            'fontSize', 'fontWeight', 'fontFamily', 'lineHeight', 'textAlign',
+            'display', 'flexDirection', 'justifyContent', 'alignItems', 'gap',
+            'position', 'top', 'right', 'bottom', 'left', 'zIndex',
+            'border', 'borderRadius', 'borderWidth', 'borderColor', 'borderStyle',
+            'boxShadow', 'opacity', 'transform', 'transition',
+            'gridTemplateColumns', 'gridTemplateRows', 'gridGap'
+        ];
+
+        var sanitized = {};
+        for (var key in styles) {
+            if (validCssProperties.indexOf(key) !== -1 && typeof styles[key] === 'string') {
+                // Evitar inyección de JS via CSS
+                var value = styles[key];
+                if (!value.match(/javascript:|expression\(|url\s*\(/i)) {
+                    sanitized[key] = value;
+                }
+            }
+        }
+        return sanitized;
+    },
+
+    /**
+     * Sanitizar props de elementos
+     */
+    sanitizeProps: function(props) {
+        var sanitized = {};
+        for (var key in props) {
+            var value = props[key];
+
+            if (typeof value === 'string') {
+                // Escapar HTML en strings
+                sanitized[key] = this.escapeHtml(value);
+            } else if (typeof value === 'number' || typeof value === 'boolean') {
+                sanitized[key] = value;
+            } else if (Array.isArray(value)) {
+                sanitized[key] = value.map(function(item) {
+                    return typeof item === 'string' ? this.escapeHtml(item) : item;
+                }, this);
+            } else if (value && typeof value === 'object') {
+                sanitized[key] = this.sanitizeProps(value);
+            }
+        }
+        return sanitized;
+    },
+
+    /**
+     * Escapar HTML para prevenir XSS
+     */
+    escapeHtml: function(text) {
+        if (typeof text !== 'string') return text;
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
 
     // ============ IMPORTACIÓN ============
 
@@ -82,7 +202,7 @@ window.VBPAppImportExport = {
         }
 
         if (data.elements) {
-            Alpine.store('vbp').elements = sanitizeElements(data.elements);
+            Alpine.store('vbp').elements = this.sanitizeElements(data.elements);
         }
         if (data.settings) {
             Alpine.store('vbp').settings = data.settings;
@@ -118,7 +238,7 @@ window.VBPAppImportExport = {
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = this.documentTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-vbp-export.json';
+        a.download = this.getDocumentTitle().replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-vbp-export.json';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -167,7 +287,7 @@ window.VBPAppImportExport = {
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
-                a.download = self.documentTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.html';
+                a.download = self.getDocumentTitle().replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.html';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -203,7 +323,7 @@ window.VBPAppImportExport = {
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
-            a.download = self.documentTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.pdf';
+            a.download = self.getDocumentTitle().replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.pdf';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

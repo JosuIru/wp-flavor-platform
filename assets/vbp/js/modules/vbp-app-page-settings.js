@@ -36,6 +36,17 @@ window.VBPAppPageSettings = {
 
     selectOgImage: function() {
         var self = this;
+        var isValidOgImageUrl = function(url) {
+            if (!url || typeof url !== 'string') return false;
+
+            var normalized = url.trim().toLowerCase();
+            if (!(normalized.startsWith('/') || normalized.startsWith('http://') || normalized.startsWith('https://'))) {
+                return false;
+            }
+
+            return /\.(png|jpe?g|gif|webp|svg)(\?.*)?(#.*)?$/.test(normalized);
+        };
+
         if (typeof wp !== 'undefined' && wp.media) {
             var mediaUploader = wp.media({
                 title: 'Seleccionar imagen para redes sociales',
@@ -50,6 +61,21 @@ window.VBPAppPageSettings = {
             });
 
             mediaUploader.open();
+            return;
+        }
+
+        var url = prompt('La biblioteca de medios no está disponible. Introduce la URL de la imagen OG:');
+        if (url) {
+            if (isValidOgImageUrl(url)) {
+                self.pageSettings.ogImage = url;
+                if (typeof self.showNotification === 'function') {
+                    self.showNotification('Imagen OG aplicada', 'success');
+                }
+            } else {
+                if (typeof self.showNotification === 'function') {
+                    self.showNotification('URL no válida para la imagen OG', 'error');
+                }
+            }
         }
     }
 };

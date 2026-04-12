@@ -877,12 +877,26 @@
         };
     };
 
-    // Registrar componente cuando Alpine esté listo
-    document.addEventListener('alpine:init', function() {
-        // El componente ya está registrado como función global
+    /**
+     * Registrar componente en Alpine
+     */
+    function registerSymbolsPanelComponent() {
+        if (typeof Alpine === 'undefined') return false;
+        Alpine.data('vbpSymbolsPanel', window.vbpSymbolsPanel);
         if (typeof window.vbpLog !== 'undefined') {
             window.vbpLog.log('Symbols Panel component registered');
         }
+        return true;
+    }
+
+    // Registrar inmediatamente si Alpine ya existe
+    if (typeof Alpine !== 'undefined') {
+        registerSymbolsPanelComponent();
+    }
+
+    // También escuchar el evento por si Alpine se carga después
+    document.addEventListener('alpine:init', function() {
+        registerSymbolsPanelComponent();
     });
 
 })();

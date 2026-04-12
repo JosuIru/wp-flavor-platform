@@ -119,14 +119,59 @@
         resizeObserver: null,
 
         /**
+         * Control de inicialización y cleanup
+         */
+        _initialized: false,
+        _eventHandlers: {},
+
+        /**
          * Inicializa el sistema de responsive variants
          */
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             this.createIndicatorsContainer();
             this.initCanvasResizeHandle();
             this.bindEvents();
             this.initBreakpointRuler();
             this.syncWithStore();
+        },
+
+        /**
+         * Destruye y limpia recursos
+         */
+        destroy: function() {
+            // Remover event listeners
+            if (this._eventHandlers.breakpointChanged) {
+                document.removeEventListener('vbp:breakpoint:changed', this._eventHandlers.breakpointChanged);
+            }
+            if (this._eventHandlers.selectionChanged) {
+                document.removeEventListener('vbp:selection:changed', this._eventHandlers.selectionChanged);
+            }
+            if (this._eventHandlers.elementUpdated) {
+                document.removeEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+            }
+            if (this._eventHandlers.canvasResized) {
+                document.removeEventListener('vbp:canvas:resized', this._eventHandlers.canvasResized);
+            }
+            if (this._eventHandlers.keydown) {
+                document.removeEventListener('keydown', this._eventHandlers.keydown);
+            }
+            if (this._eventHandlers.mousemove) {
+                document.removeEventListener('mousemove', this._eventHandlers.mousemove);
+            }
+            if (this._eventHandlers.mouseup) {
+                document.removeEventListener('mouseup', this._eventHandlers.mouseup);
+            }
+
+            // Limpiar caches
+            this.clearCache();
+            this.elementsWithOverrides.clear();
+
+            // Resetear estado
+            this._eventHandlers = {};
+            this._initialized = false;
         },
 
         /**
@@ -156,37 +201,40 @@
         bindEvents: function() {
             var self = this;
 
-            // Escuchar cambio de breakpoint
-            document.addEventListener('vbp:breakpoint:changed', function(event) {
+            // Guardar referencias para cleanup
+            this._eventHandlers.breakpointChanged = function(event) {
                 if (event.detail && event.detail.breakpoint) {
                     self.setBreakpoint(event.detail.breakpoint);
                 }
-            });
+            };
 
-            // Escuchar seleccion de elementos
-            document.addEventListener('vbp:selection:changed', function() {
+            this._eventHandlers.selectionChanged = function() {
                 self.updateOverrideIndicators();
-            });
+            };
 
-            // Escuchar actualizacion de elementos
-            document.addEventListener('vbp:element:updated', function(event) {
+            this._eventHandlers.elementUpdated = function(event) {
                 if (event.detail && event.detail.id) {
                     self.invalidateCache(event.detail.id);
                     self.updateOverrideIndicators();
                 }
-            });
+            };
 
-            // Escuchar resize del canvas
-            document.addEventListener('vbp:canvas:resized', function(event) {
+            this._eventHandlers.canvasResized = function(event) {
                 if (event.detail && event.detail.width) {
                     self.handleCanvasResize(event.detail.width);
                 }
-            });
+            };
 
-            // Escuchar teclas de atajo para cambio de breakpoint
-            document.addEventListener('keydown', function(event) {
+            this._eventHandlers.keydown = function(event) {
                 self.handleKeyboardShortcuts(event);
-            });
+            };
+
+            // Registrar event listeners
+            document.addEventListener('vbp:breakpoint:changed', this._eventHandlers.breakpointChanged);
+            document.addEventListener('vbp:selection:changed', this._eventHandlers.selectionChanged);
+            document.addEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+            document.addEventListener('vbp:canvas:resized', this._eventHandlers.canvasResized);
+            document.addEventListener('keydown', this._eventHandlers.keydown);
         },
 
         /**
@@ -268,14 +316,20 @@
             this.updateOverrideIndicators();
             this.updateBreakpointRuler();
 
-            // Disparar evento
+            // Disparar ambos eventos por compatibilidad entre módulos legacy y nuevos
+            var breakpointDetail = {
+                breakpoint: breakpoint,
+                previousBreakpoint: previousBreakpoint,
+                canvasWidth: this.canvasWidth,
+                config: breakpointConfig
+            };
+
             document.dispatchEvent(new CustomEvent('vbp:responsive:breakpointChanged', {
-                detail: {
-                    breakpoint: breakpoint,
-                    previousBreakpoint: previousBreakpoint,
-                    canvasWidth: this.canvasWidth,
-                    config: breakpointConfig
-                }
+                detail: breakpointDetail
+            }));
+
+            document.dispatchEvent(new CustomEvent('vbp:breakpoint:changed', {
+                detail: breakpointDetail
             }));
 
             // Mostrar indicador visual
@@ -898,7 +952,8 @@
                 event.preventDefault();
             });
 
-            document.addEventListener('mousemove', function(event) {
+            // Guardar referencias para cleanup
+            this._eventHandlers.mousemove = function(event) {
                 if (!isDragging) return;
 
                 var deltaX = event.clientX - startX;
@@ -910,9 +965,9 @@
 
                 self.showResizeTooltip(newWidth);
                 self.snapToBreakpointRuler(newWidth);
-            });
+            };
 
-            document.addEventListener('mouseup', function() {
+            this._eventHandlers.mouseup = function() {
                 if (!isDragging) return;
                 isDragging = false;
                 document.body.classList.remove('vbp-resizing-canvas');
@@ -926,7 +981,10 @@
                 if (matchedBreakpoint !== self.currentBreakpoint) {
                     self.showBreakpointSuggestion(matchedBreakpoint, finalWidth);
                 }
-            });
+            };
+
+            document.addEventListener('mousemove', this._eventHandlers.mousemove);
+            document.addEventListener('mouseup', this._eventHandlers.mouseup);
         },
 
         /**

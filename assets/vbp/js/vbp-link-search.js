@@ -236,7 +236,7 @@ function vbpLinkAutocomplete() {
             this.validationError = '';
 
             // Emitir evento para actualizar el modelo
-            this.$dispatch('link-selected', { url: result.url, title: result.title });
+            this.$dispatch('link-selected', { url: result.url, title: result.title, field: this.field });
         },
 
         handleKeydown: function(event) {
@@ -314,13 +314,21 @@ function vbpLinkAutocomplete() {
                     var attachment = frame.state().get('selection').first().toJSON();
                     if (attachment && attachment.url) {
                         self.searchQuery = attachment.url;
-                        self.$dispatch('link-selected', { url: attachment.url, title: attachment.title || attachment.filename });
+                        self.$dispatch('link-selected', { url: attachment.url, title: attachment.title || attachment.filename, field: self.field });
                     }
                 });
 
                 frame.open();
             } else {
-                alert('La biblioteca de medios no está disponible');
+                var url = prompt('La biblioteca de medios no está disponible. Introduce la URL del archivo:');
+                var validation = this.validateUrl(url || '');
+                if (url && validation.valid && ['absolute', 'relative', 'domain'].indexOf(validation.type) !== -1) {
+                    var finalUrl = validation.suggestion || url;
+                    self.searchQuery = finalUrl;
+                    self.$dispatch('link-selected', { url: finalUrl, title: finalUrl, field: self.field });
+                } else if (url) {
+                    this.validationError = 'URL no válida';
+                }
             }
         },
 
@@ -331,7 +339,7 @@ function vbpLinkAutocomplete() {
             var anchorName = prompt('Nombre del ancla (sin #):');
             if (anchorName && /^[a-zA-Z][a-zA-Z0-9_-]*$/.test(anchorName)) {
                 this.searchQuery = '#' + anchorName;
-                this.$dispatch('link-selected', { url: '#' + anchorName });
+                this.$dispatch('link-selected', { url: '#' + anchorName, field: this.field });
             } else if (anchorName) {
                 this.validationError = 'El ancla debe comenzar con letra y solo contener letras, números, - y _';
             }
@@ -346,7 +354,7 @@ function vbpLinkAutocomplete() {
                 var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (emailRegex.test(email)) {
                     this.searchQuery = 'mailto:' + email;
-                    this.$dispatch('link-selected', { url: 'mailto:' + email });
+                    this.$dispatch('link-selected', { url: 'mailto:' + email, field: this.field });
                 } else {
                     this.validationError = 'Formato de email inválido';
                 }
@@ -362,7 +370,7 @@ function vbpLinkAutocomplete() {
                 var cleanPhone = phone.replace(/\s/g, '');
                 if (/^[+\d-()]+$/.test(cleanPhone) && cleanPhone.replace(/\D/g, '').length >= 6) {
                     this.searchQuery = 'tel:' + cleanPhone;
-                    this.$dispatch('link-selected', { url: 'tel:' + cleanPhone });
+                    this.$dispatch('link-selected', { url: 'tel:' + cleanPhone, field: this.field });
                 } else {
                     this.validationError = 'Formato de teléfono inválido';
                 }
@@ -398,3 +406,22 @@ function vbpLinkAutocomplete() {
 
 // Registrar componente globalmente
 window.vbpLinkAutocomplete = vbpLinkAutocomplete;
+
+/**
+ * Registrar componente en Alpine
+ */
+function registerLinkSearchComponent() {
+    if (typeof Alpine === 'undefined') return false;
+    Alpine.data('vbpLinkAutocomplete', vbpLinkAutocomplete);
+    return true;
+}
+
+// Registrar inmediatamente si Alpine ya existe
+if (typeof Alpine !== 'undefined') {
+    registerLinkSearchComponent();
+}
+
+// También escuchar el evento por si Alpine se carga después
+document.addEventListener('alpine:init', function() {
+    registerLinkSearchComponent();
+});

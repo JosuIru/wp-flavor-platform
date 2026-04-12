@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <!-- ============================================ -->
 <!-- Panel Auto Layout -->
 <!-- ============================================ -->
-<div class="vbp-auto-layout-panel" x-data="vbpAutoLayoutPanel()">
+<div class="vbp-auto-layout-panel" x-data="typeof vbpAutoLayoutPanel !== 'undefined' ? vbpAutoLayoutPanel() : { expanded: true, hasAutoLayout: false, activeTab: 'main', addAutoLayout: function(){}, removeAutoLayout: function(){} }" x-show="typeof vbpAutoLayoutPanel !== 'undefined'" x-cloak>
     <!-- Header del panel -->
     <div class="vbp-auto-layout-panel__header" @click="expanded = !expanded">
         <div class="vbp-auto-layout-panel__title">

@@ -7,6 +7,8 @@
  * @since 2.1.0
  */
 
+/* global VBP_Config, VBPAppToast, vbpLog, sanitizeElements */
+
 window.VBPAppBranching = {
 	// Estado
 	branches: [],
@@ -16,6 +18,10 @@ window.VBPAppBranching = {
 	isCheckingOut: false,
 	isMerging: false,
 	hasUnsavedChanges: false,
+
+	// Control de inicialización y cleanup
+	_initialized: false,
+	_eventHandlers: {},
 
 	// Modales
 	showBranchPanel: false,
@@ -51,22 +57,58 @@ window.VBPAppBranching = {
 	 * Inicializa el sistema de branching
 	 */
 	init: function() {
+		// Evitar inicialización duplicada
+		if (this._initialized) {
+			vbpLog.log('VBP Branching: ya inicializado, ignorando');
+			return;
+		}
+		this._initialized = true;
+
 		var self = this;
 
 		// Cargar branches al iniciar
 		this.loadBranches();
 
-		// Escuchar cambios en el documento
-		document.addEventListener('vbp:content-changed', function() {
+		// Guardar referencias a los handlers para cleanup
+		this._eventHandlers.contentChanged = function() {
 			self.hasUnsavedChanges = true;
-		});
+		};
+
+		this._eventHandlers.contentSaved = function() {
+			self.hasUnsavedChanges = false;
+		};
+
+		// Escuchar cambios en el documento
+		document.addEventListener('vbp:content-changed', this._eventHandlers.contentChanged);
 
 		// Escuchar guardado
-		document.addEventListener('vbp:content-saved', function() {
-			self.hasUnsavedChanges = false;
-		});
+		document.addEventListener('vbp:content-saved', this._eventHandlers.contentSaved);
 
 		vbpLog.info('VBP Branching: Inicializado');
+	},
+
+	/**
+	 * Destruye el módulo y limpia recursos
+	 */
+	destroy: function() {
+		// Remover event listeners
+		if (this._eventHandlers.contentChanged) {
+			document.removeEventListener('vbp:content-changed', this._eventHandlers.contentChanged);
+		}
+		if (this._eventHandlers.contentSaved) {
+			document.removeEventListener('vbp:content-saved', this._eventHandlers.contentSaved);
+		}
+
+		// Limpiar referencias
+		this._eventHandlers = {};
+
+		// Resetear estado
+		this.branches = [];
+		this.currentBranch = null;
+		this.hasUnsavedChanges = false;
+		this._initialized = false;
+
+		vbpLog.info('VBP Branching: Destruido');
 	},
 
 	/**

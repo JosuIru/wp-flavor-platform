@@ -70,6 +70,12 @@ test-results/
 playwright-report/
 tests/e2e/.auth/
 
+# Performance test results
+lighthouse-results/*.json
+lighthouse-results/*.html
+lighthouse-results/*.log
+!lighthouse-results/.gitkeep
+
 # Docker volumes (keep docker-compose.yml)
 docker/data/
 

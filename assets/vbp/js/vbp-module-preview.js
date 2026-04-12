@@ -41,6 +41,13 @@
         // Timers para debounce
         debounceTimers: new Map(),
 
+        // Referencias para cleanup (evitar memory leaks)
+        _cleanupIntervalId: null,
+        _eventHandlers: {
+            elementUpdated: null,
+            elementAdded: null
+        },
+
         /**
          * Inicializar sistema de preview
          */
@@ -50,33 +57,74 @@
             // Cargar cache desde localStorage si existe
             this.loadCacheFromStorage();
 
-            // Escuchar cambios en elementos
-            document.addEventListener('vbp:element:updated', function(e) {
+            // Escuchar cambios en elementos (guardar referencia para cleanup)
+            this._eventHandlers.elementUpdated = function(e) {
                 var detail = e.detail || {};
                 var elementId = detail.id;
                 if (elementId && self.shouldRefreshFromUpdate(detail)) {
                     self.invalidateCache(elementId);
                     self.debounceRefresh(elementId);
                 }
-            });
+            };
+            document.addEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
 
-            // Escuchar cuando se añaden nuevos elementos
-            document.addEventListener('vbp:element:added', function(e) {
+            // Escuchar cuando se añaden nuevos elementos (guardar referencia para cleanup)
+            this._eventHandlers.elementAdded = function(e) {
                 var element = e.detail && e.detail.element;
                 if (element && self.isPreviewableElement(element)) {
                     self.loadPreview(element);
                 }
-            });
+            };
+            document.addEventListener('vbp:element:added', this._eventHandlers.elementAdded);
 
             // Observer para detectar elementos de módulo en el DOM
             this.initMutationObserver();
 
-            // Limpiar cache periódicamente
-            setInterval(function() {
+            // Limpiar cache periódicamente (guardar ID para cleanup)
+            this._cleanupIntervalId = setInterval(function() {
                 self.cleanExpiredCache();
             }, 60000);
 
             vbpLog.log('ModulePreview: Sistema de preview inicializado');
+        },
+
+        /**
+         * Destruir sistema y limpiar recursos
+         */
+        destroy: function() {
+            // Limpiar interval de cleanup
+            if (this._cleanupIntervalId) {
+                clearInterval(this._cleanupIntervalId);
+                this._cleanupIntervalId = null;
+            }
+
+            // Limpiar event listeners
+            if (this._eventHandlers.elementUpdated) {
+                document.removeEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+                this._eventHandlers.elementUpdated = null;
+            }
+            if (this._eventHandlers.elementAdded) {
+                document.removeEventListener('vbp:element:added', this._eventHandlers.elementAdded);
+                this._eventHandlers.elementAdded = null;
+            }
+
+            // Desconectar MutationObserver
+            if (this._observer) {
+                this._observer.disconnect();
+                this._observer = null;
+            }
+
+            // Limpiar timers de debounce
+            this.debounceTimers.forEach(function(timerId) {
+                clearTimeout(timerId);
+            });
+            this.debounceTimers.clear();
+
+            // Limpiar cache
+            this.cache.clear();
+            this.loadingElements.clear();
+
+            vbpLog.log('ModulePreview: Sistema destruido y recursos liberados');
         },
 
         /**
@@ -468,6 +516,9 @@
                 (elementData.data && elementData.data.shortcode) ||
                 'Módulo';
 
+            // Sanitizar HTML del servidor para prevenir scripts maliciosos
+            var sanitizedHtml = this.sanitizeServerHtml(html);
+
             return '<div class="vbp-module-preview__frame">' +
                 '<div class="vbp-module-badge">' +
                 '<span class="vbp-module-badge__icon">⚡</span>' +
@@ -479,8 +530,51 @@
                 '<span>Actualizar preview</span>' +
                 '</button>' +
                 '</div>' +
-                html +
+                sanitizedHtml +
                 '</div>';
+        },
+
+        /**
+         * Sanitizar HTML del servidor para prevenir XSS
+         * Permite HTML estructural pero elimina scripts y handlers peligrosos
+         */
+        sanitizeServerHtml: function(html) {
+            if (!html || typeof html !== 'string') {
+                return '';
+            }
+
+            // Crear documento temporal para parsear
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, 'text/html');
+
+            // Eliminar elementos peligrosos
+            var dangerousTags = ['script', 'iframe', 'object', 'embed', 'form'];
+            dangerousTags.forEach(function(tag) {
+                var elements = doc.querySelectorAll(tag);
+                elements.forEach(function(el) {
+                    el.remove();
+                });
+            });
+
+            // Eliminar atributos de eventos (onclick, onerror, etc.)
+            var allElements = doc.body.querySelectorAll('*');
+            allElements.forEach(function(el) {
+                var attrs = Array.from(el.attributes);
+                attrs.forEach(function(attr) {
+                    var name = attr.name.toLowerCase();
+                    // Eliminar handlers de eventos
+                    if (name.startsWith('on')) {
+                        el.removeAttribute(attr.name);
+                    }
+                    // Eliminar javascript: en href/src
+                    if ((name === 'href' || name === 'src') &&
+                        attr.value.toLowerCase().trim().startsWith('javascript:')) {
+                        el.removeAttribute(attr.name);
+                    }
+                });
+            });
+
+            return doc.body.innerHTML;
         },
 
         /**

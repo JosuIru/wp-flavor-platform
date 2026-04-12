@@ -148,7 +148,7 @@ class _EventoCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
+                          color: Colors.black.withOpacity(0.1),
                           blurRadius: 4,
                         ),
                       ],
@@ -479,7 +479,7 @@ class _EventoDetalleScreenState extends ConsumerState<_EventoDetalleScreen> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withValues(alpha: 0.7),
+                          Colors.black.withOpacity(0.7),
                         ],
                       ),
                     ),
@@ -830,7 +830,7 @@ class _EventoDetalleScreenState extends ConsumerState<_EventoDetalleScreen> {
 
     try {
       final api = ref.read(apiClientProvider);
-      final response = await api.post('/eventos/${widget.evento.id}/cancelar-inscripcion');
+      final response = await api.post('/eventos/${widget.evento.id}/cancelar-inscripcion', data: {});
 
       if (response.success) {
         setState(() => _inscrito = false);
@@ -909,7 +909,7 @@ class _InfoTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),

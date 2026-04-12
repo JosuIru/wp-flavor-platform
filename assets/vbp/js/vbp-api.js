@@ -23,56 +23,105 @@ window.vbpApi = {
     lastSaveTime: null,
     autoSaveTimer: null,
     autoSaveDelay: 3000,
+    _initialized: false,
+    _eventHandlers: {},
+
+    /**
+     * Inicializar la API
+     */
+    init: function() {
+        if (this._initialized) return;
+        this._initialized = true;
+
+        var self = this;
+        this._eventHandlers.alpineInitialized = function() {
+            self.startAutoSave();
+        };
+        document.addEventListener('alpine:initialized', this._eventHandlers.alpineInitialized);
+    },
+
+    /**
+     * Destruir y limpiar recursos
+     */
+    destroy: function() {
+        this.stopAutoSave();
+
+        if (this._eventHandlers.alpineInitialized) {
+            document.removeEventListener('alpine:initialized', this._eventHandlers.alpineInitialized);
+        }
+
+        this._eventHandlers = {};
+        this._initialized = false;
+    },
 
     /**
      * Request AJAX genérico
      */
     async request(action, data) {
-        var params = new URLSearchParams({
-            action: action,
-            nonce: VBP_Config.nonce
-        });
-
-        // Agregar datos adicionales
-        if (data) {
-            Object.keys(data).forEach(function(key) {
-                if (typeof data[key] === 'object') {
-                    params.append(key, JSON.stringify(data[key]));
-                } else {
-                    params.append(key, data[key]);
-                }
+        try {
+            var params = new URLSearchParams({
+                action: action,
+                nonce: VBP_Config.nonce
             });
+
+            // Agregar datos adicionales
+            if (data) {
+                Object.keys(data).forEach(function(key) {
+                    if (typeof data[key] === 'object') {
+                        params.append(key, JSON.stringify(data[key]));
+                    } else {
+                        params.append(key, data[key]);
+                    }
+                });
+            }
+
+            var response = await fetch(VBP_Config.ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+
+            return response.json();
+        } catch (error) {
+            vbpLog.error('Error en request AJAX:', action, error);
+            return { success: false, message: error.message };
         }
-
-        var response = await fetch(VBP_Config.ajaxUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params
-        });
-
-        return response.json();
     },
 
     /**
      * Request REST API
      */
     async restRequest(endpoint, method, data) {
-        var options = {
-            method: method || 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-WP-Nonce': VBP_Config.restNonce
+        try {
+            var options = {
+                method: method || 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': VBP_Config.restNonce
+                }
+            };
+
+            if (data && method !== 'GET') {
+                options.body = JSON.stringify(data);
             }
-        };
 
-        if (data && method !== 'GET') {
-            options.body = JSON.stringify(data);
+            var response = await fetch(VBP_Config.restUrl + endpoint, options);
+
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+
+            return response.json();
+        } catch (error) {
+            vbpLog.error('Error en request REST:', endpoint, error);
+            return { success: false, message: error.message };
         }
-
-        var response = await fetch(VBP_Config.restUrl + endpoint, options);
-        return response.json();
     },
 
     /**
@@ -216,17 +265,26 @@ window.vbpApi = {
      * Subir media
      */
     async uploadMedia(file) {
-        var formData = new FormData();
-        formData.append('action', 'vbp_upload_media');
-        formData.append('nonce', VBP_Config.nonce);
-        formData.append('file', file);
+        try {
+            var formData = new FormData();
+            formData.append('action', 'vbp_upload_media');
+            formData.append('nonce', VBP_Config.nonce);
+            formData.append('file', file);
 
-        var response = await fetch(VBP_Config.ajaxUrl, {
-            method: 'POST',
-            body: formData
-        });
+            var response = await fetch(VBP_Config.ajaxUrl, {
+                method: 'POST',
+                body: formData
+            });
 
-        return response.json();
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+
+            return response.json();
+        } catch (error) {
+            vbpLog.error('Error subiendo media:', error);
+            return { success: false, message: error.message };
+        }
     },
 
     /**
@@ -256,10 +314,7 @@ window.vbpApi = {
     }
 };
 
-// Iniciar autosave cuando el DOM esté listo
+// Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Esperar a que Alpine esté inicializado
-    document.addEventListener('alpine:initialized', function() {
-        window.vbpApi.startAutoSave();
-    });
+    window.vbpApi.init();
 });

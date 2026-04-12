@@ -177,6 +177,16 @@
         enabled: true,
 
         /**
+         * Control de inicialización
+         */
+        _initialized: false,
+
+        /**
+         * Referencias a event handlers para cleanup
+         */
+        _eventHandlers: {},
+
+        /**
          * Contenedor de indicadores visuales
          */
         indicatorsContainer: null,
@@ -195,10 +205,59 @@
          * Inicializa el sistema de Auto Layout
          */
         init: function() {
+            if (this._initialized) return;
+            this._initialized = true;
+
             this.createIndicatorsContainer();
             this.bindEvents();
             this.initResizeObserver();
             this.registerKeyboardShortcuts();
+        },
+
+        /**
+         * Destruir y limpiar recursos
+         */
+        destroy: function() {
+            // Remover event listeners
+            if (this._eventHandlers.selectionChanged) {
+                document.removeEventListener('vbp:selection:changed', this._eventHandlers.selectionChanged);
+            }
+            if (this._eventHandlers.elementUpdated) {
+                document.removeEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+            }
+            if (this._eventHandlers.canvasResized) {
+                document.removeEventListener('vbp:canvas:resized', this._eventHandlers.canvasResized);
+            }
+            if (this._eventHandlers.breakpointChanged) {
+                document.removeEventListener('vbp:breakpoint:changed', this._eventHandlers.breakpointChanged);
+            }
+            if (this._eventHandlers.dragStart) {
+                document.removeEventListener('vbp:drag:start', this._eventHandlers.dragStart);
+            }
+            if (this._eventHandlers.dragOver) {
+                document.removeEventListener('vbp:drag:over', this._eventHandlers.dragOver);
+            }
+            if (this._eventHandlers.dragEnd) {
+                document.removeEventListener('vbp:drag:end', this._eventHandlers.dragEnd);
+            }
+            if (this._eventHandlers.keydown) {
+                document.removeEventListener('keydown', this._eventHandlers.keydown);
+            }
+            this._eventHandlers = {};
+
+            // Desconectar resize observer
+            if (this.resizeObserver) {
+                this.resizeObserver.disconnect();
+                this.resizeObserver = null;
+            }
+
+            // Limpiar indicadores
+            this.clearIndicators();
+
+            // Limpiar cache
+            this.layoutCache.clear();
+
+            this._initialized = false;
         },
 
         /**
@@ -228,40 +287,39 @@
         bindEvents: function() {
             var self = this;
 
-            // Escuchar cambios de selección
-            document.addEventListener('vbp:selection:changed', function() {
+            // Guardar referencias para cleanup
+            this._eventHandlers.selectionChanged = function() {
                 self.updateIndicators();
-            });
-
-            // Escuchar actualizaciones de elementos
-            document.addEventListener('vbp:element:updated', function(event) {
+            };
+            this._eventHandlers.elementUpdated = function(event) {
                 if (event.detail && event.detail.changes) {
                     self.handleElementUpdate(event.detail.id, event.detail.changes);
                 }
-            });
-
-            // Escuchar cambios en el canvas
-            document.addEventListener('vbp:canvas:resized', function() {
+            };
+            this._eventHandlers.canvasResized = function() {
                 self.recalculateAllLayouts();
-            });
-
-            // Escuchar cambio de breakpoint
-            document.addEventListener('vbp:breakpoint:changed', function() {
+            };
+            this._eventHandlers.breakpointChanged = function() {
                 self.recalculateAllLayouts();
-            });
-
-            // Escuchar drag & drop dentro de auto layout
-            document.addEventListener('vbp:drag:start', function(event) {
+            };
+            this._eventHandlers.dragStart = function(event) {
                 self.handleDragStart(event.detail);
-            });
-
-            document.addEventListener('vbp:drag:over', function(event) {
+            };
+            this._eventHandlers.dragOver = function(event) {
                 self.handleDragOver(event.detail);
-            });
-
-            document.addEventListener('vbp:drag:end', function(event) {
+            };
+            this._eventHandlers.dragEnd = function(event) {
                 self.handleDragEnd(event.detail);
-            });
+            };
+
+            // Registrar eventos
+            document.addEventListener('vbp:selection:changed', this._eventHandlers.selectionChanged);
+            document.addEventListener('vbp:element:updated', this._eventHandlers.elementUpdated);
+            document.addEventListener('vbp:canvas:resized', this._eventHandlers.canvasResized);
+            document.addEventListener('vbp:breakpoint:changed', this._eventHandlers.breakpointChanged);
+            document.addEventListener('vbp:drag:start', this._eventHandlers.dragStart);
+            document.addEventListener('vbp:drag:over', this._eventHandlers.dragOver);
+            document.addEventListener('vbp:drag:end', this._eventHandlers.dragEnd);
         },
 
         /**
@@ -291,10 +349,10 @@
         registerKeyboardShortcuts: function() {
             var self = this;
 
-            document.addEventListener('keydown', function(event) {
+            this._eventHandlers.keydown = function(event) {
                 // Solo si hay un elemento seleccionado
                 var store = window.Alpine && Alpine.store('vbp');
-                if (!store || store.selection.elementIds.length !== 1) return;
+                if (!store || !store.selection || !store.selection.elementIds || store.selection.elementIds.length !== 1) return;
 
                 var elementId = store.selection.elementIds[0];
 
@@ -340,7 +398,9 @@
                         }
                     }
                 }
-            });
+            };
+
+            document.addEventListener('keydown', this._eventHandlers.keydown);
         },
 
         /**
@@ -695,14 +755,15 @@
          * @returns {Object}
          */
         generateCSSForAutoLayout: function(config) {
+            var padding = config.padding || { top: 0, right: 0, bottom: 0, left: 0 };
             var containerStyles = {
                 display: 'flex',
                 flexDirection: config.direction === 'vertical' ? 'column' : 'row',
-                gap: config.spacing + 'px',
-                paddingTop: config.padding.top + 'px',
-                paddingRight: config.padding.right + 'px',
-                paddingBottom: config.padding.bottom + 'px',
-                paddingLeft: config.padding.left + 'px',
+                gap: (config.spacing || 0) + 'px',
+                paddingTop: (padding.top || 0) + 'px',
+                paddingRight: (padding.right || 0) + 'px',
+                paddingBottom: (padding.bottom || 0) + 'px',
+                paddingLeft: (padding.left || 0) + 'px',
                 position: 'relative'
             };
 
@@ -934,10 +995,11 @@
             }
 
             // Añadir padding
-            totalWidth += autoLayoutConfig.padding.left + autoLayoutConfig.padding.right;
-            totalHeight += autoLayoutConfig.padding.top + autoLayoutConfig.padding.bottom;
-            maxWidth += autoLayoutConfig.padding.left + autoLayoutConfig.padding.right;
-            maxHeight += autoLayoutConfig.padding.top + autoLayoutConfig.padding.bottom;
+            var padding = autoLayoutConfig.padding || { top: 0, right: 0, bottom: 0, left: 0 };
+            totalWidth += (padding.left || 0) + (padding.right || 0);
+            totalHeight += (padding.top || 0) + (padding.bottom || 0);
+            maxWidth += (padding.left || 0) + (padding.right || 0);
+            maxHeight += (padding.top || 0) + (padding.bottom || 0);
 
             return {
                 width: autoLayoutConfig.direction === 'vertical' ? maxWidth : totalWidth,
@@ -1351,9 +1413,47 @@
     };
 
     /**
+     * Flag para evitar registro duplicado de componentes
+     */
+    var alpineComponentsRegistered = false;
+
+    /**
+     * Función para registrar componentes Alpine
+     */
+    function registerAlpineComponents() {
+        if (typeof Alpine === 'undefined') return false;
+
+        // Verificar si ya están registrados usando flag local
+        if (alpineComponentsRegistered) return true;
+
+        // Registrar componente vbpAutoLayoutPanel
+        Alpine.data('vbpAutoLayoutPanel', function() {
+            return vbpAutoLayoutPanelComponent();
+        });
+
+        // Registrar componente vbpLayoutChildPanel
+        Alpine.data('vbpLayoutChildPanel', function() {
+            return vbpLayoutChildPanelComponent();
+        });
+
+        alpineComponentsRegistered = true;
+        return true;
+    }
+
+    // Intentar registrar inmediatamente si Alpine ya existe
+    if (typeof Alpine !== 'undefined') {
+        registerAlpineComponents();
+    }
+
+    // También escuchar alpine:init por si se carga antes
+    document.addEventListener('alpine:init', function() {
+        registerAlpineComponents();
+    });
+
+    /**
      * Componente Alpine para el panel de Auto Layout
      */
-    window.vbpAutoLayoutPanel = function() {
+    function vbpAutoLayoutPanelComponent() {
         return {
             /**
              * Panel expandido
@@ -1559,12 +1659,15 @@
                 return window.VBPAutoLayout.exportCSS(this.selectedElement.id);
             }
         };
-    };
+    }
+
+    // También exponer en window para compatibilidad
+    window.vbpAutoLayoutPanel = vbpAutoLayoutPanelComponent;
 
     /**
      * Componente Alpine para configuración de hijo de Auto Layout
      */
-    window.vbpLayoutChildPanel = function() {
+    function vbpLayoutChildPanelComponent() {
         return {
             /**
              * Obtiene el elemento seleccionado
@@ -1629,7 +1732,10 @@
                 this.updateValue('absolutePosition', newPosition);
             }
         };
-    };
+    }
+
+    // También exponer en window para compatibilidad
+    window.vbpLayoutChildPanel = vbpLayoutChildPanelComponent;
 
     // Inicializar cuando el DOM esté listo
     if (document.readyState === 'loading') {

@@ -199,6 +199,7 @@ html.wp-toolbar body.vbp-editor-body {
 .vbp-toolbar-right {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 12px;
 }
 

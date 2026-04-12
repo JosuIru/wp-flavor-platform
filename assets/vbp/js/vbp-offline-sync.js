@@ -163,18 +163,50 @@
             // CONNECTION MANAGEMENT
             // ==========================================
 
+            /** Referencias a handlers para cleanup */
+            _onlineHandler: null,
+            _offlineHandler: null,
+            _connectionCheckIntervalId: null,
+
             /**
              * Configura listeners de eventos de conexion
              */
             setupConnectionListeners() {
-                // Eventos nativos de conexion
-                window.addEventListener('online', () => this.handleOnline());
-                window.addEventListener('offline', () => this.handleOffline());
+                // Guardar referencias para poder eliminar listeners después
+                this._onlineHandler = () => this.handleOnline();
+                this._offlineHandler = () => this.handleOffline();
 
-                // Verificacion periodica de conexion real
-                setInterval(() => {
+                // Eventos nativos de conexion
+                window.addEventListener('online', this._onlineHandler);
+                window.addEventListener('offline', this._offlineHandler);
+
+                // Verificacion periodica de conexion real (guardar ID para cleanup)
+                this._connectionCheckIntervalId = setInterval(() => {
                     this.verifyConnection();
                 }, OFFLINE_CONFIG.connectionCheckInterval);
+            },
+
+            /**
+             * Limpia todos los listeners y timers (llamar al destruir)
+             */
+            destroy() {
+                // Remover event listeners
+                if (this._onlineHandler) {
+                    window.removeEventListener('online', this._onlineHandler);
+                    this._onlineHandler = null;
+                }
+                if (this._offlineHandler) {
+                    window.removeEventListener('offline', this._offlineHandler);
+                    this._offlineHandler = null;
+                }
+
+                // Limpiar interval
+                if (this._connectionCheckIntervalId) {
+                    clearInterval(this._connectionCheckIntervalId);
+                    this._connectionCheckIntervalId = null;
+                }
+
+                console.log('[VBP Offline] Module destroyed and cleaned up');
             },
 
             /**
@@ -292,9 +324,10 @@
                     const pluginUrl = window.vbpConfig?.assetsUrl || '/wp-content/plugins/flavor-platform/assets/vbp/';
                     const swUrl = `${pluginUrl}js/vbp-service-worker.js`;
 
-                    const registration = await navigator.serviceWorker.register(swUrl, {
-                        scope: '/wp-admin/',
-                    });
+                    // El SW solo puede controlar páginas bajo su directorio
+                    // Por seguridad del navegador, no podemos usar scope '/wp-admin/'
+                    // Registramos sin scope para usar el default (directorio del SW)
+                    const registration = await navigator.serviceWorker.register(swUrl);
 
                     console.log('[VBP Offline] Service Worker registered:', registration.scope);
 

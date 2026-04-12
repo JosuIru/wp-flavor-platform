@@ -988,58 +988,153 @@
 
         /**
          * Configura los handlers de interaccion para el modo preview
+         * @param {Element} containerOverride - Contenedor opcional (para overlays)
          */
-        setupPreviewInteractionHandlers: function() {
+        setupPreviewInteractionHandlers: function(containerOverride) {
             var self = this;
-            var previewFrame = document.querySelector('.vbp-preview-frame');
 
-            if (!previewFrame) return;
+            // Buscar en el frame principal y también en overlays
+            var containers = [];
+            if (containerOverride) {
+                containers.push(containerOverride);
+            } else {
+                var previewFrame = document.querySelector('.vbp-preview-frame');
+                var overlayContent = document.querySelector('.vbp-preview-overlay-content');
+                if (previewFrame) containers.push(previewFrame);
+                if (overlayContent) containers.push(overlayContent);
+            }
+
+            if (containers.length === 0) return;
 
             // Para cada elemento con interacciones, agregar handlers
             Object.keys(this.interactions).forEach(function(elementId) {
-                var elementInPreview = previewFrame.querySelector('[data-vbp-id="' + elementId + '"]');
-                if (!elementInPreview) return;
+                containers.forEach(function(container) {
+                    var elementInPreview = container.querySelector('[data-vbp-id="' + elementId + '"]');
+                    if (!elementInPreview) return;
 
-                var elementInteractions = self.interactions[elementId];
+                    var elementInteractions = self.interactions[elementId];
 
-                elementInteractions.forEach(function(interaction) {
-                    switch (interaction.trigger) {
-                        case 'click':
-                            elementInPreview.addEventListener('click', function(clickEvent) {
-                                clickEvent.preventDefault();
-                                clickEvent.stopPropagation();
-                                self.executeInteraction(interaction);
-                            });
-                            elementInPreview.style.cursor = 'pointer';
-                            break;
-
-                        case 'hover':
-                            var hoverTimeoutId = null;
-                            elementInPreview.addEventListener('mouseenter', function() {
-                                hoverTimeoutId = setTimeout(function() {
-                                    self.executeInteraction(interaction);
-                                }, interaction.hoverDelay || 0);
-                            });
-                            elementInPreview.addEventListener('mouseleave', function() {
-                                if (hoverTimeoutId) {
-                                    clearTimeout(hoverTimeoutId);
-                                    hoverTimeoutId = null;
-                                }
-                            });
-                            break;
-
-                        case 'load':
-                            setTimeout(function() {
-                                self.executeInteraction(interaction);
-                            }, interaction.delay || 0);
-                            break;
-
-                        case 'scroll':
-                            self.setupScrollTrigger(elementInPreview, interaction);
-                            break;
-                    }
+                    elementInteractions.forEach(function(interaction) {
+                        self.bindInteractionHandler(elementInPreview, interaction);
+                    });
                 });
             });
+        },
+
+        /**
+         * Vincula un handler de interacción a un elemento
+         */
+        bindInteractionHandler: function(element, interaction) {
+            var self = this;
+
+            switch (interaction.trigger) {
+                case 'click':
+                    element.addEventListener('click', function(clickEvent) {
+                        clickEvent.preventDefault();
+                        clickEvent.stopPropagation();
+                        self.executeInteraction(interaction);
+                    });
+                    element.style.cursor = 'pointer';
+                    break;
+
+                case 'hover':
+                    var hoverTimeoutId = null;
+                    element.addEventListener('mouseenter', function() {
+                        hoverTimeoutId = setTimeout(function() {
+                            self.executeInteraction(interaction);
+                        }, interaction.hoverDelay || 0);
+                    });
+                    element.addEventListener('mouseleave', function() {
+                        if (hoverTimeoutId) {
+                            clearTimeout(hoverTimeoutId);
+                            hoverTimeoutId = null;
+                        }
+                    });
+                    break;
+
+                case 'load':
+                    setTimeout(function() {
+                        self.executeInteraction(interaction);
+                    }, interaction.delay || 0);
+                    break;
+
+                case 'scroll':
+                    self.setupScrollTrigger(element, interaction);
+                    break;
+
+                case 'drag':
+                    self.setupDragTrigger(element, interaction);
+                    break;
+            }
+        },
+
+        /**
+         * Configura trigger de drag para un elemento
+         */
+        setupDragTrigger: function(element, interaction) {
+            var self = this;
+            var isDragging = false;
+            var startX = 0;
+            var startY = 0;
+            var dragThreshold = 10; // Pixeles minimos para considerar drag
+
+            element.style.cursor = 'grab';
+            element.style.userSelect = 'none';
+
+            var onMouseDown = function(downEvent) {
+                isDragging = true;
+                startX = downEvent.clientX;
+                startY = downEvent.clientY;
+                element.style.cursor = 'grabbing';
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            };
+
+            var onMouseMove = function(moveEvent) {
+                if (!isDragging) return;
+
+                var deltaX = moveEvent.clientX - startX;
+                var deltaY = moveEvent.clientY - startY;
+                var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                if (distance > dragThreshold) {
+                    // Determinar direccion si se especifica
+                    if (interaction.dragDirection) {
+                        var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+                        var direction = self.getDragDirection(angle);
+
+                        if (direction === interaction.dragDirection) {
+                            self.executeInteraction(interaction);
+                            isDragging = false;
+                        }
+                    } else {
+                        // Cualquier direccion activa el trigger
+                        self.executeInteraction(interaction);
+                        isDragging = false;
+                    }
+                }
+            };
+
+            var onMouseUp = function() {
+                isDragging = false;
+                element.style.cursor = 'grab';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            element.addEventListener('mousedown', onMouseDown);
+        },
+
+        /**
+         * Determina la direccion del drag basado en el angulo
+         */
+        getDragDirection: function(angle) {
+            if (angle > -45 && angle <= 45) return 'right';
+            if (angle > 45 && angle <= 135) return 'down';
+            if (angle > 135 || angle <= -135) return 'left';
+            if (angle > -135 && angle <= -45) return 'up';
+            return 'any';
         },
 
         /**
@@ -1442,8 +1537,8 @@
                 overlayContent.style.transform = 'scale(1) translateY(0)';
             });
 
-            // Configurar handlers del overlay
-            this.setupPreviewInteractionHandlers();
+            // Configurar handlers del overlay (pasar contenedor específico)
+            this.setupPreviewInteractionHandlers(overlayContent);
         },
 
         /**

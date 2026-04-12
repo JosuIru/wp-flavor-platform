@@ -672,7 +672,7 @@ $datos_json = wp_json_encode( $datos );
                     <!-- Marcadores de Comentarios en Canvas -->
                     <template x-if="collaborationEnabled">
                         <div class="vbp-comment-markers">
-                            <template x-for="comment in comments.filter(c => !c.resolved && c.position)" :key="comment.id">
+                            <template x-for="(comment, commentIndex) in (comments || []).filter(c => !c.resolved && c.position)" :key="'comment-' + commentIndex">
                                 <div class="vbp-comment-marker" :class="{ 'resolved': comment.resolved }" :style="{ left: comment.position.x + 'px', top: comment.position.y + 'px' }" @click.stop="openCommentThread(comment.id)" :title="comment.text.substring(0, 50)">
                                     <span x-text="comment.thread_index || '?'"></span>
                                 </div>
@@ -830,7 +830,7 @@ $datos_json = wp_json_encode( $datos );
 
         <!-- Tabs de Categorías -->
         <div class="vbp-tokens-tabs" role="tablist">
-            <template x-for="category in getTokenCategories()" :key="category.id">
+            <template x-for="(category, categoryIndex) in (getTokenCategories() || [])" :key="'cat-' + categoryIndex">
                 <button
                     type="button"
                     @click="activeTokenCategory = category.id"
@@ -857,7 +857,7 @@ $datos_json = wp_json_encode( $datos );
 
         <!-- Lista de Tokens -->
         <div class="vbp-tokens-list">
-            <template x-for="token in getFilteredTokens()" :key="token.key">
+            <template x-for="(token, tokenIndex) in (getFilteredTokens() || [])" :key="'token-' + tokenIndex">
                 <div class="vbp-token-item" :class="{ 'overridden': isTokenOverridden(token.key) }">
                     <div
                         class="vbp-token-preview"
@@ -912,7 +912,7 @@ $datos_json = wp_json_encode( $datos );
         <div class="vbp-quick-palette">
             <div class="vbp-quick-palette-label"><?php esc_html_e( 'Colores del Tema', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
             <div class="vbp-quick-palette-colors">
-                <template x-for="color in getQuickColorPalette()" :key="color.key">
+                <template x-for="(color, colorIndex) in (getQuickColorPalette() || [])" :key="'color-' + colorIndex">
                     <button
                         type="button"
                         class="vbp-quick-color"
@@ -990,7 +990,7 @@ $datos_json = wp_json_encode( $datos );
                 <label class="vbp-audit-filter-label"><?php esc_html_e( 'Acción', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                 <select x-model="auditFilter.actionType" @change="applyAuditFilters()" class="vbp-audit-filter-select">
                     <option value=""><?php esc_html_e( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
-                    <template x-for="type in getAuditActionTypes()" :key="type.value">
+                    <template x-for="(type, typeIndex) in (getAuditActionTypes() || [])" :key="'audit-type-' + typeIndex">
                         <option :value="type.value" x-text="type.label"></option>
                     </template>
                 </select>
@@ -1023,7 +1023,7 @@ $datos_json = wp_json_encode( $datos );
             <!-- Log Items -->
             <template x-if="!auditLoading && auditLogs.length > 0">
                 <div>
-                    <template x-for="log in auditLogs" :key="log.id">
+                    <template x-for="(log, logIndex) in auditLogs" :key="'log-' + logIndex">
                         <div class="vbp-audit-item">
                             <div class="vbp-audit-icon" :style="{ background: getAuditActionColor(log.action_type) + '20' }">
                                 <span x-text="getAuditActionIcon(log.action_type)"></span>
@@ -1650,7 +1650,7 @@ $datos_json = wp_json_encode( $datos );
                                     </div>
                                     <template x-if="change.cambios && change.cambios.length > 0">
                                         <div style="margin-top: 8px; padding-left: 16px; font-size: 13px;">
-                                            <template x-for="cambio in change.cambios" :key="cambio.property">
+                                            <template x-for="(cambio, cambioIndex) in change.cambios" :key="cambioIndex + '-' + (cambio.property || 'prop')">
                                                 <div style="display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px dashed #e5e7eb;">
                                                     <span style="font-weight: 500; color: #374151;" x-text="cambio.property + ':'"></span>
                                                     <span style="color: #dc2626; text-decoration: line-through;" x-text="JSON.stringify(cambio.old_value)"></span>
@@ -1927,7 +1927,7 @@ $datos_json = wp_json_encode( $datos );
                 <label class="vbp-audit-filter-label"><?php esc_html_e( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                 <select x-model="auditFilter.actionType" class="vbp-audit-filter-select">
                     <option value=""><?php esc_html_e( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
-                    <template x-for="type in getAuditActionTypes()" :key="type.value">
+                    <template x-for="(type, typeIndex) in (getAuditActionTypes() || [])" :key="'audit-type-' + typeIndex">
                         <option :value="type.value" x-text="type.label"></option>
                     </template>
                 </select>
@@ -1938,7 +1938,7 @@ $datos_json = wp_json_encode( $datos );
             </div>
         </div>
         <div class="vbp-audit-list" x-show="!auditLoading && auditLogs.length > 0">
-            <template x-for="log in auditLogs" :key="log.id">
+            <template x-for="(log, logIndex) in auditLogs" :key="'log-' + logIndex">
                 <div class="vbp-audit-item">
                     <div class="vbp-audit-icon" :style="'background: ' + getAuditActionColor(log.action_type) + '20; color: ' + getAuditActionColor(log.action_type)">
                         <span x-text="getAuditActionIcon(log.action_type)"></span>
@@ -2000,7 +2000,7 @@ $datos_json = wp_json_encode( $datos );
 
             <!-- Transiciones disponibles -->
             <div class="vbp-workflow-transitions" x-show="workflowStatus?.transitions?.length > 0">
-                <template x-for="transition in workflowStatus?.transitions" :key="transition.action">
+                <template x-for="(transition, transitionIndex) in (workflowStatus?.transitions || [])" :key="'trans-' + transitionIndex">
                     <button type="button" @click="executeTransition(transition.action)" class="vbp-workflow-transition-btn" :class="{ 'vbp-workflow-transition-primary': transition.action === 'publish' || transition.action === 'approve' }" :disabled="workflowLoading">
                         <span class="vbp-workflow-transition-icon" x-text="transition.icon"></span>
                         <span x-text="transition.label"></span>
@@ -2026,7 +2026,7 @@ $datos_json = wp_json_encode( $datos );
             <!-- Tab: Historial -->
             <div x-show="activeTab === 'history'">
                 <div class="vbp-workflow-history-list" x-show="workflowHistory.length > 0">
-                    <template x-for="entry in workflowHistory" :key="entry.timestamp">
+                    <template x-for="(entry, entryIndex) in workflowHistory" :key="'hist-' + entryIndex">
                         <div class="vbp-workflow-history-item">
                             <div class="vbp-workflow-history-icon">
                                 <span x-text="getWorkflowActionIcon(entry.action)"></span>
@@ -2056,7 +2056,7 @@ $datos_json = wp_json_encode( $datos );
                 <div class="vbp-workflow-reviewers">
                     <div class="vbp-workflow-reviewers-title"><?php esc_html_e( 'Revisores asignados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     <div class="vbp-workflow-reviewers-list">
-                        <template x-for="reviewer in workflowStatus?.reviewers" :key="reviewer.id">
+                        <template x-for="(reviewer, reviewerIndex) in (workflowStatus?.reviewers || [])" :key="'reviewer-' + reviewerIndex">
                             <div class="vbp-workflow-reviewer">
                                 <img :src="reviewer.avatar" class="vbp-workflow-reviewer-avatar" :alt="reviewer.name">
                                 <span x-text="reviewer.name"></span>
@@ -2076,7 +2076,7 @@ $datos_json = wp_json_encode( $datos );
             <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
             <div x-show="activeTab === 'pending'">
                 <div class="vbp-workflow-pending-list" x-show="pendingReviews.length > 0">
-                    <template x-for="review in pendingReviews" :key="review.id">
+                    <template x-for="(review, reviewIndex) in pendingReviews" :key="'review-' + reviewIndex">
                         <a :href="review.edit_url" class="vbp-workflow-pending-item">
                             <img :src="review.author.avatar" class="vbp-workflow-pending-avatar" :alt="review.author.name">
                             <div class="vbp-workflow-pending-info">
@@ -2346,7 +2346,7 @@ $datos_json = wp_json_encode( $datos );
             </div>
             <div class="vbp-modal-body vbp-conflict-body">
                 <div class="vbp-conflict-list">
-                    <template x-for="(conflict, index) in $store.vbpBranching?.mergeConflicts || []" :key="conflict.path">
+                    <template x-for="(conflict, conflictIndex) in $store.vbpBranching?.mergeConflicts || []" :key="'conflict-' + conflictIndex">
                         <div class="vbp-conflict-item" :class="{ 'is-resolved': conflict.resolved }">
                             <div class="vbp-conflict-header">
                                 <span class="vbp-conflict-path" x-text="conflict.path"></span>
@@ -2356,14 +2356,14 @@ $datos_json = wp_json_encode( $datos );
                                 <div class="vbp-conflict-side vbp-conflict-ours">
                                     <div class="vbp-conflict-side-header">
                                         <span><?php esc_html_e( 'Actual (ours)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
-                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-primary" @click="$store.vbpBranching.resolveConflict(index, 'ours')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-primary" @click="$store.vbpBranching.resolveConflict(conflictIndex, 'ours')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                                     </div>
                                     <pre class="vbp-conflict-code" x-text="JSON.stringify(conflict.ours, null, 2)"></pre>
                                 </div>
                                 <div class="vbp-conflict-side vbp-conflict-theirs">
                                     <div class="vbp-conflict-side-header">
                                         <span><?php esc_html_e( 'Entrante (theirs)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
-                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-secondary" @click="$store.vbpBranching.resolveConflict(index, 'theirs')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
+                                        <button type="button" class="vbp-btn vbp-btn-sm vbp-btn-secondary" @click="$store.vbpBranching.resolveConflict(conflictIndex, 'theirs')"><?php esc_html_e( 'Usar este', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                                     </div>
                                     <pre class="vbp-conflict-code" x-text="JSON.stringify(conflict.theirs, null, 2)"></pre>
                                 </div>
@@ -2428,7 +2428,7 @@ $datos_json = wp_json_encode( $datos );
                     </span>
                 </div>
                 <div class="vbp-diff-content">
-                    <template x-for="change in $store.vbpBranching?.diffData?.changes || []" :key="change.path">
+                    <template x-for="(change, changeIndex) in $store.vbpBranching?.diffData?.changes || []" :key="'diff-' + changeIndex">
                         <div class="vbp-diff-change" :class="'vbp-diff-change--' + change.type">
                             <div class="vbp-diff-change-header">
                                 <span class="vbp-diff-change-type" x-text="change.type"></span>
@@ -2473,7 +2473,7 @@ $datos_json = wp_json_encode( $datos );
             </div>
             <div class="vbp-modal-body vbp-history-body">
                 <div class="vbp-history-list">
-                    <template x-for="version in $store.vbpBranching?.branchHistory || []" :key="version.id">
+                    <template x-for="(version, versionIndex) in ($store.vbpBranching?.branchHistory || [])" :key="'version-' + versionIndex">
                         <div class="vbp-history-item">
                             <div class="vbp-history-item-dot"></div>
                             <div class="vbp-history-item-content">
