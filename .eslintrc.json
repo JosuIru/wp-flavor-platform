@@ -175,7 +175,21 @@
     "vbpClipboard": "writable",
     "vbpDragDrop": "writable",
     "vbpResponsive": "writable",
-    "vbpApi": "writable"
+    "vbpApi": "writable",
+    "THREE": "readonly",
+    "VBPGlobalStyles": "writable",
+    "VBPStoreCatalog": "readonly",
+    "VBP3DStore": "writable",
+    "VBP3DScene": "writable",
+    "VBP3DInspector": "writable",
+    "generateElementId": "readonly",
+    "renderIconValue": "readonly",
+    "pagination": "writable",
+    "__": "readonly",
+    "_s": "readonly",
+    "_n": "readonly",
+    "_x": "readonly",
+    "VBPToast": "readonly"
   },
   "rules": {
     "indent": ["warn", "tab", {

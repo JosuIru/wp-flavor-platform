@@ -27,6 +27,7 @@ function vbpInspector() {
         mediaLibraryField: null,
         mediaLibraryItemIndex: null,
         spacerHeight: 60,
+        threeDInspectorInstance: null,
 
         // Modal de URL fallback
         urlModal: {
@@ -192,6 +193,258 @@ function vbpInspector() {
 
         get isGridSelection() {
             return !!(this.selectedElement && this.selectedElement.type === 'grid');
+        },
+
+        is3DElementSelection() {
+            return !!(this.selectedElement && ['3d-scene', '3d-object', '3d-model', '3d-text', '3d-particles', '3d-light', '3d-group', '3d-animation'].indexOf(this.selectedElement.type) !== -1);
+        },
+
+        get3DSceneId() {
+            var store = Alpine.store('vbp');
+            var path = store && this.selectedElement ? store.getElementPath(this.selectedElement.id) : [];
+            var sceneNode = Array.isArray(path) ? path.find(function(node) {
+                return node.type === '3d-scene';
+            }) : null;
+            return sceneNode ? sceneNode.id : null;
+        },
+
+        get3DObjectOptions() {
+            var store = Alpine.store('vbp');
+            var sceneId = this.get3DSceneId();
+            var sceneElement = sceneId && store ? (store.getElementDeep(sceneId) || store.getElement(sceneId)) : null;
+            var options = [];
+
+            function walk(children) {
+                if (!Array.isArray(children)) {
+                    return;
+                }
+
+                children.forEach(function(child) {
+                    if (!child || !child.type) {
+                        return;
+                    }
+
+                    if (['3d-object', '3d-model', '3d-text', '3d-group'].indexOf(child.type) !== -1) {
+                        options.push({
+                            id: child.id,
+                            name: child.name || child.type,
+                            type: child.type
+                        });
+                    }
+
+                    if (Array.isArray(child.children) && child.children.length) {
+                        walk(child.children);
+                    }
+                });
+            }
+
+            if (sceneElement && Array.isArray(sceneElement.children)) {
+                walk(sceneElement.children);
+            }
+
+            return options;
+        },
+
+        sanitize3DAnimationTarget() {
+            if (!this.selectedElement || this.selectedElement.type !== '3d-animation') {
+                return;
+            }
+
+            var targetId = this.selectedElement.data && this.selectedElement.data.target;
+            if (!targetId) {
+                return;
+            }
+
+            var exists = this.get3DObjectOptions().some(function(option) {
+                return option.id === targetId;
+            });
+
+            if (!exists) {
+                this.updateElementData('target', '');
+            }
+        },
+
+        add3DChildToSelectedGroup(type) {
+            if (!this.selectedElement || this.selectedElement.type !== '3d-group') {
+                return;
+            }
+
+            var store = Alpine.store('vbp');
+            if (!store) {
+                return;
+            }
+
+            var groupElement = store.getElementDeep(this.selectedElement.id) || store.getElement(this.selectedElement.id);
+            if (!groupElement) {
+                return;
+            }
+
+            var child = {
+                id: (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9),
+                type: type,
+                variant: store.getDefaultVariant ? store.getDefaultVariant(type) : 'default',
+                name: store.getDefaultName ? store.getDefaultName(type) : type,
+                visible: true,
+                locked: false,
+                data: store.getDefaultData ? store.getDefaultData(type) : {},
+                styles: store.getDefaultStyles ? store.getDefaultStyles() : {},
+                children: []
+            };
+
+            var nextChildren = Array.isArray(groupElement.children) ? JSON.parse(JSON.stringify(groupElement.children)) : [];
+            nextChildren.push(child);
+            store.updateElement(groupElement.id, { children: nextChildren });
+            store.setSelection([child.id]);
+            this.activeTab = 'content';
+        },
+
+        selectAdjacent3DGroupChild(direction) {
+            if (!this.selectedElement) {
+                return;
+            }
+
+            var store = Alpine.store('vbp');
+            if (!store || typeof store.getElementPath !== 'function') {
+                return;
+            }
+
+            var path = store.getElementPath(this.selectedElement.id) || [];
+            var groupNode = null;
+            var currentNode = null;
+
+            path.forEach(function(node) {
+                if (node && node.id === this.selectedElement.id) {
+                    currentNode = node;
+                }
+                if (node && node.type === '3d-group') {
+                    groupNode = node;
+                }
+            }, this);
+
+            if (!groupNode || !currentNode || !Array.isArray(groupNode.children) || groupNode.children.length === 0) {
+                return;
+            }
+
+            var currentIndex = groupNode.children.findIndex(function(child) {
+                return child && child.id === currentNode.id;
+            });
+
+            if (currentIndex === -1) {
+                currentIndex = 0;
+            }
+
+            var step = direction === 'prev' ? -1 : 1;
+            var nextIndex = (currentIndex + step + groupNode.children.length) % groupNode.children.length;
+            var nextChild = groupNode.children[nextIndex];
+
+            if (nextChild && nextChild.id) {
+                store.setSelection([nextChild.id]);
+                this.activeTab = 'content';
+            }
+        },
+
+        ungroupSelected3DGroup() {
+            if (!this.selectedElement || this.selectedElement.type !== '3d-group') {
+                return;
+            }
+
+            var store = Alpine.store('vbp');
+            if (!store || typeof store.getElementPath !== 'function') {
+                return;
+            }
+
+            var groupId = this.selectedElement.id;
+            var path = store.getElementPath(groupId) || [];
+            var parentNode = path.length > 1 ? path[path.length - 2] : null;
+
+            if (!parentNode || (parentNode.type !== '3d-scene' && parentNode.type !== '3d-group')) {
+                return;
+            }
+
+            var parentElement = store.getElementDeep(parentNode.id) || store.getElement(parentNode.id);
+            var groupElement = store.getElementDeep(groupId) || store.getElement(groupId);
+            if (!parentElement || !groupElement) {
+                return;
+            }
+
+            var parentChildren = Array.isArray(parentElement.children) ? JSON.parse(JSON.stringify(parentElement.children)) : [];
+            var groupIndex = parentChildren.findIndex(function(child) {
+                return child && child.id === groupId;
+            });
+
+            if (groupIndex === -1) {
+                return;
+            }
+
+            var liftedChildren = Array.isArray(groupElement.children) ? JSON.parse(JSON.stringify(groupElement.children)) : [];
+            parentChildren.splice(groupIndex, 1);
+
+            liftedChildren.forEach(function(child, offset) {
+                parentChildren.splice(groupIndex + offset, 0, child);
+            });
+
+            store.updateElement(parentElement.id, { children: parentChildren });
+
+            if (liftedChildren.length > 0) {
+                store.setSelection([liftedChildren[0].id]);
+            } else {
+                store.setSelection([parentElement.id]);
+            }
+
+            this.activeTab = 'content';
+        },
+
+        sync3DInspectorHost() {
+            var host = document.getElementById('vbp-3d-inspector-host');
+            if (!host) {
+                return;
+            }
+
+            if (!this.is3DElementSelection()) {
+                if (this.threeDInspectorInstance && typeof this.threeDInspectorInstance.destroy === 'function') {
+                    this.threeDInspectorInstance.destroy();
+                }
+                this.threeDInspectorInstance = null;
+                host.innerHTML = '';
+                return;
+            }
+
+            if (!window.VBP3DInspector || typeof window.VBP3DInspector !== 'function') {
+                host.innerHTML = '<div class="vbp-field-hint">Inspector 3D avanzado no disponible.</div>';
+                return;
+            }
+
+            if (!this.threeDInspectorInstance) {
+                this.threeDInspectorInstance = new window.VBP3DInspector('vbp-3d-inspector-host');
+                this.threeDInspectorInstance.init();
+            }
+
+            var store = Alpine.store('vbp');
+            var path = store && this.selectedElement ? store.getElementPath(this.selectedElement.id) : [];
+            var sceneNode = Array.isArray(path) ? path.find(function(node) {
+                return node.type === '3d-scene';
+            }) : null;
+
+            if (sceneNode && window.VBP3D && typeof window.VBP3D.getScene === 'function') {
+                var currentScene = window.VBP3D.getScene(sceneNode.id);
+                if (currentScene) {
+                    this.threeDInspectorInstance.sceneId = sceneNode.id;
+                    this.threeDInspectorInstance.scene = currentScene;
+                    if (typeof this.threeDInspectorInstance._updateObjectsTree === 'function') {
+                        this.threeDInspectorInstance._updateObjectsTree();
+                    }
+                    if (this.selectedElement.type !== '3d-scene' && currentScene.objects && currentScene.objects.get(this.selectedElement.id)) {
+                        this.threeDInspectorInstance.selectedObjectId = this.selectedElement.id;
+                        this.threeDInspectorInstance._onObjectSelected({
+                            detail: {
+                                sceneId: sceneNode.id,
+                                objectId: this.selectedElement.id,
+                                object: currentScene.objects.get(this.selectedElement.id)
+                            }
+                        });
+                    }
+                }
+            }
         },
 
         get currentStructureColumnsCount() {
@@ -2066,12 +2319,31 @@ function vbpInspector() {
                 }
                 // Cerrar edición de items al cambiar de elemento
                 self.editingItemIndex = null;
+                self.sanitize3DAnimationTarget();
+                self.sync3DInspectorHost();
             });
 
             this.$watch('$store.vbp.inspectorMode', function(mode) {
                 if (mode === 'basic') {
                     self.activeTab = 'content';
                 }
+            });
+
+            document.addEventListener('vbp-3d-object-selected', function(event) {
+                var store = Alpine.store('vbp');
+                if (!store || !event.detail || !event.detail.objectId) {
+                    return;
+                }
+
+                var existingElement = store.getElementDeep(event.detail.objectId) || store.getElement(event.detail.objectId);
+                if (existingElement) {
+                    store.setSelection([event.detail.objectId]);
+                    self.activeTab = 'content';
+                }
+            });
+
+            document.addEventListener('vbp:contentChanged', function() {
+                self.sanitize3DAnimationTarget();
             });
         },
 

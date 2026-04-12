@@ -2164,6 +2164,10 @@ function vbpApp() {
                 }
 
                 return children.map(function(child) {
+                    if (child.type === '3d-animation') {
+                        return null;
+                    }
+
                     var childConfig = JSON.parse(JSON.stringify(child.data || {}));
                     childConfig.id = child.id;
 
@@ -2193,6 +2197,20 @@ function vbpApp() {
                     }
 
                     return childConfig;
+                }).filter(Boolean);
+            };
+
+            var get3DAnimations = function(children) {
+                if (!Array.isArray(children)) {
+                    return [];
+                }
+
+                return children.filter(function(child) {
+                    return child && child.type === '3d-animation';
+                }).map(function(child) {
+                    var config = JSON.parse(JSON.stringify(child.data || {}));
+                    config.id = child.id;
+                    return config;
                 });
             };
 
@@ -2901,13 +2919,15 @@ function vbpApp() {
                 var scenePreset = data.preset || 'minimal';
                 var sceneChildren = Array.isArray(element.children) ? element.children : [];
                 var sceneObjects = get3DChildConfigs(sceneChildren);
+                var sceneAnimations = get3DAnimations(sceneChildren);
                 var runtimeSceneConfig = JSON.parse(JSON.stringify(data || {}));
                 runtimeSceneConfig.preset = scenePreset;
                 runtimeSceneConfig.shadows = data.shadows === true;
                 runtimeSceneConfig.antialiasing = data.antialiasing !== false;
                 var runtimeSignature = encodeRuntimePayload({
                     config: runtimeSceneConfig,
-                    objects: sceneObjects
+                    objects: sceneObjects,
+                    animations: sceneAnimations
                 });
                 var helperText = sceneChildren.length > 0
                     ? sceneChildren.length + ' objeto(s) 3D en esta escena'
@@ -2919,6 +2939,7 @@ function vbpApp() {
                         'data-vbp-element-id="' + element.id + '" ' +
                         'data-vbp-scene-config="' + encodeRuntimePayload(runtimeSceneConfig) + '" ' +
                         'data-vbp-scene-objects="' + encodeRuntimePayload(sceneObjects) + '" ' +
+                        'data-vbp-scene-animations="' + encodeRuntimePayload(sceneAnimations) + '" ' +
                         'data-vbp-scene-signature="' + runtimeSignature + '" ' +
                         'style="position: relative; width: ' + sceneWidth + '; height: ' + sceneHeight + '; min-height: 260px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #0b1220, #111827); border: 1px solid rgba(148,163,184,0.2);">' +
                         '<div class="vbp-3d-scene-overlay" style="position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; z-index: 2;">' +
@@ -2933,14 +2954,15 @@ function vbpApp() {
                 '</div>';
             }
 
-            if (['3d-object', '3d-model', '3d-text', '3d-particles', '3d-light', '3d-group'].indexOf(type) !== -1) {
+            if (['3d-object', '3d-model', '3d-text', '3d-particles', '3d-light', '3d-group', '3d-animation'].indexOf(type) !== -1) {
                 var labelMap = {
                     '3d-object': 'Objeto 3D',
                     '3d-model': 'Modelo 3D',
                     '3d-text': 'Texto 3D',
                     '3d-particles': 'Partículas 3D',
                     '3d-light': 'Luz 3D',
-                    '3d-group': 'Grupo 3D'
+                    '3d-group': 'Grupo 3D',
+                    '3d-animation': 'Animación 3D'
                 };
                 return '<div class="vbp-3d-child-placeholder" style="padding: 12px 14px; border-radius: 12px; border: 1px dashed rgba(99,102,241,0.35); background: rgba(99,102,241,0.08); color: #4338ca; font-size: 13px; font-weight: 600; ' + customStyle + '">' +
                     '🎲 ' + labelMap[type] +

@@ -148,6 +148,7 @@
         this.panels = {};
         this.inputs = {};
         this.scene = null;
+        this.sceneId = null;
         this.selectedObjectId = null;
 
         this._boundOnObjectSelected = this._onObjectSelected.bind(this);
@@ -171,6 +172,141 @@
         document.addEventListener('vbp-3d-scene-ready', this._boundOnSceneReady);
 
         return this;
+    };
+
+    VBP3DInspector.prototype._getStore = function() {
+        if (typeof Alpine === 'undefined' || !Alpine.store) {
+            return null;
+        }
+        return Alpine.store('vbp');
+    };
+
+    VBP3DInspector.prototype._mergeData = function(base, patch) {
+        var output = JSON.parse(JSON.stringify(base || {}));
+        Object.keys(patch || {}).forEach(function(key) {
+            if (patch[key] && typeof patch[key] === 'object' && !Array.isArray(patch[key])) {
+                output[key] = this._mergeData(output[key] || {}, patch[key]);
+            } else {
+                output[key] = patch[key];
+            }
+        }, this);
+        return output;
+    };
+
+    VBP3DInspector.prototype._persistObjectUpdate = function(patch) {
+        var store = this._getStore();
+        if (!store || !this.selectedObjectId) {
+            return;
+        }
+
+        var element = store.getElementDeep(this.selectedObjectId) || store.getElement(this.selectedObjectId);
+        if (!element) {
+            return;
+        }
+
+        var nextData = this._mergeData(element.data || {}, patch || {});
+        store.updateElement(this.selectedObjectId, { data: nextData });
+    };
+
+    VBP3DInspector.prototype._persistSceneUpdate = function(patch) {
+        var store = this._getStore();
+        if (!store || !this.sceneId) {
+            return;
+        }
+
+        var sceneElement = store.getElementDeep(this.sceneId) || store.getElement(this.sceneId);
+        if (!sceneElement) {
+            return;
+        }
+
+        var nextData = this._mergeData(sceneElement.data || {}, patch || {});
+        store.updateElement(this.sceneId, { data: nextData });
+    };
+
+    VBP3DInspector.prototype._collectScenePatchFromUI = function() {
+        var bgType = this.container.querySelector('#scene-bg-type');
+        var bgColor1 = this.container.querySelector('#scene-bg-color1');
+        var bgColor2 = this.container.querySelector('#scene-bg-color2');
+        var shadows = this.container.querySelector('#scene-shadows');
+        var antialiasing = this.container.querySelector('#scene-antialiasing');
+        var pixelRatio = this.container.querySelector('#scene-pixel-ratio');
+        var autoRotate = this.container.querySelector('#camera-auto-rotate');
+        var enableZoom = this.container.querySelector('#camera-enable-zoom');
+        var enablePan = this.container.querySelector('#camera-enable-pan');
+        var background = null;
+
+        if (bgType) {
+            if (bgType.value === 'gradient') {
+                background = {
+                    type: 'gradient',
+                    from: bgColor1 ? bgColor1.value : '#000000',
+                    to: bgColor2 ? bgColor2.value : '#333333'
+                };
+            } else if (bgType.value === 'transparent') {
+                background = { type: 'transparent' };
+            } else {
+                background = {
+                    type: 'solid',
+                    color: bgColor1 ? bgColor1.value : '#000000'
+                };
+            }
+        }
+
+        return {
+            background: background,
+            shadows: !!(shadows && shadows.checked),
+            antialiasing: !(antialiasing && !antialiasing.checked),
+            pixelRatio: pixelRatio ? parseFloat(pixelRatio.value || 1) : 1,
+            autoRotate: !!(autoRotate && autoRotate.checked),
+            enableZoom: !(enableZoom && !enableZoom.checked),
+            enablePan: !(enablePan && !enablePan.checked)
+        };
+    };
+
+    VBP3DInspector.prototype._applySceneUIToRuntime = function() {
+        if (!this.scene) {
+            return;
+        }
+
+        var patch = this._collectScenePatchFromUI();
+        this.scene.updateSceneConfig(patch);
+        this._persistSceneUpdate(patch);
+    };
+
+    VBP3DInspector.prototype._createBuilderChild = function(type, data) {
+        var store = this._getStore();
+        if (!store || !this.sceneId) {
+            return null;
+        }
+
+        var parentPath = typeof store.getElementPath === 'function' ? (store.getElementPath(this.selectedObjectId || this.sceneId) || []) : [];
+        var parentNode = parentPath.length > 1 ? parentPath[parentPath.length - 2] : null;
+        var targetParentId = parentNode && (parentNode.type === '3d-scene' || parentNode.type === '3d-group')
+            ? parentNode.id
+            : this.sceneId;
+
+        var parentElement = store.getElementDeep(targetParentId) || store.getElement(targetParentId);
+        if (!parentElement) {
+            return null;
+        }
+
+        var child = {
+            id: (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9),
+            type: type,
+            variant: store.getDefaultVariant ? store.getDefaultVariant(type) : 'default',
+            name: store.getDefaultName ? store.getDefaultName(type) : type,
+            visible: true,
+            locked: false,
+            data: this._mergeData(store.getDefaultData ? store.getDefaultData(type) : {}, data || {}),
+            styles: store.getDefaultStyles ? store.getDefaultStyles() : {},
+            children: []
+        };
+
+        var nextChildren = Array.isArray(parentElement.children) ? JSON.parse(JSON.stringify(parentElement.children)) : [];
+        nextChildren.push(child);
+        store.updateElement(targetParentId, { children: nextChildren });
+        store.setSelection([child.id]);
+        return child;
     };
 
     /**
@@ -777,6 +913,20 @@
                 self._addLight(btn.dataset.light);
             });
         });
+
+        ['#scene-bg-type', '#scene-bg-color1', '#scene-bg-color2', '#scene-shadows', '#scene-antialiasing', '#scene-pixel-ratio', '#camera-auto-rotate', '#camera-enable-zoom', '#camera-enable-pan'].forEach(function(selector) {
+            var input = self.container.querySelector(selector);
+            if (!input) {
+                return;
+            }
+
+            input.addEventListener('input', function() {
+                self._applySceneUIToRuntime();
+            });
+            input.addEventListener('change', function() {
+                self._applySceneUIToRuntime();
+            });
+        });
     };
 
     /**
@@ -784,6 +934,7 @@
      * @private
      */
     VBP3DInspector.prototype._onSceneReady = function(event) {
+        this.sceneId = event.detail.sceneId;
         this.scene = event.detail.scene;
         this._updateObjectsTree();
     };
@@ -794,7 +945,12 @@
      */
     VBP3DInspector.prototype._onObjectSelected = function(event) {
         this.selectedObjectId = event.detail.objectId;
+        this.sceneId = event.detail.sceneId || this.sceneId;
         var object3d = event.detail.object;
+
+        if (!object3d && this.scene && this.scene.objects) {
+            object3d = this.scene.objects.get(this.selectedObjectId);
+        }
 
         // Actualizar inputs de transformación
         if (object3d) {
@@ -891,6 +1047,7 @@
         }
 
         this.scene.updateObject(this.selectedObjectId, updateProps);
+        this._persistObjectUpdate(updateProps);
     };
 
     /**
@@ -904,10 +1061,12 @@
             var materialProps = {};
             materialProps[propName] = value;
             this.scene.updateObject(this.selectedObjectId, { material: materialProps });
+            this._persistObjectUpdate({ material: materialProps });
         } else if (category === 'camera') {
             var cameraConfig = {};
             cameraConfig[propName] = parseFloat(value);
             this.scene.setCamera(cameraConfig);
+            this._persistSceneUpdate({ camera: cameraConfig });
         }
     };
 
@@ -921,11 +1080,13 @@
         switch (actionType) {
             case 'reset-transform':
                 if (this.selectedObjectId) {
-                    this.scene.updateObject(this.selectedObjectId, {
+                    var resetProps = {
                         position: { x: 0, y: 0, z: 0 },
                         rotation: { x: 0, y: 0, z: 0 },
                         scale: { x: 1, y: 1, z: 1 }
-                    });
+                    };
+                    this.scene.updateObject(this.selectedObjectId, resetProps);
+                    this._persistObjectUpdate(resetProps);
                     var obj = this.scene.objects.get(this.selectedObjectId);
                     if (obj) this._updateTransformInputs(obj);
                 }
@@ -933,23 +1094,27 @@
 
             case 'duplicate':
                 if (this.selectedObjectId) {
-                    var originalObject = this.scene.objects.get(this.selectedObjectId);
-                    if (originalObject && originalObject.userData.config) {
-                        var newId = generateId();
-                        var newConfig = JSON.parse(JSON.stringify(originalObject.userData.config));
-                        newConfig.position = {
-                            x: (originalObject.position.x || 0) + 1,
-                            y: originalObject.position.y || 0,
-                            z: originalObject.position.z || 0
-                        };
-                        this.scene.addObject(newId, newConfig);
+                    var store = this._getStore();
+                    var originalElement = store ? (store.getElementDeep(this.selectedObjectId) || store.getElement(this.selectedObjectId)) : null;
+                    if (originalElement) {
+                        var newConfig = JSON.parse(JSON.stringify(originalElement.data || {}));
+                        if (newConfig.position) {
+                            newConfig.position.x = (newConfig.position.x || 0) + 1;
+                        } else {
+                            newConfig.position = { x: 1, y: 0, z: 0 };
+                        }
+                        this._createBuilderChild(originalElement.type, newConfig);
                     }
                 }
                 break;
 
             case 'delete':
                 if (this.selectedObjectId) {
+                    var store = this._getStore();
                     this.scene.removeObject(this.selectedObjectId);
+                    if (store) {
+                        store.removeElement(this.selectedObjectId);
+                    }
                     this.selectedObjectId = null;
                     this._updateObjectsTree();
                 }
@@ -984,7 +1149,86 @@
         var viewConfig = viewConfigs[view];
         if (viewConfig) {
             this.scene.setCamera(viewConfig);
+            this._persistSceneUpdate({ camera: viewConfig });
         }
+    };
+
+    VBP3DInspector.prototype._loadGLTFExporter = function() {
+        var assetsUrl = window.VBP_Config && window.VBP_Config.assetsUrl ? window.VBP_Config.assetsUrl.replace(/\/?$/, '/') : '';
+        var candidates = [
+            assetsUrl ? assetsUrl + 'vendor/three/examples/exporters/GLTFExporter.js' : null,
+            'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/exporters/GLTFExporter.js'
+        ].filter(Boolean);
+
+        function tryImport(index) {
+            if (!candidates[index]) {
+                return Promise.reject(new Error('GLTFExporter no disponible'));
+            }
+
+            return import(candidates[index]).catch(function() {
+                return tryImport(index + 1);
+            });
+        }
+
+        return tryImport(0).then(function(module) {
+            return module && module.GLTFExporter ? module.GLTFExporter : null;
+        });
+    };
+
+    VBP3DInspector.prototype._exportGlb = function() {
+        var self = this;
+        this.isExporting = true;
+        document.dispatchEvent(new CustomEvent('vbp-toast', {
+            detail: {
+                message: 'Exportando escena 3D...',
+                type: 'info'
+            }
+        }));
+
+        return this._loadGLTFExporter().then(function(GLTFExporter) {
+            if (!GLTFExporter) {
+                throw new Error('GLTFExporter no disponible');
+            }
+
+            return new Promise(function(resolve, reject) {
+                var exporter = new GLTFExporter();
+                exporter.parse(
+                    self.scene.scene,
+                    function(result) {
+                        var blob = result instanceof ArrayBuffer
+                            ? new Blob([result], { type: 'model/gltf-binary' })
+                            : new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+                        var url = URL.createObjectURL(blob);
+                        var link = document.createElement('a');
+                        link.download = result instanceof ArrayBuffer ? 'scene.glb' : 'scene.gltf';
+                        link.href = url;
+                        link.click();
+                        URL.revokeObjectURL(url);
+                        document.dispatchEvent(new CustomEvent('vbp-toast', {
+                            detail: {
+                                message: 'Escena 3D exportada',
+                                type: 'success'
+                            }
+                        }));
+                        resolve();
+                    },
+                    function(error) {
+                        reject(error);
+                    },
+                    { binary: true, trs: true, onlyVisible: false }
+                );
+            });
+        }).catch(function(error) {
+            console.error('Error exportando GLB:', error);
+            document.dispatchEvent(new CustomEvent('vbp-toast', {
+                detail: {
+                    message: 'No se pudo exportar GLB',
+                    type: 'error'
+                }
+            }));
+        }).finally(function() {
+            self.isExporting = false;
+        });
     };
 
     /**
@@ -997,15 +1241,16 @@
         var preset = window.VBP3D.PRESETS[presetId];
         if (!preset) return;
 
-        // Aplicar configuración del preset
-        if (preset.background) {
-            // Actualizar fondo (esto requeriría recrear la escena o tener un método específico)
-            console.log('Aplicando preset:', presetId);
-        }
-
         if (preset.camera) {
             this.scene.setCamera(preset.camera);
         }
+
+        this.scene.updateSceneConfig(preset);
+
+        this._persistSceneUpdate(this._mergeData(preset, {
+            preset: presetId,
+            camera: preset.camera || {}
+        }));
 
         // Mostrar notificación
         document.dispatchEvent(new CustomEvent('vbp-toast', {
@@ -1021,8 +1266,19 @@
      * @private
      */
     VBP3DInspector.prototype._addLight = function(lightType) {
-        console.log('Agregar luz:', lightType);
-        // Implementación pendiente de integración con escena
+        var lightConfig = {
+            type: 'light',
+            lightType: lightType || 'directional',
+            color: '#ffffff',
+            intensity: 1,
+            position: { x: 1, y: 1, z: 1 }
+        };
+
+        if (lightType === 'ambient') {
+            lightConfig.position = undefined;
+        }
+
+        this._createBuilderChild('3d-light', lightConfig);
     };
 
     /**
@@ -1048,13 +1304,16 @@
                 break;
 
             case 'glb':
-                console.log('Exportación GLB pendiente de implementar');
-                document.dispatchEvent(new CustomEvent('vbp-toast', {
-                    detail: {
-                        message: 'Exportación GLB próximamente',
-                        type: 'info'
-                    }
-                }));
+                if (this.isExporting) {
+                    document.dispatchEvent(new CustomEvent('vbp-toast', {
+                        detail: {
+                            message: 'La exportación GLB ya está en curso',
+                            type: 'info'
+                        }
+                    }));
+                    return;
+                }
+                this._exportGlb();
                 break;
         }
     };
@@ -1073,6 +1332,187 @@
         URL.revokeObjectURL(url);
     };
 
+    VBP3DInspector.prototype._getObjectTreeIcon = function(element) {
+        if (!element) {
+            return '◆';
+        }
+
+        if (element.type === '3d-group') {
+            return '📁';
+        }
+        if (element.type === '3d-light') {
+            return '💡';
+        }
+        if (element.type === '3d-model') {
+            return '📦';
+        }
+        if (element.type === '3d-text') {
+            return '🔤';
+        }
+        if (element.type === '3d-particles') {
+            return '✨';
+        }
+
+        var primitive = element.data && element.data.primitive;
+        return primitive && PRIMITIVES_3D[primitive] ? PRIMITIVES_3D[primitive].icon : '◆';
+    };
+
+    VBP3DInspector.prototype._reorder3DChildren = function(parentId, orderedIds) {
+        var store = this._getStore();
+        if (!store || !parentId || !Array.isArray(orderedIds) || orderedIds.length === 0) {
+            return;
+        }
+
+        var parentElement = store.getElementDeep(parentId) || store.getElement(parentId);
+        if (!parentElement || !Array.isArray(parentElement.children)) {
+            return;
+        }
+
+        var originalChildren = JSON.parse(JSON.stringify(parentElement.children));
+        var childrenById = {};
+
+        originalChildren.forEach(function(child) {
+            if (child && child.id) {
+                childrenById[child.id] = child;
+            }
+        });
+
+        var reordered = orderedIds.map(function(id) {
+            return childrenById[id];
+        }).filter(Boolean);
+
+        if (reordered.length !== originalChildren.length) {
+            return;
+        }
+
+        store.updateElement(parentId, { children: reordered });
+    };
+
+    VBP3DInspector.prototype._move3DChild = function(objectId, fromParentId, toParentId, toIndex) {
+        var store = this._getStore();
+        if (!store || !objectId || !fromParentId || !toParentId) {
+            return;
+        }
+
+        if (fromParentId === toParentId) {
+            return;
+        }
+
+        var fromParent = store.getElementDeep(fromParentId) || store.getElement(fromParentId);
+        var toParent = store.getElementDeep(toParentId) || store.getElement(toParentId);
+        if (!fromParent || !toParent || !Array.isArray(fromParent.children)) {
+            return;
+        }
+
+        var sourceChildren = JSON.parse(JSON.stringify(fromParent.children));
+        var sourceIndex = sourceChildren.findIndex(function(child) {
+            return child && child.id === objectId;
+        });
+
+        if (sourceIndex === -1) {
+            return;
+        }
+
+        var movedChild = sourceChildren[sourceIndex];
+        sourceChildren.splice(sourceIndex, 1);
+
+        var targetChildren = fromParentId === toParentId
+            ? sourceChildren
+            : (Array.isArray(toParent.children) ? JSON.parse(JSON.stringify(toParent.children)) : []);
+
+        var safeIndex = Math.max(0, Math.min(typeof toIndex === 'number' ? toIndex : targetChildren.length, targetChildren.length));
+        targetChildren.splice(safeIndex, 0, movedChild);
+
+        store.updateElement(fromParentId, { children: sourceChildren });
+        store.updateElement(toParentId, { children: targetChildren });
+        store.setSelection([objectId]);
+    };
+
+    VBP3DInspector.prototype._makeTreeBranchSortable = function(branch, parentId) {
+        var self = this;
+        if (!branch || !parentId || typeof Sortable === 'undefined') {
+            return;
+        }
+
+        Sortable.create(branch, {
+            animation: 150,
+            group: {
+                name: 'vbp-3d-tree',
+                pull: true,
+                put: true
+            },
+            draggable: '.vbp-3d-inspector__tree-node',
+            handle: '.vbp-3d-inspector__object-item',
+            ghostClass: 'vbp-3d-inspector__tree-node--ghost',
+            chosenClass: 'vbp-3d-inspector__tree-node--chosen',
+            onUpdate: function() {
+                var orderedIds = Array.from(branch.children).map(function(node) {
+                    return node.dataset.objectId;
+                }).filter(Boolean);
+                self._reorder3DChildren(parentId, orderedIds);
+            },
+            onAdd: function(evt) {
+                var movedId = evt.item && evt.item.dataset ? evt.item.dataset.objectId : null;
+                var fromId = evt.from && evt.from.dataset ? evt.from.dataset.parentId : null;
+                var toId = evt.to && evt.to.dataset ? evt.to.dataset.parentId : null;
+                self._move3DChild(movedId, fromId, toId, evt.newIndex);
+            }
+        });
+    };
+
+    VBP3DInspector.prototype._appendObjectTreeItems = function(container, elements, depth, parentId) {
+        var self = this;
+        var branch = createElement('div', 'vbp-3d-inspector__object-branch');
+        branch.dataset.parentId = parentId || '';
+
+        (elements || []).forEach(function(element) {
+            if (!element || !element.type || element.type === '3d-animation') {
+                return;
+            }
+
+            var node = createElement('div', 'vbp-3d-inspector__tree-node');
+            node.dataset.objectId = element.id;
+
+            var objectItem = createElement('div', 'vbp-3d-inspector__object-item');
+            objectItem.dataset.objectId = element.id;
+            objectItem.style.paddingLeft = (10 + ((depth || 0) * 16)) + 'px';
+
+            var objectType = element.type;
+            var label = element.name || element.id || objectType;
+            var childCount = Array.isArray(element.children) ? element.children.length : 0;
+
+            objectItem.innerHTML = [
+                '<span class="icon">' + self._getObjectTreeIcon(element) + '</span>',
+                '<span class="name">' + label + '</span>',
+                childCount ? '<span class="children-count">' + childCount + '</span>' : '',
+                '<span class="type">' + objectType + '</span>'
+            ].join('');
+
+            if (self.selectedObjectId === element.id) {
+                objectItem.classList.add('selected');
+            }
+
+            objectItem.addEventListener('click', function() {
+                self.scene.selectObject(element.id);
+                container.querySelectorAll('.vbp-3d-inspector__object-item').forEach(function(item) {
+                    item.classList.remove('selected');
+                });
+                objectItem.classList.add('selected');
+            });
+
+            node.appendChild(objectItem);
+
+            if (element.type === '3d-group') {
+                self._appendObjectTreeItems(node, element.children || [], (depth || 0) + 1, element.id);
+            }
+
+            branch.appendChild(node);
+        });
+
+        self._makeTreeBranchSortable(branch, parentId);
+        container.appendChild(branch);
+    };
+
     /**
      * Actualizar árbol de objetos
      * @private
@@ -1088,20 +1528,23 @@
             return;
         }
 
+        var store = this._getStore();
+        var sceneElement = store && this.sceneId ? (store.getElementDeep(this.sceneId) || store.getElement(this.sceneId)) : null;
+
+        if (sceneElement && Array.isArray(sceneElement.children) && sceneElement.children.length) {
+            this._appendObjectTreeItems(treeContainer, sceneElement.children, 0, sceneElement.id);
+            return;
+        }
+
         var self = this;
         this.scene.objects.forEach(function(object3d, objectId) {
             var objectItem = createElement('div', 'vbp-3d-inspector__object-item');
             objectItem.dataset.objectId = objectId;
-
-            var objectConfig = object3d.userData.config || {};
-            var objectType = objectConfig.type || objectConfig.primitive || 'object';
-
             objectItem.innerHTML = [
-                '<span class="icon">' + (PRIMITIVES_3D[objectType] ? PRIMITIVES_3D[objectType].icon : '◆') + '</span>',
+                '<span class="icon">◆</span>',
                 '<span class="name">' + objectId + '</span>',
-                '<span class="type">' + objectType + '</span>'
+                '<span class="type">object</span>'
             ].join('');
-
             objectItem.addEventListener('click', function() {
                 self.scene.selectObject(objectId);
                 treeContainer.querySelectorAll('.vbp-3d-inspector__object-item').forEach(function(item) {
@@ -1109,7 +1552,6 @@
                 });
                 objectItem.classList.add('selected');
             });
-
             treeContainer.appendChild(objectItem);
         });
     };

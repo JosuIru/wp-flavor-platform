@@ -55,6 +55,11 @@
         return item && typeof item === 'object' && !Array.isArray(item);
     }
 
+    function normalizeDuration(value, fallback) {
+        var parsed = parseFloat(value);
+        return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
     function decodePayload(encoded) {
         if (!encoded) {
             return null;
@@ -82,6 +87,123 @@
         });
     }
 
+    function buildAnimationConfig(animationData) {
+        if (!animationData) {
+            return null;
+        }
+
+        var preset = animationData.preset || 'rotate-y';
+        var property = animationData.property || 'rotation';
+        var duration = normalizeDuration(animationData.duration, 2);
+        var delay = normalizeDuration(animationData.delay, 0);
+        var loop = animationData.loop !== false;
+        var easing = animationData.easing || 'linear';
+        var config = {
+            duration: duration,
+            delay: delay,
+            loop: loop,
+            easing: easing
+        };
+
+        switch (preset) {
+            case 'rotate-x':
+                config.keyframes = [
+                    { time: 0, rotation: { x: 0 } },
+                    { time: 1, rotation: { x: Math.PI * 2 } }
+                ];
+                return config;
+            case 'swing':
+                config.keyframes = [
+                    { time: 0, rotation: { z: 0 } },
+                    { time: 0.25, rotation: { z: 0.35 } },
+                    { time: 0.5, rotation: { z: -0.35 } },
+                    { time: 0.75, rotation: { z: 0.18 } },
+                    { time: 1, rotation: { z: 0 } }
+                ];
+                config.easing = 'ease-in-out';
+                return config;
+            case 'float':
+                config.keyframes = [
+                    { time: 0, position: { y: 0 } },
+                    { time: 0.5, position: { y: 0.3 } },
+                    { time: 1, position: { y: 0 } }
+                ];
+                config.easing = 'ease-in-out';
+                return config;
+            case 'bounce':
+                config.keyframes = [
+                    { time: 0, position: { y: 0 } },
+                    { time: 0.4, position: { y: 0.6 } },
+                    { time: 0.7, position: { y: -0.1 } },
+                    { time: 1, position: { y: 0 } }
+                ];
+                return config;
+            case 'pulse':
+                config.keyframes = [
+                    { time: 0, scale: 1 },
+                    { time: 0.5, scale: 1.15 },
+                    { time: 1, scale: 1 }
+                ];
+                return config;
+            case 'custom':
+                if (property === 'position') {
+                    config.keyframes = [
+                        { time: 0, position: { y: 0 } },
+                        { time: 0.5, position: { y: 0.4 } },
+                        { time: 1, position: { y: 0 } }
+                    ];
+                } else if (property === 'scale') {
+                    config.keyframes = [
+                        { time: 0, scale: 1 },
+                        { time: 0.5, scale: 1.2 },
+                        { time: 1, scale: 1 }
+                    ];
+                } else if (property === 'opacity') {
+                    config.keyframes = [
+                        { time: 0, opacity: 1 },
+                        { time: 0.5, opacity: 0.35 },
+                        { time: 1, opacity: 1 }
+                    ];
+                } else if (property === 'color') {
+                    config.keyframes = [
+                        { time: 0, color: '#ffffff' },
+                        { time: 0.5, color: '#60a5fa' },
+                        { time: 1, color: '#ffffff' }
+                    ];
+                } else {
+                    config.keyframes = [
+                        { time: 0, rotation: { y: 0 } },
+                        { time: 1, rotation: { y: Math.PI * 2 } }
+                    ];
+                }
+                return config;
+            case 'rotate-y':
+            default:
+                config.keyframes = [
+                    { time: 0, rotation: { y: 0 } },
+                    { time: 1, rotation: { y: Math.PI * 2 } }
+                ];
+                return config;
+        }
+    }
+
+    function applySceneAnimations(scene, animations) {
+        if (!scene || !Array.isArray(animations)) {
+            return;
+        }
+
+        animations.forEach(function(animationData) {
+            if (!animationData || !animationData.target) {
+                return;
+            }
+
+            var config = buildAnimationConfig(animationData);
+            if (config) {
+                scene.addAnimation(animationData.target, config);
+            }
+        });
+    }
+
     function bootstrapRuntimeScenes() {
         if (!window.VBP3D || typeof window.VBP3D.Scene !== 'function') {
             return;
@@ -94,6 +216,7 @@
             var signature = node.getAttribute('data-vbp-scene-signature') || '';
             var config = decodePayload(node.getAttribute('data-vbp-scene-config')) || {};
             var objects = decodePayload(node.getAttribute('data-vbp-scene-objects')) || [];
+            var animations = decodePayload(node.getAttribute('data-vbp-scene-animations')) || [];
             var existingScene = window.VBP3D.getScene(sceneId);
 
             if (existingScene && node.getAttribute('data-vbp-runtime-ready') === '1' && node.getAttribute('data-vbp-runtime-signature') === signature) {
@@ -112,6 +235,7 @@
             var scene = new window.VBP3D.Scene(sceneId, config);
             scene.init().then(function(initializedScene) {
                 applySceneObjects(initializedScene, objects);
+                applySceneAnimations(initializedScene, animations);
                 node.setAttribute('data-vbp-runtime-ready', '1');
                 node.setAttribute('data-vbp-runtime-signature', signature);
             }).catch(function(error) {
@@ -791,16 +915,22 @@
         }
     });
 
+    var runtimeBootstrapTimer = null;
+    function scheduleRuntimeBootstrap(delay) {
+        window.clearTimeout(runtimeBootstrapTimer);
+        runtimeBootstrapTimer = window.setTimeout(bootstrapRuntimeScenes, delay || 120);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(bootstrapRuntimeScenes, 200);
+        scheduleRuntimeBootstrap(200);
     });
 
     document.addEventListener('vbp:contentChanged', function() {
-        setTimeout(bootstrapRuntimeScenes, 120);
+        scheduleRuntimeBootstrap(120);
     });
 
     document.addEventListener('vbp:afterSave', function() {
-        setTimeout(bootstrapRuntimeScenes, 120);
+        scheduleRuntimeBootstrap(120);
     });
 
     /**

@@ -3603,7 +3603,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
                         <div class="vbp-field-row">
                             <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Intensidad</label><input type="number" step="0.1" :value="selectedElement.data.intensity ?? 1" @input="updateElementData('intensity', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
-                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Posición X</label><input type="number" step="0.1" :value="selectedElement.data.position?.x ?? 1" @input="updateElementData('position.x', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Distancia</label><input type="number" step="0.1" :value="selectedElement.data.distance ?? 0" @input="updateElementData('distance', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos X</label><input type="number" step="0.1" :value="selectedElement.data.position?.x ?? 1" @input="updateElementData('position.x', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Y</label><input type="number" step="0.1" :value="selectedElement.data.position?.y ?? 1" @input="updateElementData('position.y', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Z</label><input type="number" step="0.1" :value="selectedElement.data.position?.z ?? 1" @input="updateElementData('position.z', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-row" x-show="selectedElement.data.lightType === 'spot'">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Ángulo</label><input type="number" step="1" :value="selectedElement.data.angle ?? 60" @input="updateElementData('angle', parseFloat($event.target.value || 60))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Penumbra</label><input type="number" step="0.1" :value="selectedElement.data.penumbra ?? 0.1" @input="updateElementData('penumbra', parseFloat($event.target.value || 0.1))" class="vbp-field-input"></div>
                         </div>
                     </div>
                 </template>
@@ -3615,6 +3624,104 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Y</label><input type="number" step="0.1" :value="selectedElement.data.position?.y ?? 0" @input="updateElementData('position.y', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
                             <div class="vbp-field-group vbp-field-third"><label class="vbp-field-label">Pos Z</label><input type="number" step="0.1" :value="selectedElement.data.position?.z ?? 0" @input="updateElementData('position.z', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
                         </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Rot Y</label><input type="number" step="1" :value="selectedElement.data.rotation?.y ?? 0" @input="updateElementData('rotation.y', parseFloat($event.target.value || 0))" class="vbp-field-input"></div>
+                            <div class="vbp-field-group vbp-field-half"><label class="vbp-field-label">Escala</label><input type="number" step="0.1" :value="selectedElement.data.scale ?? 1" @input="updateElementData('scale', parseFloat($event.target.value || 1))" class="vbp-field-input"></div>
+                        </div>
+                        <div class="vbp-field-hint" x-text="(selectedElement.children && selectedElement.children.length ? selectedElement.children.length : 0) + ' hijo(s) en el grupo'"></div>
+                        <div class="vbp-field-hint">Edita los hijos del grupo desde el árbol del Inspector 3D Avanzado o haciendo clic directo sobre ellos en el canvas 3D.</div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Añadir al grupo</label>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="add3DChildToSelectedGroup('3d-object')">Objeto</button>
+                                    <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="add3DChildToSelectedGroup('3d-light')">Luz</button>
+                                </div>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Navegar hijos</label>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="selectAdjacent3DGroupChild('prev')">Anterior</button>
+                                    <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="selectAdjacent3DGroupChild('next')">Siguiente</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="ungroupSelected3DGroup()">Desagrupar</button>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="selectedElement.type === '3d-animation'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Objetivo</label>
+                            <select x-model="selectedElement.data.target" @change="updateElementData('target', $event.target.value)" class="vbp-field-select">
+                                <option value="">Selecciona un objeto</option>
+                                <template x-for="obj in get3DObjectOptions()" :key="obj.id">
+                                    <option :value="obj.id" x-text="obj.name + ' (' + obj.type + ')'"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Propiedad</label>
+                                <select x-model="selectedElement.data.property" @change="updateElementData('property', $event.target.value)" class="vbp-field-select">
+                                    <option value="rotation">Rotación</option>
+                                    <option value="position">Posición</option>
+                                    <option value="scale">Escala</option>
+                                    <option value="opacity">Opacidad</option>
+                                    <option value="color">Color</option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Preset</label>
+                                <select x-model="selectedElement.data.preset" @change="updateElementData('preset', $event.target.value)" class="vbp-field-select">
+                                    <option value="rotate-y">Rotar Y</option>
+                                    <option value="rotate-x">Rotar X</option>
+                                    <option value="float">Flotar</option>
+                                    <option value="bounce">Rebotar</option>
+                                    <option value="pulse">Pulsar</option>
+                                    <option value="swing">Balancear</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Duración</label>
+                                <input type="number" step="0.1" :value="selectedElement.data.duration ?? 2" @input="updateElementData('duration', parseFloat($event.target.value || 2))" class="vbp-field-input">
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label">Retraso</label>
+                                <input type="number" step="0.1" :value="selectedElement.data.delay ?? 0" @input="updateElementData('delay', parseFloat($event.target.value || 0))" class="vbp-field-input">
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label">Easing</label>
+                            <select x-model="selectedElement.data.easing" @change="updateElementData('easing', $event.target.value)" class="vbp-field-select">
+                                <option value="linear">Lineal</option>
+                                <option value="ease">Ease</option>
+                                <option value="ease-in">Ease In</option>
+                                <option value="ease-out">Ease Out</option>
+                                <option value="ease-in-out">Ease In Out</option>
+                                <option value="bounce">Rebote</option>
+                                <option value="elastic">Elástico</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.loop !== false" @change="updateElementData('loop', $event.target.checked)">
+                                Repetir
+                            </label>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="['3d-scene','3d-object','3d-model','3d-text','3d-particles','3d-light','3d-group','3d-animation'].indexOf(selectedElement.type) !== -1">
+                    <div class="vbp-inspector-section">
+                        <h4 class="vbp-section-title">Inspector 3D Avanzado</h4>
+                        <div id="vbp-3d-inspector-host"></div>
                     </div>
                 </template>
 

@@ -12,24 +12,60 @@
 (function() {
     'use strict';
 
-    /**
-     * CDN URLs para Three.js y extensiones
-     */
-    var THREE_CDN_BASE = 'https://cdn.jsdelivr.net/npm/three@0.160.0';
-    var THREE_MODULES = {
-        core: THREE_CDN_BASE + '/build/three.module.min.js',
-        orbitControls: THREE_CDN_BASE + '/examples/jsm/controls/OrbitControls.js',
-        flyControls: THREE_CDN_BASE + '/examples/jsm/controls/FlyControls.js',
-        gltfLoader: THREE_CDN_BASE + '/examples/jsm/loaders/GLTFLoader.js',
-        objLoader: THREE_CDN_BASE + '/examples/jsm/loaders/OBJLoader.js',
-        fbxLoader: THREE_CDN_BASE + '/examples/jsm/loaders/FBXLoader.js',
-        textGeometry: THREE_CDN_BASE + '/examples/jsm/geometries/TextGeometry.js',
-        fontLoader: THREE_CDN_BASE + '/examples/jsm/loaders/FontLoader.js',
-        effectComposer: THREE_CDN_BASE + '/examples/jsm/postprocessing/EffectComposer.js',
-        renderPass: THREE_CDN_BASE + '/examples/jsm/postprocessing/RenderPass.js',
-        unrealBloomPass: THREE_CDN_BASE + '/examples/jsm/postprocessing/UnrealBloomPass.js',
-        outlinePass: THREE_CDN_BASE + '/examples/jsm/postprocessing/OutlinePass.js'
-    };
+    var THREE_VERSION = '0.160.0';
+    var THREE_CDN_BASE = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION;
+
+    function get3DAssetCandidates() {
+        var assetsUrl = window.VBP_Config && window.VBP_Config.assetsUrl
+            ? window.VBP_Config.assetsUrl
+            : '';
+        var localBase = assetsUrl ? assetsUrl.replace(/\/?$/, '/') + 'vendor/three/' : '';
+        var localFont = localBase ? localBase + 'examples/fonts/helvetiker_regular.typeface.json' : null;
+
+        return {
+            modules: [
+                localBase ? {
+                    core: localBase + 'build/three.module.min.js',
+                    orbitControls: localBase + 'examples/controls/OrbitControls.js',
+                    gltfLoader: localBase + 'examples/loaders/GLTFLoader.js',
+                    fontLoader: localBase + 'examples/loaders/FontLoader.js',
+                    textGeometry: localBase + 'examples/geometries/TextGeometry.js',
+                    importMap: {
+                        imports: {
+                            'three': localBase + 'build/three.module.min.js',
+                            'three/addons/': localBase + 'examples/'
+                        }
+                    }
+                } : null,
+                {
+                    core: THREE_CDN_BASE + '/build/three.module.min.js',
+                    orbitControls: THREE_CDN_BASE + '/examples/jsm/controls/OrbitControls.js',
+                    gltfLoader: THREE_CDN_BASE + '/examples/jsm/loaders/GLTFLoader.js',
+                    fontLoader: THREE_CDN_BASE + '/examples/jsm/loaders/FontLoader.js',
+                    textGeometry: THREE_CDN_BASE + '/examples/jsm/geometries/TextGeometry.js',
+                    importMap: null
+                }
+            ].filter(Boolean),
+            fonts: [localFont, THREE_CDN_BASE + '/examples/fonts/helvetiker_regular.typeface.json'].filter(Boolean)
+        };
+    }
+
+    function ensureImportMap(importMapConfig) {
+        if (!importMapConfig || !importMapConfig.imports) {
+            return;
+        }
+
+        var existing = document.querySelector('script[data-vbp-3d-importmap="1"]');
+        if (existing) {
+            return;
+        }
+
+        var script = document.createElement('script');
+        script.type = 'importmap';
+        script.setAttribute('data-vbp-3d-importmap', '1');
+        script.textContent = JSON.stringify(importMapConfig);
+        document.head.appendChild(script);
+    }
 
     /**
      * Definiciones de primitivas 3D
@@ -297,6 +333,12 @@
      * @returns {Promise} Promesa que resuelve cuando Three.js está listo
      */
     function loadThreeJS() {
+        if (window.THREE && window.VBP3DModules) {
+            threeJsState.loaded = true;
+            threeJsState.modules = window.VBP3DModules;
+            return Promise.resolve(window.THREE);
+        }
+
         if (threeJsState.loaded) {
             return Promise.resolve(window.THREE);
         }
@@ -308,41 +350,68 @@
         threeJsState.loading = true;
 
         threeJsState.loadPromise = new Promise(function(resolve, reject) {
+            var candidates = get3DAssetCandidates().modules;
             var script = document.createElement('script');
             script.type = 'module';
             script.textContent = [
-                'import * as THREE from "' + THREE_MODULES.core + '";',
-                'import { OrbitControls } from "' + THREE_MODULES.orbitControls + '";',
-                'import { GLTFLoader } from "' + THREE_MODULES.gltfLoader + '";',
-                'import { FontLoader } from "' + THREE_MODULES.fontLoader + '";',
-                'import { TextGeometry } from "' + THREE_MODULES.textGeometry + '";',
-                '',
-                'window.THREE = THREE;',
-                'window.VBP3DModules = {',
-                '    OrbitControls: OrbitControls,',
-                '    GLTFLoader: GLTFLoader,',
-                '    FontLoader: FontLoader,',
-                '    TextGeometry: TextGeometry',
-                '};',
-                '',
-                'window.dispatchEvent(new CustomEvent("vbp-threejs-loaded"));'
+                '(async function() {',
+                '  var candidates = ' + JSON.stringify(candidates) + ';',
+                '  var lastError = null;',
+                '  for (var i = 0; i < candidates.length; i++) {',
+                '    var candidate = candidates[i];',
+                '    try {',
+                '      if (candidate.importMap) {',
+                '        var existing = document.querySelector(\'script[data-vbp-3d-importmap="1"]\');',
+                '        if (!existing) {',
+                '          var importMapScript = document.createElement("script");',
+                '          importMapScript.type = "importmap";',
+                '          importMapScript.setAttribute("data-vbp-3d-importmap", "1");',
+                '          importMapScript.textContent = JSON.stringify(candidate.importMap);',
+                '          document.head.appendChild(importMapScript);',
+                '        }',
+                '      }',
+                '      var THREE = await import(candidate.core);',
+                '      var OrbitControlsModule = await import(candidate.orbitControls);',
+                '      var GLTFLoaderModule = await import(candidate.gltfLoader);',
+                '      var FontLoaderModule = await import(candidate.fontLoader);',
+                '      var TextGeometryModule = await import(candidate.textGeometry);',
+                '      window.THREE = THREE;',
+                '      window.VBP3DModules = {',
+                '        OrbitControls: OrbitControlsModule.OrbitControls,',
+                '        GLTFLoader: GLTFLoaderModule.GLTFLoader,',
+                '        FontLoader: FontLoaderModule.FontLoader,',
+                '        TextGeometry: TextGeometryModule.TextGeometry',
+                '      };',
+                '      window.dispatchEvent(new CustomEvent("vbp-threejs-loaded"));',
+                '      return;',
+                '    } catch (error) {',
+                '      lastError = error;',
+                '    }',
+                '  }',
+                '  window.dispatchEvent(new CustomEvent("vbp-threejs-error", { detail: { error: lastError ? String(lastError) : "unknown" } }));',
+                '})();'
             ].join('\n');
 
             var loadHandler = function() {
+                cleanup();
                 threeJsState.loaded = true;
                 threeJsState.loading = false;
                 threeJsState.modules = window.VBP3DModules || {};
-                window.removeEventListener('vbp-threejs-loaded', loadHandler);
                 resolve(window.THREE);
+            };
+            var errorHandler = function(event) {
+                cleanup();
+                threeJsState.loading = false;
+                threeJsState.loadPromise = null;
+                reject(new Error('Error cargando dependencias 3D: ' + ((event.detail && event.detail.error) || 'desconocido')));
+            };
+            var cleanup = function() {
+                window.removeEventListener('vbp-threejs-loaded', loadHandler);
+                window.removeEventListener('vbp-threejs-error', errorHandler);
             };
 
             window.addEventListener('vbp-threejs-loaded', loadHandler);
-
-            script.onerror = function(error) {
-                threeJsState.loading = false;
-                reject(new Error('Error cargando Three.js: ' + error.message));
-            };
-
+            window.addEventListener('vbp-threejs-error', errorHandler);
             document.head.appendChild(script);
         });
 
@@ -582,12 +651,34 @@
      */
     VBP3DScene.prototype._setupScene = function(THREE) {
         this.scene = new THREE.Scene();
+        this._applySceneBackground(this.config.background);
+    };
 
-        var background = this.config.background;
+    VBP3DScene.prototype._disposeSceneBackground = function() {
+        if (this.scene && this.scene.background && this.scene.background.isTexture && this.scene.background.dispose) {
+            this.scene.background.dispose();
+        }
+    };
+
+    VBP3DScene.prototype._applySceneBackground = function(background) {
+        var THREE = window.THREE;
+        if (!this.scene || !THREE) {
+            return;
+        }
+
+        this._disposeSceneBackground();
+
+        if (!background || background === 'transparent' || background.type === 'transparent') {
+            this.scene.background = null;
+            return;
+        }
 
         if (typeof background === 'string') {
             this.scene.background = new THREE.Color(background);
-        } else if (background && background.type === 'gradient') {
+            return;
+        }
+
+        if (background.type === 'gradient') {
             var canvas = document.createElement('canvas');
             canvas.width = 2;
             canvas.height = 256;
@@ -597,10 +688,11 @@
             gradient.addColorStop(1, background.to || '#333333');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 2, 256);
+            this.scene.background = new THREE.CanvasTexture(canvas);
+            return;
+        }
 
-            var texture = new THREE.CanvasTexture(canvas);
-            this.scene.background = texture;
-        } else if (background && background.type === 'solid') {
+        if (background.type === 'solid') {
             this.scene.background = new THREE.Color(background.color || '#000000');
         }
     };
@@ -752,6 +844,11 @@
     VBP3DScene.prototype._setupControls = function() {
         var controlsType = this.config.controls;
 
+        if (this.controls && this.controls.dispose) {
+            this.controls.dispose();
+            this.controls = null;
+        }
+
         if (controlsType === 'none') {
             return;
         }
@@ -764,8 +861,8 @@
             this.controls.dampingFactor = 0.05;
             this.controls.autoRotate = this.config.autoRotate || false;
             this.controls.autoRotateSpeed = this.config.autoRotateSpeed || 2;
-            this.controls.enablePan = true;
-            this.controls.enableZoom = true;
+            this.controls.enablePan = this.config.enablePan !== false;
+            this.controls.enableZoom = this.config.enableZoom !== false;
             this.controls.minDistance = this.config.camera.minDistance || 1;
             this.controls.maxDistance = this.config.camera.maxDistance || 100;
         }
@@ -793,6 +890,12 @@
             return null;
         }
 
+        return this._createObjectInstance(THREE, objectId, config, null);
+    };
+
+    VBP3DScene.prototype._createObjectInstance = function(THREE, objectId, config, parent) {
+        config = config || {};
+
         var objectType = config.type || 'primitive';
         var object3d = null;
 
@@ -801,16 +904,19 @@
                 object3d = this._createPrimitive(THREE, config);
                 break;
             case 'model':
-                this._loadModel(objectId, config);
+                this._loadModel(objectId, config, parent);
                 return null; // Se agrega asíncronamente
             case 'text':
-                this._createText3D(objectId, config);
+                this._createText3D(objectId, config, parent);
                 return null; // Se agrega asíncronamente
             case 'group':
                 object3d = this._createGroup(THREE, config);
                 break;
             case 'particles':
                 object3d = this._createParticles(THREE, config);
+                break;
+            case 'light':
+                object3d = this._createLight(THREE, config);
                 break;
             default:
                 console.warn('Tipo de objeto desconocido:', objectType);
@@ -824,7 +930,11 @@
             this._applyTransform(object3d, config);
             this._applyInteractivity(object3d, config);
 
-            this.scene.add(object3d);
+            if (parent && typeof parent.add === 'function') {
+                parent.add(object3d);
+            } else {
+                this.scene.add(object3d);
+            }
             this.objects.set(objectId, object3d);
 
             document.dispatchEvent(new CustomEvent('vbp-3d-object-added', {
@@ -849,7 +959,14 @@
         }
 
         var geometryParams = config.geometryParams || primitiveConfig.params;
-        var geometry = new THREE[primitiveConfig.geometry].apply(THREE, [null].concat(geometryParams));
+        var GeometryCtor = THREE[primitiveConfig.geometry];
+
+        if (typeof GeometryCtor !== 'function') {
+            console.warn('Constructor de geometría no disponible:', primitiveConfig.geometry);
+            return null;
+        }
+
+        var geometry = new GeometryCtor(...geometryParams);
 
         var material = this._createMaterial(THREE, config.material || {});
         var mesh = new THREE.Mesh(geometry, material);
@@ -860,6 +977,52 @@
         }
 
         return mesh;
+    };
+
+    /**
+     * Crear luz 3D
+     * @private
+     */
+    VBP3DScene.prototype._createLight = function(THREE, config) {
+        var lightType = config.lightType || 'directional';
+        var color = config.color || '#ffffff';
+        var intensity = config.intensity !== undefined ? config.intensity : 1;
+        var light = null;
+
+        switch (lightType) {
+            case 'ambient':
+                light = new THREE.AmbientLight(color, intensity);
+                break;
+            case 'point':
+                light = new THREE.PointLight(color, intensity, config.distance || 0);
+                break;
+            case 'spot':
+                light = new THREE.SpotLight(
+                    color,
+                    intensity,
+                    config.distance || 0,
+                    THREE.MathUtils.degToRad(config.angle || 60),
+                    config.penumbra || 0.1
+                );
+                break;
+            case 'hemisphere':
+                light = new THREE.HemisphereLight(
+                    config.skyColor || '#87ceeb',
+                    config.groundColor || '#444444',
+                    intensity
+                );
+                break;
+            case 'directional':
+            default:
+                light = new THREE.DirectionalLight(color, intensity);
+                break;
+        }
+
+        if (light && config.castShadow === true && light.shadow) {
+            light.castShadow = true;
+        }
+
+        return light;
     };
 
     /**
@@ -916,7 +1079,7 @@
      * Cargar modelo 3D externo
      * @private
      */
-    VBP3DScene.prototype._loadModel = function(objectId, config) {
+    VBP3DScene.prototype._loadModel = function(objectId, config, parent) {
         var self = this;
         var THREE = window.THREE;
         var modelSrc = config.src;
@@ -964,7 +1127,11 @@
                         });
                     }
 
-                    self.scene.add(model);
+                    if (parent && typeof parent.add === 'function') {
+                        parent.add(model);
+                    } else {
+                        self.scene.add(model);
+                    }
                     self.objects.set(objectId, model);
 
                     document.dispatchEvent(new CustomEvent('vbp-3d-model-loaded', {
@@ -993,7 +1160,7 @@
      * Crear texto 3D
      * @private
      */
-    VBP3DScene.prototype._createText3D = function(objectId, config) {
+    VBP3DScene.prototype._createText3D = function(objectId, config, parent) {
         var self = this;
         var THREE = window.THREE;
         var FontLoader = window.VBP3DModules && window.VBP3DModules.FontLoader;
@@ -1004,10 +1171,16 @@
             return;
         }
 
-        var fontUrl = config.fontUrl || 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json';
         var loader = new FontLoader();
+        var fontUrls = config.fontUrl ? [config.fontUrl] : get3DAssetCandidates().fonts;
 
-        loader.load(fontUrl, function(font) {
+        var tryLoadFont = function(index) {
+            if (!fontUrls[index]) {
+                console.error('No se pudo cargar ninguna fuente 3D');
+                return;
+            }
+
+            loader.load(fontUrls[index], function(font) {
             var geometry = new TextGeometry(config.text || 'Hello 3D', {
                 font: font,
                 size: config.size || 1,
@@ -1029,13 +1202,22 @@
 
             self._applyTransform(textMesh, config);
 
-            self.scene.add(textMesh);
+            if (parent && typeof parent.add === 'function') {
+                parent.add(textMesh);
+            } else {
+                self.scene.add(textMesh);
+            }
             self.objects.set(objectId, textMesh);
 
             document.dispatchEvent(new CustomEvent('vbp-3d-text-created', {
                 detail: { sceneId: self.containerId, objectId: objectId, mesh: textMesh }
             }));
-        });
+            }, undefined, function() {
+                tryLoadFont(index + 1);
+            });
+        };
+
+        tryLoadFont(0);
     };
 
     /**
@@ -1047,11 +1229,10 @@
 
         if (config.children && Array.isArray(config.children)) {
             config.children.forEach(function(childConfig, index) {
-                var childId = config.id + '_child_' + index;
-                var child = this.addObject(childId, childConfig);
-                if (child) {
-                    group.add(child);
-                }
+                var childId = childConfig && childConfig.id
+                    ? childConfig.id
+                    : (config.id + '_child_' + index);
+                this._createObjectInstance(THREE, childId, Object.assign({}, childConfig, { id: childId }), group);
             }, this);
         }
 
@@ -1179,7 +1360,6 @@
         }
 
         if (props.material && object3d.material) {
-            var THREE = window.THREE;
             if (props.material.color) {
                 object3d.material.color.set(props.material.color);
             }
@@ -1193,11 +1373,47 @@
             if (props.material.roughness !== undefined) {
                 object3d.material.roughness = props.material.roughness;
             }
+            if (props.material.wireframe !== undefined) {
+                object3d.material.wireframe = props.material.wireframe;
+            }
+            object3d.material.needsUpdate = true;
         }
 
         if (props.visible !== undefined) {
             object3d.visible = props.visible;
         }
+
+        if (object3d.isLight) {
+            if (props.color && object3d.color) {
+                object3d.color.set(props.color);
+            }
+            if (props.intensity !== undefined) {
+                object3d.intensity = props.intensity;
+            }
+            if (props.distance !== undefined && 'distance' in object3d) {
+                object3d.distance = props.distance;
+            }
+            if (props.angle !== undefined && object3d.isSpotLight) {
+                object3d.angle = window.THREE.MathUtils.degToRad(props.angle);
+            }
+            if (props.penumbra !== undefined && object3d.isSpotLight) {
+                object3d.penumbra = props.penumbra;
+            }
+            if (props.castShadow !== undefined && 'castShadow' in object3d) {
+                object3d.castShadow = !!props.castShadow;
+            }
+            if (props.skyColor && object3d.isHemisphereLight) {
+                object3d.color.set(props.skyColor);
+            }
+            if (props.groundColor && object3d.isHemisphereLight && object3d.groundColor) {
+                object3d.groundColor.set(props.groundColor);
+            }
+            if (props.position) {
+                this._applyTransform(object3d, { position: props.position });
+            }
+        }
+
+        object3d.userData.config = Object.assign({}, object3d.userData.config || {}, props || {});
     };
 
     /**
@@ -1248,6 +1464,7 @@
             object: object3d,
             keyframes: animationConfig.keyframes || [],
             duration: animationConfig.duration || 1,
+            delay: animationConfig.delay || 0,
             loop: animationConfig.loop !== false,
             easing: animationConfig.easing || 'linear',
             currentTime: 0,
@@ -1382,16 +1599,24 @@
 
             animation.currentTime += delta;
 
-            if (animation.currentTime >= animation.duration) {
+            if (animation.currentTime < animation.delay) {
+                return;
+            }
+
+            var activeTime = animation.currentTime - animation.delay;
+
+            if (activeTime >= animation.duration) {
                 if (animation.loop) {
-                    animation.currentTime = animation.currentTime % animation.duration;
+                    animation.currentTime = animation.delay + (activeTime % animation.duration);
+                    activeTime = animation.currentTime - animation.delay;
                 } else {
-                    animation.currentTime = animation.duration;
+                    animation.currentTime = animation.delay + animation.duration;
+                    activeTime = animation.duration;
                     animation.playing = false;
                 }
             }
 
-            var progress = animation.currentTime / animation.duration;
+            var progress = animation.duration > 0 ? (activeTime / animation.duration) : 1;
 
             // Interpolar entre keyframes
             var keyframes = animation.keyframes;
@@ -1412,11 +1637,15 @@
 
             // Aplicar propiedades interpoladas
             if (fromKeyframe.rotation && toKeyframe.rotation) {
-                animation.object.rotation.y = this._lerp(
-                    fromKeyframe.rotation.y || 0,
-                    toKeyframe.rotation.y || 0,
-                    keyframeProgress
-                );
+                ['x', 'y', 'z'].forEach(function(axis) {
+                    if (fromKeyframe.rotation[axis] !== undefined || toKeyframe.rotation[axis] !== undefined) {
+                        animation.object.rotation[axis] = this._lerp(
+                            fromKeyframe.rotation[axis] || 0,
+                            toKeyframe.rotation[axis] || 0,
+                            keyframeProgress
+                        );
+                    }
+                }, this);
             }
 
             if (fromKeyframe.position && toKeyframe.position) {
@@ -1438,10 +1667,75 @@
             }
 
             if (fromKeyframe.scale !== undefined && toKeyframe.scale !== undefined) {
-                var scaleLerped = this._lerp(fromKeyframe.scale, toKeyframe.scale, keyframeProgress);
-                animation.object.scale.setScalar(scaleLerped);
+                if (typeof fromKeyframe.scale === 'object' || typeof toKeyframe.scale === 'object') {
+                    ['x', 'y', 'z'].forEach(function(axis) {
+                        var fromScale = typeof fromKeyframe.scale === 'object' ? (fromKeyframe.scale[axis] || 1) : fromKeyframe.scale;
+                        var toScale = typeof toKeyframe.scale === 'object' ? (toKeyframe.scale[axis] || 1) : toKeyframe.scale;
+                        animation.object.scale[axis] = this._lerp(fromScale, toScale, keyframeProgress);
+                    }, this);
+                } else {
+                    var scaleLerped = this._lerp(fromKeyframe.scale, toKeyframe.scale, keyframeProgress);
+                    animation.object.scale.setScalar(scaleLerped);
+                }
+            }
+
+            if (fromKeyframe.opacity !== undefined && toKeyframe.opacity !== undefined && animation.object.material) {
+                animation.object.material.opacity = this._lerp(fromKeyframe.opacity, toKeyframe.opacity, keyframeProgress);
+                animation.object.material.transparent = animation.object.material.opacity < 1;
+            }
+
+            if (fromKeyframe.color && toKeyframe.color && animation.object.material && animation.object.material.color) {
+                var THREE = window.THREE;
+                var fromColor = new THREE.Color(fromKeyframe.color);
+                var toColor = new THREE.Color(toKeyframe.color);
+                animation.object.material.color.copy(fromColor.lerp(toColor, keyframeProgress));
             }
         }, this);
+    };
+
+    VBP3DScene.prototype._updateShadowState = function() {
+        if (!this.renderer) {
+            return;
+        }
+
+        this.renderer.shadowMap.enabled = !!this.config.shadows;
+        this.objects.forEach(function(object3d) {
+            if (object3d.isMesh) {
+                object3d.castShadow = !!this.config.shadows && object3d.userData.config && object3d.userData.config.castShadow !== false;
+                object3d.receiveShadow = !!this.config.shadows;
+            }
+            if (object3d.isLight && 'castShadow' in object3d) {
+                object3d.castShadow = !!this.config.shadows && !!(object3d.userData.config && object3d.userData.config.castShadow);
+            }
+        }, this);
+    };
+
+    VBP3DScene.prototype.updateSceneConfig = function(patch) {
+        this.config = Object.assign({}, this.config || {}, patch || {});
+
+        if (patch && patch.background !== undefined) {
+            this._applySceneBackground(this.config.background);
+        }
+
+        if (patch && patch.camera) {
+            this.setCamera(this.config.camera || {});
+        }
+
+        if (patch && (patch.controls !== undefined || patch.autoRotate !== undefined || patch.autoRotateSpeed !== undefined || patch.enableZoom !== undefined || patch.enablePan !== undefined || patch.camera)) {
+            this._setupControls();
+        }
+
+        if (patch && patch.shadows !== undefined) {
+            this._updateShadowState();
+        }
+
+        if (patch && patch.pixelRatio !== undefined && this.renderer) {
+            this.renderer.setPixelRatio(Math.min(this.config.pixelRatio || window.devicePixelRatio || 1, 2));
+        }
+
+        if (patch && patch.antialiasing !== undefined) {
+            this._updateShadowState();
+        }
     };
 
     /**

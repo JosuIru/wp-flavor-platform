@@ -31,8 +31,16 @@
     var CONFIG = {
         REST_BASE: (window.VBP_Config && window.VBP_Config.restUrl) || '/wp-json/flavor-vbp/v1/',
         NONCE: (window.VBP_Config && window.VBP_Config.restNonce) || '',
-        CSS_PREFIX: 'vbp-gs-'
+        CSS_PREFIX: 'vbp-gs-',
+        ENDPOINTS: (window.VBP_Config && window.VBP_Config.globalStyles && window.VBP_Config.globalStyles.endpoints) || {}
     };
+
+    function getEndpoint(pathKey, fallbackPath) {
+        if (CONFIG.ENDPOINTS && CONFIG.ENDPOINTS[pathKey]) {
+            return CONFIG.ENDPOINTS[pathKey];
+        }
+        return CONFIG.REST_BASE + fallbackPath;
+    }
 
     /**
      * Caché local de estilos globales
@@ -55,7 +63,7 @@
                 return Promise.resolve(stylesCache);
             }
 
-            return fetch(CONFIG.REST_BASE + 'global-styles', {
+            return fetch(getEndpoint('list', 'global-styles'), {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
@@ -78,7 +86,7 @@
          * @returns {Promise<Object>}
          */
         getGrouped: function() {
-            return fetch(CONFIG.REST_BASE + 'global-styles?group=1', {
+            return fetch(getEndpoint('list', 'global-styles') + '?group=1', {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
@@ -101,7 +109,7 @@
          * @returns {Promise<Object>}
          */
         get: function(styleId) {
-            return fetch(CONFIG.REST_BASE + 'global-styles/' + encodeURIComponent(styleId), {
+            return fetch(getEndpoint('update', 'global-styles/{id}').replace('{id}', encodeURIComponent(styleId)), {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
@@ -124,7 +132,7 @@
          * @returns {Promise<Object>}
          */
         create: function(styleData) {
-            return fetch(CONFIG.REST_BASE + 'global-styles', {
+            return fetch(getEndpoint('create', 'global-styles'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,7 +160,7 @@
          * @returns {Promise<Object>}
          */
         update: function(styleId, styleData) {
-            return fetch(CONFIG.REST_BASE + 'global-styles/' + encodeURIComponent(styleId), {
+            return fetch(getEndpoint('update', 'global-styles/{id}').replace('{id}', encodeURIComponent(styleId)), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -181,7 +189,7 @@
          * @returns {Promise<boolean>}
          */
         delete: function(styleId) {
-            return fetch(CONFIG.REST_BASE + 'global-styles/' + encodeURIComponent(styleId), {
+            return fetch(getEndpoint('delete', 'global-styles/{id}').replace('{id}', encodeURIComponent(styleId)), {
                 method: 'DELETE',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
@@ -209,7 +217,7 @@
                 return Promise.resolve(categoriesCache);
             }
 
-            return fetch(CONFIG.REST_BASE + 'global-styles/categories', {
+            return fetch(getEndpoint('categories', 'global-styles/categories'), {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
@@ -533,13 +541,16 @@
          * Refrescar CSS de estilos globales en el documento
          */
         refreshCSS: function() {
-            fetch(CONFIG.REST_BASE + 'global-styles/css', {
+            fetch(getEndpoint('css', 'global-styles/css'), {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': CONFIG.NONCE
                 }
             })
             .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Error HTTP: ' + response.status);
+                }
                 return response.json();
             })
             .then(function(data) {

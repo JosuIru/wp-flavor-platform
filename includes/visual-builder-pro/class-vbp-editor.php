@@ -964,37 +964,8 @@ class Flavor_VBP_Editor {
         // VBP_Translations se carga automáticamente en vbp-i18n.js
         wp_localize_script( 'vbp-i18n', 'VBP_Translations', $this->obtener_strings_i18n() );
 
-        // Registrar Service Worker para modo offline
-        // Se ejecuta despues de que todos los scripts VBP esten cargados
-        $service_worker_registration = "
-            // VBP Service Worker Registration
-            (function() {
-                if ('serviceWorker' in navigator) {
-                    window.addEventListener('load', function() {
-                        var swUrl = '" . esc_js( FLAVOR_PLATFORM_URL . 'assets/vbp/js/vbp-service-worker.js' ) . "';
-                        navigator.serviceWorker.register(swUrl, { scope: '/wp-admin/' })
-                            .then(function(registration) {
-                                console.log('[VBP] Service Worker registered:', registration.scope);
-
-                                // Notificar cuando hay actualizacion
-                                registration.addEventListener('updatefound', function() {
-                                    var installingWorker = registration.installing;
-                                    installingWorker.addEventListener('statechange', function() {
-                                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                            // Hay una nueva version disponible
-                                            window.dispatchEvent(new CustomEvent('vbp:sw-update-available'));
-                                        }
-                                    });
-                                });
-                            })
-                            .catch(function(error) {
-                                console.warn('[VBP] Service Worker registration failed:', error);
-                            });
-                    });
-                }
-            })();
-        ";
-        wp_add_inline_script( 'vbp-offline-sync', $service_worker_registration, 'after' );
+        // El Service Worker se registra desde vbp-offline-sync.js.
+        // Evitamos un segundo registro inline con scope invalido sobre /wp-admin/.
     }
 
     /**
