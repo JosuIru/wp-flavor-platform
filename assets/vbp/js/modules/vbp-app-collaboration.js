@@ -6,8 +6,6 @@
  * @since 2.2.0
  */
 
-/* global VBP_Config, vbpLog */
-
 window.VBPAppCollaboration = {
     // Estado de colaboración
     collaborationEnabled: false,

@@ -152,7 +152,30 @@
     "Audio": "readonly",
     "Image": "readonly",
     "Worker": "readonly",
-    "ServiceWorkerRegistration": "readonly"
+    "ServiceWorkerRegistration": "readonly",
+
+    "VBP_Config": "readonly",
+    "VBPStore": "writable",
+    "vbpStore": "writable",
+    "vbpLog": "readonly",
+    "VBPAppToast": "readonly",
+    "VBPAppBranching": "writable",
+    "VBPAppCollaboration": "writable",
+    "VBPAppImportExport": "writable",
+    "VBPAppPageSettings": "writable",
+    "VBPAppSplitScreen": "writable",
+    "VBPAppWorkflows": "writable",
+    "VBPAppDesignTokens": "writable",
+    "sanitizeElements": "readonly",
+    "vbpCanvas": "writable",
+    "vbpInspector": "writable",
+    "vbpToolbar": "writable",
+    "vbpKeyboard": "writable",
+    "vbpHistory": "writable",
+    "vbpClipboard": "writable",
+    "vbpDragDrop": "writable",
+    "vbpResponsive": "writable",
+    "vbpApi": "writable"
   },
   "rules": {
     "indent": ["warn", "tab", {

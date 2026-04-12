@@ -6,8 +6,6 @@
  * @since 2.0.0
  */
 
-/* global VBPAppToast, vbpLog */
-
 window.VBPAppSplitScreen = {
     // Estado
     splitScreenMode: false,

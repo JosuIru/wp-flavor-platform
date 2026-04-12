@@ -6,8 +6,6 @@
  * @since 2.3.0
  */
 
-/* global VBP_Config, VBPAppToast, vbpLog */
-
 window.VBPAppWorkflows = {
     // Estado del workflow
     showWorkflowPanel: false,

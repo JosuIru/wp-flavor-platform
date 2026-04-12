@@ -7,8 +7,6 @@
  * @since 2.1.0
  */
 
-/* global VBP_Config, VBPAppToast, vbpLog, sanitizeElements */
-
 window.VBPAppBranching = {
 	// Estado
 	branches: [],

@@ -6,8 +6,6 @@
  * @since 2.0.0
  */
 
-/* global VBP_Config */
-
 window.VBPAppImportExport = {
     // Estado
     showExportModal: false,
