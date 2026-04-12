@@ -641,8 +641,128 @@
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         }
 
+        // Habilitar WebXR si está configurado
+        if (this.config.enableAR || this.config.enableVR) {
+            this.renderer.xr.enabled = true;
+        }
+
         this.renderer.domElement.style.display = 'block';
         this.container.appendChild(this.renderer.domElement);
+
+        // Añadir botón AR si está habilitado
+        if (this.config.enableAR) {
+            this._setupARButton();
+        }
+    };
+
+    /**
+     * Verificar soporte WebXR AR
+     * @returns {Promise<boolean>}
+     */
+    VBP3DScene.prototype.checkARSupport = function() {
+        if (!navigator.xr) {
+            return Promise.resolve(false);
+        }
+        return navigator.xr.isSessionSupported('immersive-ar')
+            .catch(function() { return false; });
+    };
+
+    /**
+     * Configurar botón AR
+     * @private
+     */
+    VBP3DScene.prototype._setupARButton = function() {
+        var self = this;
+
+        this.checkARSupport().then(function(supported) {
+            if (!supported) {
+                console.log('VBP 3D: WebXR AR no soportado en este dispositivo');
+                return;
+            }
+
+            // Crear botón AR
+            var arButton = document.createElement('button');
+            arButton.className = 'vbp-3d-ar-button';
+            arButton.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M5 9h2v6H5zm12 0h2v6h-2zm-6-3h2v12h-2zm-4 5h2v2H7zm8 0h2v2h-2z"/></svg> Ver en AR';
+            arButton.title = 'Ver objeto en Realidad Aumentada';
+            arButton.style.cssText = 'position:absolute;bottom:16px;left:50%;transform:translateX(-50%);' +
+                'padding:12px 24px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);' +
+                'color:#fff;border:none;border-radius:25px;cursor:pointer;font-size:14px;font-weight:600;' +
+                'display:flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(102,126,234,0.4);' +
+                'transition:all 0.3s ease;z-index:100;';
+
+            arButton.onmouseenter = function() {
+                this.style.transform = 'translateX(-50%) scale(1.05)';
+                this.style.boxShadow = '0 6px 20px rgba(102,126,234,0.5)';
+            };
+            arButton.onmouseleave = function() {
+                this.style.transform = 'translateX(-50%) scale(1)';
+                this.style.boxShadow = '0 4px 15px rgba(102,126,234,0.4)';
+            };
+
+            arButton.onclick = function() {
+                self.startAR();
+            };
+
+            self.container.style.position = 'relative';
+            self.container.appendChild(arButton);
+            self.arButton = arButton;
+        });
+    };
+
+    /**
+     * Iniciar sesión AR
+     * @returns {Promise}
+     */
+    VBP3DScene.prototype.startAR = function() {
+        var self = this;
+
+        if (!navigator.xr) {
+            alert('Tu navegador no soporta WebXR. Prueba con Chrome en Android.');
+            return Promise.reject(new Error('WebXR no soportado'));
+        }
+
+        return navigator.xr.requestSession('immersive-ar', {
+            requiredFeatures: ['hit-test', 'dom-overlay'],
+            domOverlay: { root: document.body }
+        }).then(function(session) {
+            self.xrSession = session;
+            self.renderer.xr.setSession(session);
+
+            // Cambiar texto del botón
+            if (self.arButton) {
+                self.arButton.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Salir de AR';
+                self.arButton.onclick = function() {
+                    self.stopAR();
+                };
+            }
+
+            session.addEventListener('end', function() {
+                self.xrSession = null;
+                if (self.arButton) {
+                    self.arButton.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M5 9h2v6H5zm12 0h2v6h-2zm-6-3h2v12h-2zm-4 5h2v2H7zm8 0h2v2h-2z"/></svg> Ver en AR';
+                    self.arButton.onclick = function() {
+                        self.startAR();
+                    };
+                }
+            });
+
+            console.log('VBP 3D: Sesión AR iniciada');
+            return session;
+        }).catch(function(err) {
+            console.error('VBP 3D: Error al iniciar AR:', err);
+            alert('No se pudo iniciar la experiencia AR. Asegúrate de dar permisos de cámara.');
+            throw err;
+        });
+    };
+
+    /**
+     * Detener sesión AR
+     */
+    VBP3DScene.prototype.stopAR = function() {
+        if (this.xrSession) {
+            this.xrSession.end();
+        }
     };
 
     /**

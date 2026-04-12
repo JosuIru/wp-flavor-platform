@@ -112,7 +112,19 @@
                     }
                 },
                 shadows: { type: 'toggle', label: 'Sombras', default: false },
-                antialiasing: { type: 'toggle', label: 'Antialiasing', default: true }
+                antialiasing: { type: 'toggle', label: 'Antialiasing', default: true },
+                enableAR: {
+                    type: 'toggle',
+                    label: 'Habilitar AR',
+                    default: false,
+                    description: 'Mostrar botón "Ver en AR" para dispositivos compatibles'
+                },
+                enableVR: {
+                    type: 'toggle',
+                    label: 'Habilitar VR',
+                    default: false,
+                    description: 'Mostrar botón "Ver en VR" para cascos compatibles'
+                }
             }
         },
 
