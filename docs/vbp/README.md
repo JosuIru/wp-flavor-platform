@@ -72,6 +72,18 @@ Editor visual fullscreen tipo Figma/Photoshop para WordPress, integrado en Flavo
 | 3D/WebGL | Completo | Escenas y modelos 3D | [Ver](features/3d-webgl.md) |
 | Variables y Logica | Completo | Variables dinamicas | [Ver](features/variables-logic.md) |
 
+### Herramientas Avanzadas
+
+| Feature | Estado | Descripcion | Documentacion |
+|---------|--------|-------------|---------------|
+| Auto Layout | Completo | Layout automatico tipo Figma | [Ver](features/auto-layout.md) |
+| Command Palette | Completo | Paleta de comandos (Cmd+K) | [Ver](features/command-palette.md) |
+| Whiteboard | Completo | Pizarra/FigJam para brainstorming | [Ver](features/whiteboard.md) |
+| Dev Mode | Completo | Modo desarrollador, exportar codigo | [Ver](features/dev-mode.md) |
+| Code Components | Completo | Componentes con codigo custom | [Ver](features/code-components.md) |
+| Comments | Completo | Sistema de comentarios | [Ver](features/comments.md) |
+| WebXR/AR | Completo | Realidad aumentada | [Ver](features/webxr-ar.md) |
+
 ---
 
 ## Referencia API
@@ -143,6 +155,12 @@ Editor visual fullscreen tipo Figma/Photoshop para WordPress, integrado en Flavo
 | `vbp-performance-monitor.js` | Monitor rendimiento |
 | `vbp-accessibility.js` | Herramientas a11y |
 | `vbp-editor-themes.js` | Temas del editor |
+| `vbp-auto-layout.js` | Auto layout Figma-style |
+| `vbp-command-palette.js` | Paleta de comandos |
+| `vbp-whiteboard.js` | Pizarra/FigJam |
+| `vbp-dev-mode.js` | Modo desarrollador |
+| `vbp-code-components.js` | Componentes con codigo |
+| `vbp-comments.js` | Sistema de comentarios |
 
 ---
 
@@ -157,7 +175,18 @@ Editor visual fullscreen tipo Figma/Photoshop para WordPress, integrado en Flavo
 
 ## Changelog
 
-### Version 2.5.0 (Actual)
+### Version 2.6.0 (Actual)
+- Nuevo: WebXR/AR - Realidad aumentada para modelos 3D
+- Nuevo: Modelos 3D de ejemplo incluidos
+- Nuevo: Auto Layout tipo Figma
+- Nuevo: Command Palette (Cmd+K)
+- Nuevo: Whiteboard/Pizarra para brainstorming
+- Nuevo: Dev Mode para desarrolladores
+- Nuevo: Code Components personalizados
+- Nuevo: Sistema de comentarios colaborativo
+- Mejora: Documentacion ampliada
+
+### Version 2.5.0
 - Nuevo: Animaciones de Scroll avanzadas
 - Nuevo: Animaciones con stagger, spring, motion path
 - Nuevo: Soporte 3D/WebGL
@@ -196,3 +225,5 @@ Editor visual fullscreen tipo Figma/Photoshop para WordPress, integrado en Flavo
 - [CLAUDE.md](../../CLAUDE.md) - Instrucciones para Claude Code
 - [Guiones Video](../GUIONES-VIDEO-TUTORIALES.md) - Tutoriales
 - [API Reference](../api/CLAUDE-API-GUIDE.md) - Guia completa APIs
+- [Editor 3D](../VBP-3D-EDITOR.md) - Guia completa del editor 3D
+- [Modelos 3D de ejemplo](../../assets/vbp/models/examples/) - Modelos GLB para probar
