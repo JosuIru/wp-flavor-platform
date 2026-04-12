@@ -1,5 +1,50 @@
 # CLAUDE-APK.md - Instrucciones para Configuración de APKs
 
+## 🚨 REGLA CRÍTICA: DOS APKs SEPARADAS - NO MEZCLAR
+
+**EXISTEN DOS APLICACIONES COMPLETAMENTE SEPARADAS:**
+
+| APK | Entry Point | Flavor | Comando de Build |
+|-----|-------------|--------|------------------|
+| **Cliente** | `lib/main_client.dart` | `client` | `./build_app.sh client release` |
+| **Admin** | `lib/main_admin.dart` | `admin` | `./build_app.sh admin release` |
+
+### ⛔ PROHIBIDO
+
+```bash
+# ❌ NUNCA compilar sin especificar flavor y target
+flutter build apk
+
+# ❌ NUNCA usar el mismo target para ambas
+flutter build apk -t lib/main_admin.dart  # Esto es SOLO para admin
+flutter build apk -t lib/main_client.dart # Esto es SOLO para client
+```
+
+### ✅ OBLIGATORIO
+
+```bash
+# ✅ SIEMPRE usar el script build_app.sh
+cd mobile-apps/
+
+# Para APK de CLIENTE:
+./build_app.sh client release
+
+# Para APK de ADMIN:
+./build_app.sh admin release
+```
+
+### Verificación antes de compilar
+
+```bash
+# Verificar qué target usará cada flavor:
+cat build_app.sh | grep -A2 "client)"  # Debe mostrar main_client.dart
+cat build_app.sh | grep -A2 "admin)"   # Debe mostrar main_admin.dart
+```
+
+**SI COMPILAS LA MISMA APK EN AMBAS, EL USUARIO TENDRÁ DOS APPS IDÉNTICAS.**
+
+---
+
 ## REGLA FUNDAMENTAL: ALINEACIÓN DE 3 NIVELES
 
 Antes de configurar cualquier APK, DEBES verificar que los módulos están disponibles en los **3 niveles**:

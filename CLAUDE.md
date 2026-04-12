@@ -28,6 +28,18 @@ Cuando trabajes con sitios que tienen Flavor Platform, DEBES seguir estas reglas
 
 6. **NUNCA omitir la configuración del footer**
 
+7. **NUNCA compilar APKs sin usar el script `build_app.sh`**
+   ```bash
+   # ❌ PROHIBIDO - Compila admin por defecto
+   flutter build apk
+
+   # ✅ OBLIGATORIO - Usar el script con flavor específico
+   cd mobile-apps/
+   ./build_app.sh client release  # Para APK de cliente
+   ./build_app.sh admin release   # Para APK de admin
+   ```
+   **HAY DOS APKs SEPARADAS (cliente y admin). NO MEZCLAR.**
+
 ### ✅ OBLIGATORIO
 
 1. **SIEMPRE ejecutar validación primero**
