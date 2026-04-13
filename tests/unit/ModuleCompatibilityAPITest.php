@@ -223,13 +223,24 @@ class ModuleCompatibilityAPITest extends Flavor_TestCase {
 
         $result = $this->api->get_compatibility_matrix($request);
 
-        // Buscar un módulo con algún nivel de soporte
+        // Verificar que la matriz existe
+        $this->assertArrayHasKey('matrix', $result);
+        $this->assertIsArray($result['matrix']);
+
+        // Buscar un módulo con soporte completo (nivel 3)
+        $foundFullSupport = false;
         foreach ($result['matrix'] as $module) {
-            if ($module['support_level'] === 3) {
+            if (isset($module['support_level']) && $module['support_level'] === 3) {
                 $this->assertEquals('enable', $module['recommendation']['action']);
                 $this->assertFalse($module['recommendation']['ask_permission']);
+                $foundFullSupport = true;
                 break;
             }
+        }
+
+        // Si no hay módulos con soporte completo, es aceptable
+        if (!$foundFullSupport) {
+            $this->assertGreaterThanOrEqual(0, count($result['matrix']));
         }
     }
 

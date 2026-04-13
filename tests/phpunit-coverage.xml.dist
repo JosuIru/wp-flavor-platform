@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests/unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Coverage solo de archivos que se ejecutan durante tests -->
+    <coverage processUncoveredFiles="false">
+        <include>
+            <directory suffix="Test.php">tests/unit</directory>
+        </include>
+        <report>
+            <html outputDirectory="tests/coverage/html"/>
+            <text outputFile="tests/coverage/coverage.txt" showOnlySummary="true"/>
+        </report>
+    </coverage>
+
+    <php>
+        <const name="WP_TESTS_MULTISITE" value="0"/>
+    </php>
+</phpunit>

@@ -82,3 +82,11 @@ docker/data/
 # Environment files for testing
 .env.test
 .env.test.local
+
+# PHPUnit cache
+.phpunit.cache/
+.phpunit.result.cache
+
+# Coverage reports (regenerables)
+tests/coverage/
+releases/

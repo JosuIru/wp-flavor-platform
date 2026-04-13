@@ -1,12 +1,51 @@
-# Tests - Visual Builder Pro
+# Tests - Flavor Platform
 
-Suite completa de tests automatizados para Visual Builder Pro.
+Suite completa de tests automatizados para Flavor Platform y Visual Builder Pro.
+
+## Métricas Actuales
+
+| Tipo | Tests | Assertions |
+|------|-------|------------|
+| Unitarios | 632 | 1,443 |
+| Integración | 91 | 157 |
+| **Total** | **723** | **1,600** |
 
 ## Estructura
 
 ```
 tests/
-├── php/                           # Tests PHPUnit
+├── unit/                          # Tests unitarios (sin WordPress)
+│   ├── VBPBlocksTest.php              # Bloques VBP
+│   ├── VBPPagesTest.php               # Páginas VBP
+│   ├── VBPSymbolsTest.php             # Símbolos VBP
+│   ├── EventosModuleTest.php          # Módulo Eventos
+│   ├── MarketplaceModuleTest.php      # Módulo Marketplace
+│   ├── SociosModuleTest.php           # Módulo Socios
+│   ├── ForosModuleTest.php            # Módulo Foros
+│   ├── ReservasModuleTest.php         # Módulo Reservas
+│   ├── ChatSystemTest.php             # Sistema de Chat
+│   ├── SearchSystemTest.php           # Sistema de Búsqueda
+│   ├── MediaSystemTest.php            # Sistema de Medios
+│   ├── CronSystemTest.php             # Tareas Programadas
+│   ├── SecurityTest.php               # Seguridad
+│   ├── NotificationsSystemTest.php    # Notificaciones
+│   ├── ReputationSystemTest.php       # Gamificación
+│   ├── UserSystemTest.php             # Sistema de Usuarios
+│   ├── NetworkSystemTest.php          # Red/Federación
+│   ├── AddonsSystemTest.php           # Sistema de Addons
+│   ├── ShortcodesTest.php             # Shortcodes
+│   └── ...                            # +10 archivos más
+│
+├── integration/                   # Tests de integración (con WordPress)
+│   ├── ModulesIntegrationTest.php     # Carga de módulos
+│   ├── RestApiIntegrationTest.php     # API REST
+│   ├── ShortcodesIntegrationTest.php  # Shortcodes
+│   └── VBPIntegrationTest.php         # Visual Builder Pro
+│
+├── benchmark/                     # Tests de rendimiento
+│   └── PerformanceTest.php            # Benchmarks de operaciones
+│
+├── php/                           # Tests PHPUnit legacy
 │   ├── test-class-vbp-symbols.php      # Tests de Symbols
 │   ├── test-class-vbp-branching.php    # Tests de Branching
 │   ├── test-class-vbp-rest-api.php     # Tests de REST API
@@ -64,20 +103,29 @@ npm run test:stress
 ### Tests PHP (PHPUnit)
 
 ```bash
+# Tests unitarios (sin WordPress)
+composer test:unit
+
+# Tests de integración (con WordPress)
+composer test:integration
+
 # Todos los tests PHP
-npm run test:php
+composer test:all
 
-# Solo tests VBP
-npm run test:php:vbp
+# Tests de benchmark/rendimiento
+composer test:benchmark
 
-# Con cobertura
-npm run test:coverage:php
+# Con cobertura de código
+composer test:coverage
 
-# Suite especifica
+# Suite específica
 vendor/bin/phpunit --testsuite VBP-Symbols
-vendor/bin/phpunit --testsuite VBP-Branching
-vendor/bin/phpunit --testsuite VBP-API
-vendor/bin/phpunit --testsuite VBP-GlobalStyles
+vendor/bin/phpunit --testsuite unit --filter SecurityTest
+
+# Usando npm
+npm run test:php
+npm run test:php:vbp
+npm run test:coverage:php
 ```
 
 ### Tests JavaScript (Vitest)

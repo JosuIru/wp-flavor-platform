@@ -246,6 +246,9 @@ final class Flavor_System_Initializer {
         // Accesibilidad
         $this->init_singleton('Flavor_Accessibility');
 
+        // Shortcodes principales de módulos
+        $this->init_singleton('Flavor_Shortcodes');
+
         // Shortcodes de Landing Pages
         $this->init_singleton('Flavor_Landing_Shortcodes');
 

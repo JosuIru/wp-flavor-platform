@@ -509,7 +509,7 @@ class Flavor_Reputation_Manager {
         $nivel_info = $this->get_info_nivel($nivel_nuevo);
 
         if (class_exists('Flavor_Notifications_System')) {
-            Flavor_Notifications_System::get_instance()->crear_notificacion(
+            Flavor_Notifications_System::get_instance()->create(
                 $usuario_id,
                 'reputacion',
                 'Subiste de nivel!',
@@ -537,7 +537,7 @@ class Flavor_Reputation_Manager {
         }
 
         if (class_exists('Flavor_Notifications_System')) {
-            Flavor_Notifications_System::get_instance()->crear_notificacion(
+            Flavor_Notifications_System::get_instance()->create(
                 $usuario_id,
                 'reputacion',
                 'Nuevo badge desbloqueado!',

@@ -8,34 +8,29 @@
     stopOnFailure="false"
 >
     <testsuites>
-        <testsuite name="VBP">
-            <directory suffix=".php">tests/php</directory>
-        </testsuite>
-        <testsuite name="VBP-Symbols">
-            <file>tests/php/test-class-vbp-symbols.php</file>
-        </testsuite>
-        <testsuite name="VBP-Branching">
-            <file>tests/php/test-class-vbp-branching.php</file>
-        </testsuite>
-        <testsuite name="VBP-API">
-            <file>tests/php/test-class-vbp-rest-api.php</file>
-        </testsuite>
-        <testsuite name="VBP-GlobalStyles">
-            <file>tests/php/test-class-vbp-global-styles.php</file>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests/unit</directory>
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
+    <coverage processUncoveredFiles="false">
         <include>
-            <directory suffix=".php">includes/visual-builder-pro</directory>
+            <directory suffix=".php">includes</directory>
+            <directory suffix=".php">modules</directory>
+            <directory suffix=".php">admin</directory>
         </include>
         <exclude>
             <directory suffix=".php">tests</directory>
             <directory suffix=".php">vendor</directory>
+            <directory suffix=".php">node_modules</directory>
+            <directory suffix=".php">includes/admin</directory>
+            <directory suffix=".php">includes/views</directory>
+            <file>includes/index.php</file>
         </exclude>
         <report>
             <html outputDirectory="tests/coverage/html"/>
             <text outputFile="tests/coverage/coverage.txt" showOnlySummary="true"/>
+            <clover outputFile="tests/coverage/clover.xml"/>
         </report>
     </coverage>
 

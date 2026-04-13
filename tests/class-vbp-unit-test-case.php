@@ -7,6 +7,81 @@
  */
 
 /**
+ * Mock de WP_UnitTestCase cuando no está disponible el WP Test Framework.
+ *
+ * Esto permite ejecutar tests unitarios sin una instalación completa de WordPress.
+ */
+if ( ! class_exists( 'WP_UnitTestCase' ) ) {
+    abstract class WP_UnitTestCase extends \PHPUnit\Framework\TestCase {
+        protected static $ignore_files;
+
+        public static function setUpBeforeClass(): void {
+            parent::setUpBeforeClass();
+        }
+
+        public static function tearDownAfterClass(): void {
+            parent::tearDownAfterClass();
+        }
+
+        protected function setUp(): void {
+            parent::setUp();
+        }
+
+        protected function tearDown(): void {
+            parent::tearDown();
+        }
+
+        /**
+         * Mock de factory para crear posts, usuarios, etc.
+         */
+        protected function factory() {
+            return new class {
+                public function post() {
+                    return new class {
+                        public function create( $args = array() ) {
+                            static $id = 1;
+                            return $id++;
+                        }
+                        public function create_and_get( $args = array() ) {
+                            return (object) array_merge( array(
+                                'ID'           => $this->create( $args ),
+                                'post_title'   => $args['post_title'] ?? 'Test Post',
+                                'post_content' => $args['post_content'] ?? '',
+                                'post_status'  => $args['post_status'] ?? 'publish',
+                                'post_type'    => $args['post_type'] ?? 'post',
+                            ), $args );
+                        }
+                    };
+                }
+                public function user() {
+                    return new class {
+                        public function create( $args = array() ) {
+                            static $id = 1;
+                            return $id++;
+                        }
+                    };
+                }
+                public function term() {
+                    return new class {
+                        public function create( $args = array() ) {
+                            static $id = 1;
+                            return $id++;
+                        }
+                    };
+                }
+            };
+        }
+
+        /**
+         * Simula wp_set_current_user.
+         */
+        protected function set_current_user( $user_id ) {
+            // Mock - no hace nada en tests unitarios
+        }
+    }
+}
+
+/**
  * VBP Unit Test Case base class.
  *
  * Provides helper methods and common setup for VBP tests.
