@@ -756,9 +756,6 @@ final class Flavor_Bootstrap_Dependencies {
         // Admin Shell
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-admin-shell.php';
 
-        // Trait de componentes para dashboards de módulos (v3.5.1+)
-        require_once FLAVOR_PLATFORM_PATH . 'admin/trait-dashboard-components.php';
-
         // Hub de Configuración Unificado (v3.5.1+)
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-settings-hub.php';
 
