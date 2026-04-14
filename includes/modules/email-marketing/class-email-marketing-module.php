@@ -4006,7 +4006,9 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
         }
 
         $hash = sanitize_text_field($parts[0]);
-        $url = esc_url_raw($parts[1]);
+        $url_raw = esc_url_raw($parts[1]);
+        // SEGURIDAD: Validar URL para prevenir Open Redirect
+        $url = wp_validate_redirect($url_raw, home_url());
 
         global $wpdb;
 

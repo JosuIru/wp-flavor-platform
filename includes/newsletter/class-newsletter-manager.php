@@ -286,18 +286,22 @@ class Flavor_Newsletter_Manager {
     public function rastrear_click() {
         $identificador_campana = intval($_GET['c'] ?? 0);
         $direccion_email = $this->decodificar_email_seguro($_GET['e'] ?? '');
-        $url_destino = esc_url_raw(urldecode($_GET['u'] ?? ''));
+        $url_destino_raw = esc_url_raw(urldecode($_GET['u'] ?? ''));
 
-        if ($identificador_campana && $direccion_email && $url_destino) {
+        // SEGURIDAD: Validar URL para prevenir Open Redirect
+        // Permite URLs del mismo sitio y dominios en allowed_redirect_hosts
+        $url_destino = wp_validate_redirect($url_destino_raw, home_url());
+
+        if ($identificador_campana && $direccion_email && $url_destino_raw) {
             global $wpdb;
             $wpdb->insert($this->tabla_tracking, [
-                'campana_id' => $identificador_campana, 'email' => $direccion_email, 'tipo' => 'click', 'url_click' => $url_destino,
+                'campana_id' => $identificador_campana, 'email' => $direccion_email, 'tipo' => 'click', 'url_click' => $url_destino_raw,
                 'ip_address' => $this->obtener_ip_real(), 'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''), 'created_at' => current_time('mysql'),
             ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
             $wpdb->query($wpdb->prepare("UPDATE {$this->tabla_campanas} SET total_clicks = total_clicks + 1 WHERE id = %d", $identificador_campana));
         }
 
-        wp_redirect(!empty($url_destino) ? $url_destino : home_url());
+        wp_redirect($url_destino);
         exit;
     }
 
