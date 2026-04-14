@@ -516,6 +516,112 @@ class Flavor_Module_Hierarchy {
 			'children'       => $this->get_module_children( $normalized_id ),
 		];
 	}
+
+	/**
+	 * Obtener mapeo de categoría de módulo a categoría de widget
+	 *
+	 * Permite sincronizar las categorías de Module Hierarchy con
+	 * las categorías del Widget Registry.
+	 *
+	 * @return array Mapeo de category_id => widget_category_id.
+	 */
+	public function get_widget_category_mapping() {
+		return apply_filters( 'flavor_module_widget_category_mapping', [
+			// Module Hierarchy Category => Widget Registry Category
+			'comunidad'      => 'comunidad',
+			'economia'       => 'economia',
+			'actividades'    => 'actividades',
+			'servicios'      => 'servicios',
+			'recursos'       => 'recursos',
+			'sostenibilidad' => 'sostenibilidad',
+			'comunicacion'   => 'comunicacion',
+			'mapeo'          => 'sistema',
+			'certificacion'  => 'sistema',
+			'desarrollo'     => 'sistema',
+		] );
+	}
+
+	/**
+	 * Obtener la categoría de widget para un módulo
+	 *
+	 * @param string $module_id ID del módulo.
+	 * @return string Categoría de widget (para Widget Registry).
+	 */
+	public function get_module_widget_category( $module_id ) {
+		$module_category = $this->get_module_category( $module_id );
+
+		if ( ! $module_category ) {
+			return 'sistema';
+		}
+
+		$mapping = $this->get_widget_category_mapping();
+
+		return $mapping[ $module_category ] ?? 'sistema';
+	}
+
+	/**
+	 * Obtener información para registrar un widget de módulo
+	 *
+	 * Devuelve toda la información necesaria para que un módulo
+	 * registre su widget de manera consistente con la jerarquía.
+	 *
+	 * @param string $module_id ID del módulo.
+	 * @return array Información para registro de widget.
+	 */
+	public function get_widget_registration_info( $module_id ) {
+		$module_info = $this->get_module_info( $module_id );
+
+		if ( ! $module_info ) {
+			return [
+				'category'       => 'sistema',
+				'category_label' => __( 'Sistema', 'flavor-platform' ),
+				'category_color' => '#64748b',
+				'category_icon'  => 'dashicons-admin-generic',
+				'priority'       => 999,
+			];
+		}
+
+		return [
+			'category'       => $this->get_module_widget_category( $module_id ),
+			'category_label' => $module_info['category_title'],
+			'category_color' => $module_info['category_color'],
+			'category_icon'  => $module_info['category_icon'],
+			'priority'       => $module_info['priority'],
+		];
+	}
+
+	/**
+	 * Obtener todos los módulos agrupados por categoría de widget
+	 *
+	 * Útil para sincronizar el menú lateral con los widgets del dashboard.
+	 *
+	 * @param bool $only_active Solo módulos activos.
+	 * @return array Array de widget_category => [module_ids].
+	 */
+	public function get_modules_by_widget_category( $only_active = true ) {
+		$result = [];
+		$active_modules = [];
+
+		if ( $only_active && class_exists( 'Flavor_Platform_Module_Loader' ) ) {
+			$active_modules = Flavor_Platform_Module_Loader::get_active_modules_cached();
+		}
+
+		foreach ( $this->module_to_category as $module_id => $info ) {
+			if ( $only_active && ! in_array( $module_id, $active_modules, true ) ) {
+				continue;
+			}
+
+			$widget_category = $this->get_module_widget_category( $module_id );
+
+			if ( ! isset( $result[ $widget_category ] ) ) {
+				$result[ $widget_category ] = [];
+			}
+
+			$result[ $widget_category ][] = $module_id;
+		}
+
+		return $result;
+	}
 }
 
 /**
