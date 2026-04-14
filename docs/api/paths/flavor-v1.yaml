@@ -1,0 +1,1353 @@
+# Flavor Platform API v1 - Paths
+# OpenAPI 3.0 paths specification
+# Namespace: flavor/v1
+
+# =============================================================================
+# MODULES API - Universal Module Actions
+# =============================================================================
+
+/flavor/v1/modules:
+  get:
+    summary: List all active modules
+    description: |
+      Returns a list of all currently active modules in the platform.
+      Public endpoint with rate limiting.
+    operationId: listModules
+    tags:
+      - Modules
+    responses:
+      '200':
+        description: List of active modules
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Module identifier
+                        example: "eventos"
+                      name:
+                        type: string
+                        description: Module display name
+                        example: "Eventos"
+                      description:
+                        type: string
+                        description: Module description
+                      active:
+                        type: boolean
+                        example: true
+                total:
+                  type: integer
+                  description: Total number of active modules
+      '429':
+        description: Rate limit exceeded
+
+/flavor/v1/modules/{module_id}:
+  get:
+    summary: Get module information
+    description: |
+      Returns detailed information about a specific module.
+      For authenticated users, includes available actions and form configs.
+    operationId: getModuleInfo
+    tags:
+      - Modules
+    parameters:
+      - name: module_id
+        in: path
+        required: true
+        description: Module identifier
+        schema:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]+$'
+        example: eventos
+    responses:
+      '200':
+        description: Module information
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                active:
+                  type: boolean
+                actions:
+                  type: object
+                  description: Available actions (only for authenticated users)
+                form_configs:
+                  type: object
+                  description: Form configurations (only for authenticated users)
+      '404':
+        description: Module not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+
+/flavor/v1/modules/{module_id}/actions/{action_name}:
+  post:
+    summary: Execute module action
+    description: |
+      Executes a specific action on a module. Some actions are public,
+      others require authentication. Admin actions require manage_options capability.
+    operationId: executeModuleAction
+    tags:
+      - Modules
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: module_id
+        in: path
+        required: true
+        description: Module identifier
+        schema:
+          type: string
+        example: eventos
+      - name: action_name
+        in: path
+        required: true
+        description: Action name to execute
+        schema:
+          type: string
+        example: inscribirse
+    requestBody:
+      description: Action parameters
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+          example:
+            evento_id: 123
+            comentarios: "Me interesa asistir"
+    responses:
+      '200':
+        description: Action executed successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                data:
+                  type: object
+                redirect_url:
+                  type: string
+                  nullable: true
+      '400':
+        description: Validation error or action failed
+      '401':
+        description: Authentication required
+      '403':
+        description: Insufficient permissions or invalid nonce
+      '404':
+        description: Module or action not found
+
+# =============================================================================
+# MODULE CONFIG API - Mobile App Configuration
+# =============================================================================
+
+/flavor/v1/modules/config:
+  get:
+    summary: Get all module configurations
+    description: |
+      Returns UI configuration for all modules, including fields, layouts,
+      actions, and filters for mobile app rendering.
+    operationId: getAllModuleConfigs
+    tags:
+      - Module Config
+    parameters:
+      - name: all
+        in: query
+        description: Include inactive modules
+        schema:
+          type: boolean
+          default: false
+    responses:
+      '200':
+        description: Module configurations
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModuleConfig'
+      '429':
+        description: Rate limit exceeded
+
+/flavor/v1/modules/config/{module_id}:
+  get:
+    summary: Get specific module configuration
+    description: Returns UI configuration for a specific module
+    operationId: getModuleConfig
+    tags:
+      - Module Config
+    parameters:
+      - name: module_id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: eventos
+    responses:
+      '200':
+        description: Module configuration
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuleConfig'
+      '404':
+        description: Module not found
+
+/flavor/v1/modules/docs:
+  get:
+    summary: List all module documentation
+    description: Returns documentation index for all modules
+    operationId: getAllModuleDocs
+    tags:
+      - Module Config
+    responses:
+      '200':
+        description: Documentation index
+
+/flavor/v1/modules/docs/{module_id}:
+  get:
+    summary: Get module documentation
+    description: Returns detailed documentation for a specific module
+    operationId: getModuleDocs
+    tags:
+      - Module Config
+    parameters:
+      - name: module_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Module documentation
+      '404':
+        description: Module not found
+
+# =============================================================================
+# CLIENT DASHBOARD API
+# =============================================================================
+
+/flavor/v1/client/dashboard:
+  get:
+    summary: Get client dashboard
+    description: |
+      Returns complete dashboard data including user profile, stats,
+      recent activity, notifications, and widgets.
+    operationId: getClientDashboard
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: include_widgets
+        in: query
+        description: Include widget data in response
+        schema:
+          type: boolean
+          default: true
+    responses:
+      '200':
+        description: Dashboard data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  description: User profile data
+                stats_summary:
+                  type: object
+                  description: Statistics summary
+                recent_activity:
+                  type: object
+                  properties:
+                    items:
+                      type: array
+                    total:
+                      type: integer
+                notifications:
+                  type: object
+                  properties:
+                    unread_count:
+                      type: integer
+                    recent:
+                      type: array
+                preferences:
+                  type: object
+                widgets:
+                  type: array
+                meta:
+                  type: object
+                  properties:
+                    generated_at:
+                      type: string
+                      format: date-time
+                    cache_ttl:
+                      type: integer
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/stats:
+  get:
+    summary: Get detailed user statistics
+    description: Returns detailed statistics for the authenticated user
+    operationId: getClientStats
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: period
+        in: query
+        description: Statistics period
+        schema:
+          type: string
+          enum: [week, month, year, all]
+          default: month
+    responses:
+      '200':
+        description: User statistics
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/statistics:
+  get:
+    summary: Get simplified statistics for mobile
+    description: Returns simplified statistics for mobile dashboard widgets
+    operationId: getClientStatisticsMobile
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Simplified statistics
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/activity:
+  get:
+    summary: Get user activity timeline
+    description: Returns paginated activity timeline for the user
+    operationId: getClientActivity
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: type
+        in: query
+        description: Filter by activity type
+        schema:
+          type: string
+      - name: module
+        in: query
+        description: Filter by module
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Activity timeline
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/notifications:
+  get:
+    summary: Get user notifications
+    description: Returns paginated notifications for the user
+    operationId: getClientNotifications
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: unread_only
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - name: type
+        in: query
+        description: Filter by notification type
+        schema:
+          type: string
+    responses:
+      '200':
+        description: User notifications
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/notifications/mark-read:
+  post:
+    summary: Mark notifications as read
+    description: Marks specified notifications as read
+    operationId: markNotificationsRead
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              notification_ids:
+                type: array
+                items:
+                  type: integer
+              mark_all:
+                type: boolean
+                default: false
+    responses:
+      '200':
+        description: Notifications marked as read
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/widgets:
+  get:
+    summary: Get available widgets
+    description: Returns available dashboard widgets based on active modules
+    operationId: getClientWidgets
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: widget_ids
+        in: query
+        description: Specific widget IDs to retrieve
+        schema:
+          type: array
+          items:
+            type: string
+    responses:
+      '200':
+        description: Available widgets
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/preferences:
+  get:
+    summary: Get dashboard preferences
+    description: Returns user dashboard preferences
+    operationId: getClientPreferences
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Dashboard preferences
+      '401':
+        description: Authentication required
+  post:
+    summary: Save dashboard preferences
+    description: Saves user dashboard preferences
+    operationId: saveClientPreferences
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              visible_widgets:
+                type: array
+                items:
+                  type: string
+              widget_order:
+                type: array
+                items:
+                  type: string
+              theme:
+                type: string
+                enum: [light, dark, auto]
+              notifications_enabled:
+                type: boolean
+              compact_mode:
+                type: boolean
+    responses:
+      '200':
+        description: Preferences saved
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/network-stats:
+  get:
+    summary: Get network statistics
+    description: Returns global platform/network statistics
+    operationId: getNetworkStats
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: period
+        in: query
+        schema:
+          type: string
+          enum: [week, month, year, all]
+          default: month
+    responses:
+      '200':
+        description: Network statistics
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/shared-resources:
+  get:
+    summary: Get shared resources
+    description: Returns shared resources accessible from mobile dashboard
+    operationId: getSharedResources
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+          default: all
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+    responses:
+      '200':
+        description: Shared resources
+      '401':
+        description: Authentication required
+
+/flavor/v1/client/activity-map:
+  get:
+    summary: Get activity map
+    description: Returns platform activity map data
+    operationId: getActivityMap
+    tags:
+      - Client Dashboard
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: period
+        in: query
+        schema:
+          type: string
+          enum: [week, month, year]
+          default: month
+      - name: module
+        in: query
+        description: Filter by specific module
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Activity map data
+      '401':
+        description: Authentication required
+
+# =============================================================================
+# REPUTATION API
+# =============================================================================
+
+/flavor/v1/reputation/me:
+  get:
+    summary: Get my reputation
+    description: Returns reputation data for the authenticated user
+    operationId: getMyReputation
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: User reputation
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                data:
+                  $ref: '#/components/schemas/ReputationData'
+      '401':
+        description: Authentication required
+
+/flavor/v1/reputation/user/{id}:
+  get:
+    summary: Get user reputation
+    description: Returns reputation data for a specific user (self or admin only)
+    operationId: getUserReputation
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: User reputation
+      '401':
+        description: Authentication required
+      '403':
+        description: Access denied (not self or admin)
+      '404':
+        description: User not found
+
+/flavor/v1/reputation/user/{id}/badges:
+  get:
+    summary: Get user badges
+    description: Returns badges for a specific user (self or admin only)
+    operationId: getUserBadges
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: User badges
+      '401':
+        description: Authentication required
+      '403':
+        description: Access denied
+      '404':
+        description: User not found
+
+/flavor/v1/reputation/leaderboard:
+  get:
+    summary: Get reputation leaderboard
+    description: Returns reputation leaderboard (public with rate limiting)
+    operationId: getLeaderboard
+    tags:
+      - Reputation
+    parameters:
+      - name: periodo
+        in: query
+        schema:
+          type: string
+          enum: [total, semana, mes]
+          default: total
+      - name: limite
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+    responses:
+      '200':
+        description: Leaderboard data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                periodo:
+                  type: string
+                data:
+                  type: array
+      '429':
+        description: Rate limit exceeded
+
+/flavor/v1/reputation/badges:
+  get:
+    summary: Get available badges
+    description: Returns all available badges in the system
+    operationId: getAvailableBadges
+    tags:
+      - Reputation
+    responses:
+      '200':
+        description: Available badges
+      '429':
+        description: Rate limit exceeded
+
+/flavor/v1/reputation/badges/{badge_id}/highlight:
+  post:
+    summary: Toggle badge highlight
+    description: Toggles highlight status for a user's badge (max 3 highlighted)
+    operationId: toggleBadgeHighlight
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: badge_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Badge highlight toggled
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                destacado:
+                  type: boolean
+                message:
+                  type: string
+      '400':
+        description: Max highlighted badges reached
+      '401':
+        description: Authentication required
+      '404':
+        description: Badge not found
+
+/flavor/v1/reputation/me/history:
+  get:
+    summary: Get points history
+    description: Returns paginated points history for authenticated user
+    operationId: getPointsHistory
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+    responses:
+      '200':
+        description: Points history
+      '401':
+        description: Authentication required
+
+/flavor/v1/reputation/config:
+  get:
+    summary: Get reputation config (admin)
+    description: Returns reputation configuration (admin only)
+    operationId: getReputationConfig
+    tags:
+      - Reputation
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Reputation configuration
+      '401':
+        description: Authentication required
+      '403':
+        description: Admin access required
+
+# =============================================================================
+# E2E ENCRYPTION API
+# =============================================================================
+
+/flavor/v1/e2e/status:
+  get:
+    summary: Get E2E status
+    description: Returns E2E encryption system status and requirements
+    operationId: getE2EStatus
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: E2E status
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                e2e_habilitado:
+                  type: boolean
+                requisitos_crypto:
+                  type: object
+                usuario_tiene_claves:
+                  type: boolean
+                dispositivos:
+                  type: array
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/keys/register:
+  post:
+    summary: Register E2E keys
+    description: Registers encryption keys for a new device
+    operationId: registerE2EKeys
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              dispositivo_id:
+                type: string
+                description: Device ID (generated if not provided)
+              dispositivo_nombre:
+                type: string
+              dispositivo_tipo:
+                type: string
+                enum: [web, android, ios, desktop]
+                default: web
+    responses:
+      '200':
+        description: Keys registered
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                dispositivo_id:
+                  type: string
+                fingerprint:
+                  type: string
+                identity_key_public:
+                  type: string
+      '400':
+        description: Device limit reached (max 5)
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/prekey-bundle/{usuario_id}:
+  get:
+    summary: Get PreKey Bundle
+    description: Retrieves PreKey Bundle for initiating encrypted communication
+    operationId: getPrekeyBundle
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: usuario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: dispositivo_id
+        in: query
+        description: Specific device ID
+        schema:
+          type: string
+    responses:
+      '200':
+        description: PreKey Bundle
+      '400':
+        description: Cannot request own bundle
+      '401':
+        description: Authentication required
+      '404':
+        description: User has no E2E keys
+
+/flavor/v1/e2e/session/init:
+  post:
+    summary: Initialize E2E session
+    description: Initializes encrypted session with another user
+    operationId: initE2ESession
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - usuario_remoto_id
+              - dispositivo_local_id
+              - dispositivo_remoto_id
+            properties:
+              usuario_remoto_id:
+                type: integer
+              dispositivo_local_id:
+                type: string
+              dispositivo_remoto_id:
+                type: string
+    responses:
+      '200':
+        description: Session initialized
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/session/check:
+  get:
+    summary: Check E2E session exists
+    description: Checks if an encrypted session exists with another user
+    operationId: checkE2ESession
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: usuario_remoto_id
+        in: query
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Session check result
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sesion_existe:
+                  type: boolean
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/devices:
+  get:
+    summary: List E2E devices
+    description: Lists all devices with E2E keys for the authenticated user
+    operationId: listE2EDevices
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Device list
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dispositivos:
+                  type: array
+                total:
+                  type: integer
+                limite:
+                  type: integer
+                  example: 5
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/device/register:
+  post:
+    summary: Register E2E device
+    description: Alias for /e2e/keys/register
+    operationId: registerE2EDevice
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nombre:
+                type: string
+              tipo:
+                type: string
+                enum: [web, android, ios, desktop]
+    responses:
+      '200':
+        description: Device registered
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/device/{dispositivo_id}/revoke:
+  post:
+    summary: Revoke E2E device
+    description: Revokes encryption keys for a specific device
+    operationId: revokeE2EDevice
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    parameters:
+      - name: dispositivo_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Device revoked
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                mensaje:
+                  type: string
+      '401':
+        description: Authentication required
+      '404':
+        description: Device not found
+      '500':
+        description: Revocation error
+
+/flavor/v1/e2e/verify:
+  post:
+    summary: Verify user identity
+    description: Verifies another user's identity by comparing fingerprints
+    operationId: verifyE2EIdentity
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - usuario_id
+              - dispositivo_id
+              - fingerprint
+            properties:
+              usuario_id:
+                type: integer
+              dispositivo_id:
+                type: string
+              fingerprint:
+                type: string
+    responses:
+      '200':
+        description: Identity verified
+      '400':
+        description: Fingerprint mismatch
+      '401':
+        description: Authentication required
+      '404':
+        description: User has no keys for device
+
+/flavor/v1/e2e/verified:
+  get:
+    summary: Get verified identities
+    description: Returns list of identities verified by the authenticated user
+    operationId: getVerifiedIdentities
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Verified identities
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/backup/create:
+  post:
+    summary: Create E2E backup
+    description: Creates encrypted backup of E2E keys with recovery code
+    operationId: createE2EBackup
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    responses:
+      '200':
+        description: Backup created
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                codigo_recuperacion:
+                  type: string
+                  description: Store this code securely
+                mensaje:
+                  type: string
+      '400':
+        description: No keys to backup
+      '401':
+        description: Authentication required
+
+/flavor/v1/e2e/backup/restore:
+  post:
+    summary: Restore E2E backup
+    description: Restores E2E keys from backup using recovery code
+    operationId: restoreE2EBackup
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - codigo_recuperacion
+            properties:
+              codigo_recuperacion:
+                type: string
+    responses:
+      '200':
+        description: Backup restored
+      '400':
+        description: Decryption failed
+      '401':
+        description: Authentication required
+      '404':
+        description: Invalid recovery code or no backup
+
+/flavor/v1/e2e/prekeys/regenerate:
+  post:
+    summary: Regenerate prekeys
+    description: Regenerates signed and/or one-time prekeys for a device
+    operationId: regeneratePrekeys
+    tags:
+      - E2E Encryption
+    security:
+      - bearerAuth: []
+      - cookieAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - dispositivo_id
+              - tipo
+            properties:
+              dispositivo_id:
+                type: string
+              tipo:
+                type: string
+                enum: [signed, onetime, ambas]
+    responses:
+      '200':
+        description: Prekeys regenerated
+      '401':
+        description: Authentication required
+      '404':
+        description: Device not found
+
+# =============================================================================
+# COMPONENTS
+# =============================================================================
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: wordpress_logged_in_*
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+
+    ModuleConfig:
+      type: object
+      properties:
+        id:
+          type: string
+        titulo:
+          type: string
+        icono:
+          type: string
+          description: Material icon name
+        endpoint:
+          type: string
+          description: API endpoint for data
+        layout:
+          type: string
+          enum: [list, card, grid, dashboard]
+        requiere_auth:
+          type: boolean
+        campos:
+          type: object
+          description: Field mappings for UI
+        acciones:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              label:
+                type: string
+              icono:
+                type: string
+              tipo:
+                type: string
+                enum: [api_call, navigate, share]
+              endpoint:
+                type: string
+              route:
+                type: string
+        fab:
+          type: object
+          properties:
+            icono:
+              type: string
+            label:
+              type: string
+            accion:
+              type: string
+        filtros:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              label:
+                type: string
+              tipo:
+                type: string
+              opciones:
+                type: array
+        form_fields:
+          type: array
+          items:
+            type: object
+
+    ReputationData:
+      type: object
+      properties:
+        puntos_totales:
+          type: integer
+        nivel:
+          type: string
+        badges:
+          type: array
+        ranking:
+          type: integer

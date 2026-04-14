@@ -1,0 +1,2398 @@
+# =============================================================================
+# Flavor Mobile API - OpenAPI 3.0 Paths
+# =============================================================================
+# Namespace: /wp-json/chat-ia-mobile/v1/
+# Uso: Apps Flutter (cliente y admin)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# INFORMACION DEL SITIO (PUBLICO)
+# -----------------------------------------------------------------------------
+
+/site-info:
+  get:
+    tags:
+      - Site Info
+    summary: Obtener informacion basica del sitio
+    description: |
+      Devuelve informacion publica del sitio: nombre, logo, colores,
+      configuracion de chat IA, y metadata general para la app movil.
+    operationId: getSiteInfo
+    responses:
+      '200':
+        description: Informacion del sitio
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                site:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Mi Cooperativa"
+                    url:
+                      type: string
+                      format: uri
+                    logo:
+                      type: string
+                      format: uri
+                    tagline:
+                      type: string
+                colors:
+                  type: object
+                  properties:
+                    primary:
+                      type: string
+                      example: "#2196F3"
+                    secondary:
+                      type: string
+                      example: "#FF9800"
+                chat_enabled:
+                  type: boolean
+
+/site-content:
+  get:
+    tags:
+      - Site Info
+    summary: Obtener contenido inteligente del sitio
+    description: |
+      Genera contenido automatico basado en paginas y configuracion del sitio.
+      Incluye secciones importantes, enlaces rapidos, galeria y noticias.
+    operationId: getSiteContent
+    responses:
+      '200':
+        description: Contenido estructurado del sitio
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                site_info:
+                  type: object
+                sections:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      summary:
+                        type: string
+                      url:
+                        type: string
+                      icon:
+                        type: string
+                quick_links:
+                  type: array
+                  items:
+                    type: object
+                social:
+                  type: array
+                  items:
+                    type: object
+                gallery:
+                  type: array
+                  items:
+                    type: object
+                news:
+                  type: array
+                  items:
+                    type: object
+
+/client-app-config:
+  get:
+    tags:
+      - Site Info
+    summary: Configuracion completa de la app cliente
+    description: |
+      Devuelve la configuracion de navegacion, tabs, drawer, colores,
+      branding, features habilitadas e info_sections para la app cliente.
+      Usado por Flutter para configuracion backend-driven.
+    operationId: getClientAppConfig
+    responses:
+      '200':
+        description: Configuracion de la app
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                config:
+                  type: object
+                  properties:
+                    navigation_type:
+                      type: string
+                      enum: [hybrid, tabs_only, drawer_only]
+                    show_appbar:
+                      type: boolean
+                    tabs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          label:
+                            type: string
+                          icon:
+                            type: string
+                          enabled:
+                            type: boolean
+                          content_type:
+                            type: string
+                          content_ref:
+                            type: string
+                    drawer_items:
+                      type: array
+                      items:
+                        type: object
+                    default_tab:
+                      type: string
+                    features:
+                      type: object
+                    branding:
+                      type: object
+                    colors:
+                      type: object
+                    info_sections:
+                      type: array
+                      items:
+                        type: object
+                    quick_actions:
+                      type: array
+                      items:
+                        type: object
+                    home_widgets:
+                      type: array
+                      items:
+                        type: object
+                    version:
+                      type: string
+                    cache_duration:
+                      type: integer
+
+# -----------------------------------------------------------------------------
+# AUTENTICACION
+# -----------------------------------------------------------------------------
+
+/auth/login:
+  post:
+    tags:
+      - Authentication
+    summary: Iniciar sesion
+    description: |
+      Autentica un usuario con credenciales de WordPress.
+      Devuelve access_token y refresh_token para uso en endpoints protegidos.
+    operationId: authLogin
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+                description: Usuario o email de WordPress
+              password:
+                type: string
+                format: password
+              device_id:
+                type: string
+                description: Identificador unico del dispositivo
+              platform:
+                type: string
+                enum: [android, ios]
+    responses:
+      '200':
+        description: Login exitoso
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                token:
+                  type: string
+                  description: JWT access token
+                refresh_token:
+                  type: string
+                  description: Token para renovar sesion
+                expires_in:
+                  type: integer
+                  description: Segundos hasta expiracion
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    display_name:
+                      type: string
+                    email:
+                      type: string
+                    roles:
+                      type: array
+                      items:
+                        type: string
+                    is_admin:
+                      type: boolean
+      '401':
+        description: Credenciales invalidas
+
+/auth/verify:
+  get:
+    tags:
+      - Authentication
+    summary: Verificar token de sesion
+    description: Verifica que el access_token sea valido y devuelve info del usuario.
+    operationId: authVerify
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Token valido
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                user:
+                  type: object
+      '401':
+        description: Token invalido o expirado
+
+/auth/refresh:
+  post:
+    tags:
+      - Authentication
+    summary: Renovar access token
+    description: Usa el refresh_token para obtener un nuevo access_token sin re-login.
+    operationId: authRefresh
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - refresh_token
+            properties:
+              refresh_token:
+                type: string
+    responses:
+      '200':
+        description: Token renovado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                token:
+                  type: string
+                expires_in:
+                  type: integer
+      '401':
+        description: Refresh token invalido
+
+# -----------------------------------------------------------------------------
+# CHAT IA
+# -----------------------------------------------------------------------------
+
+/chat/send:
+  post:
+    tags:
+      - Chat
+    summary: Enviar mensaje al chat IA
+    description: |
+      Envia un mensaje del usuario al asistente IA y recibe la respuesta.
+      Funciona tanto para usuarios anonimos como autenticados.
+    operationId: chatSend
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                description: Mensaje del usuario
+              session_id:
+                type: string
+                description: ID de sesion de chat (opcional)
+              context:
+                type: object
+                description: Contexto adicional para el chat
+    responses:
+      '200':
+        description: Respuesta del asistente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                response:
+                  type: string
+                  description: Respuesta del asistente IA
+                session_id:
+                  type: string
+                escalated:
+                  type: boolean
+                  description: Indica si se escalo a humano
+
+/chat/session:
+  post:
+    tags:
+      - Chat
+    summary: Crear nueva sesion de chat
+    description: Inicia una nueva sesion de chat con el asistente IA.
+    operationId: chatCreateSession
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              device_id:
+                type: string
+              platform:
+                type: string
+    responses:
+      '200':
+        description: Sesion creada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                session_id:
+                  type: string
+                welcome_message:
+                  type: string
+
+# -----------------------------------------------------------------------------
+# INFORMACION PUBLICA
+# -----------------------------------------------------------------------------
+
+/public/business-info:
+  get:
+    tags:
+      - Public
+    summary: Informacion del negocio
+    description: Devuelve informacion de contacto, horarios y ubicacion del negocio.
+    operationId: getBusinessInfo
+    responses:
+      '200':
+        description: Informacion del negocio
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                business:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    phone:
+                      type: string
+                    email:
+                      type: string
+                    address:
+                      type: string
+                    coordinates:
+                      type: object
+                      properties:
+                        lat:
+                          type: number
+                        lng:
+                          type: number
+                    hours:
+                      type: object
+                    social:
+                      type: object
+
+/public/availability:
+  get:
+    tags:
+      - Public
+    summary: Disponibilidad de fechas
+    description: |
+      Devuelve fechas con disponibilidad para reservas.
+      Incluye aforo disponible por fecha y tipo de ticket.
+    operationId: getAvailability
+    parameters:
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Fecha inicio (YYYY-MM-DD)
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Fecha fin (YYYY-MM-DD)
+    responses:
+      '200':
+        description: Calendario de disponibilidad
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                availability:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                      available:
+                        type: boolean
+                      slots:
+                        type: integer
+
+/public/tickets:
+  get:
+    tags:
+      - Public
+    summary: Tipos de tickets disponibles
+    description: Lista los tipos de tickets/entradas configurados con precios y descripciones.
+    operationId: getTicketTypes
+    responses:
+      '200':
+        description: Lista de tipos de ticket
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                tickets:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      slug:
+                        type: string
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      max_per_order:
+                        type: integer
+
+/public/experiences:
+  get:
+    tags:
+      - Public
+    summary: Experiencias disponibles
+    description: Lista las experiencias o actividades disponibles para reservar.
+    operationId: getExperiences
+    responses:
+      '200':
+        description: Lista de experiencias
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                experiences:
+                  type: array
+                  items:
+                    type: object
+
+/public/posts:
+  get:
+    tags:
+      - Public
+    summary: Ultimos posts/noticias
+    description: Devuelve los posts mas recientes del blog.
+    operationId: getLatestPosts
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 5
+    responses:
+      '200':
+        description: Lista de posts
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                posts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      excerpt:
+                        type: string
+                      date:
+                        type: string
+                      image:
+                        type: string
+
+/public/updates:
+  get:
+    tags:
+      - Public
+    summary: Actualizaciones del sitio
+    description: Devuelve actualizaciones y novedades recientes del sitio.
+    operationId: getSiteUpdates
+    responses:
+      '200':
+        description: Lista de actualizaciones
+
+# -----------------------------------------------------------------------------
+# RESERVAS (CLIENTE)
+# -----------------------------------------------------------------------------
+
+/reservations/check:
+  post:
+    tags:
+      - Reservations
+    summary: Verificar disponibilidad de reserva
+    description: Verifica si hay disponibilidad para una fecha y cantidad especifica.
+    operationId: checkReservationAvailability
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - date
+              - tickets
+            properties:
+              date:
+                type: string
+                format: date
+              tickets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    slug:
+                      type: string
+                    quantity:
+                      type: integer
+    responses:
+      '200':
+        description: Resultado de verificacion
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                available:
+                  type: boolean
+                message:
+                  type: string
+
+/reservations/prepare:
+  post:
+    tags:
+      - Reservations
+    summary: Preparar reserva
+    description: Prepara una reserva temporal antes de checkout.
+    operationId: prepareReservation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - date
+              - tickets
+            properties:
+              date:
+                type: string
+                format: date
+              tickets:
+                type: array
+                items:
+                  type: object
+    responses:
+      '200':
+        description: Reserva preparada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                reservation_id:
+                  type: string
+                total:
+                  type: number
+                expires_at:
+                  type: string
+
+/reservations/add-to-cart:
+  post:
+    tags:
+      - Reservations
+    summary: Agregar al carrito
+    description: Agrega tickets de reserva al carrito de WooCommerce.
+    operationId: addToCart
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - date
+              - tickets
+            properties:
+              date:
+                type: string
+                format: date
+              tickets:
+                type: array
+                items:
+                  type: object
+    responses:
+      '200':
+        description: Tickets agregados al carrito
+
+/reservations/cart-url:
+  get:
+    tags:
+      - Reservations
+    summary: Obtener URL del carrito
+    description: Devuelve la URL del carrito de WooCommerce.
+    operationId: getCartUrl
+    responses:
+      '200':
+        description: URL del carrito
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                cart_url:
+                  type: string
+                  format: uri
+                checkout_url:
+                  type: string
+                  format: uri
+
+/reservations/mobile-checkout-url:
+  post:
+    tags:
+      - Reservations
+    summary: Generar URL de checkout movil
+    description: |
+      Genera una URL especial que al abrirse en el navegador
+      agrega automaticamente los productos al carrito y redirige a checkout.
+    operationId: getMobileCheckoutUrl
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - date
+              - tickets
+            properties:
+              date:
+                type: string
+                format: date
+              tickets:
+                type: array
+                items:
+                  type: object
+    responses:
+      '200':
+        description: URL de checkout generada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                checkout_url:
+                  type: string
+                  format: uri
+                  description: URL con token para abrir en navegador
+                expires_in:
+                  type: integer
+                  description: Segundos hasta expiracion
+
+# -----------------------------------------------------------------------------
+# CLIENTE - BILLETERA DE TICKETS
+# -----------------------------------------------------------------------------
+
+/client/my-reservations:
+  get:
+    tags:
+      - Client Wallet
+    summary: Mis reservas (billetera)
+    description: |
+      Devuelve las reservas del cliente autenticado por email verificado.
+      Usado para la billetera de tickets en la app.
+    operationId: getClientReservations
+    parameters:
+      - name: email
+        in: query
+        schema:
+          type: string
+          format: email
+      - name: device_id
+        in: query
+        schema:
+          type: string
+      - name: include_past
+        in: query
+        schema:
+          type: boolean
+          default: false
+    responses:
+      '200':
+        description: Lista de reservas del cliente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                reservations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      ticket_code:
+                        type: string
+                      ticket_name:
+                        type: string
+                      date:
+                        type: string
+                        format: date
+                      status:
+                        type: string
+                        enum: [pendiente, usado, cancelado, expirado]
+                      status_display:
+                        type: string
+                      qr_data:
+                        type: string
+                total:
+                  type: integer
+
+/client/reservation/{code}:
+  get:
+    tags:
+      - Client Wallet
+    summary: Detalle de reserva por codigo
+    description: Obtiene los detalles de una reserva especifica por su codigo QR.
+    operationId: getClientReservationByCode
+    parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Detalle de la reserva
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                reservation:
+                  type: object
+
+/client/config:
+  get:
+    tags:
+      - Client Wallet
+    summary: Configuracion de app cliente
+    description: Alias de /client-app-config para la app cliente.
+    operationId: getClientConfig
+    responses:
+      '200':
+        description: Configuracion de la app
+
+# -----------------------------------------------------------------------------
+# VERIFICACION DE EMAIL
+# -----------------------------------------------------------------------------
+
+/client/email/send-code:
+  post:
+    tags:
+      - Email Verification
+    summary: Enviar codigo de verificacion
+    description: |
+      Envia un codigo de 6 digitos al email del usuario para verificacion.
+      Implementa rate limiting (max 3 envios cada 15 min).
+    operationId: sendVerificationCode
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - device_id
+            properties:
+              email:
+                type: string
+                format: email
+              device_id:
+                type: string
+    responses:
+      '200':
+        description: Codigo enviado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                expires_in:
+                  type: integer
+                  description: Segundos hasta expiracion del codigo
+      '429':
+        description: Rate limit excedido
+
+/client/email/verify-code:
+  post:
+    tags:
+      - Email Verification
+    summary: Verificar codigo de email
+    description: |
+      Verifica el codigo enviado por email.
+      Maximo 5 intentos por codigo.
+    operationId: verifyEmailCode
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - device_id
+            properties:
+              code:
+                type: string
+                pattern: '^\d{6}$'
+              device_id:
+                type: string
+    responses:
+      '200':
+        description: Verificacion exitosa
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                email:
+                  type: string
+                verified_at:
+                  type: string
+                  format: date-time
+      '400':
+        description: Codigo invalido o expirado
+
+/client/email/status:
+  get:
+    tags:
+      - Email Verification
+    summary: Estado de verificacion de email
+    description: Consulta si el dispositivo tiene un email verificado.
+    operationId: getEmailVerificationStatus
+    parameters:
+      - name: device_id
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Estado de verificacion
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                verified:
+                  type: boolean
+                email:
+                  type: string
+                  nullable: true
+                verified_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+
+# -----------------------------------------------------------------------------
+# CLIENTE - DASHBOARD
+# -----------------------------------------------------------------------------
+
+/client/statistics:
+  get:
+    tags:
+      - Client Dashboard
+    summary: Estadisticas del cliente
+    description: |
+      Devuelve estadisticas personalizadas segun los modulos activos.
+      Requiere usuario autenticado.
+    operationId: getClientStatistics
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Estadisticas del usuario
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statistics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                      value:
+                        type: string
+                      numeric_value:
+                        type: number
+                      icon_name:
+                        type: string
+                      color_hex:
+                        type: string
+                total:
+                  type: integer
+                generated_at:
+                  type: string
+                  format: date-time
+
+/client/activity:
+  get:
+    tags:
+      - Client Dashboard
+    summary: Actividad reciente del cliente
+    description: Feed de actividad del usuario autenticado.
+    operationId: getClientActivity
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 10
+          maximum: 50
+    responses:
+      '200':
+        description: Lista de actividades
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      timestamp:
+                        type: string
+                      icon_name:
+                        type: string
+                      action_route:
+                        type: string
+                total:
+                  type: integer
+
+# -----------------------------------------------------------------------------
+# ADMIN - DASHBOARD
+# -----------------------------------------------------------------------------
+
+/admin/dashboard:
+  get:
+    tags:
+      - Admin
+    summary: Dashboard de administrador
+    description: |
+      Devuelve metricas y estadisticas para el dashboard de admin.
+      Requiere rol de administrador.
+    operationId: getAdminDashboard
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Datos del dashboard
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                stats:
+                  type: object
+                  properties:
+                    today_reservations:
+                      type: integer
+                    today_revenue:
+                      type: number
+                    pending_checkins:
+                      type: integer
+                    total_customers:
+                      type: integer
+                recent_reservations:
+                  type: array
+                  items:
+                    type: object
+      '403':
+        description: No autorizado
+
+/admin/reservations:
+  get:
+    tags:
+      - Admin
+    summary: Listar reservas (admin)
+    description: Lista todas las reservas con filtros opcionales.
+    operationId: getAdminReservations
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum: [pendiente, usado, cancelado]
+      - name: search
+        in: query
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Lista de reservas
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                reservations:
+                  type: array
+                  items:
+                    type: object
+                total:
+                  type: integer
+
+/admin/reservations/{id}:
+  get:
+    tags:
+      - Admin
+    summary: Detalle de reserva
+    description: Obtiene todos los detalles de una reserva especifica.
+    operationId: getReservationDetail
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Detalle de la reserva
+      '404':
+        description: Reserva no encontrada
+
+/admin/reservations/{id}/checkin:
+  post:
+    tags:
+      - Admin
+    summary: Realizar check-in
+    description: Marca una reserva como usada (check-in).
+    operationId: doCheckin
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Check-in realizado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                checkin_time:
+                  type: string
+                  format: date-time
+      '400':
+        description: Ya tiene check-in o estado invalido
+
+/admin/reservations/{id}/cancel:
+  post:
+    tags:
+      - Admin
+    summary: Cancelar reserva
+    description: Cancela una reserva existente.
+    operationId: cancelReservation
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              reason:
+                type: string
+    responses:
+      '200':
+        description: Reserva cancelada
+
+/admin/reservations/find:
+  get:
+    tags:
+      - Admin
+    summary: Buscar reserva por codigo
+    description: Busca una reserva por codigo de ticket (para escaneo QR).
+    operationId: findReservationByCode
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Reserva encontrada
+      '404':
+        description: Reserva no encontrada
+
+/admin/stats:
+  get:
+    tags:
+      - Admin
+    summary: Estadisticas de admin
+    description: Estadisticas detalladas para reportes.
+    operationId: getAdminStats
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: period
+        in: query
+        schema:
+          type: string
+          enum: [day, week, month, year]
+          default: week
+    responses:
+      '200':
+        description: Estadisticas
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                stats:
+                  type: object
+
+/admin/customers:
+  get:
+    tags:
+      - Admin
+    summary: Listar clientes
+    description: Lista clientes con sus reservas.
+    operationId: getCustomers
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: search
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+    responses:
+      '200':
+        description: Lista de clientes
+
+/admin/export/csv:
+  post:
+    tags:
+      - Admin
+    summary: Exportar datos a CSV
+    description: Genera exportacion CSV de reservas, clientes o ingresos.
+    operationId: exportCsv
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - type
+              - from
+              - to
+            properties:
+              type:
+                type: string
+                enum: [reservations, customers, revenue]
+              from:
+                type: string
+                format: date
+              to:
+                type: string
+                format: date
+              view_only:
+                type: boolean
+                description: Si true, devuelve datos en JSON en lugar de CSV
+              ticket_type:
+                type: string
+                description: Filtrar por tipo de ticket
+    responses:
+      '200':
+        description: Datos exportados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                csv:
+                  type: string
+                  description: Contenido CSV (si view_only=false)
+                filename:
+                  type: string
+                data:
+                  type: array
+                  description: Datos JSON (si view_only=true)
+
+# -----------------------------------------------------------------------------
+# ADMIN - CLIENTES MANUALES
+# -----------------------------------------------------------------------------
+
+/admin/manual-customers:
+  get:
+    tags:
+      - Admin Customers
+    summary: Listar clientes manuales
+    description: Lista clientes agregados manualmente (sin WooCommerce).
+    operationId: getManualCustomers
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Lista de clientes manuales
+
+  post:
+    tags:
+      - Admin Customers
+    summary: Crear cliente manual
+    description: Agrega un cliente manual con sus tickets.
+    operationId: createManualCustomer
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - date
+            properties:
+              name:
+                type: string
+              phone:
+                type: string
+              email:
+                type: string
+                format: email
+              date:
+                type: string
+                format: date
+              notes:
+                type: string
+              tickets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    slug:
+                      type: string
+                    quantity:
+                      type: integer
+    responses:
+      '200':
+        description: Cliente creado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                id:
+                  type: integer
+                message:
+                  type: string
+
+/admin/manual-customers/{id}:
+  put:
+    tags:
+      - Admin Customers
+    summary: Actualizar cliente manual
+    description: Actualiza datos de un cliente manual.
+    operationId: updateManualCustomer
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              phone:
+                type: string
+              email:
+                type: string
+              date:
+                type: string
+                format: date
+              notes:
+                type: string
+              status:
+                type: string
+              tickets:
+                type: array
+                items:
+                  type: object
+    responses:
+      '200':
+        description: Cliente actualizado
+
+  delete:
+    tags:
+      - Admin Customers
+    summary: Eliminar cliente manual
+    description: Elimina un cliente manual y sus tickets asociados.
+    operationId: deleteManualCustomer
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Cliente eliminado
+
+/admin/customer-notes:
+  post:
+    tags:
+      - Admin Customers
+    summary: Guardar notas de cliente
+    description: Guarda notas para un cliente (manual o WooCommerce).
+    operationId: saveCustomerNotes
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - origin
+              - notes
+            properties:
+              origin:
+                type: string
+                enum: [manual, woocommerce]
+              id:
+                type: integer
+                description: ID del cliente manual (si origin=manual)
+              order_id:
+                type: integer
+                description: ID del pedido WC (si origin=woocommerce)
+              date:
+                type: string
+                format: date
+              notes:
+                type: string
+    responses:
+      '200':
+        description: Notas guardadas
+
+/admin/unified-customers:
+  get:
+    tags:
+      - Admin Customers
+    summary: Clientes unificados
+    description: Lista combinada de clientes WooCommerce y manuales.
+    operationId: getUnifiedCustomers
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Lista unificada de clientes
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                customers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      date:
+                        type: string
+                      tickets:
+                        type: array
+                        items:
+                          type: object
+                      origin:
+                        type: string
+                        enum: [woocommerce, manual]
+                total:
+                  type: integer
+
+# -----------------------------------------------------------------------------
+# ADMIN - CHAT IA ESCALADO
+# -----------------------------------------------------------------------------
+
+/admin/chat/send:
+  post:
+    tags:
+      - Admin Chat
+    summary: Enviar mensaje como admin
+    description: Envia mensaje al chat IA con contexto de administrador.
+    operationId: handleAdminChat
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+              context:
+                type: object
+    responses:
+      '200':
+        description: Respuesta del chat
+
+/admin/chat/escalated:
+  get:
+    tags:
+      - Admin Chat
+    summary: Chats escalados
+    description: Lista conversaciones escaladas a humano pendientes de respuesta.
+    operationId: getEscalatedChats
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Lista de chats escalados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                chats:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+                      created_at:
+                        type: string
+                      last_message:
+                        type: string
+                      customer_info:
+                        type: object
+
+/admin/chat/escalated/{id}:
+  get:
+    tags:
+      - Admin Chat
+    summary: Detalle de chat escalado
+    description: Obtiene el historial completo de un chat escalado.
+    operationId: getEscalatedChatDetail
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Detalle del chat
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                chat:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    messages:
+                      type: array
+                      items:
+                        type: object
+                    customer_info:
+                      type: object
+                    status:
+                      type: string
+
+/admin/chat/escalated/{id}/reply:
+  post:
+    tags:
+      - Admin Chat
+    summary: Responder chat escalado
+    description: Envia una respuesta humana a un chat escalado.
+    operationId: replyEscalatedChat
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+    responses:
+      '200':
+        description: Respuesta enviada
+
+/admin/chat/escalated/{id}/resolve:
+  post:
+    tags:
+      - Admin Chat
+    summary: Resolver chat escalado
+    description: Marca un chat escalado como resuelto.
+    operationId: resolveEscalatedChat
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              resolution_notes:
+                type: string
+    responses:
+      '200':
+        description: Chat resuelto
+
+# -----------------------------------------------------------------------------
+# NOTIFICACIONES PUSH
+# -----------------------------------------------------------------------------
+
+/push/register:
+  post:
+    tags:
+      - Push Notifications
+    summary: Registrar token de push
+    description: Registra el token FCM/APNs del dispositivo para notificaciones push.
+    operationId: registerPushToken
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+                description: Token FCM o APNs
+              platform:
+                type: string
+                enum: [android, ios]
+    responses:
+      '200':
+        description: Token registrado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+
+# -----------------------------------------------------------------------------
+# AUTOCONFIGURACION DE APPS
+# -----------------------------------------------------------------------------
+
+/app-config/generate:
+  get:
+    tags:
+      - App Config
+    summary: Generar configuracion de app
+    description: |
+      Genera configuracion automatica para personalizar apps moviles.
+      Usa IA para analizar el sitio y sugerir colores, nombres, etc.
+    operationId: generateAppConfig
+    responses:
+      '200':
+        description: Configuracion generada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_name:
+                  type: string
+                app_id:
+                  type: string
+                client_app_name:
+                  type: string
+                admin_app_name:
+                  type: string
+                deep_link_scheme:
+                  type: string
+                server_url:
+                  type: string
+                logo_url:
+                  type: string
+                colors:
+                  type: object
+                developer:
+                  type: object
+                contact:
+                  type: object
+                social:
+                  type: object
+                tagline:
+                  type: string
+                suggested_features:
+                  type: array
+                  items:
+                    type: string
+                _generated_by:
+                  type: string
+                  enum: [basic, ai]
+
+/app-config/preview:
+  get:
+    tags:
+      - App Config
+    summary: Vista previa de configuracion
+    description: Vista previa de configuracion para panel de admin.
+    operationId: previewAppConfig
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Vista previa de configuracion
+
+# -----------------------------------------------------------------------------
+# VALIDACION ADMIN
+# -----------------------------------------------------------------------------
+
+/admin/validate-site-token:
+  post:
+    tags:
+      - Admin
+    summary: Validar token de sitio admin
+    description: |
+      Valida el token secreto del sitio para vincular la app admin.
+      Usado durante el proceso de setup inicial de la app admin.
+    operationId: validateAdminSiteToken
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - site_token
+            properties:
+              site_token:
+                type: string
+    responses:
+      '200':
+        description: Token valido
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                site_name:
+                  type: string
+                site_url:
+                  type: string
+      '403':
+        description: Token invalido
+
+# -----------------------------------------------------------------------------
+# SUBIDA DE MEDIOS
+# -----------------------------------------------------------------------------
+
+/media/upload:
+  post:
+    tags:
+      - Media
+    summary: Subir archivo multimedia
+    description: Sube una imagen u otro archivo a la biblioteca de medios.
+    operationId: uploadMedia
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                format: binary
+              title:
+                type: string
+              alt_text:
+                type: string
+    responses:
+      '200':
+        description: Archivo subido
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                attachment_id:
+                  type: integer
+                url:
+                  type: string
+                  format: uri
+
+# -----------------------------------------------------------------------------
+# MARKETPLACE (PROXY)
+# -----------------------------------------------------------------------------
+
+/marketplace/anuncio:
+  post:
+    tags:
+      - Marketplace
+    summary: Crear anuncio
+    description: Crea un nuevo anuncio en el marketplace.
+    operationId: createMarketplaceAd
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - titulo
+              - descripcion
+            properties:
+              titulo:
+                type: string
+              descripcion:
+                type: string
+              precio:
+                type: number
+              categoria:
+                type: string
+              imagenes:
+                type: array
+                items:
+                  type: integer
+    responses:
+      '200':
+        description: Anuncio creado
+
+/marketplace/anuncio/{id}:
+  put:
+    tags:
+      - Marketplace
+    summary: Actualizar anuncio
+    description: Actualiza un anuncio existente del usuario.
+    operationId: updateMarketplaceAd
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              titulo:
+                type: string
+              descripcion:
+                type: string
+              precio:
+                type: number
+              estado:
+                type: string
+    responses:
+      '200':
+        description: Anuncio actualizado
+
+/marketplace/anuncios:
+  get:
+    tags:
+      - Marketplace
+    summary: Listar anuncios
+    description: Lista anuncios publicos del marketplace.
+    operationId: listMarketplaceAds
+    parameters:
+      - name: categoria
+        in: query
+        schema:
+          type: string
+      - name: search
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      '200':
+        description: Lista de anuncios
+
+/marketplace/mis-anuncios:
+  get:
+    tags:
+      - Marketplace
+    summary: Mis anuncios
+    description: Lista los anuncios del usuario autenticado.
+    operationId: listMyMarketplaceAds
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Lista de mis anuncios
+
+# =============================================================================
+# EXTENSION: chat-ia-mobile/v1 - Endpoints adicionales (Mobile API Extensions)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# NOTIFICACIONES
+# -----------------------------------------------------------------------------
+
+/notifications:
+  get:
+    tags:
+      - Notifications
+    summary: Listar notificaciones
+    description: Obtiene las notificaciones del usuario autenticado.
+    operationId: getNotifications
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+      - name: unread_only
+        in: query
+        schema:
+          type: boolean
+          default: false
+    responses:
+      '200':
+        description: Lista de notificaciones
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      title:
+                        type: string
+                      message:
+                        type: string
+                      icon:
+                        type: string
+                      color:
+                        type: string
+                      link:
+                        type: string
+                      is_read:
+                        type: boolean
+                      created_at:
+                        type: string
+                      time_ago:
+                        type: string
+                total:
+                  type: integer
+
+/notifications/{id}/read:
+  post:
+    tags:
+      - Notifications
+    summary: Marcar notificacion como leida
+    description: Marca una notificacion especifica como leida.
+    operationId: markNotificationRead
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Notificacion marcada como leida
+      '404':
+        description: Notificacion no encontrada
+
+/notifications/read-all:
+  post:
+    tags:
+      - Notifications
+    summary: Marcar todas como leidas
+    description: Marca todas las notificaciones del usuario como leidas.
+    operationId: markAllNotificationsRead
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Notificaciones marcadas como leidas
+
+/notifications/{id}:
+  delete:
+    tags:
+      - Notifications
+    summary: Eliminar notificacion
+    description: Elimina una notificacion especifica.
+    operationId: deleteNotification
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Notificacion eliminada
+      '404':
+        description: Notificacion no encontrada
+
+/notifications/unread-count:
+  get:
+    tags:
+      - Notifications
+    summary: Contador de no leidas
+    description: Obtiene el numero de notificaciones no leidas.
+    operationId: getUnreadNotificationCount
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Contador
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                count:
+                  type: integer
+
+# -----------------------------------------------------------------------------
+# ACTIVIDAD
+# -----------------------------------------------------------------------------
+
+/activity:
+  get:
+    tags:
+      - Activity
+    summary: Feed de actividad
+    description: |
+      Obtiene el feed de actividad del usuario, combinando
+      reservas, pedidos de grupos de consumo, marketplace, etc.
+    operationId: getUserActivity
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      '200':
+        description: Feed de actividad
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      title:
+                        type: string
+                      message:
+                        type: string
+                      date:
+                        type: string
+                      time_ago:
+                        type: string
+                      icon:
+                        type: string
+                      color:
+                        type: string
+                      link:
+                        type: string
+                total:
+                  type: integer
+
+# -----------------------------------------------------------------------------
+# METRICAS DASHBOARD
+# -----------------------------------------------------------------------------
+
+/dashboard/user-metrics:
+  get:
+    tags:
+      - Dashboard
+    summary: Metricas del usuario
+    description: Obtiene metricas personalizadas para el dashboard del usuario.
+    operationId: getUserMetrics
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Metricas del usuario
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                      value:
+                        type: integer
+                      icon:
+                        type: string
+                      color:
+                        type: string
+
+/dashboard/charts:
+  get:
+    tags:
+      - Dashboard
+    summary: Datos para graficos
+    description: Obtiene datos formateados para graficos (fl_chart).
+    operationId: getChartData
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum: [activity, trends, distribution]
+          default: activity
+      - name: days
+        in: query
+        schema:
+          type: integer
+          default: 7
+    responses:
+      '200':
+        description: Datos para graficos
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                type:
+                  type: string
+                  enum: [bar, line, pie]
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                      value:
+                        type: number
+
+# =============================================================================
+# SECURITY SCHEMES
+# =============================================================================
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Token JWT obtenido del endpoint /auth/login.
+        Incluir en header: Authorization: Bearer <token>

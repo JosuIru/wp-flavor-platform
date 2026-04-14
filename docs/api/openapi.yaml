@@ -1,2077 +1,555 @@
 openapi: 3.0.3
 info:
-  title: Flavor Chat IA - Mobile API
+  title: Flavor Platform API
   version: 1.0.0
   description: |
-    API REST para apps móviles Flutter del plugin Flavor Chat IA.
+    API REST para Flavor Platform - Plataforma modular para comunidades, cooperativas y organizaciones.
 
-    ## Autenticación
+    ## Descripcion General
 
-    La API utiliza JWT (JSON Web Tokens) para autenticación. Los tokens se obtienen mediante
-    el endpoint `/auth/login` y deben incluirse en el header `Authorization: Bearer <token>`.
+    Flavor Platform proporciona una API REST completa para gestionar sitios comunitarios,
+    incluyendo modulos funcionales, Visual Builder Pro para paginas, configuracion de apps
+    moviles y notificaciones push.
 
-    - **Access Token**: Válido por 1 hora
-    - **Refresh Token**: Válido por 30 días
+    ## Autenticacion
 
-    ## Roles
+    La API soporta dos metodos de autenticacion:
 
-    - **Público**: Endpoints accesibles sin autenticación
-    - **Cliente**: Requiere verificación de email
-    - **Admin**: Requiere rol de administrador de WordPress
+    ### 1. X-VBP-Key (API Key)
+    Para automatizacion y acceso programatico. La key se obtiene desde:
+    - Panel de administracion: Flavor Platform > Config. VBP
+    - WP-CLI: `wp eval "echo flavor_get_vbp_api_key();"`
+
+    ```
+    X-VBP-Key: tu-api-key-aqui
+    ```
+
+    ### 2. WordPress Cookie Auth
+    Para peticiones desde el contexto del navegador con sesion activa de WordPress.
+
+    ## Grupos de Endpoints
+
+    - **Core**: Configuracion del sitio, modulos, temas y sistema
+    - **VBP (Visual Builder Pro)**: Creacion y gestion de paginas con bloques
+    - **App**: Configuracion de apps moviles Flutter
+    - **Modules**: Endpoints especificos por modulo funcional
+    - **Notifications**: Notificaciones push y alertas
+
+    ## Respuestas de Error
+
+    Todos los errores siguen el formato estandar:
+
+    ```json
+    {
+      "code": "error_code",
+      "message": "Descripcion del error",
+      "data": {
+        "status": 400
+      }
+    }
+    ```
 
   contact:
-    name: Flavor Chat IA
-    url: https://github.com/flavor-chat-ia
+    name: Flavor Platform
+    url: https://github.com/flavor-platform
   license:
     name: GPL-3.0
     url: https://www.gnu.org/licenses/gpl-3.0.html
 
 servers:
-  - url: /wp-json/chat-ia-mobile/v1
-    description: API endpoint relativo al sitio WordPress
+  - url: '{protocol}://{host}/wp-json'
+    description: WordPress REST API base
+    variables:
+      protocol:
+        default: https
+        enum:
+          - http
+          - https
+      host:
+        default: tu-sitio.com
+        description: Dominio del sitio WordPress
 
 tags:
-  - name: Public
-    description: Endpoints públicos sin autenticación
-  - name: Auth
-    description: Autenticación y gestión de tokens
-  - name: Chat
-    description: Funcionalidad de chat con IA
-  - name: Reservations
-    description: Sistema de reservas
-  - name: Client
-    description: Endpoints para clientes verificados
-  - name: Admin
-    description: Endpoints administrativos (requiere rol admin)
-  - name: Push
-    description: Notificaciones push
+  - name: core
+    description: |
+      Endpoints principales del sistema: salud, estado, configuracion global,
+      gestion de modulos y temas visuales.
+  - name: Modules
+    description: |
+      API Universal de Modulos (flavor/v1). Permite listar modulos activos,
+      obtener informacion detallada y ejecutar acciones de cualquier modulo.
+  - name: Module Config
+    description: |
+      Configuracion UI de modulos para apps moviles. Define layouts, campos,
+      acciones, filtros y formularios para renderizado dinamico.
+  - name: Client Dashboard
+    description: |
+      Dashboard del usuario cliente. Estadisticas personales, actividad,
+      notificaciones, widgets y preferencias.
+  - name: Reputation
+    description: |
+      Sistema de reputacion y gamificacion. Puntos, niveles, badges,
+      leaderboard e historial.
+  - name: E2E Encryption
+    description: |
+      Cifrado extremo a extremo (E2E) para comunicaciones seguras.
+      Gestion de claves, dispositivos, sesiones y backups.
+  - name: app
+    description: |
+      Configuracion de apps moviles Flutter: branding, temas, navegacion,
+      modulos habilitados y sincronizacion con el sitio web.
+  - name: vbp
+    description: |
+      Visual Builder Pro - API para crear y gestionar paginas con bloques,
+      secciones, simbolos reutilizables, design tokens y mas.
+  - name: notifications
+    description: |
+      Sistema de notificaciones push y alertas. Gestion de tokens de dispositivos,
+      envio de notificaciones y configuracion de canales.
 
 paths:
-  # ==========================================
-  # ENDPOINTS PÚBLICOS
-  # ==========================================
+  # Paths are defined in separate files for maintainability.
+  # See: paths/flavor-v1.yaml for flavor/v1 namespace endpoints
+  #
+  # To use a single bundled file, run:
+  #   npx @redocly/cli bundle openapi.yaml -o openapi-bundled.yaml
+  #
+  # Or reference paths inline with $ref:
+  #   /flavor/v1/modules:
+  #     $ref: 'paths/flavor-v1.yaml#/~1flavor~1v1~1modules'
 
-  /site-info:
+  # Placeholder for inline documentation
+  /flavor/v1/modules:
     get:
-      tags: [Public]
-      summary: Información del sitio
-      description: Obtiene información básica del sitio WordPress
-      operationId: getSiteInfo
+      summary: List all active modules
+      description: Returns a list of all currently active modules in the platform.
+      operationId: listModules
+      tags:
+        - Modules
       responses:
         '200':
-          description: Información del sitio
+          description: List of active modules
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SiteInfo'
-              example:
-                name: "Mi Negocio"
-                url: "https://minegocio.com"
-                description: "Descripción del negocio"
-                timezone: "Europe/Madrid"
-                locale: "es_ES"
-                api_version: "1.0.0"
+                type: object
+                properties:
+                  modules:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Module'
+                  total:
+                    type: integer
+        '429':
+          description: Rate limit exceeded
 
-  /site-content:
+  /flavor/v1/modules/{module_id}:
     get:
-      tags: [Public]
-      summary: Contenido del sitio
-      description: Obtiene contenido inteligente del sitio para autoconfiguración
-      operationId: getSiteContent
-      responses:
-        '200':
-          description: Contenido del sitio
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SiteContent'
-
-  /client-app-config:
-    get:
-      tags: [Public]
-      summary: Configuración de la app cliente
-      description: Configuración completa para personalizar la app cliente (tabs, features, info_sections)
-      operationId: getClientAppConfig
-      responses:
-        '200':
-          description: Configuración de la app
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppConfig'
-              example:
-                tabs:
-                  - id: "home"
-                    label: "Inicio"
-                    icon: "home"
-                    enabled: true
-                  - id: "reservations"
-                    label: "Reservas"
-                    icon: "calendar"
-                    enabled: true
-                features:
-                  chat_enabled: true
-                  reservations_enabled: true
-                  wallet_enabled: true
-                theme:
-                  primary_color: "#4F46E5"
-                  dark_mode: false
-
-  /public/business-info:
-    get:
-      tags: [Public]
-      summary: Información del negocio
-      description: Obtiene información detallada del negocio (horarios, contacto, ubicación)
-      operationId: getBusinessInfo
-      responses:
-        '200':
-          description: Información del negocio
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BusinessInfo'
-
-  /public/availability:
-    get:
-      tags: [Public]
-      summary: Disponibilidad
-      description: Consulta la disponibilidad para una fecha específica
-      operationId: getAvailability
+      summary: Get module information
+      description: Returns detailed information about a specific module.
+      operationId: getModuleInfo
+      tags:
+        - Modules
       parameters:
-        - name: date
-          in: query
-          description: Fecha a consultar (YYYY-MM-DD)
+        - name: module_id
+          in: path
           required: true
           schema:
             type: string
-            format: date
-          example: "2026-02-15"
       responses:
         '200':
-          description: Disponibilidad para la fecha
+          description: Module information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Availability'
+                $ref: '#/components/schemas/Module'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
-  /public/tickets:
-    get:
-      tags: [Public]
-      summary: Tipos de tickets
-      description: Lista todos los tipos de tickets disponibles
-      operationId: getTicketTypes
-      responses:
-        '200':
-          description: Lista de tipos de tickets
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TicketType'
-
-  /public/experiences:
-    get:
-      tags: [Public]
-      summary: Experiencias disponibles
-      description: Lista las experiencias/servicios disponibles
-      operationId: getExperiences
-      responses:
-        '200':
-          description: Lista de experiencias
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Experience'
-
-  /public/posts:
-    get:
-      tags: [Public]
-      summary: Últimas publicaciones
-      description: Obtiene las últimas publicaciones del blog
-      operationId: getLatestPosts
+  /flavor/v1/modules/{module_id}/actions/{action_name}:
+    post:
+      summary: Execute module action
+      description: Executes a specific action on a module.
+      operationId: executeModuleAction
+      tags:
+        - Modules
+      security:
+        - VBPKey: []
+        - WordPressCookie: []
       parameters:
-        - name: per_page
+        - name: module_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: action_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Action executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /flavor/v1/client/dashboard:
+    get:
+      summary: Get client dashboard
+      description: Returns complete dashboard data for the authenticated user.
+      operationId: getClientDashboard
+      tags:
+        - Client Dashboard
+      security:
+        - VBPKey: []
+        - WordPressCookie: []
+      parameters:
+        - name: include_widgets
+          in: query
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Dashboard data
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /flavor/v1/reputation/me:
+    get:
+      summary: Get my reputation
+      description: Returns reputation data for the authenticated user.
+      operationId: getMyReputation
+      tags:
+        - Reputation
+      security:
+        - VBPKey: []
+        - WordPressCookie: []
+      responses:
+        '200':
+          description: User reputation data
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /flavor/v1/reputation/leaderboard:
+    get:
+      summary: Get reputation leaderboard
+      description: Returns the reputation leaderboard.
+      operationId: getLeaderboard
+      tags:
+        - Reputation
+      parameters:
+        - name: periodo
+          in: query
+          schema:
+            type: string
+            enum: [total, semana, mes]
+            default: total
+        - name: limite
           in: query
           schema:
             type: integer
             default: 10
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
       responses:
         '200':
-          description: Lista de publicaciones
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+          description: Leaderboard data
+        '429':
+          description: Rate limit exceeded
 
-  /public/updates:
+  /flavor/v1/e2e/status:
     get:
-      tags: [Public]
-      summary: Actualizaciones del sitio
-      description: Obtiene las últimas actualizaciones/novedades
-      operationId: getSiteUpdates
+      summary: Get E2E encryption status
+      description: Returns E2E encryption system status.
+      operationId: getE2EStatus
+      tags:
+        - E2E Encryption
+      security:
+        - VBPKey: []
+        - WordPressCookie: []
       responses:
         '200':
-          description: Lista de actualizaciones
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Update'
-
-  # ==========================================
-  # AUTENTICACIÓN
-  # ==========================================
-
-  /auth/login:
-    post:
-      tags: [Auth]
-      summary: Iniciar sesión
-      description: |
-        Autentica un usuario y devuelve tokens JWT.
-        Para admin, requiere usuario y contraseña de WordPress.
-      operationId: login
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-            examples:
-              admin:
-                summary: Login de administrador
-                value:
-                  username: "admin"
-                  password: "password123"
-                  app_type: "admin"
-              client:
-                summary: Login de cliente
-                value:
-                  email: "cliente@example.com"
-                  app_type: "client"
-      responses:
-        '200':
-          description: Login exitoso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
+          description: E2E status
         '401':
-          description: Credenciales inválidas
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Unauthorized'
 
-  /auth/verify:
+  /flavor/v1/e2e/devices:
     get:
-      tags: [Auth]
-      summary: Verificar token
-      description: Verifica si el token actual es válido
-      operationId: verifyToken
+      summary: List E2E devices
+      description: Lists all devices with E2E keys for the authenticated user.
+      operationId: listE2EDevices
+      tags:
+        - E2E Encryption
       security:
-        - bearerAuth: []
+        - VBPKey: []
+        - WordPressCookie: []
       responses:
         '200':
-          description: Token válido
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenInfo'
+          description: Device list
         '401':
-          description: Token inválido o expirado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /auth/refresh:
-    post:
-      tags: [Auth]
-      summary: Renovar token
-      description: Obtiene un nuevo access token usando el refresh token
-      operationId: refreshToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - refresh_token
-              properties:
-                refresh_token:
-                  type: string
-                  description: El refresh token obtenido en login
-      responses:
-        '200':
-          description: Token renovado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RefreshResponse'
-        '401':
-          description: Refresh token inválido
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  # ==========================================
-  # CHAT
-  # ==========================================
-
-  /chat/send:
-    post:
-      tags: [Chat]
-      summary: Enviar mensaje al chat
-      description: Envía un mensaje al asistente de IA y obtiene respuesta
-      operationId: sendChatMessage
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatRequest'
-            example:
-              message: "¿Cuál es el horario de apertura?"
-              session_id: "abc123"
-      responses:
-        '200':
-          description: Respuesta del chat
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatResponse'
-
-  /chat/session:
-    post:
-      tags: [Chat]
-      summary: Crear sesión de chat
-      description: Crea una nueva sesión de chat
-      operationId: createChatSession
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                device_id:
-                  type: string
-                  description: ID único del dispositivo
-      responses:
-        '200':
-          description: Sesión creada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatSession'
-
-  # ==========================================
-  # RESERVAS
-  # ==========================================
-
-  /reservations/check:
-    post:
-      tags: [Reservations]
-      summary: Verificar disponibilidad
-      description: Verifica disponibilidad para fecha y cantidad de tickets
-      operationId: checkAvailability
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AvailabilityCheckRequest'
-      responses:
-        '200':
-          description: Resultado de disponibilidad
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AvailabilityCheckResponse'
-
-  /reservations/prepare:
-    post:
-      tags: [Reservations]
-      summary: Preparar reserva
-      description: Prepara una reserva antes del pago
-      operationId: prepareReservation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PrepareReservationRequest'
-      responses:
-        '200':
-          description: Reserva preparada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PrepareReservationResponse'
-
-  /reservations/mobile-checkout-url:
-    post:
-      tags: [Reservations]
-      summary: Obtener URL de checkout móvil
-      description: Genera una URL firmada para completar el checkout en navegador
-      operationId: getMobileCheckoutUrl
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CheckoutUrlRequest'
-      responses:
-        '200':
-          description: URL de checkout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CheckoutUrlResponse'
-
-  /reservations/cart-url:
-    get:
-      tags: [Reservations]
-      summary: URL del carrito
-      description: Obtiene la URL del carrito de WooCommerce
-      operationId: getCartUrl
-      responses:
-        '200':
-          description: URL del carrito
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  cart_url:
-                    type: string
-                    format: uri
-
-  # ==========================================
-  # CLIENTE
-  # ==========================================
-
-  /client/my-reservations:
-    get:
-      tags: [Client]
-      summary: Mis reservas
-      description: Lista las reservas del cliente autenticado
-      operationId: getClientReservations
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: status
-          in: query
-          schema:
-            type: string
-            enum: [pending, confirmed, completed, cancelled]
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-      responses:
-        '200':
-          description: Lista de reservas
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reservation'
-        '401':
-          description: No autenticado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /client/reservation/{code}:
-    get:
-      tags: [Client]
-      summary: Detalle de reserva
-      description: Obtiene el detalle de una reserva por su código
-      operationId: getReservationByCode
-      parameters:
-        - name: code
-          in: path
-          required: true
-          schema:
-            type: string
-          example: "RES-ABC123"
-      responses:
-        '200':
-          description: Detalle de la reserva
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReservationDetail'
-        '404':
-          description: Reserva no encontrada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /client/email/send-code:
-    post:
-      tags: [Client]
-      summary: Enviar código de verificación
-      description: Envía un código de verificación al email del cliente
-      operationId: sendVerificationCode
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  format: email
-      responses:
-        '200':
-          description: Código enviado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-
-  /client/email/verify-code:
-    post:
-      tags: [Client]
-      summary: Verificar código
-      description: Verifica el código enviado al email
-      operationId: verifyEmailCode
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-                - code
-              properties:
-                email:
-                  type: string
-                  format: email
-                code:
-                  type: string
-                  minLength: 6
-                  maxLength: 6
-      responses:
-        '200':
-          description: Verificación exitosa
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VerificationResponse'
-
-  /client/email/status:
-    get:
-      tags: [Client]
-      summary: Estado de verificación
-      description: Obtiene el estado de verificación del email
-      operationId: getEmailStatus
-      parameters:
-        - name: email
-          in: query
-          required: true
-          schema:
-            type: string
-            format: email
-      responses:
-        '200':
-          description: Estado de verificación
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  verified:
-                    type: boolean
-                  verified_at:
-                    type: string
-                    format: date-time
-
-  # ==========================================
-  # ADMIN
-  # ==========================================
-
-  /admin/dashboard:
-    get:
-      tags: [Admin]
-      summary: Dashboard administrativo
-      description: Obtiene datos del dashboard (estadísticas, resumen)
-      operationId: getAdminDashboard
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Datos del dashboard
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dashboard'
-        '403':
-          description: Sin permisos de administrador
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /admin/reservations:
-    get:
-      tags: [Admin]
-      summary: Lista de reservas (admin)
-      description: Lista todas las reservas con filtros
-      operationId: getAdminReservations
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: date
-          in: query
-          schema:
-            type: string
-            format: date
-        - name: status
-          in: query
-          schema:
-            type: string
-            enum: [pending, confirmed, checked_in, completed, cancelled]
-        - name: search
-          in: query
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: Lista de reservas
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedReservations'
-
-  /admin/reservations/{id}:
-    get:
-      tags: [Admin]
-      summary: Detalle de reserva (admin)
-      description: Obtiene el detalle completo de una reserva
-      operationId: getReservationDetail
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Detalle de la reserva
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminReservationDetail'
-
-  /admin/reservations/{id}/checkin:
-    post:
-      tags: [Admin]
-      summary: Realizar check-in
-      description: Marca una reserva como checked-in
-      operationId: doCheckin
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                notes:
-                  type: string
-                  description: Notas del check-in
-      responses:
-        '200':
-          description: Check-in realizado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CheckinResponse'
-
-  /admin/reservations/{id}/cancel:
-    post:
-      tags: [Admin]
-      summary: Cancelar reserva
-      description: Cancela una reserva
-      operationId: cancelReservation
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: Motivo de la cancelación
-                notify_customer:
-                  type: boolean
-                  default: true
-      responses:
-        '200':
-          description: Reserva cancelada
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-
-  /admin/reservations/find:
-    get:
-      tags: [Admin]
-      summary: Buscar reserva por código
-      description: Busca una reserva por su código (útil para QR)
-      operationId: findReservationByCode
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: code
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Reserva encontrada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminReservationDetail'
-
-  /admin/stats:
-    get:
-      tags: [Admin]
-      summary: Estadísticas
-      description: Obtiene estadísticas detalladas
-      operationId: getAdminStats
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: period
-          in: query
-          schema:
-            type: string
-            enum: [day, week, month, year]
-            default: week
-      responses:
-        '200':
-          description: Estadísticas
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Stats'
-
-  /admin/customers:
-    get:
-      tags: [Admin]
-      summary: Lista de clientes
-      description: Lista todos los clientes
-      operationId: getCustomers
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: search
-          in: query
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-      responses:
-        '200':
-          description: Lista de clientes
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedCustomers'
-
-  /admin/manual-customers:
-    get:
-      tags: [Admin]
-      summary: Clientes manuales
-      description: Lista clientes agregados manualmente
-      operationId: getManualCustomers
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de clientes manuales
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ManualCustomer'
-    post:
-      tags: [Admin]
-      summary: Crear cliente manual
-      description: Crea un nuevo cliente manual
-      operationId: createManualCustomer
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManualCustomerInput'
-      responses:
-        '201':
-          description: Cliente creado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ManualCustomer'
-
-  /admin/manual-customers/{id}:
-    put:
-      tags: [Admin]
-      summary: Actualizar cliente manual
-      operationId: updateManualCustomer
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManualCustomerInput'
-      responses:
-        '200':
-          description: Cliente actualizado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ManualCustomer'
-    delete:
-      tags: [Admin]
-      summary: Eliminar cliente manual
-      operationId: deleteManualCustomer
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Cliente eliminado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-
-  /admin/chat/send:
-    post:
-      tags: [Admin]
-      summary: Chat admin con IA
-      description: Envía mensaje al chat administrativo con IA
-      operationId: sendAdminChat
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatRequest'
-      responses:
-        '200':
-          description: Respuesta del chat
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatResponse'
-
-  /admin/chat/escalated:
-    get:
-      tags: [Admin]
-      summary: Chats escalados
-      description: Lista los chats que requieren atención humana
-      operationId: getEscalatedChats
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de chats escalados
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EscalatedChat'
-
-  /admin/chat/escalated/{id}:
-    get:
-      tags: [Admin]
-      summary: Detalle de chat escalado
-      operationId: getEscalatedChatDetail
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Detalle del chat
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EscalatedChatDetail'
-
-  /admin/chat/escalated/{id}/reply:
-    post:
-      tags: [Admin]
-      summary: Responder chat escalado
-      operationId: replyEscalatedChat
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - message
-              properties:
-                message:
-                  type: string
-      responses:
-        '200':
-          description: Respuesta enviada
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-
-  /admin/chat/escalated/{id}/resolve:
-    post:
-      tags: [Admin]
-      summary: Resolver chat escalado
-      operationId: resolveEscalatedChat
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                resolution_notes:
-                  type: string
-      responses:
-        '200':
-          description: Chat resuelto
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-
-  /admin/export/csv:
-    post:
-      tags: [Admin]
-      summary: Exportar a CSV
-      description: Exporta datos a formato CSV
-      operationId: exportCsv
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - type
-              properties:
-                type:
-                  type: string
-                  enum: [reservations, customers]
-                date_from:
-                  type: string
-                  format: date
-                date_to:
-                  type: string
-                  format: date
-      responses:
-        '200':
-          description: CSV generado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  download_url:
-                    type: string
-                    format: uri
-                  filename:
-                    type: string
-                  expires_at:
-                    type: string
-                    format: date-time
-
-  /admin/validate-site-token:
-    post:
-      tags: [Admin]
-      summary: Validar token de sitio
-      description: Valida el token secreto del sitio para vincular app admin
-      operationId: validateSiteToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - site_token
-              properties:
-                site_token:
-                  type: string
-      responses:
-        '200':
-          description: Token válido
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  site_name:
-                    type: string
-                  site_url:
-                    type: string
-        '403':
-          description: Token inválido
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  # ==========================================
-  # NOTIFICACIONES PUSH
-  # ==========================================
-
-  /push/register:
-    post:
-      tags: [Push]
-      summary: Registrar token push
-      description: Registra el token de Firebase para notificaciones push
-      operationId: registerPushToken
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - token
-                - platform
-              properties:
-                token:
-                  type: string
-                  description: Token de Firebase Cloud Messaging
-                platform:
-                  type: string
-                  enum: [android, ios]
-                device_id:
-                  type: string
-      responses:
-        '200':
-          description: Token registrado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-
-  # ==========================================
-  # AUTOCONFIGURACIÓN
-  # ==========================================
-
-  /app-config/generate:
-    get:
-      tags: [Public]
-      summary: Generar configuración de app
-      description: Genera configuración completa para personalizar la app usando IA
-      operationId: generateAppConfig
-      responses:
-        '200':
-          description: Configuración generada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneratedAppConfig'
-
-  /app-config/preview:
-    get:
-      tags: [Admin]
-      summary: Vista previa de configuración
-      description: Vista previa de la configuración de app para admins
-      operationId: previewAppConfig
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Vista previa
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneratedAppConfig'
+          $ref: '#/components/responses/Unauthorized'
 
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    VBPKey:
+      type: apiKey
+      in: header
+      name: X-VBP-Key
       description: |
-        Token JWT obtenido del endpoint `/auth/login`.
-        Incluir en header: `Authorization: Bearer <token>`
+        API Key para automatizacion externa. Se obtiene desde el panel de
+        administracion (Flavor Platform > Config. VBP) o via WP-CLI.
+    WordPressCookie:
+      type: apiKey
+      in: cookie
+      name: wordpress_logged_in
+      description: |
+        Cookie de sesion de WordPress. Se establece automaticamente al
+        iniciar sesion en el sitio. Util para peticiones desde el navegador.
 
   schemas:
-    # ==========================================
-    # SCHEMAS BÁSICOS
-    # ==========================================
-
     Error:
       type: object
+      description: Respuesta de error estandar de WordPress REST API
       required:
         - code
         - message
+        - data
       properties:
         code:
           type: string
-          description: Código de error
+          description: Codigo de error unico
+          example: rest_forbidden
         message:
           type: string
-          description: Mensaje descriptivo
+          description: Mensaje descriptivo del error
+          example: No tienes permisos para acceder a este recurso.
         data:
           type: object
-          description: Datos adicionales del error
-      example:
-        code: "invalid_token"
-        message: "El token ha expirado"
-
-    SiteInfo:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-          format: uri
-        description:
-          type: string
-        timezone:
-          type: string
-        locale:
-          type: string
-        api_version:
-          type: string
-
-    SiteContent:
-      type: object
-      properties:
-        pages:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              title:
-                type: string
-              slug:
-                type: string
-        menus:
-          type: array
-          items:
-            type: object
-        posts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Post'
-
-    AppConfig:
-      type: object
-      properties:
-        tabs:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              label:
-                type: string
-              icon:
-                type: string
-              enabled:
-                type: boolean
-        features:
-          type: object
           properties:
-            chat_enabled:
-              type: boolean
-            reservations_enabled:
-              type: boolean
-            wallet_enabled:
-              type: boolean
-        theme:
-          type: object
-          properties:
-            primary_color:
-              type: string
-            secondary_color:
-              type: string
-            dark_mode:
-              type: boolean
-        info_sections:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              title:
-                type: string
-              icon:
-                type: string
-              url:
-                type: string
-                format: uri
-
-    BusinessInfo:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        address:
-          type: string
-        phone:
-          type: string
-        email:
-          type: string
-          format: email
-        website:
-          type: string
-          format: uri
-        hours:
-          type: array
-          items:
-            type: object
-            properties:
-              day:
-                type: string
-              open:
-                type: string
-              close:
-                type: string
-              closed:
-                type: boolean
-        location:
-          type: object
-          properties:
-            lat:
-              type: number
-            lng:
-              type: number
-        social:
-          type: object
-          properties:
-            facebook:
-              type: string
-            instagram:
-              type: string
-            twitter:
-              type: string
-
-    # ==========================================
-    # AUTENTICACIÓN
-    # ==========================================
-
-    LoginRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          description: Usuario (para admin)
-        password:
-          type: string
-          format: password
-          description: Contraseña (para admin)
-        email:
-          type: string
-          format: email
-          description: Email (para cliente)
-        app_type:
-          type: string
-          enum: [admin, client]
-          default: client
-
-    LoginResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        user:
-          type: object
-          properties:
-            id:
+            status:
               type: integer
-            name:
-              type: string
-            email:
-              type: string
-            role:
-              type: string
-        access_token:
-          type: string
-        refresh_token:
-          type: string
-        expires_in:
-          type: integer
-          description: Segundos hasta expiración
-
-    TokenInfo:
-      type: object
-      properties:
-        valid:
-          type: boolean
-        user_id:
-          type: integer
-        role:
-          type: string
-        expires_at:
-          type: string
-          format: date-time
-
-    RefreshResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        expires_in:
-          type: integer
-
-    VerificationResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        verified:
-          type: boolean
-        token:
-          type: string
-          description: Token de acceso (si se verificó)
-
-    # ==========================================
-    # CHAT
-    # ==========================================
-
-    ChatRequest:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-          description: Mensaje del usuario
-        session_id:
-          type: string
-          description: ID de sesión de chat
-        context:
-          type: object
-          description: Contexto adicional
-
-    ChatResponse:
-      type: object
-      properties:
-        response:
-          type: string
-          description: Respuesta del asistente
-        session_id:
-          type: string
-        suggestions:
-          type: array
-          items:
-            type: string
-          description: Sugerencias de preguntas
-        actions:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-              data:
-                type: object
-          description: Acciones sugeridas
-
-    ChatSession:
-      type: object
-      properties:
-        session_id:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        welcome_message:
-          type: string
-
-    EscalatedChat:
-      type: object
-      properties:
-        id:
-          type: string
-        session_id:
-          type: string
-        customer_email:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum: [pending, in_progress, resolved]
-        created_at:
-          type: string
-          format: date-time
-        messages_count:
-          type: integer
-
-    EscalatedChatDetail:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/EscalatedChat'
-        - type: object
-          properties:
-            messages:
-              type: array
-              items:
-                type: object
-                properties:
-                  role:
-                    type: string
-                    enum: [user, assistant, admin]
-                  content:
-                    type: string
-                  timestamp:
-                    type: string
-                    format: date-time
-
-    # ==========================================
-    # DISPONIBILIDAD Y TICKETS
-    # ==========================================
-
-    Availability:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-        available:
-          type: boolean
-        capacity:
-          type: integer
-        remaining:
-          type: integer
-        time_slots:
-          type: array
-          items:
-            type: object
-            properties:
-              time:
-                type: string
-              available:
-                type: boolean
-              remaining:
-                type: integer
-
-    TicketType:
-      type: object
-      properties:
-        slug:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        price:
-          type: number
-        currency:
-          type: string
-        max_quantity:
-          type: integer
-        min_quantity:
-          type: integer
-
-    Experience:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        image:
-          type: string
-          format: uri
-        duration:
-          type: string
-        price_from:
-          type: number
-
-    AvailabilityCheckRequest:
-      type: object
-      required:
-        - date
-        - tickets
-      properties:
-        date:
-          type: string
-          format: date
-        tickets:
-          type: array
-          items:
-            type: object
-            properties:
-              slug:
-                type: string
-              quantity:
-                type: integer
-
-    AvailabilityCheckResponse:
-      type: object
-      properties:
-        available:
-          type: boolean
-        date:
-          type: string
-          format: date
-        total_price:
-          type: number
-        currency:
-          type: string
-        tickets:
-          type: array
-          items:
-            type: object
-            properties:
-              slug:
-                type: string
-              quantity:
-                type: integer
-              available:
-                type: boolean
-              price:
-                type: number
-
-    PrepareReservationRequest:
-      type: object
-      required:
-        - date
-        - tickets
-        - customer
-      properties:
-        date:
-          type: string
-          format: date
-        tickets:
-          type: array
-          items:
-            type: object
-            properties:
-              slug:
-                type: string
-              quantity:
-                type: integer
-        customer:
-          type: object
-          properties:
-            name:
-              type: string
-            email:
-              type: string
-              format: email
-            phone:
-              type: string
-
-    PrepareReservationResponse:
-      type: object
-      properties:
-        reservation_id:
-          type: string
-        status:
-          type: string
-        total:
-          type: number
-        checkout_url:
-          type: string
-          format: uri
-
-    CheckoutUrlRequest:
-      type: object
-      required:
-        - date
-        - tickets
-      properties:
-        date:
-          type: string
-          format: date
-        tickets:
-          type: array
-          items:
-            type: object
-            properties:
-              slug:
-                type: string
-              quantity:
-                type: integer
-
-    CheckoutUrlResponse:
-      type: object
-      properties:
-        checkout_url:
-          type: string
-          format: uri
-        expires_at:
-          type: string
-          format: date-time
-
-    # ==========================================
-    # RESERVAS
-    # ==========================================
-
-    Reservation:
-      type: object
-      properties:
-        id:
-          type: integer
-        code:
-          type: string
-        date:
-          type: string
-          format: date
-        status:
-          type: string
-          enum: [pending, confirmed, checked_in, completed, cancelled]
-        tickets:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              quantity:
-                type: integer
-        total:
-          type: number
-        created_at:
-          type: string
-          format: date-time
-
-    ReservationDetail:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Reservation'
-        - type: object
-          properties:
-            customer:
+              description: Codigo de estado HTTP
+              example: 403
+            params:
               type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                phone:
-                  type: string
-            qr_code:
-              type: string
-              description: Datos para generar QR
-            notes:
-              type: string
+              description: Parametros adicionales del error
+              additionalProperties: true
 
-    AdminReservationDetail:
+    Success:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/ReservationDetail'
-        - type: object
-          properties:
-            order_id:
-              type: integer
-            payment_method:
-              type: string
-            payment_status:
-              type: string
-            check_in_at:
-              type: string
-              format: date-time
-            check_in_by:
-              type: string
-            history:
-              type: array
-              items:
-                type: object
-                properties:
-                  action:
-                    type: string
-                  timestamp:
-                    type: string
-                    format: date-time
-                  user:
-                    type: string
-
-    PaginatedReservations:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reservation'
-        total:
-          type: integer
-        page:
-          type: integer
-        per_page:
-          type: integer
-        pages:
-          type: integer
-
-    CheckinResponse:
-      type: object
+      description: Respuesta de exito generica
+      required:
+        - success
       properties:
         success:
           type: boolean
-        reservation:
-          $ref: '#/components/schemas/AdminReservationDetail'
+          description: Indica si la operacion fue exitosa
+          example: true
         message:
           type: string
+          description: Mensaje descriptivo opcional
+          example: Operacion completada correctamente.
+        data:
+          type: object
+          description: Datos adicionales de la respuesta
+          additionalProperties: true
 
-    # ==========================================
-    # CLIENTES
-    # ==========================================
-
-    Customer:
+    Pagination:
       type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        reservations_count:
-          type: integer
-        total_spent:
-          type: number
-        last_visit:
-          type: string
-          format: date
-
-    ManualCustomer:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        notes:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        created_at:
-          type: string
-          format: date-time
-
-    ManualCustomerInput:
-      type: object
+      description: Informacion de paginacion para listados
       required:
-        - name
+        - page
+        - per_page
+        - total
+        - total_pages
       properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        notes:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
+        page:
+          type: integer
+          description: Pagina actual (1-indexed)
+          minimum: 1
+          example: 1
+        per_page:
+          type: integer
+          description: Elementos por pagina
+          minimum: 1
+          maximum: 100
+          example: 10
+        total:
+          type: integer
+          description: Total de elementos disponibles
+          minimum: 0
+          example: 42
+        total_pages:
+          type: integer
+          description: Total de paginas disponibles
+          minimum: 0
+          example: 5
 
-    PaginatedCustomers:
+    PaginatedResponse:
       type: object
+      description: Respuesta paginada generica
+      required:
+        - items
+        - pagination
       properties:
         items:
           type: array
-          items:
-            $ref: '#/components/schemas/Customer'
-        total:
-          type: integer
-        page:
-          type: integer
-        per_page:
-          type: integer
+          description: Lista de elementos de la pagina actual
+          items: {}
+        pagination:
+          $ref: '#/components/schemas/Pagination'
 
-    # ==========================================
-    # DASHBOARD Y ESTADÍSTICAS
-    # ==========================================
-
-    Dashboard:
+    HealthStatus:
       type: object
+      description: Estado de salud del sistema
+      required:
+        - status
+        - version
       properties:
-        today:
+        status:
+          type: string
+          enum:
+            - ok
+            - degraded
+            - error
+          description: Estado general del sistema
+          example: ok
+        version:
+          type: string
+          description: Version del plugin
+          example: 1.0.0
+        timestamp:
+          type: string
+          format: date-time
+          description: Marca de tiempo de la verificacion
+          example: '2026-04-14T12:00:00Z'
+        checks:
           type: object
-          properties:
-            reservations:
-              type: integer
-            checked_in:
-              type: integer
-            pending:
-              type: integer
-            revenue:
-              type: number
-        week:
-          type: object
-          properties:
-            reservations:
-              type: integer
-            revenue:
-              type: number
-        upcoming:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reservation'
-        recent_activity:
-          type: array
-          items:
+          description: Verificaciones individuales del sistema
+          additionalProperties:
             type: object
             properties:
-              type:
+              status:
                 type: string
+                enum:
+                  - pass
+                  - warn
+                  - fail
               message:
                 type: string
-              timestamp:
-                type: string
-                format: date-time
 
-    Stats:
+    Module:
       type: object
+      description: Informacion de un modulo de Flavor Platform
+      required:
+        - id
+        - name
+        - active
       properties:
-        period:
+        id:
           type: string
-        reservations:
-          type: object
-          properties:
-            total:
-              type: integer
-            confirmed:
-              type: integer
-            cancelled:
-              type: integer
-            no_show:
-              type: integer
-        revenue:
-          type: object
-          properties:
-            total:
-              type: number
-            average:
-              type: number
-            currency:
-              type: string
-        customers:
-          type: object
-          properties:
-            total:
-              type: integer
-            new:
-              type: integer
-            returning:
-              type: integer
-        by_day:
+          description: Identificador unico del modulo
+          example: eventos
+        name:
+          type: string
+          description: Nombre legible del modulo
+          example: Eventos
+        description:
+          type: string
+          description: Descripcion del modulo
+          example: Gestion de eventos y calendario comunitario
+        active:
+          type: boolean
+          description: Si el modulo esta activo
+          example: true
+        category:
+          type: string
+          description: Categoria del modulo
+          example: comunidad
+        dependencies:
           type: array
+          description: Modulos requeridos para funcionar
           items:
-            type: object
-            properties:
-              date:
-                type: string
-                format: date
-              reservations:
-                type: integer
-              revenue:
-                type: number
+            type: string
+          example:
+            - socios
 
-    # ==========================================
-    # OTROS
-    # ==========================================
+  responses:
+    BadRequest:
+      description: Peticion mal formada o parametros invalidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: rest_invalid_param
+            message: El parametro 'page' debe ser un numero entero positivo.
+            data:
+              status: 400
+              params:
+                page: invalid
 
-    Post:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        excerpt:
-          type: string
-        content:
-          type: string
-        image:
-          type: string
-          format: uri
-        date:
-          type: string
-          format: date-time
-        url:
-          type: string
-          format: uri
+    Unauthorized:
+      description: No autenticado - se requiere autenticacion
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: rest_not_logged_in
+            message: Debes iniciar sesion para acceder a este recurso.
+            data:
+              status: 401
 
-    Update:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        content:
-          type: string
-        type:
-          type: string
-          enum: [news, promotion, event, update]
-        date:
-          type: string
-          format: date-time
+    Forbidden:
+      description: Sin permisos - autenticado pero sin autorizacion
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: rest_forbidden
+            message: No tienes permisos para realizar esta accion.
+            data:
+              status: 403
 
-    GeneratedAppConfig:
-      type: object
-      properties:
-        generated_at:
-          type: string
-          format: date-time
-        config:
-          $ref: '#/components/schemas/AppConfig'
-        analysis:
-          type: object
-          properties:
-            business_type:
-              type: string
-            suggested_features:
-              type: array
-              items:
-                type: string
-            color_palette:
-              type: array
-              items:
-                type: string
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: rest_post_invalid_id
+            message: El recurso solicitado no existe.
+            data:
+              status: 404
+
+    InternalError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Ha ocurrido un error interno. Por favor, intentalo de nuevo.
+            data:
+              status: 500
+
+security:
+  - VBPKey: []
+  - WordPressCookie: []
