@@ -336,7 +336,8 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
 	Alpine.data('flavorShell', () => ({
 		// Estado
-		collapsed: localStorage.getItem('flavorShellCollapsed') === 'true',
+		// Por defecto colapsado, a menos que el usuario haya elegido expandido
+		collapsed: localStorage.getItem('flavorShellCollapsed') !== 'false',
 		mobileOpen: false,
 		darkMode: document.body.classList.contains('fls-shell-dark'),
 		vistaOpen: false,
@@ -463,6 +464,13 @@ document.addEventListener('alpine:init', () => {
          * Manejar atajos de teclado
          */
 		handleKeyboard(e) {
+			// Ctrl/Cmd + K: Abrir búsqueda rápida
+			if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+				e.preventDefault();
+				window.dispatchEvent(new CustomEvent('open-shell-search'));
+				return;
+			}
+
 			// Ctrl/Cmd + B: Toggle collapse
 			if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
 				e.preventDefault();
