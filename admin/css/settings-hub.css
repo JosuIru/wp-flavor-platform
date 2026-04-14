@@ -1,0 +1,508 @@
+/**
+ * Flavor Settings Hub - Estilos
+ *
+ * Hub de configuración unificado
+ *
+ * @package FlavorPlatform
+ * @since 3.5.1
+ */
+
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+
+.flavor-settings-hub {
+	--fsh-bg: #f8fafc;
+	--fsh-card-bg: #ffffff;
+	--fsh-border: #e2e8f0;
+	--fsh-text: #1e293b;
+	--fsh-text-muted: #64748b;
+	--fsh-accent: #3b82f6;
+	--fsh-radius: 12px;
+	--fsh-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+	--fsh-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	--fsh-transition: 200ms ease;
+
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 20px;
+	background: var(--fsh-bg);
+	min-height: calc(100vh - 100px);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.fsh-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 24px;
+	margin-bottom: 24px;
+	flex-wrap: wrap;
+}
+
+.fsh-header__title h1 {
+	margin: 0 0 4px 0;
+	font-size: 28px;
+	font-weight: 700;
+	color: var(--fsh-text);
+}
+
+.fsh-header__subtitle {
+	margin: 0;
+	font-size: 15px;
+	color: var(--fsh-text-muted);
+}
+
+.fsh-header__search {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: var(--fsh-card-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: var(--fsh-radius);
+	padding: 10px 16px;
+	min-width: 320px;
+	box-shadow: var(--fsh-shadow);
+	transition: all var(--fsh-transition);
+}
+
+.fsh-header__search:focus-within {
+	border-color: var(--fsh-accent);
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.fsh-header__search .dashicons {
+	color: var(--fsh-text-muted);
+	font-size: 18px;
+}
+
+.fsh-header__search input {
+	flex: 1;
+	border: none;
+	background: transparent;
+	font-size: 14px;
+	color: var(--fsh-text);
+	outline: none;
+}
+
+.fsh-header__search input::placeholder {
+	color: var(--fsh-text-muted);
+}
+
+.fsh-header__search kbd {
+	background: var(--fsh-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: 4px;
+	padding: 2px 6px;
+	font-size: 11px;
+	font-family: monospace;
+	color: var(--fsh-text-muted);
+}
+
+/* ==========================================================================
+   Quick Stats
+   ========================================================================== */
+
+.fsh-quick-stats {
+	display: flex;
+	gap: 16px;
+	margin-bottom: 32px;
+	flex-wrap: wrap;
+}
+
+.fsh-stat {
+	background: var(--fsh-card-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: var(--fsh-radius);
+	padding: 16px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	box-shadow: var(--fsh-shadow);
+}
+
+.fsh-stat__value {
+	font-size: 28px;
+	font-weight: 700;
+	color: var(--fsh-accent);
+}
+
+.fsh-stat__label {
+	font-size: 13px;
+	color: var(--fsh-text-muted);
+}
+
+/* ==========================================================================
+   Categories Grid
+   ========================================================================== */
+
+.fsh-categories {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+	gap: 24px;
+	margin-bottom: 40px;
+}
+
+.fsh-category {
+	background: var(--fsh-card-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: var(--fsh-radius);
+	overflow: hidden;
+	box-shadow: var(--fsh-shadow);
+	transition: all var(--fsh-transition);
+}
+
+.fsh-category:hover {
+	box-shadow: var(--fsh-shadow-lg);
+	transform: translateY(-2px);
+}
+
+.fsh-category__header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 16px 20px;
+	background: linear-gradient(135deg, var(--category-color) 0%, color-mix(in srgb, var(--category-color) 80%, #000) 100%);
+	color: #fff;
+}
+
+.fsh-category__header .dashicons {
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+	opacity: 0.9;
+}
+
+.fsh-category__info {
+	flex: 1;
+}
+
+.fsh-category__info h2 {
+	margin: 0 0 2px 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: inherit;
+}
+
+.fsh-category__info p {
+	margin: 0;
+	font-size: 12px;
+	opacity: 0.85;
+}
+
+.fsh-category__count {
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 20px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.fsh-category__items {
+	padding: 8px;
+}
+
+/* ==========================================================================
+   Items
+   ========================================================================== */
+
+.fsh-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 14px;
+	border-radius: 8px;
+	text-decoration: none;
+	color: var(--fsh-text);
+	transition: all var(--fsh-transition);
+}
+
+.fsh-item:hover {
+	background: var(--fsh-bg);
+	color: var(--fsh-text);
+}
+
+.fsh-item:focus {
+	outline: 2px solid var(--fsh-accent);
+	outline-offset: -2px;
+}
+
+.fsh-item .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: var(--fsh-text-muted);
+	flex-shrink: 0;
+}
+
+.fsh-item:hover .dashicons {
+	color: var(--fsh-accent);
+}
+
+.fsh-item__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.fsh-item__title {
+	display: block;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.3;
+}
+
+.fsh-item__desc {
+	display: block;
+	font-size: 12px;
+	color: var(--fsh-text-muted);
+	line-height: 1.4;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.fsh-item__arrow {
+	opacity: 0;
+	transform: translateX(-4px);
+	transition: all var(--fsh-transition);
+}
+
+.fsh-item:hover .fsh-item__arrow {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+/* ==========================================================================
+   Search Results
+   ========================================================================== */
+
+.fsh-search-results {
+	margin-bottom: 32px;
+}
+
+.fsh-section-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--fsh-text);
+	margin: 0 0 16px 0;
+}
+
+.fsh-section-title .dashicons {
+	color: var(--fsh-text-muted);
+}
+
+.fsh-search-results__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 12px;
+}
+
+.fsh-search-result {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	background: var(--fsh-card-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: var(--fsh-radius);
+	text-decoration: none;
+	color: var(--fsh-text);
+	transition: all var(--fsh-transition);
+}
+
+.fsh-search-result:hover {
+	border-color: var(--result-color, var(--fsh-accent));
+	box-shadow: var(--fsh-shadow);
+	color: var(--fsh-text);
+}
+
+.fsh-search-result__icon {
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--result-color, var(--fsh-accent));
+	border-radius: 8px;
+	flex-shrink: 0;
+}
+
+.fsh-search-result__icon .dashicons {
+	color: #fff;
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+.fsh-search-result__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.fsh-search-result__title {
+	display: block;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.3;
+}
+
+.fsh-search-result__category {
+	display: block;
+	font-size: 12px;
+	color: var(--fsh-text-muted);
+}
+
+.fsh-search-empty {
+	grid-column: 1 / -1;
+	text-align: center;
+	padding: 40px 20px;
+	color: var(--fsh-text-muted);
+}
+
+.fsh-search-empty .dashicons {
+	font-size: 48px;
+	width: 48px;
+	height: 48px;
+	margin-bottom: 12px;
+	opacity: 0.3;
+}
+
+.fsh-search-empty p {
+	margin: 0;
+	font-size: 14px;
+}
+
+/* ==========================================================================
+   Quick Links
+   ========================================================================== */
+
+.fsh-quick-links {
+	margin-top: 40px;
+}
+
+.fsh-quick-links__grid {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.fsh-quick-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	background: var(--fsh-card-bg);
+	border: 1px solid var(--fsh-border);
+	border-radius: 100px;
+	text-decoration: none;
+	color: var(--fsh-text);
+	font-size: 13px;
+	font-weight: 500;
+	transition: all var(--fsh-transition);
+}
+
+.fsh-quick-link:hover {
+	background: var(--fsh-accent);
+	border-color: var(--fsh-accent);
+	color: #fff;
+}
+
+.fsh-quick-link .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 782px) {
+	.fsh-header {
+		flex-direction: column;
+	}
+
+	.fsh-header__search {
+		width: 100%;
+		min-width: auto;
+	}
+
+	.fsh-categories {
+		grid-template-columns: 1fr;
+	}
+
+	.fsh-quick-stats {
+		flex-direction: column;
+	}
+
+	.fsh-stat {
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.fsh-stat__value {
+		font-size: 24px;
+	}
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fsh-category {
+	animation: fadeIn 0.3s ease forwards;
+}
+
+.fsh-category:nth-child(1) { animation-delay: 0.05s; }
+.fsh-category:nth-child(2) { animation-delay: 0.1s; }
+.fsh-category:nth-child(3) { animation-delay: 0.15s; }
+.fsh-category:nth-child(4) { animation-delay: 0.2s; }
+.fsh-category:nth-child(5) { animation-delay: 0.25s; }
+.fsh-category:nth-child(6) { animation-delay: 0.3s; }
+.fsh-category:nth-child(7) { animation-delay: 0.35s; }
+.fsh-category:nth-child(8) { animation-delay: 0.4s; }
+
+.fsh-search-result {
+	animation: fadeIn 0.2s ease forwards;
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+	.flavor-settings-hub {
+		--fsh-bg: #0f172a;
+		--fsh-card-bg: #1e293b;
+		--fsh-border: #334155;
+		--fsh-text: #f1f5f9;
+		--fsh-text-muted: #94a3b8;
+	}
+}
+
+/* Admin dark mode class */
+body.fls-shell-dark .flavor-settings-hub {
+	--fsh-bg: #0f172a;
+	--fsh-card-bg: #1e293b;
+	--fsh-border: #334155;
+	--fsh-text: #f1f5f9;
+	--fsh-text-muted: #94a3b8;
+}

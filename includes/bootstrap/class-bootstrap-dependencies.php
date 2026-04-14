@@ -674,6 +674,9 @@ final class Flavor_Bootstrap_Dependencies {
             : 'Flavor_Chat_Settings';
         $settings_class::get_instance();
 
+        // Hub de Configuración Unificado
+        require_once FLAVOR_PLATFORM_PATH . 'admin/class-settings-hub.php';
+
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-chat-analytics.php';
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-app-profile-admin.php';
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-module-dashboards-page.php';
