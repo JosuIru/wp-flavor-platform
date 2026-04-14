@@ -292,15 +292,30 @@ class Flavor_Network_Admin {
         global $wpdb;
         $prefix = Flavor_Network_Installer::get_table_name('');
 
-        $total_nodos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado = 'activo'");
-        $total_nodos_inactivos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado != 'activo'");
-        $total_conexiones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'aprobada'");
-        $total_conexiones_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'pendiente'");
-        $total_contenido = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}shared_content WHERE estado = 'activo'");
-        $total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}events WHERE estado = 'activo' AND fecha_inicio >= NOW()");
-        $total_colaboraciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}collaborations WHERE estado = 'abierta'");
+        $total_nodos = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}nodes` WHERE estado = %s", 'activo')
+        );
+        $total_nodos_inactivos = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}nodes` WHERE estado != %s", 'activo')
+        );
+        $total_conexiones = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}connections` WHERE estado = %s", 'aprobada')
+        );
+        $total_conexiones_pendientes = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}connections` WHERE estado = %s", 'pendiente')
+        );
+        $total_contenido = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}shared_content` WHERE estado = %s", 'activo')
+        );
+        $total_eventos = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}events` WHERE estado = %s AND fecha_inicio >= NOW()", 'activo')
+        );
+        $total_colaboraciones = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$prefix}collaborations` WHERE estado = %s", 'abierta')
+        );
         $mensajes_sin_leer = 0;
-        $ultima_sync = $wpdb->get_var("SELECT MAX(ultima_sincronizacion) FROM {$prefix}nodes");
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna sin variables de usuario
+        $ultima_sync = $wpdb->get_var("SELECT MAX(ultima_sincronizacion) FROM `{$prefix}nodes`");
         $ultima_sync_local = $nodo_local ? $nodo_local->ultima_sincronizacion : null;
 
         if ($nodo_local) {

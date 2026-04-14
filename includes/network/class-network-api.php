@@ -1928,18 +1928,28 @@ class Flavor_Network_API {
         $tabla_eventos = Flavor_Network_Installer::get_table_name('events');
         $tabla_colaboraciones = Flavor_Network_Installer::get_table_name('collaborations');
 
-        $total_nodos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_nodos} WHERE estado = 'activo'");
-        $total_conexiones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conexiones} WHERE estado = 'aprobada'");
-        $total_contenido = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_contenido} WHERE estado = 'activo' AND visible_red = 1");
-        $total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'activo' AND fecha_inicio >= NOW()");
-        $total_colaboraciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_colaboraciones} WHERE estado = 'abierta'");
+        $total_nodos = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_nodos}` WHERE estado = %s", 'activo')
+        );
+        $total_conexiones = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_conexiones}` WHERE estado = %s", 'aprobada')
+        );
+        $total_contenido = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_contenido}` WHERE estado = %s AND visible_red = 1", 'activo')
+        );
+        $total_eventos = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_eventos}` WHERE estado = %s AND fecha_inicio >= NOW()", 'activo')
+        );
+        $total_colaboraciones = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_colaboraciones}` WHERE estado = %s", 'abierta')
+        );
 
         $por_tipo = $wpdb->get_results(
-            "SELECT tipo_entidad, COUNT(*) as total FROM {$tabla_nodos} WHERE estado = 'activo' GROUP BY tipo_entidad ORDER BY total DESC"
+            $wpdb->prepare("SELECT tipo_entidad, COUNT(*) as total FROM `{$tabla_nodos}` WHERE estado = %s GROUP BY tipo_entidad ORDER BY total DESC", 'activo')
         );
 
         $por_pais = $wpdb->get_results(
-            "SELECT pais, COUNT(*) as total FROM {$tabla_nodos} WHERE estado = 'activo' GROUP BY pais ORDER BY total DESC"
+            $wpdb->prepare("SELECT pais, COUNT(*) as total FROM `{$tabla_nodos}` WHERE estado = %s GROUP BY pais ORDER BY total DESC", 'activo')
         );
 
         return new WP_REST_Response([

@@ -66,15 +66,22 @@ $filtro_fecha_inicio = isset($_GET['fecha_inicio']) ? sanitize_text_field($_GET[
 $filtro_fecha_fin = isset($_GET['fecha_fin']) ? sanitize_text_field($_GET['fecha_fin']) : '';
 
 // Calcular balance actual
-$balance_actual = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'pending'") ?? 0;
-$total_pagado = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'paid'") ?? 0;
-$total_cancelado = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'cancelled'") ?? 0;
+$balance_actual = $wpdb->get_var(
+    $wpdb->prepare("SELECT SUM(monto) FROM `{$tabla_pagos}` WHERE estado = %s", 'pending')
+) ?? 0;
+$total_pagado = $wpdb->get_var(
+    $wpdb->prepare("SELECT SUM(monto) FROM `{$tabla_pagos}` WHERE estado = %s", 'paid')
+) ?? 0;
+$total_cancelado = $wpdb->get_var(
+    $wpdb->prepare("SELECT SUM(monto) FROM `{$tabla_pagos}` WHERE estado = %s", 'cancelled')
+) ?? 0;
 
 // Obtener umbral mínimo de pago
 $umbral_minimo_pago = get_option('flavor_advertising_min_payout', 50);
 
 // Construir consulta de historial de pagos
-$query_historial = "SELECT * FROM {$tabla_pagos} WHERE 1=1";
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna
+$query_historial = "SELECT * FROM `{$tabla_pagos}` WHERE 1=1";
 $parametros_consulta = [];
 
 if (!empty($filtro_estado)) {
@@ -95,8 +102,10 @@ if (!empty($filtro_fecha_fin)) {
 $query_historial .= " ORDER BY fecha DESC LIMIT 100";
 
 if (!empty($parametros_consulta)) {
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- query construida con prepare params
     $historial_pagos = $wpdb->get_results($wpdb->prepare($query_historial, $parametros_consulta));
 } else {
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- query sin variables de usuario
     $historial_pagos = $wpdb->get_results($query_historial);
 }
 

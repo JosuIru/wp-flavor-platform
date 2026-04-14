@@ -745,11 +745,13 @@ class Flavor_WP_Module_Integrations {
     }
 
     /**
-     * Verifica si una tabla existe
+     * Verifica si una tabla existe (usa la versión segura con cache)
+     *
+     * @param string $tabla Nombre completo de la tabla
+     * @return bool
      */
     private function tabla_existe($tabla) {
-        global $wpdb;
-        return $wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla;
+        return $this->tabla_existe_cached($tabla);
     }
 
     /**
@@ -1556,7 +1558,7 @@ class Flavor_WP_Module_Integrations {
         $campo = $campo_map[$modulo];
 
         // Verificar que la tabla existe
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") !== $tabla) {
+        if (!$this->tabla_existe_cached($tabla)) {
             return [];
         }
 
@@ -1930,8 +1932,9 @@ class Flavor_WP_Module_Integrations {
                 continue;
             }
             $tabla = $prefix . $config['tabla'];
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla) {
-                $count = $wpdb->get_var("SELECT COUNT(DISTINCT post_id) FROM {$tabla}");
+            if ($this->tabla_existe_cached($tabla)) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $tabla viene de array interno hardcodeado
+                $count = $wpdb->get_var("SELECT COUNT(DISTINCT post_id) FROM `{$tabla}`");
                 if ($count > 0) {
                     $stats[$modulo] = [
                         'count'  => $count,
@@ -2198,7 +2201,7 @@ class Flavor_WP_Module_Integrations {
         $config = $tabla_map[$modulo];
         $tabla = $prefix . $config['tabla'];
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") !== $tabla) {
+        if (!$this->tabla_existe_cached($tabla)) {
             return false;
         }
 
@@ -2222,7 +2225,7 @@ class Flavor_WP_Module_Integrations {
 
             // Registrar en log
             $tabla_log = $prefix . 'posts_integraciones_log';
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") === $tabla_log) {
+            if ($this->tabla_existe_cached($tabla_log)) {
                 $wpdb->insert($tabla_log, [
                     'post_id'       => $post_id,
                     'modulo'        => $modulo,
@@ -2530,8 +2533,9 @@ class Flavor_WP_Module_Integrations {
 
         foreach ($tablas as $modulo => $tabla_nombre) {
             $tabla = $prefix . $tabla_nombre;
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla) {
-                $count = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla}");
+            if ($this->tabla_existe_cached($tabla)) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $tabla viene de array interno
+                $count = $wpdb->get_var("SELECT COUNT(*) FROM `{$tabla}`");
                 $estadisticas[$modulo] = intval($count);
                 $total_global += intval($count);
             } else {
@@ -2540,9 +2544,14 @@ class Flavor_WP_Module_Integrations {
         }
 
         // Posts únicos integrados
-        $posts_unicos = $wpdb->get_var(
-            "SELECT COUNT(DISTINCT post_id) FROM {$prefix}posts_integraciones_log WHERE estado = 'exito'"
-        ) ?: 0;
+        $tabla_log = $prefix . 'posts_integraciones_log';
+        $posts_unicos = 0;
+        if ($this->tabla_existe_cached($tabla_log)) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla interno
+            $posts_unicos = $wpdb->get_var(
+                "SELECT COUNT(DISTINCT post_id) FROM `{$tabla_log}` WHERE estado = 'exito'"
+            ) ?: 0;
+        }
 
         return rest_ensure_response([
             'por_modulo'    => $estadisticas,
@@ -2607,8 +2616,9 @@ class Flavor_WP_Module_Integrations {
 
             $tabla = $prefix . $tabla_nombre;
             $count = 0;
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla) {
-                $count = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla}");
+            if ($this->tabla_existe_cached($tabla)) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $tabla de array interno
+                $count = $wpdb->get_var("SELECT COUNT(*) FROM `{$tabla}`");
             }
 
             if ($count > 0) {
@@ -2638,10 +2648,11 @@ class Flavor_WP_Module_Integrations {
 
         // Últimas integraciones
         $tabla_log = $prefix . 'posts_integraciones_log';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") === $tabla_log) {
+        if ($this->tabla_existe_cached($tabla_log)) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tablas internas
             $ultimas = $wpdb->get_results(
                 "SELECT l.*, p.post_title
-                 FROM {$tabla_log} l
+                 FROM `{$tabla_log}` l
                  LEFT JOIN {$wpdb->posts} p ON l.post_id = p.ID
                  WHERE l.estado = 'exito'
                  ORDER BY l.fecha DESC
@@ -2927,8 +2938,9 @@ class Flavor_WP_Module_Integrations {
 
         foreach ($tablas as $tabla_nombre) {
             $tabla = $prefix . $tabla_nombre;
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla) {
-                $ids = $wpdb->get_col("SELECT DISTINCT post_id FROM {$tabla}");
+            if ($this->tabla_existe_cached($tabla)) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna
+                $ids = $wpdb->get_col("SELECT DISTINCT post_id FROM `{$tabla}`");
                 $post_ids = array_merge($post_ids, $ids);
             }
         }
@@ -2959,11 +2971,12 @@ class Flavor_WP_Module_Integrations {
         }
 
         $tabla = $prefix . $tablas_map[$modulo];
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") !== $tabla) {
+        if (!$this->tabla_existe_cached($tabla)) {
             return [];
         }
 
-        return $wpdb->get_col("SELECT DISTINCT post_id FROM {$tabla}");
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla de map interno
+        return $wpdb->get_col("SELECT DISTINCT post_id FROM `{$tabla}`");
     }
 
     /**
@@ -2984,14 +2997,14 @@ class Flavor_WP_Module_Integrations {
 
         foreach ($tablas as $tabla_nombre) {
             $tabla = $prefix . $tabla_nombre;
-            if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") === $tabla) {
+            if ($this->tabla_existe_cached($tabla)) {
                 $wpdb->delete($tabla, ['post_id' => $post_id], ['%d']);
             }
         }
 
         // Limpiar log también
         $tabla_log = $prefix . 'posts_integraciones_log';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") === $tabla_log) {
+        if ($this->tabla_existe_cached($tabla_log)) {
             $wpdb->delete($tabla_log, ['post_id' => $post_id], ['%d']);
         }
 
@@ -3017,13 +3030,14 @@ class Flavor_WP_Module_Integrations {
         $prefix = $wpdb->prefix . 'flavor_';
 
         $tabla_log = $prefix . 'posts_integraciones_log';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") !== $tabla_log) {
+        if (!$this->tabla_existe_cached($tabla_log)) {
             wp_die(__('No hay datos para exportar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna
         $datos = $wpdb->get_results(
             "SELECT l.*, p.post_title, u.display_name as usuario
-             FROM {$tabla_log} l
+             FROM `{$tabla_log}` l
              LEFT JOIN {$wpdb->posts} p ON l.post_id = p.ID
              LEFT JOIN {$wpdb->users} u ON l.usuario_id = u.ID
              ORDER BY l.fecha DESC",
@@ -3335,7 +3349,7 @@ class Flavor_WP_Module_Integrations {
 
         // Obtener datos
         $tabla_log = $prefix . 'posts_integraciones_log';
-        $tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") === $tabla_log;
+        $tabla_existe = $this->tabla_existe_cached($tabla_log);
 
         $integraciones = [];
         $total = 0;
@@ -3349,14 +3363,16 @@ class Flavor_WP_Module_Integrations {
                 $where .= $wpdb->prepare(" AND l.estado = %s", $filtro_estado);
             }
 
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna, $where usa prepare
             $total = $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla_log} l {$where}"
+                "SELECT COUNT(*) FROM `{$tabla_log}` l {$where}"
             );
 
             $offset = ($paged - 1) * $per_page;
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna, variables sanitizadas
             $integraciones = $wpdb->get_results(
                 "SELECT l.*, p.post_title, u.display_name as usuario_nombre
-                 FROM {$tabla_log} l
+                 FROM `{$tabla_log}` l
                  LEFT JOIN {$wpdb->posts} p ON l.post_id = p.ID
                  LEFT JOIN {$wpdb->users} u ON l.usuario_id = u.ID
                  {$where}

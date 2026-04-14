@@ -426,9 +426,9 @@ class Flavor_Crash_Reporting_API {
             return strtotime($b['occurred_at']) - strtotime($a['occurred_at']);
         });
 
-        // Paginación
-        $page = intval($request->get_param('page'));
-        $per_page = intval($request->get_param('per_page'));
+        // Paginación (con límites para evitar DoS)
+        $page = max(1, intval($request->get_param('page')) ?: 1);
+        $per_page = min(100, max(1, intval($request->get_param('per_page')) ?: 20));
         $total = count($filtered);
         $offset = ($page - 1) * $per_page;
         $items = array_slice($filtered, $offset, $per_page);

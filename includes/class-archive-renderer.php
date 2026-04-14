@@ -2554,8 +2554,8 @@ class Flavor_Archive_Renderer {
             return ['items' => [], 'stats' => [], 'total' => 0];
         }
 
-        // Parámetros de paginación
-        $per_page = intval($_GET['per_page'] ?? 12);
+        // Parámetros de paginación (límite máximo para evitar DoS)
+        $per_page = min(100, max(1, intval($_GET['per_page'] ?? 12)));
         $current_page = max(1, intval($_GET['pag'] ?? 1));
         $offset = ($current_page - 1) * $per_page;
 
@@ -2589,14 +2589,16 @@ class Flavor_Archive_Renderer {
         $where_sql = !empty($where) ? implode(' AND ', $where) : '1=1';
 
         // Obtener total
-        $count_query = "SELECT COUNT(*) FROM $table WHERE $where_sql";
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table de config interna, $where_sql usa placeholders
+        $count_query = "SELECT COUNT(*) FROM `{$table}` WHERE {$where_sql}";
         $total = !empty($params)
             ? (int) $wpdb->get_var($wpdb->prepare($count_query, $params))
             : (int) $wpdb->get_var($count_query);
 
         // Obtener items
         $order_by = $tables_config['order_by'] ?? 'created_at DESC';
-        $query = "SELECT * FROM $table WHERE $where_sql ORDER BY $order_by LIMIT %d OFFSET %d";
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table y $order_by de config interna
+        $query = "SELECT * FROM `{$table}` WHERE {$where_sql} ORDER BY {$order_by} LIMIT %d OFFSET %d";
         $query_params = array_merge($params, [$per_page, $offset]);
         $rows = $wpdb->get_results($wpdb->prepare($query, $query_params));
 

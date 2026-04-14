@@ -266,8 +266,8 @@ class Flavor_Lazy_Loading_API {
      */
     public function get_module_content($request) {
         $module_id = $request->get_param('id');
-        $page = intval($request->get_param('page'));
-        $per_page = intval($request->get_param('per_page'));
+        $page = max(1, intval($request->get_param('page')));
+        $per_page = min(100, max(1, intval($request->get_param('per_page')) ?: 10));
         $orderby = $request->get_param('orderby');
         $order = strtoupper($request->get_param('order'));
 

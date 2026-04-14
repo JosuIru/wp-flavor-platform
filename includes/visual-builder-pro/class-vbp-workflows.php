@@ -630,8 +630,8 @@ class Flavor_VBP_Workflows {
      */
     public function get_pending_reviews( $request ) {
         $user_id = get_current_user_id();
-        $page = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
-        $per_page = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
+        $page = isset( $request['page'] ) ? max( 1, intval( $request['page'] ) ) : 1;
+        $per_page = isset( $request['per_page'] ) ? min( 100, max( 1, intval( $request['per_page'] ) ) ) : 10;
 
         $args = array(
             'post_type'      => 'page',

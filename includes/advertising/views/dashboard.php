@@ -42,32 +42,43 @@ $total_ingresos = $estadisticas_mes->total_ingresos ?? 0;
 $ctr_promedio = $total_impresiones > 0 ? ($total_clicks / $total_impresiones) * 100 : 0;
 
 // Obtener ingresos pendientes de pago
+$tabla_pagos = $wpdb->prefix . 'flavor_advertising_payments';
 $ingresos_pendientes = $wpdb->get_var(
-    "SELECT SUM(monto) FROM {$wpdb->prefix}flavor_advertising_payments WHERE estado = 'pending'"
+    $wpdb->prepare(
+        "SELECT SUM(monto) FROM `{$tabla_pagos}` WHERE estado = %s",
+        'pending'
+    )
 ) ?? 0;
 
 // Anuncios activos vs pausados
-$anuncios_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE estado = 'activo'");
-$anuncios_pausados = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE estado = 'pausado'");
+$anuncios_activos = $wpdb->get_var(
+    $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_anuncios}` WHERE estado = %s", 'activo')
+);
+$anuncios_pausados = $wpdb->get_var(
+    $wpdb->prepare("SELECT COUNT(*) FROM `{$tabla_anuncios}` WHERE estado = %s", 'pausado')
+);
 
 // Top 5 anuncios por rendimiento
 $top_anuncios = $wpdb->get_results(
-    "SELECT
-        a.id,
-        a.nombre,
-        SUM(s.impresiones) as impresiones,
-        SUM(s.clicks) as clicks,
-        SUM(s.ingresos) as ingresos,
-        CASE
-            WHEN SUM(s.impresiones) > 0 THEN (SUM(s.clicks) / SUM(s.impresiones)) * 100
-            ELSE 0
-        END as ctr
-    FROM {$tabla_anuncios} a
-    LEFT JOIN {$tabla_estadisticas} s ON a.id = s.anuncio_id
-    WHERE s.fecha >= '{$fecha_inicio_mes}'
-    GROUP BY a.id
-    ORDER BY ingresos DESC
-    LIMIT 5"
+    $wpdb->prepare(
+        "SELECT
+            a.id,
+            a.nombre,
+            SUM(s.impresiones) as impresiones,
+            SUM(s.clicks) as clicks,
+            SUM(s.ingresos) as ingresos,
+            CASE
+                WHEN SUM(s.impresiones) > 0 THEN (SUM(s.clicks) / SUM(s.impresiones)) * 100
+                ELSE 0
+            END as ctr
+        FROM `{$tabla_anuncios}` a
+        LEFT JOIN `{$tabla_estadisticas}` s ON a.id = s.anuncio_id
+        WHERE s.fecha >= %s
+        GROUP BY a.id
+        ORDER BY ingresos DESC
+        LIMIT 5",
+        $fecha_inicio_mes
+    )
 );
 
 // Datos para gráfica (últimos 30 días)

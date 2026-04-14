@@ -3187,17 +3187,20 @@ class Flavor_Module_Shortcodes {
         ];
 
         // Intentar obtener datos del módulo
-        $tabla = $wpdb->prefix . 'flavor_' . $modulo_id;
+        // Sanitizar modulo_id para evitar SQL injection
+        $modulo_id_safe = preg_replace('/[^a-z0-9_-]/', '', strtolower($modulo_id));
+        $tabla = $wpdb->prefix . 'flavor_' . $modulo_id_safe;
 
         if ($this->tabla_existe($tabla)) {
-            $limite = intval($atts['limite']);
+            $limite = min(100, max(1, intval($atts['limite'])));
             $tipo = sanitize_text_field($atts['tipo']);
 
             $where = "WHERE 1=1";
             $params = [];
 
             // Filtro por estado publicado si existe la columna
-            $columns = $wpdb->get_col("DESCRIBE {$tabla}");
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla sanitizada
+            $columns = $wpdb->get_col("DESCRIBE `{$tabla}`");
             if (in_array('estado', $columns)) {
                 $where .= " AND estado = %s";
                 $params[] = 'publicado';
@@ -3225,9 +3228,11 @@ class Flavor_Module_Shortcodes {
                 $order = "ORDER BY created_at DESC";
             }
 
-            $query = "SELECT * FROM {$tabla} {$where} {$order} LIMIT {$limite}";
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $tabla sanitizada, $limite validado, $order interno
+            $query = "SELECT * FROM `{$tabla}` {$where} {$order} LIMIT {$limite}";
 
             if (!empty($params)) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- query construida con placeholders
                 $query = $wpdb->prepare($query, ...$params);
             }
 
