@@ -3,10 +3,11 @@
  * Breadcrumbs para el Admin de WordPress
  *
  * Muestra navegación de migas de pan en las páginas de edición
- * de los custom post types de Flavor.
+ * de los custom post types de Flavor y en las páginas del admin shell.
  *
  * @package FlavorPlatform
  * @since 3.3.0
+ * @since 3.5.2 Añadido soporte para páginas del admin shell con jerarquía de módulos
  */
 
 if (!defined('ABSPATH')) {
@@ -26,6 +27,13 @@ class Flavor_Admin_Breadcrumbs {
     private $post_type_modules = [];
 
     /**
+     * Cache de información de páginas
+     *
+     * @var array
+     */
+    private $page_info_cache = [];
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -42,6 +50,8 @@ class Flavor_Admin_Breadcrumbs {
         $this->init_post_type_modules();
         add_action('edit_form_top', [$this, 'render_breadcrumbs']);
         add_action('admin_head', [$this, 'add_styles']);
+        // Breadcrumbs para páginas del shell
+        add_action('in_admin_header', [$this, 'render_shell_breadcrumbs'], 100);
     }
 
     /**
@@ -469,7 +479,515 @@ class Flavor_Admin_Breadcrumbs {
             body.flavor-dark-mode .flavor-admin-breadcrumbs__title {
                 color: #94a3b8;
             }
+
+            /* ============================================
+               Breadcrumbs del Shell (páginas admin)
+               ============================================ */
+            .fls-breadcrumbs {
+                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                border-bottom: 1px solid #e2e8f0;
+                padding: 10px 20px;
+                margin-left: 260px;
+                font-size: 13px;
+                position: relative;
+                z-index: 99;
+            }
+
+            .fls-shell--collapsed ~ .fls-breadcrumbs,
+            .fls-shell--collapsed + #wpcontent .fls-breadcrumbs {
+                margin-left: 60px;
+            }
+
+            body.fls-shell-active .fls-breadcrumbs {
+                margin-left: 260px;
+            }
+
+            body.fls-shell-active.fls-shell--collapsed .fls-breadcrumbs {
+                margin-left: 60px;
+            }
+
+            .fls-breadcrumbs__list {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 4px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .fls-breadcrumbs__item {
+                display: flex;
+                align-items: center;
+            }
+
+            .fls-breadcrumbs__link {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: #64748b;
+                text-decoration: none;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: all 0.15s ease;
+            }
+
+            .fls-breadcrumbs__link:hover {
+                background: #e2e8f0;
+                color: #334155;
+            }
+
+            .fls-breadcrumbs__icon {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                opacity: 0.7;
+            }
+
+            .fls-breadcrumbs__separator {
+                color: #cbd5e1;
+                display: flex;
+                align-items: center;
+                margin: 0 2px;
+            }
+
+            .fls-breadcrumbs__separator svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .fls-breadcrumbs__current {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: #1e293b;
+                font-weight: 500;
+                padding: 4px 8px;
+            }
+
+            .fls-breadcrumbs__item--current .fls-breadcrumbs__icon {
+                opacity: 1;
+                color: var(--crumb-color, #3b82f6);
+            }
+
+            /* Dark mode para shell breadcrumbs */
+            .fls-shell-dark .fls-breadcrumbs,
+            body.flavor-dark-mode .fls-breadcrumbs {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-color: #334155;
+            }
+
+            .fls-shell-dark .fls-breadcrumbs__link,
+            body.flavor-dark-mode .fls-breadcrumbs__link {
+                color: #94a3b8;
+            }
+
+            .fls-shell-dark .fls-breadcrumbs__link:hover,
+            body.flavor-dark-mode .fls-breadcrumbs__link:hover {
+                background: #334155;
+                color: #e2e8f0;
+            }
+
+            .fls-shell-dark .fls-breadcrumbs__separator,
+            body.flavor-dark-mode .fls-breadcrumbs__separator {
+                color: #475569;
+            }
+
+            .fls-shell-dark .fls-breadcrumbs__current,
+            body.flavor-dark-mode .fls-breadcrumbs__current {
+                color: #f1f5f9;
+            }
+
+            /* Responsive */
+            @media (max-width: 782px) {
+                .fls-breadcrumbs {
+                    margin-left: 0;
+                    padding: 8px 12px;
+                }
+
+                .fls-breadcrumbs__text {
+                    display: none;
+                }
+
+                .fls-breadcrumbs__item--current .fls-breadcrumbs__text {
+                    display: inline;
+                }
+            }
         </style>
         <?php
     }
+
+    /**
+     * Renderizar breadcrumbs para páginas del shell
+     */
+    public function render_shell_breadcrumbs() {
+        if (!$this->is_shell_page() || !$this->is_shell_active()) {
+            return;
+        }
+
+        $breadcrumbs = $this->build_shell_breadcrumbs();
+
+        if (empty($breadcrumbs)) {
+            return;
+        }
+
+        ?>
+        <nav class="fls-breadcrumbs" aria-label="<?php esc_attr_e('Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <ol class="fls-breadcrumbs__list">
+                <?php
+                $count = count($breadcrumbs);
+                $index = 0;
+
+                foreach ($breadcrumbs as $crumb) :
+                    $index++;
+                    $is_last = $index === $count;
+                    $is_current = !empty($crumb['current']);
+                    ?>
+                    <li class="fls-breadcrumbs__item<?php echo $is_current ? ' fls-breadcrumbs__item--current' : ''; ?>">
+                        <?php if (!empty($crumb['url']) && !$is_current) : ?>
+                            <a href="<?php echo esc_url($crumb['url']); ?>" class="fls-breadcrumbs__link">
+                                <?php if (!empty($crumb['icon'])) : ?>
+                                    <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
+                                <?php endif; ?>
+                                <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
+                            </a>
+                        <?php else : ?>
+                            <span class="fls-breadcrumbs__current"
+                                <?php if (!empty($crumb['color'])) : ?>
+                                    style="--crumb-color: <?php echo esc_attr($crumb['color']); ?>"
+                                <?php endif; ?>
+                            >
+                                <?php if (!empty($crumb['icon'])) : ?>
+                                    <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
+                                <?php endif; ?>
+                                <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if (!$is_last) : ?>
+                            <span class="fls-breadcrumbs__separator" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+        </nav>
+        <?php
+    }
+
+    /**
+     * Verificar si estamos en una página del shell
+     *
+     * @return bool
+     */
+    private function is_shell_page() {
+        $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        if (empty($page)) {
+            return false;
+        }
+
+        // Prefijos conocidos de Flavor
+        $flavor_prefixes = ['flavor-', 'gc-'];
+        foreach ($flavor_prefixes as $prefix) {
+            if (strpos($page, $prefix) === 0) {
+                return true;
+            }
+        }
+
+        // Slugs de módulos conocidos
+        $module_slugs = [
+            'socios', 'comunidades', 'colectivos', 'foros', 'eventos',
+            'cursos', 'talleres', 'reservas', 'tramites', 'incidencias',
+            'marketplace', 'banco-tiempo', 'contabilidad', 'huertos',
+            'espacios', 'biblioteca', 'carpooling', 'reciclaje', 'compostaje',
+            'bicicletas', 'multimedia', 'podcast', 'radio', 'campanias',
+            'encuestas', 'chat-grupos', 'chat-interno', 'clientes', 'facturas',
+            'empresas', 'crowdfunding', 'presupuestos', 'transparencia',
+        ];
+
+        foreach ($module_slugs as $slug) {
+            if (strpos($page, $slug) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verificar si el shell está activo
+     *
+     * @return bool
+     */
+    private function is_shell_active() {
+        if (!class_exists('Flavor_Admin_Shell')) {
+            return false;
+        }
+
+        $shell = Flavor_Admin_Shell::get_instance();
+        return $shell->should_show_shell();
+    }
+
+    /**
+     * Construir breadcrumbs para páginas del shell
+     *
+     * @return array
+     */
+    private function build_shell_breadcrumbs() {
+        $breadcrumbs = [];
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        if (empty($current_page)) {
+            return $breadcrumbs;
+        }
+
+        // Si es el dashboard principal, no mostrar breadcrumbs
+        if ($current_page === 'flavor-dashboard') {
+            return $breadcrumbs;
+        }
+
+        // Siempre empezar con Dashboard
+        $breadcrumbs[] = [
+            'label' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'url'   => admin_url('admin.php?page=flavor-dashboard'),
+            'icon'  => 'dashicons-dashboard',
+        ];
+
+        // Obtener información de la página actual
+        $page_info = $this->get_shell_page_info($current_page);
+
+        // Añadir categoría si existe
+        if (!empty($page_info['category'])) {
+            $category_crumb = $this->get_category_breadcrumb($page_info['category']);
+            if ($category_crumb) {
+                $breadcrumbs[] = $category_crumb;
+            }
+        }
+
+        // Añadir módulo padre si existe
+        if (!empty($page_info['parent_module'])) {
+            $parent_crumb = $this->get_module_breadcrumb($page_info['parent_module']);
+            if ($parent_crumb) {
+                $breadcrumbs[] = $parent_crumb;
+            }
+        }
+
+        // Añadir página actual
+        $breadcrumbs[] = [
+            'label'   => $page_info['label'],
+            'url'     => null,
+            'icon'    => $page_info['icon'],
+            'color'   => $page_info['color'] ?? null,
+            'current' => true,
+        ];
+
+        return $breadcrumbs;
+    }
+
+    /**
+     * Obtener información de una página del shell
+     *
+     * @param string $page_slug
+     * @return array
+     */
+    private function get_shell_page_info($page_slug) {
+        if (isset($this->page_info_cache[$page_slug])) {
+            return $this->page_info_cache[$page_slug];
+        }
+
+        $info = [
+            'slug'          => $page_slug,
+            'label'         => $this->format_page_label($page_slug),
+            'icon'          => 'dashicons-admin-page',
+            'color'         => null,
+            'category'      => null,
+            'module_id'     => null,
+            'parent_module' => null,
+        ];
+
+        // Extraer módulo del slug
+        $module_id = $this->extract_module_from_slug($page_slug);
+
+        // Usar jerarquía de módulos si está disponible
+        if ($module_id && function_exists('flavor_module_hierarchy')) {
+            $hierarchy = flavor_module_hierarchy();
+            $module_info = $hierarchy->get_module_info($module_id);
+
+            if ($module_info) {
+                $info['module_id'] = $module_id;
+                $info['category'] = $module_info['category_id'];
+                $info['parent_module'] = $module_info['parent'];
+                $info['icon'] = $module_info['category_icon'];
+                $info['color'] = $module_info['category_color'];
+            }
+        }
+
+        // Obtener información del shell
+        if (class_exists('Flavor_Admin_Shell')) {
+            $shell = Flavor_Admin_Shell::get_instance();
+            $navigation = $shell->get_navigation_structure();
+
+            foreach ($navigation as $section_id => $section) {
+                if (empty($section['items'])) {
+                    continue;
+                }
+
+                foreach ($section['items'] as $item) {
+                    if (isset($item['slug']) && $item['slug'] === $page_slug) {
+                        $info['label'] = $item['label'] ?? $info['label'];
+                        $info['icon'] = $item['icon'] ?? $info['icon'];
+                        if (empty($info['category'])) {
+                            $info['category'] = $section_id;
+                        }
+                        break 2;
+                    }
+
+                    // Buscar en subpáginas
+                    if (!empty($item['subpages'])) {
+                        foreach ($item['subpages'] as $subpage) {
+                            if (isset($subpage['slug']) && $subpage['slug'] === $page_slug) {
+                                $info['label'] = $subpage['label'] ?? $info['label'];
+                                $info['icon'] = $subpage['icon'] ?? $item['icon'] ?? $info['icon'];
+                                $info['parent_slug'] = $item['slug'];
+                                $info['parent_label'] = $item['label'];
+                                if (empty($info['category'])) {
+                                    $info['category'] = $section_id;
+                                }
+                                break 3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->page_info_cache[$page_slug] = $info;
+        return $info;
+    }
+
+    /**
+     * Extraer ID de módulo de un slug de página
+     *
+     * @param string $page_slug
+     * @return string|null
+     */
+    private function extract_module_from_slug($page_slug) {
+        $patterns = [
+            '/^([a-z-]+)-dashboard$/',
+            '/^([a-z-]+)-settings$/',
+            '/^([a-z-]+)-config$/',
+            '/^([a-z-]+)-list$/',
+            '/^([a-z-]+)-nuevo$/',
+            '/^([a-z-]+)-add$/',
+            '/^gc-([a-z-]+)$/',
+            '/^flavor-([a-z-]+)$/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $page_slug, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return $page_slug;
+    }
+
+    /**
+     * Obtener breadcrumb de categoría
+     *
+     * @param string $category_id
+     * @return array|null
+     */
+    private function get_category_breadcrumb($category_id) {
+        // Intentar obtener de jerarquía de módulos
+        if (function_exists('flavor_module_hierarchy')) {
+            $hierarchy = flavor_module_hierarchy();
+            $category = $hierarchy->get_category($category_id);
+
+            if ($category) {
+                return [
+                    'label' => $category['title'],
+                    'url'   => null,
+                    'icon'  => $category['icon'] ?? 'dashicons-category',
+                    'color' => $category['color'] ?? null,
+                ];
+            }
+        }
+
+        // Fallback: obtener de navegación del shell
+        if (class_exists('Flavor_Admin_Shell')) {
+            $shell = Flavor_Admin_Shell::get_instance();
+            $navigation = $shell->get_navigation_structure();
+
+            if (isset($navigation[$category_id])) {
+                return [
+                    'label' => $navigation[$category_id]['label'] ?? ucfirst($category_id),
+                    'url'   => null,
+                    'icon'  => $navigation[$category_id]['icon'] ?? 'dashicons-category',
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtener breadcrumb de módulo padre
+     *
+     * @param string $module_id
+     * @return array|null
+     */
+    private function get_module_breadcrumb($module_id) {
+        $parent_dashboard = $module_id . '-dashboard';
+        $parent_info = $this->get_shell_page_info($parent_dashboard);
+
+        if ($parent_info) {
+            return [
+                'label' => $parent_info['label'],
+                'url'   => admin_url('admin.php?page=' . $parent_dashboard),
+                'icon'  => $parent_info['icon'],
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Formatear label de página
+     *
+     * @param string $slug
+     * @return string
+     */
+    private function format_page_label($slug) {
+        $label = preg_replace('/^(flavor-|gc-)/', '', $slug);
+        $label = preg_replace('/(-dashboard|-settings|-config|-list)$/', '', $label);
+        $label = str_replace(['-', '_'], ' ', $label);
+        $label = ucwords($label);
+        return $label;
+    }
+
+    /**
+     * Obtener breadcrumbs como array (para uso programático)
+     *
+     * @return array
+     */
+    public function get_breadcrumbs() {
+        if ($this->is_shell_page() && $this->is_shell_active()) {
+            return $this->build_shell_breadcrumbs();
+        }
+        return [];
+    }
+}
+
+/**
+ * Función helper para obtener la instancia
+ *
+ * @return Flavor_Admin_Breadcrumbs
+ */
+function flavor_admin_breadcrumbs() {
+    return Flavor_Admin_Breadcrumbs::get_instance();
 }
