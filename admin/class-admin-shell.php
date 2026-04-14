@@ -156,6 +156,83 @@ class Flavor_Admin_Shell {
     const USER_META_KEY = 'flavor_admin_shell_disabled';
 
     /**
+     * Mapeo de slugs de dashboard a módulos requeridos
+     * Si el módulo no está activo, el item no se muestra
+     */
+    const SLUG_TO_MODULE = [
+        // Comunidad
+        'socios-dashboard'              => 'socios',
+        'flavor-colectivos-dashboard'   => 'colectivos',
+        'comunidades-dashboard'         => 'comunidades',
+        'foros-dashboard'               => 'foros',
+        'flavor-red-social-dashboard'   => 'red-social',
+        // Economía
+        'gc-dashboard'                  => 'grupos-consumo',
+        'marketplace-dashboard'         => 'marketplace',
+        'banco-tiempo-dashboard'        => 'banco-tiempo',
+        'contabilidad-dashboard'        => 'contabilidad',
+        'economia-don-dashboard'        => 'economia-don',
+        // Empresarial
+        'empresas-dashboard'            => 'empresas',
+        'clientes-dashboard'            => 'clientes',
+        'facturas-dashboard'            => 'facturas',
+        'presupuestos-dashboard'        => 'presupuestos-clientes',
+        'fichaje-dashboard'             => 'fichaje',
+        'flavor-woocommerce-dashboard'  => 'woocommerce',
+        'flavor-crowdfunding'           => 'crowdfunding',
+        'themacle-dashboard'            => 'themacle',
+        'trading-ia-dashboard'          => 'trading-ia',
+        'dex-solana-dashboard'          => 'dex-solana',
+        // Actividades
+        'eventos-dashboard'             => 'eventos',
+        'cursos-dashboard'              => 'cursos',
+        'talleres-dashboard'            => 'talleres',
+        'reservas-dashboard'            => 'reservas',
+        // Servicios
+        'tramites-dashboard'            => 'tramites',
+        'incidencias-dashboard'         => 'incidencias',
+        'ayuda-dashboard'               => 'ayuda-vecinal',
+        'participacion-dashboard'       => 'participacion',
+        'transparencia-dashboard'       => 'transparencia',
+        'avisos-dashboard'              => 'avisos-municipales',
+        'denuncias-dashboard'           => 'denuncias',
+        'documentos-dashboard'          => 'documentacion-legal',
+        // Recursos
+        'huertos-dashboard'             => 'huertos-urbanos',
+        'espacios-dashboard'            => 'espacios-comunes',
+        'biblioteca-dashboard'          => 'biblioteca',
+        'carpooling-dashboard'          => 'carpooling',
+        'parkings-dashboard'            => 'parkings',
+        'actores-dashboard'             => 'mapa-actores',
+        'bares-dashboard'               => 'bares',
+        'recetas-dashboard'             => 'recetas',
+        // Sostenibilidad
+        'reciclaje-dashboard'           => 'reciclaje',
+        'compostaje-dashboard'          => 'compostaje',
+        'flavor-energia-dashboard'      => 'energia',
+        'bicicletas-dashboard'          => 'bicicletas-compartidas',
+        'biodiversidad-dashboard'       => 'biodiversidad',
+        'huella-ecologica-dashboard'    => 'huella-ecologica',
+        'saberes-dashboard'             => 'saberes',
+        'suficiencia-dashboard'         => 'suficiencia',
+        'circulos-cuidados-dashboard'   => 'circulos-cuidados',
+        'trabajo-digno-dashboard'       => 'trabajo-digno',
+        'justicia-restaurativa-dashboard' => 'justicia-restaurativa',
+        // Comunicación
+        'multimedia-dashboard'          => 'multimedia',
+        'flavor-radio-dashboard'        => 'radio',
+        'podcast-dashboard'             => 'podcast',
+        'campanias-dashboard'           => 'campanias',
+        'email-marketing-dashboard'     => 'email-marketing',
+        'encuestas-dashboard'           => 'encuestas',
+        // Chat
+        'chat-grupos-dashboard'         => 'chat-grupos',
+        'chat-interno-dashboard'        => 'chat-interno',
+        // Publicidad
+        'advertising-dashboard'         => 'advertising',
+    ];
+
+    /**
      * Obtener instancia singleton
      */
     public static function get_instance() {
@@ -738,21 +815,30 @@ class Flavor_Admin_Shell {
         ];
 
         // Obtener el menu manager para filtrar según vista
-        if (!class_exists('Flavor_Admin_Menu_Manager')) {
-            return $this->inject_subpages_and_badges($estructura_completa);
-        }
+        $menu_manager = class_exists('Flavor_Admin_Menu_Manager')
+            ? Flavor_Admin_Menu_Manager::get_instance()
+            : null;
 
-        $menu_manager = Flavor_Admin_Menu_Manager::get_instance();
+        // Obtener módulos activos para filtrar
+        $modulos_activos = $this->get_active_modules();
+
         $estructura_filtrada = [];
 
         foreach ($estructura_completa as $seccion_id => $seccion) {
             $items_filtrados = [];
 
             foreach ($seccion['items'] as $item) {
-                // Verificar si el menú es visible en la vista actual
-                if ($menu_manager->menu_visible_en_vista($item['slug'])) {
-                    $items_filtrados[] = $item;
+                // 1. Verificar si el módulo requerido está activo
+                if (!$this->is_module_item_visible($item['slug'], $modulos_activos)) {
+                    continue;
                 }
+
+                // 2. Verificar si el menú es visible en la vista actual
+                if ($menu_manager && !$menu_manager->menu_visible_en_vista($item['slug'])) {
+                    continue;
+                }
+
+                $items_filtrados[] = $item;
             }
 
             // Solo incluir sección si tiene items visibles
@@ -929,6 +1015,43 @@ class Flavor_Admin_Shell {
         }
 
         wp_send_json_error(['message' => __('Acción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+    }
+
+    /**
+     * Obtiene la lista de módulos activos
+     *
+     * @return array Lista de IDs de módulos activos
+     */
+    private function get_active_modules() {
+        static $modulos_activos = null;
+
+        if ($modulos_activos === null) {
+            $modulos_activos = get_option('flavor_active_modules', []);
+            if (!is_array($modulos_activos)) {
+                $modulos_activos = [];
+            }
+        }
+
+        return $modulos_activos;
+    }
+
+    /**
+     * Verifica si un item del menú debe mostrarse según módulos activos
+     *
+     * @param string $slug            Slug del item
+     * @param array  $modulos_activos Lista de módulos activos
+     * @return bool True si debe mostrarse
+     */
+    private function is_module_item_visible($slug, $modulos_activos) {
+        // Si no hay mapeo para este slug, siempre es visible (items core)
+        if (!isset(self::SLUG_TO_MODULE[$slug])) {
+            return true;
+        }
+
+        $modulo_requerido = self::SLUG_TO_MODULE[$slug];
+
+        // Verificar si el módulo está activo
+        return in_array($modulo_requerido, $modulos_activos, true);
     }
 }
 

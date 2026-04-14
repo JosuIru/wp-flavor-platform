@@ -48,7 +48,7 @@
         "test:coverage:clover": "XDEBUG_MODE=coverage phpunit --testsuite unit --coverage-clover tests/coverage/clover.xml",
         "test:benchmark": "phpunit -c tests/phpunit-benchmark.xml.dist",
         "test:install": "tools/install-wp-tests.sh wordpress_test root root localhost latest",
-        "analyze": "phpstan analyse -c config/phpstan.neon --memory-limit=512M",
+        "analyze": "phpstan analyse -c config/phpstan.neon --memory-limit=1G",
         "check": [
             "@lint",
             "@test:unit"
