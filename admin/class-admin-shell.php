@@ -606,8 +606,12 @@ class Flavor_Admin_Shell {
         $this->current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         $this->detect_active_module();
 
-        // Estructura completa de navegación
+        // Estructura consolidada de navegación (8 secciones)
+        // Reducida de 16 a 8 secciones para mejor UX
         $estructura_completa = [
+            // =================================================================
+            // 1. MI APP - Dashboard principal y configuración general
+            // =================================================================
             'mi_app' => [
                 'label' => __('Mi App', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-home',
@@ -621,32 +625,41 @@ class Flavor_Admin_Shell {
                     ['slug' => 'flavor-landings', 'url' => 'edit.php?post_type=flavor_landing', 'label' => __('Editor Visual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-edit'],
                 ],
             ],
-            'mod_comunidad' => [
+
+            // =================================================================
+            // 2. COMUNIDAD - Personas, grupos y comunicación social
+            // =================================================================
+            'comunidad' => [
                 'label' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
                 'items' => [
+                    // Miembros y grupos
                     ['slug' => 'socios-dashboard', 'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-id-alt'],
                     ['slug' => 'flavor-colectivos-dashboard', 'label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-networking'],
                     ['slug' => 'comunidades-dashboard', 'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-multisite'],
+                    // Interacción social
                     ['slug' => 'foros-dashboard', 'label' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-chat'],
                     ['slug' => 'flavor-red-social-dashboard', 'label' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-share'],
+                    // Chat (fusionado desde mod_chat)
+                    ['slug' => 'chat-grupos-dashboard', 'label' => __('Chat Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                    ['slug' => 'chat-interno-dashboard', 'label' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-testimonial'],
                 ],
             ],
-            'mod_economia' => [
+
+            // =================================================================
+            // 3. ECONOMÍA - Marketplace, empresas, finanzas
+            // (Fusiona mod_economia + mod_empresarial)
+            // =================================================================
+            'economia' => [
                 'label' => __('Economía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-money-alt',
                 'items' => [
+                    // Economía social
                     ['slug' => 'gc-dashboard', 'label' => __('Grupos Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-cart'],
                     ['slug' => 'marketplace-dashboard', 'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store'],
                     ['slug' => 'banco-tiempo-dashboard', 'label' => __('Banco Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clock'],
-                    ['slug' => 'contabilidad-dashboard', 'label' => __('Contabilidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-pie'],
                     ['slug' => 'economia-don-dashboard', 'label' => __('Economía Don', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart'],
-                ],
-            ],
-            'mod_empresarial' => [
-                'label' => __('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-building',
-                'items' => [
+                    // Empresarial
                     [
                         'slug' => 'empresas-dashboard',
                         'label' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -660,15 +673,21 @@ class Flavor_Admin_Shell {
                     ['slug' => 'clientes-dashboard', 'label' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-businessman'],
                     ['slug' => 'facturas-dashboard', 'label' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-media-text'],
                     ['slug' => 'presupuestos-dashboard', 'label' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-pie'],
-                    ['slug' => 'fichaje-dashboard', 'label' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clock'],
+                    ['slug' => 'contabilidad-dashboard', 'label' => __('Contabilidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-pie'],
+                    // Integraciones comerciales
                     ['slug' => 'flavor-woocommerce-dashboard', 'label' => __('WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-cart'],
                     ['slug' => 'flavor-crowdfunding', 'label' => __('Crowdfunding', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money-alt'],
+                    // Avanzado
                     ['slug' => 'themacle-dashboard', 'label' => __('Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-art'],
                     ['slug' => 'trading-ia-dashboard', 'label' => __('Trading IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-line'],
                     ['slug' => 'dex-solana-dashboard', 'label' => __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money'],
                 ],
             ],
-            'mod_actividades' => [
+
+            // =================================================================
+            // 4. ACTIVIDADES - Eventos, formación, reservas
+            // =================================================================
+            'actividades' => [
                 'label' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar-alt',
                 'items' => [
@@ -676,12 +695,19 @@ class Flavor_Admin_Shell {
                     ['slug' => 'cursos-dashboard', 'label' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-welcome-learn-more'],
                     ['slug' => 'talleres-dashboard', 'label' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-hammer'],
                     ['slug' => 'reservas-dashboard', 'label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-tickets-alt'],
+                    ['slug' => 'fichaje-dashboard', 'label' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clock'],
                 ],
             ],
-            'mod_servicios' => [
+
+            // =================================================================
+            // 5. SERVICIOS - Trámites, participación, recursos
+            // (Fusiona mod_servicios + mod_recursos)
+            // =================================================================
+            'servicios' => [
                 'label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-tools',
                 'items' => [
+                    // Gestión ciudadana
                     ['slug' => 'tramites-dashboard', 'label' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clipboard'],
                     ['slug' => 'incidencias-dashboard', 'label' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning'],
                     ['slug' => 'ayuda-dashboard', 'label' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-sos'],
@@ -690,12 +716,7 @@ class Flavor_Admin_Shell {
                     ['slug' => 'avisos-dashboard', 'label' => __('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone'],
                     ['slug' => 'denuncias-dashboard', 'label' => __('Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-flag'],
                     ['slug' => 'documentos-dashboard', 'label' => __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-media-document'],
-                ],
-            ],
-            'mod_recursos' => [
-                'label' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-building',
-                'items' => [
+                    // Recursos compartidos
                     ['slug' => 'huertos-dashboard', 'label' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot'],
                     ['slug' => 'espacios-dashboard', 'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-building'],
                     ['slug' => 'biblioteca-dashboard', 'label' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book-alt'],
@@ -706,27 +727,29 @@ class Flavor_Admin_Shell {
                     ['slug' => 'recetas-dashboard', 'label' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot'],
                 ],
             ],
-            'mod_sostenibilidad' => [
+
+            // =================================================================
+            // 6. SOSTENIBILIDAD - Ecología y comunicación
+            // (Fusiona mod_sostenibilidad + mod_comunicacion)
+            // =================================================================
+            'sostenibilidad' => [
                 'label' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-palmtree',
                 'items' => [
+                    // Ecología
                     ['slug' => 'reciclaje-dashboard', 'label' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-image-rotate'],
                     ['slug' => 'compostaje-dashboard', 'label' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot'],
                     ['slug' => 'flavor-energia-dashboard', 'label' => __('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lightbulb'],
                     ['slug' => 'bicicletas-dashboard', 'label' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-performance'],
                     ['slug' => 'biodiversidad-dashboard', 'label' => __('Biodiversidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-palmtree'],
                     ['slug' => 'huella-ecologica-dashboard', 'label' => __('Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-line'],
+                    // Social/Cuidados
                     ['slug' => 'saberes-dashboard', 'label' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-welcome-learn-more'],
                     ['slug' => 'suficiencia-dashboard', 'label' => __('Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart'],
                     ['slug' => 'circulos-cuidados-dashboard', 'label' => __('Círculos Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
                     ['slug' => 'trabajo-digno-dashboard', 'label' => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-businessman'],
                     ['slug' => 'justicia-restaurativa-dashboard', 'label' => __('Justicia Rest.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
-                ],
-            ],
-            'mod_comunicacion' => [
-                'label' => __('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-megaphone',
-                'items' => [
+                    // Comunicación (fusionado)
                     ['slug' => 'multimedia-dashboard', 'label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-video'],
                     ['slug' => 'flavor-radio-dashboard', 'label' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-controls-volumeon'],
                     ['slug' => 'podcast-dashboard', 'label' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-microphone'],
@@ -735,46 +758,46 @@ class Flavor_Admin_Shell {
                     ['slug' => 'encuestas-dashboard', 'label' => __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-forms'],
                 ],
             ],
-            'mod_chat' => [
-                'label' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-format-chat',
+
+            // =================================================================
+            // 7. CONFIGURACIÓN - Apps, extensiones, IA, administración
+            // (Fusiona chat_ia + apps + extensiones + administracion)
+            // =================================================================
+            'configuracion' => [
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'icon' => 'dashicons-admin-settings',
                 'items' => [
-                    ['slug' => 'chat-grupos-dashboard', 'label' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
-                    ['slug' => 'chat-interno-dashboard', 'label' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-testimonial'],
-                ],
-            ],
-            'chat_ia' => [
-                'label' => __('Asistente IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-admin-comments',
-                'items' => [
-                    ['slug' => 'flavor-platform-settings', 'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-settings'],
-                    ['slug' => 'flavor-platform-escalations', 'label' => __('Escalados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning'],
-                ],
-            ],
-            'apps' => [
-                'label' => __('Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-smartphone',
-                'items' => [
+                    // Asistente IA
+                    ['slug' => 'flavor-platform-settings', 'label' => __('Asistente IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-comments'],
+                    ['slug' => 'flavor-platform-escalations', 'label' => __('Escalados IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning'],
+                    // Apps
                     ['slug' => 'flavor-platform-apps', 'label' => __('Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-smartphone'],
                     ['slug' => 'flavor-app-generator', 'label' => __('Generador Apps', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-customizer'],
                     ['slug' => 'flavor-platform-deep-links', 'label' => __('Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-links'],
                     ['slug' => 'flavor-platform-network', 'label' => __('Red', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-networking'],
-                ],
-            ],
-            'extensiones' => [
-                'label' => __('Extensiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-plugins-checked',
-                'items' => [
+                    // Extensiones
                     ['slug' => 'flavor-addons', 'label' => __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-plugins'],
-                    ['slug' => 'flavor-marketplace', 'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store'],
+                    ['slug' => 'flavor-marketplace', 'label' => __('Marketplace Addons', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store'],
                     ['slug' => 'flavor-newsletter', 'label' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-email'],
                     ['slug' => 'flavor-platform-license', 'label' => __('Licencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-network'],
+                    // Administración
+                    ['slug' => 'flavor-moderation', 'label' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
+                    ['slug' => 'advertising-dashboard', 'label' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone'],
+                    ['slug' => 'flavor-shell-views', 'label' => __('Vistas Shell', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-visibility'],
+                    ['slug' => 'flavor-integraciones-posts', 'label' => __('Integraciones Posts', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-post'],
+                    ['slug' => 'flavor-integraciones-config', 'label' => __('Config. Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-settings'],
                 ],
             ],
+
+            // =================================================================
+            // 8. HERRAMIENTAS - Diagnóstico, utilidades, ayuda
+            // (Fusiona herramientas + ayuda)
+            // =================================================================
             'herramientas' => [
                 'label' => __('Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-tools',
                 'items' => [
+                    // Utilidades
                     ['slug' => 'flavor-ai-tools', 'label' => __('Herramientas IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lightbulb'],
                     ['slug' => 'flavor-platform-demo-data', 'label' => __('Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-database-import'],
                     ['slug' => 'flavor-platform-export-import', 'label' => __('Export/Import', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-migrate'],
@@ -789,23 +812,7 @@ class Flavor_Admin_Shell {
                         'icon' => 'dashicons-smartphone',
                         'url' => 'admin.php?page=flavor-platform-apps&tab=tools',
                     ],
-                ],
-            ],
-            'administracion' => [
-                'label' => __('Administración', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-admin-settings',
-                'items' => [
-                    ['slug' => 'flavor-moderation', 'label' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
-                    ['slug' => 'advertising-dashboard', 'label' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone'],
-                    ['slug' => 'flavor-shell-views', 'label' => __('Vistas Shell', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-visibility'],
-                    ['slug' => 'flavor-integraciones-posts', 'label' => __('Integraciones Posts', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-post'],
-                    ['slug' => 'flavor-integraciones-config', 'label' => __('Config. Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-settings'],
-                ],
-            ],
-            'ayuda' => [
-                'label' => __('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'icon' => 'dashicons-editor-help',
-                'items' => [
+                    // Ayuda (fusionado)
                     ['slug' => 'flavor-platform-docs', 'label' => __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book'],
                     ['slug' => 'flavor-tours', 'label' => __('Tours', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location'],
                 ],
