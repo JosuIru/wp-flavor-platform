@@ -117,6 +117,9 @@ final class Flavor_Bootstrap_Dependencies {
         require_once FLAVOR_PLATFORM_PATH . 'includes/modules/interface-chat-module.php';
         require_once FLAVOR_PLATFORM_PATH . 'includes/modules/class-module-loader.php';
 
+        // Jerarquía de módulos (categorías y relaciones parent/child)
+        require_once FLAVOR_PLATFORM_PATH . 'includes/class-module-hierarchy.php';
+
         // Traits para módulos
         require_once FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-notifications.php';
         require_once FLAVOR_PLATFORM_PATH . 'includes/modules/trait-module-frontend-actions.php';
