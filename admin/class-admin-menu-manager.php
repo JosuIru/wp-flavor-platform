@@ -15,32 +15,54 @@ if (!defined('ABSPATH')) {
 }
 
 class Flavor_Admin_Menu_Manager {
-    const PAGE_CHAT_SETTINGS = 'flavor-platform-settings';
-    const PAGE_CHAT_SETTINGS_LEGACY = 'flavor-chat-config';
+
+    // =========================================================================
+    // SLUGS CANÓNICOS - Usar estos siempre
+    // =========================================================================
+    const PAGE_CHAT_SETTINGS  = 'flavor-platform-settings';
     const PAGE_CHAT_ESCALATIONS = 'flavor-platform-escalations';
+    const PAGE_APPS_CONFIG    = 'flavor-platform-apps';
+    const PAGE_DEEP_LINKS     = 'flavor-platform-deep-links';
+    const PAGE_NETWORK        = 'flavor-platform-network';
+    const PAGE_APP_MENU       = 'flavor-platform-app-menu';
+    const PAGE_VIEWS_CONFIG   = 'flavor-platform-views';
+    const PAGE_EXPORT_IMPORT  = 'flavor-platform-export-import';
+    const PAGE_HEALTH_CHECK   = 'flavor-platform-health-check';
+    const PAGE_ACTIVITY_LOG   = 'flavor-platform-activity-log';
+    const PAGE_DOCUMENTATION  = 'flavor-platform-docs';
+    const PAGE_LICENSE        = 'flavor-platform-license';
+    const PAGE_DEMO_DATA      = 'flavor-platform-demo-data';
+
+    // =========================================================================
+    // SLUGS LEGACY - @deprecated Mantener solo para compatibilidad con bookmarks
+    // =========================================================================
+    /** @deprecated Use PAGE_CHAT_SETTINGS */
+    const PAGE_CHAT_SETTINGS_LEGACY = 'flavor-chat-config';
+    /** @deprecated Use PAGE_CHAT_ESCALATIONS */
     const PAGE_CHAT_ESCALATIONS_LEGACY = 'flavor-chat-ia-escalations';
-    const PAGE_APPS_CONFIG = 'flavor-platform-apps';
+    /** @deprecated Use PAGE_APPS_CONFIG */
     const PAGE_APPS_CONFIG_LEGACY = 'flavor-apps-config';
-    const PAGE_DEEP_LINKS = 'flavor-platform-deep-links';
+    /** @deprecated Use PAGE_DEEP_LINKS */
     const PAGE_DEEP_LINKS_LEGACY = 'flavor-deep-links';
-    const PAGE_NETWORK = 'flavor-platform-network';
+    /** @deprecated Use PAGE_NETWORK */
     const PAGE_NETWORK_LEGACY = 'flavor-network';
-    const PAGE_APP_MENU = 'flavor-platform-app-menu';
+    /** @deprecated Use PAGE_APP_MENU */
     const PAGE_APP_MENU_LEGACY = 'flavor-app-menu';
-    const PAGE_VIEWS_CONFIG = 'flavor-platform-views';
+    /** @deprecated Use PAGE_VIEWS_CONFIG */
     const PAGE_VIEWS_CONFIG_LEGACY = 'flavor-config-vistas';
-    const PAGE_EXPORT_IMPORT = 'flavor-platform-export-import';
+    /** @deprecated Use PAGE_EXPORT_IMPORT */
     const PAGE_EXPORT_IMPORT_LEGACY = 'flavor-export-import';
-    const PAGE_HEALTH_CHECK = 'flavor-platform-health-check';
+    /** @deprecated Use PAGE_HEALTH_CHECK */
     const PAGE_HEALTH_CHECK_LEGACY = 'flavor-health-check';
-    const PAGE_ACTIVITY_LOG = 'flavor-platform-activity-log';
+    /** @deprecated Use PAGE_ACTIVITY_LOG */
     const PAGE_ACTIVITY_LOG_LEGACY = 'flavor-activity-log';
-    const PAGE_DOCUMENTATION = 'flavor-platform-docs';
+    /** @deprecated Use PAGE_DOCUMENTATION */
     const PAGE_DOCUMENTATION_LEGACY = 'flavor-documentation';
-    const PAGE_LICENSE = 'flavor-platform-license';
+    /** @deprecated Use PAGE_LICENSE */
     const PAGE_LICENSE_LEGACY = 'flavor-license';
-    const PAGE_DEMO_DATA = 'flavor-platform-demo-data';
+    /** @deprecated Use PAGE_DEMO_DATA */
     const PAGE_DEMO_DATA_OLD = 'flavor-demo-data';
+    /** @deprecated Use PAGE_DEMO_DATA */
     const PAGE_DEMO_DATA_LEGACY = 'flavor-demo-data-legacy';
 
     /**
@@ -170,6 +192,76 @@ class Flavor_Admin_Menu_Manager {
             self::$instancia = new self();
         }
         return self::$instancia;
+    }
+
+    /**
+     * Obtiene la URL canónica de una página admin.
+     *
+     * Uso: Flavor_Admin_Menu_Manager::get_admin_url('settings')
+     *
+     * @param string $page Alias corto o slug completo
+     * @return string URL completa de la página admin
+     */
+    public static function get_admin_url($page) {
+        $slug = self::get_canonical_slug($page);
+        return admin_url('admin.php?page=' . $slug);
+    }
+
+    /**
+     * Obtiene el slug canónico de una página.
+     *
+     * @param string $page Alias corto o slug (legacy o canónico)
+     * @return string Slug canónico
+     */
+    public static function get_canonical_slug($page) {
+        // Aliases cortos para uso fácil
+        $short_aliases = [
+            'settings'     => self::PAGE_CHAT_SETTINGS,
+            'ia'           => self::PAGE_CHAT_SETTINGS,
+            'config'       => self::PAGE_CHAT_SETTINGS,
+            'escalations'  => self::PAGE_CHAT_ESCALATIONS,
+            'apps'         => self::PAGE_APPS_CONFIG,
+            'deep-links'   => self::PAGE_DEEP_LINKS,
+            'network'      => self::PAGE_NETWORK,
+            'app-menu'     => self::PAGE_APP_MENU,
+            'views'        => self::PAGE_VIEWS_CONFIG,
+            'vistas'       => self::PAGE_VIEWS_CONFIG,
+            'export'       => self::PAGE_EXPORT_IMPORT,
+            'import'       => self::PAGE_EXPORT_IMPORT,
+            'health'       => self::PAGE_HEALTH_CHECK,
+            'diagnostico'  => self::PAGE_HEALTH_CHECK,
+            'activity'     => self::PAGE_ACTIVITY_LOG,
+            'log'          => self::PAGE_ACTIVITY_LOG,
+            'docs'         => self::PAGE_DOCUMENTATION,
+            'license'      => self::PAGE_LICENSE,
+            'licencia'     => self::PAGE_LICENSE,
+            'demo'         => self::PAGE_DEMO_DATA,
+            'demo-data'    => self::PAGE_DEMO_DATA,
+        ];
+
+        if (isset($short_aliases[$page])) {
+            return $short_aliases[$page];
+        }
+
+        // Mapeo legacy → canónico
+        $legacy_map = [
+            self::PAGE_CHAT_SETTINGS_LEGACY    => self::PAGE_CHAT_SETTINGS,
+            self::PAGE_CHAT_ESCALATIONS_LEGACY => self::PAGE_CHAT_ESCALATIONS,
+            self::PAGE_APPS_CONFIG_LEGACY      => self::PAGE_APPS_CONFIG,
+            self::PAGE_DEEP_LINKS_LEGACY       => self::PAGE_DEEP_LINKS,
+            self::PAGE_NETWORK_LEGACY          => self::PAGE_NETWORK,
+            self::PAGE_APP_MENU_LEGACY         => self::PAGE_APP_MENU,
+            self::PAGE_VIEWS_CONFIG_LEGACY     => self::PAGE_VIEWS_CONFIG,
+            self::PAGE_EXPORT_IMPORT_LEGACY    => self::PAGE_EXPORT_IMPORT,
+            self::PAGE_HEALTH_CHECK_LEGACY     => self::PAGE_HEALTH_CHECK,
+            self::PAGE_ACTIVITY_LOG_LEGACY     => self::PAGE_ACTIVITY_LOG,
+            self::PAGE_DOCUMENTATION_LEGACY    => self::PAGE_DOCUMENTATION,
+            self::PAGE_LICENSE_LEGACY          => self::PAGE_LICENSE,
+            self::PAGE_DEMO_DATA_OLD           => self::PAGE_DEMO_DATA,
+            self::PAGE_DEMO_DATA_LEGACY        => self::PAGE_DEMO_DATA,
+        ];
+
+        return $legacy_map[$page] ?? $page;
     }
 
     /**
