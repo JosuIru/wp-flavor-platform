@@ -87,11 +87,32 @@ class Flavor_Settings_Hub {
 						'keywords'    => [ 'activar', 'desactivar', 'funcionalidades', 'features' ],
 					],
 					[
+						'title'       => __( 'Widgets Unificados', 'flavor-platform' ),
+						'description' => __( 'Dashboard de widgets personalizables', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-unified-dashboard' ),
+						'icon'        => 'dashicons-grid-view',
+						'keywords'    => [ 'widgets', 'dashboard', 'kpis', 'metricas' ],
+					],
+					[
+						'title'       => __( 'Crear Páginas', 'flavor-platform' ),
+						'description' => __( 'Generador de páginas del sitio', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-create-pages' ),
+						'icon'        => 'dashicons-admin-page',
+						'keywords'    => [ 'paginas', 'crear', 'generar', 'sitio' ],
+					],
+					[
 						'title'       => __( 'Licencia', 'flavor-platform' ),
 						'description' => __( 'Estado de la licencia y actualizaciones', 'flavor-platform' ),
 						'url'         => admin_url( 'admin.php?page=flavor-platform-license' ),
 						'icon'        => 'dashicons-admin-network',
 						'keywords'    => [ 'licencia', 'license', 'activar', 'pro', 'premium' ],
+					],
+					[
+						'title'       => __( 'Addons', 'flavor-platform' ),
+						'description' => __( 'Extensiones y plugins adicionales', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-addons' ),
+						'icon'        => 'dashicons-admin-plugins',
+						'keywords'    => [ 'addons', 'extensiones', 'plugins', 'marketplace' ],
 					],
 				],
 			],
@@ -276,6 +297,50 @@ class Flavor_Settings_Hub {
 					],
 				],
 			],
+			'moderation'    => [
+				'title'       => __( 'Moderación', 'flavor-platform' ),
+				'icon'        => 'dashicons-shield',
+				'description' => __( 'Moderación de contenido y usuarios', 'flavor-platform' ),
+				'color'       => '#dc2626',
+				'items'       => [
+					[
+						'title'       => __( 'Panel de Moderación', 'flavor-platform' ),
+						'description' => __( 'Revisar contenido reportado', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-moderation' ),
+						'icon'        => 'dashicons-shield',
+						'keywords'    => [ 'moderar', 'reportes', 'contenido', 'spam' ],
+					],
+					[
+						'title'       => __( 'Anuncios', 'flavor-platform' ),
+						'description' => __( 'Gestionar publicidad y banners', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=advertising-dashboard' ),
+						'icon'        => 'dashicons-megaphone',
+						'keywords'    => [ 'anuncios', 'publicidad', 'banners', 'ads' ],
+					],
+				],
+			],
+			'analytics'     => [
+				'title'       => __( 'Analytics', 'flavor-platform' ),
+				'icon'        => 'dashicons-chart-area',
+				'description' => __( 'Métricas, estadísticas y reportes', 'flavor-platform' ),
+				'color'       => '#7c3aed',
+				'items'       => [
+					[
+						'title'       => __( 'Dashboard Analytics', 'flavor-platform' ),
+						'description' => __( 'Métricas generales del sitio', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-analytics' ),
+						'icon'        => 'dashicons-chart-area',
+						'keywords'    => [ 'metricas', 'estadisticas', 'graficos', 'reportes' ],
+					],
+					[
+						'title'       => __( 'Registro de Actividad', 'flavor-platform' ),
+						'description' => __( 'Historial de cambios y acciones', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-platform-activity-log' ),
+						'icon'        => 'dashicons-backup',
+						'keywords'    => [ 'log', 'historial', 'actividad', 'auditoria' ],
+					],
+				],
+			],
 			'advanced'      => [
 				'title'       => __( 'Avanzado', 'flavor-platform' ),
 				'icon'        => 'dashicons-admin-generic',
@@ -303,12 +368,219 @@ class Flavor_Settings_Hub {
 						'icon'        => 'dashicons-admin-links',
 						'keywords'    => [ 'integraciones', 'webhooks', 'api', 'externos' ],
 					],
+					[
+						'title'       => __( 'Sistemas V3', 'flavor-platform' ),
+						'description' => __( 'Panel de sistemas avanzados', 'flavor-platform' ),
+						'url'         => admin_url( 'admin.php?page=flavor-systems-panel' ),
+						'icon'        => 'dashicons-admin-generic',
+						'keywords'    => [ 'sistemas', 'v3', 'panel', 'avanzado' ],
+					],
 				],
 			],
 		];
 
+		// Añadir configuraciones dinámicas de módulos activos
+		$this->add_module_settings();
+
 		// Permitir extensión via filtro
 		$this->categories = apply_filters( 'flavor_settings_hub_categories', $this->categories );
+	}
+
+	/**
+	 * Añadir configuraciones dinámicas de módulos activos
+	 *
+	 * Crea una categoría "modules" con links a la configuración
+	 * de cada módulo que está activo y tiene página de settings.
+	 */
+	private function add_module_settings() {
+		$active_modules = get_option( 'flavor_active_modules', [] );
+
+		if ( empty( $active_modules ) || ! is_array( $active_modules ) ) {
+			return;
+		}
+
+		// Mapeo de módulos a sus páginas de configuración
+		$module_settings_map = [
+			// Comunidad
+			'socios'            => [
+				'title'    => __( 'Socios/Miembros', 'flavor-platform' ),
+				'url'      => 'socios-dashboard',
+				'icon'     => 'dashicons-id-alt',
+				'keywords' => [ 'socios', 'miembros', 'usuarios', 'membresia' ],
+				'category' => 'comunidad',
+			],
+			'comunidades'       => [
+				'title'    => __( 'Comunidades', 'flavor-platform' ),
+				'url'      => 'comunidades-dashboard',
+				'icon'     => 'dashicons-admin-multisite',
+				'keywords' => [ 'comunidades', 'grupos', 'vecinos' ],
+				'category' => 'comunidad',
+			],
+			'foros'             => [
+				'title'    => __( 'Foros', 'flavor-platform' ),
+				'url'      => 'foros-dashboard',
+				'icon'     => 'dashicons-format-chat',
+				'keywords' => [ 'foros', 'discusion', 'temas', 'posts' ],
+				'category' => 'comunidad',
+			],
+			'red-social'        => [
+				'title'    => __( 'Red Social', 'flavor-platform' ),
+				'url'      => 'flavor-red-social-dashboard',
+				'icon'     => 'dashicons-share',
+				'keywords' => [ 'red', 'social', 'amigos', 'feed' ],
+				'category' => 'comunidad',
+			],
+			// Economía
+			'grupos-consumo'    => [
+				'title'    => __( 'Grupos de Consumo', 'flavor-platform' ),
+				'url'      => 'gc-dashboard',
+				'icon'     => 'dashicons-cart',
+				'keywords' => [ 'grupos', 'consumo', 'pedidos', 'productos' ],
+				'category' => 'economia',
+			],
+			'marketplace'       => [
+				'title'    => __( 'Marketplace', 'flavor-platform' ),
+				'url'      => 'marketplace-dashboard',
+				'icon'     => 'dashicons-store',
+				'keywords' => [ 'tienda', 'productos', 'vender', 'comprar' ],
+				'category' => 'economia',
+			],
+			'banco-tiempo'      => [
+				'title'    => __( 'Banco de Tiempo', 'flavor-platform' ),
+				'url'      => 'banco-tiempo-dashboard',
+				'icon'     => 'dashicons-clock',
+				'keywords' => [ 'banco', 'tiempo', 'intercambio', 'horas' ],
+				'category' => 'economia',
+			],
+			// Actividades
+			'eventos'           => [
+				'title'    => __( 'Eventos', 'flavor-platform' ),
+				'url'      => 'eventos-dashboard',
+				'icon'     => 'dashicons-calendar',
+				'keywords' => [ 'eventos', 'actividades', 'calendario', 'inscripciones' ],
+				'category' => 'actividades',
+			],
+			'cursos'            => [
+				'title'    => __( 'Cursos', 'flavor-platform' ),
+				'url'      => 'cursos-dashboard',
+				'icon'     => 'dashicons-welcome-learn-more',
+				'keywords' => [ 'cursos', 'formacion', 'aprender', 'lecciones' ],
+				'category' => 'actividades',
+			],
+			'talleres'          => [
+				'title'    => __( 'Talleres', 'flavor-platform' ),
+				'url'      => 'talleres-dashboard',
+				'icon'     => 'dashicons-hammer',
+				'keywords' => [ 'talleres', 'practico', 'manualidades' ],
+				'category' => 'actividades',
+			],
+			'reservas'          => [
+				'title'    => __( 'Reservas', 'flavor-platform' ),
+				'url'      => 'reservas-dashboard',
+				'icon'     => 'dashicons-tickets-alt',
+				'keywords' => [ 'reservas', 'booking', 'disponibilidad' ],
+				'category' => 'actividades',
+			],
+			// Servicios
+			'tramites'          => [
+				'title'    => __( 'Trámites', 'flavor-platform' ),
+				'url'      => 'tramites-dashboard',
+				'icon'     => 'dashicons-clipboard',
+				'keywords' => [ 'tramites', 'gestiones', 'solicitudes' ],
+				'category' => 'servicios',
+			],
+			'incidencias'       => [
+				'title'    => __( 'Incidencias', 'flavor-platform' ),
+				'url'      => 'incidencias-dashboard',
+				'icon'     => 'dashicons-warning',
+				'keywords' => [ 'incidencias', 'problemas', 'reportar' ],
+				'category' => 'servicios',
+			],
+			'participacion'     => [
+				'title'    => __( 'Participación', 'flavor-platform' ),
+				'url'      => 'participacion-dashboard',
+				'icon'     => 'dashicons-megaphone',
+				'keywords' => [ 'participacion', 'propuestas', 'votar' ],
+				'category' => 'servicios',
+			],
+			'transparencia'     => [
+				'title'    => __( 'Transparencia', 'flavor-platform' ),
+				'url'      => 'transparencia-dashboard',
+				'icon'     => 'dashicons-visibility',
+				'keywords' => [ 'transparencia', 'actas', 'presupuestos' ],
+				'category' => 'servicios',
+			],
+		];
+
+		// Agrupar módulos activos por categoría
+		$modules_by_category = [];
+
+		foreach ( $active_modules as $module_id ) {
+			if ( ! isset( $module_settings_map[ $module_id ] ) ) {
+				continue;
+			}
+
+			$module_info = $module_settings_map[ $module_id ];
+			$category_key = $module_info['category'];
+
+			if ( ! isset( $modules_by_category[ $category_key ] ) ) {
+				$modules_by_category[ $category_key ] = [];
+			}
+
+			$modules_by_category[ $category_key ][] = [
+				'title'       => $module_info['title'],
+				'description' => sprintf(
+					/* translators: %s: module name */
+					__( 'Configurar %s', 'flavor-platform' ),
+					$module_info['title']
+				),
+				'url'         => admin_url( 'admin.php?page=' . $module_info['url'] ),
+				'icon'        => $module_info['icon'],
+				'keywords'    => $module_info['keywords'],
+			];
+		}
+
+		// Crear categorías de módulos si hay módulos activos
+		$category_definitions = [
+			'comunidad'   => [
+				'title'       => __( 'Módulos: Comunidad', 'flavor-platform' ),
+				'icon'        => 'dashicons-groups',
+				'description' => __( 'Configuración de módulos de comunidad', 'flavor-platform' ),
+				'color'       => '#ec4899',
+			],
+			'economia'    => [
+				'title'       => __( 'Módulos: Economía', 'flavor-platform' ),
+				'icon'        => 'dashicons-money-alt',
+				'description' => __( 'Configuración de módulos económicos', 'flavor-platform' ),
+				'color'       => '#22c55e',
+			],
+			'actividades' => [
+				'title'       => __( 'Módulos: Actividades', 'flavor-platform' ),
+				'icon'        => 'dashicons-calendar-alt',
+				'description' => __( 'Configuración de eventos y formación', 'flavor-platform' ),
+				'color'       => '#f97316',
+			],
+			'servicios'   => [
+				'title'       => __( 'Módulos: Servicios', 'flavor-platform' ),
+				'icon'        => 'dashicons-admin-tools',
+				'description' => __( 'Configuración de servicios ciudadanos', 'flavor-platform' ),
+				'color'       => '#14b8a6',
+			],
+		];
+
+		foreach ( $modules_by_category as $category_key => $items ) {
+			if ( empty( $items ) || ! isset( $category_definitions[ $category_key ] ) ) {
+				continue;
+			}
+
+			$this->categories[ 'mod_' . $category_key ] = [
+				'title'       => $category_definitions[ $category_key ]['title'],
+				'icon'        => $category_definitions[ $category_key ]['icon'],
+				'description' => $category_definitions[ $category_key ]['description'],
+				'color'       => $category_definitions[ $category_key ]['color'],
+				'items'       => $items,
+			];
+		}
 	}
 
 	/**
