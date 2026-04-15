@@ -25,7 +25,7 @@ $categorias = [
 	'otro'      => __( 'Otro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
 ];
 
-// Tipos de evento desde settings
+// Tipos de evento desde settings.
 if ( ! empty( $settings['tipos_evento'] ) && is_array( $settings['tipos_evento'] ) ) {
 	$categorias = [];
 	foreach ( $settings['tipos_evento'] as $tipo ) {
@@ -33,20 +33,22 @@ if ( ! empty( $settings['tipos_evento'] ) && is_array( $settings['tipos_evento']
 	}
 }
 
-// Integraciones disponibles (módulos que pueden vincularse)
-$integraciones_disponibles = [];
-$modulos_integrables       = [ 'recetas', 'multimedia', 'podcast' ];
-
-foreach ( $modulos_integrables as $modulo_id ) {
-	$modulo = Flavor_Platform_Helpers::get_module_instance( $modulo_id );
-	if ( $modulo && method_exists( $modulo, 'is_active' ) && $modulo->is_active() ) {
-		$integraciones_disponibles[ $modulo_id ] = [
-			'id'    => $modulo_id,
-			'label' => ucfirst( $modulo_id ),
-			'icon'  => 'dashicons-admin-post',
-		];
+// Obtener comunidades disponibles (el evento puede pertenecer a una comunidad).
+$comunidades_disponibles = [];
+$comunidades_module      = Flavor_Platform_Helpers::get_module_instance( 'comunidades' );
+if ( $comunidades_module && method_exists( $comunidades_module, 'is_active' ) && $comunidades_module->is_active() ) {
+	global $wpdb;
+	$tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_comunidades ) ) === $tabla_comunidades ) {
+		$comunidades_disponibles = $wpdb->get_results(
+			"SELECT id, nombre FROM {$tabla_comunidades} WHERE estado = 'activa' ORDER BY nombre ASC",
+			ARRAY_A
+		);
 	}
 }
+
+// Contexto de comunidad (si viene de una comunidad específica).
+$comunidad_contexto = absint( $_GET['comunidad_id'] ?? $_GET['comunidad'] ?? 0 );
 ?>
 
 <?php
@@ -197,34 +199,22 @@ if ( class_exists( 'Flavor_Breadcrumbs' ) ) {
 					</div>
 				</div>
 
-				<?php if ( ! empty( $integraciones_disponibles ) ) : ?>
+				<?php if ( ! empty( $comunidades_disponibles ) ) : ?>
 				<div class="flavor-form-section">
-					<h2><?php esc_html_e( 'Contenido vinculado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
-					<p class="description"><?php esc_html_e( 'Vincula recetas, podcasts u otro contenido relacionado con este evento.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+					<h2><?php esc_html_e( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
+					<p class="description"><?php esc_html_e( 'Asocia este evento a una comunidad específica.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
 
-					<div class="flavor-integraciones-grid">
-						<?php foreach ( $integraciones_disponibles as $integracion ) : ?>
-						<div class="flavor-integracion-box" data-modulo="<?php echo esc_attr( $integracion['id'] ); ?>">
-							<h4>
-								<span class="dashicons <?php echo esc_attr( $integracion['icon'] ); ?>"></span>
-								<?php echo esc_html( $integracion['label'] ); ?>
-							</h4>
-							<div class="flavor-integracion-items" data-modulo="<?php echo esc_attr( $integracion['id'] ); ?>">
-								<p class="flavor-no-items"><?php printf( esc_html__( 'Sin %s vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN ), esc_html( strtolower( $integracion['label'] ) ) ); ?></p>
-							</div>
-							<div class="flavor-integracion-add">
-								<select class="flavor-integracion-selector widefat" data-modulo="<?php echo esc_attr( $integracion['id'] ); ?>">
-									<option value=""><?php printf( esc_html__( 'Seleccionar %s...', FLAVOR_PLATFORM_TEXT_DOMAIN ), esc_html( strtolower( $integracion['label'] ) ) ); ?></option>
-								</select>
-								<button type="button" class="button flavor-btn-add-integracion" data-modulo="<?php echo esc_attr( $integracion['id'] ); ?>">
-									<span class="dashicons dashicons-plus-alt2"></span>
-								</button>
-							</div>
-						</div>
-						<?php endforeach; ?>
+					<div class="flavor-form-group">
+						<label for="evento-comunidad"><?php esc_html_e( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-comunidad" name="comunidad_id" class="widefat">
+							<option value=""><?php esc_html_e( 'Sin comunidad (evento general)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $comunidades_disponibles as $comunidad ) : ?>
+								<option value="<?php echo esc_attr( $comunidad['id'] ); ?>" <?php selected( $comunidad_contexto, $comunidad['id'] ); ?>>
+									<?php echo esc_html( $comunidad['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
 					</div>
-
-					<input type="hidden" id="evento-integraciones" name="integraciones" value="">
 				</div>
 				<?php endif; ?>
 
@@ -380,80 +370,6 @@ if ( class_exists( 'Flavor_Breadcrumbs' ) ) {
 	height: 20px;
 }
 
-/* Integraciones */
-.flavor-integraciones-grid {
-	display: grid;
-	gap: 16px;
-}
-
-.flavor-integracion-box {
-	border: 1px solid #ddd;
-	border-radius: 6px;
-	padding: 12px;
-	background: #f9f9f9;
-}
-
-.flavor-integracion-box h4 {
-	margin: 0 0 10px 0;
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 13px;
-	color: #1d2327;
-}
-
-.flavor-integracion-box h4 .dashicons {
-	font-size: 16px;
-	width: 16px;
-	height: 16px;
-	color: #2271b1;
-}
-
-.flavor-integracion-items {
-	max-height: 150px;
-	overflow-y: auto;
-	margin-bottom: 10px;
-	padding: 8px;
-	background: #fff;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-}
-
-.flavor-no-items {
-	color: #646970;
-	font-size: 12px;
-	font-style: italic;
-	margin: 0;
-}
-
-.flavor-integracion-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 4px 0;
-	border-bottom: 1px solid #eee;
-}
-
-.flavor-integracion-item:last-child {
-	border-bottom: 0;
-}
-
-.flavor-integracion-add {
-	display: flex;
-	gap: 6px;
-}
-
-.flavor-integracion-add select {
-	flex: 1;
-}
-
-.flavor-integracion-add .button {
-	padding: 0 8px;
-}
-
-.flavor-integracion-add .button .dashicons {
-	vertical-align: middle;
-}
 
 /* Imagen */
 .flavor-image-preview {
