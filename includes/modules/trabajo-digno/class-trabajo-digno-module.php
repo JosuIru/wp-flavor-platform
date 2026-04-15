@@ -773,7 +773,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-trabajo-digno', 'flavorTrabajoDigno', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+            'nonce' => wp_create_nonce('flavor_trabajo_digno_nonce'),
             'tipos' => self::TIPOS_OFERTA,
             'sectores' => self::SECTORES,
             'criterios' => self::CRITERIOS_DIGNIDAD,
@@ -839,7 +839,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
      * AJAX: Publicar oferta
      */
     public function ajax_publicar_oferta() {
-        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+        check_ajax_referer('flavor_trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -892,7 +892,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
      * AJAX: Postular a oferta
      */
     public function ajax_postular() {
-        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+        check_ajax_referer('flavor_trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -944,7 +944,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
      * AJAX: Guardar perfil profesional
      */
     public function ajax_guardar_perfil() {
-        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+        check_ajax_referer('flavor_trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1007,7 +1007,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
      * AJAX: Registrar emprendimiento
      */
     public function ajax_registrar_emprendimiento() {
-        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+        check_ajax_referer('flavor_trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1055,7 +1055,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
      * AJAX: Inscribir a formación
      */
     public function ajax_inscribir_formacion() {
-        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+        check_ajax_referer('flavor_trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

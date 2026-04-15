@@ -89,7 +89,7 @@ class Flavor_Incidencias_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-incidencias', 'flavorIncidencias', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('incidencias_nonce'),
+            'nonce' => wp_create_nonce('flavor_incidencias_nonce'),
             'i18n' => [
                 'reportada' => __('Incidencia reportada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -529,7 +529,7 @@ class Flavor_Incidencias_Frontend_Controller {
             echo '<div class="flavor-incidencias-form">';
             echo '<h3>' . __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
             echo '<form id="form-reportar-incidencia" class="flavor-form">';
-            wp_nonce_field('incidencias_nonce', 'incidencias_nonce_field');
+            wp_nonce_field('flavor_incidencias_nonce', 'incidencias_nonce_field');
             echo '<p><label>' . __('Tipo de incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<select name="categoria" required>';
             echo '<option value="">' . __('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
@@ -669,7 +669,7 @@ class Flavor_Incidencias_Frontend_Controller {
      * AJAX: Reportar incidencia
      */
     public function ajax_reportar() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
         $descripcion = isset($_POST['descripcion']) ? sanitize_textarea_field($_POST['descripcion']) : '';
@@ -716,7 +716,7 @@ class Flavor_Incidencias_Frontend_Controller {
      * AJAX: Comentar incidencia
      */
     public function ajax_comentar() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -763,7 +763,7 @@ class Flavor_Incidencias_Frontend_Controller {
      * AJAX: Votar incidencia
      */
     public function ajax_votar() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -816,7 +816,7 @@ class Flavor_Incidencias_Frontend_Controller {
      * AJAX: Filtrar incidencias
      */
     public function ajax_filtrar() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
         $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';

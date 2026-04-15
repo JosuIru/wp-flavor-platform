@@ -705,7 +705,7 @@ class Flavor_Eventos_Conciencia_Features {
     // ─────────────────────────────────────────────────────────────
 
     public function ajax_solicitar_plaza_solidaria() {
-        check_ajax_referer('ev_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ev_conciencia_nonce', 'nonce');
 
         $resultado = $this->solicitar_plaza_solidaria(
             absint($_POST['evento_id']),
@@ -718,7 +718,7 @@ class Flavor_Eventos_Conciencia_Features {
     }
 
     public function ajax_apuntarse_voluntario() {
-        check_ajax_referer('ev_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ev_conciencia_nonce', 'nonce');
 
         $resultado = $this->apuntarse_voluntario(
             absint($_POST['evento_id']),
@@ -731,7 +731,7 @@ class Flavor_Eventos_Conciencia_Features {
     }
 
     public function ajax_registrar_huella() {
-        check_ajax_referer('ev_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ev_conciencia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => 'Sin permisos']);
@@ -742,7 +742,7 @@ class Flavor_Eventos_Conciencia_Features {
     }
 
     public function ajax_proponer_colaboracion() {
-        check_ajax_referer('ev_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ev_conciencia_nonce', 'nonce');
 
         $resultado = $this->proponer_colaboracion(
             absint($_POST['evento_id']),
@@ -775,7 +775,7 @@ class Flavor_Eventos_Conciencia_Features {
             $atts['limite']
         ));
 
-        $nonce = wp_create_nonce('ev_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_ev_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/eventos-inclusivos.php';
@@ -827,7 +827,7 @@ class Flavor_Eventos_Conciencia_Features {
             $evento_id = 0;
         }
 
-        $nonce = wp_create_nonce('ev_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_ev_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/voluntariado-eventos.php';

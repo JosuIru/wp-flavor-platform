@@ -1136,7 +1136,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
         // Configuración JS
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('incidencias_nonce'),
+            'nonce' => wp_create_nonce('flavor_incidencias_nonce'),
             'mapboxToken' => $this->get_setting('mapbox_token'),
             'defaultLat' => floatval($this->get_setting('centro_mapa_lat')),
             'defaultLng' => floatval($this->get_setting('centro_mapa_lng')),
@@ -1458,7 +1458,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reportar incidencia
      */
     public function ajax_reportar_incidencia() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         $configuracion = $this->get_settings();
@@ -1754,7 +1754,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Votar incidencia
      */
     public function ajax_votar_incidencia() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesión para votar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1802,7 +1802,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Quitar voto
      */
     public function ajax_quitar_voto() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1834,7 +1834,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Comentar incidencia
      */
     public function ajax_comentar_incidencia() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesión para comentar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1870,7 +1870,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cambiar estado (admin)
      */
     public function ajax_cambiar_estado() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1955,7 +1955,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cambiar prioridad (admin)
      */
     public function ajax_cambiar_prioridad() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1981,7 +1981,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Asignar responsable (admin)
      */
     public function ajax_asignar_responsable() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2032,7 +2032,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
      * AJAX: Eliminar incidencia (admin)
      */
     public function ajax_eliminar_incidencia() {
-        check_ajax_referer('incidencias_nonce', 'nonce');
+        check_ajax_referer('flavor_incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

@@ -107,7 +107,7 @@ class Flavor_Red_Social_Dashboard_Tab {
 
         wp_localize_script('flavor-red-social', 'flavorRedSocial', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('rs_nonce'),
+            'nonce' => wp_create_nonce('flavor_red_social_nonce'),
             'userId' => get_current_user_id(),
             'maxCaracteres' => 5000,
             'maxImagenes' => 10,

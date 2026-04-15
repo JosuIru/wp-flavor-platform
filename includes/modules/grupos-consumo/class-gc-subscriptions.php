@@ -102,8 +102,8 @@ class Flavor_GC_Subscriptions {
         $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
         $acciones_validas = [
             'gc_suscripcion_nonce',
-            'gc_lista_compra_nonce',
-            'gc_nonce',
+            'flavor_gc_lista_compra_nonce',
+            'flavor_gc_nonce',
         ];
 
         foreach ($acciones_validas as $accion) {

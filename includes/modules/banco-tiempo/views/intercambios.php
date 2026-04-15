@@ -346,7 +346,7 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'banco_tiempo_ver_intercambio',
                 intercambio_id: id,
-                nonce: '<?php echo wp_create_nonce("banco_tiempo_nonce"); ?>'
+                nonce: '<?php echo wp_create_nonce("flavor_banco_tiempo_nonce"); ?>'
             },
             success: function(response) {
                 if (response.success && response.data) {

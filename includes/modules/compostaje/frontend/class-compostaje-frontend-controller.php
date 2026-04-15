@@ -558,7 +558,7 @@ class Flavor_Compostaje_Frontend_Controller {
         ?>
         <div class="flavor-compostaje-registrar">
             <form id="flavor-form-aportacion" class="flavor-form">
-                <?php wp_nonce_field('flavor_compostaje_nonce', 'compostaje_nonce'); ?>
+                <?php wp_nonce_field('flavor_compostaje_nonce', 'flavor_compostaje_nonce'); ?>
 
                 <div class="flavor-form-group">
                     <label for="punto_id"><?php _e('Punto de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>

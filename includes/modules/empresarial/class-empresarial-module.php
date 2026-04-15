@@ -505,7 +505,7 @@ class Flavor_Platform_Empresarial_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-empresarial', 'flavorEmpresarialConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('empresarial_contacto_nonce'),
+            'nonce'   => wp_create_nonce('flavor_empresarial_contacto_nonce'),
             'strings' => [
                 'enviando'    => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enviar'      => __('Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1399,7 +1399,7 @@ class Flavor_Platform_Empresarial_Module extends Flavor_Platform_Module_Base {
      */
     public function ajax_contacto_form() {
         // Verificar nonce de seguridad
-        if (!check_ajax_referer('empresarial_contacto_nonce', 'nonce', false)) {
+        if (!check_ajax_referer('flavor_empresarial_contacto_nonce', 'nonce', false)) {
             wp_send_json_error([
                 'message' => __('Error de seguridad. Recarga la página e intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);

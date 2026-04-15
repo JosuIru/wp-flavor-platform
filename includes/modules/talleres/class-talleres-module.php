@@ -1807,7 +1807,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     // =========================================================================
 
     public function ajax_inscribirse() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_inscribirse([
             'taller_id' => isset($_POST['taller_id']) ? intval($_POST['taller_id']) : 0,
             'nombre' => isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '',
@@ -1818,7 +1818,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_cancelar_inscripcion() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_cancelar_inscripcion([
             'inscripcion_id' => isset($_POST['inscripcion_id']) ? intval($_POST['inscripcion_id']) : 0,
             'motivo' => isset($_POST['motivo']) ? sanitize_textarea_field($_POST['motivo']) : '',
@@ -1826,7 +1826,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_valorar() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_valorar_taller([
             'taller_id' => isset($_POST['taller_id']) ? intval($_POST['taller_id']) : 0,
             'puntuacion' => isset($_POST['puntuacion']) ? intval($_POST['puntuacion']) : 0,
@@ -1835,7 +1835,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_descargar_material() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         global $wpdb;
         $tabla_materiales = $wpdb->prefix . 'flavor_talleres_materiales';
@@ -1863,12 +1863,12 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_proponer_taller() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_proponer_taller($_POST));
     }
 
     public function ajax_marcar_asistencia() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_marcar_asistencia([
             'sesion_id' => isset($_POST['sesion_id']) ? intval($_POST['sesion_id']) : 0,
             'participante_id' => isset($_POST['participante_id']) ? intval($_POST['participante_id']) : 0,
@@ -1877,14 +1877,14 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_generar_certificado() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
         wp_send_json($this->action_descargar_certificado([
             'taller_id' => isset($_POST['taller_id']) ? intval($_POST['taller_id']) : 0,
         ]));
     }
 
     public function ajax_subir_material() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json(['success' => false, 'error' => __('Material no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1946,7 +1946,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_admin_guardar_taller() {
-        check_ajax_referer('talleres_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2002,7 +2002,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_admin_cambiar_estado() {
-        check_ajax_referer('talleres_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2168,7 +2168,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     }
 
     public function ajax_admin_exportar() {
-        check_ajax_referer('talleres_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2327,7 +2327,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         wp_enqueue_script('talleres-frontend', $this->get_module_url() . 'assets/js/talleres.js', ['jquery'], '1.0.0', true);
         wp_localize_script('talleres-frontend', 'talleresData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('talleres_nonce'),
+            'nonce' => wp_create_nonce('flavor_talleres_nonce'),
             'rest_url' => rest_url('flavor/v1/talleres'),
             'i18n' => [
                 'confirmar_inscripcion' => __('¿Confirmar inscripción?', FLAVOR_PLATFORM_TEXT_DOMAIN),

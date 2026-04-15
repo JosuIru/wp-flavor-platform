@@ -63,7 +63,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
     </header>
 
     <form class="carpooling-form flavor-carpooling-publicar__form" id="carpooling-publicar-form">
-        <?php wp_nonce_field('carpooling_publicar_nonce', 'carpooling_nonce'); ?>
+        <?php wp_nonce_field('flavor_carpooling_nonce', 'flavor_carpooling_nonce'); ?>
 
         <!-- Seccion: Ruta -->
         <fieldset class="flavor-carpooling-publicar__seccion">

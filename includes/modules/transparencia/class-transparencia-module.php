@@ -324,7 +324,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-transparencia', 'flavorTransparencia', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('transparencia_nonce'),
+            'nonce' => wp_create_nonce('flavor_transparencia_nonce'),
             'strings' => [
                 'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1568,7 +1568,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Buscar documentos
      */
     public function transparencia_buscar_documentos() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $parametros = [
             'termino' => sanitize_text_field($_POST['termino'] ?? ''),
@@ -1585,7 +1585,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Ver documento
      */
     public function transparencia_ver_documento() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $documento_id = (int) ($_POST['documento_id'] ?? 0);
 
@@ -1608,7 +1608,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Descargar documento
      */
     public function transparencia_descargar_documento() {
-        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'transparencia_nonce')) {
+        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'flavor_transparencia_nonce')) {
             wp_die(__('Acceso no autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
@@ -1640,7 +1640,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Enviar solicitud
      */
     public function transparencia_enviar_solicitud() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $datos = [
             'titulo' => sanitize_text_field($_POST['titulo'] ?? ''),
@@ -1664,7 +1664,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener presupuesto
      */
     public function transparencia_obtener_presupuesto() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $periodo = sanitize_text_field($_POST['periodo'] ?? date('Y'));
 
@@ -1688,7 +1688,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Filtrar gastos
      */
     public function transparencia_filtrar_gastos() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $parametros = [
             'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
@@ -1705,7 +1705,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener actas
      */
     public function transparencia_obtener_actas() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $parametros = [
             'tipo_organo' => sanitize_text_field($_POST['tipo_organo'] ?? ''),
@@ -1722,7 +1722,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      * AJAX: Estadisticas
      */
     public function transparencia_estadisticas() {
-        check_ajax_referer('transparencia_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
         $estadisticas = $this->calcular_estadisticas_generales();
 
@@ -2962,7 +2962,7 @@ KNOWLEDGE;
             <?php $this->render_page_header(__('Configuracion de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <form method="post" action="">
-                <?php wp_nonce_field('transparencia_config', 'transparencia_nonce'); ?>
+                <?php wp_nonce_field('transparencia_config', 'flavor_transparencia_nonce'); ?>
 
                 <table class="form-table">
                     <tr>

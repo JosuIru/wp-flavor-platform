@@ -92,7 +92,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
 
         wp_localize_script('flavor-fichaje-empleados', 'fichajeEmpleados', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('fichaje_empleados_nonce'),
+            'nonce' => wp_create_nonce('flavor_fichaje_empleados_nonce'),
             'strings' => [
                 'confirmEntrada' => __('¿Confirmas fichar entrada?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmSalida' => __('¿Confirmas fichar salida?', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -394,7 +394,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Fichar entrada
      */
     public function ajax_fichar_entrada() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -414,7 +414,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Fichar salida
      */
     public function ajax_fichar_salida() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -434,7 +434,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Iniciar pausa
      */
     public function ajax_pausa_iniciar() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -454,7 +454,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Finalizar pausa
      */
     public function ajax_pausa_finalizar() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -473,7 +473,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Obtener estado actual
      */
     public function ajax_obtener_estado() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -487,7 +487,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Obtener historial
      */
     public function ajax_obtener_historial() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -510,7 +510,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      * AJAX: Solicitar cambio
      */
     public function ajax_solicitar_cambio() {
-        check_ajax_referer('fichaje_empleados_nonce', 'nonce');
+        check_ajax_referer('flavor_fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

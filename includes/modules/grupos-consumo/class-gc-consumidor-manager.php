@@ -708,7 +708,7 @@ class Flavor_GC_Consumidor_Manager {
      * AJAX: Alta de consumidor
      */
     public function ajax_alta_consumidor() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -736,7 +736,7 @@ class Flavor_GC_Consumidor_Manager {
      * AJAX: Cambiar estado
      */
     public function ajax_cambiar_estado() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -758,7 +758,7 @@ class Flavor_GC_Consumidor_Manager {
      * AJAX: Cambiar rol
      */
     public function ajax_cambiar_rol() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -780,7 +780,7 @@ class Flavor_GC_Consumidor_Manager {
      * AJAX: Actualizar preferencias
      */
     public function ajax_actualizar_preferencias() {
-        check_ajax_referer('gc_preferencias_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_preferencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

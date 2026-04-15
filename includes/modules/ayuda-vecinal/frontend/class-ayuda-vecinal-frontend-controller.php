@@ -90,7 +90,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-ayuda-vecinal', 'flavorAyudaVecinal', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ayuda_vecinal_nonce'),
+            'nonce' => wp_create_nonce('flavor_ayuda_vecinal_nonce'),
             'i18n' => [
                 'solicitud_enviada' => __('Solicitud de ayuda enviada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'oferta_enviada' => __('Oferta de ayuda registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -439,7 +439,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
             <p class="form-intro"><?php _e('¿Necesitas ayuda? Describe tu situación y un vecino voluntario te contactará.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="form-solicitar-ayuda" class="flavor-form">
-                <?php wp_nonce_field('ayuda_vecinal_nonce', 'av_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_ayuda_vecinal_nonce', 'av_nonce_field'); ?>
 
                 <div class="form-group">
                     <label><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
@@ -499,7 +499,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
             <p class="form-intro"><?php _e('Regístrate como voluntario para ayudar a tus vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="form-ofrecer-ayuda" class="flavor-form">
-                <?php wp_nonce_field('ayuda_vecinal_nonce', 'av_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_ayuda_vecinal_nonce', 'av_nonce_field'); ?>
 
                 <div class="form-group">
                     <label><?php _e('¿En qué puedes ayudar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
@@ -715,7 +715,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * AJAX: Solicitar ayuda
      */
     public function ajax_solicitar_ayuda() {
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -760,7 +760,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * AJAX: Ofrecer ayuda (registrarse como voluntario)
      */
     public function ajax_ofrecer_ayuda() {
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -812,7 +812,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * AJAX: Aceptar solicitud
      */
     public function ajax_aceptar_solicitud() {
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -847,7 +847,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * AJAX: Completar ayuda
      */
     public function ajax_completar_ayuda() {
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -893,7 +893,7 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * AJAX: Valorar
      */
     public function ajax_valorar() {
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

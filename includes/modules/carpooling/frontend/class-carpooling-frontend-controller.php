@@ -105,7 +105,7 @@ class Flavor_Carpooling_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor/v1/carpooling/'),
-            'nonce' => wp_create_nonce('carpooling_frontend_nonce'),
+            'nonce' => wp_create_nonce('flavor_carpooling_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(flavor_current_request_url()),
@@ -1043,7 +1043,7 @@ class Flavor_Carpooling_Frontend_Controller {
      * AJAX: Reservar plaza
      */
     public function ajax_reservar_plaza() {
-        check_ajax_referer('carpooling_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1127,7 +1127,7 @@ class Flavor_Carpooling_Frontend_Controller {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('carpooling_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1163,7 +1163,7 @@ class Flavor_Carpooling_Frontend_Controller {
      * AJAX: Cancelar viaje
      */
     public function ajax_cancelar_viaje() {
-        check_ajax_referer('carpooling_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1223,7 +1223,7 @@ class Flavor_Carpooling_Frontend_Controller {
      * AJAX: Buscar viajes
      */
     public function ajax_buscar_viajes() {
-        check_ajax_referer('carpooling_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_frontend_nonce', 'nonce');
 
         $origen = sanitize_text_field($_POST['origen'] ?? '');
         $destino = sanitize_text_field($_POST['destino'] ?? '');
@@ -1291,7 +1291,7 @@ class Flavor_Carpooling_Frontend_Controller {
      * AJAX: Contactar conductor
      */
     public function ajax_contactar_conductor() {
-        check_ajax_referer('carpooling_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

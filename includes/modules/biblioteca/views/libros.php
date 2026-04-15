@@ -256,7 +256,7 @@ jQuery(document).ready(function($) {
         $.get(ajaxurl, {
             action: 'flavor_biblioteca_historial',
             libro_id: id,
-            nonce: '<?php echo wp_create_nonce('biblioteca_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_biblioteca_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 var html = '<h3><?php echo esc_js(__('Historial de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>';

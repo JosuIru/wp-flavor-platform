@@ -594,7 +594,7 @@ class Flavor_GC_Export {
      * AJAX para generar exportaciones desde admin
      */
     public function ajax_generar_exportacion() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

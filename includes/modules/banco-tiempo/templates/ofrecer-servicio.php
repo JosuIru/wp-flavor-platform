@@ -32,7 +32,7 @@ $categorias = [
     <p class="bt-intro"><?php _e('Comparte tus habilidades con la comunidad y gana horas para intercambiar por otros servicios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
     <form id="form-ofrecer-servicio" class="bt-form" method="post">
-        <?php wp_nonce_field('banco_tiempo_nonce', 'bt_nonce_field'); ?>
+        <?php wp_nonce_field('flavor_banco_tiempo_nonce', 'bt_nonce_field'); ?>
         <?php if (!empty($comunidad_id) && $comunidad_id > 0): ?>
         <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad_id); ?>">
         <?php endif; ?>

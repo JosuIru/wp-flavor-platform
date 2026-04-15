@@ -77,7 +77,7 @@ class Flavor_Red_Social_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-red-social', 'flavorRedSocial', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('red-social_nonce'),
+            'nonce' => wp_create_nonce('flavor_red_social_nonce'),
             'i18n' => [
                 'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),

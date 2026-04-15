@@ -300,7 +300,7 @@ foreach ($grupos as $grupo) {
             type: 'POST',
             data: {
                 action: 'grupos_consumo_solicitar_union',
-                nonce: '<?php echo esc_attr(wp_create_nonce('gc_nonce')); ?>',
+                nonce: '<?php echo esc_attr(wp_create_nonce('flavor_gc_nonce')); ?>',
                 grupo_id: grupoId
             },
             success: function(response) {

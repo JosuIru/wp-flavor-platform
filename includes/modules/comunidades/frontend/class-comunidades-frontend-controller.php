@@ -82,7 +82,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         wp_localize_script('flavor-comunidades', 'flavorComunidades', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('comunidades_nonce'),
+            'nonce' => wp_create_nonce('flavor_comunidades_nonce'),
             'i18n' => [
                 'unido' => __('Te has unido a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'salido' => __('Has abandonado la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -612,7 +612,7 @@ class Flavor_Comunidades_Frontend_Controller {
                     <?php if ($es_miembro): ?>
                         <div class="comunidad-publicar">
                             <form id="flavor-com-form-publicar" class="form-publicar">
-                                <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
+                                <?php wp_nonce_field('flavor_comunidades_nonce', 'comunidades_nonce_field'); ?>
                                 <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad->id); ?>">
                                 <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con la comunidad?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="3"></textarea>
                                 <div class="publicar-opciones">
@@ -735,7 +735,7 @@ class Flavor_Comunidades_Frontend_Controller {
             <h2><?php esc_html_e('Crear Nueva Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="flavor-com-form-crear" class="flavor-form" enctype="multipart/form-data">
-                <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_comunidades_nonce', 'comunidades_nonce_field'); ?>
 
                 <div class="flavor-form-group">
                     <label for="nombre"><?php esc_html_e('Nombre de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
@@ -1181,7 +1181,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * AJAX: Crear comunidad
      */
     public function ajax_crear_comunidad() {
-        check_ajax_referer('comunidades_nonce', 'comunidades_nonce_field');
+        check_ajax_referer('flavor_comunidades_nonce', 'comunidades_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1254,7 +1254,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * AJAX: Unirse a comunidad
      */
     public function ajax_unirse() {
-        check_ajax_referer('comunidades_nonce', 'nonce');
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1323,7 +1323,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * AJAX: Salir de comunidad
      */
     public function ajax_salir() {
-        check_ajax_referer('comunidades_nonce', 'nonce');
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1382,7 +1382,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * AJAX: Publicar
      */
     public function ajax_publicar() {
-        check_ajax_referer('comunidades_nonce', 'comunidades_nonce_field');
+        check_ajax_referer('flavor_comunidades_nonce', 'comunidades_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1431,7 +1431,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * AJAX: Comentar
      */
     public function ajax_comentar() {
-        check_ajax_referer('comunidades_nonce', 'nonce');
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

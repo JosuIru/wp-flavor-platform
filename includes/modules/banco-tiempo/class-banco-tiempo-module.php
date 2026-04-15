@@ -2233,7 +2233,7 @@ add_action('wp_ajax_banco_tiempo_historial_usuario', 'banco_tiempo_ajax_historia
  * AJAX: Ver detalles de un intercambio
  */
 function banco_tiempo_ajax_ver_intercambio() {
-    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+    check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
         wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -2279,7 +2279,7 @@ function banco_tiempo_ajax_ver_intercambio() {
  * AJAX: Obtener datos de un servicio para edición
  */
 function banco_tiempo_ajax_obtener_servicio() {
-    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+    check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
         wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -2320,7 +2320,7 @@ function banco_tiempo_ajax_obtener_servicio() {
  * AJAX: Historial de un usuario en banco de tiempo
  */
 function banco_tiempo_ajax_historial_usuario() {
-    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+    check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
         wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));

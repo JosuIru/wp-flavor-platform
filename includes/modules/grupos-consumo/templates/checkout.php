@@ -141,7 +141,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
             <?php else : ?>
 
             <form id="gc-checkout-form" method="post" class="gc-payment-form">
-                <?php wp_nonce_field('gc_checkout_nonce', 'gc_checkout_nonce'); ?>
+                <?php wp_nonce_field('flavor_gc_checkout_nonce', 'flavor_gc_checkout_nonce'); ?>
                 <input type="hidden" name="entrega_id" value="<?php echo esc_attr($entrega_id); ?>">
 
                 <div class="gc-payment-methods">
@@ -221,7 +221,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
             type: 'POST',
             data: {
                 action: 'gc_get_checkout_form',
-                nonce: '<?php echo wp_create_nonce('gc_checkout_nonce'); ?>',
+                nonce: '<?php echo wp_create_nonce('flavor_gc_checkout_nonce'); ?>',
                 gateway_id: gatewayId
             },
             success: function(response) {

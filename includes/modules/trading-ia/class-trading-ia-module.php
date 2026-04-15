@@ -1622,7 +1622,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener estado
      */
     public function ajax_obtener_estado() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $resultado = $this->action_obtener_estado(array());
         wp_send_json($resultado);
     }
@@ -1631,7 +1631,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener portfolio
      */
     public function ajax_obtener_portfolio() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $resultado = $this->action_obtener_portfolio(array());
         wp_send_json($resultado);
     }
@@ -1640,7 +1640,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener mercado
      */
     public function ajax_obtener_mercado() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $tokens = isset($_POST['tokens']) ? sanitize_text_field($_POST['tokens']) : '';
         $resultado = $this->action_obtener_datos_mercado(array('tokens' => $tokens));
         wp_send_json($resultado);
@@ -1650,7 +1650,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener indicadores
      */
     public function ajax_obtener_indicadores() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
         $resultado = $this->action_obtener_indicadores(array('token' => $token));
         wp_send_json($resultado);
@@ -1660,7 +1660,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Ejecutar compra
      */
     public function ajax_ejecutar_compra() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
         $cantidad_usd = isset($_POST['cantidad_usd']) ? floatval($_POST['cantidad_usd']) : 0;
@@ -1682,7 +1682,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Ejecutar venta
      */
     public function ajax_ejecutar_venta() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
         $cantidad = isset($_POST['cantidad']) ? floatval($_POST['cantidad']) : null;
@@ -1704,7 +1704,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Iniciar bot
      */
     public function ajax_iniciar_bot() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(array('success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)));
@@ -1718,7 +1718,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Detener bot
      */
     public function ajax_detener_bot() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(array('success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)));
@@ -1732,7 +1732,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Historial de trades
      */
     public function ajax_historial_trades() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $limite = isset($_POST['limite']) ? absint($_POST['limite']) : 20;
         $resultado = $this->action_obtener_historial_trades(array('limite' => $limite));
         wp_send_json($resultado);
@@ -1742,7 +1742,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener reglas
      */
     public function ajax_obtener_reglas() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $resultado = $this->action_obtener_reglas(array());
         wp_send_json($resultado);
     }
@@ -1751,7 +1751,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear regla
      */
     public function ajax_crear_regla() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $resultado = $this->action_crear_regla(array(
             'nombre'      => isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '',
@@ -1770,7 +1770,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Eliminar regla
      */
     public function ajax_eliminar_regla() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $regla_id = isset($_POST['regla_id']) ? sanitize_text_field($_POST['regla_id']) : '';
         $resultado = $this->action_eliminar_regla(array('regla_id' => $regla_id));
         wp_send_json($resultado);
@@ -1780,7 +1780,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Actualizar parametros
      */
     public function ajax_actualizar_parametros() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(array('success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)));
@@ -1795,7 +1795,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reset paper trading
      */
     public function ajax_reset_paper_trading() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(array('success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)));
@@ -1809,7 +1809,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Estado de riesgo
      */
     public function ajax_estado_riesgo() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
         $resultado = $this->action_obtener_estado_riesgo(array());
         wp_send_json($resultado);
     }
@@ -1818,7 +1818,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Agregar token a monitoreo
      */
     public function ajax_agregar_token() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $token_nuevo = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
 
@@ -1846,7 +1846,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Eliminar token del monitoreo
      */
     public function ajax_eliminar_token() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $token_eliminar = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
 
@@ -1873,7 +1873,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
      * AJAX: Exportar historial de trades
      */
     public function ajax_exportar_historial() {
-        check_ajax_referer('trading_ia_nonce', 'nonce');
+        check_ajax_referer('flavor_trading_ia_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
 
@@ -2348,7 +2348,7 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
         wp_localize_script('trading-ia-frontend', 'tradingIAData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'rest_url' => rest_url('flavor/v1/trading-ia'),
-            'nonce'    => wp_create_nonce('trading_ia_nonce'),
+            'nonce'    => wp_create_nonce('flavor_trading_ia_nonce'),
             'i18n'     => array(
                 'confirmar_compra'  => __('Confirmar compra?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmar_venta'   => __('Confirmar venta?', FLAVOR_PLATFORM_TEXT_DOMAIN),

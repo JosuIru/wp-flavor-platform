@@ -144,7 +144,7 @@ class Flavor_Campanias_Dashboard_Tab {
 
         wp_localize_script('flavor-campanias-dashboard', 'flavorCampaniasDashboard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('campanias_dashboard_nonce'),
+            'nonce'   => wp_create_nonce('flavor_campanias_dashboard_nonce'),
             'strings' => [
                 'confirmarRetirarFirma'  => __('¿Seguro que deseas retirar tu firma de esta campaña?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmarDejarSeguir'   => __('¿Seguro que deseas dejar de seguir esta campaña?', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -703,7 +703,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * AJAX: Retirar firma de una campania
      */
     public function ajax_retirar_firma() {
-        check_ajax_referer('campanias_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -754,7 +754,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * AJAX: Dejar de seguir una campania
      */
     public function ajax_dejar_seguir() {
-        check_ajax_referer('campanias_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -787,7 +787,7 @@ class Flavor_Campanias_Dashboard_Tab {
      * AJAX: Cambiar estado de una campania (solo creador)
      */
     public function ajax_cambiar_estado() {
-        check_ajax_referer('campanias_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

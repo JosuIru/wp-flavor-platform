@@ -17,7 +17,7 @@ $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 $mensaje = '';
 $tipo_mensaje = '';
 
-if (isset($_POST['comunidades_crear']) && wp_verify_nonce($_POST['comunidades_nonce'], 'comunidades_crear_comunidad')) {
+if (isset($_POST['comunidades_crear']) && wp_verify_nonce($_POST['flavor_comunidades_nonce'], 'comunidades_crear_comunidad')) {
     $nombre = sanitize_text_field($_POST['nombre'] ?? '');
     $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
     $categoria = sanitize_text_field($_POST['categoria'] ?? 'otros');
@@ -109,7 +109,7 @@ $categorias = [
     <?php endif; ?>
 
     <form method="post" action="" enctype="multipart/form-data">
-        <?php wp_nonce_field('comunidades_crear_comunidad', 'comunidades_nonce'); ?>
+        <?php wp_nonce_field('comunidades_crear_comunidad', 'flavor_comunidades_nonce'); ?>
 
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">

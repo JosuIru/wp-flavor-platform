@@ -362,7 +362,7 @@ class Flavor_GC_Payment_Manager {
      * @return void
      */
     public function ajax_process_checkout(): void {
-        check_ajax_referer('gc_checkout_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_checkout_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -390,7 +390,7 @@ class Flavor_GC_Payment_Manager {
      * @return void
      */
     public function ajax_get_checkout_form(): void {
-        check_ajax_referer('gc_checkout_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_checkout_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

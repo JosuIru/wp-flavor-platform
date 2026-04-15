@@ -35,7 +35,7 @@ if (!wp_script_is('flavor-economia-don', 'enqueued')) {
 }
 wp_localize_script('flavor-economia-don', 'edData', [
     'ajaxUrl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('ed_nonce'),
+    'nonce' => wp_create_nonce('flavor_ed_nonce'),
     'i18n' => [
         'confirmSolicitar' => __('¿Deseas solicitar este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'confirmEntrega' => __('¿Confirmas que has entregado este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -56,7 +56,7 @@ $categorias = $economia_don_module_class::CATEGORIAS_DON;
     </header>
 
     <form class="ed-form-ofrecer" method="post">
-        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('ed_nonce')); ?>">
+        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_ed_nonce')); ?>">
         <div class="ed-form-grupo">
             <label for="ed-titulo"><?php esc_html_e('¿Qué ofreces?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
             <input type="text" name="titulo" id="ed-titulo" required

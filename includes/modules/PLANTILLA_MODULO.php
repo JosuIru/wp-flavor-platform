@@ -486,7 +486,7 @@ KNOWLEDGE;
      * Handler para peticiones AJAX
      */
     public function ajax_handler() {
-        check_ajax_referer('mi_modulo_nonce', 'nonce');
+        check_ajax_referer('flavor_mi_modulo_nonce', 'nonce');
 
         // Tu lógica AJAX aquí
 

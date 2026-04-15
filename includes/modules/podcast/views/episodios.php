@@ -313,7 +313,7 @@ function eliminarEpisodio(episodioId) {
         jQuery.post(ajaxurl, {
             action: 'flavor_podcast_eliminar_episodio',
             episodio_id: episodioId,
-            nonce: '<?php echo wp_create_nonce('podcast_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_podcast_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();

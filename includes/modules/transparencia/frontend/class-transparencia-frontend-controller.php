@@ -185,7 +185,7 @@ class Flavor_Transparencia_Frontend_Controller {
 
         wp_localize_script('flavor-transparencia-frontend', 'flavorTransparencia', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('transparencia_nonce'),
+            'nonce' => wp_create_nonce('flavor_transparencia_nonce'),
             'estados' => $this->estados_solicitud,
             'categorias' => $this->categorias,
             'strings' => [

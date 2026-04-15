@@ -137,7 +137,7 @@ class Flavor_GC_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'),
-            'nonce' => wp_create_nonce('gc_nonce'),
+            'nonce' => wp_create_nonce('flavor_gc_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(home_url('/mi-portal/grupos-consumo/productos/')),
@@ -1055,7 +1055,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Agregar producto a lista
      */
     public function ajax_agregar_lista() {
-        check_ajax_referer('gc_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1136,7 +1136,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Quitar producto de lista
      */
     public function ajax_quitar_lista() {
-        check_ajax_referer('gc_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1160,7 +1160,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Actualizar cantidad
      */
     public function ajax_actualizar_cantidad() {
-        check_ajax_referer('gc_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1187,7 +1187,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Convertir lista en pedido
      */
     public function ajax_convertir_pedido() {
-        check_ajax_referer('gc_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

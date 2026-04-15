@@ -346,7 +346,7 @@ $todos_los_grupos = get_posts([
         <div class="gc-modal-body">
             <form id="form-nuevo-consumidor">
                 <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo_id); ?>">
-                <?php wp_nonce_field('gc_admin_nonce', 'gc_admin_nonce'); ?>
+                <?php wp_nonce_field('flavor_grupos_consumo_nonce', 'flavor_grupos_consumo_nonce'); ?>
 
                 <div class="gc-form-field">
                     <label for="nuevo-usuario"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
@@ -468,7 +468,7 @@ jQuery(document).ready(function($) {
                 action: 'gc_cambiar_estado_consumidor',
                 consumidor_id: consumidorId,
                 estado: nuevoEstado,
-                nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+                nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
             }, function(response) {
                 if (response.success) {
                     location.reload();
@@ -517,7 +517,7 @@ jQuery(document).ready(function($) {
             action: 'gc_cambiar_rol_consumidor',
             consumidor_id: consumidorId,
             rol: rolesString,
-            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
         }, function(response) {
             if (!response.success) {
                 gcAviso(response.data.mensaje || response.data.error, 'error');
@@ -570,7 +570,7 @@ jQuery(document).ready(function($) {
         $.post(ajaxurl, {
             action: 'gc_obtener_detalles_consumidor',
             consumidor_id: consumidorId,
-            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 var c = response.data.consumidor;
@@ -627,7 +627,7 @@ jQuery(document).ready(function($) {
         $.post(ajaxurl, {
             action: 'gc_listar_usuarios_wp',
             grupo_id: <?php echo $grupo_id ?: 0; ?>,
-            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
         }, function(response) {
             if (response.success && response.data.usuarios.length > 0) {
                 var html = '<div class="gc-usuarios-checkboxes">';
@@ -673,7 +673,7 @@ jQuery(document).ready(function($) {
             action: 'gc_importar_usuarios_wp',
             grupo_id: <?php echo $grupo_id ?: 0; ?>,
             usuarios: usuarios,
-            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 gcAviso(response.data.mensaje, 'success');

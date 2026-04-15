@@ -3824,7 +3824,7 @@ KNOWLEDGE;
      * AJAX: Moderar un elemento multimedia (aprobar/rechazar)
      */
     public function ajax_moderar_multimedia() {
-        check_ajax_referer('moderacion_nonce', 'nonce');
+        check_ajax_referer('flavor_moderacion_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para moderar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3881,7 +3881,7 @@ KNOWLEDGE;
      * AJAX: Moderar elementos multimedia en lote
      */
     public function ajax_moderar_masivo() {
-        check_ajax_referer('moderacion_nonce', 'nonce');
+        check_ajax_referer('flavor_moderacion_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para moderar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3923,7 +3923,7 @@ KNOWLEDGE;
      * AJAX: Ver detalle de un elemento multimedia
      */
     public function ajax_ver_detalle() {
-        check_ajax_referer('moderacion_nonce', 'nonce');
+        check_ajax_referer('flavor_moderacion_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para ver este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3971,7 +3971,7 @@ KNOWLEDGE;
      * AJAX: Eliminar una categoria de multimedia
      */
     public function ajax_eliminar_categoria() {
-        check_ajax_referer('multimedia_categoria_nonce', 'nonce');
+        check_ajax_referer('flavor_multimedia_categoria_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para eliminar categorias', FLAVOR_PLATFORM_TEXT_DOMAIN));

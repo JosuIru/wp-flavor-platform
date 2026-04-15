@@ -68,7 +68,7 @@ $categoria_colors = [
     </div>
 
     <form id="form-registrar-aportacion" class="registrar-form" method="post">
-        <?php wp_nonce_field('compostaje_registrar_aportacion', 'compostaje_nonce'); ?>
+        <?php wp_nonce_field('compostaje_registrar_aportacion', 'flavor_compostaje_nonce'); ?>
 
         <!-- Paso 1: Seleccionar punto -->
         <div class="form-section">

@@ -1137,7 +1137,7 @@ class Flavor_GC_Membership {
             </div>
 
             <form id="gc-formulario-union" class="gc-formulario-union" data-grupo-id="<?php echo esc_attr($grupo->ID); ?>">
-                <?php wp_nonce_field('gc_solicitar_union', 'gc_union_nonce'); ?>
+                <?php wp_nonce_field('flavor_gc_solicitar_union', 'gc_union_nonce'); ?>
                 <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo->ID); ?>">
 
                 <!-- Motivacion -->
@@ -1497,7 +1497,7 @@ class Flavor_GC_Membership {
      */
     public function ajax_solicitar_union() {
         // Verificar nonce
-        if (!check_ajax_referer('gc_solicitar_union', 'gc_union_nonce', false)) {
+        if (!check_ajax_referer('flavor_gc_solicitar_union', 'gc_union_nonce', false)) {
             wp_send_json_error(['error' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -1540,7 +1540,7 @@ class Flavor_GC_Membership {
      * AJAX: Aprobar solicitud
      */
     public function ajax_aprobar_solicitud() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
             wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1565,7 +1565,7 @@ class Flavor_GC_Membership {
      * AJAX: Rechazar solicitud
      */
     public function ajax_rechazar_solicitud() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
             wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1591,7 +1591,7 @@ class Flavor_GC_Membership {
      * AJAX: Obtener detalles de solicitud
      */
     public function ajax_obtener_solicitud() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
             wp_send_json_error(['error' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

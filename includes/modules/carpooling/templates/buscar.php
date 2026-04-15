@@ -37,7 +37,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
     </header>
 
     <form class="carpooling-form flavor-carpooling-buscar__form" id="carpooling-buscar-form" method="get">
-        <?php wp_nonce_field('carpooling_buscar_nonce', 'carpooling_nonce'); ?>
+        <?php wp_nonce_field('flavor_carpooling_nonce', 'flavor_carpooling_nonce'); ?>
 
         <!-- Origen y Destino -->
         <div class="carpooling-form-row">

@@ -886,7 +886,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         wp_localize_script('flavor-saberes-ancestrales', 'flavorSaberes', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('saberes_nonce'),
+            'nonce' => wp_create_nonce('flavor_saberes_nonce'),
             'categorias' => self::CATEGORIAS_SABER,
             'i18n' => [
                 'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -940,7 +940,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      * AJAX: Registrar un saber
      */
     public function ajax_registrar_saber(): void {
-        check_ajax_referer('saberes_nonce', 'nonce');
+        check_ajax_referer('flavor_saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -992,7 +992,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      * AJAX: Solicitar aprendizaje de un saber
      */
     public function ajax_solicitar_aprendizaje(): void {
-        check_ajax_referer('saberes_nonce', 'nonce');
+        check_ajax_referer('flavor_saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1049,7 +1049,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      * AJAX: Inscribirse en taller
      */
     public function ajax_inscribirse_taller(): void {
-        check_ajax_referer('saberes_nonce', 'nonce');
+        check_ajax_referer('flavor_saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1087,7 +1087,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      * AJAX: Agradecer un saber
      */
     public function ajax_agradecer_saber(): void {
-        check_ajax_referer('saberes_nonce', 'nonce');
+        check_ajax_referer('flavor_saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

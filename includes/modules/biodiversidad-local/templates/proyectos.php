@@ -35,7 +35,7 @@ $biodiversidad_local_module_class = function_exists('flavor_get_runtime_class_na
     : 'Flavor_Chat_Biodiversidad_Local_Module';
 wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
     'ajaxurl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('biodiversidad_nonce'),
+    'nonce' => wp_create_nonce('flavor_biodiversidad_nonce'),
     'categorias' => $biodiversidad_local_module_class::CATEGORIAS_ESPECIES,
     'estados' => $biodiversidad_local_module_class::ESTADOS_CONSERVACION,
     'habitats' => $biodiversidad_local_module_class::TIPOS_HABITAT,
@@ -163,7 +163,7 @@ $proyectos = get_posts([
     <?php if (is_user_logged_in()) : ?>
     <div id="tab-crear" class="bl-tab-contenido" style="display: none;">
         <form class="bl-form bl-form-proyecto" method="post">
-            <input type="hidden" name="bl_nonce" value="<?php echo esc_attr(wp_create_nonce('biodiversidad_nonce')); ?>">
+            <input type="hidden" name="bl_nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_biodiversidad_nonce')); ?>">
             <div class="bl-form-grupo">
                 <label for="bl-proyecto-titulo"><?php esc_html_e('Nombre del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <input type="text" name="titulo" id="bl-proyecto-titulo" required

@@ -38,7 +38,7 @@ $fecha_hoy = date('Y-m-d');
     <?php endif; ?>
 
     <form class="flavor-carpooling-busqueda-rapida__form" id="carpooling-busqueda-rapida-form">
-        <?php wp_nonce_field('carpooling_buscar_nonce', 'carpooling_nonce_rapida'); ?>
+        <?php wp_nonce_field('flavor_carpooling_nonce', 'flavor_carpooling_nonce'); ?>
 
         <?php if (!empty($atributos_widget['redirect_url'])) : ?>
             <input type="hidden" name="redirect_url" value="<?php echo esc_url($atributos_widget['redirect_url']); ?>" />

@@ -47,7 +47,7 @@ $categorias_disponibles = [
 $formatos_disponibles = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'odt', 'ods', 'csv', 'txt'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transparencia_guardar_config'])) {
-    check_admin_referer('transparencia_config', 'transparencia_nonce');
+    check_admin_referer('transparencia_config', 'flavor_transparencia_nonce');
 
     $categorias = array_values(array_intersect(
         array_map('sanitize_key', (array) ($_POST['categorias_habilitadas'] ?? [])),
@@ -123,7 +123,7 @@ $tamano_actual_mb = max(1, (int) floor(((int) $configuracion_actual['tamano_maxi
     </p>
 
     <form method="post">
-        <?php wp_nonce_field('transparencia_config', 'transparencia_nonce'); ?>
+        <?php wp_nonce_field('transparencia_config', 'flavor_transparencia_nonce'); ?>
         <input type="hidden" name="transparencia_guardar_config" value="1">
 
         <h2><?php esc_html_e('Solicitudes de Información', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>

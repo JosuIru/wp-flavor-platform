@@ -919,7 +919,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'restUrl' => rest_url('flavor/v1/energia-comunitaria/'),
                 'nonce' => wp_create_nonce('wp_rest'),
-                'formNonce' => wp_create_nonce('energia_comunitaria_nonce'),
+                'formNonce' => wp_create_nonce('flavor_energia_comunitaria_nonce'),
             ]);
             wp_enqueue_script('flavor-energia-comunitaria');
         }
@@ -2559,7 +2559,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
                                         <td>
                                             <form method="post" class="flavor-energia-inline-form"
                                                 action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                                                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                                                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                                                 <input type="hidden" name="action" value="energia_comunitaria_actualizar_liquidacion">
                                                 <input type="hidden" name="liquidacion_id"
                                                     value="<?php echo esc_attr($liquidacion['id']); ?>">
@@ -2605,7 +2605,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Crear comunidad energetica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_comunidad">
 
                 <div class="flavor-form-group">
@@ -2688,7 +2688,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Registrar instalacion energetica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_instalacion">
 
                 <div class="flavor-form-group">
@@ -2765,7 +2765,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Registrar participante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_participante">
 
                 <div class="flavor-form-group">
@@ -2834,7 +2834,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Cerrar reparto mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_cerrar_reparto">
 
                 <div class="flavor-form-group">
@@ -2884,7 +2884,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Registrar lectura energetica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_registrar_lectura">
 
                 <div class="flavor-form-group">
@@ -2943,7 +2943,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         <div class="flavor-energia-form-wrapper">
             <h3><?php esc_html_e('Reportar incidencia tecnica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-                <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_reportar_incidencia">
 
                 <div class="flavor-form-group">
@@ -2987,7 +2987,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_crear_instalacion()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
             wp_send_json_error(['message' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3025,7 +3025,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_crear_comunidad_energetica()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
             wp_send_json_error(['message' => __('No tienes permisos para crear comunidades energeticas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3060,7 +3060,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_registrar_lectura()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_submit_readings()) {
             wp_send_json_error(['message' => __('No tienes permisos para registrar lecturas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3100,7 +3100,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_crear_participante()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
             wp_send_json_error(['message' => __('No tienes permisos para registrar participantes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3137,7 +3137,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_cerrar_reparto()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
             wp_send_json_error(['message' => __('No tienes permisos para cerrar repartos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3161,7 +3161,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_reportar_incidencia()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_submit_reports()) {
             wp_send_json_error(['message' => __('No tienes permisos para reportar incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3184,7 +3184,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
 
     public function ajax_actualizar_liquidacion()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('No tienes permisos para gestionar liquidaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3207,7 +3207,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
      */
     public function ajax_actualizar_incidencia()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('No tienes permisos para actualizar incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -3286,7 +3286,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
      */
     public function ajax_exportar_liquidacion()
     {
-        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+        check_ajax_referer('flavor_energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesion para exportar la liquidacion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

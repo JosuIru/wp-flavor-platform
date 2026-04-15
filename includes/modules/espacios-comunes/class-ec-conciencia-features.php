@@ -967,7 +967,7 @@ class Flavor_EC_Conciencia_Features {
     // ─────────────────────────────────────────────────────────────
 
     public function ajax_ceder_reserva() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         $reserva_id = absint($_POST['reserva_id'] ?? 0);
         $es_solidaria = !empty($_POST['es_solidaria']);
@@ -978,7 +978,7 @@ class Flavor_EC_Conciencia_Features {
     }
 
     public function ajax_reclamar_cesion() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         $cesion_id = absint($_POST['cesion_id'] ?? 0);
         $resultado = $this->reclamar_cesion($cesion_id, get_current_user_id());
@@ -986,7 +986,7 @@ class Flavor_EC_Conciencia_Features {
     }
 
     public function ajax_registrar_consumo() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1005,7 +1005,7 @@ class Flavor_EC_Conciencia_Features {
     }
 
     public function ajax_apuntarse_voluntariado() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         $tarea_id = absint($_POST['tarea_id'] ?? 0);
         $resultado = $this->apuntarse_voluntariado($tarea_id, get_current_user_id());
@@ -1013,7 +1013,7 @@ class Flavor_EC_Conciencia_Features {
     }
 
     public function ajax_completar_voluntariado() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1028,7 +1028,7 @@ class Flavor_EC_Conciencia_Features {
     }
 
     public function ajax_lista_espera() {
-        check_ajax_referer('ec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_ec_conciencia_nonce', 'nonce');
 
         $resultado = $this->añadir_lista_espera(
             get_current_user_id(),
@@ -1089,7 +1089,7 @@ class Flavor_EC_Conciencia_Features {
             $atts['espacio_id'] ?: null,
             $atts['estado']
         );
-        $nonce = wp_create_nonce('ec_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_ec_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/voluntariado.php';

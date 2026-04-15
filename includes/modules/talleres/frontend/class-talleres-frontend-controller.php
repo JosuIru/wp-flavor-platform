@@ -87,7 +87,7 @@ class Flavor_Talleres_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-talleres', 'flavorTalleres', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('talleres_nonce'),
+            'nonce' => wp_create_nonce('flavor_talleres_nonce'),
             'i18n' => [
                 'inscrito' => __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cancelado' => __('Inscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -685,7 +685,7 @@ class Flavor_Talleres_Frontend_Controller {
      * AJAX: Inscribirse a taller
      */
     public function ajax_inscribirse() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -750,7 +750,7 @@ class Flavor_Talleres_Frontend_Controller {
      * AJAX: Cancelar inscripción
      */
     public function ajax_cancelar_inscripcion() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -779,7 +779,7 @@ class Flavor_Talleres_Frontend_Controller {
      * AJAX: Valorar taller
      */
     public function ajax_valorar() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -816,7 +816,7 @@ class Flavor_Talleres_Frontend_Controller {
      * AJAX: Filtrar talleres
      */
     public function ajax_filtrar() {
-        check_ajax_referer('talleres_nonce', 'nonce');
+        check_ajax_referer('flavor_talleres_nonce', 'nonce');
 
         $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
         $busqueda = isset($_POST['busqueda']) ? sanitize_text_field($_POST['busqueda']) : '';

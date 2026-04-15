@@ -1783,7 +1783,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Solicitar préstamo
      */
     public function ajax_solicitar_prestamo() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_solicitar_prestamo([
             'libro_id' => isset($_POST['libro_id']) ? intval($_POST['libro_id']) : 0,
@@ -1797,7 +1797,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Devolver libro
      */
     public function ajax_devolver_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_devolver_libro([
             'prestamo_id' => isset($_POST['prestamo_id']) ? intval($_POST['prestamo_id']) : 0,
@@ -1810,7 +1810,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Renovar préstamo
      */
     public function ajax_renovar_prestamo() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_renovar_prestamo([
             'prestamo_id' => isset($_POST['prestamo_id']) ? intval($_POST['prestamo_id']) : 0,
@@ -1823,7 +1823,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reservar libro
      */
     public function ajax_reservar_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_reservar_libro([
             'libro_id' => isset($_POST['libro_id']) ? intval($_POST['libro_id']) : 0,
@@ -1836,7 +1836,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
@@ -1863,7 +1863,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Valorar libro
      */
     public function ajax_valorar_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_valorar_libro([
             'libro_id' => isset($_POST['libro_id']) ? intval($_POST['libro_id']) : 0,
@@ -1878,7 +1878,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Agregar libro
      */
     public function ajax_agregar_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $resultado = $this->action_agregar_libro([
             'titulo' => isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '',
@@ -1903,7 +1903,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Editar libro
      */
     public function ajax_editar_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
@@ -1949,7 +1949,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Eliminar libro
      */
     public function ajax_eliminar_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
@@ -1986,7 +1986,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Aprobar préstamo
      */
     public function ajax_aprobar_prestamo() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
@@ -2040,7 +2040,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Rechazar préstamo
      */
     public function ajax_rechazar_prestamo() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
@@ -2074,7 +2074,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Buscar ISBN
      */
     public function ajax_buscar_isbn() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         $isbn = isset($_POST['isbn']) ? sanitize_text_field($_POST['isbn']) : '';
         $resultado = $this->buscar_datos_isbn($isbn);
@@ -2086,7 +2086,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Completar reserva - Convierte una reserva confirmada en un préstamo activo
      */
     public function ajax_completar_reserva() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('biblioteca_gestionar')) {
             wp_send_json(['success' => false, 'error' => __('No tienes permisos para esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2170,7 +2170,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Confirmar reserva - Marca una reserva pendiente como confirmada
      */
     public function ajax_confirmar_reserva() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
@@ -2242,7 +2242,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * AJAX: Enviar recordatorio - Envía un recordatorio manual de devolución
      */
     public function ajax_enviar_recordatorio() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         global $wpdb;
         $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
@@ -2292,7 +2292,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * Usado por: views/libros.php (botón "Historial")
      */
     public function ajax_historial_libro() {
-        check_ajax_referer('biblioteca_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_nonce', 'nonce');
 
         // Solo usuarios con permisos de gestión pueden ver historial
         if (!current_user_can('manage_options') && !current_user_can('biblioteca_gestionar') && !current_user_can('edit_posts')) {
@@ -2366,7 +2366,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_nonce'),
             'usuario_logueado' => is_user_logged_in(),
         ]);
 
@@ -2397,7 +2397,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_nonce'),
             'usuario_logueado' => is_user_logged_in(),
         ]);
 
@@ -2422,7 +2422,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_nonce'),
             'usuario_logueado' => true,
         ]);
 
@@ -2447,7 +2447,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_nonce'),
             'usuario_logueado' => true,
         ]);
 
@@ -2473,7 +2473,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_nonce'),
             'usuario_logueado' => true,
         ]);
 

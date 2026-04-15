@@ -77,7 +77,7 @@ class Flavor_Socios_Frontend_Controller {
 
         wp_localize_script('flavor-socios', 'flavorSocios', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('socios_nonce'),
+            'nonce' => wp_create_nonce('flavor_socios_nonce'),
             'i18n' => [
                 'solicitud_enviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'perfil_actualizado' => __('Perfil actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -221,7 +221,7 @@ class Flavor_Socios_Frontend_Controller {
             <?php endif; ?>
 
             <form id="form-alta-socio" class="flavor-form" <?php echo ($atts['mostrar_tipos'] === 'true' && !empty($tipos_membresia)) ? 'style="display:none;"' : ''; ?>>
-                <?php wp_nonce_field('socios_nonce', 'socios_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_socios_nonce', 'socios_nonce_field'); ?>
                 <input type="hidden" name="tipo_membresia_id" id="tipo_membresia_id" value="<?php echo esc_attr($atts['tipo_membresia']); ?>">
 
                 <div class="flavor-form-section">
@@ -435,7 +435,7 @@ class Flavor_Socios_Frontend_Controller {
             <div class="perfil-datos">
                 <h3><?php esc_html_e('Mis Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <form id="form-actualizar-perfil" class="flavor-form">
-                    <?php wp_nonce_field('socios_nonce', 'socios_nonce_field'); ?>
+                    <?php wp_nonce_field('flavor_socios_nonce', 'socios_nonce_field'); ?>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-6">
@@ -869,7 +869,7 @@ class Flavor_Socios_Frontend_Controller {
      * AJAX: Solicitar alta
      */
     public function ajax_solicitar_alta() {
-        check_ajax_referer('socios_nonce', 'socios_nonce_field');
+        check_ajax_referer('flavor_socios_nonce', 'socios_nonce_field');
 
         $nombre = isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '';
         $apellidos = isset($_POST['apellidos']) ? sanitize_text_field($_POST['apellidos']) : '';
@@ -967,7 +967,7 @@ class Flavor_Socios_Frontend_Controller {
      * AJAX: Actualizar perfil
      */
     public function ajax_actualizar_perfil() {
-        check_ajax_referer('socios_nonce', 'socios_nonce_field');
+        check_ajax_referer('flavor_socios_nonce', 'socios_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1000,7 +1000,7 @@ class Flavor_Socios_Frontend_Controller {
      * AJAX: Renovar cuota
      */
     public function ajax_renovar_cuota() {
-        check_ajax_referer('socios_nonce', 'nonce');
+        check_ajax_referer('flavor_socios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1044,7 +1044,7 @@ class Flavor_Socios_Frontend_Controller {
      * AJAX: Descargar carnet
      */
     public function ajax_descargar_carnet() {
-        check_ajax_referer('socios_nonce', 'nonce');
+        check_ajax_referer('flavor_socios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));

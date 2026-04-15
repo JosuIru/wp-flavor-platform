@@ -227,7 +227,7 @@ class Flavor_Eventos_API {
      */
     public function ajax_crear_evento() {
         // Verificar nonce
-        if (!isset($_POST['eventos_nonce']) || !wp_verify_nonce($_POST['eventos_nonce'], 'eventos_crear')) {
+        if (!isset($_POST['flavor_eventos_nonce']) || !wp_verify_nonce($_POST['flavor_eventos_nonce'], 'eventos_crear')) {
             wp_send_json_error(['message' => __('Sesion expirada. Recarga la pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 

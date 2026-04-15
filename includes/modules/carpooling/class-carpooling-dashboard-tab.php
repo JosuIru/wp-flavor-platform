@@ -130,7 +130,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         wp_localize_script('carpooling-dashboard', 'carpoolingDashboard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('carpooling_dashboard_nonce'),
+            'nonce' => wp_create_nonce('flavor_carpooling_dashboard_nonce'),
             'i18n' => [
                 'confirmarCancelar' => __('¿Seguro que quieres cancelar este viaje?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmarCancelarReserva' => __('¿Seguro que quieres cancelar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1447,7 +1447,7 @@ class Flavor_Carpooling_Dashboard_Tab {
      * AJAX: Cancelar viaje
      */
     public function ajax_cancelar_viaje() {
-        check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1493,7 +1493,7 @@ class Flavor_Carpooling_Dashboard_Tab {
      * AJAX: Finalizar viaje
      */
     public function ajax_finalizar_viaje() {
-        check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1537,7 +1537,7 @@ class Flavor_Carpooling_Dashboard_Tab {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1592,7 +1592,7 @@ class Flavor_Carpooling_Dashboard_Tab {
      * AJAX: Valorar viaje/conductor
      */
     public function ajax_valorar() {
-        check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

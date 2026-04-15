@@ -658,7 +658,7 @@ jQuery(document).ready(function($) {
             $.post(ajaxurl, {
                 action: 'gc_enviar_consolidado_productores',
                 ciclo_id: cicloId,
-                nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+                nonce: '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>'
             }, function(response) {
                 if (response.success) {
                     gcConsolidadoAviso('<?php echo esc_js(__('Consolidado enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');

@@ -771,7 +771,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-red-social', 'flavorRedSocial', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('rs_nonce'),
+            'nonce' => wp_create_nonce('flavor_red_social_nonce'),
             'userId' => get_current_user_id(),
             'maxCaracteres' => $this->get_setting('max_caracteres_publicacion'),
             'maxImagenes' => $this->get_setting('max_imagenes_por_post'),
@@ -829,7 +829,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear publicacion
      */
     public function ajax_crear_publicacion() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -918,7 +918,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Toggle like
      */
     public function ajax_toggle_like() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1008,7 +1008,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear comentario
      */
     public function ajax_crear_comentario() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1078,7 +1078,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener comentarios
      */
     public function ajax_obtener_comentarios() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
         $limite = absint($_POST['limite'] ?? 10);
@@ -1124,7 +1124,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Like comentario
      */
     public function ajax_like_comentario() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1183,7 +1183,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Toggle seguir
      */
     public function ajax_toggle_seguir() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $seguidor_id = get_current_user_id();
         if (!$seguidor_id) {
@@ -1246,7 +1246,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cargar feed
      */
     public function ajax_cargar_feed() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         $desde_id = absint($_POST['desde'] ?? 0);
@@ -1275,7 +1275,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Buscar usuarios
      */
     public function ajax_buscar_usuarios() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $query = sanitize_text_field($_POST['query'] ?? '');
         $limite = absint($_POST['limite'] ?? 10);
@@ -1311,7 +1311,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener historias
      */
     public function ajax_obtener_historias() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = absint($_POST['usuario_id'] ?? 0);
 
@@ -1356,7 +1356,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear historia
      */
     public function ajax_crear_historia() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1406,7 +1406,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Guardar post
      */
     public function ajax_guardar_post() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1450,7 +1450,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener notificaciones
      */
     public function ajax_obtener_notificaciones() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1503,7 +1503,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Marcar notificacion como leida
      */
     public function ajax_marcar_notificacion_leida() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1541,7 +1541,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener perfil
      */
     public function ajax_obtener_perfil() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = absint($_POST['usuario_id'] ?? 0);
         $usuario_actual = get_current_user_id();
@@ -1566,7 +1566,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Actualizar perfil
      */
     public function ajax_actualizar_perfil() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1615,7 +1615,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Eliminar publicacion
      */
     public function ajax_eliminar_publicacion() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1657,7 +1657,7 @@ class Flavor_Platform_Red_Social_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reportar contenido
      */
     public function ajax_reportar_contenido() {
-        check_ajax_referer('rs_nonce', 'nonce');
+        check_ajax_referer('flavor_red_social_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {

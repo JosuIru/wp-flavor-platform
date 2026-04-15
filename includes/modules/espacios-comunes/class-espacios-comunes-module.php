@@ -1402,7 +1402,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     // =========================================================================
 
     public function ajax_crear_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         $resultado = $this->action_crear_reserva([
             'espacio_id' => isset($_POST['espacio_id']) ? intval($_POST['espacio_id']) : 0,
@@ -1417,7 +1417,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         $resultado = $this->action_cancelar_reserva([
             'reserva_id' => isset($_POST['reserva_id']) ? intval($_POST['reserva_id']) : 0,
@@ -1427,7 +1427,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_valorar() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         $resultado = $this->action_valorar_espacio([
             'reserva_id' => isset($_POST['reserva_id']) ? intval($_POST['reserva_id']) : 0,
@@ -1449,7 +1449,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_reportar_incidencia() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         $resultado = $this->action_reportar_incidencia([
             'espacio_id' => isset($_POST['espacio_id']) ? intval($_POST['espacio_id']) : 0,
@@ -1463,7 +1463,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_confirmar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => 'Sin permisos']);
@@ -1485,7 +1485,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_rechazar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => 'Sin permisos']);
@@ -1508,7 +1508,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     public function ajax_devolver_fianza() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => 'Sin permisos']);
@@ -1528,7 +1528,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar espacio (crear o actualizar)
      */
     public function ajax_guardar_espacio() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1608,7 +1608,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar reserva (crear o actualizar desde admin)
      */
     public function ajax_guardar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1733,7 +1733,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Listar espacios (para admin)
      */
     public function ajax_listar_espacios() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1802,7 +1802,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Listar reservas (para admin)
      */
     public function ajax_listar_reservas() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1902,7 +1902,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener espacio individual
      */
     public function ajax_obtener_espacio() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1933,7 +1933,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Eliminar espacio
      */
     public function ajax_eliminar_espacio() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1982,7 +1982,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener reserva individual
      */
     public function ajax_obtener_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2025,7 +2025,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Eliminar reserva
      */
     public function ajax_eliminar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2068,7 +2068,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Listar normas
      */
     public function ajax_listar_normas() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2108,7 +2108,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener norma individual
      */
     public function ajax_obtener_norma() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2141,7 +2141,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar norma
      */
     public function ajax_guardar_norma() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2219,7 +2219,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Eliminar norma
      */
     public function ajax_eliminar_norma() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2250,7 +2250,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener políticas de cancelación
      */
     public function ajax_obtener_politicas_cancelacion() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2270,7 +2270,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar políticas de cancelación
      */
     public function ajax_guardar_politicas_cancelacion() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2297,7 +2297,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener restricciones de uso
      */
     public function ajax_obtener_restricciones() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2316,7 +2316,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar restricciones de uso
      */
     public function ajax_guardar_restricciones() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2337,7 +2337,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener configuración de notificaciones
      */
     public function ajax_obtener_config_notificaciones() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2357,7 +2357,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar configuración de notificaciones
      */
     public function ajax_guardar_notificaciones() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2379,7 +2379,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener calendario de disponibilidad
      */
     public function ajax_obtener_calendario() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2442,7 +2442,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener eventos del calendario (para vista de calendario)
      */
     public function ajax_obtener_eventos_calendario() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2555,7 +2555,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener estadísticas del calendario
      */
     public function ajax_obtener_estadisticas_calendario() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2632,7 +2632,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         }
 
         // Verificar nonce
-        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'espacios_calendario_nonce')) {
+        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'flavor_espacios_calendario_nonce')) {
             wp_die(__('Verificación de seguridad fallida.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
@@ -2711,7 +2711,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Listar usuarios (para select en formularios)
      */
     public function ajax_listar_usuarios() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2764,7 +2764,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('espacios_nonce'),
+            'nonce' => wp_create_nonce('flavor_espacios_nonce'),
             'usuario_logueado' => is_user_logged_in(),
         ]);
 
@@ -2789,7 +2789,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('espacios_nonce'),
+            'nonce' => wp_create_nonce('flavor_espacios_nonce'),
             'usuario_logueado' => is_user_logged_in(),
             'espacio_id' => $espacio_id,
         ]);
@@ -2812,7 +2812,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('espacios_nonce'),
+            'nonce' => wp_create_nonce('flavor_espacios_nonce'),
             'usuario_logueado' => true,
         ]);
 
@@ -2832,7 +2832,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('espacios_nonce'),
+            'nonce' => wp_create_nonce('flavor_espacios_nonce'),
             'espacio_id' => intval($atts['espacio_id']),
         ]);
 

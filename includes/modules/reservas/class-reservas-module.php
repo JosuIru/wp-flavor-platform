@@ -1130,7 +1130,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                 <div id="reservas-mensajes"></div>
 
                 <form id="form-nueva-reserva" method="post">
-                    <?php wp_nonce_field('reservas_crear_nonce', 'reservas_nonce'); ?>
+                    <?php wp_nonce_field('reservas_crear_nonce', 'flavor_reservas_nonce'); ?>
 
                     <div class="reservas-form-group">
                         <label class="reservas-form-label" for="tipo_servicio"><?php esc_html_e('Tipo de servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
@@ -1618,7 +1618,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear reserva desde shortcode
      */
     public function ajax_crear_reserva() {
-        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) || isset($_POST['recurso_id'])) {
+        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'flavor_reservas_nonce')) || isset($_POST['recurso_id'])) {
             if (class_exists('Flavor_Reservas_Frontend_Controller')) {
                 Flavor_Reservas_Frontend_Controller::get_instance()->ajax_crear_reserva();
                 return;
@@ -1626,7 +1626,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
         }
 
         // Verificar nonce
-        if (!wp_verify_nonce($_POST['reservas_nonce'] ?? '', 'reservas_crear_nonce')) {
+        if (!wp_verify_nonce($_POST['flavor_reservas_nonce'] ?? '', 'reservas_crear_nonce')) {
             wp_send_json_error(['error' => __('Error de seguridad. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -1664,7 +1664,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cancelar reserva desde shortcode
      */
     public function ajax_cancelar_reserva() {
-        if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) {
+        if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'flavor_reservas_nonce')) {
             if (class_exists('Flavor_Reservas_Frontend_Controller')) {
                 Flavor_Reservas_Frontend_Controller::get_instance()->ajax_cancelar_reserva();
                 return;
@@ -1695,7 +1695,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
      * AJAX: Consultar disponibilidad desde shortcode
      */
     public function ajax_consultar_disponibilidad() {
-        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) || isset($_POST['recurso_id'])) {
+        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'flavor_reservas_nonce')) || isset($_POST['recurso_id'])) {
             if (class_exists('Flavor_Reservas_Frontend_Controller')) {
                 Flavor_Reservas_Frontend_Controller::get_instance()->ajax_verificar_disponibilidad();
                 return;
@@ -2007,7 +2007,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
         $estados = $this->get_setting('estados_reserva', []);
 
         echo '<form method="post">';
-        wp_nonce_field('crear_reserva', 'reservas_nonce');
+        wp_nonce_field('crear_reserva', 'flavor_reservas_nonce');
         echo '<table class="form-table"><tbody>';
         echo '<tr><th>' . esc_html__('Tipo de servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><select name="tipo_servicio">';
         foreach ($tipos as $key => $label) {
@@ -2137,10 +2137,10 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
     }
 
     private function handle_admin_create_reserva() {
-        if (empty($_POST['reservas_nonce'])) {
+        if (empty($_POST['flavor_reservas_nonce'])) {
             return;
         }
-        if (!wp_verify_nonce($_POST['reservas_nonce'], 'crear_reserva')) {
+        if (!wp_verify_nonce($_POST['flavor_reservas_nonce'], 'crear_reserva')) {
             echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
@@ -4009,7 +4009,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="reservas-formulario-container">
             <form id="form-nueva-reserva" class="reservas-form">
-                <?php wp_nonce_field('reservas_crear', 'reservas_nonce'); ?>
+                <?php wp_nonce_field('reservas_crear', 'flavor_reservas_nonce'); ?>
 
                 <div class="form-section">
                     <h4><?php esc_html_e('Selecciona el recurso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>

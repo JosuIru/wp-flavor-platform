@@ -697,7 +697,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 $.post(ajaxurl, {
                     action: 'comunidades_dashboard_notificaciones',
                     subaction: 'marcar_todas',
-                    nonce: '<?php echo wp_create_nonce('comunidades_dashboard_nonce'); ?>'
+                    nonce: '<?php echo wp_create_nonce('flavor_comunidades_dashboard_nonce'); ?>'
                 }, function(response) {
                     if (response.success) {
                         $('.flavor-notificacion-item').removeClass('no-leida').addClass('leida');
@@ -718,7 +718,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                     action: 'comunidades_dashboard_notificaciones',
                     subaction: 'guardar_preferencias',
                     preferencias: preferencias,
-                    nonce: '<?php echo wp_create_nonce('comunidades_dashboard_nonce'); ?>'
+                    nonce: '<?php echo wp_create_nonce('flavor_comunidades_dashboard_nonce'); ?>'
                 }, function(response) {
                     if (response.success) {
                         mostrarAviso('<?php echo esc_js(__('Preferencias guardadas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');
@@ -922,7 +922,7 @@ class Flavor_Comunidades_Dashboard_Tab {
      * AJAX: Cargar más actividad
      */
     public function ajax_cargar_actividad() {
-        check_ajax_referer('comunidades_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_comunidades_dashboard_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -959,7 +959,7 @@ class Flavor_Comunidades_Dashboard_Tab {
      * AJAX: Manejar notificaciones
      */
     public function ajax_cargar_notificaciones() {
-        check_ajax_referer('comunidades_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_comunidades_dashboard_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {

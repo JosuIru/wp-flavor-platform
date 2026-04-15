@@ -104,7 +104,7 @@ class Flavor_Cursos_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor/v1/cursos/'),
-            'nonce' => wp_create_nonce('cursos_frontend_nonce'),
+            'nonce' => wp_create_nonce('flavor_cursos_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(flavor_current_request_url()),
@@ -975,7 +975,7 @@ class Flavor_Cursos_Frontend_Controller {
      * AJAX: Inscribirse en curso
      */
     public function ajax_inscribirse() {
-        check_ajax_referer('cursos_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1030,7 +1030,7 @@ class Flavor_Cursos_Frontend_Controller {
      * AJAX: Cancelar inscripción
      */
     public function ajax_cancelar_inscripcion() {
-        check_ajax_referer('cursos_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1076,7 +1076,7 @@ class Flavor_Cursos_Frontend_Controller {
      * AJAX: Filtrar cursos
      */
     public function ajax_filtrar() {
-        check_ajax_referer('cursos_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_frontend_nonce', 'nonce');
 
         $texto = sanitize_text_field($_POST['texto'] ?? '');
         $categoria = sanitize_text_field($_POST['categoria'] ?? '');
@@ -1136,7 +1136,7 @@ class Flavor_Cursos_Frontend_Controller {
      * AJAX: Completar leccion
      */
     public function ajax_completar_leccion() {
-        check_ajax_referer('cursos_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

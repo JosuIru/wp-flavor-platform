@@ -113,7 +113,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
         wp_localize_script('biblioteca-dashboard-tab', 'bibliotecaDashboard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biblioteca_dashboard_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_dashboard_nonce'),
             'i18n' => [
                 'confirmarEliminarFavorito' => __('¿Eliminar este libro de favoritos?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'agregadoFavoritos' => __('Libro agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -972,7 +972,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
      * AJAX: Toggle favorito (agregar/quitar)
      */
     public function ajax_toggle_favorito() {
-        check_ajax_referer('biblioteca_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1033,7 +1033,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
      * AJAX: Obtener lista de favoritos del usuario
      */
     public function ajax_obtener_favoritos() {
-        check_ajax_referer('biblioteca_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

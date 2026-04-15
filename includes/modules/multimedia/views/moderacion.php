@@ -212,7 +212,7 @@ function aprobar(id) {
             action: 'flavor_multimedia_moderar',
             multimedia_id: id,
             estado: 'aprobado',
-            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_moderacion_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -231,7 +231,7 @@ function rechazar(id) {
             multimedia_id: id,
             estado: 'rechazado',
             motivo: motivo,
-            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_moderacion_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -268,7 +268,7 @@ function aprobarSeleccionados() {
             action: 'flavor_multimedia_moderar_masivo',
             ids: ids,
             estado: 'aprobado',
-            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_moderacion_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -293,7 +293,7 @@ function rechazarSeleccionados() {
             action: 'flavor_multimedia_moderar_masivo',
             ids: ids,
             estado: 'rechazado',
-            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_moderacion_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();

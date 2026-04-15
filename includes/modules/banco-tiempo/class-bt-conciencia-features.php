@@ -380,7 +380,7 @@ class Flavor_BT_Conciencia_Features {
      * AJAX: Valorar intercambio
      */
     public function ajax_valorar_intercambio(): void {
-        check_ajax_referer('bt_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -409,7 +409,7 @@ class Flavor_BT_Conciencia_Features {
      * AJAX: Obtener reputación
      */
     public function ajax_obtener_reputacion(): void {
-        check_ajax_referer('bt_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_bt_conciencia_nonce', 'nonce');
 
         $usuario_id = intval($_POST['usuario_id'] ?? get_current_user_id());
         $reputacion = $this->obtener_reputacion($usuario_id);
@@ -640,7 +640,7 @@ class Flavor_BT_Conciencia_Features {
      * AJAX: Donar horas
      */
     public function ajax_donar_horas(): void {
-        check_ajax_referer('bt_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -667,7 +667,7 @@ class Flavor_BT_Conciencia_Features {
      * AJAX: Solicitar fondo
      */
     public function ajax_solicitar_fondo(): void {
-        check_ajax_referer('bt_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -950,7 +950,7 @@ class Flavor_BT_Conciencia_Features {
      * AJAX: Obtener métricas
      */
     public function ajax_obtener_metricas(): void {
-        check_ajax_referer('bt_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_bt_conciencia_nonce', 'nonce');
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? 'mensual');
         $metricas = $this->calcular_metricas_periodo($tipo);
@@ -1079,7 +1079,7 @@ class Flavor_BT_Conciencia_Features {
         }
 
         $saldo = $this->obtener_saldo(get_current_user_id());
-        $nonce = wp_create_nonce('bt_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_bt_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/donar-horas.php';

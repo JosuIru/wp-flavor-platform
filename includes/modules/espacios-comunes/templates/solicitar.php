@@ -108,7 +108,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
         </div>
 
         <form id="form-solicitar-reserva" class="solicitar-form" method="post">
-            <?php wp_nonce_field('espacios_crear_reserva', 'espacios_nonce'); ?>
+            <?php wp_nonce_field('flavor_espacios_crear_reserva', 'flavor_espacios_nonce'); ?>
 
             <!-- Paso 1: Seleccion de espacio -->
             <div class="solicitar-seccion">

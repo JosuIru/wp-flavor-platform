@@ -747,7 +747,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                     data: {
                         action: 'transparencia_quitar_documento',
                         documento_id: documentoId,
-                        nonce: '<?php echo wp_create_nonce('transparencia_docs_nonce'); ?>'
+                        nonce: '<?php echo wp_create_nonce('flavor_transparencia_docs_nonce'); ?>'
                     },
                     success: function(respuesta) {
                         if (respuesta.success) {
@@ -827,7 +827,7 @@ class Flavor_Transparencia_Dashboard_Tab {
      * Handler AJAX para guardar documento
      */
     public function ajax_guardar_documento() {
-        check_ajax_referer('transparencia_docs_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_docs_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -868,7 +868,7 @@ class Flavor_Transparencia_Dashboard_Tab {
      * Handler AJAX para quitar documento de guardados
      */
     public function ajax_quitar_documento() {
-        check_ajax_referer('transparencia_docs_nonce', 'nonce');
+        check_ajax_referer('flavor_transparencia_docs_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {

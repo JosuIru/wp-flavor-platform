@@ -147,7 +147,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
 
         wp_localize_script('flavor-reciclaje-dashboard', 'flavorReciclajeDashboard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('reciclaje_dashboard_nonce'),
+            'nonce'   => wp_create_nonce('flavor_reciclaje_dashboard_nonce'),
             'i18n'    => [
                 'loading'      => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error'        => __('Error al cargar los datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1211,7 +1211,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
      * AJAX handler para cargar contenido de tab dinamicamente
      */
     public function ajax_load_tab_content() {
-        check_ajax_referer('reciclaje_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

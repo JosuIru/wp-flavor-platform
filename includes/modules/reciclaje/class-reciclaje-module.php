@@ -1168,7 +1168,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-reciclaje', 'flavorReciclaje', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('reciclaje_nonce'),
+            'nonce' => wp_create_nonce('flavor_reciclaje_nonce'),
             'i18n' => [
                 'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'success' => __('Operación realizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -1196,7 +1196,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Registrar depósito
      */
     public function ajax_registrar_deposito() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1265,7 +1265,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener puntos cercanos
      */
     public function ajax_obtener_puntos() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         $result = $this->action_puntos_cercanos($_POST);
         wp_send_json($result);
@@ -1275,7 +1275,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reportar contenedor
      */
     public function ajax_reportar_contenedor() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1320,7 +1320,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Calendario de recogidas
      */
     public function ajax_calendario_recogidas() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         global $wpdb;
         $tabla_recogidas = $wpdb->prefix . 'flavor_reciclaje_recogidas';
@@ -1355,7 +1355,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Mis puntos
      */
     public function ajax_mis_puntos() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1386,7 +1386,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Canjear puntos
      */
     public function ajax_canjear_puntos() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1424,7 +1424,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Exportar datos de reciclaje a CSV
      */
     public function ajax_export_csv() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in() || !current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('No tienes permisos para exportar datos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1581,7 +1581,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Ver detalle de una recogida programada
      */
     public function ajax_ver_recogida() {
-        check_ajax_referer('reciclaje_nonce', 'nonce');
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         global $wpdb;
 

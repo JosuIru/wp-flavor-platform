@@ -3844,7 +3844,7 @@ KNOWLEDGE;
      * AJAX: Eliminar un episodio de podcast
      */
     public function ajax_eliminar_episodio() {
-        check_ajax_referer('podcast_nonce', 'nonce');
+        check_ajax_referer('flavor_podcast_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para eliminar episodios', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3897,7 +3897,7 @@ KNOWLEDGE;
      * AJAX: Eliminar una suscripcion de podcast
      */
     public function ajax_eliminar_suscripcion() {
-        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+        check_ajax_referer('flavor_podcast_suscriptores_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para eliminar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3931,7 +3931,7 @@ KNOWLEDGE;
      * AJAX: Enviar notificacion a suscriptores seleccionados
      */
     public function ajax_enviar_notificacion() {
-        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+        check_ajax_referer('flavor_podcast_suscriptores_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para enviar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -3983,7 +3983,7 @@ KNOWLEDGE;
      * AJAX: Alternar estado de notificaciones de una suscripcion
      */
     public function ajax_toggle_notificaciones() {
-        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+        check_ajax_referer('flavor_podcast_suscriptores_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para modificar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));

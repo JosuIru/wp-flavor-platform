@@ -947,7 +947,7 @@ class Flavor_GC_Dashboard_Tab {
         $current_user_id = get_current_user_id();
         wp_localize_script('gc-dashboard', 'gcDashboardData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('gc_lista_compra_nonce'),
+            'nonce' => wp_create_nonce('flavor_gc_lista_compra_nonce'),
             'suscripcion_nonce' => wp_create_nonce('gc_suscripcion_nonce'),
             'charts' => [
                 'labels' => $this->get_chart_labels_last_months(6),
@@ -2592,7 +2592,7 @@ class Flavor_GC_Dashboard_Tab {
      * AJAX: Agregar a lista de compra
      */
     public function ajax_agregar_lista_compra() {
-        check_ajax_referer('gc_lista_compra_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_lista_compra_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2615,7 +2615,7 @@ class Flavor_GC_Dashboard_Tab {
      * AJAX: Quitar de lista
      */
     public function ajax_quitar_lista_compra() {
-        check_ajax_referer('gc_lista_compra_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_lista_compra_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2637,7 +2637,7 @@ class Flavor_GC_Dashboard_Tab {
      * AJAX: Actualizar cantidad
      */
     public function ajax_actualizar_cantidad() {
-        check_ajax_referer('gc_lista_compra_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_lista_compra_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2659,7 +2659,7 @@ class Flavor_GC_Dashboard_Tab {
      * AJAX: Vaciar lista
      */
     public function ajax_vaciar_lista() {
-        check_ajax_referer('gc_lista_compra_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_lista_compra_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2673,7 +2673,7 @@ class Flavor_GC_Dashboard_Tab {
      * AJAX: Convertir lista a pedido
      */
     public function ajax_convertir_a_pedido() {
-        check_ajax_referer('gc_lista_compra_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_lista_compra_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

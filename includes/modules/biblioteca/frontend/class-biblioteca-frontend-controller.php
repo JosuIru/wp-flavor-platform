@@ -101,7 +101,7 @@ class Flavor_Biblioteca_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor/v1/biblioteca/'),
-            'nonce' => wp_create_nonce('biblioteca_frontend_nonce'),
+            'nonce' => wp_create_nonce('flavor_biblioteca_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(flavor_current_request_url()),
@@ -896,7 +896,7 @@ class Flavor_Biblioteca_Frontend_Controller {
      * AJAX: Reservar libro
      */
     public function ajax_reservar_libro() {
-        check_ajax_referer('biblioteca_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -947,7 +947,7 @@ class Flavor_Biblioteca_Frontend_Controller {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('biblioteca_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -975,7 +975,7 @@ class Flavor_Biblioteca_Frontend_Controller {
      * AJAX: Renovar préstamo
      */
     public function ajax_renovar_prestamo() {
-        check_ajax_referer('biblioteca_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1025,7 +1025,7 @@ class Flavor_Biblioteca_Frontend_Controller {
      * AJAX: Buscar libros
      */
     public function ajax_buscar_libros() {
-        check_ajax_referer('biblioteca_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_biblioteca_frontend_nonce', 'nonce');
 
         $texto = sanitize_text_field($_POST['texto'] ?? '');
         $categoria = sanitize_text_field($_POST['categoria'] ?? '');

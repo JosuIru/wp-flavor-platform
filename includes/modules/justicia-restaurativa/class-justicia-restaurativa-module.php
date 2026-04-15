@@ -655,7 +655,7 @@ class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Modul
      * AJAX: Solicitar proceso restaurativo
      */
     public function ajax_solicitar_proceso() {
-        check_ajax_referer('jr_nonce', 'nonce');
+        check_ajax_referer('flavor_jr_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -717,7 +717,7 @@ class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Modul
      * AJAX: Responder a solicitud
      */
     public function ajax_responder_solicitud() {
-        check_ajax_referer('jr_nonce', 'nonce');
+        check_ajax_referer('flavor_jr_nonce', 'nonce');
 
         $proceso_id = absint($_POST['proceso_id'] ?? 0);
         $respuesta = sanitize_text_field($_POST['respuesta'] ?? '');
@@ -756,7 +756,7 @@ class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Modul
      * AJAX: Ser mediador voluntario
      */
     public function ajax_ser_mediador() {
-        check_ajax_referer('jr_nonce', 'nonce');
+        check_ajax_referer('flavor_jr_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1002,7 +1002,7 @@ class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Modul
 
         wp_localize_script('flavor-justicia-restaurativa', 'jrData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('jr_nonce'),
+            'nonce' => wp_create_nonce('flavor_jr_nonce'),
             'i18n' => [
                 'confirmSolicitud' => __('¿Deseas iniciar este proceso de mediación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),

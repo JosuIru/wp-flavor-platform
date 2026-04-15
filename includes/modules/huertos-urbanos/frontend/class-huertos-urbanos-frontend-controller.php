@@ -77,7 +77,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
 
         wp_localize_script('flavor-huertos-urbanos', 'flavorHuertos', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('huertos_nonce'),
+            'nonce' => wp_create_nonce('flavor_huertos_nonce'),
             'i18n' => [
                 'solicitud_enviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'actividad_registrada' => __('Actividad registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -391,7 +391,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
         <div class="flavor-huertos-solicitar">
             <h2><?php esc_html_e('Solicitar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <form id="form-solicitar-parcela" class="flavor-form" method="post">
-                <?php wp_nonce_field('huertos_nonce', 'huertos_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_huertos_nonce', 'huertos_nonce_field'); ?>
 
                 <div class="flavor-form-group">
                     <label for="huerto_id"><?php esc_html_e('Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
@@ -598,7 +598,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
                 <div class="flavor-modal-content">
                     <h3><?php esc_html_e('Registrar Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <form id="form-nueva-actividad" class="flavor-form">
-                        <?php wp_nonce_field('huertos_nonce', 'actividad_nonce'); ?>
+                        <?php wp_nonce_field('flavor_huertos_nonce', 'actividad_nonce'); ?>
 
                         <div class="flavor-form-group">
                             <label><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
@@ -729,7 +729,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * AJAX: Solicitar parcela
      */
     public function ajax_solicitar_parcela() {
-        check_ajax_referer('huertos_nonce', 'huertos_nonce_field');
+        check_ajax_referer('flavor_huertos_nonce', 'huertos_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -792,7 +792,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * AJAX: Registrar actividad
      */
     public function ajax_registrar_actividad() {
-        check_ajax_referer('huertos_nonce', 'actividad_nonce');
+        check_ajax_referer('flavor_huertos_nonce', 'actividad_nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -857,7 +857,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * AJAX: Registrar cultivo
      */
     public function ajax_registrar_cultivo() {
-        check_ajax_referer('huertos_nonce', 'nonce');
+        check_ajax_referer('flavor_huertos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -910,7 +910,7 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * AJAX: Actualizar cultivo
      */
     public function ajax_actualizar_cultivo() {
-        check_ajax_referer('huertos_nonce', 'nonce');
+        check_ajax_referer('flavor_huertos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

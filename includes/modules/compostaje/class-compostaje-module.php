@@ -296,7 +296,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             wp_localize_script('flavor-compostaje', 'flavorCompostaje', [
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'restUrl' => rest_url('flavor-compostaje/v1/'),
-                'nonce' => wp_create_nonce('compostaje_nonce'),
+                'nonce' => wp_create_nonce('flavor_compostaje_nonce'),
                 'restNonce' => wp_create_nonce('wp_rest'),
                 'usuario_id' => get_current_user_id(),
                 'strings' => [
@@ -1407,7 +1407,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Registrar aportacion
      */
     public function ajax_registrar_aportacion() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         $punto_id = intval($_POST['punto_id'] ?? 0);
         $tipo_material = sanitize_text_field($_POST['tipo_material'] ?? '');
@@ -1423,7 +1423,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Apuntarse a turno
      */
     public function ajax_apuntarse_turno() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         $turno_id = intval($_POST['turno_id'] ?? 0);
         $resultado = $this->inscribir_usuario_turno($turno_id);
@@ -1461,7 +1461,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener puntos del usuario
      */
     public function ajax_obtener_puntos_compostaje() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1476,7 +1476,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Mis aportaciones
      */
     public function ajax_mis_aportaciones() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1521,7 +1521,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cancelar turno
      */
     public function ajax_cancelar_turno() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         $turno_id = intval($_POST['turno_id'] ?? 0);
@@ -1556,7 +1556,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      * AJAX: Completar turno (admin)
      */
     public function ajax_completar_turno() {
-        check_ajax_referer('compostaje_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1703,7 +1703,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <h3><?php _e('Registrar Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <form id="form-aportacion-compost" class="flavor-form">
-                <?php wp_nonce_field('compostaje_nonce', 'compostaje_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_compostaje_nonce', 'compostaje_nonce_field'); ?>
 
                 <div class="flavor-form-group">
                     <label for="punto-compostaje"><?php _e('Punto de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>

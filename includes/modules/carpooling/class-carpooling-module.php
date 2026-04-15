@@ -359,7 +359,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('carpooling-scripts', 'carpoolingData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('carpooling_nonce'),
+            'nonce' => wp_create_nonce('flavor_carpooling_nonce'),
             'restUrl' => rest_url('carpooling/v1/'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'strings' => [
@@ -1425,7 +1425,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Buscar viajes
      */
     public function ajax_buscar_viajes() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_buscar_viajes($_POST);
         wp_send_json($resultado);
@@ -1435,7 +1435,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Publicar viaje
      */
     public function ajax_publicar_viaje() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_publicar_viaje($_POST);
         wp_send_json($resultado);
@@ -1445,7 +1445,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Reservar plaza
      */
     public function ajax_reservar_plaza() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_reservar_plaza($_POST);
         wp_send_json($resultado);
@@ -1455,7 +1455,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_cancelar_reserva($_POST);
         wp_send_json($resultado);
@@ -1465,7 +1465,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Confirmar reserva
      */
     public function ajax_confirmar_reserva() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_confirmar_reserva($_POST);
         wp_send_json($resultado);
@@ -1475,7 +1475,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Valorar viaje
      */
     public function ajax_valorar_viaje() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_valorar_viaje($_POST);
         wp_send_json($resultado);
@@ -1485,7 +1485,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Cancelar viaje (conductor)
      */
     public function ajax_cancelar_viaje() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
         global $wpdb;
 
         $conductor_id = get_current_user_id();
@@ -1539,7 +1539,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Mis viajes
      */
     public function ajax_mis_viajes() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_mis_viajes_conductor($_POST);
         wp_send_json($resultado);
@@ -1549,7 +1549,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Mis reservas
      */
     public function ajax_mis_reservas() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_mis_viajes_pasajero($_POST);
         wp_send_json($resultado);
@@ -1559,7 +1559,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Guardar vehiculo
      */
     public function ajax_guardar_vehiculo() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_gestionar_vehiculo([
             'vehiculo_id' => $_POST['vehiculo_id'] ?? 0,
@@ -1572,7 +1572,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener vehiculos del usuario
      */
     public function ajax_obtener_vehiculos() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
         global $wpdb;
 
         $usuario_id = get_current_user_id();
@@ -1592,7 +1592,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Crear ruta recurrente
      */
     public function ajax_crear_ruta_recurrente() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_crear_ruta_recurrente($_POST);
         wp_send_json($resultado);
@@ -1602,7 +1602,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Autocompletar lugar
      */
     public function ajax_autocompletar_lugar() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $termino = sanitize_text_field($_POST['termino'] ?? '');
         if (strlen($termino) < 3) {
@@ -1649,7 +1649,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
      * AJAX: Detalle de viaje
      */
     public function ajax_detalle_viaje() {
-        check_ajax_referer('carpooling_nonce', 'nonce');
+        check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $viaje_id = absint($_POST['viaje_id'] ?? 0);
         $viaje = $this->obtener_viaje($viaje_id);

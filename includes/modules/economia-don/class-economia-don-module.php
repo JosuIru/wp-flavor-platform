@@ -916,7 +916,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
      * AJAX: Solicitar un don
      */
     public function ajax_solicitar_don() {
-        check_ajax_referer('ed_nonce', 'nonce');
+        check_ajax_referer('flavor_ed_nonce', 'nonce');
 
         $don_id = absint($_POST['don_id'] ?? 0);
         $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
@@ -971,7 +971,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
      * AJAX: Confirmar entrega
      */
     public function ajax_confirmar_entrega() {
-        check_ajax_referer('ed_nonce', 'nonce');
+        check_ajax_referer('flavor_ed_nonce', 'nonce');
 
         $don_id = absint($_POST['don_id'] ?? 0);
         $user_id = get_current_user_id();
@@ -1008,7 +1008,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
      * AJAX: Agradecer un don
      */
     public function ajax_agradecer() {
-        check_ajax_referer('ed_nonce', 'nonce');
+        check_ajax_referer('flavor_ed_nonce', 'nonce');
 
         $don_id = absint($_POST['don_id'] ?? 0);
         $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
@@ -1057,7 +1057,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
      * AJAX: Publicar nuevo don
      */
     public function ajax_publicar_don() {
-        check_ajax_referer('ed_nonce', 'nonce');
+        check_ajax_referer('flavor_ed_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1289,7 +1289,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
 
         wp_localize_script('flavor-economia-don', 'edData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ed_nonce'),
+            'nonce' => wp_create_nonce('flavor_ed_nonce'),
             'i18n' => [
                 'confirmSolicitar' => __('¿Deseas solicitar este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmEntrega' => __('¿Confirmas que has entregado este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),

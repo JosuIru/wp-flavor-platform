@@ -267,7 +267,7 @@ class Flavor_Reciclaje_Conciencia_Features {
             ORDER BY fecha_creacion DESC
         ", $user_id));
 
-        $nonce = wp_create_nonce('rec_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_rec_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/economia-circular.php';
@@ -345,7 +345,7 @@ class Flavor_Reciclaje_Conciencia_Features {
             $mis_retos = array_column($mis_part, 'reto_id');
         }
 
-        $nonce = wp_create_nonce('rec_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_rec_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/retos-reciclaje.php';
@@ -379,7 +379,7 @@ class Flavor_Reciclaje_Conciencia_Features {
             LIMIT 10
         ");
 
-        $nonce = wp_create_nonce('rec_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_rec_conciencia_nonce');
         $user_id = get_current_user_id();
 
         ob_start();
@@ -612,7 +612,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      * AJAX: Registrar reutilización
      */
     public function ajax_registrar_reutilizacion() {
-        check_ajax_referer('rec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -654,7 +654,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      * AJAX: Unirse a reto
      */
     public function ajax_unirse_reto() {
-        check_ajax_referer('rec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -709,7 +709,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      * AJAX: Registrar reparación
      */
     public function ajax_registrar_reparacion() {
-        check_ajax_referer('rec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -743,7 +743,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      * AJAX: Ofrecer material
      */
     public function ajax_ofrecer_material() {
-        check_ajax_referer('rec_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

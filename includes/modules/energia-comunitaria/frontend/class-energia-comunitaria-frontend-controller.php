@@ -77,7 +77,7 @@ class Flavor_Energia_Comunitaria_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-energia-comunitaria', 'flavorEnergiaComunitaria', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('energia-comunitaria_nonce'),
+            'nonce' => wp_create_nonce('flavor_energia_comunitaria_nonce'),
             'i18n' => [
                 'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),

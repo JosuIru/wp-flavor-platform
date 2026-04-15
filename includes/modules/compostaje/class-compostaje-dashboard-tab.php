@@ -217,7 +217,7 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         wp_localize_script('flavor-compostaje-dashboard-tab', 'flavorCompostajeDashboard', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('compostaje_dashboard_nonce'),
+            'nonce' => wp_create_nonce('flavor_compostaje_dashboard_nonce'),
             'usuarioId' => get_current_user_id(),
             'co2Factor' => self::CO2_POR_KG_ORGANICO,
             'strings' => [
@@ -1702,7 +1702,7 @@ class Flavor_Compostaje_Dashboard_Tab {
      * @return void
      */
     public function ajax_cargar_aportes() {
-        check_ajax_referer('compostaje_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_dashboard_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -1739,7 +1739,7 @@ class Flavor_Compostaje_Dashboard_Tab {
      * @return void
      */
     public function ajax_cargar_ranking() {
-        check_ajax_referer('compostaje_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_dashboard_nonce', 'nonce');
 
         $periodo = sanitize_text_field($_POST['periodo'] ?? 'total');
         $limite = intval($_POST['limite'] ?? 10);
@@ -1755,7 +1755,7 @@ class Flavor_Compostaje_Dashboard_Tab {
      * @return void
      */
     public function ajax_exportar_datos() {
-        check_ajax_referer('compostaje_dashboard_nonce', 'nonce');
+        check_ajax_referer('flavor_compostaje_dashboard_nonce', 'nonce');
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {

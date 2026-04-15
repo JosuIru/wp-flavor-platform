@@ -43,7 +43,7 @@ $total_miembros = $wpdb->get_var($wpdb->prepare(
 $mensaje = '';
 $tipo_mensaje = '';
 
-if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['comunidades_nonce'], 'comunidades_editar_comunidad')) {
+if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['flavor_comunidades_nonce'], 'comunidades_editar_comunidad')) {
     $nombre = sanitize_text_field($_POST['nombre'] ?? '');
     $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
     $categoria = sanitize_text_field($_POST['categoria'] ?? 'otra');
@@ -138,7 +138,7 @@ $privacidades = [
     <?php endif; ?>
 
     <form method="post" action="">
-        <?php wp_nonce_field('comunidades_editar_comunidad', 'comunidades_nonce'); ?>
+        <?php wp_nonce_field('comunidades_editar_comunidad', 'flavor_comunidades_nonce'); ?>
 
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">

@@ -365,7 +365,7 @@ function verDetalleRecogida(id) {
     jQuery.get(ajaxurl, {
         action: 'flavor_reciclaje_ver_recogida',
         recogida_id: id,
-        nonce: '<?php echo wp_create_nonce('reciclaje_nonce'); ?>'
+        nonce: '<?php echo wp_create_nonce('flavor_reciclaje_nonce'); ?>'
     }, function(response) {
         if (response.success) {
             var r = response.data;

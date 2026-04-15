@@ -489,7 +489,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         wp_localize_script('flavor-huella-ecologica', 'flavorHuellaEcologica', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('huella_ecologica_nonce'),
+            'nonce' => wp_create_nonce('flavor_huella_ecologica_nonce'),
             'categorias' => self::CATEGORIAS_HUELLA,
             'acciones' => self::TIPOS_ACCION,
             'i18n' => [
@@ -525,7 +525,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Registrar huella diaria
      */
     public function ajax_registrar_huella(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -575,7 +575,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Registrar acción reductora
      */
     public function ajax_registrar_accion(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -629,7 +629,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Proponer proyecto de compensación
      */
     public function ajax_proponer_proyecto(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -680,7 +680,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Unirse a proyecto de compensación
      */
     public function ajax_unirse_proyecto(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -720,7 +720,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener estadísticas del usuario
      */
     public function ajax_obtener_estadisticas(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -738,7 +738,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * AJAX: Calcular huella estimada
      */
     public function ajax_calcular_huella(): void {
-        check_ajax_referer('huella_ecologica_nonce', 'nonce');
+        check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
         $datos = $_POST['datos'] ?? [];
         $huella_total = 0;

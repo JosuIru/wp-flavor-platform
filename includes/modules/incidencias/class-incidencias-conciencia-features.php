@@ -223,7 +223,7 @@ class Flavor_Incidencias_Conciencia_Features {
             LIMIT 100
         ");
 
-        $nonce = wp_create_nonce('inc_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_inc_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/mapa-impacto-ambiental.php';
@@ -253,7 +253,7 @@ class Flavor_Incidencias_Conciencia_Features {
             LIMIT %d
         ", 10));
 
-        $nonce = wp_create_nonce('inc_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_inc_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/alertas-zona.php';
@@ -298,7 +298,7 @@ class Flavor_Incidencias_Conciencia_Features {
             ORDER BY v.fecha_oferta DESC
         ", $user_id));
 
-        $nonce = wp_create_nonce('inc_conciencia_nonce');
+        $nonce = wp_create_nonce('flavor_inc_conciencia_nonce');
 
         ob_start();
         include dirname(__FILE__) . '/templates/voluntariado-incidencias.php';
@@ -654,7 +654,7 @@ class Flavor_Incidencias_Conciencia_Features {
      * AJAX: Solicitar voluntariado
      */
     public function ajax_solicitar_voluntariado() {
-        check_ajax_referer('inc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -698,7 +698,7 @@ class Flavor_Incidencias_Conciencia_Features {
      * AJAX: Marcar voluntariado como resuelto
      */
     public function ajax_resolver_voluntario() {
-        check_ajax_referer('inc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -787,7 +787,7 @@ class Flavor_Incidencias_Conciencia_Features {
      * AJAX: Agregar comentario ambiental
      */
     public function ajax_agregar_comentario_ambiental() {
-        check_ajax_referer('inc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -822,7 +822,7 @@ class Flavor_Incidencias_Conciencia_Features {
      * AJAX: Valorar resolución de incidencia
      */
     public function ajax_valorar_resolucion() {
-        check_ajax_referer('inc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

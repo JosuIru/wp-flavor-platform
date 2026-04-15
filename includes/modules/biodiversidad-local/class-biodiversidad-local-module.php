@@ -807,7 +807,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
 
         wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('biodiversidad_nonce'),
+            'nonce' => wp_create_nonce('flavor_biodiversidad_nonce'),
             'categorias' => self::CATEGORIAS_ESPECIES,
             'estados' => self::ESTADOS_CONSERVACION,
             'habitats' => self::TIPOS_HABITAT,
@@ -873,7 +873,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
      * AJAX: Registrar avistamiento
      */
     public function ajax_registrar_avistamiento() {
-        check_ajax_referer('biodiversidad_nonce', 'nonce');
+        check_ajax_referer('flavor_biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -927,7 +927,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
      * AJAX: Registrar nueva especie
      */
     public function ajax_registrar_especie() {
-        check_ajax_referer('biodiversidad_nonce', 'nonce');
+        check_ajax_referer('flavor_biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -977,7 +977,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
      * AJAX: Crear proyecto de conservación
      */
     public function ajax_crear_proyecto() {
-        check_ajax_referer('biodiversidad_nonce', 'nonce');
+        check_ajax_referer('flavor_biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1025,7 +1025,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
      * AJAX: Participar en proyecto
      */
     public function ajax_participar_proyecto() {
-        check_ajax_referer('biodiversidad_nonce', 'nonce');
+        check_ajax_referer('flavor_biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1058,7 +1058,7 @@ class Flavor_Platform_Biodiversidad_Local_Module extends Flavor_Platform_Module_
      * AJAX: Validar avistamiento
      */
     public function ajax_validar_avistamiento() {
-        check_ajax_referer('biodiversidad_nonce', 'nonce');
+        check_ajax_referer('flavor_biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

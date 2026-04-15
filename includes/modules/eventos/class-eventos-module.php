@@ -658,7 +658,7 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="flavor-form-container" style="max-width: 700px;">
             <form id="form-crear-evento" class="flavor-form" method="post">
-                <?php wp_nonce_field('eventos_crear', 'eventos_nonce'); ?>
+                <?php wp_nonce_field('eventos_crear', 'flavor_eventos_nonce'); ?>
                 <input type="hidden" name="action" value="eventos_crear_evento">
                 <input type="hidden" name="organizador_id" value="<?php echo esc_attr($usuario_id); ?>">
                 <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($this->resolve_contextual_comunidad_id()); ?>">
@@ -2623,7 +2623,7 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
      * AJAX: Obtener datos del dashboard de eventos
      */
     public function ajax_get_dashboard_data() {
-        $has_valid_nonce = check_ajax_referer('eventos_nonce', 'nonce', false);
+        $has_valid_nonce = check_ajax_referer('flavor_eventos_nonce', 'nonce', false);
         if (!$has_valid_nonce && !current_user_can('manage_options')) {
             wp_send_json_error(['message' => 'Solicitud inválida'], 403);
         }

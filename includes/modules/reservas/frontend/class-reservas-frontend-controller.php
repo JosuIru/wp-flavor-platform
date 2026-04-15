@@ -91,7 +91,7 @@ class Flavor_Reservas_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-reservas', 'flavorReservas', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('reservas_nonce'),
+            'nonce' => wp_create_nonce('flavor_reservas_nonce'),
             'i18n' => [
                 'reserva_creada' => __('Reserva creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_cancelada' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -456,7 +456,7 @@ class Flavor_Reservas_Frontend_Controller {
             <h3><?php printf(__('Reservar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($recurso->nombre)); ?></h3>
 
             <form id="form-crear-reserva" class="flavor-form">
-                <?php wp_nonce_field('reservas_nonce', 'reservas_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_reservas_nonce', 'reservas_nonce_field'); ?>
                 <input type="hidden" name="recurso_id" value="<?php echo esc_attr($recurso_id); ?>">
 
                 <div class="form-row">
@@ -599,7 +599,7 @@ class Flavor_Reservas_Frontend_Controller {
      * AJAX: Crear reserva
      */
     public function ajax_crear_reserva() {
-        check_ajax_referer('reservas_nonce', 'nonce');
+        check_ajax_referer('flavor_reservas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -685,7 +685,7 @@ class Flavor_Reservas_Frontend_Controller {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('reservas_nonce', 'nonce');
+        check_ajax_referer('flavor_reservas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -777,7 +777,7 @@ class Flavor_Reservas_Frontend_Controller {
      * AJAX: Calendario de disponibilidad
      */
     public function ajax_calendario() {
-        check_ajax_referer('reservas_nonce', 'nonce');
+        check_ajax_referer('flavor_reservas_nonce', 'nonce');
 
         $recurso_id = isset($_POST['recurso_id']) ? absint($_POST['recurso_id']) : 0;
         $mes = isset($_POST['mes']) ? absint($_POST['mes']) : (int) gmdate('n');

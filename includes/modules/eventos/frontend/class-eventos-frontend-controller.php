@@ -126,7 +126,7 @@ class Flavor_Eventos_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-eventos', 'flavorEventos', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('eventos_nonce'),
+            'nonce' => wp_create_nonce('flavor_eventos_nonce'),
             'i18n' => [
                 'inscrito' => __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cancelado' => __('Inscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -558,7 +558,7 @@ class Flavor_Eventos_Frontend_Controller {
      * AJAX: Inscribirse a evento
      */
     public function ajax_inscribirse() {
-        check_ajax_referer('eventos_nonce', 'nonce');
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
 
         $evento_id = isset($_POST['evento_id']) ? absint($_POST['evento_id']) : 0;
         $numero_plazas = isset($_POST['num_plazas']) ? absint($_POST['num_plazas']) : 1;
@@ -690,7 +690,7 @@ class Flavor_Eventos_Frontend_Controller {
      * AJAX: Cancelar inscripcion
      */
     public function ajax_cancelar_inscripcion() {
-        check_ajax_referer('eventos_nonce', 'nonce');
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -802,7 +802,7 @@ class Flavor_Eventos_Frontend_Controller {
      * AJAX: Compartir evento
      */
     public function ajax_compartir() {
-        check_ajax_referer('eventos_nonce', 'nonce');
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
 
         $evento_id = isset($_POST['evento_id']) ? absint($_POST['evento_id']) : 0;
         $red_social = isset($_POST['red']) ? sanitize_text_field($_POST['red']) : '';

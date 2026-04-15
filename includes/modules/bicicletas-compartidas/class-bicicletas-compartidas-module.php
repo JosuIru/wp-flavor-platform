@@ -112,7 +112,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
     public function register_shortcodes() {
         add_shortcode('bicicletas_mapa', [$this, 'shortcode_mapa']);
         add_shortcode('bicicletas_estaciones', [$this, 'shortcode_estaciones']);
-        add_shortcode('bicicletas_reservar', [$this, 'shortcode_reservar']);
+        add_shortcode('flavor_bicicletas_reservar', [$this, 'shortcode_reservar']);
         add_shortcode('bicicletas_mis_viajes', [$this, 'shortcode_mis_viajes']);
         add_shortcode('bicicletas_estadisticas', [$this, 'shortcode_estadisticas']);
         add_shortcode('bicicletas_tarifas', [$this, 'shortcode_tarifas']);
@@ -133,7 +133,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
         $shortcodes_modulo = [
             'bicicletas_mapa',
             'bicicletas_estaciones',
-            'bicicletas_reservar',
+            'flavor_bicicletas_reservar',
             'bicicletas_mis_viajes',
             'bicicletas_estadisticas',
             'bicicletas_tarifas',
@@ -593,7 +593,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                     </div>
                 <?php else: ?>
                     <form id="form-reservar-bicicleta" class="space-y-6">
-                        <?php wp_nonce_field('bicicletas_reservar', 'bicicletas_nonce'); ?>
+                        <?php wp_nonce_field('flavor_bicicletas_reservar', 'bicicletas_nonce'); ?>
 
                         <!-- Paso 1: Seleccionar estación -->
                         <div class="form-group">
@@ -750,7 +750,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                             btnReservar.querySelector('.loading-state').classList.remove('hidden');
 
                             var formData = new FormData();
-                            formData.append('action', 'bicicletas_reservar');
+                            formData.append('action', 'flavor_bicicletas_reservar');
                             formData.append('bicicleta_id', bicicletaId.value);
                             formData.append('bicicletas_nonce', form.querySelector('[name="bicicletas_nonce"]').value);
 
@@ -1388,7 +1388,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
      */
     public function ajax_reservar_bicicleta() {
         // Verificar nonce
-        if (!check_ajax_referer('bicicletas_reservar', 'bicicletas_nonce', false)) {
+        if (!check_ajax_referer('flavor_bicicletas_reservar', 'bicicletas_nonce', false)) {
             wp_send_json_error(__('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 

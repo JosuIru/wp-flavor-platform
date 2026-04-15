@@ -319,7 +319,7 @@ $clases_estado = [
 
 <script>
 jQuery(document).ready(function($) {
-    var gcNonce = '<?php echo wp_create_nonce('gc_admin_nonce'); ?>';
+    var gcNonce = '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>';
     var solicitudActual = null;
     var $notice = $('<div class="gc-inline-notice"></div>').insertBefore('.wrap h1').hide();
 

@@ -170,7 +170,7 @@ function iniciarEmision(id) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_iniciar_emision',
             emision_id: id,
-            nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_radio_emision_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -186,7 +186,7 @@ function finalizarEmision(id) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_finalizar_emision',
             emision_id: id,
-            nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_radio_emision_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -204,7 +204,7 @@ function verEmision(id) {
     jQuery.get(ajaxurl, {
         action: 'flavor_radio_ver_emision',
         emision_id: id,
-        nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+        nonce: '<?php echo wp_create_nonce('flavor_radio_emision_nonce'); ?>'
     }, function(response) {
         if (response.success) {
             var e = response.data;

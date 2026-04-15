@@ -208,7 +208,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Registrar excedente
      */
     public function ajax_registrar_excedente(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -230,7 +230,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Reclamar excedente
      */
     public function ajax_reclamar_excedente(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -474,7 +474,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Calcular huella
      */
     public function ajax_calcular_huella(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         $ciclo_id = intval($_POST['ciclo_id'] ?? 0);
 
@@ -581,7 +581,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Obtener desglose de precio
      */
     public function ajax_obtener_precio_desglose(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         $producto_id = intval($_POST['producto_id'] ?? 0);
         $ciclo_id = isset($_POST['ciclo_id']) ? intval($_POST['ciclo_id']) : null;
@@ -831,7 +831,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Publicar trueque
      */
     public function ajax_publicar_trueque(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -853,7 +853,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Responder trueque
      */
     public function ajax_responder_trueque(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -887,7 +887,7 @@ class Flavor_GC_Conciencia_Features {
      * AJAX: Listar trueques
      */
     public function ajax_listar_trueques(): void {
-        check_ajax_referer('gc_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_conciencia_nonce', 'nonce');
 
         $filtros = [
             'tipo'      => sanitize_text_field($_POST['tipo'] ?? ''),
@@ -1011,7 +1011,7 @@ class Flavor_GC_Conciencia_Features {
         wp_enqueue_script('gc-trueques', plugins_url('assets/js/trueques.js', dirname(__FILE__)), ['jquery'], '1.0.0', true);
         wp_localize_script('gc-trueques', 'gcTruequeData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('gc_conciencia_nonce'),
+            'nonce'   => wp_create_nonce('flavor_gc_conciencia_nonce'),
             'i18n'    => [
                 'enviando'   => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error'      => __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN),

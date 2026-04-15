@@ -153,7 +153,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                 wp_localize_script('gc-frontend', 'gcFrontend', [
                     'ajaxUrl'    => admin_url('admin-ajax.php'),
                     'restUrl'    => rest_url('flavor/v1/grupos-consumo/'),
-                    'nonce'      => wp_create_nonce('gc_nonce'),
+                    'nonce'      => wp_create_nonce('flavor_gc_nonce'),
                     'restNonce'  => wp_create_nonce('wp_rest'),
                     'isLoggedIn' => is_user_logged_in(),
                     'loginUrl'   => wp_login_url(home_url('/mi-portal/grupos-consumo/')),
@@ -286,7 +286,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Agregar producto a la lista de compra
      */
     public function ajax_agregar_a_lista() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_gc_nonce')) {
             wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -330,7 +330,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Quitar producto de la lista de compra
      */
     public function ajax_quitar_de_lista() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_gc_nonce')) {
             wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -366,7 +366,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Convertir lista de compra en pedido
      */
     public function ajax_convertir_lista_en_pedido() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_gc_nonce')) {
             wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -496,7 +496,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Alta de nuevo consumidor
      */
     public function ajax_alta_consumidor() {
-        if (!wp_verify_nonce($_POST['gc_admin_nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['flavor_grupos_consumo_nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -553,7 +553,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Cambiar estado de consumidor
      */
     public function ajax_cambiar_estado_consumidor() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -592,7 +592,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Cambiar rol de consumidor (soporta múltiples roles separados por coma)
      */
     public function ajax_cambiar_rol_consumidor() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -647,7 +647,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Importar usuarios de WordPress como consumidores
      */
     public function ajax_importar_usuarios_wp() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -717,7 +717,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Listar usuarios de WordPress para importar
      */
     public function ajax_listar_usuarios_wp() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -765,7 +765,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      * AJAX: Obtener detalles de un consumidor
      */
     public function ajax_obtener_detalles_consumidor() {
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_grupos_consumo_nonce')) {
             wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
@@ -3990,7 +3990,7 @@ KNOWLEDGE;
      * AJAX: Hacer pedido
      */
     public function ajax_hacer_pedido() {
-        check_ajax_referer('gc_pedido_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_pedido_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4023,7 +4023,7 @@ KNOWLEDGE;
      * AJAX: Modificar pedido
      */
     public function ajax_modificar_pedido() {
-        check_ajax_referer('gc_pedido_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_pedido_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4048,7 +4048,7 @@ KNOWLEDGE;
      * AJAX: Solicitar unión a un grupo de consumo
      */
     public function ajax_solicitar_union() {
-        check_ajax_referer('gc_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_nonce', 'nonce');
 
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
 
@@ -5278,7 +5278,7 @@ KNOWLEDGE;
                 wp_localize_script('gc-frontend', 'gcFrontend', [
                     'ajaxUrl' => admin_url('admin-ajax.php'),
                     'restUrl' => rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'),
-                    'nonce' => wp_create_nonce('gc_nonce'),
+                    'nonce' => wp_create_nonce('flavor_gc_nonce'),
                     'restNonce' => wp_create_nonce('wp_rest'),
                     'isLoggedIn' => is_user_logged_in(),
                     'i18n' => [
@@ -5317,7 +5317,7 @@ KNOWLEDGE;
                 );
 
                 wp_localize_script('gc-admin', 'gcAdmin', [
-                    'nonce' => wp_create_nonce('gc_admin_nonce'),
+                    'nonce' => wp_create_nonce('flavor_grupos_consumo_nonce'),
                     'ajaxUrl' => admin_url('admin-ajax.php'),
                 ]);
             }
@@ -5995,7 +5995,7 @@ KNOWLEDGE;
                             url: gcFrontend.ajaxUrl,
                             type: 'POST',
                             data: {
-                                action: 'gc_solicitar_union',
+                                action: 'flavor_gc_solicitar_union',
                                 nonce: gcFrontend.nonce,
                                 grupo_id: $form.find('[name="grupo_id"]').val(),
                                 nombre: $form.find('[name="nombre"]').val() || '',
@@ -6720,7 +6720,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_enviar_consolidado_productores() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -6889,7 +6889,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_exportar_consolidado() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -6923,7 +6923,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_exportar_consumidores() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -6960,7 +6960,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_exportar_pedidos() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -6995,7 +6995,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_exportar_pedidos_filtrado() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -7052,7 +7052,7 @@ KNOWLEDGE;
      * @since 4.2.0
      */
     public function ajax_exportar_suscripciones() {
-        check_ajax_referer('gc_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_grupos_consumo_nonce', 'nonce');
 
         if (!current_user_can('gc_gestionar_suscripciones') && !current_user_can('manage_options')) {
             wp_send_json_error(['mensaje' => __('No tienes permisos para exportar suscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

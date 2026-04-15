@@ -490,7 +490,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
 
         wp_localize_script('flavor-economia-suficiencia', 'flavorSuficiencia', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('suficiencia_nonce'),
+            'nonce' => wp_create_nonce('flavor_suficiencia_nonce'),
             'categorias' => self::CATEGORIAS_NECESIDADES,
             'compromisos' => self::TIPOS_COMPROMISO,
             'i18n' => [
@@ -545,7 +545,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Guardar reflexión
      */
     public function ajax_guardar_reflexion(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -589,7 +589,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Hacer compromiso de suficiencia
      */
     public function ajax_hacer_compromiso(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -639,7 +639,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Registrar práctica de suficiencia
      */
     public function ajax_registrar_practica(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -688,7 +688,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Compartir recurso en biblioteca
      */
     public function ajax_compartir_recurso(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -735,7 +735,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Solicitar préstamo
      */
     public function ajax_solicitar_prestamo(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -837,7 +837,7 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * AJAX: Evaluar necesidades personales
      */
     public function ajax_evaluar_necesidades(): void {
-        check_ajax_referer('suficiencia_nonce', 'nonce');
+        check_ajax_referer('flavor_suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

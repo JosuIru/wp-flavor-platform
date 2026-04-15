@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nonce = wp_create_nonce('gc_conciencia_nonce');
+$nonce = wp_create_nonce('flavor_gc_conciencia_nonce');
 ?>
 
 <div class="gc-excedentes" data-nonce="<?php echo esc_attr($nonce); ?>">

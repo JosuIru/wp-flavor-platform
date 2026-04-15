@@ -112,7 +112,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
         wp_localize_script('flavor-espacios-comunes', 'flavorEspacios', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('espacios_nonce'),
+            'nonce' => wp_create_nonce('flavor_espacios_nonce'),
             'i18n' => [
                 'reserva_confirmada' => __('Reserva confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_cancelada' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -535,7 +535,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
             </div>
 
             <form id="form-reservar-espacio" class="flavor-form">
-                <?php wp_nonce_field('espacios_nonce', 'espacios_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_espacios_nonce', 'espacios_nonce_field'); ?>
                 <input type="hidden" name="espacio_id" value="<?php echo esc_attr($espacio->id); ?>">
 
                 <div class="flavor-form-row">
@@ -797,7 +797,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
      * AJAX: Reservar espacio
      */
     public function ajax_reservar() {
-        check_ajax_referer('espacios_nonce', 'espacios_nonce_field');
+        check_ajax_referer('flavor_espacios_nonce', 'espacios_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -890,7 +890,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
      * AJAX: Cancelar reserva
      */
     public function ajax_cancelar_reserva() {
-        check_ajax_referer('espacios_nonce', 'nonce');
+        check_ajax_referer('flavor_espacios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

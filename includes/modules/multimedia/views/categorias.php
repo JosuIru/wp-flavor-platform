@@ -234,7 +234,7 @@ function eliminarCategoria(id) {
         jQuery.post(ajaxurl, {
             action: 'flavor_multimedia_eliminar_categoria',
             categoria_id: id,
-            nonce: '<?php echo wp_create_nonce('multimedia_categoria_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_multimedia_categoria_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();

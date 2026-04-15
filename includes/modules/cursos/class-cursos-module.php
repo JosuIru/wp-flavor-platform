@@ -1771,7 +1771,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX: Inscribirse
      */
     public function ajax_inscribirse() {
-        check_ajax_referer('cursos_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
 
         $resultado = $this->action_inscribirse([
             'curso_id' => isset($_POST['curso_id']) ? intval($_POST['curso_id']) : 0,
@@ -1784,7 +1784,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX: Marcar lección
      */
     public function ajax_marcar_leccion() {
-        check_ajax_referer('cursos_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
 
         $resultado = $this->action_marcar_completada([
             'leccion_id' => isset($_POST['leccion_id']) ? intval($_POST['leccion_id']) : 0,
@@ -1798,7 +1798,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX: Valorar curso
      */
     public function ajax_valorar() {
-        check_ajax_referer('cursos_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
 
         $resultado = $this->action_valorar_curso([
             'curso_id' => isset($_POST['curso_id']) ? intval($_POST['curso_id']) : 0,
@@ -1813,7 +1813,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX: Solicitar certificado
      */
     public function ajax_solicitar_certificado() {
-        check_ajax_referer('cursos_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
 
         $resultado = $this->action_solicitar_certificado([
             'curso_id' => isset($_POST['curso_id']) ? intval($_POST['curso_id']) : 0,
@@ -1826,7 +1826,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX Admin: Guardar curso
      */
     public function ajax_admin_guardar_curso() {
-        check_ajax_referer('cursos_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1888,7 +1888,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX Admin: Guardar lección
      */
     public function ajax_admin_guardar_leccion() {
-        check_ajax_referer('cursos_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1943,7 +1943,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX Admin: Cambiar estado
      */
     public function ajax_admin_cambiar_estado() {
-        check_ajax_referer('cursos_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1973,7 +1973,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      * AJAX Admin: Exportar alumnos
      */
     public function ajax_admin_exportar() {
-        check_ajax_referer('cursos_admin_nonce', 'nonce');
+        check_ajax_referer('flavor_cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2188,7 +2188,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         wp_enqueue_script('cursos-frontend', $this->get_module_url() . 'assets/js/cursos-frontend.js', ['jquery'], '1.0.0', true);
         wp_localize_script('cursos-frontend', 'cursosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cursos_nonce'),
+            'nonce' => wp_create_nonce('flavor_cursos_nonce'),
             'rest_url' => rest_url('flavor/v1/cursos'),
         ]);
 
@@ -2221,7 +2221,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         wp_enqueue_script('cursos-frontend', $this->get_module_url() . 'assets/js/cursos-frontend.js', ['jquery'], '1.0.0', true);
         wp_localize_script('cursos-frontend', 'cursosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cursos_nonce'),
+            'nonce' => wp_create_nonce('flavor_cursos_nonce'),
         ]);
 
         $curso = $resultado['curso'];
@@ -2270,7 +2270,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         wp_enqueue_script('cursos-aula', $this->get_module_url() . 'assets/js/cursos-aula.js', ['jquery'], '1.0.0', true);
         wp_localize_script('cursos-aula', 'cursosAulaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cursos_nonce'),
+            'nonce' => wp_create_nonce('flavor_cursos_nonce'),
             'curso_id' => $curso_id,
             'leccion_id' => $leccion_id,
         ]);
@@ -2292,7 +2292,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         wp_enqueue_script('cursos-instructor', $this->get_module_url() . 'assets/js/cursos-instructor.js', ['jquery'], '1.0.0', true);
         wp_localize_script('cursos-instructor', 'cursosInstructorData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cursos_admin_nonce'),
+            'nonce' => wp_create_nonce('flavor_cursos_admin_nonce'),
         ]);
 
         ob_start();

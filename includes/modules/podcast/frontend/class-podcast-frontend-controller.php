@@ -1176,7 +1176,7 @@ class Flavor_Podcast_Frontend_Controller {
             <p class="flavor-intro"><?php _e('Crea tu propia serie de podcast para compartir contenido de audio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="form-crear-serie-podcast" class="flavor-form" enctype="multipart/form-data">
-                <?php wp_nonce_field('flavor_podcast_nonce', 'podcast_nonce'); ?>
+                <?php wp_nonce_field('flavor_podcast_nonce', 'flavor_podcast_nonce'); ?>
 
                 <div class="flavor-form-grupo">
                     <label for="serie_nombre"><?php _e('Nombre de la serie *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
@@ -1258,7 +1258,7 @@ class Flavor_Podcast_Frontend_Controller {
                 </div>
             <?php else: ?>
                 <form id="form-subir-episodio" class="flavor-form" enctype="multipart/form-data">
-                    <?php wp_nonce_field('flavor_podcast_nonce', 'podcast_nonce'); ?>
+                    <?php wp_nonce_field('flavor_podcast_nonce', 'flavor_podcast_nonce'); ?>
 
                     <div class="flavor-form-grupo">
                         <label for="episodio_serie"><?php _e('Serie *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>

@@ -107,7 +107,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         // Localizar script
         wp_localize_script('flavor-banco-tiempo', 'flavorBancoTiempo', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('banco_tiempo_nonce'),
+            'nonce' => wp_create_nonce('flavor_banco_tiempo_nonce'),
             'categorias' => [
                 'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -772,7 +772,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             <div class="flavor-bt-ofrecer">
                 <h3><?php _e('Ofrecer un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <form id="form-ofrecer-servicio" class="flavor-form">
-                    <?php wp_nonce_field('banco_tiempo_nonce', 'bt_nonce_field'); ?>
+                    <?php wp_nonce_field('flavor_banco_tiempo_nonce', 'bt_nonce_field'); ?>
                     <?php if ($comunidad_id > 0): ?>
                         <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad_id); ?>">
                     <?php endif; ?>
@@ -946,7 +946,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Solicitar servicio
      */
     public function ajax_solicitar_servicio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1004,7 +1004,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Ofrecer servicio
      */
     public function ajax_ofrecer_servicio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1051,7 +1051,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Aceptar solicitud
      */
     public function ajax_aceptar_solicitud() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1087,7 +1087,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Rechazar solicitud
      */
     public function ajax_rechazar_solicitud() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1124,7 +1124,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Completar intercambio
      */
     public function ajax_completar_intercambio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1174,7 +1174,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Cancelar intercambio
      */
     public function ajax_cancelar_intercambio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1214,7 +1214,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Valorar
      */
     public function ajax_valorar() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1313,7 +1313,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Obtener historial de intercambios del usuario
      */
     public function ajax_obtener_historial() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1389,7 +1389,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Obtener servicios del usuario actual
      */
     public function ajax_obtener_mis_servicios() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1444,7 +1444,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Obtener un servicio para frontend
      */
     public function ajax_obtener_servicio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
 
@@ -1493,7 +1493,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Actualizar servicio propio
      */
     public function ajax_actualizar_servicio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1552,7 +1552,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * AJAX: Eliminar servicio propio
      */
     public function ajax_eliminar_servicio() {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1584,7 +1584,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * Cambia el estado de un servicio propio
      */
     private function ajax_cambiar_estado_servicio($estado, $mensaje_ok) {
-        check_ajax_referer('banco_tiempo_nonce', 'nonce');
+        check_ajax_referer('flavor_banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

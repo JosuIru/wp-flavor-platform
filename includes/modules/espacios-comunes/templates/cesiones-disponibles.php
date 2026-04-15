@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nonce = wp_create_nonce('ec_conciencia_nonce');
+$nonce = wp_create_nonce('flavor_ec_conciencia_nonce');
 $usuario_logueado = is_user_logged_in();
 ?>
 

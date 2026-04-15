@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
         <?php endif; ?>
 
         <form id="incidencias-form-reportar" class="incidencias-form" enctype="multipart/form-data">
-            <?php wp_nonce_field('incidencias_nonce', 'nonce'); ?>
+            <?php wp_nonce_field('flavor_incidencias_nonce', 'nonce'); ?>
 
             <!-- Categoría -->
             <div class="incidencias-form-group">

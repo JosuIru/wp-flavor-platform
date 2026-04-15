@@ -240,7 +240,7 @@ class Flavor_GC_Facturas_Integration {
      * AJAX: Crear factura rapida para productor
      */
     public function ajax_crear_factura_productor() {
-        check_ajax_referer('gc_facturas_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_facturas_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -274,7 +274,7 @@ class Flavor_GC_Facturas_Integration {
      * AJAX: Crear factura rapida para consumidor
      */
     public function ajax_crear_factura_consumidor() {
-        check_ajax_referer('gc_facturas_nonce', 'nonce');
+        check_ajax_referer('flavor_gc_facturas_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_pedidos')) {
             wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));

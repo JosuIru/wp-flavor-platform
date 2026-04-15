@@ -77,7 +77,7 @@ class Flavor_Participacion_Frontend_Controller {
 
         wp_localize_script('flavor-participacion', 'flavorParticipacion', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('participacion_nonce'),
+            'nonce' => wp_create_nonce('flavor_participacion_nonce'),
             'i18n' => [
                 'voto_registrado' => __('Tu voto ha sido registrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'firma_registrada' => __('Tu firma ha sido registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -342,7 +342,7 @@ class Flavor_Participacion_Frontend_Controller {
 
             <?php if ($puede_votar && is_user_logged_in()): ?>
                 <form id="form-votar-encuesta" class="encuesta-votar">
-                    <?php wp_nonce_field('participacion_nonce', 'participacion_nonce_field'); ?>
+                    <?php wp_nonce_field('flavor_participacion_nonce', 'participacion_nonce_field'); ?>
                     <input type="hidden" name="encuesta_id" value="<?php echo esc_attr($encuesta->id); ?>">
 
                     <div class="opciones-lista">
@@ -609,7 +609,7 @@ class Flavor_Participacion_Frontend_Controller {
             <?php if ($peticion->estado === 'activa' && is_user_logged_in() && !$ya_firmo): ?>
                 <div class="peticion-firmar">
                     <form id="form-firmar-peticion" class="form-firmar">
-                        <?php wp_nonce_field('participacion_nonce', 'participacion_nonce_field'); ?>
+                        <?php wp_nonce_field('flavor_participacion_nonce', 'participacion_nonce_field'); ?>
                         <input type="hidden" name="peticion_id" value="<?php echo esc_attr($peticion->id); ?>">
 
                         <div class="firmar-opciones">
@@ -702,7 +702,7 @@ class Flavor_Participacion_Frontend_Controller {
             <h2><?php esc_html_e('Crear Nueva Petición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="form-crear-peticion" class="flavor-form">
-                <?php wp_nonce_field('participacion_nonce', 'participacion_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_participacion_nonce', 'participacion_nonce_field'); ?>
 
                 <div class="flavor-form-group">
                     <label for="titulo"><?php esc_html_e('Título de la petición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
@@ -870,7 +870,7 @@ class Flavor_Participacion_Frontend_Controller {
             <?php if (is_user_logged_in() && $debate->estado === 'activo'): ?>
                 <div class="debate-participar">
                     <form id="form-comentar-debate" class="form-comentar">
-                        <?php wp_nonce_field('participacion_nonce', 'participacion_nonce_field'); ?>
+                        <?php wp_nonce_field('flavor_participacion_nonce', 'participacion_nonce_field'); ?>
                         <input type="hidden" name="debate_id" value="<?php echo esc_attr($debate->id); ?>">
                         <textarea name="contenido" rows="3" placeholder="<?php esc_attr_e('Comparte tu opinión...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required></textarea>
                         <button type="submit" class="flavor-btn flavor-btn-primary">
@@ -976,7 +976,7 @@ class Flavor_Participacion_Frontend_Controller {
      * AJAX: Votar encuesta
      */
     public function ajax_votar_encuesta() {
-        check_ajax_referer('participacion_nonce', 'participacion_nonce_field');
+        check_ajax_referer('flavor_participacion_nonce', 'participacion_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1036,7 +1036,7 @@ class Flavor_Participacion_Frontend_Controller {
      * AJAX: Firmar petición
      */
     public function ajax_firmar_peticion() {
-        check_ajax_referer('participacion_nonce', 'participacion_nonce_field');
+        check_ajax_referer('flavor_participacion_nonce', 'participacion_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1102,7 +1102,7 @@ class Flavor_Participacion_Frontend_Controller {
      * AJAX: Crear petición
      */
     public function ajax_crear_peticion() {
-        check_ajax_referer('participacion_nonce', 'participacion_nonce_field');
+        check_ajax_referer('flavor_participacion_nonce', 'participacion_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1166,7 +1166,7 @@ class Flavor_Participacion_Frontend_Controller {
      * AJAX: Participar en debate
      */
     public function ajax_participar_debate() {
-        check_ajax_referer('participacion_nonce', 'participacion_nonce_field');
+        check_ajax_referer('flavor_participacion_nonce', 'participacion_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

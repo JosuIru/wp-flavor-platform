@@ -239,7 +239,7 @@ function toggleNotificaciones(suscripcionId, nuevoEstado) {
             action: 'flavor_podcast_toggle_notificaciones',
             suscripcion_id: suscripcionId,
             estado: nuevoEstado ? 1 : 0,
-            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_podcast_suscriptores_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -255,7 +255,7 @@ function eliminarSuscripcion(suscripcionId) {
         jQuery.post(ajaxurl, {
             action: 'flavor_podcast_eliminar_suscripcion',
             suscripcion_id: suscripcionId,
-            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_podcast_suscriptores_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -281,7 +281,7 @@ function enviarNotificacion() {
             action: 'flavor_podcast_enviar_notificacion',
             suscriptor_ids: ids,
             mensaje: mensaje,
-            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_podcast_suscriptores_nonce'); ?>'
         }, function(response) {
             if (response.success) {
                 alert('<?php echo esc_js(__('Notificaciones enviadas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');

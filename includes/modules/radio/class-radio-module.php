@@ -4446,7 +4446,7 @@ KNOWLEDGE;
      * AJAX: Iniciar una emision en vivo
      */
     public function ajax_iniciar_emision() {
-        check_ajax_referer('radio_emision_nonce', 'nonce');
+        check_ajax_referer('flavor_radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para iniciar emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -4510,7 +4510,7 @@ KNOWLEDGE;
      * AJAX: Finalizar una emision en vivo
      */
     public function ajax_finalizar_emision() {
-        check_ajax_referer('radio_emision_nonce', 'nonce');
+        check_ajax_referer('flavor_radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para finalizar emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -4574,7 +4574,7 @@ KNOWLEDGE;
      * AJAX: Ver detalles de una emision
      */
     public function ajax_ver_emision() {
-        check_ajax_referer('radio_emision_nonce', 'nonce');
+        check_ajax_referer('flavor_radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permisos para ver emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));

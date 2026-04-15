@@ -2005,7 +2005,7 @@ KNOWLEDGE;
             <!-- Formulario -->
             <form id="marketplace-form-publicar" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6"
                   data-ajax-action="marketplace_guardar_anuncio">
-                <?php wp_nonce_field('marketplace_publicar_anuncio', 'marketplace_nonce'); ?>
+                <?php wp_nonce_field('flavor_marketplace_publicar_anuncio', 'marketplace_nonce'); ?>
                 <?php if ($anuncio_editar): ?>
                 <input type="hidden" name="anuncio_id" value="<?php echo esc_attr($anuncio_editar->id); ?>">
                 <?php endif; ?>
@@ -2251,7 +2251,7 @@ KNOWLEDGE;
      * Handler AJAX para guardar anuncio
      */
     public function ajax_guardar_anuncio() {
-        check_ajax_referer('marketplace_publicar_anuncio', 'marketplace_nonce');
+        check_ajax_referer('flavor_marketplace_publicar_anuncio', 'marketplace_nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

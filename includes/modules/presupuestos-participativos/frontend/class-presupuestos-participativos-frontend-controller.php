@@ -79,7 +79,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
 
         wp_localize_script('flavor-presupuestos', 'flavorPP', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('pp_nonce'),
+            'nonce' => wp_create_nonce('flavor_pp_nonce'),
             'i18n' => [
                 'voto_registrado' => __('Voto registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'apoyo_registrado' => __('Apoyo registrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -716,7 +716,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
 
                 <?php if (is_user_logged_in()): ?>
                     <form id="form-comentario" class="form-comentario">
-                        <?php wp_nonce_field('pp_nonce', 'pp_nonce_field'); ?>
+                        <?php wp_nonce_field('flavor_pp_nonce', 'pp_nonce_field'); ?>
                         <input type="hidden" name="propuesta_id" value="<?php echo esc_attr($propuesta->id); ?>">
                         <textarea name="contenido" rows="3" placeholder="<?php esc_attr_e('Escribe tu comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required></textarea>
                         <button type="submit" class="flavor-btn flavor-btn-primary">
@@ -799,7 +799,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
             <p class="proceso-info"><?php printf(esc_html__('Para el proceso: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html($proceso->titulo) . '</strong>'); ?></p>
 
             <form id="form-crear-propuesta" class="flavor-form" method="post" enctype="multipart/form-data">
-                <?php wp_nonce_field('pp_nonce', 'pp_nonce_field'); ?>
+                <?php wp_nonce_field('flavor_pp_nonce', 'pp_nonce_field'); ?>
                 <input type="hidden" name="proceso_id" value="<?php echo esc_attr($proceso->id); ?>">
 
                 <div class="flavor-form-group">
@@ -1164,7 +1164,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * AJAX: Crear propuesta
      */
     public function ajax_crear_propuesta() {
-        check_ajax_referer('pp_nonce', 'pp_nonce_field');
+        check_ajax_referer('flavor_pp_nonce', 'pp_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1239,7 +1239,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * AJAX: Votar propuesta
      */
     public function ajax_votar_propuesta() {
-        check_ajax_referer('pp_nonce', 'nonce');
+        check_ajax_referer('flavor_pp_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1339,7 +1339,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * AJAX: Apoyar propuesta
      */
     public function ajax_apoyar_propuesta() {
-        check_ajax_referer('pp_nonce', 'nonce');
+        check_ajax_referer('flavor_pp_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
@@ -1397,7 +1397,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * AJAX: Comentar
      */
     public function ajax_comentar() {
-        check_ajax_referer('pp_nonce', 'pp_nonce_field');
+        check_ajax_referer('flavor_pp_nonce', 'pp_nonce_field');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));

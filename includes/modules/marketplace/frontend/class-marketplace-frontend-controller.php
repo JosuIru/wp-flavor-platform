@@ -112,7 +112,7 @@ class Flavor_Marketplace_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor/v1/marketplace/'),
-            'nonce' => wp_create_nonce('marketplace_frontend_nonce'),
+            'nonce' => wp_create_nonce('flavor_marketplace_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url($this->get_current_request_url()),
@@ -1077,7 +1077,7 @@ class Flavor_Marketplace_Frontend_Controller {
      * AJAX: Agregar a favoritos
      */
     public function ajax_agregar_favorito() {
-        check_ajax_referer('marketplace_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_marketplace_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1103,7 +1103,7 @@ class Flavor_Marketplace_Frontend_Controller {
      * AJAX: Quitar de favoritos
      */
     public function ajax_quitar_favorito() {
-        check_ajax_referer('marketplace_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_marketplace_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1124,7 +1124,7 @@ class Flavor_Marketplace_Frontend_Controller {
      * AJAX: Contactar vendedor
      */
     public function ajax_contactar_vendedor() {
-        check_ajax_referer('marketplace_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_marketplace_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1168,7 +1168,7 @@ class Flavor_Marketplace_Frontend_Controller {
      * AJAX: Marcar como vendido
      */
     public function ajax_marcar_vendido() {
-        check_ajax_referer('marketplace_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_marketplace_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1200,7 +1200,7 @@ class Flavor_Marketplace_Frontend_Controller {
      * AJAX: Filtrar anuncios
      */
     public function ajax_filtrar_anuncios() {
-        check_ajax_referer('marketplace_frontend_nonce', 'nonce');
+        check_ajax_referer('flavor_marketplace_frontend_nonce', 'nonce');
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? '');
         $categoria = sanitize_text_field($_POST['categoria'] ?? '');

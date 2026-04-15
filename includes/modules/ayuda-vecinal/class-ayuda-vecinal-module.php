@@ -2830,7 +2830,7 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
@@ -2912,7 +2912,7 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
@@ -3022,7 +3022,7 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
@@ -3097,7 +3097,7 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
 
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
@@ -3416,7 +3416,7 @@ KNOWLEDGE;
         // Localizar script con datos necesarios
         wp_localize_script('ayuda-vecinal-frontend', 'ayudaVecinalData', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ayuda_vecinal_frontend'),
+            'nonce' => wp_create_nonce('flavor_ayuda_vecinal_nonce'),
             'rest_url' => rest_url('flavor/v1/ayuda-vecinal/'),
             'rest_nonce' => wp_create_nonce('wp_rest'),
             'user_logged_in' => is_user_logged_in(),
@@ -3677,7 +3677,7 @@ KNOWLEDGE;
             <?php endif; ?>
 
             <form id="form-ofrecer-ayuda" class="ayuda-vecinal-form" data-oferta-id="<?php echo $oferta_existente ? esc_attr($oferta_existente->id) : ''; ?>">
-                <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
+                <?php wp_nonce_field('flavor_ayuda_vecinal_nonce', 'ayuda_vecinal_nonce'); ?>
 
                 <div class="form-grupo">
                     <label for="oferta-titulo"><?php esc_html_e('Título de tu oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
@@ -3790,7 +3790,7 @@ KNOWLEDGE;
             </div>
 
             <form id="form-solicitar-ayuda" class="ayuda-vecinal-form">
-                <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
+                <?php wp_nonce_field('flavor_ayuda_vecinal_nonce', 'ayuda_vecinal_nonce'); ?>
 
                 <div class="form-grupo">
                     <label for="solicitud-titulo"><?php esc_html_e('¿Qué necesitas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
@@ -4134,7 +4134,7 @@ KNOWLEDGE;
             'lat_centro' => $atributos['lat_centro'] ?: 40.4168, // Madrid por defecto
             'lng_centro' => $atributos['lng_centro'] ?: -3.7038,
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ayuda_vecinal_mapa'),
+            'nonce' => wp_create_nonce('flavor_ayuda_vecinal_nonce'),
         ];
 
         $categorias = $this->get_categorias_ayuda();
@@ -4435,7 +4435,7 @@ KNOWLEDGE;
      * AJAX: Crear solicitud desde frontend
      */
     public function ajax_crear_solicitud_frontend() {
-        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4483,7 +4483,7 @@ KNOWLEDGE;
      * AJAX: Crear o actualizar oferta de ayuda
      */
     public function ajax_crear_oferta_frontend() {
-        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -4550,7 +4550,7 @@ KNOWLEDGE;
      * AJAX: Responder a una solicitud (ofrecer ayuda)
      */
     public function ajax_responder_solicitud() {
-        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

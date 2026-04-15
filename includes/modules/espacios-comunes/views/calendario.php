@@ -447,7 +447,7 @@ jQuery(document).ready(function($) {
             action: 'espacios_comunes_exportar_calendario',
             mes: mesActual,
             anio: anioActual,
-            nonce: '<?php echo wp_create_nonce('espacios_calendario_nonce'); ?>'
+            nonce: '<?php echo wp_create_nonce('flavor_espacios_calendario_nonce'); ?>'
         });
         window.location.href = ajaxurl + '?' + params.toString();
     });

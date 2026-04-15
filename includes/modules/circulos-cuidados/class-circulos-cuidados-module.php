@@ -805,7 +805,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
      * AJAX: Unirse a un círculo
      */
     public function ajax_unirse_circulo() {
-        check_ajax_referer('cc_nonce', 'nonce');
+        check_ajax_referer('flavor_cc_nonce', 'nonce');
 
         $circulo_id = absint($_POST['circulo_id'] ?? 0);
         $user_id = get_current_user_id();
@@ -838,7 +838,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
      * AJAX: Ofrecer ayuda a una necesidad
      */
     public function ajax_ofrecer_ayuda() {
-        check_ajax_referer('cc_nonce', 'nonce');
+        check_ajax_referer('flavor_cc_nonce', 'nonce');
 
         $necesidad_id = absint($_POST['necesidad_id'] ?? 0);
         $horas = floatval($_POST['horas'] ?? 0);
@@ -882,7 +882,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
      * AJAX: Registrar horas de cuidado realizadas
      */
     public function ajax_registrar_horas() {
-        check_ajax_referer('cc_nonce', 'nonce');
+        check_ajax_referer('flavor_cc_nonce', 'nonce');
 
         $necesidad_id = absint($_POST['necesidad_id'] ?? 0);
         $horas = floatval($_POST['horas'] ?? 0);
@@ -1102,7 +1102,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
 
         wp_localize_script('flavor-circulos-cuidados', 'ccData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cc_nonce'),
+            'nonce' => wp_create_nonce('flavor_cc_nonce'),
             'i18n' => [
                 'confirmUnirse' => __('¿Quieres unirte a este círculo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'gracias' => __('¡Gracias por cuidar!', FLAVOR_PLATFORM_TEXT_DOMAIN),

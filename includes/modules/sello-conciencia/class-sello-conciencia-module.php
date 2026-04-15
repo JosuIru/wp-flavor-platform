@@ -1663,7 +1663,7 @@ class Flavor_Platform_Sello_Conciencia_Module extends Flavor_Platform_Module_Bas
      * Handler AJAX para evaluar
      */
     public function ajax_evaluar(): void {
-        check_ajax_referer('sello_conciencia_nonce', 'nonce');
+        check_ajax_referer('flavor_sello_conciencia_nonce', 'nonce');
 
         $this->invalidar_cache();
         $evaluacion = $this->evaluar();

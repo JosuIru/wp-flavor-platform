@@ -35,7 +35,7 @@ if (!wp_script_is('flavor-trabajo-digno', 'enqueued')) {
 }
 wp_localize_script('flavor-trabajo-digno', 'flavorTrabajoDigno', [
     'ajaxurl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+    'nonce' => wp_create_nonce('flavor_trabajo_digno_nonce'),
     'i18n' => [
         'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'confirm_postular' => __('¿Confirmas tu postulación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -63,7 +63,7 @@ $criterios = $trabajo_digno_module_class::CRITERIOS_DIGNIDAD;
     </header>
 
     <form class="td-form td-form-oferta" method="post">
-        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('trabajo_digno_nonce')); ?>">
+        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_trabajo_digno_nonce')); ?>">
         <div class="td-form-grupo">
             <label for="td-titulo"><?php esc_html_e('Título del puesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
             <input type="text" name="titulo" id="td-titulo" required
