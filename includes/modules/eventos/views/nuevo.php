@@ -33,11 +33,13 @@ if ( ! empty( $settings['tipos_evento'] ) && is_array( $settings['tipos_evento']
 	}
 }
 
-// Obtener comunidades disponibles (el evento puede pertenecer a una comunidad).
+// Obtener todas las entidades vinculables (solo si sus módulos están activos).
+global $wpdb;
+
+// Comunidades.
 $comunidades_disponibles = [];
 $comunidades_module      = Flavor_Platform_Helpers::get_module_instance( 'comunidades' );
 if ( $comunidades_module && method_exists( $comunidades_module, 'is_active' ) && $comunidades_module->is_active() ) {
-	global $wpdb;
 	$tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_comunidades ) ) === $tabla_comunidades ) {
 		$comunidades_disponibles = $wpdb->get_results(
@@ -47,8 +49,96 @@ if ( $comunidades_module && method_exists( $comunidades_module, 'is_active' ) &&
 	}
 }
 
-// Contexto de comunidad (si viene de una comunidad específica).
-$comunidad_contexto = absint( $_GET['comunidad_id'] ?? $_GET['comunidad'] ?? 0 );
+// Colectivos.
+$colectivos_disponibles = [];
+$colectivos_module      = Flavor_Platform_Helpers::get_module_instance( 'colectivos' );
+if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $colectivos_module->is_active() ) {
+	$tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_colectivos ) ) === $tabla_colectivos ) {
+		$colectivos_disponibles = $wpdb->get_results(
+			"SELECT id, nombre FROM {$tabla_colectivos} WHERE estado = 'activo' ORDER BY nombre ASC",
+			ARRAY_A
+		);
+	}
+}
+
+// Grupos de consumo.
+$grupos_consumo_disponibles = [];
+$grupos_consumo_module      = Flavor_Platform_Helpers::get_module_instance( 'grupos-consumo' );
+if ( $grupos_consumo_module && method_exists( $grupos_consumo_module, 'is_active' ) && $grupos_consumo_module->is_active() ) {
+	$tabla_grupos = $wpdb->prefix . 'flavor_gc_grupos';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_grupos ) ) === $tabla_grupos ) {
+		$grupos_consumo_disponibles = $wpdb->get_results(
+			"SELECT id, nombre FROM {$tabla_grupos} WHERE estado = 'activo' ORDER BY nombre ASC",
+			ARRAY_A
+		);
+	}
+}
+
+// Proyectos (de colectivos).
+$proyectos_disponibles = [];
+if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $colectivos_module->is_active() ) {
+	$tabla_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_proyectos ) ) === $tabla_proyectos ) {
+		$proyectos_disponibles = $wpdb->get_results(
+			"SELECT id, nombre FROM {$tabla_proyectos} WHERE estado = 'activo' ORDER BY nombre ASC",
+			ARRAY_A
+		);
+	}
+}
+
+// Talleres.
+$talleres_disponibles = [];
+$talleres_module      = Flavor_Platform_Helpers::get_module_instance( 'talleres' );
+if ( $talleres_module && method_exists( $talleres_module, 'is_active' ) && $talleres_module->is_active() ) {
+	$tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_talleres ) ) === $tabla_talleres ) {
+		$talleres_disponibles = $wpdb->get_results(
+			"SELECT id, nombre FROM {$tabla_talleres} WHERE estado IN ('activo', 'publicado') ORDER BY nombre ASC",
+			ARRAY_A
+		);
+	}
+}
+
+// Cursos (CPT).
+$cursos_disponibles = [];
+$cursos_module      = Flavor_Platform_Helpers::get_module_instance( 'cursos' );
+if ( $cursos_module && method_exists( $cursos_module, 'is_active' ) && $cursos_module->is_active() ) {
+	$cursos_query = new WP_Query(
+		[
+			'post_type'      => 'flavor_curso',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		]
+	);
+	if ( $cursos_query->have_posts() ) {
+		foreach ( $cursos_query->posts as $curso_post ) {
+			$cursos_disponibles[] = [
+				'id'     => $curso_post->ID,
+				'nombre' => $curso_post->post_title,
+			];
+		}
+	}
+	wp_reset_postdata();
+}
+
+// Verificar si hay alguna vinculación disponible.
+$hay_vinculaciones = ! empty( $comunidades_disponibles )
+	|| ! empty( $colectivos_disponibles )
+	|| ! empty( $grupos_consumo_disponibles )
+	|| ! empty( $proyectos_disponibles )
+	|| ! empty( $talleres_disponibles )
+	|| ! empty( $cursos_disponibles );
+
+// Contextos desde GET (si viene de una entidad específica).
+$comunidad_contexto      = absint( $_GET['comunidad_id'] ?? $_GET['comunidad'] ?? 0 );
+$colectivo_contexto      = absint( $_GET['colectivo_id'] ?? $_GET['colectivo'] ?? 0 );
+$grupo_consumo_contexto  = absint( $_GET['grupo_consumo_id'] ?? $_GET['grupo'] ?? 0 );
+$proyecto_contexto       = absint( $_GET['proyecto_id'] ?? $_GET['proyecto'] ?? 0 );
+$taller_contexto         = absint( $_GET['taller_id'] ?? $_GET['taller'] ?? 0 );
+$curso_contexto          = absint( $_GET['curso_id'] ?? $_GET['curso'] ?? 0 );
 ?>
 
 <?php
@@ -199,15 +289,16 @@ if ( class_exists( 'Flavor_Breadcrumbs' ) ) {
 					</div>
 				</div>
 
-				<?php if ( ! empty( $comunidades_disponibles ) ) : ?>
+				<?php if ( $hay_vinculaciones ) : ?>
 				<div class="flavor-form-section">
-					<h2><?php esc_html_e( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
-					<p class="description"><?php esc_html_e( 'Asocia este evento a una comunidad específica.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+					<h2><?php esc_html_e( 'Vinculaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
+					<p class="description"><?php esc_html_e( 'Asocia este evento a entidades del ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
 
+					<?php if ( ! empty( $comunidades_disponibles ) ) : ?>
 					<div class="flavor-form-group">
 						<label for="evento-comunidad"><?php esc_html_e( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
 						<select id="evento-comunidad" name="comunidad_id" class="widefat">
-							<option value=""><?php esc_html_e( 'Sin comunidad (evento general)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<option value=""><?php esc_html_e( '— Ninguna —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
 							<?php foreach ( $comunidades_disponibles as $comunidad ) : ?>
 								<option value="<?php echo esc_attr( $comunidad['id'] ); ?>" <?php selected( $comunidad_contexto, $comunidad['id'] ); ?>>
 									<?php echo esc_html( $comunidad['nombre'] ); ?>
@@ -215,6 +306,77 @@ if ( class_exists( 'Flavor_Breadcrumbs' ) ) {
 							<?php endforeach; ?>
 						</select>
 					</div>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $colectivos_disponibles ) ) : ?>
+					<div class="flavor-form-group">
+						<label for="evento-colectivo"><?php esc_html_e( 'Colectivo organizador', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-colectivo" name="colectivo_id" class="widefat">
+							<option value=""><?php esc_html_e( '— Ninguno —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $colectivos_disponibles as $colectivo ) : ?>
+								<option value="<?php echo esc_attr( $colectivo['id'] ); ?>" <?php selected( $colectivo_contexto, $colectivo['id'] ); ?>>
+									<?php echo esc_html( $colectivo['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $grupos_consumo_disponibles ) ) : ?>
+					<div class="flavor-form-group">
+						<label for="evento-grupo-consumo"><?php esc_html_e( 'Grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-grupo-consumo" name="grupo_consumo_id" class="widefat">
+							<option value=""><?php esc_html_e( '— Ninguno —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $grupos_consumo_disponibles as $grupo ) : ?>
+								<option value="<?php echo esc_attr( $grupo['id'] ); ?>" <?php selected( $grupo_consumo_contexto, $grupo['id'] ); ?>>
+									<?php echo esc_html( $grupo['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $proyectos_disponibles ) ) : ?>
+					<div class="flavor-form-group">
+						<label for="evento-proyecto"><?php esc_html_e( 'Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-proyecto" name="proyecto_id" class="widefat">
+							<option value=""><?php esc_html_e( '— Ninguno —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $proyectos_disponibles as $proyecto ) : ?>
+								<option value="<?php echo esc_attr( $proyecto['id'] ); ?>" <?php selected( $proyecto_contexto, $proyecto['id'] ); ?>>
+									<?php echo esc_html( $proyecto['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $talleres_disponibles ) ) : ?>
+					<div class="flavor-form-group">
+						<label for="evento-taller"><?php esc_html_e( 'Taller asociado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-taller" name="taller_id" class="widefat">
+							<option value=""><?php esc_html_e( '— Ninguno —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $talleres_disponibles as $taller ) : ?>
+								<option value="<?php echo esc_attr( $taller['id'] ); ?>" <?php selected( $taller_contexto, $taller['id'] ); ?>>
+									<?php echo esc_html( $taller['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $cursos_disponibles ) ) : ?>
+					<div class="flavor-form-group">
+						<label for="evento-curso"><?php esc_html_e( 'Curso asociado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+						<select id="evento-curso" name="curso_id" class="widefat">
+							<option value=""><?php esc_html_e( '— Ninguno —', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+							<?php foreach ( $cursos_disponibles as $curso ) : ?>
+								<option value="<?php echo esc_attr( $curso['id'] ); ?>" <?php selected( $curso_contexto, $curso['id'] ); ?>>
+									<?php echo esc_html( $curso['nombre'] ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<?php endif; ?>
 				</div>
 				<?php endif; ?>
 

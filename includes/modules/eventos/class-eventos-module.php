@@ -36,7 +36,8 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
         $this->gailu_contribuye_a = ['cohesion'];
 
         parent::__construct();
-        add_action('init', [$this, 'ensure_comunidad_schema'], 1);
+        add_action('init', [$this, 'ensure_relations_schema'], 1);
+        add_action('wp_ajax_eventos_guardar_evento', [Flavor_Eventos_API::get_instance(), 'ajax_guardar_evento']);
     }
 
     public function get_dependencies() {
@@ -65,21 +66,35 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * Garantiza la columna de relacion con comunidades en instalaciones existentes.
+     * Garantiza las columnas de relación con otros módulos en instalaciones existentes.
      */
-    public function ensure_comunidad_schema() {
+    public function ensure_relations_schema() {
         global $wpdb;
 
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
+        if ( ! Flavor_Platform_Helpers::tabla_existe( $tabla_eventos ) ) {
             return;
         }
 
-        $columna = $wpdb->get_var("SHOW COLUMNS FROM {$tabla_eventos} LIKE 'comunidad_id'");
-        if (!$columna) {
-            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL");
-            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD KEY comunidad_id (comunidad_id)");
+        // Columnas de relación con otros módulos.
+        $columnas_relacion = [
+            'comunidad_id'      => 'bigint(20) unsigned DEFAULT NULL',
+            'colectivo_id'      => 'bigint(20) unsigned DEFAULT NULL',
+            'grupo_consumo_id'  => 'bigint(20) unsigned DEFAULT NULL',
+            'proyecto_id'       => 'bigint(20) unsigned DEFAULT NULL',
+            'taller_id'         => 'bigint(20) unsigned DEFAULT NULL',
+            'curso_id'          => 'bigint(20) unsigned DEFAULT NULL',
+        ];
+
+        foreach ( $columnas_relacion as $columna => $definicion ) {
+            $existe = $wpdb->get_var(
+                $wpdb->prepare( "SHOW COLUMNS FROM {$tabla_eventos} LIKE %s", $columna )
+            );
+            if ( ! $existe ) {
+                $wpdb->query( "ALTER TABLE {$tabla_eventos} ADD COLUMN {$columna} {$definicion}" );
+                $wpdb->query( "ALTER TABLE {$tabla_eventos} ADD KEY {$columna} ({$columna})" );
+            }
         }
     }
 
@@ -1817,9 +1832,14 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
             'aforo_maximo'  => isset($params['aforo_maximo']) ? absint($params['aforo_maximo']) : 0,
             'es_online'     => !empty($params['es_online']) ? 1 : 0,
             'url_online'    => isset($params['url_online']) ? esc_url_raw($params['url_online']) : null,
-            'organizador_id' => get_current_user_id(),
-            'comunidad_id'  => !empty($params['comunidad_id']) ? absint($params['comunidad_id']) : null,
-            'estado'        => 'borrador',
+            'organizador_id'    => get_current_user_id(),
+            'comunidad_id'      => ! empty( $params['comunidad_id'] ) ? absint( $params['comunidad_id'] ) : null,
+            'colectivo_id'      => ! empty( $params['colectivo_id'] ) ? absint( $params['colectivo_id'] ) : null,
+            'grupo_consumo_id'  => ! empty( $params['grupo_consumo_id'] ) ? absint( $params['grupo_consumo_id'] ) : null,
+            'proyecto_id'       => ! empty( $params['proyecto_id'] ) ? absint( $params['proyecto_id'] ) : null,
+            'taller_id'         => ! empty( $params['taller_id'] ) ? absint( $params['taller_id'] ) : null,
+            'curso_id'          => ! empty( $params['curso_id'] ) ? absint( $params['curso_id'] ) : null,
+            'estado'            => 'borrador',
         ];
         $resultado = $wpdb->insert($tabla, $datos);
         if ($resultado === false) {

@@ -521,80 +521,132 @@ class Flavor_Eventos_API {
      * AJAX: Guardar evento (crear o actualizar)
      */
     public function ajax_guardar_evento() {
-        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+        check_ajax_referer( 'flavor_eventos_nonce', 'nonce' );
 
-        // Verificar permisos
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('No tienes permisos para gestionar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( [ 'message' => __( 'No tienes permisos para gestionar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ] );
         }
 
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
-        $usuario_id = get_current_user_id();
+        $usuario_id    = get_current_user_id();
 
-        // Obtener y sanitizar datos
-        $evento_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
-        $descripcion = isset($_POST['descripcion']) ? wp_kses_post($_POST['descripcion']) : '';
-        $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : '';
-        $hora = isset($_POST['hora']) ? sanitize_text_field($_POST['hora']) : '';
-        $ubicacion = isset($_POST['ubicacion']) ? sanitize_text_field($_POST['ubicacion']) : '';
-        $capacidad = isset($_POST['capacidad']) ? intval($_POST['capacidad']) : 0;
-        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : 'otro';
+        // Obtener y sanitizar datos básicos.
+        $evento_id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+        $titulo      = isset( $_POST['titulo'] ) ? sanitize_text_field( wp_unslash( $_POST['titulo'] ) ) : '';
+        $descripcion = isset( $_POST['descripcion'] ) ? wp_kses_post( wp_unslash( $_POST['descripcion'] ) ) : '';
+        $tipo        = isset( $_POST['tipo'] ) ? sanitize_text_field( wp_unslash( $_POST['tipo'] ) ) : 'otro';
+        $estado      = isset( $_POST['estado'] ) ? sanitize_text_field( wp_unslash( $_POST['estado'] ) ) : 'borrador';
 
-        // Validar campos requeridos
-        if (empty($titulo) || empty($fecha) || empty($hora)) {
-            wp_send_json_error(['message' => __('Completa los campos obligatorios: título, fecha y hora.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        // Fecha y hora (soporta ambos formatos: separados o combinados).
+        $fecha_inicio_raw = isset( $_POST['fecha_inicio'] ) ? sanitize_text_field( wp_unslash( $_POST['fecha_inicio'] ) ) : '';
+        $hora_inicio_raw  = isset( $_POST['hora_inicio'] ) ? sanitize_text_field( wp_unslash( $_POST['hora_inicio'] ) ) : '';
+        $fecha_fin_raw    = isset( $_POST['fecha_fin'] ) ? sanitize_text_field( wp_unslash( $_POST['fecha_fin'] ) ) : '';
+        $hora_fin_raw     = isset( $_POST['hora_fin'] ) ? sanitize_text_field( wp_unslash( $_POST['hora_fin'] ) ) : '';
+
+        // Compatibilidad con formato antiguo.
+        if ( empty( $fecha_inicio_raw ) && isset( $_POST['fecha'] ) ) {
+            $fecha_inicio_raw = sanitize_text_field( wp_unslash( $_POST['fecha'] ) );
+        }
+        if ( empty( $hora_inicio_raw ) && isset( $_POST['hora'] ) ) {
+            $hora_inicio_raw = sanitize_text_field( wp_unslash( $_POST['hora'] ) );
         }
 
-        // Combinar fecha y hora
-        $fecha_inicio = $fecha . ' ' . $hora . ':00';
+        // Validar campos requeridos.
+        if ( empty( $titulo ) || empty( $fecha_inicio_raw ) || empty( $hora_inicio_raw ) ) {
+            wp_send_json_error( [ 'message' => __( 'Completa los campos obligatorios: título, fecha y hora.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ] );
+        }
 
-        // Preparar datos
+        // Combinar fecha y hora.
+        $fecha_inicio = $fecha_inicio_raw . ' ' . $hora_inicio_raw . ':00';
+        $fecha_fin    = null;
+        if ( ! empty( $fecha_fin_raw ) && ! empty( $hora_fin_raw ) ) {
+            $fecha_fin = $fecha_fin_raw . ' ' . $hora_fin_raw . ':00';
+        }
+
+        // Ubicación y coordenadas.
+        $ubicacion       = isset( $_POST['ubicacion'] ) ? sanitize_text_field( wp_unslash( $_POST['ubicacion'] ) ) : '';
+        $es_online       = ! empty( $_POST['es_online'] ) ? 1 : 0;
+        $url_online      = isset( $_POST['url_online'] ) ? esc_url_raw( wp_unslash( $_POST['url_online'] ) ) : '';
+        $coordenadas_lat = isset( $_POST['coordenadas_lat'] ) && $_POST['coordenadas_lat'] !== '' ? floatval( $_POST['coordenadas_lat'] ) : null;
+        $coordenadas_lng = isset( $_POST['coordenadas_lng'] ) && $_POST['coordenadas_lng'] !== '' ? floatval( $_POST['coordenadas_lng'] ) : null;
+
+        // Inscripciones.
+        $aforo_maximo         = isset( $_POST['aforo_maximo'] ) ? absint( $_POST['aforo_maximo'] ) : 0;
+        $precio               = isset( $_POST['precio'] ) ? floatval( $_POST['precio'] ) : 0.00;
+        $requiere_inscripcion = ! empty( $_POST['requiere_inscripcion'] ) ? 1 : 0;
+
+        // Imagen.
+        $imagen_id = isset( $_POST['imagen_id'] ) ? absint( $_POST['imagen_id'] ) : 0;
+        $imagen    = $imagen_id > 0 ? wp_get_attachment_url( $imagen_id ) : null;
+
+        // Relaciones con otros módulos.
+        $comunidad_id     = ! empty( $_POST['comunidad_id'] ) ? absint( $_POST['comunidad_id'] ) : null;
+        $colectivo_id     = ! empty( $_POST['colectivo_id'] ) ? absint( $_POST['colectivo_id'] ) : null;
+        $grupo_consumo_id = ! empty( $_POST['grupo_consumo_id'] ) ? absint( $_POST['grupo_consumo_id'] ) : null;
+        $proyecto_id      = ! empty( $_POST['proyecto_id'] ) ? absint( $_POST['proyecto_id'] ) : null;
+        $taller_id        = ! empty( $_POST['taller_id'] ) ? absint( $_POST['taller_id'] ) : null;
+        $curso_id         = ! empty( $_POST['curso_id'] ) ? absint( $_POST['curso_id'] ) : null;
+
+        // Preparar datos para inserción/actualización.
         $datos_evento = [
-            'titulo'         => $titulo,
-            'descripcion'    => $descripcion,
-            'tipo'           => $categoria,
-            'fecha_inicio'   => $fecha_inicio,
-            'ubicacion'      => $ubicacion,
-            'aforo_maximo'   => $capacidad,
-            'estado'         => 'publicado',
-            'updated_at'     => current_time('mysql'),
+            'titulo'              => $titulo,
+            'descripcion'         => $descripcion,
+            'tipo'                => $tipo,
+            'fecha_inicio'        => $fecha_inicio,
+            'fecha_fin'           => $fecha_fin,
+            'ubicacion'           => $ubicacion,
+            'es_online'           => $es_online,
+            'url_online'          => $es_online ? $url_online : null,
+            'coordenadas_lat'     => $coordenadas_lat,
+            'coordenadas_lng'     => $coordenadas_lng,
+            'aforo_maximo'        => $aforo_maximo,
+            'precio'              => $precio,
+            'requiere_inscripcion' => $requiere_inscripcion,
+            'imagen'              => $imagen,
+            'comunidad_id'        => $comunidad_id,
+            'colectivo_id'        => $colectivo_id,
+            'grupo_consumo_id'    => $grupo_consumo_id,
+            'proyecto_id'         => $proyecto_id,
+            'taller_id'           => $taller_id,
+            'curso_id'            => $curso_id,
+            'estado'              => $estado,
+            'updated_at'          => current_time( 'mysql' ),
         ];
 
-        if ($evento_id > 0) {
-            // Actualizar evento existente
+        if ( $evento_id > 0 ) {
+            // Actualizar evento existente.
             $resultado = $wpdb->update(
                 $tabla_eventos,
                 $datos_evento,
-                ['id' => $evento_id],
+                [ 'id' => $evento_id ],
                 null,
-                ['%d']
+                [ '%d' ]
             );
 
-            if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al actualizar el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            if ( false === $resultado ) {
+                wp_send_json_error( [ 'message' => __( 'Error al actualizar el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ] );
             }
 
-            wp_send_json_success([
-                'id' => $evento_id,
-                'message' => __('Evento actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            ]);
+            wp_send_json_success( [
+                'id'      => $evento_id,
+                'message' => __( 'Evento actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            ] );
         } else {
-            // Crear nuevo evento
+            // Crear nuevo evento.
             $datos_evento['organizador_id'] = $usuario_id;
-            $datos_evento['created_at'] = current_time('mysql');
+            $datos_evento['created_at']     = current_time( 'mysql' );
 
-            $resultado = $wpdb->insert($tabla_eventos, $datos_evento);
+            $resultado = $wpdb->insert( $tabla_eventos, $datos_evento );
 
-            if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al crear el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            if ( false === $resultado ) {
+                wp_send_json_error( [ 'message' => __( 'Error al crear el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ] );
             }
 
-            wp_send_json_success([
-                'id' => $wpdb->insert_id,
-                'message' => __('Evento creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            ]);
+            wp_send_json_success( [
+                'id'      => $wpdb->insert_id,
+                'message' => __( 'Evento creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            ] );
         }
     }
 
