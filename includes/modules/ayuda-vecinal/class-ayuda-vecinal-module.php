@@ -53,6 +53,10 @@ class Flavor_Platform_Ayuda_Vecinal_Module extends Flavor_Platform_Module_Base {
         // AJAX handlers para solicitudes
         add_action('wp_ajax_ayuda_vecinal_listar_solicitudes', [$this, 'ajax_listar_solicitudes']);
         add_action('wp_ajax_ayuda_vecinal_guardar_solicitud', [$this, 'ajax_guardar_solicitud']);
+        add_action('wp_ajax_ayuda_vecinal_asignar_voluntario', [$this, 'ajax_asignar_voluntario']);
+        add_action('wp_ajax_ayuda_vecinal_obtener_estadisticas', [$this, 'ajax_obtener_estadisticas']);
+        add_action('wp_ajax_ayuda_vecinal_solicitudes_sin_asignar', [$this, 'ajax_solicitudes_sin_asignar']);
+        add_action('wp_ajax_ayuda_vecinal_sugerencias_matching', [$this, 'ajax_sugerencias_matching']);
 
         // Registrar shortcodes
         add_shortcode('ayuda_vecinal_solicitudes', [$this, 'render_shortcode_solicitudes']);
@@ -2804,6 +2808,421 @@ KNOWLEDGE;
         } else {
             wp_send_json_error(['message' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
+    }
+
+    /**
+     * AJAX: Asignar voluntario a una solicitud
+     */
+    public function ajax_asignar_voluntario() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+
+        $solicitud_id = isset($_POST['solicitud_id']) ? absint($_POST['solicitud_id']) : 0;
+        $voluntario_id = isset($_POST['voluntario_id']) ? absint($_POST['voluntario_id']) : 0;
+
+        if (empty($solicitud_id) || empty($voluntario_id)) {
+            wp_send_json_error(['message' => __('Solicitud y voluntario son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificar que la solicitud existe y está abierta
+        $solicitud = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, estado, solicitante_id FROM {$tabla_solicitudes} WHERE id = %d",
+            $solicitud_id
+        ));
+
+        if (!$solicitud) {
+            wp_send_json_error(['message' => __('Solicitud no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if ($solicitud->estado !== 'abierta') {
+            wp_send_json_error(['message' => __('La solicitud no está disponible para asignación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificar que el voluntario existe
+        $voluntario = get_userdata($voluntario_id);
+        if (!$voluntario) {
+            wp_send_json_error(['message' => __('Voluntario no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Actualizar la solicitud con el voluntario asignado
+        $resultado_actualizacion = $wpdb->update(
+            $tabla_solicitudes,
+            [
+                'ayudante_id' => $voluntario_id,
+                'estado' => 'asignada',
+                'fecha_asignacion' => current_time('mysql'),
+            ],
+            ['id' => $solicitud_id],
+            ['%d', '%s', '%s'],
+            ['%d']
+        );
+
+        if ($resultado_actualizacion === false) {
+            wp_send_json_error(['message' => __('Error al asignar voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Crear registro de respuesta aceptada
+        $wpdb->insert(
+            $tabla_respuestas,
+            [
+                'solicitud_id' => $solicitud_id,
+                'ayudante_id' => $voluntario_id,
+                'mensaje' => __('Asignado por administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'estado' => 'aceptada',
+                'fecha_respuesta' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%s']
+        );
+
+        wp_send_json_success([
+            'message' => sprintf(
+                __('Voluntario %s asignado correctamente a la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $voluntario->display_name
+            ),
+            'solicitud_id' => $solicitud_id,
+            'voluntario_id' => $voluntario_id,
+            'voluntario_nombre' => $voluntario->display_name,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener estadísticas del módulo
+     */
+    public function ajax_obtener_estadisticas() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+
+        $periodo = isset($_POST['periodo']) ? sanitize_text_field($_POST['periodo']) : 'mes';
+
+        // Calcular fecha de inicio según periodo
+        switch ($periodo) {
+            case 'semana':
+                $fecha_inicio = date('Y-m-d', strtotime('-1 week'));
+                break;
+            case 'año':
+                $fecha_inicio = date('Y-m-d', strtotime('-1 year'));
+                break;
+            case 'todo':
+                $fecha_inicio = '2000-01-01';
+                break;
+            case 'mes':
+            default:
+                $fecha_inicio = date('Y-m-d', strtotime('-1 month'));
+                break;
+        }
+
+        // Total de solicitudes
+        $total_solicitudes = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE fecha_solicitud >= %s",
+            $fecha_inicio
+        ));
+
+        // Solicitudes por estado
+        $solicitudes_por_estado = $wpdb->get_results($wpdb->prepare(
+            "SELECT estado, COUNT(*) as cantidad FROM {$tabla_solicitudes} WHERE fecha_solicitud >= %s GROUP BY estado",
+            $fecha_inicio
+        ), OBJECT_K);
+
+        // Solicitudes completadas
+        $solicitudes_completadas = isset($solicitudes_por_estado['completada']) ? $solicitudes_por_estado['completada']->cantidad : 0;
+
+        // Solicitudes abiertas
+        $solicitudes_abiertas = isset($solicitudes_por_estado['abierta']) ? $solicitudes_por_estado['abierta']->cantidad : 0;
+
+        // Total de voluntarios activos
+        $voluntarios_activos = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_ofertas} WHERE estado = 'activa'"
+        );
+
+        // Solicitudes por categoría
+        $solicitudes_por_categoria = $wpdb->get_results($wpdb->prepare(
+            "SELECT categoria, COUNT(*) as cantidad FROM {$tabla_solicitudes} WHERE fecha_solicitud >= %s GROUP BY categoria ORDER BY cantidad DESC",
+            $fecha_inicio
+        ));
+
+        // Promedio de valoraciones
+        $promedio_valoraciones = $wpdb->get_var($wpdb->prepare(
+            "SELECT AVG(puntuacion) FROM {$tabla_valoraciones} WHERE fecha_valoracion >= %s",
+            $fecha_inicio
+        ));
+
+        // Tasa de resolución
+        $tasa_resolucion = $total_solicitudes > 0 ? round(($solicitudes_completadas / $total_solicitudes) * 100, 1) : 0;
+
+        // Tiempo promedio de resolución (en horas)
+        $tiempo_promedio_resolucion = $wpdb->get_var($wpdb->prepare(
+            "SELECT AVG(TIMESTAMPDIFF(HOUR, fecha_solicitud, fecha_completado))
+             FROM {$tabla_solicitudes}
+             WHERE estado = 'completada' AND fecha_solicitud >= %s AND fecha_completado IS NOT NULL",
+            $fecha_inicio
+        ));
+
+        // Top voluntarios
+        $top_voluntarios = $wpdb->get_results($wpdb->prepare(
+            "SELECT s.ayudante_id, u.display_name, COUNT(*) as ayudas_completadas
+             FROM {$tabla_solicitudes} s
+             LEFT JOIN {$wpdb->users} u ON s.ayudante_id = u.ID
+             WHERE s.estado = 'completada' AND s.fecha_completado >= %s AND s.ayudante_id IS NOT NULL
+             GROUP BY s.ayudante_id
+             ORDER BY ayudas_completadas DESC
+             LIMIT 10",
+            $fecha_inicio
+        ));
+
+        wp_send_json_success([
+            'periodo' => $periodo,
+            'fecha_inicio' => $fecha_inicio,
+            'total_solicitudes' => (int) $total_solicitudes,
+            'solicitudes_abiertas' => (int) $solicitudes_abiertas,
+            'solicitudes_completadas' => (int) $solicitudes_completadas,
+            'voluntarios_activos' => (int) $voluntarios_activos,
+            'tasa_resolucion' => $tasa_resolucion,
+            'tiempo_promedio_resolucion' => $tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion, 1) : null,
+            'promedio_valoraciones' => $promedio_valoraciones ? round($promedio_valoraciones, 1) : null,
+            'solicitudes_por_categoria' => $solicitudes_por_categoria,
+            'solicitudes_por_estado' => array_map(function($item) {
+                return ['estado' => $item->estado ?? '', 'cantidad' => (int) ($item->cantidad ?? 0)];
+            }, array_values((array) $solicitudes_por_estado)),
+            'top_voluntarios' => $top_voluntarios,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener solicitudes sin asignar
+     */
+    public function ajax_solicitudes_sin_asignar() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        $limite = isset($_POST['limite']) ? absint($_POST['limite']) : 20;
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+        $urgencia = isset($_POST['urgencia']) ? sanitize_text_field($_POST['urgencia']) : '';
+
+        $condiciones = ["estado = 'abierta'", "ayudante_id IS NULL"];
+        $valores = [];
+
+        if (!empty($categoria)) {
+            $condiciones[] = "categoria = %s";
+            $valores[] = $categoria;
+        }
+
+        if (!empty($urgencia)) {
+            $condiciones[] = "urgencia = %s";
+            $valores[] = $urgencia;
+        }
+
+        $valores[] = $limite;
+
+        $consulta = $wpdb->prepare(
+            "SELECT s.*, u.display_name as solicitante_nombre
+             FROM {$tabla_solicitudes} s
+             LEFT JOIN {$wpdb->users} u ON s.solicitante_id = u.ID
+             WHERE " . implode(' AND ', $condiciones) . "
+             ORDER BY
+                CASE urgencia
+                    WHEN 'urgente' THEN 1
+                    WHEN 'alta' THEN 2
+                    WHEN 'media' THEN 3
+                    WHEN 'baja' THEN 4
+                    ELSE 5
+                END,
+                fecha_solicitud ASC
+             LIMIT %d",
+            $valores
+        );
+
+        $solicitudes = $wpdb->get_results($consulta);
+
+        $resultado = [];
+        foreach ($solicitudes as $solicitud) {
+            $resultado[] = [
+                'id' => (int) $solicitud->id,
+                'titulo' => $solicitud->titulo,
+                'descripcion' => $solicitud->descripcion,
+                'categoria' => $solicitud->categoria,
+                'urgencia' => $solicitud->urgencia,
+                'ubicacion' => $solicitud->ubicacion,
+                'fecha_necesaria' => $solicitud->fecha_necesaria,
+                'fecha_solicitud' => $solicitud->fecha_solicitud,
+                'solicitante_id' => (int) $solicitud->solicitante_id,
+                'solicitante_nombre' => $solicitud->solicitante_nombre ?: __('Usuario anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tiempo_transcurrido' => human_time_diff(strtotime($solicitud->fecha_solicitud), current_time('timestamp')),
+            ];
+        }
+
+        wp_send_json_success([
+            'solicitudes' => $resultado,
+            'total' => count($resultado),
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener sugerencias de matching entre solicitudes y voluntarios
+     */
+    public function ajax_sugerencias_matching() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        check_ajax_referer('ayuda_vecinal_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+
+        $solicitud_id = isset($_POST['solicitud_id']) ? absint($_POST['solicitud_id']) : 0;
+        $limite = isset($_POST['limite']) ? absint($_POST['limite']) : 5;
+
+        if (empty($solicitud_id)) {
+            wp_send_json_error(['message' => __('ID de solicitud requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener datos de la solicitud
+        $solicitud = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_solicitudes} WHERE id = %d",
+            $solicitud_id
+        ));
+
+        if (!$solicitud) {
+            wp_send_json_error(['message' => __('Solicitud no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Buscar voluntarios con ofertas activas que coincidan con la categoría
+        $voluntarios_matching = $wpdb->get_results($wpdb->prepare(
+            "SELECT
+                o.id as oferta_id,
+                o.usuario_id,
+                o.categoria,
+                o.habilidades,
+                o.disponibilidad,
+                o.radio_km,
+                o.tiene_vehiculo,
+                u.display_name as nombre,
+                u.user_email as email,
+                (SELECT AVG(puntuacion) FROM {$tabla_valoraciones} WHERE valorado_id = o.usuario_id) as valoracion_promedio,
+                (SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE ayudante_id = o.usuario_id AND estado = 'completada') as ayudas_completadas
+             FROM {$tabla_ofertas} o
+             LEFT JOIN {$wpdb->users} u ON o.usuario_id = u.ID
+             WHERE o.estado = 'activa'
+                AND o.usuario_id != %d
+                AND (o.categoria = %s OR o.categoria = '' OR o.categoria IS NULL)
+             ORDER BY
+                CASE WHEN o.categoria = %s THEN 0 ELSE 1 END,
+                ayudas_completadas DESC,
+                valoracion_promedio DESC NULLS LAST
+             LIMIT %d",
+            $solicitud->solicitante_id,
+            $solicitud->categoria,
+            $solicitud->categoria,
+            $limite
+        ));
+
+        $sugerencias = [];
+        foreach ($voluntarios_matching as $voluntario) {
+            $puntuacion_match = 0;
+
+            // Coincidencia de categoría
+            if ($voluntario->categoria === $solicitud->categoria) {
+                $puntuacion_match += 40;
+            }
+
+            // Tiene experiencia
+            if ($voluntario->ayudas_completadas > 0) {
+                $puntuacion_match += min($voluntario->ayudas_completadas * 5, 30);
+            }
+
+            // Buena valoración
+            if ($voluntario->valoracion_promedio && $voluntario->valoracion_promedio >= 4) {
+                $puntuacion_match += 20;
+            }
+
+            // Tiene vehículo si la solicitud necesita desplazamiento
+            if ($solicitud->necesita_desplazamiento && $voluntario->tiene_vehiculo) {
+                $puntuacion_match += 10;
+            }
+
+            $sugerencias[] = [
+                'oferta_id' => (int) $voluntario->oferta_id,
+                'usuario_id' => (int) $voluntario->usuario_id,
+                'nombre' => $voluntario->nombre ?: __('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'email' => $voluntario->email,
+                'categoria' => $voluntario->categoria,
+                'habilidades' => $voluntario->habilidades,
+                'tiene_vehiculo' => (bool) $voluntario->tiene_vehiculo,
+                'valoracion_promedio' => $voluntario->valoracion_promedio ? round($voluntario->valoracion_promedio, 1) : null,
+                'ayudas_completadas' => (int) $voluntario->ayudas_completadas,
+                'puntuacion_match' => $puntuacion_match,
+                'razones_match' => $this->obtener_razones_match($voluntario, $solicitud),
+            ];
+        }
+
+        // Ordenar por puntuación de match
+        usort($sugerencias, function($a, $b) {
+            return $b['puntuacion_match'] - $a['puntuacion_match'];
+        });
+
+        wp_send_json_success([
+            'solicitud_id' => $solicitud_id,
+            'solicitud_titulo' => $solicitud->titulo,
+            'solicitud_categoria' => $solicitud->categoria,
+            'sugerencias' => $sugerencias,
+            'total' => count($sugerencias),
+        ]);
+    }
+
+    /**
+     * Obtiene las razones del matching entre voluntario y solicitud
+     *
+     * @param object $voluntario Datos del voluntario
+     * @param object $solicitud Datos de la solicitud
+     * @return array Razones del matching
+     */
+    private function obtener_razones_match($voluntario, $solicitud) {
+        $razones = [];
+
+        if ($voluntario->categoria === $solicitud->categoria) {
+            $razones[] = __('Categoría coincidente', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        }
+
+        if ($voluntario->ayudas_completadas > 5) {
+            $razones[] = sprintf(__('%d ayudas completadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $voluntario->ayudas_completadas);
+        } elseif ($voluntario->ayudas_completadas > 0) {
+            $razones[] = __('Tiene experiencia previa', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        }
+
+        if ($voluntario->valoracion_promedio && $voluntario->valoracion_promedio >= 4.5) {
+            $razones[] = __('Excelente valoración', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        } elseif ($voluntario->valoracion_promedio && $voluntario->valoracion_promedio >= 4) {
+            $razones[] = __('Buena valoración', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        }
+
+        if ($solicitud->necesita_desplazamiento && $voluntario->tiene_vehiculo) {
+            $razones[] = __('Dispone de vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        }
+
+        return $razones;
     }
 
     /**

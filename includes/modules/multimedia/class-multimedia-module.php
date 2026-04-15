@@ -554,6 +554,12 @@ class Flavor_Platform_Multimedia_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_flavor_mm_admin_destacar', [$this, 'ajax_admin_destacar']);
         add_action('wp_ajax_flavor_mm_admin_stats', [$this, 'ajax_admin_stats']);
 
+        // Admin AJAX - Moderacion y categorias
+        add_action('wp_ajax_flavor_multimedia_moderar', [$this, 'ajax_moderar_multimedia']);
+        add_action('wp_ajax_flavor_multimedia_moderar_masivo', [$this, 'ajax_moderar_masivo']);
+        add_action('wp_ajax_flavor_multimedia_ver_detalle', [$this, 'ajax_ver_detalle']);
+        add_action('wp_ajax_flavor_multimedia_eliminar_categoria', [$this, 'ajax_eliminar_categoria']);
+
         // Shortcodes
         $this->register_shortcodes();
 
@@ -3812,6 +3818,212 @@ KNOWLEDGE;
                 Flavor_Multimedia_Dashboard_Tab::get_instance();
             }
         }
+    }
+
+    /**
+     * AJAX: Moderar un elemento multimedia (aprobar/rechazar)
+     */
+    public function ajax_moderar_multimedia() {
+        check_ajax_referer('moderacion_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para moderar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        $multimedia_id = absint($_POST['multimedia_id'] ?? 0);
+        $estado = sanitize_text_field($_POST['estado'] ?? '');
+        $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
+
+        if (!$multimedia_id || !in_array($estado, ['aprobado', 'rechazado'], true)) {
+            wp_send_json_error(__('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $nuevo_estado = $estado === 'aprobado' ? 'publico' : 'rechazado';
+
+        $resultado = $wpdb->update(
+            $tabla_multimedia,
+            ['estado' => $nuevo_estado],
+            ['id' => $multimedia_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al actualizar el estado', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Notificar al usuario si fue rechazado
+        if ($estado === 'rechazado' && $motivo) {
+            $multimedia = $wpdb->get_row($wpdb->prepare(
+                "SELECT usuario_id, titulo FROM {$tabla_multimedia} WHERE id = %d",
+                $multimedia_id
+            ));
+
+            if ($multimedia) {
+                do_action('flavor_notificacion_enviar', $multimedia->usuario_id, 'multimedia_rechazado', [
+                    'titulo' => $multimedia->titulo,
+                    'motivo' => $motivo,
+                ]);
+            }
+        }
+
+        wp_send_json_success([
+            'message' => $estado === 'aprobado'
+                ? __('Contenido aprobado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Contenido rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * AJAX: Moderar elementos multimedia en lote
+     */
+    public function ajax_moderar_masivo() {
+        check_ajax_referer('moderacion_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para moderar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        $ids = isset($_POST['ids']) ? array_map('absint', (array) $_POST['ids']) : [];
+        $estado = sanitize_text_field($_POST['estado'] ?? '');
+
+        if (empty($ids) || !in_array($estado, ['aprobado', 'rechazado'], true)) {
+            wp_send_json_error(__('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $nuevo_estado = $estado === 'aprobado' ? 'publico' : 'rechazado';
+
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+        $resultado = $wpdb->query($wpdb->prepare(
+            "UPDATE {$tabla_multimedia} SET estado = %s WHERE id IN ({$placeholders})",
+            array_merge([$nuevo_estado], $ids)
+        ));
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al actualizar los estados', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        wp_send_json_success([
+            'message' => sprintf(
+                __('%d elementos %s correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $resultado,
+                $estado === 'aprobado' ? __('aprobados', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('rechazados', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            ),
+            'count' => $resultado,
+        ]);
+    }
+
+    /**
+     * AJAX: Ver detalle de un elemento multimedia
+     */
+    public function ajax_ver_detalle() {
+        check_ajax_referer('moderacion_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para ver este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        $multimedia_id = absint($_GET['multimedia_id'] ?? $_POST['multimedia_id'] ?? 0);
+
+        if (!$multimedia_id) {
+            wp_send_json_error(__('ID inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $multimedia = $wpdb->get_row($wpdb->prepare(
+            "SELECT m.*, u.display_name as autor_nombre, u.user_email as autor_email
+             FROM {$tabla_multimedia} m
+             LEFT JOIN {$wpdb->users} u ON m.usuario_id = u.ID
+             WHERE m.id = %d",
+            $multimedia_id
+        ));
+
+        if (!$multimedia) {
+            wp_send_json_error(__('Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        wp_send_json_success([
+            'id' => $multimedia->id,
+            'titulo' => $multimedia->titulo,
+            'descripcion' => $multimedia->descripcion,
+            'tipo' => $multimedia->tipo,
+            'archivo_url' => $multimedia->archivo_url,
+            'thumbnail_url' => $multimedia->thumbnail_url,
+            'estado' => $multimedia->estado,
+            'vistas' => $multimedia->vistas,
+            'me_gusta' => $multimedia->me_gusta,
+            'comentarios_count' => $multimedia->comentarios_count,
+            'autor_nombre' => $multimedia->autor_nombre,
+            'autor_email' => $multimedia->autor_email,
+            'fecha_creacion' => $multimedia->fecha_creacion,
+        ]);
+    }
+
+    /**
+     * AJAX: Eliminar una categoria de multimedia
+     */
+    public function ajax_eliminar_categoria() {
+        check_ajax_referer('multimedia_categoria_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para eliminar categorias', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_categorias = $wpdb->prefix . 'flavor_multimedia_categorias';
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        $categoria_id = absint($_POST['categoria_id'] ?? 0);
+
+        if (!$categoria_id) {
+            wp_send_json_error(__('ID de categoria inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Verificar que la categoria existe
+        $categoria = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, slug FROM {$tabla_categorias} WHERE id = %d",
+            $categoria_id
+        ));
+
+        if (!$categoria) {
+            wp_send_json_error(__('Categoria no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Verificar que no tiene contenido asociado
+        $contenido_asociado = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_multimedia} WHERE categoria = %s",
+            $categoria->slug
+        ));
+
+        if ($contenido_asociado > 0) {
+            wp_send_json_error(sprintf(
+                __('No se puede eliminar: la categoria tiene %d elementos asociados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $contenido_asociado
+            ));
+        }
+
+        // Eliminar la categoria
+        $resultado = $wpdb->delete(
+            $tabla_categorias,
+            ['id' => $categoria_id],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al eliminar la categoria', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        wp_send_json_success([
+            'message' => __('Categoria eliminada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
     }
 }
 

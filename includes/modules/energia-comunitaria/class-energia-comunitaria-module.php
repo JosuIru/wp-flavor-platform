@@ -29,6 +29,8 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         add_action('wp_ajax_energia_comunitaria_registrar_lectura', [$this, 'ajax_registrar_lectura']);
         add_action('wp_ajax_energia_comunitaria_reportar_incidencia', [$this, 'ajax_reportar_incidencia']);
         add_action('wp_ajax_energia_comunitaria_actualizar_liquidacion', [$this, 'ajax_actualizar_liquidacion']);
+        add_action('wp_ajax_energia_comunitaria_actualizar_incidencia', [$this, 'ajax_actualizar_incidencia']);
+        add_action('wp_ajax_energia_comunitaria_exportar_liquidacion', [$this, 'ajax_exportar_liquidacion']);
         add_action('admin_post_energia_comunitaria_exportar_liquidaciones', [$this, 'handle_exportar_liquidaciones_csv']);
         add_action('admin_post_energia_comunitaria_exportar_liquidacion', [$this, 'handle_exportar_liquidacion_csv']);
 
@@ -3198,6 +3200,122 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         }
 
         wp_send_json_success($resultado);
+    }
+
+    /**
+     * AJAX: Actualizar estado de una incidencia
+     */
+    public function ajax_actualizar_incidencia()
+    {
+        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('No tienes permisos para actualizar incidencias.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+
+        $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
+        $estado = sanitize_text_field($_POST['estado'] ?? '');
+        $comentario = sanitize_textarea_field($_POST['comentario'] ?? '');
+
+        if ($incidencia_id <= 0) {
+            wp_send_json_error(['message' => __('ID de incidencia no valido.', 'flavor-platform')]);
+        }
+
+        $estados_permitidos = ['abierta', 'en_progreso', 'resuelta', 'cerrada'];
+        if (!in_array($estado, $estados_permitidos, true)) {
+            wp_send_json_error(['message' => __('Estado de incidencia no valido.', 'flavor-platform')]);
+        }
+
+        $tabla_incidencias = $wpdb->prefix . 'flavor_energia_incidencias';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
+            wp_send_json_error(['message' => __('La tabla de incidencias no existe.', 'flavor-platform')]);
+        }
+
+        $incidencia = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_incidencias} WHERE id = %d",
+            $incidencia_id
+        ));
+
+        if (!$incidencia) {
+            wp_send_json_error(['message' => __('Incidencia no encontrada.', 'flavor-platform')]);
+        }
+
+        if (!$this->user_can_manage_instalacion((int) $incidencia->instalacion_id) && !$this->can_manage_module()) {
+            wp_send_json_error(['message' => __('No tienes permisos para actualizar esta incidencia.', 'flavor-platform')]);
+        }
+
+        $datos_actualizar = [
+            'estado' => $estado,
+        ];
+        $formatos = ['%s'];
+
+        if ($comentario !== '') {
+            $datos_actualizar['notas'] = $comentario;
+            $formatos[] = '%s';
+        }
+
+        if ($estado === 'resuelta' || $estado === 'cerrada') {
+            $datos_actualizar['fecha_resolucion'] = current_time('mysql');
+            $formatos[] = '%s';
+        }
+
+        $actualizado = $wpdb->update(
+            $tabla_incidencias,
+            $datos_actualizar,
+            ['id' => $incidencia_id],
+            $formatos,
+            ['%d']
+        );
+
+        if ($actualizado === false) {
+            wp_send_json_error(['message' => __('No se pudo actualizar la incidencia.', 'flavor-platform')]);
+        }
+
+        wp_send_json_success([
+            'message' => __('Incidencia actualizada correctamente.', 'flavor-platform'),
+            'incidencia_id' => $incidencia_id,
+            'estado' => $estado,
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar liquidacion individual como CSV
+     */
+    public function ajax_exportar_liquidacion()
+    {
+        check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesion para exportar la liquidacion.', 'flavor-platform')]);
+        }
+
+        $liquidacion_id = absint($_POST['liquidacion_id'] ?? 0);
+
+        if ($liquidacion_id <= 0) {
+            wp_send_json_error(['message' => __('ID de liquidacion no valido.', 'flavor-platform')]);
+        }
+
+        $liquidacion = $this->get_liquidacion($liquidacion_id);
+
+        if (!$liquidacion) {
+            wp_send_json_error(['message' => __('La liquidacion indicada no existe.', 'flavor-platform')]);
+        }
+
+        if (!$this->user_can_manage_energia_comunidad((int) $liquidacion->energia_comunidad_id)) {
+            wp_send_json_error(['message' => __('No tienes permisos para exportar esta liquidacion.', 'flavor-platform')]);
+        }
+
+        $filename = $this->build_liquidacion_export_filename($liquidacion);
+        $csv_content = $this->build_liquidacion_csv_string($liquidacion);
+
+        wp_send_json_success([
+            'filename' => $filename,
+            'csv' => $csv_content,
+            'liquidacion_id' => $liquidacion_id,
+        ]);
     }
 
     public function handle_exportar_liquidaciones_csv()

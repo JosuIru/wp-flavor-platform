@@ -118,6 +118,9 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_biblioteca_aprobar_prestamo', [$this, 'ajax_aprobar_prestamo']);
         add_action('wp_ajax_biblioteca_rechazar_prestamo', [$this, 'ajax_rechazar_prestamo']);
         add_action('wp_ajax_biblioteca_buscar_isbn', [$this, 'ajax_buscar_isbn']);
+        add_action('wp_ajax_biblioteca_completar_reserva', [$this, 'ajax_completar_reserva']);
+        add_action('wp_ajax_biblioteca_confirmar_reserva', [$this, 'ajax_confirmar_reserva']);
+        add_action('wp_ajax_biblioteca_enviar_recordatorio', [$this, 'ajax_enviar_recordatorio']);
 
         // WP Cron para recordatorios de devolución
         add_action('flavor_biblioteca_recordatorios', [$this, 'enviar_recordatorios_devolucion']);
@@ -2074,6 +2077,209 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
         $resultado = $this->buscar_datos_isbn($isbn);
 
         wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Completar reserva - Convierte una reserva confirmada en un préstamo activo
+     */
+    public function ajax_completar_reserva() {
+        check_ajax_referer('biblioteca_nonce', 'nonce');
+
+        if (!current_user_can('manage_options') && !current_user_can('biblioteca_gestionar')) {
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos para esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+
+        $reserva_id = isset($_POST['reserva_id']) ? intval($_POST['reserva_id']) : 0;
+        $punto_entrega = isset($_POST['punto_entrega']) ? sanitize_text_field($_POST['punto_entrega']) : '';
+
+        if (!$reserva_id) {
+            wp_send_json(['success' => false, 'error' => __('ID de reserva requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $reserva = $wpdb->get_row($wpdb->prepare(
+            "SELECT r.*, l.propietario_id, l.titulo
+             FROM $tabla_reservas r
+             INNER JOIN $tabla_libros l ON r.libro_id = l.id
+             WHERE r.id = %d AND r.estado = 'confirmada'",
+            $reserva_id
+        ));
+
+        if (!$reserva) {
+            wp_send_json(['success' => false, 'error' => __('Reserva no encontrada o no está confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $settings = $this->get_settings();
+        $dias_prestamo = $settings['duracion_prestamo_dias'] ?? 30;
+        $fecha_devolucion = date('Y-m-d H:i:s', strtotime("+{$dias_prestamo} days"));
+
+        // Crear el préstamo
+        $resultado_prestamo = $wpdb->insert($tabla_prestamos, [
+            'libro_id' => $reserva->libro_id,
+            'prestamista_id' => $reserva->propietario_id,
+            'prestatario_id' => $reserva->usuario_id,
+            'fecha_solicitud' => $reserva->fecha_solicitud,
+            'fecha_prestamo' => current_time('mysql'),
+            'fecha_devolucion_prevista' => $fecha_devolucion,
+            'estado' => 'activo',
+            'punto_entrega' => $punto_entrega,
+        ]);
+
+        if (!$resultado_prestamo) {
+            wp_send_json(['success' => false, 'error' => __('Error al crear el préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $prestamo_id = $wpdb->insert_id;
+
+        // Actualizar la reserva como convertida
+        $wpdb->update(
+            $tabla_reservas,
+            ['estado' => 'convertida'],
+            ['id' => $reserva_id]
+        );
+
+        // Actualizar el libro como prestado
+        $wpdb->update(
+            $tabla_libros,
+            ['disponibilidad' => 'prestado'],
+            ['id' => $reserva->libro_id]
+        );
+
+        // Incrementar contador de préstamos
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_libros SET veces_prestado = veces_prestado + 1 WHERE id = %d",
+            $reserva->libro_id
+        ));
+
+        wp_send_json([
+            'success' => true,
+            'mensaje' => __('Reserva completada y préstamo activado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'prestamo_id' => $prestamo_id,
+            'fecha_devolucion' => date_i18n(get_option('date_format'), strtotime($fecha_devolucion)),
+        ]);
+    }
+
+    /**
+     * AJAX: Confirmar reserva - Marca una reserva pendiente como confirmada
+     */
+    public function ajax_confirmar_reserva() {
+        check_ajax_referer('biblioteca_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        $reserva_id = isset($_POST['reserva_id']) ? intval($_POST['reserva_id']) : 0;
+        $usuario_id = get_current_user_id();
+
+        if (!$reserva_id) {
+            wp_send_json(['success' => false, 'error' => __('ID de reserva requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener la reserva con datos del libro
+        $reserva = $wpdb->get_row($wpdb->prepare(
+            "SELECT r.*, l.propietario_id, l.titulo
+             FROM $tabla_reservas r
+             INNER JOIN $tabla_libros l ON r.libro_id = l.id
+             WHERE r.id = %d AND r.estado = 'pendiente'",
+            $reserva_id
+        ));
+
+        if (!$reserva) {
+            wp_send_json(['success' => false, 'error' => __('Reserva no encontrada o ya procesada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Solo el propietario del libro o un administrador puede confirmar
+        $es_propietario = ($reserva->propietario_id == $usuario_id);
+        $es_administrador = current_user_can('manage_options') || current_user_can('biblioteca_gestionar');
+
+        if (!$es_propietario && !$es_administrador) {
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos para confirmar esta reserva', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Establecer fecha de expiración (48 horas para recoger)
+        $fecha_expiracion = date('Y-m-d H:i:s', strtotime('+48 hours'));
+
+        $resultado = $wpdb->update(
+            $tabla_reservas,
+            [
+                'estado' => 'confirmada',
+                'fecha_expiracion' => $fecha_expiracion,
+                'notificado' => 0,
+            ],
+            ['id' => $reserva_id]
+        );
+
+        if ($resultado === false) {
+            wp_send_json(['success' => false, 'error' => __('Error al confirmar la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Actualizar disponibilidad del libro
+        $wpdb->update(
+            $tabla_libros,
+            ['disponibilidad' => 'reservado'],
+            ['id' => $reserva->libro_id]
+        );
+
+        // Notificar al usuario que hizo la reserva
+        $this->notificar_reserva_disponible($reserva);
+
+        wp_send_json([
+            'success' => true,
+            'mensaje' => __('Reserva confirmada. El usuario tiene 48 horas para recoger el libro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'fecha_expiracion' => date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($fecha_expiracion)),
+        ]);
+    }
+
+    /**
+     * AJAX: Enviar recordatorio - Envía un recordatorio manual de devolución
+     */
+    public function ajax_enviar_recordatorio() {
+        check_ajax_referer('biblioteca_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        $prestamo_id = isset($_POST['prestamo_id']) ? intval($_POST['prestamo_id']) : 0;
+        $usuario_id = get_current_user_id();
+
+        if (!$prestamo_id) {
+            wp_send_json(['success' => false, 'error' => __('ID de préstamo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener el préstamo con datos del libro
+        $prestamo = $wpdb->get_row($wpdb->prepare(
+            "SELECT p.*, l.titulo, l.autor, l.propietario_id
+             FROM $tabla_prestamos p
+             INNER JOIN $tabla_libros l ON p.libro_id = l.id
+             WHERE p.id = %d AND p.estado IN ('activo', 'retrasado')",
+            $prestamo_id
+        ));
+
+        if (!$prestamo) {
+            wp_send_json(['success' => false, 'error' => __('Préstamo no encontrado o no activo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Solo el prestamista (propietario) o un administrador puede enviar recordatorios
+        $es_prestamista = ($prestamo->prestamista_id == $usuario_id);
+        $es_administrador = current_user_can('manage_options') || current_user_can('biblioteca_gestionar');
+
+        if (!$es_prestamista && !$es_administrador) {
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos para enviar recordatorios de este préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Enviar el recordatorio
+        $this->notificar_recordatorio_devolucion($prestamo);
+
+        wp_send_json([
+            'success' => true,
+            'mensaje' => __('Recordatorio enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
     }
 
     // =========================================================================

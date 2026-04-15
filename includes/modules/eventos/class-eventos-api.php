@@ -145,6 +145,15 @@ class Flavor_Eventos_API {
         add_action('wp_ajax_eventos_listar_eventos', [$this, 'ajax_listar_eventos']);
         add_action('wp_ajax_eventos_obtener_evento', [$this, 'ajax_obtener_evento']);
         add_action('wp_ajax_eventos_eliminar_evento', [$this, 'ajax_eliminar_evento']);
+
+        // Handlers AJAX para tipos de entrada
+        add_action('wp_ajax_eventos_listar_tipos_entrada', [$this, 'ajax_listar_tipos_entrada']);
+
+        // Handlers AJAX para gestión de asistentes
+        add_action('wp_ajax_eventos_listar_asistentes', [$this, 'ajax_listar_asistentes']);
+        add_action('wp_ajax_eventos_hacer_checkin', [$this, 'ajax_hacer_checkin']);
+        add_action('wp_ajax_eventos_exportar_asistentes', [$this, 'ajax_exportar_asistentes']);
+        add_action('wp_ajax_eventos_estadisticas_entradas', [$this, 'ajax_estadisticas_entradas']);
     }
 
     /**
@@ -711,6 +720,434 @@ class Flavor_Eventos_API {
         }
 
         wp_send_json_success(['message' => __('Evento eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+    }
+
+    /**
+     * AJAX: Listar tipos de entrada para un evento
+     */
+    public function ajax_listar_tipos_entrada() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['evento_id']) ? intval($_POST['evento_id']) : 0;
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_tipos_entrada = $wpdb->prefix . 'flavor_eventos_tipos_entrada';
+
+        // Verificar si la tabla existe
+        $tabla_existe = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+                DB_NAME,
+                $tabla_tipos_entrada
+            )
+        );
+
+        if (!$tabla_existe) {
+            // Devolver tipos por defecto si la tabla no existe
+            wp_send_json_success([
+                [
+                    'id' => 0,
+                    'nombre' => __('Entrada General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'precio' => 0,
+                    'cantidad_disponible' => null,
+                    'descripcion' => '',
+                ],
+            ]);
+            return;
+        }
+
+        $tipos_entrada = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, nombre, precio, cantidad_disponible, descripcion, activo
+                FROM {$tabla_tipos_entrada}
+                WHERE evento_id = %d
+                ORDER BY precio ASC",
+                $evento_id
+            ),
+            ARRAY_A
+        );
+
+        if (empty($tipos_entrada)) {
+            // Devolver tipo por defecto si no hay tipos configurados
+            $tipos_entrada = [
+                [
+                    'id' => 0,
+                    'nombre' => __('Entrada General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'precio' => 0,
+                    'cantidad_disponible' => null,
+                    'descripcion' => '',
+                ],
+            ];
+        }
+
+        wp_send_json_success($tipos_entrada);
+    }
+
+    /**
+     * AJAX: Listar asistentes de un evento
+     */
+    public function ajax_listar_asistentes() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['evento_id']) ? intval($_POST['evento_id']) : 0;
+        $buscar = isset($_POST['buscar']) ? sanitize_text_field($_POST['buscar']) : '';
+        $estado_filtro = isset($_POST['estado']) ? sanitize_key($_POST['estado']) : '';
+        $pagina = isset($_POST['pagina']) ? max(1, intval($_POST['pagina'])) : 1;
+        $por_pagina = isset($_POST['por_pagina']) ? min(100, max(1, intval($_POST['por_pagina']))) : 20;
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+        $offset = ($pagina - 1) * $por_pagina;
+
+        // Construir condiciones WHERE
+        $condiciones_where = ['i.evento_id = %d'];
+        $valores_where = [$evento_id];
+
+        if (!empty($buscar)) {
+            $condiciones_where[] = "(u.display_name LIKE %s OR u.user_email LIKE %s)";
+            $termino_busqueda = '%' . $wpdb->esc_like($buscar) . '%';
+            $valores_where[] = $termino_busqueda;
+            $valores_where[] = $termino_busqueda;
+        }
+
+        if (!empty($estado_filtro)) {
+            $condiciones_where[] = "i.estado = %s";
+            $valores_where[] = $estado_filtro;
+        }
+
+        $where_sql = implode(' AND ', $condiciones_where);
+
+        // Contar total
+        $query_total = "SELECT COUNT(*)
+            FROM {$tabla_inscripciones} i
+            LEFT JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+            WHERE {$where_sql}";
+
+        $total = $wpdb->get_var($wpdb->prepare($query_total, $valores_where));
+
+        // Obtener asistentes con paginación
+        $valores_paginados = array_merge($valores_where, [$por_pagina, $offset]);
+
+        $query_asistentes = "SELECT
+                i.id,
+                i.usuario_id,
+                i.estado,
+                i.fecha_inscripcion,
+                i.checkin_at,
+                i.tipo_entrada_id,
+                u.display_name as nombre,
+                u.user_email as email
+            FROM {$tabla_inscripciones} i
+            LEFT JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+            WHERE {$where_sql}
+            ORDER BY i.fecha_inscripcion DESC
+            LIMIT %d OFFSET %d";
+
+        $asistentes = $wpdb->get_results(
+            $wpdb->prepare($query_asistentes, $valores_paginados),
+            ARRAY_A
+        );
+
+        // Formatear fechas
+        foreach ($asistentes as &$asistente) {
+            $asistente['fecha_inscripcion_formateada'] = date_i18n(
+                get_option('date_format') . ' ' . get_option('time_format'),
+                strtotime($asistente['fecha_inscripcion'])
+            );
+            $asistente['checkin_formateado'] = !empty($asistente['checkin_at'])
+                ? date_i18n(get_option('time_format'), strtotime($asistente['checkin_at']))
+                : null;
+            $asistente['tiene_checkin'] = !empty($asistente['checkin_at']);
+        }
+
+        wp_send_json_success([
+            'asistentes' => $asistentes,
+            'total' => (int) $total,
+            'pagina' => $pagina,
+            'por_pagina' => $por_pagina,
+            'total_paginas' => ceil($total / $por_pagina),
+        ]);
+    }
+
+    /**
+     * AJAX: Hacer check-in de un asistente
+     */
+    public function ajax_hacer_checkin() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $inscripcion_id = isset($_POST['inscripcion_id']) ? intval($_POST['inscripcion_id']) : 0;
+        $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : 'checkin';
+
+        if ($inscripcion_id <= 0) {
+            wp_send_json_error(['message' => __('ID de inscripción inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // Verificar que la inscripción existe
+        $inscripcion = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT id, estado, checkin_at FROM {$tabla_inscripciones} WHERE id = %d",
+                $inscripcion_id
+            ),
+            ARRAY_A
+        );
+
+        if (!$inscripcion) {
+            wp_send_json_error(['message' => __('Inscripción no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if ($accion === 'undo') {
+            // Deshacer check-in
+            $resultado = $wpdb->update(
+                $tabla_inscripciones,
+                [
+                    'checkin_at' => null,
+                    'checkin_by' => null,
+                ],
+                ['id' => $inscripcion_id],
+                ['%s', '%s'],
+                ['%d']
+            );
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al deshacer el check-in.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            }
+
+            wp_send_json_success([
+                'message' => __('Check-in deshecho correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tiene_checkin' => false,
+            ]);
+        } else {
+            // Hacer check-in
+            if (!empty($inscripcion['checkin_at'])) {
+                wp_send_json_error(['message' => __('Este asistente ya tiene check-in.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            }
+
+            $resultado = $wpdb->update(
+                $tabla_inscripciones,
+                [
+                    'checkin_at' => current_time('mysql'),
+                    'checkin_by' => get_current_user_id(),
+                ],
+                ['id' => $inscripcion_id],
+                ['%s', '%d'],
+                ['%d']
+            );
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al registrar el check-in.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            }
+
+            wp_send_json_success([
+                'message' => __('Check-in registrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tiene_checkin' => true,
+                'checkin_formateado' => date_i18n(get_option('time_format'), current_time('timestamp')),
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Exportar lista de asistentes a CSV
+     */
+    public function ajax_exportar_asistentes() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['evento_id']) ? intval($_POST['evento_id']) : 0;
+        $formato = isset($_POST['formato']) ? sanitize_key($_POST['formato']) : 'csv';
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // Obtener datos del evento
+        $evento = $wpdb->get_row(
+            $wpdb->prepare("SELECT titulo FROM {$tabla_eventos} WHERE id = %d", $evento_id),
+            ARRAY_A
+        );
+
+        if (!$evento) {
+            wp_send_json_error(['message' => __('Evento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener todos los asistentes
+        $asistentes = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT
+                    u.display_name as nombre,
+                    u.user_email as email,
+                    i.estado,
+                    i.fecha_inscripcion,
+                    i.checkin_at,
+                    i.notas
+                FROM {$tabla_inscripciones} i
+                LEFT JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+                WHERE i.evento_id = %d
+                ORDER BY i.fecha_inscripcion ASC",
+                $evento_id
+            ),
+            ARRAY_A
+        );
+
+        if (empty($asistentes)) {
+            wp_send_json_error(['message' => __('No hay asistentes para exportar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Generar CSV
+        $csv_lineas = [];
+
+        // Cabecera
+        $csv_lineas[] = implode(',', [
+            '"' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+            '"' . __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+            '"' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+            '"' . __('Fecha Inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+            '"' . __('Check-in', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+            '"' . __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"',
+        ]);
+
+        // Datos
+        foreach ($asistentes as $asistente) {
+            $csv_lineas[] = implode(',', [
+                '"' . str_replace('"', '""', $asistente['nombre'] ?: '') . '"',
+                '"' . str_replace('"', '""', $asistente['email'] ?: '') . '"',
+                '"' . str_replace('"', '""', $asistente['estado'] ?: '') . '"',
+                '"' . ($asistente['fecha_inscripcion'] ? date_i18n('Y-m-d H:i', strtotime($asistente['fecha_inscripcion'])) : '') . '"',
+                '"' . ($asistente['checkin_at'] ? date_i18n('Y-m-d H:i', strtotime($asistente['checkin_at'])) : '') . '"',
+                '"' . str_replace('"', '""', $asistente['notas'] ?: '') . '"',
+            ]);
+        }
+
+        $contenido_csv = implode("\n", $csv_lineas);
+        $nombre_archivo = sanitize_file_name('asistentes-' . $evento['titulo'] . '-' . date('Y-m-d')) . '.csv';
+
+        wp_send_json_success([
+            'contenido' => $contenido_csv,
+            'nombre_archivo' => $nombre_archivo,
+            'tipo_mime' => 'text/csv',
+            'total_registros' => count($asistentes),
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener estadísticas de entradas para un evento
+     */
+    public function ajax_estadisticas_entradas() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['evento_id']) ? intval($_POST['evento_id']) : 0;
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // Obtener datos del evento
+        $evento = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT id, titulo, aforo_maximo, precio FROM {$tabla_eventos} WHERE id = %d",
+                $evento_id
+            ),
+            ARRAY_A
+        );
+
+        if (!$evento) {
+            wp_send_json_error(['message' => __('Evento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Estadísticas generales de inscripciones
+        $estadisticas_estado = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT estado, COUNT(*) as cantidad
+                FROM {$tabla_inscripciones}
+                WHERE evento_id = %d
+                GROUP BY estado",
+                $evento_id
+            ),
+            ARRAY_A
+        );
+
+        $por_estado = [];
+        $total_inscripciones = 0;
+        foreach ($estadisticas_estado as $fila) {
+            $por_estado[$fila['estado']] = (int) $fila['cantidad'];
+            $total_inscripciones += (int) $fila['cantidad'];
+        }
+
+        // Check-ins realizados
+        $total_checkins = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_inscripciones}
+                WHERE evento_id = %d AND checkin_at IS NOT NULL",
+                $evento_id
+            )
+        );
+
+        // Inscripciones por día (últimos 30 días)
+        $inscripciones_por_dia = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DATE(fecha_inscripcion) as fecha, COUNT(*) as cantidad
+                FROM {$tabla_inscripciones}
+                WHERE evento_id = %d
+                AND fecha_inscripcion >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                GROUP BY DATE(fecha_inscripcion)
+                ORDER BY fecha ASC",
+                $evento_id
+            ),
+            ARRAY_A
+        );
+
+        // Calcular ocupación
+        $aforo_maximo = (int) ($evento['aforo_maximo'] ?: 0);
+        $confirmados = $por_estado['confirmada'] ?? $por_estado['confirmado'] ?? 0;
+        $porcentaje_ocupacion = $aforo_maximo > 0
+            ? round(($confirmados / $aforo_maximo) * 100, 1)
+            : 0;
+
+        // Calcular tasa de check-in
+        $tasa_checkin = $confirmados > 0
+            ? round(((int) $total_checkins / $confirmados) * 100, 1)
+            : 0;
+
+        wp_send_json_success([
+            'evento_id' => $evento_id,
+            'evento_titulo' => $evento['titulo'],
+            'aforo_maximo' => $aforo_maximo,
+            'total_inscripciones' => $total_inscripciones,
+            'por_estado' => $por_estado,
+            'confirmados' => $confirmados,
+            'total_checkins' => (int) $total_checkins,
+            'porcentaje_ocupacion' => $porcentaje_ocupacion,
+            'tasa_checkin' => $tasa_checkin,
+            'plazas_disponibles' => $aforo_maximo > 0 ? max(0, $aforo_maximo - $confirmados) : null,
+            'inscripciones_por_dia' => $inscripciones_por_dia,
+        ]);
     }
 }
 

@@ -128,6 +128,9 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_reciclaje_calendario', [$this, 'ajax_calendario_recogidas']);
         add_action('wp_ajax_reciclaje_mis_puntos', [$this, 'ajax_mis_puntos']);
         add_action('wp_ajax_reciclaje_canjear_puntos', [$this, 'ajax_canjear_puntos']);
+        add_action('wp_ajax_flavor_reciclaje_export_csv', [$this, 'ajax_export_csv']);
+        add_action('wp_ajax_flavor_reciclaje_ver_recogida', [$this, 'ajax_ver_recogida']);
+        add_action('wp_ajax_nopriv_flavor_reciclaje_ver_recogida', [$this, 'ajax_ver_recogida']);
 
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -1415,6 +1418,230 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         update_user_meta($usuario_id, '_reciclaje_ultimo_canje', current_time('mysql'));
 
         wp_send_json_success(['message' => __('Puntos canjeados correctamente', 'flavor-platform')]);
+    }
+
+    /**
+     * AJAX: Exportar datos de reciclaje a CSV
+     */
+    public function ajax_export_csv() {
+        check_ajax_referer('reciclaje_nonce', 'nonce');
+
+        if (!is_user_logged_in() || !current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para exportar datos', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+
+        $tipo = sanitize_text_field($_POST['tipo'] ?? 'depositos');
+        $fecha_desde = sanitize_text_field($_POST['fecha_desde'] ?? '');
+        $fecha_hasta = sanitize_text_field($_POST['fecha_hasta'] ?? '');
+
+        $tipos_permitidos = ['depositos', 'recogidas', 'puntos'];
+        if (!in_array($tipo, $tipos_permitidos, true)) {
+            wp_send_json_error(['message' => __('Tipo de exportacion no valido', 'flavor-platform')]);
+        }
+
+        $datos_csv = [];
+        $cabeceras = [];
+
+        switch ($tipo) {
+            case 'depositos':
+                $tabla = $wpdb->prefix . 'flavor_reciclaje_depositos';
+                $cabeceras = ['ID', 'Usuario', 'Punto Reciclaje', 'Tipo Material', 'Cantidad (kg)', 'Puntos', 'Verificado', 'Fecha'];
+
+                $where = '1=1';
+                $valores = [];
+
+                if ($fecha_desde && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_desde)) {
+                    $where .= ' AND DATE(fecha_deposito) >= %s';
+                    $valores[] = $fecha_desde;
+                }
+                if ($fecha_hasta && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_hasta)) {
+                    $where .= ' AND DATE(fecha_deposito) <= %s';
+                    $valores[] = $fecha_hasta;
+                }
+
+                $sql = "SELECT d.id, u.display_name, d.punto_reciclaje_id, d.tipo_material, d.cantidad_kg, d.puntos_ganados, d.verificado, d.fecha_deposito
+                        FROM {$tabla} d
+                        LEFT JOIN {$wpdb->users} u ON d.usuario_id = u.ID
+                        WHERE {$where}
+                        ORDER BY d.fecha_deposito DESC
+                        LIMIT 5000";
+
+                if (!empty($valores)) {
+                    $sql = $wpdb->prepare($sql, $valores);
+                }
+
+                $resultados = $wpdb->get_results($sql, ARRAY_A);
+
+                foreach ($resultados as $fila) {
+                    $datos_csv[] = [
+                        $fila['id'],
+                        $fila['display_name'] ?? __('Usuario desconocido', 'flavor-platform'),
+                        $fila['punto_reciclaje_id'],
+                        $fila['tipo_material'],
+                        number_format((float) $fila['cantidad_kg'], 2, ',', '.'),
+                        $fila['puntos_ganados'],
+                        $fila['verificado'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform'),
+                        $fila['fecha_deposito'],
+                    ];
+                }
+                break;
+
+            case 'recogidas':
+                $tabla = $wpdb->prefix . 'flavor_reciclaje_recogidas';
+                $cabeceras = ['ID', 'Zona', 'Tipo Recogida', 'Fecha Programada', 'Estado', 'Notas'];
+
+                $where = '1=1';
+                $valores = [];
+
+                if ($fecha_desde && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_desde)) {
+                    $where .= ' AND DATE(fecha_programada) >= %s';
+                    $valores[] = $fecha_desde;
+                }
+                if ($fecha_hasta && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_hasta)) {
+                    $where .= ' AND DATE(fecha_programada) <= %s';
+                    $valores[] = $fecha_hasta;
+                }
+
+                $sql = "SELECT id, zona, tipo_recogida, fecha_programada, estado, notas
+                        FROM {$tabla}
+                        WHERE {$where}
+                        ORDER BY fecha_programada DESC
+                        LIMIT 5000";
+
+                if (!empty($valores)) {
+                    $sql = $wpdb->prepare($sql, $valores);
+                }
+
+                $resultados = $wpdb->get_results($sql, ARRAY_A);
+
+                foreach ($resultados as $fila) {
+                    $datos_csv[] = [
+                        $fila['id'],
+                        $fila['zona'],
+                        $fila['tipo_recogida'],
+                        $fila['fecha_programada'],
+                        $fila['estado'],
+                        $fila['notas'] ?? '',
+                    ];
+                }
+                break;
+
+            case 'puntos':
+                $tabla = $wpdb->prefix . 'flavor_reciclaje_puntos';
+                $cabeceras = ['ID', 'Nombre', 'Direccion', 'Tipo', 'Latitud', 'Longitud', 'Activo'];
+
+                $resultados = $wpdb->get_results(
+                    "SELECT id, nombre, direccion, tipo, latitud, longitud, activo
+                     FROM {$tabla}
+                     ORDER BY nombre ASC
+                     LIMIT 5000",
+                    ARRAY_A
+                );
+
+                foreach ($resultados as $fila) {
+                    $datos_csv[] = [
+                        $fila['id'],
+                        $fila['nombre'],
+                        $fila['direccion'] ?? '',
+                        $fila['tipo'] ?? '',
+                        $fila['latitud'] ?? '',
+                        $fila['longitud'] ?? '',
+                        $fila['activo'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform'),
+                    ];
+                }
+                break;
+        }
+
+        $stream = fopen('php://temp', 'r+');
+        if (!$stream) {
+            wp_send_json_error(['message' => __('Error al generar el CSV', 'flavor-platform')]);
+        }
+
+        fputcsv($stream, $cabeceras, ';');
+        foreach ($datos_csv as $fila) {
+            fputcsv($stream, $fila, ';');
+        }
+
+        rewind($stream);
+        $csv_content = stream_get_contents($stream) ?: '';
+        fclose($stream);
+
+        $filename = sprintf('reciclaje-%s-%s.csv', $tipo, date('Ymd-His'));
+
+        wp_send_json_success([
+            'filename' => $filename,
+            'csv' => $csv_content,
+            'total_filas' => count($datos_csv),
+        ]);
+    }
+
+    /**
+     * AJAX: Ver detalle de una recogida programada
+     */
+    public function ajax_ver_recogida() {
+        check_ajax_referer('reciclaje_nonce', 'nonce');
+
+        global $wpdb;
+
+        $recogida_id = absint($_POST['recogida_id'] ?? 0);
+
+        if ($recogida_id <= 0) {
+            wp_send_json_error(['message' => __('ID de recogida no valido', 'flavor-platform')]);
+        }
+
+        $tabla_recogidas = $wpdb->prefix . 'flavor_reciclaje_recogidas';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_recogidas)) {
+            wp_send_json_error(['message' => __('La tabla de recogidas no existe', 'flavor-platform')]);
+        }
+
+        $recogida = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_recogidas} WHERE id = %d",
+            $recogida_id
+        ), ARRAY_A);
+
+        if (!$recogida) {
+            wp_send_json_error(['message' => __('Recogida no encontrada', 'flavor-platform')]);
+        }
+
+        $datos_recogida = [
+            'id' => (int) $recogida['id'],
+            'zona' => $recogida['zona'] ?? '',
+            'tipo_recogida' => $recogida['tipo_recogida'] ?? '',
+            'fecha_programada' => $recogida['fecha_programada'] ?? '',
+            'fecha_formateada' => !empty($recogida['fecha_programada'])
+                ? date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($recogida['fecha_programada']))
+                : '',
+            'estado' => $recogida['estado'] ?? 'programada',
+            'estado_label' => $this->get_estado_recogida_label($recogida['estado'] ?? 'programada'),
+            'notas' => $recogida['notas'] ?? '',
+            'frecuencia' => $recogida['frecuencia'] ?? '',
+            'responsable' => $recogida['responsable'] ?? '',
+        ];
+
+        wp_send_json_success([
+            'recogida' => $datos_recogida,
+        ]);
+    }
+
+    /**
+     * Obtiene la etiqueta legible de un estado de recogida
+     *
+     * @param string $estado Estado de la recogida
+     * @return string Etiqueta traducida
+     */
+    private function get_estado_recogida_label($estado) {
+        $estados = [
+            'programada' => __('Programada', 'flavor-platform'),
+            'en_curso' => __('En curso', 'flavor-platform'),
+            'completada' => __('Completada', 'flavor-platform'),
+            'cancelada' => __('Cancelada', 'flavor-platform'),
+            'retrasada' => __('Retrasada', 'flavor-platform'),
+        ];
+
+        return $estados[$estado] ?? ucfirst($estado);
     }
 
     /**

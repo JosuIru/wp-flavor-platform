@@ -125,6 +125,13 @@ class Flavor_Platform_Podcast_Module extends Flavor_Platform_Module_Base {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_filter('query_vars', [$this, 'add_query_vars']);
 
+        // Admin AJAX handlers
+        add_action('wp_ajax_flavor_podcast_eliminar_episodio', [$this, 'ajax_eliminar_episodio']);
+        add_action('wp_ajax_flavor_podcast_eliminar_suscripcion', [$this, 'ajax_eliminar_suscripcion']);
+        add_action('wp_ajax_flavor_podcast_enviar_notificacion', [$this, 'ajax_enviar_notificacion']);
+        add_action('wp_ajax_flavor_podcast_toggle_notificaciones', [$this, 'ajax_toggle_notificaciones']);
+        add_action('wp_ajax_exportar_suscriptores_podcast', [$this, 'ajax_exportar_suscriptores']);
+
         // Admin pages
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
@@ -3831,6 +3838,259 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         }
+    }
+
+    /**
+     * AJAX: Eliminar un episodio de podcast
+     */
+    public function ajax_eliminar_episodio() {
+        check_ajax_referer('podcast_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para eliminar episodios', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
+
+        $episodio_id = absint($_POST['episodio_id'] ?? 0);
+
+        if (!$episodio_id) {
+            wp_send_json_error(__('ID de episodio inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Obtener el episodio para eliminar el archivo asociado
+        $episodio = $wpdb->get_row($wpdb->prepare(
+            "SELECT archivo_url, imagen_url FROM {$tabla_episodios} WHERE id = %d",
+            $episodio_id
+        ));
+
+        if (!$episodio) {
+            wp_send_json_error(__('Episodio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Eliminar de la base de datos
+        $resultado = $wpdb->delete(
+            $tabla_episodios,
+            ['id' => $episodio_id],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al eliminar el episodio', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Opcionalmente eliminar archivos fisicos (descomentar si es necesario)
+        // if ($episodio->archivo_url) {
+        //     $archivo_path = str_replace(home_url('/'), ABSPATH, $episodio->archivo_url);
+        //     if (file_exists($archivo_path)) {
+        //         unlink($archivo_path);
+        //     }
+        // }
+
+        wp_send_json_success([
+            'message' => __('Episodio eliminado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * AJAX: Eliminar una suscripcion de podcast
+     */
+    public function ajax_eliminar_suscripcion() {
+        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para eliminar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
+
+        $suscripcion_id = absint($_POST['suscripcion_id'] ?? 0);
+
+        if (!$suscripcion_id) {
+            wp_send_json_error(__('ID de suscripcion inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $resultado = $wpdb->delete(
+            $tabla_suscripciones,
+            ['id' => $suscripcion_id],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al eliminar la suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        wp_send_json_success([
+            'message' => __('Suscripcion eliminada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * AJAX: Enviar notificacion a suscriptores seleccionados
+     */
+    public function ajax_enviar_notificacion() {
+        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para enviar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
+
+        $suscriptor_ids = isset($_POST['suscriptor_ids']) ? array_map('absint', (array) $_POST['suscriptor_ids']) : [];
+        $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
+
+        if (empty($suscriptor_ids)) {
+            wp_send_json_error(__('No se seleccionaron suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        if (empty($mensaje)) {
+            wp_send_json_error(__('El mensaje no puede estar vacio', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        // Obtener los usuarios de las suscripciones
+        $placeholders = implode(',', array_fill(0, count($suscriptor_ids), '%d'));
+        $suscripciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT s.usuario_id, p.titulo as podcast_titulo
+             FROM {$tabla_suscripciones} s
+             INNER JOIN {$wpdb->prefix}flavor_podcasts p ON s.podcast_id = p.id
+             WHERE s.id IN ({$placeholders}) AND s.notificaciones_activas = 1",
+            $suscriptor_ids
+        ));
+
+        $enviados = 0;
+        foreach ($suscripciones as $suscripcion) {
+            do_action('flavor_notificacion_enviar', $suscripcion->usuario_id, 'podcast_notificacion', [
+                'mensaje' => $mensaje,
+                'podcast' => $suscripcion->podcast_titulo,
+            ]);
+            $enviados++;
+        }
+
+        wp_send_json_success([
+            'message' => sprintf(
+                __('Notificacion enviada a %d suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $enviados
+            ),
+            'count' => $enviados,
+        ]);
+    }
+
+    /**
+     * AJAX: Alternar estado de notificaciones de una suscripcion
+     */
+    public function ajax_toggle_notificaciones() {
+        check_ajax_referer('podcast_suscriptores_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para modificar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
+
+        $suscripcion_id = absint($_POST['suscripcion_id'] ?? 0);
+        $estado = absint($_POST['estado'] ?? 0);
+
+        if (!$suscripcion_id) {
+            wp_send_json_error(__('ID de suscripcion inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $resultado = $wpdb->update(
+            $tabla_suscripciones,
+            ['notificaciones_activas' => $estado ? 1 : 0],
+            ['id' => $suscripcion_id],
+            ['%d'],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al actualizar las notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        wp_send_json_success([
+            'message' => $estado
+                ? __('Notificaciones activadas', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Notificaciones desactivadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar suscriptores a CSV
+     */
+    public function ajax_exportar_suscriptores() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('No tienes permisos para exportar datos', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        global $wpdb;
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
+        $tabla_podcasts = $wpdb->prefix . 'flavor_podcasts';
+
+        $podcast_id = absint($_GET['podcast_id'] ?? 0);
+
+        $where_clause = '';
+        $prepare_values = [];
+
+        if ($podcast_id > 0) {
+            $where_clause = 'WHERE s.podcast_id = %d';
+            $prepare_values[] = $podcast_id;
+        }
+
+        $query = "SELECT s.id, u.display_name, u.user_email, p.titulo as podcast_titulo,
+                         s.notificaciones_activas, s.fecha_suscripcion
+                  FROM {$tabla_suscripciones} s
+                  INNER JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+                  INNER JOIN {$tabla_podcasts} p ON s.podcast_id = p.id
+                  {$where_clause}
+                  ORDER BY s.fecha_suscripcion DESC";
+
+        if (!empty($prepare_values)) {
+            $suscriptores = $wpdb->get_results($wpdb->prepare($query, $prepare_values));
+        } else {
+            $suscriptores = $wpdb->get_results($query);
+        }
+
+        // Generar CSV
+        $filename = 'suscriptores_podcast_' . date('Y-m-d_H-i-s') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+
+        // BOM para Excel
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        // Cabeceras
+        fputcsv($output, [
+            'ID',
+            'Nombre',
+            'Email',
+            'Podcast',
+            'Notificaciones',
+            'Fecha Suscripcion',
+        ]);
+
+        // Datos
+        foreach ($suscriptores as $suscriptor) {
+            fputcsv($output, [
+                $suscriptor->id,
+                $suscriptor->display_name,
+                $suscriptor->user_email,
+                $suscriptor->podcast_titulo,
+                $suscriptor->notificaciones_activas ? 'Activas' : 'Desactivadas',
+                $suscriptor->fecha_suscripcion,
+            ]);
+        }
+
+        fclose($output);
+        exit;
     }
 }
 

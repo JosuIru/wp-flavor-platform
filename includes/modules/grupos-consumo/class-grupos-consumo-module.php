@@ -91,6 +91,14 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         add_action('wp_ajax_gc_listar_usuarios_wp', [$this, 'ajax_listar_usuarios_wp']);
         add_action('wp_ajax_gc_obtener_detalles_consumidor', [$this, 'ajax_obtener_detalles_consumidor']);
 
+        // Registrar handlers AJAX para exportaciones
+        add_action('wp_ajax_gc_enviar_consolidado_productores', [$this, 'ajax_enviar_consolidado_productores']);
+        add_action('wp_ajax_gc_exportar_consolidado', [$this, 'ajax_exportar_consolidado']);
+        add_action('wp_ajax_gc_exportar_consumidores', [$this, 'ajax_exportar_consumidores']);
+        add_action('wp_ajax_gc_exportar_pedidos', [$this, 'ajax_exportar_pedidos']);
+        add_action('wp_ajax_gc_exportar_pedidos_filtrado', [$this, 'ajax_exportar_pedidos_filtrado']);
+        add_action('wp_ajax_gc_exportar_suscripciones', [$this, 'ajax_exportar_suscripciones']);
+
         // Cargar scripts y estilos del frontend
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
@@ -6699,6 +6707,379 @@ KNOWLEDGE;
         if (class_exists('Flavor_GC_Dashboard_Widget')) {
             $registry->register(new Flavor_GC_Dashboard_Widget());
         }
+    }
+
+    // ========================================
+    // AJAX Handlers para Exportaciones
+    // ========================================
+
+    /**
+     * AJAX: Enviar consolidado a productores por email
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_enviar_consolidado_productores() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
+
+        if (!$ciclo_id) {
+            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', 'flavor-platform')]);
+        }
+
+        $ciclo = get_post($ciclo_id);
+        if (!$ciclo || $ciclo->post_type !== 'gc_ciclo') {
+            wp_send_json_error(['mensaje' => __('Ciclo no encontrado.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+
+        // Obtener consolidado agrupado por productor
+        $consolidado_por_productor = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.productor_id, pr.post_title as productor_nombre,
+                    GROUP_CONCAT(p.post_title SEPARATOR '||') as productos,
+                    GROUP_CONCAT(c.cantidad_total SEPARATOR '||') as cantidades,
+                    GROUP_CONCAT(c.total SEPARATOR '||') as totales,
+                    SUM(c.total) as total_productor
+             FROM {$wpdb->prefix}flavor_gc_consolidado c
+             LEFT JOIN {$wpdb->posts} p ON c.producto_id = p.ID
+             LEFT JOIN {$wpdb->posts} pr ON c.productor_id = pr.ID
+             WHERE c.ciclo_id = %d
+             GROUP BY c.productor_id
+             ORDER BY pr.post_title",
+            $ciclo_id
+        ));
+
+        if (empty($consolidado_por_productor)) {
+            wp_send_json_error(['mensaje' => __('No hay datos de consolidado para este ciclo.', 'flavor-platform')]);
+        }
+
+        $enviados = 0;
+        $errores = [];
+        $sitio_nombre = get_bloginfo('name');
+
+        foreach ($consolidado_por_productor as $productor_data) {
+            $email_productor = get_post_meta($productor_data->productor_id, '_gc_email', true);
+
+            if (empty($email_productor) || !is_email($email_productor)) {
+                $errores[] = sprintf(
+                    __('Productor "%s" sin email válido.', 'flavor-platform'),
+                    $productor_data->productor_nombre
+                );
+                continue;
+            }
+
+            // Construir tabla de productos
+            $productos_array = explode('||', $productor_data->productos);
+            $cantidades_array = explode('||', $productor_data->cantidades);
+            $totales_array = explode('||', $productor_data->totales);
+
+            $tabla_productos = '<table style="width:100%;border-collapse:collapse;margin:20px 0;">';
+            $tabla_productos .= '<thead><tr style="background:#f5f5f5;">';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:left;">' . esc_html__('Producto', 'flavor-platform') . '</th>';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Cantidad', 'flavor-platform') . '</th>';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Total', 'flavor-platform') . '</th>';
+            $tabla_productos .= '</tr></thead><tbody>';
+
+            for ($i = 0; $i < count($productos_array); $i++) {
+                $tabla_productos .= '<tr>';
+                $tabla_productos .= '<td style="border:1px solid #ddd;padding:10px;">' . esc_html($productos_array[$i]) . '</td>';
+                $tabla_productos .= '<td style="border:1px solid #ddd;padding:10px;text-align:right;">' . number_format((float) $cantidades_array[$i], 2, ',', '.') . '</td>';
+                $tabla_productos .= '<td style="border:1px solid #ddd;padding:10px;text-align:right;">' . number_format((float) $totales_array[$i], 2, ',', '.') . ' €</td>';
+                $tabla_productos .= '</tr>';
+            }
+
+            $tabla_productos .= '<tr style="background:#f9f9f9;font-weight:bold;">';
+            $tabla_productos .= '<td colspan="2" style="border:1px solid #ddd;padding:10px;">' . esc_html__('TOTAL', 'flavor-platform') . '</td>';
+            $tabla_productos .= '<td style="border:1px solid #ddd;padding:10px;text-align:right;">' . number_format((float) $productor_data->total_productor, 2, ',', '.') . ' €</td>';
+            $tabla_productos .= '</tr></tbody></table>';
+
+            // Construir email
+            $asunto = sprintf(
+                /* translators: 1: Site name, 2: Cycle name */
+                __('[%1$s] Pedido consolidado - %2$s', 'flavor-platform'),
+                $sitio_nombre,
+                $ciclo->post_title
+            );
+
+            $mensaje = '<html><body style="font-family:Arial,sans-serif;color:#333;">';
+            $mensaje .= '<h2 style="color:#2c5530;">' . sprintf(
+                /* translators: %s: Producer name */
+                esc_html__('Hola %s,', 'flavor-platform'),
+                esc_html($productor_data->productor_nombre)
+            ) . '</h2>';
+            $mensaje .= '<p>' . sprintf(
+                /* translators: %s: Cycle name */
+                esc_html__('Te enviamos el consolidado de pedidos para el ciclo: %s', 'flavor-platform'),
+                '<strong>' . esc_html($ciclo->post_title) . '</strong>'
+            ) . '</p>';
+            $mensaje .= $tabla_productos;
+            $mensaje .= '<p style="margin-top:20px;">' . esc_html__('Por favor, prepara los productos para la fecha de entrega acordada.', 'flavor-platform') . '</p>';
+            $mensaje .= '<p style="color:#666;font-size:12px;margin-top:30px;">' . esc_html__('Este es un mensaje automático generado por', 'flavor-platform') . ' ' . esc_html($sitio_nombre) . '</p>';
+            $mensaje .= '</body></html>';
+
+            $headers = [
+                'Content-Type: text/html; charset=UTF-8',
+                'From: ' . $sitio_nombre . ' <' . get_option('admin_email') . '>',
+            ];
+
+            $enviado = wp_mail($email_productor, $asunto, $mensaje, $headers);
+
+            if ($enviado) {
+                $enviados++;
+            } else {
+                $errores[] = sprintf(
+                    /* translators: %s: Producer name */
+                    __('Error al enviar a "%s".', 'flavor-platform'),
+                    $productor_data->productor_nombre
+                );
+            }
+        }
+
+        // Registrar en log
+        if ($enviados > 0) {
+            update_post_meta($ciclo_id, '_gc_consolidado_enviado', current_time('mysql'));
+            update_post_meta($ciclo_id, '_gc_consolidado_enviado_count', $enviados);
+        }
+
+        if ($enviados > 0 && empty($errores)) {
+            wp_send_json_success([
+                'mensaje' => sprintf(
+                    /* translators: %d: Number of emails sent */
+                    _n(
+                        'Consolidado enviado a %d productor.',
+                        'Consolidado enviado a %d productores.',
+                        $enviados,
+                        'flavor-platform'
+                    ),
+                    $enviados
+                ),
+            ]);
+        } elseif ($enviados > 0 && !empty($errores)) {
+            wp_send_json_success([
+                'mensaje' => sprintf(
+                    /* translators: %d: Number of emails sent */
+                    _n(
+                        'Consolidado enviado a %d productor.',
+                        'Consolidado enviado a %d productores.',
+                        $enviados,
+                        'flavor-platform'
+                    ),
+                    $enviados
+                ),
+                'advertencias' => $errores,
+            ]);
+        } else {
+            wp_send_json_error([
+                'mensaje' => __('No se pudo enviar ningún email.', 'flavor-platform'),
+                'errores' => $errores,
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Exportar consolidado a CSV/Excel
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_exportar_consolidado() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+        }
+
+        $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
+        $formato = isset($_POST['formato']) ? sanitize_text_field($_POST['formato']) : 'excel';
+
+        if (!$ciclo_id) {
+            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', 'flavor-platform')]);
+        }
+
+        // Generar URL de descarga via admin-post
+        $url_descarga = add_query_arg([
+            'action'   => 'gc_exportar_consolidado',
+            'ciclo_id' => $ciclo_id,
+            'formato'  => $formato,
+            '_wpnonce' => wp_create_nonce('gc_exportar_consolidado'),
+        ], admin_url('admin-post.php'));
+
+        wp_send_json_success([
+            'url' => $url_descarga,
+            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar listado de consumidores
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_exportar_consumidores() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+        }
+
+        $grupo_id = isset($_POST['grupo_id']) ? absint($_POST['grupo_id']) : 0;
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+
+        // Generar URL de descarga via admin-post
+        $params = [
+            'action'   => 'gc_exportar_consumidores',
+            '_wpnonce' => wp_create_nonce('gc_exportar_consumidores'),
+        ];
+
+        if ($grupo_id) {
+            $params['grupo_id'] = $grupo_id;
+        }
+        if ($estado) {
+            $params['estado'] = $estado;
+        }
+
+        $url_descarga = add_query_arg($params, admin_url('admin-post.php'));
+
+        wp_send_json_success([
+            'url' => $url_descarga,
+            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar pedidos
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_exportar_pedidos() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+        }
+
+        $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
+        $formato = isset($_POST['formato']) ? sanitize_text_field($_POST['formato']) : 'excel';
+
+        // Generar URL de descarga via admin-post
+        $params = [
+            'action'   => 'gc_exportar_pedidos',
+            'formato'  => $formato,
+            '_wpnonce' => wp_create_nonce('gc_exportar_pedidos'),
+        ];
+
+        if ($ciclo_id) {
+            $params['ciclo_id'] = $ciclo_id;
+        }
+
+        $url_descarga = add_query_arg($params, admin_url('admin-post.php'));
+
+        wp_send_json_success([
+            'url' => $url_descarga,
+            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar pedidos con filtros
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_exportar_pedidos_filtrado() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+        }
+
+        $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
+        $productor_id = isset($_POST['productor_id']) ? absint($_POST['productor_id']) : 0;
+        $desde = isset($_POST['desde']) ? sanitize_text_field($_POST['desde']) : '';
+        $hasta = isset($_POST['hasta']) ? sanitize_text_field($_POST['hasta']) : '';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+
+        // Validar fechas si se proporcionan
+        if ($desde && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $desde)) {
+            wp_send_json_error(['mensaje' => __('Formato de fecha "desde" inválido. Use YYYY-MM-DD.', 'flavor-platform')]);
+        }
+        if ($hasta && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $hasta)) {
+            wp_send_json_error(['mensaje' => __('Formato de fecha "hasta" inválido. Use YYYY-MM-DD.', 'flavor-platform')]);
+        }
+
+        // Generar URL de descarga via admin-post
+        $params = [
+            'action'   => 'gc_exportar_pedidos_filtrado',
+            '_wpnonce' => wp_create_nonce('gc_exportar_pedidos_filtrado'),
+        ];
+
+        if ($ciclo_id) {
+            $params['ciclo_id'] = $ciclo_id;
+        }
+        if ($productor_id) {
+            $params['productor_id'] = $productor_id;
+        }
+        if ($desde) {
+            $params['desde'] = $desde;
+        }
+        if ($hasta) {
+            $params['hasta'] = $hasta;
+        }
+        if ($estado) {
+            $params['estado'] = $estado;
+        }
+
+        $url_descarga = add_query_arg($params, admin_url('admin-post.php'));
+
+        wp_send_json_success([
+            'url' => $url_descarga,
+            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+        ]);
+    }
+
+    /**
+     * AJAX: Exportar suscripciones
+     *
+     * @return void
+     * @since 4.2.0
+     */
+    public function ajax_exportar_suscripciones() {
+        check_ajax_referer('gc_admin_nonce', 'nonce');
+
+        if (!current_user_can('gc_gestionar_suscripciones') && !current_user_can('manage_options')) {
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar suscripciones.', 'flavor-platform')]);
+        }
+
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+        $tipo_cesta = isset($_POST['tipo_cesta']) ? sanitize_text_field($_POST['tipo_cesta']) : '';
+
+        // Generar URL de descarga via admin-post
+        $params = [
+            'action'   => 'gc_exportar_suscripciones',
+            '_wpnonce' => wp_create_nonce('gc_exportar_suscripciones'),
+        ];
+
+        if ($estado) {
+            $params['estado'] = $estado;
+        }
+        if ($tipo_cesta) {
+            $params['tipo_cesta'] = $tipo_cesta;
+        }
+
+        $url_descarga = add_query_arg($params, admin_url('admin-post.php'));
+
+        wp_send_json_success([
+            'url' => $url_descarga,
+            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+        ]);
     }
 
     /**

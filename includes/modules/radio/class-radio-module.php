@@ -150,6 +150,11 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_flavor_radio_admin_finalizar_emision', [$this, 'ajax_admin_finalizar_emision']);
         add_action('wp_ajax_flavor_radio_admin_stats', [$this, 'ajax_admin_stats']);
 
+        // Admin AJAX - Emisiones (aliases sin prefijo admin_ para compatibilidad con vistas)
+        add_action('wp_ajax_flavor_radio_iniciar_emision', [$this, 'ajax_iniciar_emision']);
+        add_action('wp_ajax_flavor_radio_finalizar_emision', [$this, 'ajax_finalizar_emision']);
+        add_action('wp_ajax_flavor_radio_ver_emision', [$this, 'ajax_ver_emision']);
+
         // Shortcodes
         $this->register_shortcodes();
 
@@ -4435,6 +4440,177 @@ KNOWLEDGE;
             'audiencia_por_hora' => $audiencia_por_hora,
             'top_programas' => $top_programas,
         ], 200);
+    }
+
+    /**
+     * AJAX: Iniciar una emision en vivo
+     */
+    public function ajax_iniciar_emision() {
+        check_ajax_referer('radio_emision_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para iniciar emisiones', 'flavor-platform'));
+        }
+
+        global $wpdb;
+        $tabla_emisiones = $wpdb->prefix . 'flavor_radio_emisiones';
+
+        $emision_id = absint($_POST['emision_id'] ?? 0);
+
+        if (!$emision_id) {
+            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+        }
+
+        // Verificar que la emision existe y esta programada
+        $emision = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, estado, programa_id FROM {$tabla_emisiones} WHERE id = %d",
+            $emision_id
+        ));
+
+        if (!$emision) {
+            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+        }
+
+        if ($emision->estado !== 'programada') {
+            wp_send_json_error(__('Esta emision no esta programada', 'flavor-platform'));
+        }
+
+        // Verificar que no hay otra emision en vivo
+        $emision_en_vivo = $wpdb->get_var(
+            "SELECT id FROM {$tabla_emisiones} WHERE estado = 'en_vivo' LIMIT 1"
+        );
+
+        if ($emision_en_vivo) {
+            wp_send_json_error(__('Ya hay una emision en vivo. Finaliza la actual primero.', 'flavor-platform'));
+        }
+
+        // Iniciar la emision
+        $resultado = $wpdb->update(
+            $tabla_emisiones,
+            [
+                'estado' => 'en_vivo',
+                'fecha_inicio_real' => current_time('mysql'),
+            ],
+            ['id' => $emision_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al iniciar la emision', 'flavor-platform'));
+        }
+
+        wp_send_json_success([
+            'message' => __('Emision iniciada correctamente', 'flavor-platform'),
+            'emision_id' => $emision_id,
+        ]);
+    }
+
+    /**
+     * AJAX: Finalizar una emision en vivo
+     */
+    public function ajax_finalizar_emision() {
+        check_ajax_referer('radio_emision_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para finalizar emisiones', 'flavor-platform'));
+        }
+
+        global $wpdb;
+        $tabla_emisiones = $wpdb->prefix . 'flavor_radio_emisiones';
+
+        $emision_id = absint($_POST['emision_id'] ?? 0);
+
+        if (!$emision_id) {
+            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+        }
+
+        // Verificar que la emision existe y esta en vivo
+        $emision = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, estado, fecha_inicio_real FROM {$tabla_emisiones} WHERE id = %d",
+            $emision_id
+        ));
+
+        if (!$emision) {
+            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+        }
+
+        if ($emision->estado !== 'en_vivo') {
+            wp_send_json_error(__('Esta emision no esta en vivo', 'flavor-platform'));
+        }
+
+        // Calcular duracion
+        $duracion_minutos = 0;
+        if ($emision->fecha_inicio_real) {
+            $inicio = strtotime($emision->fecha_inicio_real);
+            $fin = current_time('timestamp');
+            $duracion_minutos = round(($fin - $inicio) / 60);
+        }
+
+        // Finalizar la emision
+        $resultado = $wpdb->update(
+            $tabla_emisiones,
+            [
+                'estado' => 'finalizada',
+                'fecha_fin_real' => current_time('mysql'),
+                'duracion_minutos' => $duracion_minutos,
+            ],
+            ['id' => $emision_id],
+            ['%s', '%s', '%d'],
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al finalizar la emision', 'flavor-platform'));
+        }
+
+        wp_send_json_success([
+            'message' => __('Emision finalizada correctamente', 'flavor-platform'),
+            'duracion_minutos' => $duracion_minutos,
+        ]);
+    }
+
+    /**
+     * AJAX: Ver detalles de una emision
+     */
+    public function ajax_ver_emision() {
+        check_ajax_referer('radio_emision_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para ver emisiones', 'flavor-platform'));
+        }
+
+        global $wpdb;
+        $tabla_emisiones = $wpdb->prefix . 'flavor_radio_emisiones';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+
+        $emision_id = absint($_GET['emision_id'] ?? $_POST['emision_id'] ?? 0);
+
+        if (!$emision_id) {
+            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+        }
+
+        $emision = $wpdb->get_row($wpdb->prepare(
+            "SELECT e.*, p.nombre as programa_nombre
+             FROM {$tabla_emisiones} e
+             INNER JOIN {$tabla_programas} p ON e.programa_id = p.id
+             WHERE e.id = %d",
+            $emision_id
+        ));
+
+        if (!$emision) {
+            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+        }
+
+        wp_send_json_success([
+            'id' => $emision->id,
+            'programa_nombre' => $emision->programa_nombre,
+            'fecha' => date_i18n('d/m/Y H:i', strtotime($emision->fecha_emision)),
+            'duracion' => $emision->duracion_minutos,
+            'estado' => ucfirst($emision->estado),
+            'oyentes_pico' => $emision->oyentes_pico ?? 0,
+            'oyentes_actual' => $emision->oyentes_actual ?? 0,
+        ]);
     }
 
 }
