@@ -1562,7 +1562,7 @@ class Flavor_Platform_Carpooling_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_carpooling_nonce', 'nonce');
 
         $resultado = $this->action_gestionar_vehiculo([
-            'vehiculo_id' => $_POST['vehiculo_id'] ?? 0,
+            'vehiculo_id' => intval($_POST['vehiculo_id'] ?? 0),
             'datos' => $_POST,
         ]);
         wp_send_json($resultado);

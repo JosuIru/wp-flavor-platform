@@ -2106,9 +2106,10 @@ class Flavor_Platform_Documentacion_Legal_Module extends Flavor_Platform_Module_
                 'orden'       => $orden,
             ];
 
-            if (isset($_POST['categoria_id']) && $_POST['categoria_id']) {
+            $categoria_id = intval($_POST['categoria_id'] ?? 0);
+            if ($categoria_id > 0) {
                 // Actualizar
-                $wpdb->update($tabla_categorias, $datos_categoria, ['id' => intval($_POST['categoria_id'])]);
+                $wpdb->update($tabla_categorias, $datos_categoria, ['id' => $categoria_id]);
                 add_settings_error('flavor_categorias', 'actualizada', __('Categoria actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
             } else {
                 // Crear

@@ -22,13 +22,17 @@ $punto_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('flavor_reciclaje_punto_action')) {
     if (isset($_POST['guardar_punto'])) {
+        $materiales_aceptados_sanitizados = isset($_POST['materiales_aceptados']) && is_array($_POST['materiales_aceptados'])
+            ? array_map('sanitize_text_field', $_POST['materiales_aceptados'])
+            : [];
+
         $datos_punto = [
             'nombre' => sanitize_text_field($_POST['nombre']),
             'tipo' => sanitize_text_field($_POST['tipo']),
             'direccion' => sanitize_text_field($_POST['direccion']),
             'latitud' => floatval($_POST['latitud']),
             'longitud' => floatval($_POST['longitud']),
-            'materiales_aceptados' => json_encode($_POST['materiales_aceptados'] ?? []),
+            'materiales_aceptados' => wp_json_encode($materiales_aceptados_sanitizados),
             'horario' => sanitize_textarea_field($_POST['horario']),
             'contacto' => sanitize_text_field($_POST['contacto']),
             'instrucciones' => sanitize_textarea_field($_POST['instrucciones']),

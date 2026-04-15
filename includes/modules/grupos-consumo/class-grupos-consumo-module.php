@@ -2852,13 +2852,14 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         foreach ($campos_a_guardar as $campo => $funcion_sanitizar) {
             $campo_form = str_replace('_gc_', 'gc_', $campo);
             if (isset($_POST[$campo_form])) {
-                $valor = $_POST[$campo_form];
+                // Sanitizar inmediatamente al obtener el valor de $_POST
+                $valor_crudo = sanitize_text_field(wp_unslash($_POST[$campo_form]));
                 if ($funcion_sanitizar === 'absint') {
-                    $valor = absint($valor);
+                    $valor = absint($valor_crudo);
                 } elseif ($funcion_sanitizar === 'floatval') {
-                    $valor = floatval($valor);
+                    $valor = floatval($valor_crudo);
                 } else {
-                    $valor = $funcion_sanitizar($valor);
+                    $valor = $funcion_sanitizar($valor_crudo);
                 }
                 update_post_meta($post_id, $campo, $valor);
             }

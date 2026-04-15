@@ -795,7 +795,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
         update_post_meta($post_id, '_cc_anonimo', isset($_POST['cc_anonimo']) ? '1' : '0');
 
         // Disparar acción si es urgente
-        $urgencia = $_POST['cc_urgencia'] ?? 'normal';
+        $urgencia = sanitize_text_field($_POST['cc_urgencia'] ?? 'normal');
         if ($urgencia === 'urgente') {
             do_action('cc_necesidad_urgente', $post_id, get_current_user_id());
         }

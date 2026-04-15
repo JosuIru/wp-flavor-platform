@@ -740,7 +740,14 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
     public function ajax_calcular_huella(): void {
         check_ajax_referer('flavor_huella_ecologica_nonce', 'nonce');
 
-        $datos = $_POST['datos'] ?? [];
+        $datos_sanitizados = [];
+        if (isset($_POST['datos']) && is_array($_POST['datos'])) {
+            foreach ($_POST['datos'] as $clave => $valor) {
+                $clave_sanitizada = sanitize_key($clave);
+                $datos_sanitizados[$clave_sanitizada] = is_numeric($valor) ? floatval($valor) : sanitize_text_field($valor);
+            }
+        }
+        $datos = $datos_sanitizados;
         $huella_total = 0;
         $desglose = [];
 

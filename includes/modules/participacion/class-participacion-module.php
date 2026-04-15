@@ -1416,7 +1416,10 @@ class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
         }
 
         $votacion_id = absint($_POST['votacion_id'] ?? 0);
-        $opciones = $_POST['opciones'] ?? [];
+        $opciones_raw = isset($_POST['opciones']) && is_array($_POST['opciones'])
+            ? $_POST['opciones']
+            : (isset($_POST['opciones']) ? [$_POST['opciones']] : []);
+        $opciones = array_map('sanitize_text_field', $opciones_raw);
 
         if (!$votacion_id || empty($opciones)) {
             wp_send_json_error(['error' => __('Datos de votacion invalidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

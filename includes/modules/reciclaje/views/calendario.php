@@ -19,10 +19,14 @@ $mensaje_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('flavor_reciclaje_recogida_action')) {
     if (isset($_POST['crear_recogida'])) {
+        $tipos_residuos_sanitizados = isset($_POST['tipos_residuos']) && is_array($_POST['tipos_residuos'])
+            ? array_map('sanitize_text_field', $_POST['tipos_residuos'])
+            : [];
+
         $datos_recogida = [
             'tipo_recogida' => sanitize_text_field($_POST['tipo_recogida']),
             'zona' => sanitize_text_field($_POST['zona']),
-            'tipos_residuos' => json_encode($_POST['tipos_residuos'] ?? []),
+            'tipos_residuos' => wp_json_encode($tipos_residuos_sanitizados),
             'fecha_programada' => sanitize_text_field($_POST['fecha_programada']),
             'hora_inicio' => sanitize_text_field($_POST['hora_inicio']),
             'hora_fin' => sanitize_text_field($_POST['hora_fin']),

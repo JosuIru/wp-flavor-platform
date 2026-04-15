@@ -1573,7 +1573,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         $parametros = [
             'termino' => sanitize_text_field($_POST['termino'] ?? ''),
             'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
-            'pagina' => (int) ($_POST['pagina'] ?? 1),
+            'pagina' => absint($_POST['pagina'] ?? 1),
         ];
 
         $resultado = $this->obtener_documentos_publicos($parametros);
@@ -1587,7 +1587,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
     public function transparencia_ver_documento() {
         check_ajax_referer('flavor_transparencia_nonce', 'nonce');
 
-        $documento_id = (int) ($_POST['documento_id'] ?? 0);
+        $documento_id = absint($_POST['documento_id'] ?? 0);
 
         if (!$documento_id) {
             wp_send_json_error(['mensaje' => __('ID de documento invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -1692,7 +1692,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
 
         $parametros = [
             'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
-            'ejercicio' => (int) ($_POST['ejercicio'] ?? date('Y')),
+            'ejercicio' => absint($_POST['ejercicio'] ?? date('Y')),
             'limite' => 20,
         ];
 

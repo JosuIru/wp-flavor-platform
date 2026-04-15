@@ -1315,12 +1315,18 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Ingredientes
         if (isset($_POST['receta_ingredientes']) && is_array($_POST['receta_ingredientes'])) {
             $ingredientes_limpios = [];
-            foreach ($_POST['receta_ingredientes'] as $ingrediente) {
-                if (!empty($ingrediente['nombre'])) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitizado campo por campo
+            $ingredientes_raw = wp_unslash($_POST['receta_ingredientes']);
+            foreach ($ingredientes_raw as $ingrediente) {
+                if (!is_array($ingrediente)) {
+                    continue;
+                }
+                $nombre_limpio = isset($ingrediente['nombre']) ? sanitize_text_field($ingrediente['nombre']) : '';
+                if (!empty($nombre_limpio)) {
                     $ingredientes_limpios[] = [
-                        'cantidad' => sanitize_text_field($ingrediente['cantidad']),
-                        'unidad' => sanitize_text_field($ingrediente['unidad']),
-                        'nombre' => sanitize_text_field($ingrediente['nombre']),
+                        'cantidad' => isset($ingrediente['cantidad']) ? sanitize_text_field($ingrediente['cantidad']) : '',
+                        'unidad'   => isset($ingrediente['unidad']) ? sanitize_text_field($ingrediente['unidad']) : '',
+                        'nombre'   => $nombre_limpio,
                     ];
                 }
             }
@@ -1330,7 +1336,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Pasos
         if (isset($_POST['receta_pasos']) && is_array($_POST['receta_pasos'])) {
             $pasos_limpios = [];
-            foreach ($_POST['receta_pasos'] as $paso) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitizado elemento por elemento
+            $pasos_raw = wp_unslash($_POST['receta_pasos']);
+            foreach ($pasos_raw as $paso) {
+                if (!is_string($paso)) {
+                    continue;
+                }
                 $paso_limpio = sanitize_textarea_field($paso);
                 if (!empty($paso_limpio)) {
                     $pasos_limpios[] = $paso_limpio;

@@ -167,8 +167,10 @@ $categorias = [
                             <p>
                                 <label for="categoria"><strong><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                                 <select id="categoria" name="categoria" style="width: 100%; margin-top: 5px;">
-                                    <?php foreach ($categorias as $slug => $label): ?>
-                                    <option value="<?php echo esc_attr($slug); ?>" <?php selected($_POST['categoria'] ?? '', $slug); ?>>
+                                    <?php
+                                    $categoria_seleccionada = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+                                    foreach ($categorias as $slug => $label): ?>
+                                    <option value="<?php echo esc_attr($slug); ?>" <?php selected($categoria_seleccionada, $slug); ?>>
                                         <?php echo esc_html($label); ?>
                                     </option>
                                     <?php endforeach; ?>
@@ -177,14 +179,15 @@ $categorias = [
 
                             <p>
                                 <label for="tipo"><strong><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
+                                <?php $tipo_seleccionado = isset($_POST['tipo']) ? sanitize_text_field($_POST['tipo']) : ''; ?>
                                 <select id="tipo" name="tipo" style="width: 100%; margin-top: 5px;">
-                                    <option value="abierta" <?php selected($_POST['tipo'] ?? '', 'abierta'); ?>>
+                                    <option value="abierta" <?php selected($tipo_seleccionado, 'abierta'); ?>>
                                         <?php _e('Abierta - Cualquiera puede unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </option>
-                                    <option value="cerrada" <?php selected($_POST['tipo'] ?? '', 'cerrada'); ?>>
+                                    <option value="cerrada" <?php selected($tipo_seleccionado, 'cerrada'); ?>>
                                         <?php _e('Cerrada - Requiere aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </option>
-                                    <option value="secreta" <?php selected($_POST['tipo'] ?? '', 'secreta'); ?>>
+                                    <option value="secreta" <?php selected($tipo_seleccionado, 'secreta'); ?>>
                                         <?php _e('Secreta - Solo por invitación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </option>
                                 </select>

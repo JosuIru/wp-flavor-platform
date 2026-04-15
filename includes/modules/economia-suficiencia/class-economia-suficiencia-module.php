@@ -844,9 +844,11 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
         }
 
         $user_id = get_current_user_id();
-        $evaluaciones = $_POST['evaluaciones'] ?? [];
+        $evaluaciones = isset($_POST['evaluaciones']) && is_array($_POST['evaluaciones'])
+            ? array_map('intval', $_POST['evaluaciones'])
+            : [];
 
-        if (empty($evaluaciones) || !is_array($evaluaciones)) {
+        if (empty($evaluaciones)) {
             wp_send_json_error(['message' => __('Datos de evaluación no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 

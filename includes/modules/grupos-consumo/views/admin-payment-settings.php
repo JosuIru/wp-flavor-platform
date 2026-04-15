@@ -19,12 +19,19 @@ $settings = get_option('flavor_gc_payment_settings', []);
 $active_tab = sanitize_key($_GET['tab'] ?? 'general');
 
 // Guardar configuración si se envía el formulario
-if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_payment_settings_nonce'], 'gc_payment_settings')) {
+if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['gc_payment_settings_nonce'])), 'gc_payment_settings')) {
     $new_settings = [];
 
     foreach ($gateways as $gateway_id => $gateway) {
-        if (isset($_POST['gateway'][$gateway_id])) {
-            $gateway_data = $_POST['gateway'][$gateway_id];
+        if (isset($_POST['gateway'][$gateway_id]) && is_array($_POST['gateway'][$gateway_id])) {
+            // Sanitizar el array de datos del gateway recursivamente
+            $gateway_data_raw = wp_unslash($_POST['gateway'][$gateway_id]);
+            $gateway_data = array_map(function($value) {
+                return is_array($value)
+                    ? array_map('sanitize_text_field', $value)
+                    : sanitize_text_field($value);
+            }, $gateway_data_raw);
+
             $validated = $gateway->validate_settings($gateway_data);
 
             if (!is_wp_error($validated)) {

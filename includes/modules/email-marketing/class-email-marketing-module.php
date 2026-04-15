@@ -119,6 +119,31 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
     }
 
     /**
+     * Sanitiza recursivamente un array de datos.
+     *
+     * @param array $array Array a sanitizar.
+     * @return array Array sanitizado.
+     */
+    private function sanitize_array_recursive( array $array ): array {
+        $sanitized_array = [];
+        foreach ( $array as $key => $value ) {
+            $sanitized_key = sanitize_text_field( $key );
+            if ( is_array( $value ) ) {
+                $sanitized_array[ $sanitized_key ] = $this->sanitize_array_recursive( $value );
+            } elseif ( is_bool( $value ) ) {
+                $sanitized_array[ $sanitized_key ] = (bool) $value;
+            } elseif ( is_int( $value ) ) {
+                $sanitized_array[ $sanitized_key ] = (int) $value;
+            } elseif ( is_float( $value ) ) {
+                $sanitized_array[ $sanitized_key ] = (float) $value;
+            } else {
+                $sanitized_array[ $sanitized_key ] = sanitize_text_field( (string) $value );
+            }
+        }
+        return $sanitized_array;
+    }
+
+    /**
      * Verifica si el módulo está activo
      */
     public function is_active() {
@@ -5393,11 +5418,12 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
         if (isset($_POST['apellidos'])) {
             $update_data['apellidos'] = sanitize_text_field($_POST['apellidos']);
         }
-        if (isset($_POST['estado']) && in_array($_POST['estado'], self::ESTADOS_SUSCRIPTOR)) {
-            $update_data['estado'] = $_POST['estado'];
+        if (isset($_POST['estado']) && in_array($_POST['estado'], self::ESTADOS_SUSCRIPTOR, true)) {
+            $update_data['estado'] = sanitize_text_field($_POST['estado']);
         }
         if (isset($_POST['tags'])) {
-            $update_data['tags'] = wp_json_encode((array) $_POST['tags']);
+            $tags_sanitizados = array_map('sanitize_text_field', (array) $_POST['tags']);
+            $update_data['tags'] = wp_json_encode($tags_sanitizados);
         }
 
         if (!empty($update_data)) {
@@ -5786,12 +5812,15 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
         global $wpdb;
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
 
+        $trigger_condiciones_raw = isset($_POST['trigger_condiciones']) ? (array) $_POST['trigger_condiciones'] : [];
+        $pasos_raw = isset($_POST['pasos']) ? (array) $_POST['pasos'] : [];
+
         $wpdb->insert($tabla, [
             'nombre' => $nombre,
             'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
             'trigger_tipo' => $trigger_tipo,
-            'trigger_condiciones' => wp_json_encode($_POST['trigger_condiciones'] ?? []),
-            'pasos' => wp_json_encode($_POST['pasos'] ?? []),
+            'trigger_condiciones' => wp_json_encode($this->sanitize_array_recursive($trigger_condiciones_raw)),
+            'pasos' => wp_json_encode($this->sanitize_array_recursive($pasos_raw)),
             'estado' => 'inactiva',
         ]);
 
@@ -5836,10 +5865,12 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
             $update_data['descripcion'] = sanitize_textarea_field($_POST['descripcion']);
         }
         if (isset($_POST['trigger_condiciones'])) {
-            $update_data['trigger_condiciones'] = wp_json_encode($_POST['trigger_condiciones']);
+            $trigger_condiciones_sanitized = $this->sanitize_array_recursive((array) $_POST['trigger_condiciones']);
+            $update_data['trigger_condiciones'] = wp_json_encode($trigger_condiciones_sanitized);
         }
         if (isset($_POST['pasos'])) {
-            $update_data['pasos'] = wp_json_encode($_POST['pasos']);
+            $pasos_sanitized = $this->sanitize_array_recursive((array) $_POST['pasos']);
+            $update_data['pasos'] = wp_json_encode($pasos_sanitized);
         }
 
         if (!empty($update_data)) {
@@ -6413,7 +6444,7 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
                         $nuevos_settings[$clave] = absint($_POST[$clave]);
                         break;
                     case 'array':
-                        $nuevos_settings[$clave] = (array) $_POST[$clave];
+                        $nuevos_settings[$clave] = $this->sanitize_array_recursive((array) $_POST[$clave]);
                         break;
                     default:
                         if (strpos($clave, 'email') !== false) {

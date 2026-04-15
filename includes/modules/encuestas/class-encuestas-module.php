@@ -1362,7 +1362,15 @@ class Flavor_Platform_Encuestas_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_encuestas_nonce', 'nonce');
 
         $encuesta_id = absint($_POST['encuesta_id'] ?? 0);
-        $respuestas = $_POST['respuestas'] ?? [];
+        $respuestas_raw = isset($_POST['respuestas']) && is_array($_POST['respuestas'])
+            ? $_POST['respuestas']
+            : [];
+        $respuestas = array_map(function($respuesta) {
+            if (is_array($respuesta)) {
+                return array_map('sanitize_text_field', $respuesta);
+            }
+            return sanitize_text_field($respuesta);
+        }, $respuestas_raw);
 
         if (!$encuesta_id || empty($respuestas)) {
             wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -2552,22 +2560,33 @@ class Flavor_Platform_Encuestas_Module extends Flavor_Platform_Module_Base {
 
             // Procesar campos/preguntas
             $campos_data = [];
-            if (!empty($_POST['preguntas']) && is_array($_POST['preguntas'])) {
-                foreach ($_POST['preguntas'] as $indice => $pregunta) {
-                    $opciones = [];
-                    if (!empty($pregunta['opciones']) && is_array($pregunta['opciones'])) {
-                        $opciones = array_map('sanitize_text_field', array_filter($pregunta['opciones']));
-                    }
-
-                    $campos_data[] = [
-                        'tipo'        => sanitize_text_field($pregunta['tipo'] ?? 'seleccion_unica'),
-                        'etiqueta'    => sanitize_text_field($pregunta['etiqueta'] ?? ''),
-                        'descripcion' => sanitize_textarea_field($pregunta['descripcion'] ?? ''),
-                        'opciones'    => $opciones,
-                        'es_requerido'=> isset($pregunta['es_requerido']) ? 1 : 0,
-                        'orden'       => $indice,
-                    ];
+            $preguntas_raw = isset($_POST['preguntas']) && is_array($_POST['preguntas'])
+                ? $_POST['preguntas']
+                : [];
+            foreach ($preguntas_raw as $indice => $pregunta_raw) {
+                if (!is_array($pregunta_raw)) {
+                    continue;
                 }
+                $pregunta = array_map(function($valor) {
+                    if (is_array($valor)) {
+                        return array_map('sanitize_text_field', $valor);
+                    }
+                    return $valor; // Los campos individuales se sanitizan abajo
+                }, $pregunta_raw);
+
+                $opciones = [];
+                if (!empty($pregunta['opciones']) && is_array($pregunta['opciones'])) {
+                    $opciones = array_map('sanitize_text_field', array_filter($pregunta['opciones']));
+                }
+
+                $campos_data[] = [
+                    'tipo'        => sanitize_text_field($pregunta['tipo'] ?? 'seleccion_unica'),
+                    'etiqueta'    => sanitize_text_field($pregunta['etiqueta'] ?? ''),
+                    'descripcion' => sanitize_textarea_field($pregunta['descripcion'] ?? ''),
+                    'opciones'    => $opciones,
+                    'es_requerido'=> isset($pregunta['es_requerido']) ? 1 : 0,
+                    'orden'       => absint($indice),
+                ];
             }
 
             $datos['campos'] = $campos_data;

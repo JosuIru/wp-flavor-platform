@@ -2648,9 +2648,13 @@ KNOWLEDGE;
 
         $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
         $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
-        $categorias = isset($_POST['categorias']) ? (array) $_POST['categorias'] : [];
+        $categorias_raw = isset($_POST['categorias']) && is_array($_POST['categorias'])
+            ? array_map('sanitize_text_field', $_POST['categorias'])
+            : [];
         $habilidades = isset($_POST['habilidades']) ? sanitize_textarea_field($_POST['habilidades']) : '';
-        $dias_disponibles = isset($_POST['dias_disponibles']) ? (array) $_POST['dias_disponibles'] : [];
+        $dias_disponibles_raw = isset($_POST['dias_disponibles']) && is_array($_POST['dias_disponibles'])
+            ? array_map('absint', $_POST['dias_disponibles'])
+            : [];
         $max_ayudas = isset($_POST['max_ayudas_simultaneas']) ? intval($_POST['max_ayudas_simultaneas']) : 3;
         $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'disponible';
 
@@ -2658,9 +2662,9 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Usuario requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        $categoria = !empty($categorias) ? sanitize_text_field($categorias[0]) : '';
+        $categoria = !empty($categorias_raw) ? $categorias_raw[0] : '';
         $disponibilidad = json_encode([
-            'dias' => array_map('intval', $dias_disponibles),
+            'dias' => $dias_disponibles_raw,
             'max_ayudas' => $max_ayudas,
         ]);
 
@@ -4494,11 +4498,15 @@ KNOWLEDGE;
         $id_usuario = get_current_user_id();
         $id_oferta_existente = absint($_POST['oferta_id'] ?? 0);
 
-        // Procesar disponibilidad
+        // Procesar disponibilidad (sanitizar array completo antes de iterar)
         $disponibilidad_dias = [];
-        if (!empty($_POST['disponibilidad']) && is_array($_POST['disponibilidad'])) {
-            foreach ($_POST['disponibilidad'] as $dia => $valor) {
-                $disponibilidad_dias[sanitize_key($dia)] = true;
+        if (isset($_POST['disponibilidad']) && is_array($_POST['disponibilidad'])) {
+            $disponibilidad_raw = array_map('sanitize_text_field', $_POST['disponibilidad']);
+            foreach ($disponibilidad_raw as $dia_key => $valor_sanitizado) {
+                $dia_sanitizado = sanitize_key($dia_key);
+                if (!empty($dia_sanitizado)) {
+                    $disponibilidad_dias[$dia_sanitizado] = true;
+                }
             }
         }
 

@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
             'smtp_host' => sanitize_text_field($_POST['smtp_host']),
             'smtp_puerto' => absint($_POST['smtp_puerto']),
             'smtp_usuario' => sanitize_text_field($_POST['smtp_usuario']),
-            'smtp_password' => $_POST['smtp_password'], // No sanitize para permitir caracteres especiales
+            'smtp_password' => wp_unslash($_POST['smtp_password']), // wp_unslash evita slashes extra, permite caracteres especiales
             'smtp_encriptacion' => sanitize_key($_POST['smtp_encriptacion']),
         ];
 

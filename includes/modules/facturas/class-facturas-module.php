@@ -2163,8 +2163,22 @@ class Flavor_Platform_Facturas_Module extends Flavor_Platform_Module_Base {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        $filtros = $_POST['filtros'] ?? [];
-        $resultado = $this->listar_facturas($filtros);
+        $filtros_raw = isset($_POST['filtros']) && is_array($_POST['filtros']) ? $_POST['filtros'] : [];
+        $filtros_sanitizados = [
+            'estado'            => isset($filtros_raw['estado']) ? sanitize_text_field(wp_unslash($filtros_raw['estado'])) : '',
+            'cliente_id'        => isset($filtros_raw['cliente_id']) ? absint($filtros_raw['cliente_id']) : 0,
+            'empresa_id'        => isset($filtros_raw['empresa_id']) ? absint($filtros_raw['empresa_id']) : null,
+            'desde'             => isset($filtros_raw['desde']) ? sanitize_text_field(wp_unslash($filtros_raw['desde'])) : '',
+            'hasta'             => isset($filtros_raw['hasta']) ? sanitize_text_field(wp_unslash($filtros_raw['hasta'])) : '',
+            'busqueda'          => isset($filtros_raw['busqueda']) ? sanitize_text_field(wp_unslash($filtros_raw['busqueda'])) : '',
+            'serie'             => isset($filtros_raw['serie']) ? sanitize_text_field(wp_unslash($filtros_raw['serie'])) : '',
+            'pagina'            => isset($filtros_raw['pagina']) ? absint($filtros_raw['pagina']) : 1,
+            'por_pagina'        => isset($filtros_raw['por_pagina']) ? absint($filtros_raw['por_pagina']) : 20,
+            'orderby'           => isset($filtros_raw['orderby']) ? sanitize_key($filtros_raw['orderby']) : 'fecha_emision',
+            'order'             => isset($filtros_raw['order']) && in_array(strtoupper($filtros_raw['order']), ['ASC', 'DESC'], true) ? strtoupper($filtros_raw['order']) : 'DESC',
+            'filtrar_por_empresa' => isset($filtros_raw['filtrar_por_empresa']) ? (bool) $filtros_raw['filtrar_por_empresa'] : true,
+        ];
+        $resultado = $this->listar_facturas($filtros_sanitizados);
 
         wp_send_json_success($resultado);
     }
@@ -2179,16 +2193,34 @@ class Flavor_Platform_Facturas_Module extends Flavor_Platform_Module_Base {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
+        // Sanitizar líneas de factura
+        $lineas_raw = isset($_POST['lineas']) && is_array($_POST['lineas']) ? $_POST['lineas'] : [];
+        $lineas_sanitizadas = [];
+        foreach ($lineas_raw as $linea) {
+            if (!is_array($linea)) {
+                continue;
+            }
+            $lineas_sanitizadas[] = [
+                'concepto'             => isset($linea['concepto']) ? sanitize_text_field(wp_unslash($linea['concepto'])) : '',
+                'descripcion'          => isset($linea['descripcion']) ? sanitize_textarea_field(wp_unslash($linea['descripcion'])) : '',
+                'cantidad'             => isset($linea['cantidad']) ? floatval($linea['cantidad']) : 1,
+                'precio_unitario'      => isset($linea['precio_unitario']) ? floatval($linea['precio_unitario']) : (isset($linea['precio']) ? floatval($linea['precio']) : 0),
+                'descuento_porcentaje' => isset($linea['descuento_porcentaje']) ? floatval($linea['descuento_porcentaje']) : (isset($linea['descuento']) ? floatval($linea['descuento']) : 0),
+                'iva_porcentaje'       => isset($linea['iva_porcentaje']) ? floatval($linea['iva_porcentaje']) : (isset($linea['iva']) ? floatval($linea['iva']) : 21),
+                'retencion_porcentaje' => isset($linea['retencion_porcentaje']) ? floatval($linea['retencion_porcentaje']) : 0,
+            ];
+        }
+
         $datos = [
-            'cliente_nombre' => sanitize_text_field($_POST['cliente_nombre'] ?? ''),
-            'cliente_nif' => sanitize_text_field($_POST['cliente_nif'] ?? ''),
-            'cliente_direccion' => sanitize_textarea_field($_POST['cliente_direccion'] ?? ''),
+            'cliente_nombre' => sanitize_text_field(wp_unslash($_POST['cliente_nombre'] ?? '')),
+            'cliente_nif' => sanitize_text_field(wp_unslash($_POST['cliente_nif'] ?? '')),
+            'cliente_direccion' => sanitize_textarea_field(wp_unslash($_POST['cliente_direccion'] ?? '')),
             'cliente_email' => sanitize_email($_POST['cliente_email'] ?? ''),
-            'fecha_emision' => sanitize_text_field($_POST['fecha_emision'] ?? ''),
-            'fecha_vencimiento' => sanitize_text_field($_POST['fecha_vencimiento'] ?? ''),
-            'lineas' => $_POST['lineas'] ?? [],
-            'observaciones' => sanitize_textarea_field($_POST['observaciones'] ?? ''),
-            'metodo_pago' => sanitize_text_field($_POST['metodo_pago'] ?? 'transferencia'),
+            'fecha_emision' => sanitize_text_field(wp_unslash($_POST['fecha_emision'] ?? '')),
+            'fecha_vencimiento' => sanitize_text_field(wp_unslash($_POST['fecha_vencimiento'] ?? '')),
+            'lineas' => $lineas_sanitizadas,
+            'observaciones' => sanitize_textarea_field(wp_unslash($_POST['observaciones'] ?? '')),
+            'metodo_pago' => sanitize_text_field(wp_unslash($_POST['metodo_pago'] ?? 'transferencia')),
         ];
 
         $resultado = $this->crear_factura($datos);

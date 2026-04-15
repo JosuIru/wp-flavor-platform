@@ -600,9 +600,12 @@ class Flavor_GC_Export {
             wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        $tipo = sanitize_text_field($_POST['tipo'] ?? '');
-        $formato = sanitize_text_field($_POST['formato'] ?? 'excel');
-        $params = $_POST['params'] ?? [];
+        $tipo = sanitize_text_field(wp_unslash($_POST['tipo'] ?? ''));
+        $formato = sanitize_text_field(wp_unslash($_POST['formato'] ?? 'excel'));
+
+        // Sanitizar params: asegurar que es array y sanitizar cada elemento
+        $params_raw = isset($_POST['params']) && is_array($_POST['params']) ? $_POST['params'] : [];
+        $params = array_map('sanitize_text_field', array_map('wp_unslash', $params_raw));
 
         $url_params = [
             'action' => 'gc_exportar_' . $tipo,
@@ -611,7 +614,8 @@ class Flavor_GC_Export {
         ];
 
         foreach ($params as $key => $value) {
-            $url_params[$key] = sanitize_text_field($value);
+            // Las claves también deben sanitizarse
+            $url_params[sanitize_key($key)] = $value;
         }
 
         $url = add_query_arg($url_params, admin_url('admin-post.php'));
