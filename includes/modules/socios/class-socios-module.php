@@ -1833,7 +1833,7 @@ KNOWLEDGE;
 
         $action = sanitize_text_field($_GET['socio_action']);
         $socio_id = absint($_GET['socio_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
 
         if (!wp_verify_nonce($nonce, 'socios_estado_' . $socio_id)) {
             echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
@@ -1997,7 +1997,7 @@ KNOWLEDGE;
 
         $action = sanitize_text_field($_GET['cuota_action']);
         $cuota_id = absint($_GET['cuota_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
 
         if (!wp_verify_nonce($nonce, 'socios_cuota_' . $cuota_id)) {
             echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';

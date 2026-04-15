@@ -841,7 +841,7 @@ class Flavor_Platform_Facturas_Module extends Flavor_Platform_Module_Base {
 
         $accion = sanitize_text_field($_GET['factura_action']);
         $factura_id = absint($_GET['factura_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
 
         if (!$factura_id) {
             return;

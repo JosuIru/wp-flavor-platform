@@ -2172,11 +2172,14 @@ class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_B
     }
 
     private function resolve_contextual_aviso($params = []) {
-        $aviso_id = intval(
+        $get_aviso_id = isset( $_GET['aviso_id'] ) ? absint( $_GET['aviso_id'] ) : 0;
+        $get_id       = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
+        $aviso_id = absint(
             $params['aviso_id']
             ?? $params['id']
-            ?? $_GET['aviso_id']
-            ?? $_GET['id']
+            ?? $get_aviso_id
+            ?? $get_id
             ?? 0
         );
 

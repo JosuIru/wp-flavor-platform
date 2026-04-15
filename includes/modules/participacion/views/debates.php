@@ -41,7 +41,7 @@ if (isset($_POST['accion_moderacion']) && wp_verify_nonce($_POST['_wpnonce'], 'p
 // Filtros
 $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
 $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
-$propuesta_filtro = isset($_GET['propuesta_id']) ? intval($_GET['propuesta_id']) : 0;
+$propuesta_filtro = isset($_GET['propuesta_id']) ? absint($_GET['propuesta_id']) : 0;
 
 // Construir query
 $where = ['1=1'];

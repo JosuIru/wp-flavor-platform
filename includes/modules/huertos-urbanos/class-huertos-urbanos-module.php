@@ -2726,7 +2726,7 @@ class Flavor_Platform_Huertos_Urbanos_Module extends Flavor_Platform_Module_Base
         $huerto_id = intval(
             $params['huerto_id']
             ?? $params['entity_id']
-            ?? ($_GET['huerto_id'] ?? 0)
+            ?? absint($_GET['huerto_id'] ?? 0)
         );
 
         if ($huerto_id <= 0) {
@@ -3380,22 +3380,22 @@ KNOWLEDGE;
     }
 
     public function render_tab_foro(): string {
-        $result = $this->action_foro_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        $result = $this->action_foro_huerto(['huerto_id' => absint($_GET['huerto_id'] ?? 0)]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_chat(): string {
-        $result = $this->action_chat_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        $result = $this->action_chat_huerto(['huerto_id' => absint($_GET['huerto_id'] ?? 0)]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_multimedia(): string {
-        $result = $this->action_multimedia_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        $result = $this->action_multimedia_huerto(['huerto_id' => absint($_GET['huerto_id'] ?? 0)]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_red_social(): string {
-        $result = $this->action_red_social_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        $result = $this->action_red_social_huerto(['huerto_id' => absint($_GET['huerto_id'] ?? 0)]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 }

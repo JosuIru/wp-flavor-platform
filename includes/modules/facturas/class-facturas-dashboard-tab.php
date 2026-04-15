@@ -144,20 +144,25 @@ class Flavor_Facturas_Dashboard_Tab {
         </div>
 
         <!-- Filtros -->
+        <?php
+        $buscar_filtro = sanitize_text_field($_GET['buscar'] ?? '');
+        $estado_filtro = sanitize_text_field($_GET['estado'] ?? '');
+        $mes_filtro = sanitize_text_field($_GET['mes'] ?? '');
+        ?>
         <div class="facturas-filtros">
             <form method="get" class="form-filtros">
                 <input type="hidden" name="tab" value="facturas">
                 <input type="text" name="buscar" placeholder="Buscar factura..."
-                       value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
+                       value="<?php echo esc_attr($buscar_filtro); ?>">
                 <select name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="borrador" <?php selected($_GET['estado'] ?? '', 'borrador'); ?>>Borrador</option>
-                    <option value="enviada" <?php selected($_GET['estado'] ?? '', 'enviada'); ?>>Enviada</option>
-                    <option value="pagada" <?php selected($_GET['estado'] ?? '', 'pagada'); ?>>Pagada</option>
-                    <option value="vencida" <?php selected($_GET['estado'] ?? '', 'vencida'); ?>>Vencida</option>
-                    <option value="anulada" <?php selected($_GET['estado'] ?? '', 'anulada'); ?>>Anulada</option>
+                    <option value="borrador" <?php selected($estado_filtro, 'borrador'); ?>>Borrador</option>
+                    <option value="enviada" <?php selected($estado_filtro, 'enviada'); ?>>Enviada</option>
+                    <option value="pagada" <?php selected($estado_filtro, 'pagada'); ?>>Pagada</option>
+                    <option value="vencida" <?php selected($estado_filtro, 'vencida'); ?>>Vencida</option>
+                    <option value="anulada" <?php selected($estado_filtro, 'anulada'); ?>>Anulada</option>
                 </select>
-                <input type="month" name="mes" value="<?php echo esc_attr($_GET['mes'] ?? ''); ?>">
+                <input type="month" name="mes" value="<?php echo esc_attr($mes_filtro); ?>">
                 <button type="submit" class="flavor-btn">Filtrar</button>
             </form>
         </div>

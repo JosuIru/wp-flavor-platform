@@ -856,9 +856,9 @@ class Flavor_Platform_Tramites_Module extends Flavor_Platform_Module_Base {
             return;
         }
 
-        $accion = sanitize_text_field($_GET['tramite_action']);
+        $accion = sanitize_text_field(wp_unslash($_GET['tramite_action']));
         $expediente_id = absint($_GET['expediente_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
 
         if (!$expediente_id) {
             return;
@@ -968,9 +968,9 @@ class Flavor_Platform_Tramites_Module extends Flavor_Platform_Module_Base {
             return;
         }
 
-        $accion = sanitize_text_field($_GET['tipo_action']);
+        $accion = sanitize_text_field(wp_unslash($_GET['tipo_action']));
         $tipo_id = absint($_GET['tipo_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
 
         if (!$tipo_id) {
             return;

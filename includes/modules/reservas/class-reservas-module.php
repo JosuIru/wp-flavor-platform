@@ -1376,7 +1376,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
         if (isset($_GET['cancelar_reserva']) && isset($_GET['_wpnonce'])) {
             $identificador_reserva = absint($_GET['cancelar_reserva']);
 
-            if (wp_verify_nonce($_GET['_wpnonce'], 'cancelar_reserva_' . $identificador_reserva)) {
+            if (wp_verify_nonce(sanitize_text_field($_GET['_wpnonce']), 'cancelar_reserva_' . $identificador_reserva)) {
                 $resultado_cancelacion = $this->action_cancelar_reserva(['reserva_id' => $identificador_reserva]);
 
                 if ($resultado_cancelacion['success']) {
@@ -2099,7 +2099,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
 
         $action = sanitize_text_field($_GET['reserva_action']);
         $reserva_id = absint($_GET['reserva_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
 
         if (!wp_verify_nonce($nonce, 'reservas_estado_' . $reserva_id)) {
             echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';

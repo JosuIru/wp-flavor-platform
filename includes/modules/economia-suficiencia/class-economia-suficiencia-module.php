@@ -1184,10 +1184,12 @@ class Flavor_Platform_Economia_Suficiencia_Module extends Flavor_Platform_Module
      * @return WP_Post|null
      */
     private function resolve_contextual_recurso($params = []) {
+        $get_recurso_id = isset($_GET['recurso_id']) ? absint($_GET['recurso_id']) : 0;
+
         $recurso_id = absint(
             $params['recurso_id']
             ?? $params['id']
-            ?? $_GET['recurso_id']
+            ?? ($get_recurso_id ?: null)
             ?? 0
         );
 

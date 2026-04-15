@@ -158,14 +158,14 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <form class="flavor-filtros-form" method="get">
                     <div class="flavor-filtro-grupo">
                         <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar saber...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
-                               value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
+                               value="<?php echo esc_attr(sanitize_text_field($_GET['buscar'] ?? '')); ?>">
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="categoria">
                             <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
-                                    <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
+                                    <?php selected(sanitize_text_field($_GET['categoria'] ?? ''), $cat['slug']); ?>>
                                 <?php echo esc_html($cat['nombre']); ?>
                             </option>
                             <?php endforeach; ?>

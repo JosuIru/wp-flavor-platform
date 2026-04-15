@@ -15,7 +15,7 @@ $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
 
 // Obtener podcasts para selector
 $podcasts = $wpdb->get_results("SELECT id, titulo FROM $tabla_podcasts ORDER BY titulo");
-$podcast_seleccionado = isset($_GET['podcast_id']) ? intval($_GET['podcast_id']) : 0;
+$podcast_seleccionado = isset($_GET['podcast_id']) ? absint($_GET['podcast_id']) : 0;
 
 // Obtener suscriptores con filtro
 $where_clauses = ['1=1'];

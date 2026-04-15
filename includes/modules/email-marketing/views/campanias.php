@@ -225,17 +225,18 @@ $campanias = $wpdb->get_results(
         </a>
     </h1>
 
+    <?php $estado_filtro = sanitize_text_field($_GET['estado'] ?? ''); ?>
     <div class="em-tabs-filter">
-        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias'); ?>" class="<?php echo empty($_GET['estado']) ? 'active' : ''; ?>">
+        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias'); ?>" class="<?php echo empty($estado_filtro) ? 'active' : ''; ?>">
             <?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=borrador'); ?>" class="<?php echo ($_GET['estado'] ?? '') === 'borrador' ? 'active' : ''; ?>">
+        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=borrador'); ?>" class="<?php echo $estado_filtro === 'borrador' ? 'active' : ''; ?>">
             <?php _e('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=programada'); ?>" class="<?php echo ($_GET['estado'] ?? '') === 'programada' ? 'active' : ''; ?>">
+        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=programada'); ?>" class="<?php echo $estado_filtro === 'programada' ? 'active' : ''; ?>">
             <?php _e('Programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=enviada'); ?>" class="<?php echo ($_GET['estado'] ?? '') === 'enviada' ? 'active' : ''; ?>">
+        <a href="<?php echo admin_url('admin.php?page=flavor-em-campanias&estado=enviada'); ?>" class="<?php echo $estado_filtro === 'enviada' ? 'active' : ''; ?>">
             <?php _e('Enviadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>

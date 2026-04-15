@@ -1391,7 +1391,7 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
         $oferta_id = intval(
             $params['oferta_id']
             ?? $params['entity_id']
-            ?? ($_GET['oferta_id'] ?? 0)
+            ?? absint($_GET['oferta_id'] ?? 0)
         );
 
         if ($oferta_id <= 0) {
@@ -1645,22 +1645,26 @@ class Flavor_Platform_Trabajo_Digno_Module extends Flavor_Platform_Module_Base {
     }
 
     public function render_tab_foro(): string {
-        $result = $this->action_foro_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        $oferta_id = absint($_GET['oferta_id'] ?? 0);
+        $result = $this->action_foro_oferta(['oferta_id' => $oferta_id]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_chat(): string {
-        $result = $this->action_chat_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        $oferta_id = absint($_GET['oferta_id'] ?? 0);
+        $result = $this->action_chat_oferta(['oferta_id' => $oferta_id]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_multimedia(): string {
-        $result = $this->action_multimedia_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        $oferta_id = absint($_GET['oferta_id'] ?? 0);
+        $result = $this->action_multimedia_oferta(['oferta_id' => $oferta_id]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
     public function render_tab_red_social(): string {
-        $result = $this->action_red_social_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        $oferta_id = absint($_GET['oferta_id'] ?? 0);
+        $result = $this->action_red_social_oferta(['oferta_id' => $oferta_id]);
         return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 

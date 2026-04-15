@@ -978,7 +978,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
 
         $accion = sanitize_text_field($_GET['incidencia_action']);
         $incidencia_id = absint($_GET['incidencia_id']);
-        $nonce = $_GET['_wpnonce'] ?? '';
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
 
         if (!$incidencia_id) {
             return;
@@ -2888,11 +2888,12 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
             return null;
         }
 
+        $incidencia_id_from_get = absint($_GET['incidencia_id'] ?? 0) ?: absint($_GET['entity_id'] ?? 0) ?: absint($_GET['item_id'] ?? 0);
         $incidencia_id = absint(
             $parametros['incidencia_id']
             ?? $parametros['entity_id']
             ?? $parametros['item_id']
-            ?? ($_GET['incidencia_id'] ?? $_GET['entity_id'] ?? $_GET['item_id'] ?? 0)
+            ?? $incidencia_id_from_get
         );
 
         if ($incidencia_id <= 0) {
@@ -3701,7 +3702,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            $ticket_id = isset($_GET['ticket_id']) ? intval($_GET['ticket_id']) : 0;
+            $ticket_id = absint($_GET['ticket_id'] ?? 0);
             echo '<div class="wrap">';
             echo '<h1>' . esc_html__('Detalle de Ticket', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
             if ($ticket_id > 0) {

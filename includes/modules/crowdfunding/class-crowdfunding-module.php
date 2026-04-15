@@ -899,7 +899,8 @@ class Flavor_Platform_Crowdfunding_Module extends Flavor_Platform_Module_Base {
 
         $identificador = $atributos['id'] ?: $atributos['slug'];
         if (empty($identificador)) {
-            $identificador = get_query_var('proyecto') ?: ($_GET['proyecto'] ?? '');
+            $proyecto_get = isset($_GET['proyecto']) ? sanitize_text_field(wp_unslash($_GET['proyecto'])) : '';
+            $identificador = get_query_var('proyecto') ?: $proyecto_get;
         }
 
         if (empty($identificador)) {

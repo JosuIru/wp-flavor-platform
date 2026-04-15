@@ -1346,11 +1346,14 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      * @return object|null
      */
     private function resolve_contextual_libro(array $params = []) {
+        $get_libro_id = isset($_GET['libro_id']) ? absint($_GET['libro_id']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $libro_id = absint(
             $params['libro_id']
             ?? $params['id']
-            ?? $_GET['libro_id']
-            ?? $_GET['id']
+            ?? ($get_libro_id ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

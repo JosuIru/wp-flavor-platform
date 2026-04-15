@@ -77,7 +77,7 @@ if (isset($_POST['accion_presupuesto']) && wp_verify_nonce($_POST['_wpnonce'], '
 }
 
 // Filtro de edición
-$edicion_id = isset($_GET['edicion_id']) ? intval($_GET['edicion_id']) : 0;
+$edicion_id = isset($_GET['edicion_id']) ? absint($_GET['edicion_id']) : 0;
 
 // Obtener ediciones disponibles
 $ediciones = $wpdb->get_results("SELECT id, nombre, anio, presupuesto_total, fase, estado FROM {$tabla_ediciones} ORDER BY anio DESC, id DESC");

@@ -2180,11 +2180,14 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     private function resolve_contextual_programa($params = []) {
         global $wpdb;
 
+        $get_programa_id = isset($_GET['programa_id']) ? absint($_GET['programa_id']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $programa_id = absint(
             $params['programa_id']
             ?? $params['id']
-            ?? $_GET['programa_id']
-            ?? $_GET['id']
+            ?? ($get_programa_id ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

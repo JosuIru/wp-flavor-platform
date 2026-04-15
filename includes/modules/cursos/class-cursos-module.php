@@ -760,11 +760,15 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
     private function resolve_contextual_curso(array $params = []): ?array {
         global $wpdb;
 
+        $get_curso_id = isset($_GET['curso_id']) ? absint($_GET['curso_id']) : 0;
+        $get_curso = isset($_GET['curso']) ? absint($_GET['curso']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $curso_id = absint(
             $params['curso_id']
-            ?? $_GET['curso_id']
-            ?? $_GET['curso']
-            ?? $_GET['id']
+            ?? ($get_curso_id ?: null)
+            ?? ($get_curso ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

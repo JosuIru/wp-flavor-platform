@@ -47,7 +47,7 @@ if (isset($_POST['accion_proyecto']) && wp_verify_nonce($_POST['_wpnonce'], 'pp_
 }
 
 // Filtros
-$edicion_id = isset($_GET['edicion_id']) ? intval($_GET['edicion_id']) : 0;
+$edicion_id = isset($_GET['edicion_id']) ? absint($_GET['edicion_id']) : 0;
 $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
 $busqueda = isset($_GET['buscar']) ? sanitize_text_field($_GET['buscar']) : '';
 

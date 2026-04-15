@@ -1085,11 +1085,14 @@ class Flavor_Platform_Documentacion_Legal_Module extends Flavor_Platform_Module_
     private function resolve_contextual_documento(array $params = []): ?array {
         global $wpdb;
 
+        $get_documento_id = isset( $_GET['documento_id'] ) ? absint( $_GET['documento_id'] ) : 0;
+        $get_id           = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
         $documento_id = absint(
             $params['documento_id']
             ?? $params['id']
-            ?? $_GET['documento_id']
-            ?? $_GET['id']
+            ?? $get_documento_id
+            ?? $get_id
             ?? 0
         );
 

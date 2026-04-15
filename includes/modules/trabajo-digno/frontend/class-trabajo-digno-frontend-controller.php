@@ -152,18 +152,23 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                 <?php endif; ?>
             </div>
 
+            <?php
+            $buscar_sanitizado = sanitize_text_field($_GET['buscar'] ?? '');
+            $categoria_sanitizada = sanitize_text_field($_GET['categoria'] ?? '');
+            $tipo_sanitizado = sanitize_text_field($_GET['tipo'] ?? '');
+            ?>
             <div class="flavor-trabajo-filtros">
                 <form class="flavor-filtros-form" method="get">
                     <div class="flavor-filtro-grupo">
                         <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar empleo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
-                               value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
+                               value="<?php echo esc_attr($buscar_sanitizado); ?>">
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="categoria">
                             <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
-                                    <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
+                                    <?php selected($categoria_sanitizada, $cat['slug']); ?>>
                                 <?php echo esc_html($cat['nombre']); ?>
                             </option>
                             <?php endforeach; ?>
@@ -174,7 +179,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                             <option value=""><?php _e('Tipo de contrato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($tipos as $tipo): ?>
                             <option value="<?php echo esc_attr($tipo['slug']); ?>"
-                                    <?php selected($_GET['tipo'] ?? '', $tipo['slug']); ?>>
+                                    <?php selected($tipo_sanitizado, $tipo['slug']); ?>>
                                 <?php echo esc_html($tipo['nombre']); ?>
                             </option>
                             <?php endforeach; ?>
@@ -260,7 +265,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function shortcode_oferta($atts) {
         $atts = shortcode_atts(['id' => 0], $atts);
-        $oferta_id = intval($atts['id']) ?: intval($_GET['oferta_id'] ?? 0);
+        $oferta_id = intval($atts['id']) ?: absint($_GET['oferta_id'] ?? 0);
 
         if (!$oferta_id) {
             return '<div class="flavor-error">' . __('Oferta no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';

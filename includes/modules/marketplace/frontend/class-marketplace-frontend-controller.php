@@ -346,8 +346,8 @@ class Flavor_Marketplace_Frontend_Controller {
         $anuncio_id = absint(
             $atts['id']
             ?: $atts['anuncio_id']
-            ?: ($_GET['anuncio_id'] ?? 0)
-            ?: ($_GET['id'] ?? 0)
+            ?: absint($_GET['anuncio_id'] ?? 0)
+            ?: absint($_GET['id'] ?? 0)
         );
 
         if (!$anuncio_id) {

@@ -1869,7 +1869,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     public function enqueue_admin_assets($hook) {
         global $post_type;
 
-        if ($post_type === 'flavor_receta' || (isset($_GET['page']) && strpos($_GET['page'], 'recetas') !== false)) {
+        if ($post_type === 'flavor_receta' || (isset($_GET['page']) && strpos(sanitize_text_field($_GET['page']), 'recetas') !== false)) {
             wp_enqueue_style('dashicons');
         }
     }
@@ -2023,11 +2023,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      * @return WP_Post|null
      */
     private function resolve_contextual_receta(array $params = []) {
+        $get_receta_id = isset($_GET['receta_id']) ? absint($_GET['receta_id']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $receta_id = absint(
             $params['receta_id']
             ?? $params['id']
-            ?? $_GET['receta_id']
-            ?? $_GET['id']
+            ?? ($get_receta_id ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

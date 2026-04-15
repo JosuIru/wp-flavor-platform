@@ -613,11 +613,13 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     private function resolve_contextual_taller(array $params = []): ?array {
         global $wpdb;
 
+        $taller_id_from_get = isset($_GET['taller_id']) ? absint($_GET['taller_id']) : 0;
+        $id_from_get = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $taller_id = absint(
             $params['taller_id']
-            ?? $_GET['taller_id']
-            ?? $_GET['id']
-            ?? 0
+            ?? ($taller_id_from_get ?: $id_from_get)
+            ?: 0
         );
 
         if (!$taller_id) {
@@ -3410,7 +3412,7 @@ KNOWLEDGE;
     private function handle_admin_actions() {
         if (!empty($_GET['taller_action']) && !empty($_GET['taller_id'])) {
             $taller_id = absint($_GET['taller_id']);
-            $nonce = $_GET['_wpnonce'] ?? '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
             if (!$taller_id || !wp_verify_nonce($nonce, 'talleres_admin_' . $taller_id)) {
                 echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;
@@ -3426,7 +3428,7 @@ KNOWLEDGE;
 
         if (!empty($_GET['inscripcion_action']) && !empty($_GET['inscripcion_id'])) {
             $inscripcion_id = absint($_GET['inscripcion_id']);
-            $nonce = $_GET['_wpnonce'] ?? '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
             if (!$inscripcion_id || !wp_verify_nonce($nonce, 'talleres_inscripcion_' . $inscripcion_id)) {
                 echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;

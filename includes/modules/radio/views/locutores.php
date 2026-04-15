@@ -148,7 +148,7 @@ function calcular_rating_locutor($audiencia_promedio) {
 // PARÁMETROS DE FILTRADO Y PAGINACIÓN
 // =====================================================
 
-$pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+$pagina_actual = isset($_GET['paged']) ? max(1, absint($_GET['paged'])) : 1;
 $items_por_pagina = 12;
 $offset = ($pagina_actual - 1) * $items_por_pagina;
 
@@ -444,7 +444,7 @@ foreach ($datos_distribucion as $item) {
                             <span class="dashicons dashicons-search"></span>
                             <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'flavor-radio') . '&tab=locutores')); ?>" class="button">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=' . sanitize_text_field($_GET['page'] ?? 'flavor-radio') . '&tab=locutores')); ?>" class="button">
                             <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>

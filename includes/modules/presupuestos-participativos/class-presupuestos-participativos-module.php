@@ -2350,12 +2350,14 @@ class Flavor_Platform_Presupuestos_Participativos_Module extends Flavor_Platform
     private function resolve_contextual_proyecto($params = []) {
         global $wpdb;
 
+        $proyecto_id_from_get = isset($_GET['proyecto_id']) ? absint($_GET['proyecto_id']) : 0;
+        $id_from_get = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $proyecto_id = absint(
             $params['proyecto_id']
             ?? $params['id']
-            ?? $_GET['proyecto_id']
-            ?? $_GET['id']
-            ?? 0
+            ?? ($proyecto_id_from_get ?: $id_from_get)
+            ?: 0
         );
 
         if (!$proyecto_id) {

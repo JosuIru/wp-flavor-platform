@@ -134,22 +134,27 @@ class Flavor_Clientes_Dashboard_Tab {
 
         <!-- Filtros y búsqueda -->
         <div class="crm-filtros">
+            <?php
+            $filtro_buscar = isset($_GET['buscar']) ? sanitize_text_field($_GET['buscar']) : '';
+            $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+            $filtro_tipo = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+            ?>
             <form method="get" class="form-filtros">
                 <input type="hidden" name="tab" value="clientes">
                 <input type="text" name="buscar" placeholder="Buscar cliente..."
-                       value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
+                       value="<?php echo esc_attr($filtro_buscar); ?>">
                 <select name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="activo" <?php selected($_GET['estado'] ?? '', 'activo'); ?>>Activos</option>
-                    <option value="potencial" <?php selected($_GET['estado'] ?? '', 'potencial'); ?>>Potenciales</option>
-                    <option value="inactivo" <?php selected($_GET['estado'] ?? '', 'inactivo'); ?>>Inactivos</option>
-                    <option value="perdido" <?php selected($_GET['estado'] ?? '', 'perdido'); ?>>Perdidos</option>
+                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>>Activos</option>
+                    <option value="potencial" <?php selected($filtro_estado, 'potencial'); ?>>Potenciales</option>
+                    <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>>Inactivos</option>
+                    <option value="perdido" <?php selected($filtro_estado, 'perdido'); ?>>Perdidos</option>
                 </select>
                 <select name="tipo">
                     <option value="">Todos los tipos</option>
-                    <option value="particular" <?php selected($_GET['tipo'] ?? '', 'particular'); ?>>Particular</option>
-                    <option value="empresa" <?php selected($_GET['tipo'] ?? '', 'empresa'); ?>>Empresa</option>
-                    <option value="autonomo" <?php selected($_GET['tipo'] ?? '', 'autonomo'); ?>>Autónomo</option>
+                    <option value="particular" <?php selected($filtro_tipo, 'particular'); ?>>Particular</option>
+                    <option value="empresa" <?php selected($filtro_tipo, 'empresa'); ?>>Empresa</option>
+                    <option value="autonomo" <?php selected($filtro_tipo, 'autonomo'); ?>>Autónomo</option>
                 </select>
                 <button type="submit" class="flavor-btn">Filtrar</button>
             </form>

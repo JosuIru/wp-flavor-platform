@@ -17,7 +17,7 @@ $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
 $podcasts_disponibles = $wpdb->get_results("SELECT id, titulo FROM $tabla_podcasts ORDER BY titulo");
 
 // Filtros
-$podcast_seleccionado = isset($_GET['podcast_id']) ? intval($_GET['podcast_id']) : 0;
+$podcast_seleccionado = isset($_GET['podcast_id']) ? absint($_GET['podcast_id']) : 0;
 $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
 
 // Construir consulta con filtros

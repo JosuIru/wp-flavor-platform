@@ -75,7 +75,7 @@ if (Flavor_Platform_Helpers::tabla_existe($tabla_comentarios)) {
 }
 
 // Obtener propuestas del usuario con paginación
-$pagina_actual = max(1, intval($_GET['pag'] ?? 1));
+$pagina_actual = max(1, absint($_GET['pag'] ?? 1));
 $elementos_por_pagina = 10;
 $offset = ($pagina_actual - 1) * $elementos_por_pagina;
 

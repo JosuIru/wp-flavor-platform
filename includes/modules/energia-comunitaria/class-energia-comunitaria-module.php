@@ -3482,9 +3482,9 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
             $params['energia_comunidad_id']
                 ?? $params['comunidad_id']
                 ?? $params['id']
-                ?? $_GET['energia_comunidad_id']
-                ?? $_GET['comunidad_id']
-                ?? $_GET['id']
+                ?? absint($_GET['energia_comunidad_id'] ?? 0)
+                ?? absint($_GET['comunidad_id'] ?? 0)
+                ?? absint($_GET['id'] ?? 0)
                 ?? 0
         );
 

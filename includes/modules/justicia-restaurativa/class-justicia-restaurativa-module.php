@@ -1185,11 +1185,11 @@ KNOWLEDGE;
      * @return WP_Post|null
      */
     private function resolve_contextual_proceso($params = []) {
+        $proceso_id_from_get = absint($_GET['proceso_id'] ?? 0) ?: absint($_GET['proceso'] ?? 0);
         $proceso_id = absint(
             $params['proceso_id']
             ?? $params['id']
-            ?? $_GET['proceso_id']
-            ?? $_GET['proceso']
+            ?? $proceso_id_from_get
             ?? 0
         );
 

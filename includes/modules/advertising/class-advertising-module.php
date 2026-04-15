@@ -849,11 +849,14 @@ class Flavor_Platform_Advertising_Module extends Flavor_Platform_Module_Base {
     }
 
     private function resolve_contextual_anuncio($params = []) {
+        $get_ad_id = isset( $_GET['ad_id'] ) ? absint( $_GET['ad_id'] ) : 0;
+        $get_id    = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
         $ad_id = absint(
             $params['ad_id']
             ?? $params['id']
-            ?? $_GET['ad_id']
-            ?? $_GET['id']
+            ?? $get_ad_id
+            ?? $get_id
             ?? 0
         );
 

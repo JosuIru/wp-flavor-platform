@@ -1360,11 +1360,14 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     }
 
     private function resolve_contextual_saber($params = []) {
+        $get_saber_id = isset($_GET['saber_id']) ? absint($_GET['saber_id']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $saber_id = absint(
             $params['saber_id']
             ?? $params['id']
-            ?? $_GET['saber_id']
-            ?? $_GET['id']
+            ?? ($get_saber_id ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

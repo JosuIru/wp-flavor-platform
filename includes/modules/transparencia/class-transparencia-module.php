@@ -1613,7 +1613,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         }
 
         global $wpdb;
-        $documento_id = (int) ($_GET['documento_id'] ?? 0);
+        $documento_id = isset($_GET['documento_id']) ? absint($_GET['documento_id']) : 0;
         $tabla_documentos = $this->prefijo_tabla . 'documentos_publicos';
 
         $documento = $wpdb->get_row($wpdb->prepare(
@@ -2454,11 +2454,14 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
     }
 
     private function resolve_contextual_documento($parametros = []) {
+        $get_documento_id = isset($_GET['documento_id']) ? absint($_GET['documento_id']) : 0;
+        $get_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+
         $documento_id = absint(
             $parametros['documento_id']
             ?? $parametros['id']
-            ?? $_GET['documento_id']
-            ?? $_GET['id']
+            ?? ($get_documento_id ?: null)
+            ?? ($get_id ?: null)
             ?? 0
         );
 

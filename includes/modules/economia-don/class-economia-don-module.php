@@ -1459,11 +1459,14 @@ KNOWLEDGE;
     private function resolve_contextual_don($params = []) {
         global $wpdb;
 
+        $get_don_id = isset( $_GET['don_id'] ) ? absint( $_GET['don_id'] ) : 0;
+        $get_id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
         $don_id = absint(
             $params['don_id']
             ?? $params['id']
-            ?? $_GET['don_id']
-            ?? $_GET['id']
+            ?? $get_don_id
+            ?? $get_id
             ?? 0
         );
 

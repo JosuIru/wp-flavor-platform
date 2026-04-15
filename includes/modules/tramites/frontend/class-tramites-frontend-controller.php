@@ -191,8 +191,9 @@ class Flavor_Tramites_Frontend_Controller {
                         <select name="categoria">
                             <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $cat): ?>
+                            <?php $categoria_seleccionada = isset($_GET['categoria']) ? sanitize_text_field(wp_unslash($_GET['categoria'])) : ''; ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
-                                    <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
+                                    <?php selected($categoria_seleccionada, $cat['slug']); ?>>
                                 <?php echo esc_html($cat['nombre']); ?>
                             </option>
                             <?php endforeach; ?>
@@ -1042,10 +1043,12 @@ class Flavor_Tramites_Frontend_Controller {
                 </div>
             </form>
 
-            <?php if (!empty($_GET['q'])): ?>
+            <?php
+            $termino_busqueda = isset($_GET['q']) ? sanitize_text_field(wp_unslash($_GET['q'])) : '';
+            if (!empty($termino_busqueda)): ?>
             <div class="flavor-resultados-busqueda" id="resultados-tramites">
                 <?php
-                $resultados = $this->buscar_tramites($_GET['q']);
+                $resultados = $this->buscar_tramites($termino_busqueda);
                 if (empty($resultados)):
                 ?>
                 <div class="flavor-no-resultados">

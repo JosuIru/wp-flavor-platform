@@ -531,11 +531,15 @@ class Flavor_Platform_Banco_Tiempo_Module extends Flavor_Platform_Module_Base {
             return null;
         }
 
+        $get_servicio_id = isset( $_GET['servicio_id'] ) ? absint( $_GET['servicio_id'] ) : 0;
+        $get_id          = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
         $servicio_id = absint(
             $params['servicio_id']
             ?? $params['id']
-            ?? ($_GET['servicio_id'] ?? 0)
-            ?? ($_GET['id'] ?? 0)
+            ?? $get_servicio_id
+            ?? $get_id
+            ?? 0
         );
 
         if ($servicio_id <= 0) {

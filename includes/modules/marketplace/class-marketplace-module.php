@@ -959,12 +959,11 @@ class Flavor_Platform_Marketplace_Module extends Flavor_Platform_Module_Base {
     private function resolve_contextual_anuncio(array $params = []): ?array {
         global $wpdb;
 
+        $anuncio_id_from_get = absint($_GET['anuncio_id'] ?? 0) ?: absint($_GET['id'] ?? 0);
         $anuncio_id = absint(
             $params['anuncio_id']
             ?? $params['id']
-            ?? $_GET['anuncio_id']
-            ?? $_GET['id']
-            ?? 0
+            ?? $anuncio_id_from_get
         );
 
         if (!$anuncio_id) {
@@ -1982,7 +1981,7 @@ KNOWLEDGE;
         $categorias = $wpdb->get_results("SELECT id, nombre, icono FROM {$tabla_categorias} WHERE activa = 1 ORDER BY orden ASC");
 
         // Verificar si estamos editando
-        $editando_id = isset($_GET['editar']) ? absint($_GET['editar']) : 0;
+        $editando_id = absint($_GET['editar'] ?? 0);
         $anuncio_editar = null;
         if ($editando_id > 0) {
             $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
@@ -2243,7 +2242,7 @@ KNOWLEDGE;
      */
     public static function render_tab_detalle(): void {
         self::asegurar_frontend_controller();
-        $anuncio_id = absint($_GET['anuncio_id'] ?? $_GET['id'] ?? 0);
+        $anuncio_id = absint($_GET['anuncio_id'] ?? 0) ?: absint($_GET['id'] ?? 0);
         echo do_shortcode('[marketplace_detalle id="' . $anuncio_id . '"]');
     }
 

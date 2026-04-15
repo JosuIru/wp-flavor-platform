@@ -1118,7 +1118,7 @@ class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
             'id' => 0,
         ], $atts);
 
-        $propuesta_id = intval($atributos['id']) ?: intval($_GET['propuesta_id'] ?? 0);
+        $propuesta_id = absint($atributos['id']) ?: absint($_GET['propuesta_id'] ?? 0);
 
         if (!$propuesta_id) {
             return '<div class="alerta-participacion error">' . esc_html__('Propuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
@@ -2405,11 +2405,13 @@ class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
      * @return object|null
      */
     private function resolve_contextual_propuesta($params = []) {
+        $propuesta_id_from_get = isset($_GET['propuesta_id']) ? absint($_GET['propuesta_id']) : 0;
+
         $propuesta_id = absint(
             $params['propuesta_id']
             ?? $params['id']
-            ?? $_GET['propuesta_id']
-            ?? 0
+            ?? $propuesta_id_from_get
+            ?: 0
         );
 
         if (!$propuesta_id) {

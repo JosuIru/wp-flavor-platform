@@ -2408,11 +2408,14 @@ class Flavor_Platform_Podcast_Module extends Flavor_Platform_Module_Base {
      * @return object|null
      */
     private function resolve_contextual_serie(array $params = []) {
+        $get_serie_id = isset($_GET['serie_id']) ? absint($_GET['serie_id']) : 0;
+        $get_serie = isset($_GET['serie']) ? absint($_GET['serie']) : 0;
+
         $serie_id = absint(
             $params['serie_id']
             ?? $params['id']
-            ?? $_GET['serie_id']
-            ?? $_GET['serie']
+            ?? ($get_serie_id ?: null)
+            ?? ($get_serie ?: null)
             ?? 0
         );
 
@@ -3155,7 +3158,7 @@ KNOWLEDGE;
         $tabla_episodios = $this->tabla_episodios;
         $tabla_series = $this->tabla_series;
         $por_pagina = 12;
-        $pagina_actual = max(1, intval($_GET['pag'] ?? 1));
+        $pagina_actual = max(1, absint($_GET['pag'] ?? 1));
         $offset = ($pagina_actual - 1) * $por_pagina;
 
         // Obtener episodios recientes
@@ -3299,7 +3302,7 @@ KNOWLEDGE;
 
         $tabla_series = $this->tabla_series;
         $por_pagina = 12;
-        $pagina_actual = max(1, intval($_GET['pag'] ?? 1));
+        $pagina_actual = max(1, absint($_GET['pag'] ?? 1));
         $offset = ($pagina_actual - 1) * $por_pagina;
         $categoria_filtro = sanitize_text_field($_GET['categoria'] ?? '');
 

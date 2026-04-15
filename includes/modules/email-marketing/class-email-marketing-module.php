@@ -4022,7 +4022,8 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
      * Track de click
      */
     private function track_click() {
-        $data = base64_decode($_GET['em_click']);
+        $em_click_raw = sanitize_text_field($_GET['em_click'] ?? '');
+        $data = base64_decode($em_click_raw);
         $parts = explode('|', $data);
 
         if (count($parts) !== 2) {

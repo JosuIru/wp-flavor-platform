@@ -15,7 +15,7 @@ $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
 $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
 
 // Filtro de edición
-$edicion_id = isset($_GET['edicion_id']) ? intval($_GET['edicion_id']) : 0;
+$edicion_id = isset($_GET['edicion_id']) ? absint($_GET['edicion_id']) : 0;
 
 // Obtener ediciones disponibles
 $ediciones = $wpdb->get_results("SELECT id, nombre, anio, fase, estado, votos_por_ciudadano, fecha_inicio_votacion, fecha_fin_votacion FROM {$tabla_ediciones} ORDER BY anio DESC, id DESC");
