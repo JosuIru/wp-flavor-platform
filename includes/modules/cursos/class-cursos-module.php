@@ -151,6 +151,10 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_cursos_admin_cambiar_estado', [$this, 'ajax_admin_cambiar_estado']);
         add_action('wp_ajax_cursos_admin_exportar', [$this, 'ajax_admin_exportar']);
 
+        // AJAX handlers para la vista de admin (cursos.php)
+        add_action('wp_ajax_flavor_guardar_curso', [$this, 'ajax_flavor_guardar_curso']);
+        add_action('wp_ajax_flavor_get_curso', [$this, 'ajax_flavor_get_curso']);
+
         // WP Cron para recordatorios
         if (!wp_next_scheduled('cursos_enviar_recordatorios')) {
             wp_schedule_event(time(), 'daily', 'cursos_enviar_recordatorios');
@@ -2910,6 +2914,260 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/config.php';
         if (file_exists($views_path)) {
             include $views_path;
+        }
+    }
+
+    // =========================================================================
+    // AJAX HANDLERS PARA ADMIN (vista cursos.php)
+    // =========================================================================
+
+    /**
+     * AJAX: Obtener datos de un curso para edición
+     */
+    public function ajax_flavor_get_curso() {
+        // Verificar nonce
+        if (!check_ajax_referer('flavor_cursos_nonce', 'nonce', false)) {
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+        }
+
+        // Verificar permisos
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        $curso_id = isset($_POST['curso_id']) ? absint($_POST['curso_id']) : 0;
+
+        if (!$curso_id) {
+            wp_send_json_error(['message' => __('ID de curso no válido.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+
+        $curso = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_cursos} WHERE id = %d",
+            $curso_id
+        ));
+
+        if (!$curso) {
+            wp_send_json_error(['message' => __('Curso no encontrado.', 'flavor-platform')]);
+        }
+
+        // Formatear fechas para datetime-local input
+        $datos_curso = (array) $curso;
+        if (!empty($datos_curso['fecha_inicio'])) {
+            $datos_curso['fecha_inicio'] = date('Y-m-d\TH:i', strtotime($datos_curso['fecha_inicio']));
+        }
+        if (!empty($datos_curso['fecha_fin'])) {
+            $datos_curso['fecha_fin'] = date('Y-m-d\TH:i', strtotime($datos_curso['fecha_fin']));
+        }
+
+        wp_send_json_success($datos_curso);
+    }
+
+    /**
+     * AJAX: Guardar curso (crear o actualizar)
+     */
+    public function ajax_flavor_guardar_curso() {
+        // Verificar nonce
+        if (!check_ajax_referer('flavor_cursos_nonce', 'nonce', false)) {
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+        }
+
+        // Verificar permisos
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        // Sanitizar inputs
+        $curso_id = isset($_POST['curso_id']) ? absint($_POST['curso_id']) : 0;
+        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
+        $descripcion = isset($_POST['descripcion']) ? sanitize_textarea_field($_POST['descripcion']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+        $nivel = isset($_POST['nivel']) ? sanitize_text_field($_POST['nivel']) : 'todos';
+        $modalidad = isset($_POST['modalidad']) ? sanitize_text_field($_POST['modalidad']) : 'online';
+        $duracion_horas = isset($_POST['duracion_horas']) ? absint($_POST['duracion_horas']) : 0;
+        $max_alumnos = isset($_POST['max_alumnos']) ? absint($_POST['max_alumnos']) : 30;
+        $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+        $es_gratuito = isset($_POST['es_gratuito']) ? 1 : 0;
+        $fecha_inicio = isset($_POST['fecha_inicio']) && !empty($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : null;
+        $fecha_fin = isset($_POST['fecha_fin']) && !empty($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : null;
+        $ubicacion = isset($_POST['ubicacion']) ? sanitize_text_field($_POST['ubicacion']) : '';
+        $requisitos = isset($_POST['requisitos']) ? sanitize_textarea_field($_POST['requisitos']) : '';
+        $que_aprenderas = isset($_POST['que_aprenderas']) ? sanitize_textarea_field($_POST['que_aprenderas']) : '';
+        $imagen_portada = isset($_POST['imagen_portada']) ? esc_url_raw($_POST['imagen_portada']) : '';
+        $video_presentacion = isset($_POST['video_presentacion']) ? esc_url_raw($_POST['video_presentacion']) : '';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'borrador';
+
+        // Validar campos requeridos
+        if (empty($titulo)) {
+            wp_send_json_error(['message' => __('El título es obligatorio.', 'flavor-platform')]);
+        }
+
+        if (empty($descripcion)) {
+            wp_send_json_error(['message' => __('La descripción es obligatoria.', 'flavor-platform')]);
+        }
+
+        if (empty($categoria)) {
+            wp_send_json_error(['message' => __('La categoría es obligatoria.', 'flavor-platform')]);
+        }
+
+        if ($duracion_horas < 1) {
+            wp_send_json_error(['message' => __('La duración debe ser al menos 1 hora.', 'flavor-platform')]);
+        }
+
+        // Validar valores permitidos
+        $niveles_permitidos = ['todos', 'principiante', 'intermedio', 'avanzado'];
+        if (!in_array($nivel, $niveles_permitidos, true)) {
+            $nivel = 'todos';
+        }
+
+        $modalidades_permitidas = ['online', 'presencial', 'mixto'];
+        if (!in_array($modalidad, $modalidades_permitidas, true)) {
+            $modalidad = 'online';
+        }
+
+        $estados_permitidos = ['borrador', 'pendiente', 'publicado', 'en_curso', 'finalizado', 'cancelado'];
+        if (!in_array($estado, $estados_permitidos, true)) {
+            $estado = 'borrador';
+        }
+
+        // Formatear fechas para MySQL
+        if ($fecha_inicio) {
+            $fecha_inicio = date('Y-m-d H:i:s', strtotime($fecha_inicio));
+        }
+        if ($fecha_fin) {
+            $fecha_fin = date('Y-m-d H:i:s', strtotime($fecha_fin));
+        }
+
+        // Generar slug
+        $slug_base = sanitize_title($titulo);
+
+        global $wpdb;
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+
+        // Datos del curso
+        $datos_curso = [
+            'titulo'             => $titulo,
+            'slug'               => $slug_base,
+            'descripcion'        => $descripcion,
+            'categoria'          => $categoria,
+            'nivel'              => $nivel,
+            'modalidad'          => $modalidad,
+            'duracion_horas'     => $duracion_horas,
+            'max_alumnos'        => $max_alumnos,
+            'precio'             => $precio,
+            'es_gratuito'        => $es_gratuito,
+            'fecha_inicio'       => $fecha_inicio,
+            'fecha_fin'          => $fecha_fin,
+            'ubicacion'          => $ubicacion,
+            'requisitos'         => $requisitos,
+            'que_aprenderas'     => $que_aprenderas,
+            'imagen_portada'     => $imagen_portada,
+            'video_presentacion' => $video_presentacion,
+            'estado'             => $estado,
+            'fecha_actualizacion'=> current_time('mysql'),
+        ];
+
+        // Formatos para wpdb
+        $formatos_datos = [
+            '%s', // titulo
+            '%s', // slug
+            '%s', // descripcion
+            '%s', // categoria
+            '%s', // nivel
+            '%s', // modalidad
+            '%d', // duracion_horas
+            '%d', // max_alumnos
+            '%f', // precio
+            '%d', // es_gratuito
+            '%s', // fecha_inicio
+            '%s', // fecha_fin
+            '%s', // ubicacion
+            '%s', // requisitos
+            '%s', // que_aprenderas
+            '%s', // imagen_portada
+            '%s', // video_presentacion
+            '%s', // estado
+            '%s', // fecha_actualizacion
+        ];
+
+        if ($curso_id > 0) {
+            // Actualizar curso existente
+            // Verificar que el curso existe
+            $curso_existente = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla_cursos} WHERE id = %d",
+                $curso_id
+            ));
+
+            if (!$curso_existente) {
+                wp_send_json_error(['message' => __('El curso no existe.', 'flavor-platform')]);
+            }
+
+            // Verificar slug único (excluyendo el curso actual)
+            $slug_existente = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla_cursos} WHERE slug = %s AND id != %d",
+                $slug_base,
+                $curso_id
+            ));
+
+            if ($slug_existente) {
+                $datos_curso['slug'] = $slug_base . '-' . $curso_id;
+            }
+
+            $resultado = $wpdb->update(
+                $tabla_cursos,
+                $datos_curso,
+                ['id' => $curso_id],
+                $formatos_datos,
+                ['%d']
+            );
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al actualizar el curso.', 'flavor-platform')]);
+            }
+
+            wp_send_json_success([
+                'message'  => __('Curso actualizado correctamente.', 'flavor-platform'),
+                'curso_id' => $curso_id,
+            ]);
+        } else {
+            // Crear nuevo curso
+            // Verificar slug único
+            $slug_existente = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla_cursos} WHERE slug = %s",
+                $slug_base
+            ));
+
+            if ($slug_existente) {
+                $datos_curso['slug'] = $slug_base . '-' . uniqid();
+            }
+
+            // Agregar campos adicionales para nuevo curso
+            $datos_curso['instructor_id'] = get_current_user_id();
+            $datos_curso['fecha_creacion'] = current_time('mysql');
+            $datos_curso['alumnos_inscritos'] = 0;
+            $datos_curso['valoracion_media'] = 0;
+            $datos_curso['numero_valoraciones'] = 0;
+
+            $formatos_datos[] = '%d'; // instructor_id
+            $formatos_datos[] = '%s'; // fecha_creacion
+            $formatos_datos[] = '%d'; // alumnos_inscritos
+            $formatos_datos[] = '%f'; // valoracion_media
+            $formatos_datos[] = '%d'; // numero_valoraciones
+
+            $resultado = $wpdb->insert($tabla_cursos, $datos_curso, $formatos_datos);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al crear el curso.', 'flavor-platform')]);
+            }
+
+            $nuevo_curso_id = $wpdb->insert_id;
+
+            wp_send_json_success([
+                'message'  => __('Curso creado correctamente.', 'flavor-platform'),
+                'curso_id' => $nuevo_curso_id,
+            ]);
         }
     }
 }

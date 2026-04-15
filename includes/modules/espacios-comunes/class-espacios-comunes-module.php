@@ -272,6 +272,12 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         add_action('wp_ajax_espacios_rechazar_reserva', [$this, 'ajax_rechazar_reserva']);
         add_action('wp_ajax_espacios_devolver_fianza', [$this, 'ajax_devolver_fianza']);
 
+        // Admin AJAX - Gestión de espacios y reservas
+        add_action('wp_ajax_espacios_comunes_guardar_espacio', [$this, 'ajax_guardar_espacio']);
+        add_action('wp_ajax_espacios_comunes_guardar_reserva', [$this, 'ajax_guardar_reserva']);
+        add_action('wp_ajax_espacios_comunes_listar_espacios', [$this, 'ajax_listar_espacios']);
+        add_action('wp_ajax_espacios_comunes_listar_reservas', [$this, 'ajax_listar_reservas']);
+
         // WP Cron para actualizar estado de reservas
         add_action('flavor_espacios_actualizar_estados', [$this, 'actualizar_estados_reservas']);
         if (!wp_next_scheduled('flavor_espacios_actualizar_estados')) {
@@ -1489,6 +1495,380 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $wpdb->update($tabla_reservas, ['fianza_devuelta' => 1], ['id' => $reserva_id]);
 
         wp_send_json(['success' => true, 'mensaje' => 'Fianza marcada como devuelta']);
+    }
+
+    /**
+     * AJAX: Guardar espacio (crear o actualizar)
+     */
+    public function ajax_guardar_espacio() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+
+        $espacio_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+        $datos_espacio = [
+            'nombre' => isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '',
+            'descripcion' => isset($_POST['descripcion']) ? sanitize_textarea_field($_POST['descripcion']) : '',
+            'tipo' => isset($_POST['tipo']) ? sanitize_text_field($_POST['tipo']) : 'salon_eventos',
+            'ubicacion' => isset($_POST['ubicacion']) ? sanitize_text_field($_POST['ubicacion']) : '',
+            'latitud' => isset($_POST['latitud']) ? floatval($_POST['latitud']) : null,
+            'longitud' => isset($_POST['longitud']) ? floatval($_POST['longitud']) : null,
+            'capacidad_personas' => isset($_POST['capacidad_personas']) ? intval($_POST['capacidad_personas']) : 0,
+            'superficie_m2' => isset($_POST['superficie_m2']) ? floatval($_POST['superficie_m2']) : null,
+            'equipamiento' => isset($_POST['equipamiento']) ? wp_json_encode($_POST['equipamiento']) : null,
+            'normas_uso' => isset($_POST['normas_uso']) ? sanitize_textarea_field($_POST['normas_uso']) : '',
+            'precio_hora' => isset($_POST['precio_hora']) ? floatval($_POST['precio_hora']) : 0,
+            'precio_dia' => isset($_POST['precio_dia']) ? floatval($_POST['precio_dia']) : 0,
+            'requiere_fianza' => isset($_POST['requiere_fianza']) ? intval($_POST['requiere_fianza']) : 1,
+            'importe_fianza' => isset($_POST['importe_fianza']) ? floatval($_POST['importe_fianza']) : 50,
+            'horario_apertura' => isset($_POST['horario_apertura']) ? sanitize_text_field($_POST['horario_apertura']) : '08:00:00',
+            'horario_cierre' => isset($_POST['horario_cierre']) ? sanitize_text_field($_POST['horario_cierre']) : '22:00:00',
+            'dias_disponibles' => isset($_POST['dias_disponibles']) ? sanitize_text_field($_POST['dias_disponibles']) : 'L,M,X,J,V,S,D',
+            'fotos' => isset($_POST['fotos']) ? wp_json_encode($_POST['fotos']) : null,
+            'responsable_id' => isset($_POST['responsable_id']) ? intval($_POST['responsable_id']) : null,
+            'instrucciones_acceso' => isset($_POST['instrucciones_acceso']) ? sanitize_textarea_field($_POST['instrucciones_acceso']) : '',
+            'estado' => isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'disponible',
+        ];
+
+        // Validar campos requeridos
+        if (empty($datos_espacio['nombre'])) {
+            wp_send_json_error(['message' => __('El nombre del espacio es requerido.', 'flavor-platform')]);
+        }
+
+        if (empty($datos_espacio['ubicacion'])) {
+            wp_send_json_error(['message' => __('La ubicación del espacio es requerida.', 'flavor-platform')]);
+        }
+
+        if ($datos_espacio['capacidad_personas'] <= 0) {
+            wp_send_json_error(['message' => __('La capacidad debe ser mayor a 0.', 'flavor-platform')]);
+        }
+
+        if ($espacio_id > 0) {
+            // Actualizar espacio existente
+            $resultado = $wpdb->update($tabla_espacios, $datos_espacio, ['id' => $espacio_id]);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al actualizar el espacio.', 'flavor-platform')]);
+            }
+
+            wp_send_json_success([
+                'message' => __('Espacio actualizado correctamente.', 'flavor-platform'),
+                'espacio_id' => $espacio_id,
+            ]);
+        } else {
+            // Crear nuevo espacio
+            $datos_espacio['fecha_creacion'] = current_time('mysql');
+            $resultado = $wpdb->insert($tabla_espacios, $datos_espacio);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al crear el espacio.', 'flavor-platform')]);
+            }
+
+            wp_send_json_success([
+                'message' => __('Espacio creado correctamente.', 'flavor-platform'),
+                'espacio_id' => $wpdb->insert_id,
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Guardar reserva (crear o actualizar desde admin)
+     */
+    public function ajax_guardar_reserva() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+
+        $reserva_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        $espacio_id = isset($_POST['espacio_id']) ? intval($_POST['espacio_id']) : 0;
+        $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
+        $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : '';
+        $fecha_fin = isset($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : '';
+
+        // Validar campos requeridos
+        if ($espacio_id <= 0) {
+            wp_send_json_error(['message' => __('Debe seleccionar un espacio.', 'flavor-platform')]);
+        }
+
+        if ($usuario_id <= 0) {
+            wp_send_json_error(['message' => __('Debe seleccionar un usuario.', 'flavor-platform')]);
+        }
+
+        if (empty($fecha_inicio) || empty($fecha_fin)) {
+            wp_send_json_error(['message' => __('Las fechas de inicio y fin son requeridas.', 'flavor-platform')]);
+        }
+
+        // Verificar que el espacio existe
+        $espacio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_espacios WHERE id = %d",
+            $espacio_id
+        ));
+
+        if (!$espacio) {
+            wp_send_json_error(['message' => __('El espacio seleccionado no existe.', 'flavor-platform')]);
+        }
+
+        // Verificar que el usuario existe
+        $usuario = get_userdata($usuario_id);
+        if (!$usuario) {
+            wp_send_json_error(['message' => __('El usuario seleccionado no existe.', 'flavor-platform')]);
+        }
+
+        // Verificar disponibilidad (excepto para la misma reserva si es actualización)
+        $condicion_excluir = $reserva_id > 0 ? $wpdb->prepare(" AND id != %d", $reserva_id) : '';
+        $solapamiento = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_reservas
+             WHERE espacio_id = %d
+             AND estado IN ('solicitada', 'confirmada', 'en_curso')
+             AND (
+                 (fecha_inicio <= %s AND fecha_fin > %s)
+                 OR (fecha_inicio < %s AND fecha_fin >= %s)
+                 OR (fecha_inicio >= %s AND fecha_fin <= %s)
+             )
+             $condicion_excluir",
+            $espacio_id,
+            $fecha_inicio, $fecha_inicio,
+            $fecha_fin, $fecha_fin,
+            $fecha_inicio, $fecha_fin
+        ));
+
+        if ($solapamiento) {
+            wp_send_json_error(['message' => __('Ya existe una reserva en ese horario.', 'flavor-platform')]);
+        }
+
+        $datos_reserva = [
+            'espacio_id' => $espacio_id,
+            'usuario_id' => $usuario_id,
+            'fecha_inicio' => $fecha_inicio,
+            'fecha_fin' => $fecha_fin,
+            'num_asistentes' => isset($_POST['num_asistentes']) ? intval($_POST['num_asistentes']) : null,
+            'motivo' => isset($_POST['motivo']) ? sanitize_textarea_field($_POST['motivo']) : '',
+            'tipo_evento' => isset($_POST['tipo_evento']) ? sanitize_text_field($_POST['tipo_evento']) : '',
+            'equipamiento_adicional' => isset($_POST['equipamiento_adicional']) ? wp_json_encode($_POST['equipamiento_adicional']) : null,
+            'precio_total' => isset($_POST['precio_total']) ? floatval($_POST['precio_total']) : 0,
+            'fianza' => isset($_POST['fianza']) ? floatval($_POST['fianza']) : ($espacio->requiere_fianza ? $espacio->importe_fianza : 0),
+            'instrucciones_especiales' => isset($_POST['instrucciones_especiales']) ? sanitize_textarea_field($_POST['instrucciones_especiales']) : '',
+            'estado' => isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'solicitada',
+        ];
+
+        if ($reserva_id > 0) {
+            // Actualizar reserva existente
+            $resultado = $wpdb->update($tabla_reservas, $datos_reserva, ['id' => $reserva_id]);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al actualizar la reserva.', 'flavor-platform')]);
+            }
+
+            wp_send_json_success([
+                'message' => __('Reserva actualizada correctamente.', 'flavor-platform'),
+                'reserva_id' => $reserva_id,
+            ]);
+        } else {
+            // Crear nueva reserva
+            $datos_reserva['fecha_solicitud'] = current_time('mysql');
+            if ($datos_reserva['estado'] === 'confirmada') {
+                $datos_reserva['fecha_confirmacion'] = current_time('mysql');
+            }
+
+            $resultado = $wpdb->insert($tabla_reservas, $datos_reserva);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al crear la reserva.', 'flavor-platform')]);
+            }
+
+            $nueva_reserva_id = $wpdb->insert_id;
+
+            // Notificar al usuario si la reserva se creó confirmada
+            if ($datos_reserva['estado'] === 'confirmada') {
+                $this->notificar_reserva_confirmada($nueva_reserva_id);
+            }
+
+            wp_send_json_success([
+                'message' => __('Reserva creada correctamente.', 'flavor-platform'),
+                'reserva_id' => $nueva_reserva_id,
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Listar espacios (para admin)
+     */
+    public function ajax_listar_espacios() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+
+        $tipo = isset($_POST['tipo']) ? sanitize_text_field($_POST['tipo']) : '';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+        $busqueda = isset($_POST['busqueda']) ? sanitize_text_field($_POST['busqueda']) : '';
+        $pagina = isset($_POST['pagina']) ? max(1, intval($_POST['pagina'])) : 1;
+        $por_pagina = isset($_POST['por_pagina']) ? min(100, max(1, intval($_POST['por_pagina']))) : 20;
+
+        $where = ['1=1'];
+        $valores_prepare = [];
+
+        if (!empty($tipo)) {
+            $where[] = 'tipo = %s';
+            $valores_prepare[] = $tipo;
+        }
+
+        if (!empty($estado)) {
+            $where[] = 'estado = %s';
+            $valores_prepare[] = $estado;
+        }
+
+        if (!empty($busqueda)) {
+            $where[] = '(nombre LIKE %s OR descripcion LIKE %s OR ubicacion LIKE %s)';
+            $patron_busqueda = '%' . $wpdb->esc_like($busqueda) . '%';
+            $valores_prepare[] = $patron_busqueda;
+            $valores_prepare[] = $patron_busqueda;
+            $valores_prepare[] = $patron_busqueda;
+        }
+
+        $condicion_where = implode(' AND ', $where);
+        $offset = ($pagina - 1) * $por_pagina;
+
+        // Obtener total
+        $sql_total = "SELECT COUNT(*) FROM $tabla_espacios WHERE $condicion_where";
+        if (!empty($valores_prepare)) {
+            $total = $wpdb->get_var($wpdb->prepare($sql_total, $valores_prepare));
+        } else {
+            $total = $wpdb->get_var($sql_total);
+        }
+
+        // Obtener espacios
+        $sql_espacios = "SELECT * FROM $tabla_espacios WHERE $condicion_where ORDER BY nombre ASC LIMIT %d OFFSET %d";
+        $valores_prepare[] = $por_pagina;
+        $valores_prepare[] = $offset;
+
+        $espacios = $wpdb->get_results($wpdb->prepare($sql_espacios, $valores_prepare));
+
+        $espacios_formateados = array_map([$this, 'formatear_espacio'], $espacios);
+
+        wp_send_json_success([
+            'espacios' => $espacios_formateados,
+            'total' => intval($total),
+            'pagina' => $pagina,
+            'por_pagina' => $por_pagina,
+            'total_paginas' => ceil($total / $por_pagina),
+        ]);
+    }
+
+    /**
+     * AJAX: Listar reservas (para admin)
+     */
+    public function ajax_listar_reservas() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+
+        $espacio_id = isset($_POST['espacio_id']) ? intval($_POST['espacio_id']) : 0;
+        $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+        $fecha_desde = isset($_POST['fecha_desde']) ? sanitize_text_field($_POST['fecha_desde']) : '';
+        $fecha_hasta = isset($_POST['fecha_hasta']) ? sanitize_text_field($_POST['fecha_hasta']) : '';
+        $pagina = isset($_POST['pagina']) ? max(1, intval($_POST['pagina'])) : 1;
+        $por_pagina = isset($_POST['por_pagina']) ? min(100, max(1, intval($_POST['por_pagina']))) : 20;
+
+        $where = ['1=1'];
+        $valores_prepare = [];
+
+        if ($espacio_id > 0) {
+            $where[] = 'r.espacio_id = %d';
+            $valores_prepare[] = $espacio_id;
+        }
+
+        if ($usuario_id > 0) {
+            $where[] = 'r.usuario_id = %d';
+            $valores_prepare[] = $usuario_id;
+        }
+
+        if (!empty($estado)) {
+            $where[] = 'r.estado = %s';
+            $valores_prepare[] = $estado;
+        }
+
+        if (!empty($fecha_desde)) {
+            $where[] = 'r.fecha_inicio >= %s';
+            $valores_prepare[] = $fecha_desde . ' 00:00:00';
+        }
+
+        if (!empty($fecha_hasta)) {
+            $where[] = 'r.fecha_fin <= %s';
+            $valores_prepare[] = $fecha_hasta . ' 23:59:59';
+        }
+
+        $condicion_where = implode(' AND ', $where);
+        $offset = ($pagina - 1) * $por_pagina;
+
+        // Obtener total
+        $sql_total = "SELECT COUNT(*) FROM $tabla_reservas r WHERE $condicion_where";
+        if (!empty($valores_prepare)) {
+            $total = $wpdb->get_var($wpdb->prepare($sql_total, $valores_prepare));
+        } else {
+            $total = $wpdb->get_var($sql_total);
+        }
+
+        // Obtener reservas con datos del espacio
+        $sql_reservas = "SELECT r.*, e.nombre as espacio_nombre, e.tipo as espacio_tipo, e.ubicacion,
+                         SUBSTRING(e.fotos, 1, 200) as foto_raw
+                         FROM $tabla_reservas r
+                         INNER JOIN $tabla_espacios e ON r.espacio_id = e.id
+                         WHERE $condicion_where
+                         ORDER BY r.fecha_inicio DESC
+                         LIMIT %d OFFSET %d";
+        $valores_prepare[] = $por_pagina;
+        $valores_prepare[] = $offset;
+
+        $reservas = $wpdb->get_results($wpdb->prepare($sql_reservas, $valores_prepare));
+
+        // Formatear reservas con datos de usuario
+        $reservas_formateadas = [];
+        foreach ($reservas as $reserva) {
+            // Extraer primera foto
+            $fotos = json_decode($reserva->foto_raw, true);
+            $reserva->foto = !empty($fotos) && is_array($fotos) ? $fotos[0] : null;
+            unset($reserva->foto_raw);
+
+            // Obtener datos del usuario
+            $usuario = get_userdata($reserva->usuario_id);
+            $reserva_formateada = $this->formatear_reserva($reserva);
+            $reserva_formateada['usuario_nombre'] = $usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-platform');
+            $reserva_formateada['usuario_email'] = $usuario ? $usuario->user_email : '';
+
+            $reservas_formateadas[] = $reserva_formateada;
+        }
+
+        wp_send_json_success([
+            'reservas' => $reservas_formateadas,
+            'total' => intval($total),
+            'pagina' => $pagina,
+            'por_pagina' => $por_pagina,
+            'total_paginas' => ceil($total / $por_pagina),
+        ]);
     }
 
     // =========================================================================
