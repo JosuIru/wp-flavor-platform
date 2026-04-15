@@ -139,6 +139,12 @@ class Flavor_Eventos_API {
 
         // Registrar AJAX handler para crear eventos (compatibilidad con formularios)
         add_action('wp_ajax_eventos_crear_evento_ajax', [$this, 'ajax_crear_evento']);
+
+        // Handlers AJAX para panel de administración de eventos
+        add_action('wp_ajax_eventos_guardar_evento', [$this, 'ajax_guardar_evento']);
+        add_action('wp_ajax_eventos_listar_eventos', [$this, 'ajax_listar_eventos']);
+        add_action('wp_ajax_eventos_obtener_evento', [$this, 'ajax_obtener_evento']);
+        add_action('wp_ajax_eventos_eliminar_evento', [$this, 'ajax_eliminar_evento']);
     }
 
     /**
@@ -496,6 +502,215 @@ class Flavor_Eventos_API {
         ));
 
         return $count > 0;
+    }
+
+    /**
+     * AJAX: Guardar evento (crear o actualizar)
+     */
+    public function ajax_guardar_evento() {
+        // Verificar permisos
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para gestionar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $usuario_id = get_current_user_id();
+
+        // Obtener y sanitizar datos
+        $evento_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
+        $descripcion = isset($_POST['descripcion']) ? wp_kses_post($_POST['descripcion']) : '';
+        $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : '';
+        $hora = isset($_POST['hora']) ? sanitize_text_field($_POST['hora']) : '';
+        $ubicacion = isset($_POST['ubicacion']) ? sanitize_text_field($_POST['ubicacion']) : '';
+        $capacidad = isset($_POST['capacidad']) ? intval($_POST['capacidad']) : 0;
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : 'otro';
+
+        // Validar campos requeridos
+        if (empty($titulo) || empty($fecha) || empty($hora)) {
+            wp_send_json_error(['message' => __('Completa los campos obligatorios: título, fecha y hora.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Combinar fecha y hora
+        $fecha_inicio = $fecha . ' ' . $hora . ':00';
+
+        // Preparar datos
+        $datos_evento = [
+            'titulo'         => $titulo,
+            'descripcion'    => $descripcion,
+            'tipo'           => $categoria,
+            'fecha_inicio'   => $fecha_inicio,
+            'ubicacion'      => $ubicacion,
+            'aforo_maximo'   => $capacidad,
+            'estado'         => 'publicado',
+            'updated_at'     => current_time('mysql'),
+        ];
+
+        if ($evento_id > 0) {
+            // Actualizar evento existente
+            $resultado = $wpdb->update(
+                $tabla_eventos,
+                $datos_evento,
+                ['id' => $evento_id],
+                null,
+                ['%d']
+            );
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al actualizar el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            }
+
+            wp_send_json_success([
+                'id' => $evento_id,
+                'message' => __('Evento actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ]);
+        } else {
+            // Crear nuevo evento
+            $datos_evento['organizador_id'] = $usuario_id;
+            $datos_evento['created_at'] = current_time('mysql');
+
+            $resultado = $wpdb->insert($tabla_eventos, $datos_evento);
+
+            if ($resultado === false) {
+                wp_send_json_error(['message' => __('Error al crear el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+            }
+
+            wp_send_json_success([
+                'id' => $wpdb->insert_id,
+                'message' => __('Evento creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Listar eventos para panel de administración
+     */
+    public function ajax_listar_eventos() {
+        // Verificar permisos
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // Filtros
+        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+
+        // Construir query
+        $where_clauses = ['1=1'];
+        $where_values = [];
+
+        if (!empty($search)) {
+            $where_clauses[] = "(titulo LIKE %s OR descripcion LIKE %s)";
+            $search_term = '%' . $wpdb->esc_like($search) . '%';
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+        }
+
+        if (!empty($categoria)) {
+            $where_clauses[] = "tipo = %s";
+            $where_values[] = $categoria;
+        }
+
+        if (!empty($estado)) {
+            $where_clauses[] = "estado = %s";
+            $where_values[] = $estado;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+
+        // Obtener eventos con conteo de asistentes
+        $query = "SELECT e.*,
+                  (SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE evento_id = e.id AND estado = 'confirmado') as asistentes_confirmados
+                  FROM {$tabla_eventos} e
+                  WHERE {$where_sql}
+                  ORDER BY e.fecha_inicio DESC
+                  LIMIT 100";
+
+        if (!empty($where_values)) {
+            $eventos = $wpdb->get_results($wpdb->prepare($query, $where_values), ARRAY_A);
+        } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No hay valores de usuario
+            $eventos = $wpdb->get_results($query, ARRAY_A);
+        }
+
+        // Formatear datos para la vista
+        foreach ($eventos as &$evento) {
+            $evento['fecha'] = date_i18n('d/m/Y H:i', strtotime($evento['fecha_inicio']));
+            $evento['capacidad'] = $evento['aforo_maximo'] ?: null;
+        }
+
+        wp_send_json_success($eventos ?: []);
+    }
+
+    /**
+     * AJAX: Obtener datos de un evento específico
+     */
+    public function ajax_obtener_evento() {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $evento = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$tabla_eventos} WHERE id = %d", $evento_id),
+            ARRAY_A
+        );
+
+        if (!$evento) {
+            wp_send_json_error(['message' => __('Evento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Separar fecha y hora para el formulario
+        if (!empty($evento['fecha_inicio'])) {
+            $fecha_datetime = strtotime($evento['fecha_inicio']);
+            $evento['fecha'] = date('Y-m-d', $fecha_datetime);
+            $evento['hora'] = date('H:i', $fecha_datetime);
+        }
+
+        $evento['categoria'] = $evento['tipo'];
+        $evento['capacidad'] = $evento['aforo_maximo'];
+
+        wp_send_json_success($evento);
+    }
+
+    /**
+     * AJAX: Eliminar evento
+     */
+    public function ajax_eliminar_evento() {
+        if (!current_user_can('delete_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para eliminar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $evento_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+        if ($evento_id <= 0) {
+            wp_send_json_error(['message' => __('ID de evento inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $resultado = $wpdb->delete($tabla_eventos, ['id' => $evento_id], ['%d']);
+
+        if ($resultado === false) {
+            wp_send_json_error(['message' => __('Error al eliminar el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        wp_send_json_success(['message' => __('Evento eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 }
 
