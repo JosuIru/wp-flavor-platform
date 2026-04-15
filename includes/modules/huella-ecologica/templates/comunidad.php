@@ -25,28 +25,28 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
     <div class="he-comunidad-header">
         <h2 class="he-comunidad-header__titulo">
             <span class="dashicons dashicons-groups"></span>
-            <?php esc_html_e('Impacto Comunitario', 'flavor-platform'); ?>
+            <?php esc_html_e('Impacto Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p class="he-comunidad-header__subtitulo">
-            <?php esc_html_e('Juntos estamos reduciendo nuestra huella ecológica colectiva', 'flavor-platform'); ?>
+            <?php esc_html_e('Juntos estamos reduciendo nuestra huella ecológica colectiva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <div class="he-comunidad-stats">
             <div class="he-comunidad-stat">
                 <div class="he-comunidad-stat__valor"><?php echo esc_html(number_format($stats_comunidad['huella_comunidad'], 0)); ?></div>
-                <div class="he-comunidad-stat__label"><?php esc_html_e('kg CO2 registrados', 'flavor-platform'); ?></div>
+                <div class="he-comunidad-stat__label"><?php esc_html_e('kg CO2 registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="he-comunidad-stat">
                 <div class="he-comunidad-stat__valor"><?php echo esc_html(number_format($stats_comunidad['reduccion_comunidad'], 0)); ?></div>
-                <div class="he-comunidad-stat__label"><?php esc_html_e('kg CO2 compensados', 'flavor-platform'); ?></div>
+                <div class="he-comunidad-stat__label"><?php esc_html_e('kg CO2 compensados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="he-comunidad-stat">
                 <div class="he-comunidad-stat__valor"><?php echo esc_html($stats_comunidad['usuarios_activos']); ?></div>
-                <div class="he-comunidad-stat__label"><?php esc_html_e('personas activas', 'flavor-platform'); ?></div>
+                <div class="he-comunidad-stat__label"><?php esc_html_e('personas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="he-comunidad-stat">
                 <div class="he-comunidad-stat__valor"><?php echo esc_html($stats_comunidad['proyectos_activos']); ?></div>
-                <div class="he-comunidad-stat__label"><?php esc_html_e('proyectos activos', 'flavor-platform'); ?></div>
+                <div class="he-comunidad-stat__label"><?php esc_html_e('proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -56,7 +56,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
         <div>
             <h3 style="margin-bottom: 1rem;">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php esc_html_e('Balance ecológico del mes', 'flavor-platform'); ?>
+                <?php esc_html_e('Balance ecológico del mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div style="background: var(--he-bg-card); border-radius: var(--he-radius); padding: 2rem; box-shadow: var(--he-shadow);">
@@ -67,7 +67,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                             <span class="dashicons dashicons-cloud"></span>
                         </div>
                         <div style="font-size: 1.75rem; font-weight: 700;"><?php echo esc_html(number_format($stats_comunidad['huella_comunidad'], 0)); ?> kg</div>
-                        <div style="color: var(--he-text-light);"><?php esc_html_e('Emitido', 'flavor-platform'); ?></div>
+                        <div style="color: var(--he-text-light);"><?php esc_html_e('Emitido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div style="display: flex; align-items: center; font-size: 2rem; color: var(--he-text-light);">−</div>
                     <div>
@@ -75,7 +75,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                             <span class="dashicons dashicons-yes-alt"></span>
                         </div>
                         <div style="font-size: 1.75rem; font-weight: 700;"><?php echo esc_html(number_format($stats_comunidad['reduccion_comunidad'], 0)); ?> kg</div>
-                        <div style="color: var(--he-text-light);"><?php esc_html_e('Compensado', 'flavor-platform'); ?></div>
+                        <div style="color: var(--he-text-light);"><?php esc_html_e('Compensado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div style="display: flex; align-items: center; font-size: 2rem; color: var(--he-text-light);">=</div>
                     <div>
@@ -83,7 +83,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                             <span class="dashicons dashicons-performance"></span>
                         </div>
                         <div style="font-size: 1.75rem; font-weight: 700;"><?php echo esc_html(number_format($stats_comunidad['huella_neta'], 0)); ?> kg</div>
-                        <div style="color: var(--he-text-light);"><?php esc_html_e('Huella neta', 'flavor-platform'); ?></div>
+                        <div style="color: var(--he-text-light);"><?php esc_html_e('Huella neta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
 
@@ -94,7 +94,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                 ?>
                 <div style="margin-top: 1.5rem;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span><?php esc_html_e('Porcentaje compensado', 'flavor-platform'); ?></span>
+                        <span><?php esc_html_e('Porcentaje compensado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span style="font-weight: 600;"><?php echo esc_html(number_format($porcentaje_compensado, 1)); ?>%</span>
                     </div>
                     <div class="he-progreso-bar" style="height: 16px; border-radius: 8px;">
@@ -106,7 +106,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                 <div style="margin-top: 1.5rem; text-align: center; padding: 1rem; background: color-mix(in srgb, var(--he-primary) 10%, #fff); border-radius: 8px;">
                     <span style="font-size: 2rem;">🎉</span>
                     <p style="margin: 0.5rem 0 0; font-weight: 600; color: var(--he-primary);">
-                        <?php esc_html_e('¡Este mes somos carbono neutro como comunidad!', 'flavor-platform'); ?>
+                        <?php esc_html_e('¡Este mes somos carbono neutro como comunidad!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <?php endif; ?>
@@ -116,23 +116,23 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
             <div style="margin-top: 2rem;">
                 <h3 style="margin-bottom: 1rem;">
                     <span class="dashicons dashicons-flag"></span>
-                    <?php esc_html_e('Objetivos colectivos', 'flavor-platform'); ?>
+                    <?php esc_html_e('Objetivos colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
                     <div style="background: var(--he-bg-card); padding: 1.25rem; border-radius: var(--he-radius); text-align: center;">
                         <div style="font-size: 2rem;">🌍</div>
-                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('2030', 'flavor-platform'); ?></div>
-                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Reducir 50% la huella', 'flavor-platform'); ?></div>
+                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('2030', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Reducir 50% la huella', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div style="background: var(--he-bg-card); padding: 1.25rem; border-radius: var(--he-radius); text-align: center;">
                         <div style="font-size: 2rem;">🌳</div>
-                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('100 árboles', 'flavor-platform'); ?></div>
-                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Meta de plantación', 'flavor-platform'); ?></div>
+                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('100 árboles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Meta de plantación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div style="background: var(--he-bg-card); padding: 1.25rem; border-radius: var(--he-radius); text-align: center;">
                         <div style="font-size: 2rem;">♻️</div>
-                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('Zero Waste', 'flavor-platform'); ?></div>
-                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Comunidad sin residuos', 'flavor-platform'); ?></div>
+                        <div style="font-weight: 600; margin: 0.5rem 0;"><?php esc_html_e('Zero Waste', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                        <div style="font-size: 0.9rem; color: var(--he-text-light);"><?php esc_html_e('Comunidad sin residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
@@ -143,7 +143,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
             <div class="he-ranking">
                 <h3 class="he-ranking__titulo">
                     <span class="dashicons dashicons-awards"></span>
-                    <?php esc_html_e('Top compensadores', 'flavor-platform'); ?>
+                    <?php esc_html_e('Top compensadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <?php if ($top_contribuyentes) : ?>
@@ -162,7 +162,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                     <?php endforeach; ?>
                 <?php else : ?>
                 <p style="color: var(--he-text-light); text-align: center; padding: 1rem;">
-                    <?php esc_html_e('Aún no hay datos suficientes', 'flavor-platform'); ?>
+                    <?php esc_html_e('Aún no hay datos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <?php endif; ?>
             </div>
@@ -170,17 +170,17 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
             <!-- Únete -->
             <div style="margin-top: 1.5rem; background: linear-gradient(135deg, var(--he-primary), var(--he-secondary)); border-radius: var(--he-radius); padding: 1.5rem; color: white; text-align: center;">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌱</div>
-                <h4 style="margin: 0 0 0.5rem;"><?php esc_html_e('¿Quieres contribuir?', 'flavor-platform'); ?></h4>
+                <h4 style="margin: 0 0 0.5rem;"><?php esc_html_e('¿Quieres contribuir?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1rem;">
-                    <?php esc_html_e('Cada acción cuenta para reducir nuestra huella colectiva', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cada acción cuenta para reducir nuestra huella colectiva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <?php if (is_user_logged_in()) : ?>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'calculadora')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
-                    <?php esc_html_e('Calcular mi huella', 'flavor-platform'); ?>
+                    <?php esc_html_e('Calcular mi huella', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php else : ?>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
-                    <?php esc_html_e('Unirme', 'flavor-platform'); ?>
+                    <?php esc_html_e('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -189,15 +189,15 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
             <div style="margin-top: 1.5rem;">
                 <h4 style="margin-bottom: 1rem;">
                     <span class="dashicons dashicons-admin-site-alt3"></span>
-                    <?php esc_html_e('Proyectos activos', 'flavor-platform'); ?>
+                    <?php esc_html_e('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <?php if ($stats_comunidad['proyectos_activos'] > 0) : ?>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'proyectos')); ?>" class="he-btn he-btn--secondary" style="width: 100%; justify-content: center;">
-                    <?php printf(esc_html__('Ver %d proyectos', 'flavor-platform'), $stats_comunidad['proyectos_activos']); ?>
+                    <?php printf(esc_html__('Ver %d proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), $stats_comunidad['proyectos_activos']); ?>
                 </a>
                 <?php else : ?>
                 <p style="color: var(--he-text-light); font-size: 0.9rem;">
-                    <?php esc_html_e('No hay proyectos activos aún', 'flavor-platform'); ?>
+                    <?php esc_html_e('No hay proyectos activos aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <?php endif; ?>
             </div>

@@ -20,16 +20,16 @@ if (!isset($encuesta) || !$encuesta) {
 }
 
 $estados_labels = [
-    'borrador'  => __('Borrador', 'flavor-platform'),
-    'activa'    => __('Activa', 'flavor-platform'),
-    'cerrada'   => __('Cerrada', 'flavor-platform'),
-    'archivada' => __('Archivada', 'flavor-platform'),
+    'borrador'  => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'activa'    => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cerrada'   => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'archivada' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $tipos_labels = [
-    'encuesta'   => __('Encuesta', 'flavor-platform'),
-    'formulario' => __('Formulario', 'flavor-platform'),
-    'quiz'       => __('Quiz', 'flavor-platform'),
+    'encuesta'   => __('Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'formulario' => __('Formulario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'quiz'       => __('Quiz', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -57,7 +57,7 @@ $tipos_labels = [
 
             <?php if ($encuesta->es_anonima): ?>
                 <span class="flavor-encuesta__badge flavor-encuesta__badge--anonima">
-                    <?php esc_html_e('Anónima', 'flavor-platform'); ?>
+                    <?php esc_html_e('Anónima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -65,10 +65,10 @@ $tipos_labels = [
 
     <?php if ($encuesta->estado === 'cerrada'): ?>
         <div class="flavor-encuesta__notice flavor-encuesta__notice--info">
-            <strong><?php esc_html_e('Encuesta finalizada', 'flavor-platform'); ?></strong>
+            <strong><?php esc_html_e('Encuesta finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <?php if (!empty($encuesta->fecha_cierre)): ?>
                 - <?php printf(
-                    esc_html__('Cerrada el %s', 'flavor-platform'),
+                    esc_html__('Cerrada el %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     date_i18n(get_option('date_format'), strtotime($encuesta->fecha_cierre))
                 ); ?>
             <?php endif; ?>
@@ -77,7 +77,7 @@ $tipos_labels = [
 
     <?php if (!empty($ya_participo) && !$encuesta->permite_multiples): ?>
         <div class="flavor-encuesta__notice flavor-encuesta__notice--success">
-            <?php esc_html_e('Ya has participado en esta encuesta.', 'flavor-platform'); ?>
+            <?php esc_html_e('Ya has participado en esta encuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
     <?php endif; ?>
 
@@ -121,9 +121,9 @@ $tipos_labels = [
                     <button type="submit" class="flavor-encuesta__submit">
                         <?php
                         if ($encuesta->tipo === 'quiz') {
-                            esc_html_e('Enviar respuestas', 'flavor-platform');
+                            esc_html_e('Enviar respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         } else {
-                            esc_html_e('Votar', 'flavor-platform');
+                            esc_html_e('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         ?>
                     </button>
@@ -144,7 +144,7 @@ $tipos_labels = [
             <span class="flavor-encuesta__participantes">
                 <?php
                 printf(
-                    esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, 'flavor-platform')),
+                    esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     $encuesta->total_participantes
                 );
                 ?>
@@ -156,7 +156,7 @@ $tipos_labels = [
                     $tiempo_restante = strtotime($encuesta->fecha_cierre) - time();
                     if ($tiempo_restante > 0) {
                         printf(
-                            esc_html__('Cierra en %s', 'flavor-platform'),
+                            esc_html__('Cierra en %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             human_time_diff(time(), strtotime($encuesta->fecha_cierre))
                         );
                     }
@@ -171,7 +171,7 @@ $tipos_labels = [
                 <div class="flavor-encuesta__autor">
                     <?php
                     printf(
-                        esc_html__('Creada por %s', 'flavor-platform'),
+                        esc_html__('Creada por %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         esc_html($autor->display_name)
                     );
                     ?>

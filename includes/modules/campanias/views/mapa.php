@@ -34,11 +34,11 @@ foreach ($acciones as $accion) {
 
 <section class="flavor-campanias-mapa">
     <header>
-        <h2><?php esc_html_e('Mapa de acciones ciudadanas', 'flavor-platform'); ?></h2>
+        <h2><?php esc_html_e('Mapa de acciones ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p>
             <?php
             printf(
-                esc_html__('%1$d acciones geolocalizadas, %2$d proximas.', 'flavor-platform'),
+                esc_html__('%1$d acciones geolocalizadas, %2$d proximas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 (int) $total,
                 (int) $proximas
             );
@@ -47,16 +47,16 @@ foreach ($acciones as $accion) {
     </header>
 
     <?php if ($total === 0): ?>
-        <p><?php esc_html_e('Todavia no hay acciones con coordenadas registradas.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Todavia no hay acciones con coordenadas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Accion', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Campania', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Ubicacion', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Coordenadas', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Accion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>

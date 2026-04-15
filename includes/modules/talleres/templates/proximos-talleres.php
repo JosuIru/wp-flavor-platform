@@ -13,12 +13,12 @@ if (!defined('ABSPATH')) {
 $talleres = isset($talleres) ? $talleres : [];
 ?>
 <div class="flavor-talleres-proximos">
-    <h2 class="flavor-talleres-titulo"><?php esc_html_e('Próximos Talleres', 'flavor-platform'); ?></h2>
+    <h2 class="flavor-talleres-titulo"><?php esc_html_e('Próximos Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <?php if (empty($talleres)): ?>
         <div class="flavor-talleres-vacio">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <p><?php esc_html_e('No hay talleres programados próximamente.', 'flavor-platform'); ?></p>
+            <p><?php esc_html_e('No hay talleres programados próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-talleres-grid">
@@ -72,11 +72,11 @@ $talleres = isset($talleres) ? $talleres : [];
                             <?php if ($plazas_disponibles > 0): ?>
                             <span class="flavor-meta-item flavor-plazas-disponibles">
                                 <span class="dashicons dashicons-groups"></span>
-                                <?php printf(esc_html__('%d plazas', 'flavor-platform'), $plazas_disponibles); ?>
+                                <?php printf(esc_html__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles); ?>
                             </span>
                             <?php elseif (isset($taller->plazas_maximas)): ?>
                             <span class="flavor-meta-item flavor-plazas-completo">
-                                <?php esc_html_e('Completo', 'flavor-platform'); ?>
+                                <?php esc_html_e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <?php endif; ?>
                         </div>
@@ -84,7 +84,7 @@ $talleres = isset($talleres) ? $talleres : [];
 
                     <div class="flavor-taller-acciones">
                         <a href="<?php echo esc_url(add_query_arg('taller_id', $taller->id, home_url('/taller/'))); ?>" class="flavor-btn flavor-btn-primario">
-                            <?php esc_html_e('Ver detalles', 'flavor-platform'); ?>
+                            <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>

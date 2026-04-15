@@ -13,44 +13,44 @@ if (!defined('ABSPATH')) {
 
 <div class="wrap flavor-espacios-management">
     <h1 class="wp-heading-inline">
-        <?php _e('Gestión de Espacios', 'flavor-platform'); ?>
+        <?php _e('Gestión de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-nuevo-espacio">
-        <?php _e('Nuevo Espacio', 'flavor-platform'); ?>
+        <?php _e('Nuevo Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
     <div class="flavor-filters-bar">
         <div class="flavor-filter-group">
-            <label><?php _e('Buscar:', 'flavor-platform'); ?></label>
-            <input type="text" id="search-espacios" class="flavor-search-input" placeholder="<?php _e('Nombre del espacio...', 'flavor-platform'); ?>">
+            <label><?php _e('Buscar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+            <input type="text" id="search-espacios" class="flavor-search-input" placeholder="<?php _e('Nombre del espacio...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Tipo:', 'flavor-platform'); ?></label>
+            <label><?php _e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-tipo" class="flavor-select">
-                <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('salon', 'flavor-platform'); ?>"><?php _e('Salón', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('oficina', 'flavor-platform'); ?>"><?php _e('Oficina', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('terraza', 'flavor-platform'); ?>"><?php _e('Terraza', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('deportivo', 'flavor-platform'); ?>"><?php _e('Deportivo', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('otro', 'flavor-platform'); ?>"><?php _e('Otro', 'flavor-platform'); ?></option>
+                <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('salon', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Salón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('oficina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Oficina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('deportivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Deportivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Estado:', 'flavor-platform'); ?></label>
+            <label><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-estado" class="flavor-select">
-                <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('activo', 'flavor-platform'); ?>"><?php _e('Activo', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('mantenimiento', 'flavor-platform'); ?>"><?php _e('Mantenimiento', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('inactivo', 'flavor-platform'); ?>"><?php _e('Inactivo', 'flavor-platform'); ?></option>
+                <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
     </div>
 
     <!-- Lista de espacios -->
     <div class="flavor-espacios-grid" id="espacios-list">
-        <div class="flavor-loading"><?php _e('Cargando espacios...', 'flavor-platform'); ?></div>
+        <div class="flavor-loading"><?php _e('Cargando espacios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>
 
@@ -59,7 +59,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content flavor-modal-large">
         <div class="flavor-modal-header">
-            <h2 id="modal-espacio-title"><?php _e('Nuevo Espacio', 'flavor-platform'); ?></h2>
+            <h2 id="modal-espacio-title"><?php _e('Nuevo Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button type="button" class="flavor-modal-close">
                 <span class="dashicons dashicons-no"></span>
             </button>
@@ -72,64 +72,64 @@ if (!defined('ABSPATH')) {
                     <!-- Columna izquierda -->
                     <div class="flavor-form-column">
                         <div class="flavor-form-section">
-                            <h3><?php _e('Información Básica', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Información Básica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-nombre"><?php _e('Nombre del espacio', 'flavor-platform'); ?> *</label>
+                                <label for="espacio-nombre"><?php _e('Nombre del espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                 <input type="text" id="espacio-nombre" name="nombre" required class="widefat">
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-tipo"><?php _e('Tipo', 'flavor-platform'); ?> *</label>
+                                <label for="espacio-tipo"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                 <select id="espacio-tipo" name="tipo" required class="widefat">
-                                    <option value="<?php echo esc_attr__('salon', 'flavor-platform'); ?>"><?php _e('Salón', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('oficina', 'flavor-platform'); ?>"><?php _e('Oficina', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('terraza', 'flavor-platform'); ?>"><?php _e('Terraza', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('deportivo', 'flavor-platform'); ?>"><?php _e('Deportivo', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('cocina', 'flavor-platform'); ?>"><?php _e('Cocina', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('sala_reuniones', 'flavor-platform'); ?>"><?php _e('Sala de reuniones', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('otro', 'flavor-platform'); ?>"><?php _e('Otro', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('salon', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Salón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('oficina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Oficina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('deportivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Deportivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('sala_reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Sala de reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-descripcion"><?php _e('Descripción', 'flavor-platform'); ?></label>
+                                <label for="espacio-descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <textarea id="espacio-descripcion" name="descripcion" rows="4" class="widefat"></textarea>
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-ubicacion"><?php _e('Ubicación', 'flavor-platform'); ?></label>
-                                <input type="text" id="espacio-ubicacion" name="ubicacion" class="widefat" placeholder="<?php _e('Ej: Planta 2, Edificio A', 'flavor-platform'); ?>">
+                                <label for="espacio-ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="espacio-ubicacion" name="ubicacion" class="widefat" placeholder="<?php _e('Ej: Planta 2, Edificio A', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                         </div>
 
                         <div class="flavor-form-section">
-                            <h3><?php _e('Capacidad y Equipamiento', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Capacidad y Equipamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <div class="flavor-form-row">
                                 <div class="flavor-form-group">
-                                    <label for="espacio-capacidad"><?php _e('Capacidad (personas)', 'flavor-platform'); ?></label>
+                                    <label for="espacio-capacidad"><?php _e('Capacidad (personas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="number" id="espacio-capacidad" name="capacidad" min="1" class="widefat">
                                 </div>
 
                                 <div class="flavor-form-group">
-                                    <label for="espacio-superficie"><?php _e('Superficie (m²)', 'flavor-platform'); ?></label>
+                                    <label for="espacio-superficie"><?php _e('Superficie (m²)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="number" id="espacio-superficie" name="superficie" min="0" step="0.1" class="widefat">
                                 </div>
                             </div>
 
                             <div class="flavor-form-group">
-                                <label><?php _e('Equipamiento disponible', 'flavor-platform'); ?></label>
+                                <label><?php _e('Equipamiento disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="flavor-checkboxes-grid">
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('wifi', 'flavor-platform'); ?>"> <?php echo esc_html__('WiFi', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('proyector', 'flavor-platform'); ?>"> <?php echo esc_html__('Proyector', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('television', 'flavor-platform'); ?>"> <?php echo esc_html__('Televisión', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('audio', 'flavor-platform'); ?>"> <?php echo esc_html__('Sistema de audio', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('pizarra', 'flavor-platform'); ?>"> <?php echo esc_html__('Pizarra', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('cocina', 'flavor-platform'); ?>"> <?php echo esc_html__('Cocina', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('aire', 'flavor-platform'); ?>"> <?php echo esc_html__('Aire acondicionado', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('calefaccion', 'flavor-platform'); ?>"> <?php echo esc_html__('Calefacción', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('accesible', 'flavor-platform'); ?>"> <?php echo esc_html__('Accesible PMR', 'flavor-platform'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('wifi', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('WiFi', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('proyector', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Proyector', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('television', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Televisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Sistema de audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('pizarra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Pizarra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('aire', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Aire acondicionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('calefaccion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Calefacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('accesible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php echo esc_html__('Accesible PMR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </div>
                             </div>
                         </div>
@@ -138,86 +138,86 @@ if (!defined('ABSPATH')) {
                     <!-- Columna derecha -->
                     <div class="flavor-form-column">
                         <div class="flavor-form-section">
-                            <h3><?php _e('Disponibilidad y Reservas', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Disponibilidad y Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-estado"><?php _e('Estado', 'flavor-platform'); ?></label>
+                                <label for="espacio-estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="espacio-estado" name="estado" class="widefat">
-                                    <option value="<?php echo esc_attr__('activo', 'flavor-platform'); ?>"><?php _e('Activo', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('mantenimiento', 'flavor-platform'); ?>"><?php _e('En mantenimiento', 'flavor-platform'); ?></option>
-                                    <option value="<?php echo esc_attr__('inactivo', 'flavor-platform'); ?>"><?php _e('Inactivo', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('En mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="<?php echo esc_attr__('inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
 
                             <div class="flavor-form-group">
                                 <label>
                                     <input type="checkbox" id="espacio-requiere-aprobacion" name="requiere_aprobacion" value="1">
-                                    <?php _e('Requiere aprobación del administrador', 'flavor-platform'); ?>
+                                    <?php _e('Requiere aprobación del administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </div>
 
                             <div class="flavor-form-row">
                                 <div class="flavor-form-group">
-                                    <label for="espacio-duracion-min"><?php _e('Duración mínima (min)', 'flavor-platform'); ?></label>
+                                    <label for="espacio-duracion-min"><?php _e('Duración mínima (min)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="number" id="espacio-duracion-min" name="duracion_minima" value="30" min="15" step="15" class="widefat">
                                 </div>
 
                                 <div class="flavor-form-group">
-                                    <label for="espacio-duracion-max"><?php _e('Duración máxima (h)', 'flavor-platform'); ?></label>
+                                    <label for="espacio-duracion-max"><?php _e('Duración máxima (h)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="number" id="espacio-duracion-max" name="duracion_maxima" value="4" min="1" step="0.5" class="widefat">
                                 </div>
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-antelacion"><?php _e('Antelación mínima (días)', 'flavor-platform'); ?></label>
+                                <label for="espacio-antelacion"><?php _e('Antelación mínima (días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="number" id="espacio-antelacion" name="antelacion_minima" value="0" min="0" class="widefat">
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-anticipacion"><?php _e('Anticipación máxima (días)', 'flavor-platform'); ?></label>
+                                <label for="espacio-anticipacion"><?php _e('Anticipación máxima (días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="number" id="espacio-anticipacion" name="anticipacion_maxima" value="30" min="1" class="widefat">
                             </div>
                         </div>
 
                         <div class="flavor-form-section">
-                            <h3><?php _e('Horarios', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Horarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-horario-inicio"><?php _e('Hora de apertura', 'flavor-platform'); ?></label>
+                                <label for="espacio-horario-inicio"><?php _e('Hora de apertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="time" id="espacio-horario-inicio" name="horario_inicio" value="08:00" class="widefat">
                             </div>
 
                             <div class="flavor-form-group">
-                                <label for="espacio-horario-fin"><?php _e('Hora de cierre', 'flavor-platform'); ?></label>
+                                <label for="espacio-horario-fin"><?php _e('Hora de cierre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="time" id="espacio-horario-fin" name="horario_fin" value="22:00" class="widefat">
                             </div>
 
                             <div class="flavor-form-group">
-                                <label><?php _e('Días disponibles', 'flavor-platform'); ?></label>
+                                <label><?php _e('Días disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="flavor-checkboxes-inline">
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="1" checked> <?php _e('L', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="2" checked> <?php _e('M', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="3" checked> <?php _e('X', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="4" checked> <?php _e('J', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="5" checked> <?php _e('V', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="6"> <?php _e('S', 'flavor-platform'); ?></label>
-                                    <label><input type="checkbox" name="dias_disponibles[]" value="0"> <?php _e('D', 'flavor-platform'); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="1" checked> <?php _e('L', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="2" checked> <?php _e('M', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="3" checked> <?php _e('X', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="4" checked> <?php _e('J', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="5" checked> <?php _e('V', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="6"> <?php _e('S', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                    <label><input type="checkbox" name="dias_disponibles[]" value="0"> <?php _e('D', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="flavor-form-section">
-                            <h3><?php _e('Imágenes', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <div class="flavor-form-group">
-                                <label><?php _e('Foto principal', 'flavor-platform'); ?></label>
+                                <label><?php _e('Foto principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="flavor-image-upload">
                                     <div class="flavor-image-preview" id="imagen-preview">
                                         <span class="dashicons dashicons-format-image"></span>
                                     </div>
                                     <input type="hidden" id="espacio-imagen" name="imagen_url">
                                     <button type="button" class="button" id="btn-subir-imagen">
-                                        <?php _e('Seleccionar imagen', 'flavor-platform'); ?>
+                                        <?php _e('Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             </div>
@@ -227,8 +227,8 @@ if (!defined('ABSPATH')) {
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-espacio"><?php _e('Cancelar', 'flavor-platform'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-espacio"><?php _e('Guardar Espacio', 'flavor-platform'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-espacio"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-espacio"><?php _e('Guardar Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </div>
 </div>
@@ -482,7 +482,7 @@ jQuery(document).ready(function($) {
 
     // Nuevo espacio
     $('#btn-nuevo-espacio').on('click', function() {
-        $('#modal-espacio-title').text('<?php _e('Nuevo Espacio', 'flavor-platform'); ?>');
+        $('#modal-espacio-title').text('<?php _e('Nuevo Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         $('#form-espacio')[0].reset();
         $('#espacio-id').val('');
         $('#modal-espacio').fadeIn();
@@ -508,7 +508,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     $('#modal-espacio').fadeOut();
                     cargarEspacios();
-                    mostrarNotificacion('<?php _e('Espacio guardado correctamente', 'flavor-platform'); ?>', 'success');
+                    mostrarNotificacion('<?php _e('Espacio guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', 'success');
                 } else {
                     mostrarNotificacion(response.data.message, 'error');
                 }
@@ -524,9 +524,9 @@ jQuery(document).ready(function($) {
             return;
         }
         mediaUploader = wp.media({
-            title: '<?php _e('Seleccionar imagen', 'flavor-platform'); ?>',
+            title: '<?php _e('Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
             button: {
-                text: '<?php _e('Usar esta imagen', 'flavor-platform'); ?>'
+                text: '<?php _e('Usar esta imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'
             },
             multiple: false
         });
@@ -563,14 +563,14 @@ jQuery(document).ready(function($) {
 
     function renderizarEspacios(espacios) {
         if (espacios.length === 0) {
-            $('#espacios-list').html('<div class="flavor-empty-state"><p><?php _e('No se encontraron espacios', 'flavor-platform'); ?></p></div>');
+            $('#espacios-list').html('<div class="flavor-empty-state"><p><?php _e('No se encontraron espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>');
             return;
         }
 
         let html = '';
         espacios.forEach(espacio => {
             const imagen = espacio.imagen_url ?
-                `<img src="${espacio.imagen_url}" alt="<?php echo esc_attr__('${espacio.nombre}', 'flavor-platform'); ?>" class="flavor-espacio-image">` :
+                `<img src="${espacio.imagen_url}" alt="<?php echo esc_attr__('${espacio.nombre}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="flavor-espacio-image">` :
                 '<div class="flavor-espacio-image"><span class="dashicons dashicons-admin-home"></span></div>';
 
             const equipamiento = espacio.equipamiento ? JSON.parse(espacio.equipamiento).map(eq =>
@@ -594,7 +594,7 @@ jQuery(document).ready(function($) {
                     </div>
                     <div class="flavor-espacio-footer">
                         <button class="button btn-editar-espacio" data-id="${espacio.id}">
-                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', 'flavor-platform'); ?>
+                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="button btn-eliminar-espacio" data-id="${espacio.id}">
                             <span class="dashicons dashicons-trash"></span>
@@ -619,7 +619,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     cargarDatosFormulario(response.data);
-                    $('#modal-espacio-title').text('<?php _e('Editar Espacio', 'flavor-platform'); ?>');
+                    $('#modal-espacio-title').text('<?php _e('Editar Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     $('#modal-espacio').fadeIn();
                 }
             }
@@ -628,7 +628,7 @@ jQuery(document).ready(function($) {
 
     // Eliminar espacio
     $(document).on('click', '.btn-eliminar-espacio', function() {
-        if (!confirm('<?php _e('¿Estás seguro de eliminar este espacio?', 'flavor-platform'); ?>')) return;
+        if (!confirm('<?php _e('¿Estás seguro de eliminar este espacio?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
 
         const espacioId = $(this).data('id');
         $.ajax({
@@ -641,7 +641,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     cargarEspacios();
-                    mostrarNotificacion('<?php _e('Espacio eliminado', 'flavor-platform'); ?>', 'success');
+                    mostrarNotificacion('<?php _e('Espacio eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', 'success');
                 }
             }
         });
@@ -672,14 +672,14 @@ jQuery(document).ready(function($) {
         if (espacio.equipamiento) {
             const equipamiento = JSON.parse(espacio.equipamiento);
             equipamiento.forEach(eq => {
-                $(`input[name="equipamiento[]"][value="<?php echo esc_attr__('${eq}', 'flavor-platform'); ?>"]`).prop('checked', true);
+                $(`input[name="equipamiento[]"][value="<?php echo esc_attr__('${eq}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"]`).prop('checked', true);
             });
         }
 
         if (espacio.dias_disponibles) {
             const dias = JSON.parse(espacio.dias_disponibles);
             dias.forEach(dia => {
-                $(`input[name="dias_disponibles[]"][value="<?php echo esc_attr__('${dia}', 'flavor-platform'); ?>"]`).prop('checked', true);
+                $(`input[name="dias_disponibles[]"][value="<?php echo esc_attr__('${dia}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"]`).prop('checked', true);
             });
         }
     }

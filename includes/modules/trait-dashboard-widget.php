@@ -189,7 +189,7 @@ trait Flavor_Dashboard_Widget_Trait {
             'items'       => [],
             'actions'     => [],
             'empty_state' => sprintf(
-                __('No hay datos de %s', 'flavor-platform'),
+                __('No hay datos de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $this->get_name()
             ),
             'footer'      => $this->get_dashboard_widget_footer(),
@@ -295,7 +295,7 @@ trait Flavor_Dashboard_Widget_Trait {
             $ruta_frontend = substr($admin_slug, strlen('_frontend_:'));
             return [
                 [
-                    'label' => __('Ver más', 'flavor-platform'),
+                    'label' => __('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => home_url($ruta_frontend),
                     'icon'  => 'dashicons-external',
                 ],
@@ -304,7 +304,7 @@ trait Flavor_Dashboard_Widget_Trait {
 
         return [
             [
-                'label' => __('Administrar', 'flavor-platform'),
+                'label' => __('Administrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => admin_url('admin.php?page=' . $admin_slug),
                 'icon'  => 'dashicons-admin-generic',
             ],

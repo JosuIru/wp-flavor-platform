@@ -146,11 +146,11 @@ class Flavor_Payment_Gateway_Manager {
         $gateway = $this->get_gateway($gateway_id);
 
         if (!$gateway) {
-            return new WP_Error('gateway_no_encontrado', __('Gateway de pago no encontrado', 'flavor-platform'));
+            return new WP_Error('gateway_no_encontrado', __('Gateway de pago no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!$gateway->is_available()) {
-            return new WP_Error('gateway_no_disponible', __('Gateway de pago no disponible', 'flavor-platform'));
+            return new WP_Error('gateway_no_disponible', __('Gateway de pago no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $gateway->process_payment($payment_data);
@@ -169,14 +169,14 @@ class Flavor_Payment_Gateway_Manager {
 
         if (empty($gateways_disponibles)) {
             return '<div class="facturas-mensaje facturas-mensaje-warning">' .
-                   esc_html__('No hay métodos de pago online disponibles en este momento.', 'flavor-platform') .
+                   esc_html__('No hay métodos de pago online disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-payment-gateways">
-            <h4><?php esc_html_e('Selecciona método de pago', 'flavor-platform'); ?></h4>
+            <h4><?php esc_html_e('Selecciona método de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
 
             <div class="payment-gateways-grid">
                 <?php foreach ($gateways_disponibles as $id => $gateway) : ?>
@@ -186,7 +186,7 @@ class Flavor_Payment_Gateway_Manager {
                             <span class="gateway-name"><?php echo esc_html($gateway->get_name()); ?></span>
                             <span class="gateway-description"><?php echo esc_html($gateway->get_description()); ?></span>
                             <?php if ($gateway->is_test_mode()) : ?>
-                                <span class="gateway-test-badge"><?php esc_html_e('Modo Test', 'flavor-platform'); ?></span>
+                                <span class="gateway-test-badge"><?php esc_html_e('Modo Test', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </label>
                     </div>
@@ -196,18 +196,18 @@ class Flavor_Payment_Gateway_Manager {
             <div class="payment-gateway-actions">
                 <button type="button" id="btn-pagar-online" class="facturas-btn facturas-btn-primary" disabled>
                     <span class="btn-icon">💳</span>
-                    <?php esc_html_e('Pagar Ahora', 'flavor-platform'); ?>
+                    <?php esc_html_e('Pagar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="btn-amount"><?php echo esc_html(number_format($importe, 2, ',', '.')); ?> €</span>
                 </button>
                 <span class="payment-secure-badge">
                     <span class="secure-icon">🔒</span>
-                    <?php esc_html_e('Pago seguro', 'flavor-platform'); ?>
+                    <?php esc_html_e('Pago seguro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
             <div id="payment-loading" class="payment-loading" style="display:none;">
                 <div class="loading-spinner"></div>
-                <p><?php esc_html_e('Procesando pago...', 'flavor-platform'); ?></p>
+                <p><?php esc_html_e('Procesando pago...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div id="payment-error" class="facturas-mensaje facturas-mensaje-error" style="display:none;"></div>
@@ -228,7 +228,7 @@ class Flavor_Payment_Gateway_Manager {
                     var gateway_id = $('input[name="payment_gateway"]:checked').val();
 
                     if (!gateway_id) {
-                        alert('<?php esc_html_e('Selecciona un método de pago', 'flavor-platform'); ?>');
+                        alert('<?php esc_html_e('Selecciona un método de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         return;
                     }
 
@@ -279,7 +279,7 @@ class Flavor_Payment_Gateway_Manager {
                         },
                         error: function() {
                             $('#payment-loading').hide();
-                            $('#payment-error').text('<?php esc_html_e('Error al procesar el pago', 'flavor-platform'); ?>').show();
+                            $('#payment-error').text('<?php esc_html_e('Error al procesar el pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>').show();
                             $('#btn-pagar-online').prop('disabled', false);
                         }
                     });

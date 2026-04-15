@@ -15,23 +15,23 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-building" style="font-size:40px;width:40px;height:40px;color:#3730a3;"></span>
         </div>
 
-        <h2 style="margin:0 0 12px;font-size:22px;"><?php esc_html_e('No perteneces a ninguna empresa', 'flavor-platform'); ?></h2>
+        <h2 style="margin:0 0 12px;font-size:22px;"><?php esc_html_e('No perteneces a ninguna empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <p style="color:#666;margin:0 0 24px;line-height:1.6;">
-            <?php esc_html_e('Todavía no eres miembro de ninguna empresa. Puedes solicitar unirte a una empresa existente o crear la tuya propia.', 'flavor-platform'); ?>
+            <?php esc_html_e('Todavía no eres miembro de ninguna empresa. Puedes solicitar unirte a una empresa existente o crear la tuya propia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
             <?php if ($puede_crear): ?>
             <button type="button" class="flavor-btn flavor-btn-primary" onclick="document.getElementById('modal-crear').style.display='flex';">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Crear mi empresa', 'flavor-platform'); ?>
+                <?php esc_html_e('Crear mi empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
 
             <a href="#directorio" class="flavor-btn flavor-btn-secondary">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Buscar empresas', 'flavor-platform'); ?>
+                <?php esc_html_e('Buscar empresas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -40,25 +40,25 @@ if (!defined('ABSPATH')) {
     <div class="flavor-grid flavor-grid-3" style="margin-top:40px;">
         <div class="flavor-card" style="text-align:center;">
             <span class="dashicons dashicons-groups" style="font-size:32px;width:32px;height:32px;color:#3b82f6;margin-bottom:12px;"></span>
-            <h4 style="margin:0 0 8px;"><?php esc_html_e('Colabora en equipo', 'flavor-platform'); ?></h4>
+            <h4 style="margin:0 0 8px;"><?php esc_html_e('Colabora en equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <p style="color:#666;font-size:13px;margin:0;">
-                <?php esc_html_e('Gestiona miembros, roles y permisos de tu organización.', 'flavor-platform'); ?>
+                <?php esc_html_e('Gestiona miembros, roles y permisos de tu organización.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <div class="flavor-card" style="text-align:center;">
             <span class="dashicons dashicons-chart-area" style="font-size:32px;width:32px;height:32px;color:#10b981;margin-bottom:12px;"></span>
-            <h4 style="margin:0 0 8px;"><?php esc_html_e('Contabilidad propia', 'flavor-platform'); ?></h4>
+            <h4 style="margin:0 0 8px;"><?php esc_html_e('Contabilidad propia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <p style="color:#666;font-size:13px;margin:0;">
-                <?php esc_html_e('Lleva la contabilidad y facturación de tu empresa de forma independiente.', 'flavor-platform'); ?>
+                <?php esc_html_e('Lleva la contabilidad y facturación de tu empresa de forma independiente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <div class="flavor-card" style="text-align:center;">
             <span class="dashicons dashicons-portfolio" style="font-size:32px;width:32px;height:32px;color:#8b5cf6;margin-bottom:12px;"></span>
-            <h4 style="margin:0 0 8px;"><?php esc_html_e('Documentos seguros', 'flavor-platform'); ?></h4>
+            <h4 style="margin:0 0 8px;"><?php esc_html_e('Documentos seguros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <p style="color:#666;font-size:13px;margin:0;">
-                <?php esc_html_e('Almacena y comparte documentos de forma segura con tu equipo.', 'flavor-platform'); ?>
+                <?php esc_html_e('Almacena y comparte documentos de forma segura con tu equipo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
     </div>
@@ -69,7 +69,7 @@ if (!defined('ABSPATH')) {
 <div id="modal-crear" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;">
     <div style="background:#fff;padding:32px;border-radius:16px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Crear mi empresa', 'flavor-platform'); ?></h3>
+            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Crear mi empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button type="button" onclick="document.getElementById('modal-crear').style.display='none';" style="background:none;border:none;cursor:pointer;">
                 <span class="dashicons dashicons-no-alt" style="font-size:24px;"></span>
             </button>
@@ -79,43 +79,43 @@ if (!defined('ABSPATH')) {
             <?php wp_nonce_field('crear_empresa_frontend'); ?>
 
             <div class="flavor-form-group">
-                <label for="nombre"><?php esc_html_e('Nombre de la empresa', 'flavor-platform'); ?> *</label>
+                <label for="nombre"><?php esc_html_e('Nombre de la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <input type="text" id="nombre" name="nombre" required class="flavor-input" />
             </div>
 
             <div class="flavor-form-group">
-                <label for="cif_nif"><?php esc_html_e('CIF/NIF', 'flavor-platform'); ?></label>
+                <label for="cif_nif"><?php esc_html_e('CIF/NIF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" id="cif_nif" name="cif_nif" class="flavor-input" />
             </div>
 
             <div class="flavor-form-group">
-                <label for="tipo"><?php esc_html_e('Tipo de empresa', 'flavor-platform'); ?></label>
+                <label for="tipo"><?php esc_html_e('Tipo de empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="tipo" name="tipo" class="flavor-select">
-                    <option value="sl"><?php esc_html_e('Sociedad Limitada (S.L.)', 'flavor-platform'); ?></option>
-                    <option value="sa"><?php esc_html_e('Sociedad Anónima (S.A.)', 'flavor-platform'); ?></option>
-                    <option value="autonomo"><?php esc_html_e('Autónomo', 'flavor-platform'); ?></option>
-                    <option value="cooperativa"><?php esc_html_e('Cooperativa', 'flavor-platform'); ?></option>
-                    <option value="asociacion"><?php esc_html_e('Asociación', 'flavor-platform'); ?></option>
-                    <option value="otro"><?php esc_html_e('Otro', 'flavor-platform'); ?></option>
+                    <option value="sl"><?php esc_html_e('Sociedad Limitada (S.L.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="sa"><?php esc_html_e('Sociedad Anónima (S.A.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="autonomo"><?php esc_html_e('Autónomo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="cooperativa"><?php esc_html_e('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="asociacion"><?php esc_html_e('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="otro"><?php esc_html_e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="flavor-form-group">
-                <label for="email"><?php esc_html_e('Email de contacto', 'flavor-platform'); ?></label>
+                <label for="email"><?php esc_html_e('Email de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="email" id="email" name="email" class="flavor-input" />
             </div>
 
             <div class="flavor-form-group">
-                <label for="descripcion"><?php esc_html_e('Descripción breve', 'flavor-platform'); ?></label>
+                <label for="descripcion"><?php esc_html_e('Descripción breve', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea id="descripcion" name="descripcion" rows="3" class="flavor-textarea"></textarea>
             </div>
 
             <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end;">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="document.getElementById('modal-crear').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" name="crear_empresa" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Crear empresa', 'flavor-platform'); ?>
+                    <?php esc_html_e('Crear empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

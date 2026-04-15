@@ -182,7 +182,7 @@ class Flavor_GC_Membership {
         if (!$usuario) {
             return [
                 'success' => false,
-                'error' => __('Usuario no encontrado.', 'flavor-platform'),
+                'error' => __('Usuario no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -191,7 +191,7 @@ class Flavor_GC_Membership {
         if (!$grupo || $grupo->post_type !== 'gc_grupo') {
             return [
                 'success' => false,
-                'error' => __('Grupo de consumo no encontrado.', 'flavor-platform'),
+                'error' => __('Grupo de consumo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -200,7 +200,7 @@ class Flavor_GC_Membership {
         if ($membresia_existente) {
             return [
                 'success' => false,
-                'error' => __('Ya eres miembro de este grupo de consumo.', 'flavor-platform'),
+                'error' => __('Ya eres miembro de este grupo de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -215,7 +215,7 @@ class Flavor_GC_Membership {
         if ($solicitud_pendiente) {
             return [
                 'success' => false,
-                'error' => __('Ya tienes una solicitud pendiente para este grupo.', 'flavor-platform'),
+                'error' => __('Ya tienes una solicitud pendiente para este grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -232,7 +232,7 @@ class Flavor_GC_Membership {
         if ($solicitud_rechazada) {
             return [
                 'success' => false,
-                'error' => __('Tu solicitud anterior fue rechazada. Podras volver a solicitar en 30 dias.', 'flavor-platform'),
+                'error' => __('Tu solicitud anterior fue rechazada. Podras volver a solicitar en 30 dias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -240,7 +240,7 @@ class Flavor_GC_Membership {
         if (empty($datos['acepta_normas'])) {
             return [
                 'success' => false,
-                'error' => __('Debes aceptar las normas del grupo para continuar.', 'flavor-platform'),
+                'error' => __('Debes aceptar las normas del grupo para continuar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -296,7 +296,7 @@ class Flavor_GC_Membership {
             flavor_log_error( 'Solicitud Union Error: ' . $db_error, 'GruposConsumo' );
 
             // Si es admin, mostrar el error real para debugging
-            $mensaje_error = __('Error al procesar la solicitud. Por favor, intentalo de nuevo.', 'flavor-platform');
+            $mensaje_error = __('Error al procesar la solicitud. Por favor, intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             if (current_user_can('manage_options') && !empty($db_error)) {
                 $mensaje_error .= ' (DB: ' . esc_html($db_error) . ')';
             }
@@ -321,7 +321,7 @@ class Flavor_GC_Membership {
         return [
             'success' => true,
             'solicitud_id' => $solicitud_id,
-            'mensaje' => __('Tu solicitud ha sido enviada. Te notificaremos cuando sea revisada.', 'flavor-platform'),
+            'mensaje' => __('Tu solicitud ha sido enviada. Te notificaremos cuando sea revisada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -350,7 +350,7 @@ class Flavor_GC_Membership {
             if ($solicitud->estado !== 'pendiente') {
                 return [
                     'success' => false,
-                    'error' => __('Esta solicitud ya fue procesada.', 'flavor-platform'),
+                    'error' => __('Esta solicitud ya fue procesada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -408,7 +408,7 @@ class Flavor_GC_Membership {
             return [
                 'success' => true,
                 'consumidor_id' => $nuevo_consumidor_id,
-                'mensaje' => __('Solicitud aprobada. El usuario ya es miembro del grupo.', 'flavor-platform'),
+                'mensaje' => __('Solicitud aprobada. El usuario ya es miembro del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -421,7 +421,7 @@ class Flavor_GC_Membership {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Solicitud no encontrada.', 'flavor-platform'),
+                'error' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -462,7 +462,7 @@ class Flavor_GC_Membership {
             if ($solicitud->estado !== 'pendiente') {
                 return [
                     'success' => false,
-                    'error' => __('Esta solicitud ya fue procesada.', 'flavor-platform'),
+                    'error' => __('Esta solicitud ya fue procesada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -482,7 +482,7 @@ class Flavor_GC_Membership {
             if ($resultado === false) {
                 return [
                     'success' => false,
-                    'error' => __('Error al procesar el rechazo.', 'flavor-platform'),
+                    'error' => __('Error al procesar el rechazo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -494,7 +494,7 @@ class Flavor_GC_Membership {
 
             return [
                 'success' => true,
-                'mensaje' => __('Solicitud rechazada correctamente.', 'flavor-platform'),
+                'mensaje' => __('Solicitud rechazada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -507,7 +507,7 @@ class Flavor_GC_Membership {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Solicitud no encontrada.', 'flavor-platform'),
+                'error' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -771,14 +771,14 @@ class Flavor_GC_Membership {
         $grupo = get_post($grupo_id);
 
         $datos = [
-            'titulo' => __('Nueva solicitud de union', 'flavor-platform'),
+            'titulo' => __('Nueva solicitud de union', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mensaje' => sprintf(
-                __('%s ha solicitado unirse al grupo "%s". Revisa la solicitud para aprobarla o rechazarla.', 'flavor-platform'),
+                __('%s ha solicitado unirse al grupo "%s". Revisa la solicitud para aprobarla o rechazarla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $solicitud['usuario_nombre'],
                 $grupo ? $grupo->post_title : ''
             ),
             'enlace' => admin_url('admin.php?page=gc-solicitudes&grupo_id=' . $grupo_id),
-            'enlace_texto' => __('Ver solicitudes pendientes', 'flavor-platform'),
+            'enlace_texto' => __('Ver solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Usar el sistema de notificaciones existente
@@ -817,13 +817,13 @@ class Flavor_GC_Membership {
         }
 
         $datos = [
-            'titulo' => __('Tu solicitud ha sido aprobada', 'flavor-platform'),
+            'titulo' => __('Tu solicitud ha sido aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mensaje' => sprintf(
-                __('Enhorabuena! Tu solicitud para unirte al grupo "%s" ha sido aprobada. Ya puedes empezar a hacer pedidos.', 'flavor-platform'),
+                __('Enhorabuena! Tu solicitud para unirte al grupo "%s" ha sido aprobada. Ya puedes empezar a hacer pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $grupo->post_title
             ),
             'enlace' => home_url('/mi-portal/grupos-consumo/'),
-            'enlace_texto' => __('Ir a Mi Grupo', 'flavor-platform'),
+            'enlace_texto' => __('Ir a Mi Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         wp_mail(
@@ -853,18 +853,18 @@ class Flavor_GC_Membership {
         }
 
         $mensaje = sprintf(
-            __('Lo sentimos, tu solicitud para unirte al grupo "%s" no ha sido aprobada.', 'flavor-platform'),
+            __('Lo sentimos, tu solicitud para unirte al grupo "%s" no ha sido aprobada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $grupo->post_title
         );
 
         if (!empty($motivo)) {
-            $mensaje .= "\n\n" . __('Motivo:', 'flavor-platform') . ' ' . $motivo;
+            $mensaje .= "\n\n" . __('Motivo:', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . $motivo;
         }
 
-        $mensaje .= "\n\n" . __('Si tienes dudas, puedes contactar con los coordinadores del grupo.', 'flavor-platform');
+        $mensaje .= "\n\n" . __('Si tienes dudas, puedes contactar con los coordinadores del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $datos = [
-            'titulo' => __('Sobre tu solicitud de union', 'flavor-platform'),
+            'titulo' => __('Sobre tu solicitud de union', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mensaje' => $mensaje,
         ];
 
@@ -919,7 +919,7 @@ class Flavor_GC_Membership {
 
         if (!empty($datos['enlace'])) {
             $html .= '<p><a href="' . esc_url($datos['enlace']) . '" class="btn">' .
-                     esc_html($datos['enlace_texto'] ?? __('Ver mas', 'flavor-platform')) . '</a></p>';
+                     esc_html($datos['enlace_texto'] ?? __('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</a></p>';
         }
 
         $html .= '</div>
@@ -981,7 +981,7 @@ class Flavor_GC_Membership {
         if (!$grupo || !in_array($grupo->post_type, ['gc_grupo', 'gc_grupo_virtual'], true)) {
             $grupo = new stdClass();
             $grupo->ID = $grupo_id;
-            $grupo->post_title = sprintf(__('Grupo de Consumo de %s', 'flavor-platform'), get_bloginfo('name'));
+            $grupo->post_title = sprintf(__('Grupo de Consumo de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
             $grupo->post_excerpt = '';
             $grupo->post_type = 'gc_grupo_virtual';
         }
@@ -1023,18 +1023,18 @@ class Flavor_GC_Membership {
             <div class="gc-union-icon">
                 <span class="dashicons dashicons-lock"></span>
             </div>
-            <h3><?php _e('Inicia sesion para unirte', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Inicia sesion para unirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php printf(
-                __('Para unirte al grupo "%s" necesitas tener una cuenta e iniciar sesion.', 'flavor-platform'),
+                __('Para unirte al grupo "%s" necesitas tener una cuenta e iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-acciones">
                 <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
-                    <?php _e('Iniciar sesion', 'flavor-platform'); ?>
+                    <?php _e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (get_option('users_can_register')): ?>
                     <a href="<?php echo esc_url(wp_registration_url()); ?>" class="gc-btn gc-btn-outline">
-                        <?php _e('Crear cuenta', 'flavor-platform'); ?>
+                        <?php _e('Crear cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -1053,14 +1053,14 @@ class Flavor_GC_Membership {
             <div class="gc-union-icon gc-icon-success">
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
-            <h3><?php _e('Ya eres miembro', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Ya eres miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php printf(
-                __('Ya eres miembro del grupo "%s". Puedes acceder a todos los beneficios.', 'flavor-platform'),
+                __('Ya eres miembro del grupo "%s". Puedes acceder a todos los beneficios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-acciones">
                 <a href="<?php echo esc_url(add_query_arg('grupo', $grupo->ID, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
-                    <?php _e('Ir a mi grupo', 'flavor-platform'); ?>
+                    <?php _e('Ir a mi grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -1078,9 +1078,9 @@ class Flavor_GC_Membership {
             <div class="gc-union-icon gc-icon-warning">
                 <span class="dashicons dashicons-warning"></span>
             </div>
-            <h3><?php _e('Membresia suspendida', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Membresia suspendida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php printf(
-                __('Tu membresia en "%s" esta actualmente suspendida. Contacta con los coordinadores para mas informacion.', 'flavor-platform'),
+                __('Tu membresia en "%s" esta actualmente suspendida. Contacta con los coordinadores para mas informacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($grupo->post_title)
             ); ?></p>
         </div>
@@ -1098,13 +1098,13 @@ class Flavor_GC_Membership {
             <div class="gc-union-icon gc-icon-info">
                 <span class="dashicons dashicons-clock"></span>
             </div>
-            <h3><?php _e('Solicitud pendiente', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Solicitud pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p><?php printf(
-                __('Tu solicitud para unirte a "%s" esta pendiente de aprobacion. Te notificaremos cuando sea revisada.', 'flavor-platform'),
+                __('Tu solicitud para unirte a "%s" esta pendiente de aprobacion. Te notificaremos cuando sea revisada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-info-adicional">
-                <p><small><?php _e('Las solicitudes suelen revisarse en un plazo de 24-48 horas.', 'flavor-platform'); ?></small></p>
+                <p><small><?php _e('Las solicitudes suelen revisarse en un plazo de 24-48 horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small></p>
             </div>
         </div>
         <?php
@@ -1125,15 +1125,15 @@ class Flavor_GC_Membership {
 - Pagar puntualmente tus pedidos
 - Participar en las asambleas y turnos de reparto cuando sea necesario
 - Avisar con antelacion si no puedes recoger tu pedido
-- Respetar a los demas miembros y productores', 'flavor-platform');
+- Respetar a los demas miembros y productores', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         ob_start();
         ?>
         <div class="gc-formulario-union-wrapper">
             <div class="gc-formulario-header">
-                <h3><?php printf(__('Unirse a "%s"', 'flavor-platform'), esc_html($grupo->post_title)); ?></h3>
-                <p><?php _e('Completa el siguiente formulario para solicitar tu ingreso al grupo.', 'flavor-platform'); ?></p>
+                <h3><?php printf(__('Unirse a "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($grupo->post_title)); ?></h3>
+                <p><?php _e('Completa el siguiente formulario para solicitar tu ingreso al grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <form id="gc-formulario-union" class="gc-formulario-union" data-grupo-id="<?php echo esc_attr($grupo->ID); ?>">
@@ -1143,7 +1143,7 @@ class Flavor_GC_Membership {
                 <!-- Motivacion -->
                 <div class="gc-campo">
                     <label for="gc-motivacion">
-                        <?php _e('Por que quieres unirte a este grupo?', 'flavor-platform'); ?>
+                        <?php _e('Por que quieres unirte a este grupo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="gc-requerido">*</span>
                     </label>
                     <textarea
@@ -1151,14 +1151,14 @@ class Flavor_GC_Membership {
                         name="motivacion"
                         rows="4"
                         required
-                        placeholder="<?php esc_attr_e('Cuentanos un poco sobre ti y por que te interesa formar parte del grupo...', 'flavor-platform'); ?>"
+                        placeholder="<?php esc_attr_e('Cuentanos un poco sobre ti y por que te interesa formar parte del grupo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     ></textarea>
                 </div>
 
                 <!-- Preferencias alimentarias -->
                 <div class="gc-campo">
-                    <label><?php _e('Preferencias alimentarias', 'flavor-platform'); ?></label>
-                    <p class="gc-campo-descripcion"><?php _e('Selecciona las que apliquen a ti o tu familia:', 'flavor-platform'); ?></p>
+                    <label><?php _e('Preferencias alimentarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <p class="gc-campo-descripcion"><?php _e('Selecciona las que apliquen a ti o tu familia:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="gc-checkboxes-grid">
                         <?php foreach (self::PREFERENCIAS_ALIMENTARIAS as $valor => $etiqueta): ?>
                             <label class="gc-checkbox-item">
@@ -1171,23 +1171,23 @@ class Flavor_GC_Membership {
 
                 <!-- Alergias -->
                 <div class="gc-campo">
-                    <label for="gc-alergias"><?php _e('Alergias o intolerancias alimentarias', 'flavor-platform'); ?></label>
+                    <label for="gc-alergias"><?php _e('Alergias o intolerancias alimentarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea
                         id="gc-alergias"
                         name="alergias"
                         rows="2"
-                        placeholder="<?php esc_attr_e('Indica cualquier alergia o intolerancia que debamos conocer...', 'flavor-platform'); ?>"
+                        placeholder="<?php esc_attr_e('Indica cualquier alergia o intolerancia que debamos conocer...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     ></textarea>
                 </div>
 
                 <!-- Como nos conociste -->
                 <div class="gc-campo">
                     <label for="gc-como-conociste">
-                        <?php _e('Como nos conociste?', 'flavor-platform'); ?>
+                        <?php _e('Como nos conociste?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="gc-requerido">*</span>
                     </label>
                     <select id="gc-como-conociste" name="como_nos_conocio" required>
-                        <option value=""><?php _e('Selecciona una opcion...', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Selecciona una opcion...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach (self::COMO_NOS_CONOCISTE as $valor => $etiqueta): ?>
                             <option value="<?php echo esc_attr($valor); ?>"><?php echo esc_html($etiqueta); ?></option>
                         <?php endforeach; ?>
@@ -1197,14 +1197,14 @@ class Flavor_GC_Membership {
                 <!-- Normas del grupo -->
                 <?php if ($mostrar_normas): ?>
                 <div class="gc-campo gc-normas-container">
-                    <label><?php _e('Normas del grupo', 'flavor-platform'); ?></label>
+                    <label><?php _e('Normas del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="gc-normas-texto">
                         <?php echo wp_kses_post(wpautop($normas_grupo)); ?>
                     </div>
                     <label class="gc-checkbox-item gc-checkbox-normas">
                         <input type="checkbox" name="acepta_normas" value="1" required>
                         <span>
-                            <?php _e('He leido y acepto las normas del grupo de consumo', 'flavor-platform'); ?>
+                            <?php _e('He leido y acepto las normas del grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="gc-requerido">*</span>
                         </span>
                     </label>
@@ -1214,10 +1214,10 @@ class Flavor_GC_Membership {
                 <!-- Boton enviar -->
                 <div class="gc-campo gc-campo-submit">
                     <button type="submit" class="gc-btn gc-btn-primary gc-btn-lg">
-                        <span class="gc-btn-texto"><?php _e('Enviar solicitud', 'flavor-platform'); ?></span>
+                        <span class="gc-btn-texto"><?php _e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="gc-btn-loading" style="display: none;">
                             <span class="gc-spinner"></span>
-                            <?php _e('Enviando...', 'flavor-platform'); ?>
+                            <?php _e('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </button>
                 </div>
@@ -1449,7 +1449,7 @@ class Flavor_GC_Membership {
                             $resultado
                                 .removeClass('gc-mensaje-error')
                                 .addClass('gc-mensaje-success')
-                                .html('<strong><?php _e('Solicitud enviada', 'flavor-platform'); ?></strong><br>' + response.data.mensaje)
+                                .html('<strong><?php _e('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + response.data.mensaje)
                                 .show();
 
                             // Ocultar formulario y mostrar mensaje de exito
@@ -1461,7 +1461,7 @@ class Flavor_GC_Membership {
                             $resultado
                                 .removeClass('gc-mensaje-success')
                                 .addClass('gc-mensaje-error')
-                                .html('<strong><?php _e('Error', 'flavor-platform'); ?></strong><br>' + (response.data.error || response.data.mensaje))
+                                .html('<strong><?php _e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + (response.data.error || response.data.mensaje))
                                 .show();
 
                             $btn.prop('disabled', false);
@@ -1473,7 +1473,7 @@ class Flavor_GC_Membership {
                         $resultado
                             .removeClass('gc-mensaje-success')
                             .addClass('gc-mensaje-error')
-                            .html('<?php _e('Error de conexion. Por favor, intentalo de nuevo.', 'flavor-platform'); ?>')
+                            .html('<?php _e('Error de conexion. Por favor, intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')
                             .show();
 
                         $btn.prop('disabled', false);
@@ -1498,11 +1498,11 @@ class Flavor_GC_Membership {
     public function ajax_solicitar_union() {
         // Verificar nonce
         if (!check_ajax_referer('gc_solicitar_union', 'gc_union_nonce', false)) {
-            wp_send_json_error(['error' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Asegurar que la tabla existe antes de continuar
@@ -1512,7 +1512,7 @@ class Flavor_GC_Membership {
         $usuario_id = get_current_user_id();
 
         if (!$grupo_id) {
-            wp_send_json_error(['error' => __('Debes seleccionar un grupo de consumo.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Debes seleccionar un grupo de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -1532,7 +1532,7 @@ class Flavor_GC_Membership {
                 wp_send_json_error($resultado);
             }
         } catch (Exception $e) {
-            wp_send_json_error(['error' => __('Error interno. Por favor, contacta al administrador.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Error interno. Por favor, contacta al administrador.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1543,13 +1543,13 @@ class Flavor_GC_Membership {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
-            wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = isset($_POST['solicitud_id']) ? absint($_POST['solicitud_id']) : 0;
 
         if (!$solicitud_id) {
-            wp_send_json_error(['error' => __('Solicitud no especificada.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Solicitud no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->aprobar_solicitud($solicitud_id);
@@ -1568,14 +1568,14 @@ class Flavor_GC_Membership {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
-            wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = isset($_POST['solicitud_id']) ? absint($_POST['solicitud_id']) : 0;
         $motivo = isset($_POST['motivo']) ? sanitize_textarea_field($_POST['motivo']) : '';
 
         if (!$solicitud_id) {
-            wp_send_json_error(['error' => __('Solicitud no especificada.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Solicitud no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->rechazar_solicitud($solicitud_id, $motivo);
@@ -1594,7 +1594,7 @@ class Flavor_GC_Membership {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
-            wp_send_json_error(['error' => __('No tienes permisos.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = isset($_POST['solicitud_id']) ? absint($_POST['solicitud_id']) : 0;
@@ -1602,7 +1602,7 @@ class Flavor_GC_Membership {
         $solicitud = $this->obtener_solicitud($solicitud_id);
 
         if (!$solicitud) {
-            wp_send_json_error(['error' => __('Solicitud no encontrada.', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Decodificar preferencias
@@ -1697,16 +1697,16 @@ class Flavor_GC_Membership {
         ?>
         <div class="gc-grupos-lista">
             <div class="gc-grupos-header">
-                <h3><?php esc_html_e('Grupos de Consumo Disponibles', 'flavor-platform'); ?></h3>
+                <h3><?php esc_html_e('Grupos de Consumo Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="gc-grupos-descripcion">
-                    <?php esc_html_e('Únete a un grupo de consumo para acceder a productos locales y ecológicos a precios justos.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Únete a un grupo de consumo para acceder a productos locales y ecológicos a precios justos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($grupos_locales)): ?>
                 <div class="gc-grupos-vacio">
                     <span class="dashicons dashicons-info"></span>
-                    <p><?php esc_html_e('No hay grupos de consumo disponibles en este momento.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay grupos de consumo disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="gc-grupos-grid">
@@ -1730,7 +1730,7 @@ class Flavor_GC_Membership {
                         $descripcion = $es_grupo_virtual
                             ? $grupo->post_excerpt
                             : (get_post_meta($grupo_id, '_gc_descripcion', true) ?: $grupo->post_excerpt);
-                        $descripcion = $descripcion ?: __('Grupo de consumo local', 'flavor-platform');
+                        $descripcion = $descripcion ?: __('Grupo de consumo local', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
                         $ubicacion = $es_grupo_virtual ? '' : get_post_meta($grupo_id, '_gc_ubicacion', true);
                         $total_miembros = $this->contar_miembros_grupo($grupo_id);
@@ -1739,7 +1739,7 @@ class Flavor_GC_Membership {
                             <div class="gc-grupo-imagen">
                                 <img src="<?php echo esc_url($imagen_url); ?>" alt="<?php echo esc_attr($grupo->post_title); ?>">
                                 <?php if ($es_miembro): ?>
-                                    <span class="gc-badge-miembro"><?php esc_html_e('Eres miembro', 'flavor-platform'); ?></span>
+                                    <span class="gc-badge-miembro"><?php esc_html_e('Eres miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="gc-grupo-contenido">
@@ -1754,30 +1754,30 @@ class Flavor_GC_Membership {
                                 <div class="gc-grupo-stats">
                                     <span class="gc-grupo-miembros">
                                         <span class="dashicons dashicons-groups"></span>
-                                        <?php printf(esc_html__('%d miembros', 'flavor-platform'), $total_miembros); ?>
+                                        <?php printf(esc_html__('%d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_miembros); ?>
                                     </span>
                                 </div>
                             </div>
                             <div class="gc-grupo-acciones">
                                 <?php if ($es_miembro): ?>
                                     <a href="<?php echo esc_url(add_query_arg('grupo', $grupo_id, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
-                                        <?php esc_html_e('Ir al grupo', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Ir al grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php elseif ($tiene_solicitud_pendiente): ?>
                                     <button class="gc-btn gc-btn-disabled" disabled>
                                         <span class="dashicons dashicons-clock"></span>
-                                        <?php esc_html_e('Solicitud pendiente', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Solicitud pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php elseif ($usuario_id): ?>
                                     <a href="<?php echo esc_url(add_query_arg('grupo', $grupo_id, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>"
                                        class="gc-btn gc-btn-primary gc-btn-unirse"
                                        data-grupo-id="<?php echo esc_attr($grupo_id); ?>">
                                         <span class="dashicons dashicons-plus-alt"></span>
-                                        <?php esc_html_e('Solicitar unión', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Solicitar unión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php else: ?>
                                     <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-secondary">
-                                        <?php esc_html_e('Inicia sesión para unirte', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Inicia sesión para unirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -1791,9 +1791,9 @@ class Flavor_GC_Membership {
                     <div class="gc-red-nodos-header">
                         <h4>
                             <span class="dashicons dashicons-networking"></span>
-                            <?php esc_html_e('Buscar en la Red de Nodos', 'flavor-platform'); ?>
+                            <?php esc_html_e('Buscar en la Red de Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
-                        <p><?php esc_html_e('Explora grupos de consumo, bancos de tiempo y comunidades de otros nodos de la red.', 'flavor-platform'); ?></p>
+                        <p><?php esc_html_e('Explora grupos de consumo, bancos de tiempo y comunidades de otros nodos de la red.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <?php
                     // Mostrar contenido de la red usando el shortcode de comunidades
@@ -2033,8 +2033,8 @@ class Flavor_GC_Membership {
         // Si no hay CPT o no hay grupos, crear un grupo virtual para este sitio
         $grupo_virtual = new stdClass();
         $grupo_virtual->ID = 1; // ID virtual
-        $grupo_virtual->post_title = sprintf(__('Grupo de Consumo de %s', 'flavor-platform'), get_bloginfo('name'));
-        $grupo_virtual->post_excerpt = __('Únete a nuestro grupo de consumo local para acceder a productos frescos y ecológicos directamente de productores cercanos.', 'flavor-platform');
+        $grupo_virtual->post_title = sprintf(__('Grupo de Consumo de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
+        $grupo_virtual->post_excerpt = __('Únete a nuestro grupo de consumo local para acceder a productos frescos y ecológicos directamente de productores cercanos.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $grupo_virtual->post_type = 'gc_grupo_virtual';
 
         return [$grupo_virtual];

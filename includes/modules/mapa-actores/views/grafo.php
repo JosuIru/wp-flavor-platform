@@ -25,14 +25,14 @@ $relaciones = $wpdb->get_results(
 ?>
 
 <section class="flavor-actores-grafo">
-    <h2><?php esc_html_e('Red de relaciones', 'flavor-platform'); ?></h2>
-    <p><?php esc_html_e('Listado de enlaces entre actores para analisis de red.', 'flavor-platform'); ?></p>
+    <h2><?php esc_html_e('Red de relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+    <p><?php esc_html_e('Listado de enlaces entre actores para analisis de red.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
     <?php if (empty($relaciones)): ?>
-        <p><?php esc_html_e('No hay relaciones registradas.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('No hay relaciones registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <table class="widefat striped">
-            <thead><tr><th><?php esc_html_e('Origen', 'flavor-platform'); ?></th><th><?php esc_html_e('Relacion', 'flavor-platform'); ?></th><th><?php esc_html_e('Destino', 'flavor-platform'); ?></th><th><?php esc_html_e('Intensidad', 'flavor-platform'); ?></th><th><?php esc_html_e('Bidireccional', 'flavor-platform'); ?></th></tr></thead>
+            <thead><tr><th><?php esc_html_e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Relacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Intensidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Bidireccional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
             <tbody>
                 <?php foreach ($relaciones as $relacion): ?>
                     <tr>
@@ -40,7 +40,7 @@ $relaciones = $wpdb->get_results(
                         <td><?php echo esc_html($relacion->tipo_relacion); ?></td>
                         <td><?php echo esc_html($relacion->destino_nombre ?: '#'.$relacion->actor_destino_id); ?></td>
                         <td><?php echo esc_html($relacion->intensidad); ?></td>
-                        <td><?php echo esc_html((int) $relacion->bidireccional === 1 ? __('Si', 'flavor-platform') : __('No', 'flavor-platform')); ?></td>
+                        <td><?php echo esc_html((int) $relacion->bidireccional === 1 ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

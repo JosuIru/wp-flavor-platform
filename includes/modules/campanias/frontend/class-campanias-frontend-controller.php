@@ -175,12 +175,12 @@ class Flavor_Campanias_Frontend_Controller {
             'tipos' => $this->tipos,
             'estados' => $this->estados,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-platform'),
-                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
-                'firma_registrada' => __('Tu firma ha sido registrada', 'flavor-platform'),
-                'ya_firmado' => __('Ya has firmado esta campaña', 'flavor-platform'),
-                'participando' => __('Ya estás participando', 'flavor-platform'),
-                'sin_campanias' => __('No hay campañas activas', 'flavor-platform'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'firma_registrada' => __('Tu firma ha sido registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ya_firmado' => __('Ya has firmado esta campaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'participando' => __('Ya estás participando', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_campanias' => __('No hay campañas activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'usuarioId' => get_current_user_id()
         ]);

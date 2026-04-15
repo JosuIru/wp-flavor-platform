@@ -29,7 +29,7 @@ class Flavor_Dex_Solana_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['dex-solana'] = [
-            'label' => __('DEX Solana', 'flavor-platform'),
+            'label' => __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-randomize',
             'callback' => [$this, 'render_tab'],
             'priority' => 85,

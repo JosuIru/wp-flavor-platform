@@ -521,6 +521,8 @@ class Flavor_Eventos_API {
      * AJAX: Guardar evento (crear o actualizar)
      */
     public function ajax_guardar_evento() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         // Verificar permisos
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos para gestionar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -600,6 +602,8 @@ class Flavor_Eventos_API {
      * AJAX: Listar eventos para panel de administración
      */
     public function ajax_listar_eventos() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         // Verificar permisos
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
@@ -665,6 +669,8 @@ class Flavor_Eventos_API {
      * AJAX: Obtener datos de un evento específico
      */
     public function ajax_obtener_evento() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -704,6 +710,8 @@ class Flavor_Eventos_API {
      * AJAX: Eliminar evento
      */
     public function ajax_eliminar_evento() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('delete_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos para eliminar eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -730,6 +738,8 @@ class Flavor_Eventos_API {
      * AJAX: Listar tipos de entrada para un evento
      */
     public function ajax_listar_tipos_entrada() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -797,6 +807,8 @@ class Flavor_Eventos_API {
      * AJAX: Listar asistentes de un evento
      */
     public function ajax_listar_asistentes() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -889,6 +901,8 @@ class Flavor_Eventos_API {
      * AJAX: Hacer check-in de un asistente
      */
     public function ajax_hacer_checkin() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -970,6 +984,8 @@ class Flavor_Eventos_API {
      * AJAX: Exportar lista de asistentes a CSV
      */
     public function ajax_exportar_asistentes() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -1058,6 +1074,8 @@ class Flavor_Eventos_API {
      * AJAX: Obtener estadísticas de entradas para un evento
      */
     public function ajax_estadisticas_entradas() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -1161,6 +1179,8 @@ class Flavor_Eventos_API {
      * Usado por: views/calendario.php
      */
     public function ajax_obtener_calendario() {
+        check_ajax_referer('flavor_eventos_nonce', 'nonce');
+
         // Verificar permisos - los usuarios autenticados pueden ver el calendario admin
         if (!current_user_can('edit_posts')) {
             wp_send_json_error(['message' => __('No tienes permisos para ver el calendario.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);

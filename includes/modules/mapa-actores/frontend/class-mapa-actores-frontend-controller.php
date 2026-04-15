@@ -146,11 +146,11 @@ class Flavor_Mapa_Actores_Frontend_Controller {
             'nonce' => wp_create_nonce('flavor_mapa_actores_nonce'),
             'tipos' => $this->tipos_actor,
             'strings' => [
-                'buscando' => __('Buscando...', 'flavor-platform'),
-                'sin_resultados' => __('No se encontraron actores', 'flavor-platform'),
-                'error' => __('Error al procesar', 'flavor-platform'),
-                'propuesto' => __('Actor propuesto correctamente', 'flavor-platform'),
-                'cargando' => __('Cargando...', 'flavor-platform'),
+                'buscando' => __('Buscando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron actores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'propuesto' => __('Actor propuesto correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -163,7 +163,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['mapa-actores'] = [
-            'label' => __('Mapa de Actores', 'flavor-platform'),
+            'label' => __('Mapa de Actores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'networking',
             'callback' => [$this, 'render_tab_mapa_actores'],
             'orden' => 85,
@@ -204,8 +204,8 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         ?>
         <div class="flavor-panel flavor-mapa-actores-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Mapa de Actores', 'flavor-platform'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Directorio de actores del territorio', 'flavor-platform'); ?></p>
+                <h2><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Mapa de Actores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Directorio de actores del territorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -213,14 +213,14 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                     <span class="flavor-kpi-icon dashicons dashicons-groups"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_actores); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Actores', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Actores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-admin-links"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_relaciones); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Relaciones', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php foreach (array_slice($por_tipo, 0, 2) as $tipo): ?>
@@ -236,7 +236,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
 
             <?php if (!empty($recientes)): ?>
                 <div class="flavor-panel-section">
-                    <h3><?php esc_html_e('Actores recientes', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Actores recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-actores-grid">
                         <?php foreach ($recientes as $actor):
                             $tipo_info = $this->tipos_actor[$actor->tipo] ?? $this->tipos_actor['otro'];
@@ -258,20 +258,20 @@ class Flavor_Mapa_Actores_Frontend_Controller {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/mapa-actores/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-admin-site-alt3"></span>
-                    <?php esc_html_e('Ver Mapa', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/mapa-actores/directorio/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Directorio', 'flavor-platform'); ?>
+                    <?php esc_html_e('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/mapa-actores/grafo/')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-networking"></span>
-                    <?php esc_html_e('Grafo', 'flavor-platform'); ?>
+                    <?php esc_html_e('Grafo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (is_user_logged_in()): ?>
                     <a href="<?php echo esc_url(home_url('/mapa-actores/proponer/')); ?>" class="flavor-btn flavor-btn-outline">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Proponer', 'flavor-platform'); ?>
+                        <?php esc_html_e('Proponer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -333,7 +333,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         global $wpdb;
 
         if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_actores)) {
-            return '<p class="flavor-notice">' . esc_html__('Directorio no disponible.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Directorio no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $where = "WHERE activo = 1";
@@ -361,22 +361,22 @@ class Flavor_Mapa_Actores_Frontend_Controller {
             <!-- Filtros -->
             <div class="flavor-filtros-bar">
                 <select id="filtro-tipo" class="flavor-select">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($this->tipos_actor as $key => $tipo): ?>
                         <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($tipo['nombre']); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <select id="filtro-ambito" class="flavor-select">
-                    <option value=""><?php esc_html_e('Todos los ámbitos', 'flavor-platform'); ?></option>
-                    <option value="local"><?php esc_html_e('Local', 'flavor-platform'); ?></option>
-                    <option value="comarcal"><?php esc_html_e('Comarcal', 'flavor-platform'); ?></option>
-                    <option value="provincial"><?php esc_html_e('Provincial', 'flavor-platform'); ?></option>
-                    <option value="autonomico"><?php esc_html_e('Autonómico', 'flavor-platform'); ?></option>
-                    <option value="estatal"><?php esc_html_e('Estatal', 'flavor-platform'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los ámbitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="local"><?php esc_html_e('Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="comarcal"><?php esc_html_e('Comarcal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="provincial"><?php esc_html_e('Provincial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="autonomico"><?php esc_html_e('Autonómico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="estatal"><?php esc_html_e('Estatal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <div class="flavor-search-box">
                     <span class="dashicons dashicons-search"></span>
-                    <input type="text" id="busqueda-actor" placeholder="<?php esc_attr_e('Buscar actor...', 'flavor-platform'); ?>" class="flavor-input">
+                    <input type="text" id="busqueda-actor" placeholder="<?php esc_attr_e('Buscar actor...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="flavor-input">
                 </div>
             </div>
 
@@ -385,7 +385,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                 <?php if (empty($actores)): ?>
                     <div class="flavor-empty-state">
                         <span class="dashicons dashicons-networking"></span>
-                        <p><?php esc_html_e('No hay actores registrados.', 'flavor-platform'); ?></p>
+                        <p><?php esc_html_e('No hay actores registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($actores as $actor):
@@ -414,7 +414,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                             </div>
                             <div class="flavor-actor-actions">
                                 <a href="<?php echo esc_url(home_url('/mapa-actores/actor/' . $actor->id . '/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                                    <?php esc_html_e('Ver detalles', 'flavor-platform'); ?>
+                                    <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </article>
@@ -442,7 +442,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         }
 
         if (!$actor_id) {
-            return '<p class="flavor-notice">' . esc_html__('Actor no especificado.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Actor no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -452,7 +452,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         ));
 
         if (!$actor) {
-            return '<p class="flavor-notice">' . esc_html__('Actor no encontrado.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Actor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $tipo_info = $this->tipos_actor[$actor->tipo] ?? $this->tipos_actor['otro'];
@@ -490,7 +490,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
 
             <?php if (!empty($actor->descripcion)): ?>
                 <div class="flavor-actor-seccion">
-                    <h3><?php esc_html_e('Descripción', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p><?php echo nl2br(esc_html($actor->descripcion)); ?></p>
                 </div>
             <?php endif; ?>
@@ -500,7 +500,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                     <div class="flavor-dato">
                         <span class="dashicons dashicons-location"></span>
                         <div>
-                            <strong><?php esc_html_e('Ubicación', 'flavor-platform'); ?></strong>
+                            <strong><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <span><?php echo esc_html(trim($actor->direccion . ', ' . $actor->municipio . ' ' . $actor->codigo_postal, ', ')); ?></span>
                         </div>
                     </div>
@@ -509,7 +509,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                     <div class="flavor-dato">
                         <span class="dashicons dashicons-phone"></span>
                         <div>
-                            <strong><?php esc_html_e('Teléfono', 'flavor-platform'); ?></strong>
+                            <strong><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="tel:<?php echo esc_attr($actor->telefono); ?>"><?php echo esc_html($actor->telefono); ?></a>
                         </div>
                     </div>
@@ -518,7 +518,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                     <div class="flavor-dato">
                         <span class="dashicons dashicons-email"></span>
                         <div>
-                            <strong><?php esc_html_e('Email', 'flavor-platform'); ?></strong>
+                            <strong><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="mailto:<?php echo esc_attr($actor->email); ?>"><?php echo esc_html($actor->email); ?></a>
                         </div>
                     </div>
@@ -527,7 +527,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                     <div class="flavor-dato">
                         <span class="dashicons dashicons-admin-site"></span>
                         <div>
-                            <strong><?php esc_html_e('Web', 'flavor-platform'); ?></strong>
+                            <strong><?php esc_html_e('Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="<?php echo esc_url($actor->web); ?>" target="_blank"><?php echo esc_html($actor->web); ?></a>
                         </div>
                     </div>
@@ -536,7 +536,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
 
             <?php if (!empty($relaciones)): ?>
                 <div class="flavor-actor-seccion">
-                    <h3><?php esc_html_e('Relaciones', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-relaciones-lista">
                         <?php foreach ($relaciones as $rel):
                             $rel_tipo_info = $this->tipos_actor[$rel->actor_tipo] ?? $this->tipos_actor['otro'];
@@ -569,9 +569,9 @@ class Flavor_Mapa_Actores_Frontend_Controller {
             <form id="form-buscar-actores" class="flavor-form-inline">
                 <div class="flavor-search-box flavor-search-box-lg">
                     <span class="dashicons dashicons-search"></span>
-                    <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar actores por nombre, descripción...', 'flavor-platform'); ?>" class="flavor-input">
+                    <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar actores por nombre, descripción...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="flavor-input">
                 </div>
-                <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Buscar', 'flavor-platform'); ?></button>
+                <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
             <div id="resultados-actores" class="flavor-actores-resultados"></div>
         </div>
@@ -606,57 +606,57 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         $this->enqueue_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para proponer actores.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para proponer actores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="flavor-proponer-actor">
-            <h2><?php esc_html_e('Proponer Nuevo Actor', 'flavor-platform'); ?></h2>
-            <p class="flavor-form-intro"><?php esc_html_e('Ayuda a completar el mapa de actores de tu territorio.', 'flavor-platform'); ?></p>
+            <h2><?php esc_html_e('Proponer Nuevo Actor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-form-intro"><?php esc_html_e('Ayuda a completar el mapa de actores de tu territorio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="form-proponer-actor" class="flavor-form">
                 <?php wp_nonce_field('flavor_mapa_actores_nonce', 'mapa_actores_nonce'); ?>
 
                 <div class="flavor-form-row">
-                    <label for="nombre"><?php esc_html_e('Nombre del actor *', 'flavor-platform'); ?></label>
+                    <label for="nombre"><?php esc_html_e('Nombre del actor *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="nombre" id="nombre" class="flavor-input" required>
                 </div>
 
                 <div class="flavor-form-grid flavor-form-grid-2">
                     <div class="flavor-form-row">
-                        <label for="tipo"><?php esc_html_e('Tipo *', 'flavor-platform'); ?></label>
+                        <label for="tipo"><?php esc_html_e('Tipo *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="tipo" id="tipo" class="flavor-select" required>
-                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-platform'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($this->tipos_actor as $key => $tipo): ?>
                                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($tipo['icono'] . ' ' . $tipo['nombre']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="flavor-form-row">
-                        <label for="ambito"><?php esc_html_e('Ámbito', 'flavor-platform'); ?></label>
+                        <label for="ambito"><?php esc_html_e('Ámbito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="ambito" id="ambito" class="flavor-select">
-                            <option value="local"><?php esc_html_e('Local', 'flavor-platform'); ?></option>
-                            <option value="comarcal"><?php esc_html_e('Comarcal', 'flavor-platform'); ?></option>
-                            <option value="provincial"><?php esc_html_e('Provincial', 'flavor-platform'); ?></option>
-                            <option value="autonomico"><?php esc_html_e('Autonómico', 'flavor-platform'); ?></option>
-                            <option value="estatal"><?php esc_html_e('Estatal', 'flavor-platform'); ?></option>
+                            <option value="local"><?php esc_html_e('Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="comarcal"><?php esc_html_e('Comarcal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="provincial"><?php esc_html_e('Provincial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="autonomico"><?php esc_html_e('Autonómico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="estatal"><?php esc_html_e('Estatal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
-                    <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
+                    <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="descripcion" id="descripcion" class="flavor-textarea" rows="3"></textarea>
                 </div>
 
                 <div class="flavor-form-grid flavor-form-grid-2">
                     <div class="flavor-form-row">
-                        <label for="municipio"><?php esc_html_e('Municipio', 'flavor-platform'); ?></label>
+                        <label for="municipio"><?php esc_html_e('Municipio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="municipio" id="municipio" class="flavor-input">
                     </div>
                     <div class="flavor-form-row">
-                        <label for="web"><?php esc_html_e('Web', 'flavor-platform'); ?></label>
+                        <label for="web"><?php esc_html_e('Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="url" name="web" id="web" class="flavor-input" placeholder="https://">
                     </div>
                 </div>
@@ -664,7 +664,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Proponer Actor', 'flavor-platform'); ?>
+                        <?php esc_html_e('Proponer Actor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -743,18 +743,18 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         check_ajax_referer('flavor_mapa_actores_nonce', 'mapa_actores_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
         $tipo = sanitize_key($_POST['tipo'] ?? '');
 
         if (empty($nombre) || empty($tipo)) {
-            wp_send_json_error(['message' => __('Nombre y tipo son obligatorios', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Nombre y tipo son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!isset($this->tipos_actor[$tipo])) {
-            wp_send_json_error(['message' => __('Tipo no válido', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Tipo no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -773,7 +773,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         ]);
 
         wp_send_json_success([
-            'message' => __('Actor propuesto correctamente. Será revisado pronto.', 'flavor-platform'),
+            'message' => __('Actor propuesto correctamente. Será revisado pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'actor_id' => $wpdb->insert_id,
         ]);
     }
@@ -786,7 +786,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
 
         $actor_id = intval($_POST['actor_id'] ?? 0);
         if (!$actor_id) {
-            wp_send_json_error(['message' => __('Actor no especificado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Actor no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -796,7 +796,7 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         ));
 
         if (!$actor) {
-            wp_send_json_error(['message' => __('Actor no encontrado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Actor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo_info = $this->tipos_actor[$actor->tipo] ?? $this->tipos_actor['otro'];

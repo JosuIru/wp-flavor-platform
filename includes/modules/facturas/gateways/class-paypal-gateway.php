@@ -40,8 +40,8 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
      */
     protected function init() {
         $this->id = 'paypal';
-        $this->name = __('PayPal', 'flavor-platform');
-        $this->description = __('Pago seguro con PayPal o tarjeta', 'flavor-platform');
+        $this->name = __('PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Pago seguro con PayPal o tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $this->load_credentials();
 
@@ -73,7 +73,7 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
      */
     public function process_payment($payment_data) {
         if (!$this->is_available()) {
-            return new WP_Error('gateway_no_disponible', __('PayPal no está disponible', 'flavor-platform'));
+            return new WP_Error('gateway_no_disponible', __('PayPal no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $factura_id = absint($payment_data['factura_id']);
@@ -101,7 +101,7 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
             }
 
             if (empty($approve_url)) {
-                return new WP_Error('paypal_error', __('No se pudo obtener URL de aprobación', 'flavor-platform'));
+                return new WP_Error('paypal_error', __('No se pudo obtener URL de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             // Guardar order_id
@@ -141,7 +141,7 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
-        return $body['access_token'] ?? new WP_Error('paypal_auth_error', __('Error al autenticar con PayPal', 'flavor-platform'));
+        return $body['access_token'] ?? new WP_Error('paypal_auth_error', __('Error al autenticar con PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -187,7 +187,7 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if (isset($body['error'])) {
-            return new WP_Error('paypal_create_order_error', $body['error']['message'] ?? __('Error al crear order', 'flavor-platform'));
+            return new WP_Error('paypal_create_order_error', $body['error']['message'] ?? __('Error al crear order', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $body;
@@ -247,7 +247,7 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
             'fecha_pago' => current_time('Y-m-d'),
             'metodo_pago' => 'paypal',
             'referencia' => $order_id,
-            'notas' => sprintf(__('Pago procesado automáticamente via PayPal. Order ID: %s', 'flavor-platform'), $order_id),
+            'notas' => sprintf(__('Pago procesado automáticamente via PayPal. Order ID: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id),
         ]);
 
         if (is_wp_error($resultado_pago)) {

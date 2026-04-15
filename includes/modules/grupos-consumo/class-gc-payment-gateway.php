@@ -317,7 +317,7 @@ abstract class Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar pasarela', 'flavor-platform'),
+                'label' => __('Habilitar pasarela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
         ];
@@ -346,7 +346,7 @@ abstract class Flavor_GC_Payment_Gateway {
         // Por defecto, indicar que no soporta reembolsos automáticos
         return [
             'success' => false,
-            'error' => __('Esta pasarela no soporta reembolsos automáticos.', 'flavor-platform'),
+            'error' => __('Esta pasarela no soporta reembolsos automáticos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -358,12 +358,12 @@ abstract class Flavor_GC_Payment_Gateway {
      */
     public static function get_status_label(string $status): string {
         $labels = [
-            'pendiente' => __('Pendiente', 'flavor-platform'),
-            'procesando' => __('Procesando', 'flavor-platform'),
-            'completado' => __('Completado', 'flavor-platform'),
-            'fallido' => __('Fallido', 'flavor-platform'),
-            'reembolsado' => __('Reembolsado', 'flavor-platform'),
-            'cancelado' => __('Cancelado', 'flavor-platform'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'procesando' => __('Procesando', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completado' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'fallido' => __('Fallido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reembolsado' => __('Reembolsado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$status] ?? $status;

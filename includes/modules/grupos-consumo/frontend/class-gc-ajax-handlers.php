@@ -98,7 +98,7 @@ class Flavor_GC_Ajax_Handlers {
     private function verificar_seguridad($accion = 'gc_nonce') {
         if (!check_ajax_referer($accion, 'nonce', false)) {
             wp_send_json_error([
-                'message' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', 'flavor-platform'),
+                'message' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'invalid_nonce'
             ], 403);
             return false;
@@ -106,7 +106,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (!is_user_logged_in()) {
             wp_send_json_error([
-                'message' => __('Debes iniciar sesion para realizar esta accion.', 'flavor-platform'),
+                'message' => __('Debes iniciar sesion para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'not_logged_in',
                 'redirect' => wp_login_url(wp_get_referer())
             ], 401);
@@ -166,7 +166,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (!$producto_id) {
             wp_send_json_error([
-                'message' => __('Producto no valido.', 'flavor-platform'),
+                'message' => __('Producto no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'invalid_product'
             ]);
         }
@@ -175,7 +175,7 @@ class Flavor_GC_Ajax_Handlers {
         $producto = get_post($producto_id);
         if (!$producto || $producto->post_type !== 'gc_producto') {
             wp_send_json_error([
-                'message' => __('El producto no existe.', 'flavor-platform'),
+                'message' => __('El producto no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'product_not_found'
             ]);
         }
@@ -185,7 +185,7 @@ class Flavor_GC_Ajax_Handlers {
         if (!empty($stock) && floatval($stock) < $cantidad) {
             wp_send_json_error([
                 'message' => sprintf(
-                    __('Stock insuficiente. Solo quedan %s unidades disponibles.', 'flavor-platform'),
+                    __('Stock insuficiente. Solo quedan %s unidades disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     number_format($stock, 0, ',', '.')
                 ),
                 'code' => 'insufficient_stock',
@@ -236,7 +236,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if ($resultado === false) {
             wp_send_json_error([
-                'message' => __('Error al agregar el producto. Intentalo de nuevo.', 'flavor-platform'),
+                'message' => __('Error al agregar el producto. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'db_error'
             ]);
         }
@@ -245,7 +245,7 @@ class Flavor_GC_Ajax_Handlers {
         $datos_carrito = $this->obtener_datos_carrito($usuario_id);
 
         wp_send_json_success([
-            'message' => __('Producto agregado al pedido.', 'flavor-platform'),
+            'message' => __('Producto agregado al pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'producto_id' => $producto_id,
             'cantidad' => $cantidad,
             'carrito' => $datos_carrito,
@@ -266,7 +266,7 @@ class Flavor_GC_Ajax_Handlers {
         // Validar que tenemos al menos un identificador
         if (!$item_id && !$producto_id) {
             wp_send_json_error([
-                'message' => __('Datos incompletos.', 'flavor-platform'),
+                'message' => __('Datos incompletos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'missing_data'
             ]);
         }
@@ -282,7 +282,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (!$item) {
             wp_send_json_error([
-                'message' => __('Producto no encontrado en tu pedido.', 'flavor-platform'),
+                'message' => __('Producto no encontrado en tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'item_not_found'
             ]);
         }
@@ -298,7 +298,7 @@ class Flavor_GC_Ajax_Handlers {
         if (!empty($stock) && floatval($stock) < $cantidad) {
             wp_send_json_error([
                 'message' => sprintf(
-                    __('Stock insuficiente. Maximo disponible: %s', 'flavor-platform'),
+                    __('Stock insuficiente. Maximo disponible: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     number_format($stock, 0, ',', '.')
                 ),
                 'code' => 'insufficient_stock',
@@ -319,7 +319,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if ($resultado === false) {
             wp_send_json_error([
-                'message' => __('Error al actualizar la cantidad.', 'flavor-platform'),
+                'message' => __('Error al actualizar la cantidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'db_error'
             ]);
         }
@@ -332,7 +332,7 @@ class Flavor_GC_Ajax_Handlers {
         $datos_carrito = $this->obtener_datos_carrito($usuario_id);
 
         wp_send_json_success([
-            'message' => __('Cantidad actualizada.', 'flavor-platform'),
+            'message' => __('Cantidad actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'item_id' => $item->id,
             'producto_id' => $item->producto_id,
             'cantidad' => $cantidad,
@@ -355,7 +355,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (!$item_id && !$producto_id) {
             wp_send_json_error([
-                'message' => __('Datos incompletos.', 'flavor-platform'),
+                'message' => __('Datos incompletos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'missing_data'
             ]);
         }
@@ -383,7 +383,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if ($resultado === false) {
             wp_send_json_error([
-                'message' => __('Error al eliminar el producto.', 'flavor-platform'),
+                'message' => __('Error al eliminar el producto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'db_error'
             ]);
         }
@@ -392,7 +392,7 @@ class Flavor_GC_Ajax_Handlers {
         $datos_carrito = $this->obtener_datos_carrito($usuario_id);
 
         wp_send_json_success([
-            'message' => __('Producto eliminado del pedido.', 'flavor-platform'),
+            'message' => __('Producto eliminado del pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'producto_id' => $producto_id,
             'carrito' => $datos_carrito,
         ]);
@@ -427,7 +427,7 @@ class Flavor_GC_Ajax_Handlers {
         );
 
         wp_send_json_success([
-            'message' => __('Tu pedido ha sido vaciado.', 'flavor-platform'),
+            'message' => __('Tu pedido ha sido vaciado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'carrito' => [
                 'items' => [],
                 'total_items' => 0,
@@ -449,7 +449,7 @@ class Flavor_GC_Ajax_Handlers {
         $ciclo = $this->obtener_ciclo_activo();
         if (!$ciclo) {
             wp_send_json_error([
-                'message' => __('No hay ningun ciclo de pedidos abierto actualmente.', 'flavor-platform'),
+                'message' => __('No hay ningun ciclo de pedidos abierto actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'no_active_cycle'
             ]);
         }
@@ -457,7 +457,7 @@ class Flavor_GC_Ajax_Handlers {
         // Verificar que no haya pasado la fecha de cierre
         if (strtotime($ciclo['fecha_cierre']) < current_time('timestamp')) {
             wp_send_json_error([
-                'message' => __('El ciclo de pedidos ha cerrado. Ya no es posible realizar pedidos.', 'flavor-platform'),
+                'message' => __('El ciclo de pedidos ha cerrado. Ya no es posible realizar pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'cycle_closed'
             ]);
         }
@@ -475,7 +475,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (empty($items)) {
             wp_send_json_error([
-                'message' => __('Tu pedido esta vacio. Agrega productos antes de confirmar.', 'flavor-platform'),
+                'message' => __('Tu pedido esta vacio. Agrega productos antes de confirmar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'empty_cart'
             ]);
         }
@@ -493,7 +493,7 @@ class Flavor_GC_Ajax_Handlers {
             // Verificar stock
             if (!empty($stock) && floatval($stock) < $item->cantidad) {
                 $errores_stock[] = sprintf(
-                    __('%s: solo quedan %s disponibles', 'flavor-platform'),
+                    __('%s: solo quedan %s disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $item->nombre,
                     number_format($stock, 0)
                 );
@@ -515,7 +515,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if (!empty($errores_stock)) {
             wp_send_json_error([
-                'message' => __('Algunos productos no tienen stock suficiente:', 'flavor-platform'),
+                'message' => __('Algunos productos no tienen stock suficiente:', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'errores' => $errores_stock,
                 'code' => 'stock_issues'
             ]);
@@ -543,7 +543,7 @@ class Flavor_GC_Ajax_Handlers {
 
         if ($resultado_pedido === false) {
             wp_send_json_error([
-                'message' => __('Error al crear el pedido. Por favor, intentalo de nuevo.', 'flavor-platform'),
+                'message' => __('Error al crear el pedido. Por favor, intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'db_error'
             ]);
         }
@@ -566,7 +566,7 @@ class Flavor_GC_Ajax_Handlers {
         do_action('gc_pedido_confirmado', $pedido_id, $usuario_id, $detalles);
 
         wp_send_json_success([
-            'message' => __('Tu pedido ha sido confirmado correctamente.', 'flavor-platform'),
+            'message' => __('Tu pedido ha sido confirmado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'pedido_id' => $pedido_id,
             'total' => $total_final,
             'total_formateado' => number_format($total_final, 2, ',', '.') . ' EUR',
@@ -754,7 +754,7 @@ class Flavor_GC_Ajax_Handlers {
         $datos_carrito = $this->obtener_datos_carrito($usuario_id, true);
 
         wp_send_json_success([
-            'message' => __('Carrito sincronizado.', 'flavor-platform'),
+            'message' => __('Carrito sincronizado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'carrito' => $datos_carrito,
         ]);
     }

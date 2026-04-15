@@ -81,21 +81,21 @@ class Flavor_Encuestas_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['encuestas-pendientes'] = [
-            'label'    => __('Encuestas', 'flavor-platform'),
+            'label'    => __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'forms',
             'callback' => [$this, 'render_tab_pendientes'],
             'orden'    => 50,
         ];
 
         $tabs['encuestas-mis-respuestas'] = [
-            'label'    => __('Mis Respuestas', 'flavor-platform'),
+            'label'    => __('Mis Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'chart-bar',
             'callback' => [$this, 'render_tab_mis_respuestas'],
             'orden'    => 51,
         ];
 
         $tabs['encuestas-resultados'] = [
-            'label'    => __('Resultados', 'flavor-platform'),
+            'label'    => __('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'chart-pie',
             'callback' => [$this, 'render_tab_resultados'],
             'orden'    => 52,
@@ -119,7 +119,7 @@ class Flavor_Encuestas_Dashboard_Tab {
     public function render_tab_pendientes() {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -172,8 +172,8 @@ class Flavor_Encuestas_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-encuestas-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-forms"></span> <?php esc_html_e('Encuestas Activas', 'flavor-platform'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Participa en las encuestas de la comunidad', 'flavor-platform'); ?></p>
+                <h2><span class="dashicons dashicons-forms"></span> <?php esc_html_e('Encuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Participa en las encuestas de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -181,28 +181,28 @@ class Flavor_Encuestas_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-forms"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_activas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Encuestas Activas', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Encuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-warning">
                     <span class="flavor-kpi-icon dashicons dashicons-clock"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($pendientes_responder); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($respondidas_total); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Respondidas', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Respondidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-edit"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_encuestas_creadas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Encuestas', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -210,11 +210,11 @@ class Flavor_Encuestas_Dashboard_Tab {
             <?php if (empty($encuestas_pendientes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <p><?php esc_html_e('Has respondido todas las encuestas disponibles. ¡Excelente participacion!', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Has respondido todas las encuestas disponibles. ¡Excelente participacion!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-encuestas-lista">
-                    <h3><?php esc_html_e('Encuestas pendientes de responder', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Encuestas pendientes de responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-cards-grid">
                         <?php foreach ($encuestas_pendientes as $encuesta): ?>
                             <div class="flavor-card flavor-encuesta-card">
@@ -226,7 +226,7 @@ class Flavor_Encuestas_Dashboard_Tab {
                                         <span class="flavor-card-meta">
                                             <span class="dashicons dashicons-calendar-alt"></span>
                                             <?php echo esc_html(sprintf(
-                                                __('Cierra: %s', 'flavor-platform'),
+                                                __('Cierra: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 date_i18n('d/m/Y', strtotime($encuesta->fecha_cierre))
                                             )); ?>
                                         </span>
@@ -242,13 +242,13 @@ class Flavor_Encuestas_Dashboard_Tab {
                                     <span class="flavor-card-stats">
                                         <span class="dashicons dashicons-groups"></span>
                                         <?php echo esc_html(sprintf(
-                                            __('%d participantes', 'flavor-platform'),
+                                            __('%d participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $encuesta->total_participantes ?? 0
                                         )); ?>
                                     </span>
                                     <a href="<?php echo esc_url(home_url('/encuestas/' . $encuesta->id . '/')); ?>"
                                        class="flavor-btn flavor-btn-primary flavor-btn-sm">
-                                        <?php esc_html_e('Responder', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </div>
                             </div>
@@ -260,11 +260,11 @@ class Flavor_Encuestas_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/encuestas/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Ver Todas', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/encuestas/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Crear Encuesta', 'flavor-platform'); ?>
+                    <?php esc_html_e('Crear Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -277,7 +277,7 @@ class Flavor_Encuestas_Dashboard_Tab {
     public function render_tab_mis_respuestas() {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -300,16 +300,16 @@ class Flavor_Encuestas_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-mis-respuestas-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Mis Respuestas', 'flavor-platform'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de encuestas en las que has participado', 'flavor-platform'); ?></p>
+                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Mis Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de encuestas en las que has participado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($encuestas_respondidas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <p><?php esc_html_e('Aun no has respondido ninguna encuesta.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Aun no has respondido ninguna encuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/encuestas/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ver encuestas disponibles', 'flavor-platform'); ?>
+                        <?php esc_html_e('Ver encuestas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -317,12 +317,12 @@ class Flavor_Encuestas_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Encuesta', 'flavor-platform'); ?></th>
-                                <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                                <th><?php esc_html_e('Fecha Respuesta', 'flavor-platform'); ?></th>
-                                <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Fecha Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -353,11 +353,11 @@ class Flavor_Encuestas_Dashboard_Tab {
                                             <a href="<?php echo esc_url(home_url('/encuestas/' . $encuesta->id . '/resultados/')); ?>"
                                                class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                                 <span class="dashicons dashicons-chart-pie"></span>
-                                                <?php esc_html_e('Resultados', 'flavor-platform'); ?>
+                                                <?php esc_html_e('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php else: ?>
                                             <span class="flavor-text-muted">
-                                                <?php esc_html_e('Resultados no disponibles', 'flavor-platform'); ?>
+                                                <?php esc_html_e('Resultados no disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         <?php endif; ?>
                                     </td>
@@ -377,7 +377,7 @@ class Flavor_Encuestas_Dashboard_Tab {
     public function render_tab_resultados() {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -407,14 +407,14 @@ class Flavor_Encuestas_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-resultados-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Resultados de Encuestas', 'flavor-platform'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Consulta los resultados de las encuestas publicas', 'flavor-platform'); ?></p>
+                <h2><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Resultados de Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Consulta los resultados de las encuestas publicas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($encuestas_con_resultados)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <p><?php esc_html_e('No hay resultados de encuestas disponibles todavia.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay resultados de encuestas disponibles todavia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-cards-grid flavor-cards-grid-2">
@@ -426,7 +426,7 @@ class Flavor_Encuestas_Dashboard_Tab {
                                 </span>
                                 <?php if ($encuesta->autor_id == $usuario_id): ?>
                                     <span class="flavor-badge flavor-badge-info">
-                                        <?php esc_html_e('Tu encuesta', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Tu encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -435,11 +435,11 @@ class Flavor_Encuestas_Dashboard_Tab {
                             <div class="flavor-resultado-stats">
                                 <div class="flavor-stat">
                                     <span class="flavor-stat-value"><?php echo number_format_i18n($encuesta->total_participantes ?? 0); ?></span>
-                                    <span class="flavor-stat-label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></span>
+                                    <span class="flavor-stat-label"><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flavor-stat">
                                     <span class="flavor-stat-value"><?php echo number_format_i18n($encuesta->total_respuestas ?? 0); ?></span>
-                                    <span class="flavor-stat-label"><?php esc_html_e('Respuestas', 'flavor-platform'); ?></span>
+                                    <span class="flavor-stat-label"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
 
@@ -451,7 +451,7 @@ class Flavor_Encuestas_Dashboard_Tab {
                                 <a href="<?php echo esc_url(home_url('/encuestas/' . $encuesta->id . '/resultados/')); ?>"
                                    class="flavor-btn flavor-btn-primary flavor-btn-sm">
                                     <span class="dashicons dashicons-visibility"></span>
-                                    <?php esc_html_e('Ver Resultados', 'flavor-platform'); ?>
+                                    <?php esc_html_e('Ver Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>

@@ -42,7 +42,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Radio no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Radio no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -64,8 +64,8 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             'url_stream' => '',
             'url_stream_hd' => '',
             'frecuencia_fm' => '',
-            'nombre_radio' => __('Radio Comunitaria', 'flavor-platform'),
-            'slogan' => __('La voz de tu barrio', 'flavor-platform'),
+            'nombre_radio' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'slogan' => __('La voz de tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'permite_locutores_comunidad' => true,
             'duracion_maxima_programa' => 120,
             'duracion_minima_programa' => 30,
@@ -184,7 +184,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         add_filter('cron_schedules', function($schedules) {
             $schedules['every_minute'] = [
                 'interval' => 60,
-                'display' => __('Cada minuto', 'flavor-platform')
+                'display' => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ];
             return $schedules;
         });
@@ -798,7 +798,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_dedicatorias']) {
-            return new WP_REST_Response(['error' => __('Las dedicatorias están deshabilitadas', 'flavor-platform')], 403);
+            return new WP_REST_Response(['error' => __('Las dedicatorias están deshabilitadas', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         global $wpdb;
@@ -825,7 +825,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $cancion_artista = sanitize_text_field($request->get_param('cancion_artista') ?: '');
 
         if (empty($de) || empty($para) || empty($mensaje)) {
-            return new WP_REST_Response(['error' => __('Completa todos los campos obligatorios', 'flavor-platform')], 400);
+            return new WP_REST_Response(['error' => __('Completa todos los campos obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $wpdb->insert($tabla, [
@@ -849,7 +849,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Tu dedicatoria ha sido enviada y será revisada por nuestro equipo', 'flavor-platform'),
+            'mensaje' => __('Tu dedicatoria ha sido enviada y será revisada por nuestro equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'dedicatoria_id' => $wpdb->insert_id,
         ], 201);
     }
@@ -980,7 +980,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['chat_en_vivo']) {
-            return new WP_REST_Response(['error' => __('El chat está deshabilitado', 'flavor-platform')], 403);
+            return new WP_REST_Response(['error' => __('El chat está deshabilitado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         global $wpdb;
@@ -992,7 +992,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (empty($mensaje)) {
-            return new WP_REST_Response(['error' => __('El mensaje no puede estar vacío', 'flavor-platform')], 400);
+            return new WP_REST_Response(['error' => __('El mensaje no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         // Verificar que la emisión tiene chat activo
@@ -1002,7 +1002,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$emision || !$emision->chat_activo || $emision->estado !== 'en_emision') {
-            return new WP_REST_Response(['error' => __('El chat no está disponible para esta emisión', 'flavor-platform')], 400);
+            return new WP_REST_Response(['error' => __('El chat no está disponible para esta emisión', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         // Rate limiting simple
@@ -1012,7 +1012,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($ultimo_mensaje && (strtotime('now') - strtotime($ultimo_mensaje)) < 3) {
-            return new WP_REST_Response(['error' => __('Espera unos segundos entre mensajes', 'flavor-platform')], 429);
+            return new WP_REST_Response(['error' => __('Espera unos segundos entre mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN)], 429);
         }
 
         $tipo = 'mensaje';
@@ -1053,7 +1053,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_locutores_comunidad']) {
-            return new WP_REST_Response(['error' => __('Las propuestas de programas están cerradas', 'flavor-platform')], 403);
+            return new WP_REST_Response(['error' => __('Las propuestas de programas están cerradas', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         global $wpdb;
@@ -1067,7 +1067,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($pendiente) {
-            return new WP_REST_Response(['error' => __('Ya tienes una propuesta pendiente de revisión', 'flavor-platform')], 400);
+            return new WP_REST_Response(['error' => __('Ya tienes una propuesta pendiente de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $nombre = sanitize_text_field($request->get_param('nombre'));
@@ -1079,7 +1079,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $demo_url = esc_url_raw($request->get_param('demo_url') ?: '');
 
         if (empty($nombre) || empty($descripcion)) {
-            return new WP_REST_Response(['error' => __('Nombre y descripción son obligatorios', 'flavor-platform')], 400);
+            return new WP_REST_Response(['error' => __('Nombre y descripción son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $wpdb->insert($tabla, [
@@ -1104,7 +1104,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('limite', 'flavor-platform'),
+            'mensaje' => __('limite', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1263,7 +1263,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1279,7 +1279,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? __('Error', 'flavor-platform'));
+            wp_send_json_error($data['error'] ?? __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1287,7 +1287,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1300,7 +1300,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? __('Error', 'flavor-platform'));
+            wp_send_json_error($data['error'] ?? __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1316,7 +1316,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1334,7 +1334,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? __('Error', 'flavor-platform'));
+            wp_send_json_error($data['error'] ?? __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1350,7 +1350,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     public function ajax_mis_dedicatorias() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $request = new WP_REST_Request('GET');
@@ -1376,7 +1376,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1401,15 +1401,15 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             ]);
         }
 
-        $estado_dedicatoria = $accion === 'aprobar' ? __('aprobada', 'flavor-platform') : __('rechazada', 'flavor-platform');
-        wp_send_json_success(['mensaje' => sprintf(__('Dedicatoria %s', 'flavor-platform'), $estado_dedicatoria)]);
+        $estado_dedicatoria = $accion === 'aprobar' ? __('aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        wp_send_json_success(['mensaje' => sprintf(__('Dedicatoria %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $estado_dedicatoria)]);
     }
 
     public function ajax_admin_emitir_dedicatoria() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1422,14 +1422,14 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             'fecha_emision' => current_time('mysql'),
         ], ['id' => $dedicatoria_id], ['%s', '%s'], ['%d']);
 
-        wp_send_json_success(['mensaje' => __('Marcada como emitida', 'flavor-platform')]);
+        wp_send_json_success(['mensaje' => __('Marcada como emitida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_admin_aprobar_programa() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1442,7 +1442,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $propuesta = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_propuestas WHERE id = %d", $propuesta_id));
 
         if (!$propuesta) {
-            wp_send_json_error(__('Propuesta no encontrada', 'flavor-platform'));
+            wp_send_json_error(__('Propuesta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($accion === 'aprobar') {
@@ -1484,15 +1484,15 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             'nombre' => $propuesta->nombre_programa,
         ]);
 
-        $estado_propuesta = $accion === 'aprobar' ? __('aprobada', 'flavor-platform') : __('rechazada', 'flavor-platform');
-        wp_send_json_success(['mensaje' => sprintf(__('Propuesta %s', 'flavor-platform'), $estado_propuesta)]);
+        $estado_propuesta = $accion === 'aprobar' ? __('aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        wp_send_json_success(['mensaje' => sprintf(__('Propuesta %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $estado_propuesta)]);
     }
 
     public function ajax_admin_crear_emision() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1506,7 +1506,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $fecha_fin = sanitize_text_field($_POST['fecha_fin']);
 
         if (empty($titulo) || empty($fecha_inicio) || empty($fecha_fin)) {
-            wp_send_json_error(__('Completa los campos obligatorios', 'flavor-platform'));
+            wp_send_json_error(__('Completa los campos obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->insert($tabla, [
@@ -1520,7 +1520,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
         wp_send_json_success([
-            'mensaje' => __('Emisión programada', 'flavor-platform'),
+            'mensaje' => __('Emisión programada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'emision_id' => $wpdb->insert_id,
         ]);
     }
@@ -1529,7 +1529,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1546,14 +1546,14 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             'en_vivo' => 1,
         ], ['id' => $emision_id], ['%s', '%d'], ['%d']);
 
-        wp_send_json_success(['mensaje' => __('Emisión iniciada', 'flavor-platform')]);
+        wp_send_json_success(['mensaje' => __('Emisión iniciada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_admin_finalizar_emision() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1580,14 +1580,14 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             $this->actualizar_promedio_programa($emision->programa_id);
         }
 
-        wp_send_json_success(['mensaje' => __('Emisión finalizada', 'flavor-platform')]);
+        wp_send_json_success(['mensaje' => __('Emisión finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_admin_stats() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1668,31 +1668,31 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
                 <?php if ($atts['mostrar_programa'] === 'true'): ?>
                 <div class="radio-programa-actual">
-                    <span class="radio-badge-vivo"><?php _e('En Vivo', 'flavor-platform'); ?></span>
-                    <span class="radio-programa-nombre"><?php _e('Cargando...', 'flavor-platform'); ?></span>
+                    <span class="radio-badge-vivo"><?php _e('En Vivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span class="radio-programa-nombre"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
 
             <div class="radio-player-controls">
-                <button class="radio-btn-play" aria-label="<?php esc_attr_e('Reproducir', 'flavor-platform'); ?>">
+                <button class="radio-btn-play" aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play"></span>
                 </button>
                 <div class="radio-volume">
-                    <button class="radio-btn-mute" aria-label="<?php esc_attr_e('Silenciar', 'flavor-platform'); ?>">
+                    <button class="radio-btn-mute" aria-label="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-volumeon"></span>
                     </button>
                     <input type="range" class="radio-volume-slider" min="0" max="100" value="80">
                 </div>
                 <?php if ($settings['url_stream_hd']): ?>
-                <button class="radio-btn-hd" title="<?php esc_attr_e('Alta Calidad', 'flavor-platform'); ?>"><?php echo esc_html__('HD', 'flavor-platform'); ?></button>
+                <button class="radio-btn-hd" title="<?php esc_attr_e('Alta Calidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('HD', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php endif; ?>
             </div>
 
             <?php if ($atts['mostrar_oyentes'] === 'true' && $settings['oyentes_contador_publico']): ?>
             <div class="radio-oyentes">
                 <span class="dashicons dashicons-groups"></span>
-                <span class="radio-oyentes-count">0</span> <?php _e('escuchando', 'flavor-platform'); ?>
+                <span class="radio-oyentes-count">0</span> <?php _e('escuchando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <?php endif; ?>
         </div>
@@ -1717,13 +1717,13 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
              data-dias="<?php echo esc_attr($atts['dias']); ?>">
 
             <div class="programacion-nav">
-                <button class="programacion-nav-prev"><?php echo esc_html__('&lsaquo;', 'flavor-platform'); ?></button>
+                <button class="programacion-nav-prev"><?php echo esc_html__('&lsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <span class="programacion-nav-titulo"></span>
-                <button class="programacion-nav-next"><?php echo esc_html__('&rsaquo;', 'flavor-platform'); ?></button>
+                <button class="programacion-nav-next"><?php echo esc_html__('&rsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
 
             <div class="programacion-grid">
-                <div class="mm-loading"><?php _e('Cargando programación...', 'flavor-platform'); ?></div>
+                <div class="mm-loading"><?php _e('Cargando programación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <?php
@@ -1737,57 +1737,57 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_dedicatorias']) {
-            return '<p class="radio-aviso">' . __('Las dedicatorias no están disponibles en este momento.', 'flavor-platform') . '</p>';
+            return '<p class="radio-aviso">' . __('Las dedicatorias no están disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="radio-aviso">' . __('Debes iniciar sesión para enviar dedicatorias.', 'flavor-platform') . '</p>';
+            return '<p class="radio-aviso">' . __('Debes iniciar sesión para enviar dedicatorias.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         $this->enqueue_frontend_assets();
         ?>
         <div class="flavor-radio-dedicatorias">
-            <h3><?php _e('Enviar Dedicatoria', 'flavor-platform'); ?></h3>
-            <p class="dedicatoria-info"><?php printf(__('Puedes enviar hasta %d dedicatorias por día.', 'flavor-platform'), $settings['max_dedicatorias_dia']); ?></p>
+            <h3><?php _e('Enviar Dedicatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="dedicatoria-info"><?php printf(__('Puedes enviar hasta %d dedicatorias por día.', FLAVOR_PLATFORM_TEXT_DOMAIN), $settings['max_dedicatorias_dia']); ?></p>
 
             <form id="radio-form-dedicatoria">
                 <?php wp_nonce_field('flavor_radio_nonce', 'radio_nonce'); ?>
 
                 <div class="form-grupo">
-                    <label><?php _e('De', 'flavor-platform'); ?></label>
-                    <input type="text" name="de" required placeholder="<?php esc_attr_e('Tu nombre', 'flavor-platform'); ?>">
+                    <label><?php _e('De', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="de" required placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Para', 'flavor-platform'); ?></label>
-                    <input type="text" name="para" required placeholder="<?php esc_attr_e('A quién va dedicada', 'flavor-platform'); ?>">
+                    <label><?php _e('Para', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="para" required placeholder="<?php esc_attr_e('A quién va dedicada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Mensaje', 'flavor-platform'); ?></label>
-                    <textarea name="mensaje" required rows="4" placeholder="<?php esc_attr_e('Escribe tu mensaje de dedicatoria...', 'flavor-platform'); ?>"></textarea>
+                    <label><?php _e('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea name="mensaje" required rows="4" placeholder="<?php esc_attr_e('Escribe tu mensaje de dedicatoria...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-grupo form-grupo-inline">
                     <div class="form-grupo-half">
-                        <label><?php _e('Canción (opcional)', 'flavor-platform'); ?></label>
-                        <input type="text" name="cancion_titulo" placeholder="<?php esc_attr_e('Título de la canción', 'flavor-platform'); ?>">
+                        <label><?php _e('Canción (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" name="cancion_titulo" placeholder="<?php esc_attr_e('Título de la canción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="form-grupo-half">
-                        <label><?php echo esc_html__('&nbsp;', 'flavor-platform'); ?></label>
-                        <input type="text" name="cancion_artista" placeholder="<?php esc_attr_e('Artista', 'flavor-platform'); ?>">
+                        <label><?php echo esc_html__('&nbsp;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" name="cancion_artista" placeholder="<?php esc_attr_e('Artista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Enviar Dedicatoria', 'flavor-platform'); ?>
+                    <?php _e('Enviar Dedicatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
 
             <div class="mis-dedicatorias" style="margin-top: 2rem;">
-                <h4><?php _e('Mis Dedicatorias', 'flavor-platform'); ?></h4>
+                <h4><?php _e('Mis Dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="mis-dedicatorias-lista"></div>
             </div>
         </div>
@@ -1810,8 +1810,8 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="flavor-radio-chat">
             <div class="radio-chat-header">
-                <h4><?php _e('Chat en Vivo', 'flavor-platform'); ?></h4>
-                <span class="radio-chat-status"><?php _e('Conectando...', 'flavor-platform'); ?></span>
+                <h4><?php _e('Chat en Vivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                <span class="radio-chat-status"><?php _e('Conectando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <div class="radio-chat-mensajes"></div>
@@ -1819,11 +1819,11 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             <?php if (is_user_logged_in()): ?>
             <form class="radio-chat-form">
                 <?php wp_nonce_field('flavor_radio_nonce', 'radio_nonce'); ?>
-                <input type="text" name="mensaje" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-platform'); ?>" autocomplete="off">
+                <input type="text" name="mensaje" placeholder="<?php esc_attr_e('Escribe un mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" autocomplete="off">
                 <button type="submit"><span class="dashicons dashicons-arrow-right-alt"></span></button>
             </form>
             <?php else: ?>
-            <p class="radio-chat-login"><?php _e('Inicia sesión para participar en el chat', 'flavor-platform'); ?></p>
+            <p class="radio-chat-login"><?php _e('Inicia sesión para participar en el chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -1837,76 +1837,76 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_locutores_comunidad']) {
-            return '<p class="radio-aviso">' . __('Las propuestas de programas están cerradas temporalmente.', 'flavor-platform') . '</p>';
+            return '<p class="radio-aviso">' . __('Las propuestas de programas están cerradas temporalmente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="radio-aviso">' . __('Debes iniciar sesión para proponer un programa.', 'flavor-platform') . '</p>';
+            return '<p class="radio-aviso">' . __('Debes iniciar sesión para proponer un programa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         $this->enqueue_frontend_assets();
         ?>
         <div class="flavor-radio-proponer">
-            <h3><?php _e('Proponer un Programa', 'flavor-platform'); ?></h3>
-            <p class="proponer-info"><?php _e('¿Tienes una idea para un programa de radio? Cuéntanos y podrías tener tu propio espacio en nuestra emisora.', 'flavor-platform'); ?></p>
+            <h3><?php _e('Proponer un Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="proponer-info"><?php _e('¿Tienes una idea para un programa de radio? Cuéntanos y podrías tener tu propio espacio en nuestra emisora.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="radio-form-proponer">
                 <?php wp_nonce_field('flavor_radio_nonce', 'radio_nonce'); ?>
 
                 <div class="form-grupo">
-                    <label><?php _e('Nombre del programa', 'flavor-platform'); ?> *</label>
+                    <label><?php _e('Nombre del programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="nombre" required>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Descripción', 'flavor-platform'); ?> *</label>
-                    <textarea name="descripcion" required rows="4" placeholder="<?php esc_attr_e('Describe de qué tratará tu programa, el formato, secciones, público objetivo...', 'flavor-platform'); ?>"></textarea>
+                    <label><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
+                    <textarea name="descripcion" required rows="4" placeholder="<?php esc_attr_e('Describe de qué tratará tu programa, el formato, secciones, público objetivo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Categoría', 'flavor-platform'); ?></label>
+                    <label><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="categoria">
-                        <option value=""><?php _e('Selecciona...', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('musica', 'flavor-platform'); ?>"><?php _e('Música', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('noticias', 'flavor-platform'); ?>"><?php _e('Noticias', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('entretenimiento', 'flavor-platform'); ?>"><?php _e('Entretenimiento', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('cultura', 'flavor-platform'); ?>"><?php _e('Cultura', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('deportes', 'flavor-platform'); ?>"><?php _e('Deportes', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('otro', 'flavor-platform'); ?>"><?php _e('Otro', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('musica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Música', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('noticias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="form-grupo form-grupo-inline">
                     <div class="form-grupo-half">
-                        <label><?php _e('Frecuencia deseada', 'flavor-platform'); ?></label>
+                        <label><?php _e('Frecuencia deseada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="frecuencia">
-                            <option value=""><?php _e('Selecciona...', 'flavor-platform'); ?></option>
-                            <option value="<?php echo esc_attr__('diario', 'flavor-platform'); ?>"><?php _e('Diario', 'flavor-platform'); ?></option>
-                            <option value="<?php echo esc_attr__('semanal', 'flavor-platform'); ?>"><?php _e('Semanal', 'flavor-platform'); ?></option>
-                            <option value="<?php echo esc_attr__('quincenal', 'flavor-platform'); ?>"><?php _e('Quincenal', 'flavor-platform'); ?></option>
-                            <option value="<?php echo esc_attr__('mensual', 'flavor-platform'); ?>"><?php _e('Mensual', 'flavor-platform'); ?></option>
+                            <option value=""><?php _e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('quincenal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Quincenal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                     <div class="form-grupo-half">
-                        <label><?php _e('Horario preferido', 'flavor-platform'); ?></label>
-                        <input type="text" name="horario" placeholder="<?php esc_attr_e('Ej: Viernes 18:00', 'flavor-platform'); ?>">
+                        <label><?php _e('Horario preferido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" name="horario" placeholder="<?php esc_attr_e('Ej: Viernes 18:00', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Experiencia previa', 'flavor-platform'); ?></label>
-                    <textarea name="experiencia" rows="3" placeholder="<?php esc_attr_e('Cuéntanos si tienes experiencia en radio, podcasting, o similar...', 'flavor-platform'); ?>"></textarea>
+                    <label><?php _e('Experiencia previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea name="experiencia" rows="3" placeholder="<?php esc_attr_e('Cuéntanos si tienes experiencia en radio, podcasting, o similar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Demo o muestra (URL)', 'flavor-platform'); ?></label>
-                    <input type="url" name="demo_url" placeholder="<?php esc_attr_e('Link a un audio de muestra si lo tienes', 'flavor-platform'); ?>">
+                    <label><?php _e('Demo o muestra (URL)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="url" name="demo_url" placeholder="<?php esc_attr_e('Link a un audio de muestra si lo tienes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <button type="submit" class="btn btn-primary">
                     <span class="dashicons dashicons-microphone"></span>
-                    <?php _e('Enviar Propuesta', 'flavor-platform'); ?>
+                    <?php _e('Enviar Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -1932,12 +1932,12 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
             <div class="podcasts-filtros">
                 <select class="podcasts-filtro-programa">
-                    <option value=""><?php _e('Todos los programas', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="podcasts-lista">
-                <div class="mm-loading"><?php _e('Cargando podcasts...', 'flavor-platform'); ?></div>
+                <div class="mm-loading"><?php _e('Cargando podcasts...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <div class="podcasts-paginacion"></div>
@@ -1951,7 +1951,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
      */
     public function shortcode_mis_programas($atts = []) {
         if (!is_user_logged_in()) {
-            return '<p class="radio-aviso">' . __('Debes iniciar sesión para ver tus programas.', 'flavor-platform') . '</p>';
+            return '<p class="radio-aviso">' . __('Debes iniciar sesión para ver tus programas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -1969,12 +1969,12 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="flavor-radio-mis-programas">
             <?php if (empty($programas)) : ?>
-                <p><?php esc_html_e('Todavía no tienes programas asignados.', 'flavor-platform'); ?></p>
+                <p><?php esc_html_e('Todavía no tienes programas asignados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else : ?>
                 <ul class="radio-programas-lista">
                     <?php foreach ($programas as $programa) : ?>
                         <li>
-                            <strong><?php echo esc_html($programa->nombre ?: __('Programa', 'flavor-platform')); ?></strong>
+                            <strong><?php echo esc_html($programa->nombre ?: __('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             <?php if (!empty($programa->categoria)) : ?>
                                 <span><?php echo esc_html($programa->categoria); ?></span>
                             <?php endif; ?>
@@ -2111,7 +2111,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     private function action_enviar_dedicatoria($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('POST');
@@ -2126,7 +2126,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     private function action_mis_dedicatorias($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         return $this->rest_mis_dedicatorias(new WP_REST_Request('GET'))->get_data();
     }
@@ -2140,7 +2140,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     private function action_enviar_chat($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('POST');
@@ -2152,7 +2152,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
 
     private function action_proponer_programa($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('POST');
@@ -2216,12 +2216,12 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     private function action_foro_programa($params) {
         $programa = $this->resolve_contextual_programa($params);
         if (!$programa) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su foro.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del programa', 'flavor-platform') . '</h2>'
+            . '<h2>' . esc_html__('Foro del programa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($programa['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
@@ -2231,18 +2231,18 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     private function action_chat_programa($params) {
         $programa = $this->resolve_contextual_programa($params);
         if (!$programa) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su chat.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este programa.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este programa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del programa', 'flavor-platform') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del programa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?programa_id=' . absint($programa['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-platform')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
             . '</div>';
@@ -2251,14 +2251,14 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     private function action_multimedia_programa($params) {
         $programa = $this->resolve_contextual_programa($params);
         if (!$programa) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver sus archivos.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Multimedia del programa', 'flavor-platform') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Multimedia del programa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?programa_id=' . absint($programa['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-platform')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
             . '</div>';
@@ -2267,18 +2267,18 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     private function action_red_social_programa($params) {
         $programa = $this->resolve_contextual_programa($params);
         if (!$programa) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su actividad social.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este programa.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este programa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del programa', 'flavor-platform') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del programa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?programa_id=' . absint($programa['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-platform')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
             . '</div>';
@@ -2385,9 +2385,9 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-platform',
-            __('Radio', 'flavor-platform'),
-            __('Radio', 'flavor-platform'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-radio',
             [$this, 'render_admin_page']
@@ -2402,8 +2402,8 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if (file_exists($template)) {
             include $template;
         } else {
-            echo '<div class="wrap"><h1>' . __('Radio Comunitaria', 'flavor-platform') . '</h1>';
-            echo '<p>' . __('Panel de administración de la radio.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . __('Panel de administración de la radio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2415,35 +2415,35 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'radio',
-            'label' => __('Radio Comunitaria', 'flavor-platform'),
+            'label' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-microphone',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-radio-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-radio-programas',
-                    'titulo' => __('Programas', 'flavor-platform'),
+                    'titulo' => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_programas'],
                 ],
                 [
                     'slug' => 'flavor-radio-emisiones',
-                    'titulo' => __('Emisiones', 'flavor-platform'),
+                    'titulo' => __('Emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_emisiones'],
                     'badge' => [$this, 'contar_emisiones_pendientes'],
                 ],
                 [
                     'slug' => 'radio-locutores',
-                    'titulo' => __('Locutores', 'flavor-platform'),
+                    'titulo' => __('Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_locutores'],
                 ],
                 [
                     'slug' => 'radio-config',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_configuracion'],
                 ],
             ],
@@ -2488,8 +2488,8 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if (file_exists($template_path)) {
             include $template_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Locutores', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Gestión del equipo de locutores de la radio.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión del equipo de locutores de la radio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2501,8 +2501,8 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         if (file_exists($template_path)) {
             include $template_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Radio', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Ajustes generales del módulo de radio comunitaria.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Radio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Ajustes generales del módulo de radio comunitaria.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2597,11 +2597,11 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
             'nonce' => wp_create_nonce('flavor_radio_nonce'),
             'user_id' => get_current_user_id(),
             'strings' => [
-                'play' => __('Reproducir', 'flavor-platform'),
-                'pause' => __('Pausar', 'flavor-platform'),
-                'loading' => __('Cargando...', 'flavor-platform'),
-                'error' => __('Error de conexión', 'flavor-platform'),
-                'sin_emision' => __('Sin emisión', 'flavor-platform'),
+                'play' => __('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pause' => __('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_emision' => __('Sin emisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -2631,7 +2631,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
      */
     public function add_dashboard_tab($tabs) {
         $tabs['radio'] = [
-            'label' => __('Radio', 'flavor-platform'),
+            'label' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'microphone',
             'callback' => [$this, 'render_dashboard_tab'],
             'orden' => 40,
@@ -2657,23 +2657,23 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
     public function get_web_components() {
         return [
             'hero_radio' => [
-                'label' => __('Hero Radio', 'flavor-platform'),
+                'label' => __('Hero Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-microphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Radio Comunitaria', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('La voz de tu barrio', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('La voz de tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_reproductor' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'radio/hero',
             ],
             'reproductor_radio' => [
-                'label' => __('Reproductor de Radio', 'flavor-platform'),
+                'label' => __('Reproductor de Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-controls-play',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('En Directo', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('En Directo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_programa_actual' => ['type' => 'toggle', 'default' => true],
                     'mostrar_oyentes' => ['type' => 'toggle', 'default' => true],
                     'estilo' => ['type' => 'select', 'options' => ['compacto', 'completo'], 'default' => 'completo'],
@@ -2681,35 +2681,35 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
                 'template' => 'radio/reproductor',
             ],
             'programacion' => [
-                'label' => __('Parrilla de Programación', 'flavor-platform'),
+                'label' => __('Parrilla de Programación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Programación', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'vista' => ['type' => 'select', 'options' => ['dia', 'semana'], 'default' => 'semana'],
                     'mostrar_descripcion' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'radio/programacion',
             ],
             'cta_locutor' => [
-                'label' => __('CTA Ser Locutor', 'flavor-platform'),
+                'label' => __('CTA Ser Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('¿Quieres Tener tu Programa?', 'flavor-platform')],
-                    'descripcion' => ['type' => 'textarea', 'default' => __('Comparte tu voz y contenido en nuestra radio comunitaria', 'flavor-platform')],
-                    'boton_texto' => ['type' => 'text', 'default' => __('Proponer Programa', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('¿Quieres Tener tu Programa?', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'descripcion' => ['type' => 'textarea', 'default' => __('Comparte tu voz y contenido en nuestra radio comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'boton_texto' => ['type' => 'text', 'default' => __('Proponer Programa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'boton_url' => ['type' => 'url', 'default' => '#'],
                     'color_fondo' => ['type' => 'color', 'default' => '#8b5cf6'],
                 ],
                 'template' => 'radio/cta-locutor',
             ],
             'podcasts_lista' => [
-                'label' => __('Lista de Podcasts', 'flavor-platform'),
+                'label' => __('Lista de Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-playlist-audio',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Podcasts', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'programa_id' => ['type' => 'number', 'default' => 0],
                     'limite' => ['type' => 'number', 'default' => 10],
                 ],
@@ -2884,7 +2884,7 @@ KNOWLEDGE;
         $estadisticas['programas'] = [
             'icon' => 'dashicons-controls-volumeon',
             'valor' => $total_programas,
-            'label' => __('Programas', 'flavor-platform'),
+            'label' => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'purple',
         ];
 
@@ -2899,8 +2899,8 @@ KNOWLEDGE;
             if ($en_vivo > 0) {
                 $estadisticas['en_vivo'] = [
                     'icon' => 'dashicons-microphone',
-                    'valor' => __('EN VIVO', 'flavor-platform'),
-                    'label' => __('Ahora', 'flavor-platform'),
+                    'valor' => __('EN VIVO', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'label' => __('Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'red',
                 ];
             }
@@ -2917,28 +2917,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Radio Comunitaria', 'flavor-platform'),
+                'title' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'radio',
-                'content' => '<h1>' . __('Radio Comunitaria', 'flavor-platform') . '</h1>
-<p>' . __('Sintoniza nuestra radio comunitaria en vivo. Disfruta de programas variados, música, noticias locales y contenido creado por vecinos para vecinos.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Sintoniza nuestra radio comunitaria en vivo. Disfruta de programas variados, música, noticias locales y contenido creado por vecinos para vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="radio" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Programación', 'flavor-platform'),
+                'title' => __('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'programacion',
-                'content' => '<h1>' . __('Programación', 'flavor-platform') . '</h1>
-<p>' . __('Consulta la programación completa de nuestra radio. Conoce los horarios de emisión de todos los programas y no te pierdas tus favoritos.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta la programación completa de nuestra radio. Conoce los horarios de emisión de todos los programas y no te pierdas tus favoritos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="radio" action="programacion"]',
                 'parent' => 'radio',
             ],
             [
-                'title' => __('Mis Programas', 'flavor-platform'),
+                'title' => __('Mis Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-programas',
-                'content' => '<h1>' . __('Mis Programas', 'flavor-platform') . '</h1>
-<p>' . __('Gestiona tus programas de radio, revisa las estadísticas de audiencia y administra tus emisiones.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Mis Programas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus programas de radio, revisa las estadísticas de audiencia y administra tus emisiones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="radio" action="mis_items"]',
                 'parent' => 'radio',
@@ -2954,8 +2954,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'radio',
-            'title'    => __('Radio Comunitaria', 'flavor-platform'),
-            'subtitle' => __('Emisiones en vivo y podcasts de tu comunidad', 'flavor-platform'),
+            'title'    => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Emisiones en vivo y podcasts de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📻',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -2965,27 +2965,27 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'       => ['type' => 'text', 'label' => __('Nombre programa', 'flavor-platform'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform'), 'options' => ['musica', 'noticias', 'cultura', 'deportes', 'entretenimiento', 'educacion']],
-                'horario'      => ['type' => 'text', 'label' => __('Horario', 'flavor-platform')],
-                'dia_emision'  => ['type' => 'select', 'label' => __('Día de emisión', 'flavor-platform')],
-                'conductor_id' => ['type' => 'select', 'label' => __('Conductor', 'flavor-platform')],
-                'imagen'       => ['type' => 'image', 'label' => __('Imagen', 'flavor-platform')],
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre programa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['musica', 'noticias', 'cultura', 'deportes', 'entretenimiento', 'educacion']],
+                'horario'      => ['type' => 'text', 'label' => __('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'dia_emision'  => ['type' => 'select', 'label' => __('Día de emisión', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'conductor_id' => ['type' => 'select', 'label' => __('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen'       => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'en_vivo'     => ['label' => __('En vivo', 'flavor-platform'), 'color' => 'red', 'icon' => '🔴'],
-                'programado'  => ['label' => __('Programado', 'flavor-platform'), 'color' => 'green', 'icon' => '📅'],
-                'pausado'     => ['label' => __('Pausado', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'archivado'   => ['label' => __('Archivado', 'flavor-platform'), 'color' => 'gray', 'icon' => '🗄️'],
+                'en_vivo'     => ['label' => __('En vivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔴'],
+                'programado'  => ['label' => __('Programado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '📅'],
+                'pausado'     => ['label' => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado'   => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '🗄️'],
             ],
 
             'stats' => [
-                'programas_activos' => ['label' => __('Programas', 'flavor-platform'), 'icon' => '📻', 'color' => 'red'],
-                'oyentes_actuales'  => ['label' => __('Oyentes ahora', 'flavor-platform'), 'icon' => '🎧', 'color' => 'green'],
-                'horas_emision'     => ['label' => __('Horas emitidas', 'flavor-platform'), 'icon' => '⏱️', 'color' => 'blue'],
-                'conductores'       => ['label' => __('Conductores', 'flavor-platform'), 'icon' => '🎙️', 'color' => 'purple'],
+                'programas_activos' => ['label' => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📻', 'color' => 'red'],
+                'oyentes_actuales'  => ['label' => __('Oyentes ahora', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎧', 'color' => 'green'],
+                'horas_emision'     => ['label' => __('Horas emitidas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏱️', 'color' => 'blue'],
+                'conductores'       => ['label' => __('Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎙️', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -2999,49 +2999,49 @@ KNOWLEDGE;
 
             'tabs' => [
                 'en-vivo' => [
-                    'label'   => __('En vivo', 'flavor-platform'),
+                    'label'   => __('En vivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-controls-volumeon',
                     'content' => 'shortcode:radio_en_vivo',
                     'public'  => true,
                 ],
                 'programacion' => [
-                    'label'   => __('Programación', 'flavor-platform'),
+                    'label'   => __('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-calendar-alt',
                     'content' => 'shortcode:radio_programacion',
                     'public'  => true,
                 ],
                 'programas' => [
-                    'label'   => __('Programas', 'flavor-platform'),
+                    'label'   => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-playlist-audio',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'mis-programas' => [
-                    'label'      => __('Mis programas', 'flavor-platform'),
+                    'label'      => __('Mis programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:radio_mis_programas',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label'      => __('Foro', 'flavor-platform'),
+                    'label'      => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-comments',
                     'content'    => 'action:foro_programa',
                     'hidden_nav' => true,
                 ],
                 'chat' => [
-                    'label'      => __('Chat', 'flavor-platform'),
+                    'label'      => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-chat',
                     'content'    => 'action:chat_programa',
                     'hidden_nav' => true,
                 ],
                 'multimedia' => [
-                    'label'      => __('Multimedia', 'flavor-platform'),
+                    'label'      => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-gallery',
                     'content'    => 'action:multimedia_programa',
                     'hidden_nav' => true,
                 ],
                 'red-social' => [
-                    'label'      => __('Red social', 'flavor-platform'),
+                    'label'      => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-share',
                     'content'    => 'action:red_social_programa',
                     'hidden_nav' => true,
@@ -3059,8 +3059,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['player_en_vivo', 'programacion_hoy', 'programas_populares', 'stats'],
                 'actions' => [
-                    'escuchar' => ['label' => __('Escuchar en vivo', 'flavor-platform'), 'icon' => '🔴', 'color' => 'red'],
-                    'ver'      => ['label' => __('Ver programación', 'flavor-platform'), 'icon' => '📅', 'color' => 'blue'],
+                    'escuchar' => ['label' => __('Escuchar en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔴', 'color' => 'red'],
+                    'ver'      => ['label' => __('Ver programación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => 'blue'],
                 ],
             ],
 
@@ -3115,8 +3115,8 @@ KNOWLEDGE;
         // Páginas ocultas (accesibles desde Panel Unificado)
         add_submenu_page(
             null, // Oculto en el menú
-            __('Radio - Dashboard', 'flavor-platform'),
-            __('Dashboard', 'flavor-platform'),
+            __('Radio - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-radio',
             [$this, 'render_pagina_dashboard']
@@ -3124,8 +3124,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Gestor de Medios', 'flavor-platform'),
-            __('Biblioteca de Audio', 'flavor-platform'),
+            __('Gestor de Medios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Biblioteca de Audio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-radio-media',
             [$this, 'render_pagina_media_manager']
@@ -3133,8 +3133,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Panel del Locutor', 'flavor-platform'),
-            __('Mi Panel de Locutor', 'flavor-platform'),
+            __('Panel del Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Mi Panel de Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_locutor,
             'flavor-radio-locutor',
             [$this, 'render_pagina_locutor_panel']
@@ -3142,8 +3142,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Programas', 'flavor-platform'),
-            __('Programas', 'flavor-platform'),
+            __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-radio-programas',
             [$this, 'render_pagina_programas']
@@ -3151,8 +3151,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Emisiones', 'flavor-platform'),
-            __('Emisiones', 'flavor-platform'),
+            __('Emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-radio-emisiones',
             [$this, 'render_pagina_emisiones']
@@ -3160,8 +3160,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Configuración', 'flavor-platform'),
-            __('Configuración', 'flavor-platform'),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-radio-settings',
             [$this, 'render_pagina_settings']
@@ -3176,8 +3176,8 @@ KNOWLEDGE;
         if (file_exists($archivo)) {
             include $archivo;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestor de Medios', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('El archivo de vista no existe.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestor de Medios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('El archivo de vista no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3189,8 +3189,8 @@ KNOWLEDGE;
         if (file_exists($archivo)) {
             include $archivo;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Panel del Locutor', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('El archivo de vista no existe.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Panel del Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('El archivo de vista no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3200,34 +3200,34 @@ KNOWLEDGE;
     public function render_pagina_settings() {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Configuración de Radio', 'flavor-platform'); ?></h1>
+            <h1><?php esc_html_e('Configuración de Radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <form method="post" action="options.php" x-data="radioSettings()">
                 <?php settings_fields('flavor_radio_settings'); ?>
 
-                <h2 class="title"><?php esc_html_e('Configuración del Stream', 'flavor-platform'); ?></h2>
+                <h2 class="title"><?php esc_html_e('Configuración del Stream', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('URL del Stream Principal', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('URL del Stream Principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="url" name="flavor_radio[url_stream]"
                                    value="<?php echo esc_attr($this->get_setting('url_stream')); ?>"
                                    class="regular-text"
                                    placeholder="https://stream.example.com:8000/radio.mp3">
-                            <p class="description"><?php esc_html_e('URL de tu servidor Shoutcast/Icecast. Déjalo vacío para usar la biblioteca de audio local.', 'flavor-platform'); ?></p>
+                            <p class="description"><?php esc_html_e('URL de tu servidor Shoutcast/Icecast. Déjalo vacío para usar la biblioteca de audio local.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('URL del Stream HD', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('URL del Stream HD', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="url" name="flavor_radio[url_stream_hd]"
                                    value="<?php echo esc_attr($this->get_setting('url_stream_hd')); ?>"
                                    class="regular-text"
                                    placeholder="https://stream.example.com:8000/radio-hd.mp3">
-                            <p class="description"><?php esc_html_e('Stream de alta calidad (opcional).', 'flavor-platform'); ?></p>
+                            <p class="description"><?php esc_html_e('Stream de alta calidad (opcional).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Nombre de la Radio', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Nombre de la Radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_radio[nombre_radio]"
                                    value="<?php echo esc_attr($this->get_setting('nombre_radio')); ?>"
@@ -3235,7 +3235,7 @@ KNOWLEDGE;
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Slogan', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Slogan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_radio[slogan]"
                                    value="<?php echo esc_attr($this->get_setting('slogan')); ?>"
@@ -3243,7 +3243,7 @@ KNOWLEDGE;
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Frecuencia FM', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Frecuencia FM', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_radio[frecuencia_fm]"
                                    value="<?php echo esc_attr($this->get_setting('frecuencia_fm')); ?>"
@@ -3253,40 +3253,40 @@ KNOWLEDGE;
                     </tr>
                 </table>
 
-                <h2 class="title"><?php esc_html_e('Opciones de Participación', 'flavor-platform'); ?></h2>
+                <h2 class="title"><?php esc_html_e('Opciones de Participación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Permitir locutores de la comunidad', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Permitir locutores de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="flavor_radio[permite_locutores_comunidad]"
                                        value="1" <?php checked($this->get_setting('permite_locutores_comunidad'), true); ?>>
-                                <?php esc_html_e('Los usuarios pueden proponer y conducir programas', 'flavor-platform'); ?>
+                                <?php esc_html_e('Los usuarios pueden proponer y conducir programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Chat en vivo', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Chat en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="flavor_radio[chat_en_vivo]"
                                        value="1" <?php checked($this->get_setting('chat_en_vivo'), true); ?>>
-                                <?php esc_html_e('Permitir chat durante las emisiones', 'flavor-platform'); ?>
+                                <?php esc_html_e('Permitir chat durante las emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Dedicatorias', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="flavor_radio[permite_dedicatorias]"
                                        value="1" <?php checked($this->get_setting('permite_dedicatorias'), true); ?>>
-                                <?php esc_html_e('Permitir que los oyentes envíen dedicatorias', 'flavor-platform'); ?>
+                                <?php esc_html_e('Permitir que los oyentes envíen dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Máximo dedicatorias por día', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Máximo dedicatorias por día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="flavor_radio[max_dedicatorias_dia]"
                                    value="<?php echo esc_attr($this->get_setting('max_dedicatorias_dia')); ?>"
@@ -3295,11 +3295,11 @@ KNOWLEDGE;
                     </tr>
                 </table>
 
-                <h2 class="title"><?php esc_html_e('Servidor de Streaming (para locutores)', 'flavor-platform'); ?></h2>
-                <p class="description"><?php esc_html_e('Configura estos datos si tienes un servidor Shoutcast/Icecast donde los locutores pueden transmitir.', 'flavor-platform'); ?></p>
+                <h2 class="title"><?php esc_html_e('Servidor de Streaming (para locutores)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="description"><?php esc_html_e('Configura estos datos si tienes un servidor Shoutcast/Icecast donde los locutores pueden transmitir.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Host del servidor', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Host del servidor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_radio[server_host]"
                                    value="<?php echo esc_attr($this->get_setting('server_host', '')); ?>"
@@ -3307,7 +3307,7 @@ KNOWLEDGE;
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Puerto', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Puerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="flavor_radio[server_port]"
                                    value="<?php echo esc_attr($this->get_setting('server_port', '8000')); ?>"
@@ -3315,16 +3315,16 @@ KNOWLEDGE;
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Contraseña del stream', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Contraseña del stream', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="password" name="flavor_radio[server_password]"
                                    value="<?php echo esc_attr($this->get_setting('server_password', '')); ?>"
                                    class="regular-text">
-                            <p class="description"><?php esc_html_e('Se mostrará a los locutores en su panel.', 'flavor-platform'); ?></p>
+                            <p class="description"><?php esc_html_e('Se mostrará a los locutores en su panel.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Mount point', 'flavor-platform'); ?></th>
+                        <th scope="row"><?php esc_html_e('Mount point', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_radio[server_mount]"
                                    value="<?php echo esc_attr($this->get_setting('server_mount', '/live')); ?>"
@@ -3609,7 +3609,7 @@ KNOWLEDGE;
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -3618,7 +3618,7 @@ KNOWLEDGE;
         $programa_id = absint($_POST['programa_id'] ?? 0);
 
         if (!$programa_id) {
-            wp_send_json_error(['message' => __('Programa no válido', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Programa no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear tabla si no existe
@@ -3634,14 +3634,14 @@ KNOWLEDGE;
 
         if ($existe) {
             $wpdb->delete($tabla, ['id' => $existe]);
-            wp_send_json_success(['favorito' => false, 'message' => __('Eliminado de favoritos', 'flavor-platform')]);
+            wp_send_json_success(['favorito' => false, 'message' => __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
             $wpdb->insert($tabla, [
                 'usuario_id' => $usuario_id,
                 'programa_id' => $programa_id,
                 'fecha' => current_time('mysql'),
             ]);
-            wp_send_json_success(['favorito' => true, 'message' => __('Añadido a favoritos', 'flavor-platform')]);
+            wp_send_json_success(['favorito' => true, 'message' => __('Añadido a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -3686,7 +3686,7 @@ KNOWLEDGE;
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -3700,7 +3700,7 @@ KNOWLEDGE;
         ));
 
         if ($actual === null) {
-            wp_send_json_error(['message' => __('Primero añade a favoritos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Primero añade a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nuevo = $actual ? 0 : 1;
@@ -3720,7 +3720,7 @@ KNOWLEDGE;
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -3730,7 +3730,7 @@ KNOWLEDGE;
         $emoji = sanitize_text_field($_POST['emoji'] ?? '');
 
         if (!$mensaje_id || !$emoji) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear tabla si no existe
@@ -4049,8 +4049,8 @@ KNOWLEDGE;
             // Enviar notificación usando el sistema de notificaciones del plugin
             if (method_exists($this, 'enviar_notificacion')) {
                 $this->enviar_notificacion($usuario_id, [
-                    'titulo' => __('¡Tu programa favorito está en vivo!', 'flavor-platform'),
-                    'mensaje' => sprintf(__('%s acaba de empezar. ¡No te lo pierdas!', 'flavor-platform'), $programa->nombre),
+                    'titulo' => __('¡Tu programa favorito está en vivo!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'mensaje' => sprintf(__('%s acaba de empezar. ¡No te lo pierdas!', FLAVOR_PLATFORM_TEXT_DOMAIN), $programa->nombre),
                     'tipo' => 'radio_programa_en_vivo',
                     'enlace' => home_url('/radio'),
                     'icono' => '📻',
@@ -4449,7 +4449,7 @@ KNOWLEDGE;
         check_ajax_referer('radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para iniciar emisiones', 'flavor-platform'));
+            wp_send_json_error(__('No tienes permisos para iniciar emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4458,7 +4458,7 @@ KNOWLEDGE;
         $emision_id = absint($_POST['emision_id'] ?? 0);
 
         if (!$emision_id) {
-            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+            wp_send_json_error(__('ID de emision inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que la emision existe y esta programada
@@ -4468,11 +4468,11 @@ KNOWLEDGE;
         ));
 
         if (!$emision) {
-            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+            wp_send_json_error(__('Emision no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($emision->estado !== 'programada') {
-            wp_send_json_error(__('Esta emision no esta programada', 'flavor-platform'));
+            wp_send_json_error(__('Esta emision no esta programada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que no hay otra emision en vivo
@@ -4481,7 +4481,7 @@ KNOWLEDGE;
         );
 
         if ($emision_en_vivo) {
-            wp_send_json_error(__('Ya hay una emision en vivo. Finaliza la actual primero.', 'flavor-platform'));
+            wp_send_json_error(__('Ya hay una emision en vivo. Finaliza la actual primero.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Iniciar la emision
@@ -4497,11 +4497,11 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al iniciar la emision', 'flavor-platform'));
+            wp_send_json_error(__('Error al iniciar la emision', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success([
-            'message' => __('Emision iniciada correctamente', 'flavor-platform'),
+            'message' => __('Emision iniciada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'emision_id' => $emision_id,
         ]);
     }
@@ -4513,7 +4513,7 @@ KNOWLEDGE;
         check_ajax_referer('radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para finalizar emisiones', 'flavor-platform'));
+            wp_send_json_error(__('No tienes permisos para finalizar emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4522,7 +4522,7 @@ KNOWLEDGE;
         $emision_id = absint($_POST['emision_id'] ?? 0);
 
         if (!$emision_id) {
-            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+            wp_send_json_error(__('ID de emision inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que la emision existe y esta en vivo
@@ -4532,11 +4532,11 @@ KNOWLEDGE;
         ));
 
         if (!$emision) {
-            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+            wp_send_json_error(__('Emision no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($emision->estado !== 'en_vivo') {
-            wp_send_json_error(__('Esta emision no esta en vivo', 'flavor-platform'));
+            wp_send_json_error(__('Esta emision no esta en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Calcular duracion
@@ -4561,11 +4561,11 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al finalizar la emision', 'flavor-platform'));
+            wp_send_json_error(__('Error al finalizar la emision', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success([
-            'message' => __('Emision finalizada correctamente', 'flavor-platform'),
+            'message' => __('Emision finalizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'duracion_minutos' => $duracion_minutos,
         ]);
     }
@@ -4577,7 +4577,7 @@ KNOWLEDGE;
         check_ajax_referer('radio_emision_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para ver emisiones', 'flavor-platform'));
+            wp_send_json_error(__('No tienes permisos para ver emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4587,7 +4587,7 @@ KNOWLEDGE;
         $emision_id = absint($_GET['emision_id'] ?? $_POST['emision_id'] ?? 0);
 
         if (!$emision_id) {
-            wp_send_json_error(__('ID de emision inválido', 'flavor-platform'));
+            wp_send_json_error(__('ID de emision inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $emision = $wpdb->get_row($wpdb->prepare(
@@ -4599,7 +4599,7 @@ KNOWLEDGE;
         ));
 
         if (!$emision) {
-            wp_send_json_error(__('Emision no encontrada', 'flavor-platform'));
+            wp_send_json_error(__('Emision no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success([

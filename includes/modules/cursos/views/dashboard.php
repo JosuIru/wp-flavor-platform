@@ -92,14 +92,14 @@ $estado_badge_classes = [
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Faltan tablas del módulo Cursos o aún no hay inscripciones registradas.', 'flavor-platform'); ?></p>
+            <p><?php esc_html_e('Faltan tablas del módulo Cursos o aún no hay inscripciones registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-welcome-learn-more"></span>
-            <h1><?php esc_html_e('Dashboard - Cursos y Formación', 'flavor-platform'); ?></h1>
+            <h1><?php esc_html_e('Dashboard - Cursos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -107,23 +107,23 @@ $estado_badge_classes = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=cursos-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-welcome-learn-more"></span>
-            <span><?php esc_html_e('Cursos', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=cursos-alumnos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Alumnos', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=cursos-instructores')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-businessperson"></span>
-            <span><?php esc_html_e('Instructores', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=cursos-matriculas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-clipboard"></span>
-            <span><?php esc_html_e('Matrículas', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(home_url('/mi-portal/cursos/')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -131,37 +131,37 @@ $estado_badge_classes = [
     <div class="dm-stats-grid dm-stats-grid--3">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_cursos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Cursos Publicados', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Cursos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-book"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($cursos_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Cursos Activos', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Cursos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-welcome-learn-more"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_alumnos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Alumnos Totales', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Alumnos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-groups"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_inscripciones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones Activas', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-welcome-write-blog"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($certificados_emitidos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Certificados (mes)', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Certificados (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-awards"></span></div>
         </div>
 
         <div class="dm-stat-card">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($ingresos_mes, 2); ?>€</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Ingresos (mes)', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Ingresos (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-cart"></span></div>
         </div>
     </div>
@@ -170,7 +170,7 @@ $estado_badge_classes = [
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Inscripciones - Últimos 30 días', 'flavor-platform'); ?></h3>
+                <h3><?php esc_html_e('Inscripciones - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="chartInscripciones"></canvas>
@@ -179,14 +179,14 @@ $estado_badge_classes = [
 
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Cursos Populares', 'flavor-platform'); ?></h3>
+                <h3><?php esc_html_e('Cursos Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Curso', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Alumnos', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Rating', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Rating', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -213,7 +213,7 @@ $estado_badge_classes = [
                             <td colspan="3">
                                 <div class="dm-empty">
                                     <span class="dashicons dashicons-book"></span>
-                                    <p><?php esc_html_e('No hay cursos disponibles', 'flavor-platform'); ?></p>
+                                    <p><?php esc_html_e('No hay cursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </td>
                         </tr>
@@ -226,15 +226,15 @@ $estado_badge_classes = [
     <!-- Inscripciones recientes -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Inscripciones Recientes', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Inscripciones Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('ID', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Alumno', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Curso', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Alumno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -252,7 +252,7 @@ $estado_badge_classes = [
                         <td colspan="4">
                             <div class="dm-empty">
                                 <span class="dashicons dashicons-clipboard"></span>
-                                <p><?php esc_html_e('No hay inscripciones recientes', 'flavor-platform'); ?></p>
+                                <p><?php esc_html_e('No hay inscripciones recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -278,7 +278,7 @@ jQuery(document).ready(function($) {
                     return fecha.getDate() + '/' + (fecha.getMonth() + 1);
                 }),
                 datasets: [{
-                    label: '<?php esc_html_e('Inscripciones', 'flavor-platform'); ?>',
+                    label: '<?php esc_html_e('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: data.map(d => parseInt(d.total)),
                     borderColor: primaryColor,
                     backgroundColor: primaryColor + '20',

@@ -47,12 +47,12 @@ class Flavor_Encuestas_Renderer {
         $encuesta = $this->module->obtener_encuesta($encuesta_id);
 
         if (!$encuesta) {
-            return $this->render_error(__('Encuesta no encontrada', 'flavor-platform'));
+            return $this->render_error(__('Encuesta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar estado
         if ($encuesta->estado === 'borrador' && !$this->module->puede_editar_encuesta($encuesta_id)) {
-            return $this->render_error(__('Esta encuesta no está disponible', 'flavor-platform'));
+            return $this->render_error(__('Esta encuesta no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $usuario_id = get_current_user_id();
@@ -76,19 +76,19 @@ class Flavor_Encuestas_Renderer {
 
             <?php if ($encuesta->estado === 'cerrada'): ?>
                 <div class="flavor-encuesta__notice flavor-encuesta__notice--info">
-                    <?php esc_html_e('Esta encuesta ha finalizado', 'flavor-platform'); ?>
+                    <?php esc_html_e('Esta encuesta ha finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($ya_participo && !$encuesta->permite_multiples): ?>
                 <?php if ($puede_ver_resultados): ?>
                     <div class="flavor-encuesta__notice flavor-encuesta__notice--success">
-                        <?php esc_html_e('Ya has participado en esta encuesta', 'flavor-platform'); ?>
+                        <?php esc_html_e('Ya has participado en esta encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                     <?php echo $this->render_resultados_inline($encuesta_id); ?>
                 <?php else: ?>
                     <div class="flavor-encuesta__notice flavor-encuesta__notice--info">
-                        <?php esc_html_e('Ya has participado. Los resultados se mostrarán cuando la encuesta cierre.', 'flavor-platform'); ?>
+                        <?php esc_html_e('Ya has participado. Los resultados se mostrarán cuando la encuesta cierre.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 <?php endif; ?>
             <?php elseif ($encuesta->estado === 'activa'): ?>
@@ -101,7 +101,7 @@ class Flavor_Encuestas_Renderer {
                 <span class="flavor-encuesta__participantes">
                     <?php
                     printf(
-                        esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, 'flavor-platform')),
+                        esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         $encuesta->total_participantes
                     );
                     ?>
@@ -113,7 +113,7 @@ class Flavor_Encuestas_Renderer {
                         $tiempo_restante = strtotime($encuesta->fecha_cierre) - time();
                         if ($tiempo_restante > 0) {
                             printf(
-                                esc_html__('Cierra en %s', 'flavor-platform'),
+                                esc_html__('Cierra en %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 human_time_diff(time(), strtotime($encuesta->fecha_cierre))
                             );
                         }
@@ -194,7 +194,7 @@ class Flavor_Encuestas_Renderer {
      */
     private function render_formulario_respuesta($encuesta) {
         if (empty($encuesta->campos)) {
-            return $this->render_error(__('Esta encuesta no tiene preguntas', 'flavor-platform'));
+            return $this->render_error(__('Esta encuesta no tiene preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -212,7 +212,7 @@ class Flavor_Encuestas_Renderer {
 
             <div class="flavor-encuesta__actions">
                 <button type="submit" class="flavor-encuesta__submit">
-                    <?php esc_html_e('Enviar respuesta', 'flavor-platform'); ?>
+                    <?php esc_html_e('Enviar respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -442,8 +442,8 @@ class Flavor_Encuestas_Renderer {
             </div>',
             $campo->id,
             $requerido,
-            esc_html__('Sí', 'flavor-platform'),
-            esc_html__('No', 'flavor-platform')
+            esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            esc_html__('No', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 
@@ -601,7 +601,7 @@ class Flavor_Encuestas_Renderer {
         $resultados = $this->module->obtener_resultados($encuesta_id);
 
         if (empty($resultados) || empty($resultados['campos'])) {
-            return $this->render_error(__('No hay resultados disponibles', 'flavor-platform'));
+            return $this->render_error(__('No hay resultados disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -612,7 +612,7 @@ class Flavor_Encuestas_Renderer {
                 <div class="flavor-encuesta-resultados__meta">
                     <?php
                     printf(
-                        esc_html__('%d participantes', 'flavor-platform'),
+                        esc_html__('%d participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $resultados['total_participantes']
                     );
                     ?>
@@ -722,13 +722,13 @@ class Flavor_Encuestas_Renderer {
     private function render_resultado_seleccion($campo, $formato, $total) {
         if (empty($campo['conteos']) || $total === 0) {
             return '<p class="flavor-encuesta-resultados__empty">' .
-                   esc_html__('Sin respuestas', 'flavor-platform') . '</p>';
+                   esc_html__('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Para sí/no, usar opciones predefinidas
         $opciones = $campo['opciones'];
         if ($campo['tipo'] === 'si_no') {
-            $opciones = [1 => __('Sí', 'flavor-platform'), 0 => __('No', 'flavor-platform')];
+            $opciones = [1 => __('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN), 0 => __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         ob_start();
@@ -765,7 +765,7 @@ class Flavor_Encuestas_Renderer {
     private function render_resultado_escala($campo, $total) {
         if (empty($campo['conteos']) || $total === 0) {
             return '<p class="flavor-encuesta-resultados__empty">' .
-                   esc_html__('Sin respuestas', 'flavor-platform') . '</p>';
+                   esc_html__('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Calcular promedio
@@ -782,11 +782,11 @@ class Flavor_Encuestas_Renderer {
         <div class="flavor-encuesta-resultados__stats">
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html($promedio); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Promedio', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html($count); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Respuestas', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -810,7 +810,7 @@ class Flavor_Encuestas_Renderer {
     private function render_resultado_numero($campo) {
         if (empty($campo['estadisticas'])) {
             return '<p class="flavor-encuesta-resultados__empty">' .
-                   esc_html__('Sin respuestas', 'flavor-platform') . '</p>';
+                   esc_html__('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $stats = $campo['estadisticas'];
@@ -820,19 +820,19 @@ class Flavor_Encuestas_Renderer {
         <div class="flavor-encuesta-resultados__stats flavor-encuesta-resultados__stats--numeric">
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html(number_format($stats['promedio'], 2)); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Promedio', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html($stats['minimo']); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Mínimo', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Mínimo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html($stats['maximo']); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Máximo', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Máximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-encuesta-resultados__stat">
                 <span class="flavor-encuesta-resultados__stat-value"><?php echo esc_html($stats['total']); ?></span>
-                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Respuestas', 'flavor-platform'); ?></span>
+                <span class="flavor-encuesta-resultados__stat-label"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -845,7 +845,7 @@ class Flavor_Encuestas_Renderer {
     private function render_resultado_texto($campo) {
         if (empty($campo['respuestas_texto'])) {
             return '<p class="flavor-encuesta-resultados__empty">' .
-                   esc_html__('Sin respuestas', 'flavor-platform') . '</p>';
+                   esc_html__('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -873,7 +873,7 @@ class Flavor_Encuestas_Renderer {
      */
     public function render_formulario_crear($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_error(__('Debes iniciar sesión para crear encuestas', 'flavor-platform'));
+            return $this->render_error(__('Debes iniciar sesión para crear encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $contexto = $atts['contexto'] ?? 'general';
@@ -887,22 +887,22 @@ class Flavor_Encuestas_Renderer {
 
                 <div class="flavor-encuesta-crear__section">
                     <label for="encuesta-contexto-tipo" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Vincular encuesta a', 'flavor-platform'); ?>
+                        <?php esc_html_e('Vincular encuesta a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select id="encuesta-contexto-tipo" name="contexto_tipo" class="flavor-encuesta-crear__input">
-                        <option value="general" <?php selected($contexto, 'general'); ?>><?php esc_html_e('General (sin vínculo)', 'flavor-platform'); ?></option>
-                        <option value="comunidad" <?php selected($contexto, 'comunidad'); ?>><?php esc_html_e('Comunidad', 'flavor-platform'); ?></option>
-                        <option value="foro" <?php selected($contexto, 'foro'); ?>><?php esc_html_e('Foro', 'flavor-platform'); ?></option>
-                        <option value="chat_grupo" <?php selected($contexto, 'chat_grupo'); ?>><?php esc_html_e('Chat de grupo', 'flavor-platform'); ?></option>
-                        <option value="red_social" <?php selected($contexto, 'red_social'); ?>><?php esc_html_e('Red social', 'flavor-platform'); ?></option>
-                        <option value="evento" <?php selected($contexto, 'evento'); ?>><?php esc_html_e('Evento', 'flavor-platform'); ?></option>
-                        <option value="curso" <?php selected($contexto, 'curso'); ?>><?php esc_html_e('Curso', 'flavor-platform'); ?></option>
+                        <option value="general" <?php selected($contexto, 'general'); ?>><?php esc_html_e('General (sin vínculo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="comunidad" <?php selected($contexto, 'comunidad'); ?>><?php esc_html_e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="foro" <?php selected($contexto, 'foro'); ?>><?php esc_html_e('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="chat_grupo" <?php selected($contexto, 'chat_grupo'); ?>><?php esc_html_e('Chat de grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="red_social" <?php selected($contexto, 'red_social'); ?>><?php esc_html_e('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="evento" <?php selected($contexto, 'evento'); ?>><?php esc_html_e('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="curso" <?php selected($contexto, 'curso'); ?>><?php esc_html_e('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-encuesta-crear__section" id="encuesta-contexto-id-wrap">
                     <label for="encuesta-contexto-id" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('ID del elemento destino', 'flavor-platform'); ?>
+                        <?php esc_html_e('ID del elemento destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input type="number"
                            id="encuesta-contexto-id"
@@ -910,135 +910,135 @@ class Flavor_Encuestas_Renderer {
                            class="flavor-encuesta-crear__input"
                            min="0"
                            value="<?php echo esc_attr((int) $contexto_id); ?>"
-                           placeholder="<?php esc_attr_e('Ej: ID de foro, comunidad, grupo...', 'flavor-platform'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: ID de foro, comunidad, grupo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <p class="flavor-encuesta-crear__help">
-                        <?php esc_html_e('Puedes poner el ID manualmente o usar el buscador de abajo.', 'flavor-platform'); ?>
+                        <?php esc_html_e('Puedes poner el ID manualmente o usar el buscador de abajo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
                 <div class="flavor-encuesta-crear__section" id="encuesta-contexto-search-wrap">
                     <label for="encuesta-contexto-buscar" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Buscar destino por nombre', 'flavor-platform'); ?>
+                        <?php esc_html_e('Buscar destino por nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input type="text"
                            id="encuesta-contexto-buscar"
                            class="flavor-encuesta-crear__input"
                            autocomplete="off"
-                           placeholder="<?php esc_attr_e('Escribe al menos 2 letras...', 'flavor-platform'); ?>">
+                           placeholder="<?php esc_attr_e('Escribe al menos 2 letras...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <div id="encuesta-contexto-resultados" class="flavor-encuesta-crear__context-results" style="display:none;"></div>
                     <div id="encuesta-contexto-seleccion" class="flavor-encuesta-crear__context-selection" style="display:none;">
                         <span id="encuesta-contexto-seleccion-label"></span>
                         <button type="button" class="flavor-encuesta-crear__context-clear" id="encuesta-contexto-seleccion-clear">
-                            <?php esc_html_e('Cambiar', 'flavor-platform'); ?>
+                            <?php esc_html_e('Cambiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
 
                 <div class="flavor-encuesta-crear__section">
                     <label for="encuesta-titulo" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Título de la encuesta', 'flavor-platform'); ?> *
+                        <?php esc_html_e('Título de la encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                     </label>
                     <input type="text"
                            id="encuesta-titulo"
                            name="titulo"
                            class="flavor-encuesta-crear__input"
                            required
-                           placeholder="<?php esc_attr_e('¿Cuál es tu pregunta?', 'flavor-platform'); ?>">
+                           placeholder="<?php esc_attr_e('¿Cuál es tu pregunta?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-encuesta-crear__section">
                     <label for="encuesta-descripcion" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Descripción (opcional)', 'flavor-platform'); ?>
+                        <?php esc_html_e('Descripción (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <textarea id="encuesta-descripcion"
                               name="descripcion"
                               class="flavor-encuesta-crear__textarea"
                               rows="2"
-                              placeholder="<?php esc_attr_e('Añade contexto o instrucciones...', 'flavor-platform'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Añade contexto o instrucciones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-encuesta-crear__section">
                     <label class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Preguntas', 'flavor-platform'); ?> *
+                        <?php esc_html_e('Preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                     </label>
 
                     <div id="encuesta-preguntas" class="flavor-encuesta-crear__preguntas">
                         <div class="flavor-encuesta-crear__pregunta" data-index="0">
                             <div class="flavor-encuesta-crear__pregunta-head">
-                                <strong><?php esc_html_e('Pregunta 1', 'flavor-platform'); ?></strong>
-                                <button type="button" class="flavor-encuesta-crear__pregunta-remove" aria-label="<?php esc_attr_e('Eliminar pregunta', 'flavor-platform'); ?>">×</button>
+                                <strong><?php esc_html_e('Pregunta 1', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <button type="button" class="flavor-encuesta-crear__pregunta-remove" aria-label="<?php esc_attr_e('Eliminar pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">×</button>
                             </div>
 
                             <input type="text"
                                    name="campo_etiqueta[]"
                                    class="flavor-encuesta-crear__input"
-                                   placeholder="<?php esc_attr_e('Escribe la pregunta', 'flavor-platform'); ?>"
+                                   placeholder="<?php esc_attr_e('Escribe la pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                    required>
 
                             <select name="campo_tipo[]" class="flavor-encuesta-crear__input flavor-encuesta-crear__pregunta-tipo">
-                                <option value="seleccion_unica"><?php esc_html_e('Selección única', 'flavor-platform'); ?></option>
-                                <option value="seleccion_multiple"><?php esc_html_e('Selección múltiple', 'flavor-platform'); ?></option>
-                                <option value="texto"><?php esc_html_e('Texto corto', 'flavor-platform'); ?></option>
-                                <option value="textarea"><?php esc_html_e('Texto largo', 'flavor-platform'); ?></option>
-                                <option value="email"><?php esc_html_e('Email', 'flavor-platform'); ?></option>
-                                <option value="telefono"><?php esc_html_e('Teléfono', 'flavor-platform'); ?></option>
-                                <option value="url"><?php esc_html_e('URL', 'flavor-platform'); ?></option>
-                                <option value="numero"><?php esc_html_e('Número', 'flavor-platform'); ?></option>
-                                <option value="rango"><?php esc_html_e('Rango (slider)', 'flavor-platform'); ?></option>
-                                <option value="escala"><?php esc_html_e('Escala (1-10)', 'flavor-platform'); ?></option>
-                                <option value="nps"><?php esc_html_e('NPS (0-10)', 'flavor-platform'); ?></option>
-                                <option value="estrellas"><?php esc_html_e('Estrellas (1-5)', 'flavor-platform'); ?></option>
-                                <option value="si_no"><?php esc_html_e('Sí/No', 'flavor-platform'); ?></option>
-                                <option value="fecha"><?php esc_html_e('Fecha', 'flavor-platform'); ?></option>
-                                <option value="fecha_hora"><?php esc_html_e('Fecha y hora', 'flavor-platform'); ?></option>
+                                <option value="seleccion_unica"><?php esc_html_e('Selección única', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="seleccion_multiple"><?php esc_html_e('Selección múltiple', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="texto"><?php esc_html_e('Texto corto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="textarea"><?php esc_html_e('Texto largo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="telefono"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="url"><?php esc_html_e('URL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="numero"><?php esc_html_e('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="rango"><?php esc_html_e('Rango (slider)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="escala"><?php esc_html_e('Escala (1-10)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="nps"><?php esc_html_e('NPS (0-10)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="estrellas"><?php esc_html_e('Estrellas (1-5)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="si_no"><?php esc_html_e('Sí/No', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="fecha"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="fecha_hora"><?php esc_html_e('Fecha y hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
 
                             <div class="flavor-encuesta-crear__pregunta-opciones">
                                 <div class="flavor-encuesta-crear__opciones">
                                     <div class="flavor-encuesta-crear__opcion">
-                                        <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_0[]" placeholder="<?php esc_attr_e('Opción 1', 'flavor-platform'); ?>" required>
-                                        <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">×</button>
+                                        <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_0[]" placeholder="<?php esc_attr_e('Opción 1', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required>
+                                        <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">×</button>
                                     </div>
                                     <div class="flavor-encuesta-crear__opcion">
-                                        <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_0[]" placeholder="<?php esc_attr_e('Opción 2', 'flavor-platform'); ?>" required>
-                                        <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">×</button>
+                                        <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_0[]" placeholder="<?php esc_attr_e('Opción 2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required>
+                                        <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">×</button>
                                     </div>
                                 </div>
                                 <button type="button" class="flavor-encuesta-crear__add-opcion flavor-encuesta-crear__pregunta-add-opcion">
-                                    + <?php esc_html_e('Añadir opción', 'flavor-platform'); ?>
+                                    + <?php esc_html_e('Añadir opción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
 
                             <div class="flavor-encuesta-crear__pregunta-range" style="display:none;">
                                 <div class="flavor-encuesta-crear__range-config">
-                                    <input type="number" name="campo_config_min[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Mínimo', 'flavor-platform'); ?>" value="1">
-                                    <input type="number" name="campo_config_max[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Máximo', 'flavor-platform'); ?>" value="10">
-                                    <input type="number" step="0.1" name="campo_config_step[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Paso', 'flavor-platform'); ?>" value="1">
+                                    <input type="number" name="campo_config_min[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Mínimo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="1">
+                                    <input type="number" name="campo_config_max[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Máximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="10">
+                                    <input type="number" step="0.1" name="campo_config_step[]" class="flavor-encuesta-crear__input" placeholder="<?php esc_attr_e('Paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="1">
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <button type="button" class="flavor-encuesta-crear__add-opcion" id="agregar-pregunta">
-                        + <?php esc_html_e('Añadir pregunta', 'flavor-platform'); ?>
+                        + <?php esc_html_e('Añadir pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <div class="flavor-encuesta-crear__section flavor-encuesta-crear__section--options">
                     <label class="flavor-encuesta-crear__checkbox">
                         <input type="checkbox" name="permite_multiples" value="1">
-                        <?php esc_html_e('Permitir varias respuestas por usuario', 'flavor-platform'); ?>
+                        <?php esc_html_e('Permitir varias respuestas por usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
 
                     <label class="flavor-encuesta-crear__checkbox">
                         <input type="checkbox" name="es_anonima" value="1">
-                        <?php esc_html_e('Encuesta anónima', 'flavor-platform'); ?>
+                        <?php esc_html_e('Encuesta anónima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
                 <div class="flavor-encuesta-crear__section">
                     <label for="encuesta-cierre" class="flavor-encuesta-crear__label">
-                        <?php esc_html_e('Fecha de cierre (opcional)', 'flavor-platform'); ?>
+                        <?php esc_html_e('Fecha de cierre (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input type="datetime-local"
                            id="encuesta-cierre"
@@ -1048,7 +1048,7 @@ class Flavor_Encuestas_Renderer {
 
                 <div class="flavor-encuesta-crear__actions">
                     <button type="submit" class="flavor-encuesta-crear__submit">
-                        <?php esc_html_e('Crear encuesta', 'flavor-platform'); ?>
+                        <?php esc_html_e('Crear encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -1080,12 +1080,12 @@ class Flavor_Encuestas_Renderer {
         if (empty($encuestas)) {
             $html = '<div class="flavor-encuestas-lista__empty-state">';
             $html .= '<p class="flavor-encuestas-lista__empty">' .
-                     esc_html__('No hay encuestas disponibles', 'flavor-platform') . '</p>';
+                     esc_html__('No hay encuestas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
             if (is_user_logged_in()) {
                 $html .= '<p><a class="flavor-encuestas-lista__empty-cta" href="' .
                          esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' .
-                         esc_html__('Crear encuesta', 'flavor-platform') . '</a></p>';
+                         esc_html__('Crear encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
             }
 
             $html .= '</div>';
@@ -1128,9 +1128,9 @@ class Flavor_Encuestas_Renderer {
 
         // Tipo
         $tipos = [
-            'encuesta'   => __('Encuesta', 'flavor-platform'),
-            'formulario' => __('Formulario', 'flavor-platform'),
-            'quiz'       => __('Quiz', 'flavor-platform'),
+            'encuesta'   => __('Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'formulario' => __('Formulario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'quiz'       => __('Quiz', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $badges[] = '<span class="flavor-encuesta__badge flavor-encuesta__badge--tipo">' .
                     esc_html($tipos[$encuesta->tipo] ?? $encuesta->tipo) . '</span>';
@@ -1138,15 +1138,15 @@ class Flavor_Encuestas_Renderer {
         // Anónima
         if ($encuesta->es_anonima) {
             $badges[] = '<span class="flavor-encuesta__badge flavor-encuesta__badge--anonima">' .
-                        esc_html__('Anónima', 'flavor-platform') . '</span>';
+                        esc_html__('Anónima', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>';
         }
 
         // Estado
         $estados_labels = [
-            'borrador'  => __('Borrador', 'flavor-platform'),
-            'activa'    => __('Activa', 'flavor-platform'),
-            'cerrada'   => __('Cerrada', 'flavor-platform'),
-            'archivada' => __('Archivada', 'flavor-platform'),
+            'borrador'  => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'activa'    => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cerrada'   => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'archivada' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $badges[] = '<span class="flavor-encuesta__badge flavor-encuesta__badge--estado flavor-encuesta__badge--' .
                     esc_attr($encuesta->estado) . '">' .

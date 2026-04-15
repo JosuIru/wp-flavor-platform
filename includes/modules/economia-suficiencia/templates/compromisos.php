@@ -36,14 +36,14 @@ $compromisos_activos = $wpdb->get_results($wpdb->prepare(
 
 <div class="es-container">
     <header class="es-header">
-        <h2><?php esc_html_e('Compromisos de Suficiencia', 'flavor-platform'); ?></h2>
-        <p><?php esc_html_e('Pequeños compromisos conscientes que transforman nuestra relación con el consumo', 'flavor-platform'); ?></p>
+        <h2><?php esc_html_e('Compromisos de Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Pequeños compromisos conscientes que transforman nuestra relación con el consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <?php if ($compromisos_activos) : ?>
     <!-- Compromisos activos -->
     <section class="es-mis-compromisos">
-        <h3><?php esc_html_e('Mis compromisos activos', 'flavor-platform'); ?></h3>
+        <h3><?php esc_html_e('Mis compromisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php foreach ($compromisos_activos as $compromiso) :
             $tipo_data = $tipos_compromiso[$compromiso->tipo] ?? ['nombre' => $compromiso->post_title, 'icono' => 'dashicons-yes'];
@@ -67,7 +67,7 @@ $compromisos_activos = $wpdb->get_results($wpdb->prepare(
                 </div>
                 <?php if ($dias_restantes > 0) : ?>
                 <small style="color: var(--es-text-light);">
-                    <?php printf(esc_html__('Quedan %d días', 'flavor-platform'), ceil($dias_restantes)); ?>
+                    <?php printf(esc_html__('Quedan %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), ceil($dias_restantes)); ?>
                 </small>
                 <?php endif; ?>
             </div>
@@ -75,7 +75,7 @@ $compromisos_activos = $wpdb->get_results($wpdb->prepare(
             <div class="es-compromiso-activo__accion">
                 <button class="es-btn es-btn--primary es-btn--small es-btn-registrar-practica" data-compromiso="<?php echo esc_attr($compromiso->ID); ?>">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Hoy lo cumplí', 'flavor-platform'); ?>
+                    <?php esc_html_e('Hoy lo cumplí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -85,9 +85,9 @@ $compromisos_activos = $wpdb->get_results($wpdb->prepare(
 
     <!-- Tipos de compromisos -->
     <section style="margin-top: 2rem;">
-        <h3><?php esc_html_e('Hacer un nuevo compromiso', 'flavor-platform'); ?></h3>
+        <h3><?php esc_html_e('Hacer un nuevo compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <p style="color: var(--es-text-light); margin-bottom: 1.5rem;">
-            <?php esc_html_e('Selecciona un tipo de compromiso y define su duración', 'flavor-platform'); ?>
+            <?php esc_html_e('Selecciona un tipo de compromiso y define su duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <form class="es-form-compromiso">
@@ -107,24 +107,24 @@ $compromisos_activos = $wpdb->get_results($wpdb->prepare(
 
             <div class="es-form-compromiso-detalle" style="display: none; margin-top: 2rem; padding: 1.5rem; background: var(--es-bg-card); border-radius: var(--es-radius);">
                 <div class="es-form-grupo">
-                    <label for="es-duracion"><?php esc_html_e('Duración del compromiso', 'flavor-platform'); ?></label>
+                    <label for="es-duracion"><?php esc_html_e('Duración del compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="duracion" id="es-duracion">
-                        <option value="7"><?php esc_html_e('1 semana', 'flavor-platform'); ?></option>
-                        <option value="14"><?php esc_html_e('2 semanas', 'flavor-platform'); ?></option>
-                        <option value="30" selected><?php esc_html_e('1 mes', 'flavor-platform'); ?></option>
-                        <option value="90"><?php esc_html_e('3 meses', 'flavor-platform'); ?></option>
+                        <option value="7"><?php esc_html_e('1 semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="14"><?php esc_html_e('2 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="30" selected><?php esc_html_e('1 mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="90"><?php esc_html_e('3 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="es-form-grupo">
-                    <label for="es-descripcion"><?php esc_html_e('Detalles de tu compromiso (opcional)', 'flavor-platform'); ?></label>
+                    <label for="es-descripcion"><?php esc_html_e('Detalles de tu compromiso (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="descripcion" id="es-descripcion" rows="3"
-                              placeholder="<?php esc_attr_e('Describe cómo vas a aplicar este compromiso...', 'flavor-platform'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe cómo vas a aplicar este compromiso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <button type="submit" class="es-btn es-btn--primary">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Hacer este compromiso', 'flavor-platform'); ?>
+                    <?php esc_html_e('Hacer este compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

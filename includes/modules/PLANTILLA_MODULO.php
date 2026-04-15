@@ -29,8 +29,8 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
      */
     public function __construct() {
         $this->id = 'mi_modulo'; // ID único (snake_case, solo letras y guiones bajos)
-        $this->name = __('Mi Módulo', 'flavor-platform'); // Nombre visible
-        $this->description = __('Descripción breve de qué hace este módulo.', 'flavor-platform');
+        $this->name = __('Mi Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); // Nombre visible
+        $this->description = __('Descripción breve de qué hace este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct();
     }
@@ -60,7 +60,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Este módulo requiere [dependencia] para funcionar.', 'flavor-platform');
+            return __('Este módulo requiere [dependencia] para funcionar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -115,8 +115,8 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         /*
         register_post_type('mi_cpt', [
             'labels' => [
-                'name' => __('Mis Items', 'flavor-platform'),
-                'singular_name' => __('Item', 'flavor-platform'),
+                'name' => __('Mis Items', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Item', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -135,8 +135,8 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         /*
         register_taxonomy('mi_categoria', 'mi_cpt', [
             'labels' => [
-                'name' => __('Categorías', 'flavor-platform'),
-                'singular_name' => __('Categoría', 'flavor-platform'),
+                'name' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_in_rest' => true,
@@ -152,7 +152,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         /*
         add_meta_box(
             'mi_meta_box',
-            __('Información Adicional', 'flavor-platform'),
+            __('Información Adicional', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'renderizar_meta_box'],
             'mi_cpt',
             'normal',
@@ -170,7 +170,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         wp_nonce_field('mi_meta_nonce', 'mi_meta_nonce_field');
         $valor = get_post_meta($post->ID, '_mi_campo', true);
         ?>
-        <label for="mi_campo"><?php _e('Mi Campo', 'flavor-platform'); ?></label>
+        <label for="mi_campo"><?php _e('Mi Campo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
         <input type="text" id="mi_campo" name="mi_campo"
                value="<?php echo esc_attr($valor); ?>" class="widefat" />
         <?php
@@ -246,7 +246,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Acción no implementada: %s', 'flavor-platform'), $nombre_accion),
+            'error' => sprintf(__('Acción no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -284,7 +284,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
             'success' => true,
             'total' => 0, // count($resultados)
             'resultados' => [], // $resultados
-            'mensaje' => sprintf(__('Se encontraron %d items.', 'flavor-platform'), 0),
+            'mensaje' => sprintf(__('Se encontraron %d items.', FLAVOR_PLATFORM_TEXT_DOMAIN), 0),
         ];
     }
 
@@ -296,7 +296,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para crear items.', 'flavor-platform'),
+                'error' => __('Debes iniciar sesión para crear items.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -306,7 +306,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         if (empty($titulo)) {
             return [
                 'success' => false,
-                'error' => __('El título es obligatorio.', 'flavor-platform'),
+                'error' => __('El título es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -331,7 +331,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         return [
             'success' => true,
             'item_id' => 0, // $post_id
-            'mensaje' => __('Item creado correctamente.', 'flavor-platform'),
+            'mensaje' => __('Item creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -344,7 +344,7 @@ class Flavor_Platform_MiModulo_Module extends Flavor_Platform_Module_Base {
         if (!$item_id) {
             return [
                 'success' => false,
-                'error' => __('ID de item no válido.', 'flavor-platform'),
+                'error' => __('ID de item no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -476,7 +476,7 @@ KNOWLEDGE;
         ?>
         <div class="mi-modulo-listado">
             <!-- Tu HTML aquí -->
-            <p><?php _e('Listado de items...', 'flavor-platform'); ?></p>
+            <p><?php _e('Listado de items...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php
         return ob_get_clean();
@@ -491,7 +491,7 @@ KNOWLEDGE;
         // Tu lógica AJAX aquí
 
         wp_send_json_success([
-            'mensaje' => __('Operación realizada.', 'flavor-platform'),
+            'mensaje' => __('Operación realizada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 }

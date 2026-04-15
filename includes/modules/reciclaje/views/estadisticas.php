@@ -115,7 +115,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
 <div class="wrap flavor-reciclaje-estadisticas">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-bar"></span>
-        <?php echo esc_html__('Estadísticas e Impacto', 'flavor-platform'); ?>
+        <?php echo esc_html__('Estadísticas e Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -123,32 +123,32 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
     <!-- Filtros -->
     <div class="flavor-filtros-container">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-reciclaje-estadisticas', 'flavor-platform'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-reciclaje-estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-            <label for="periodo"><?php echo esc_html__('Período:', 'flavor-platform'); ?></label>
+            <label for="periodo"><?php echo esc_html__('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="periodo" id="periodo" onchange="this.form.submit()">
-                <option value="<?php echo esc_attr__('semana', 'flavor-platform'); ?>" <?php selected($periodo, 'semana'); ?>><?php echo esc_html__('Última semana', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('mes', 'flavor-platform'); ?>" <?php selected($periodo, 'mes'); ?>><?php echo esc_html__('Este mes', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('trimestre', 'flavor-platform'); ?>" <?php selected($periodo, 'trimestre'); ?>><?php echo esc_html__('Último trimestre', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('anio', 'flavor-platform'); ?>" <?php selected($periodo, 'anio'); ?>><?php echo esc_html__('Este año', 'flavor-platform'); ?></option>
+                <option value="<?php echo esc_attr__('semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($periodo, 'semana'); ?>><?php echo esc_html__('Última semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($periodo, 'mes'); ?>><?php echo esc_html__('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($periodo, 'trimestre'); ?>><?php echo esc_html__('Último trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('anio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($periodo, 'anio'); ?>><?php echo esc_html__('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <label for="material"><?php echo esc_html__('Material:', 'flavor-platform'); ?></label>
+            <label for="material"><?php echo esc_html__('Material:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="material" id="material" onchange="this.form.submit()">
-                <option value=""><?php echo esc_html__('Todos los materiales', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('papel', 'flavor-platform'); ?>" <?php selected($material_filtro, 'papel'); ?>><?php echo esc_html__('Papel', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('plastico', 'flavor-platform'); ?>" <?php selected($material_filtro, 'plastico'); ?>><?php echo esc_html__('Plástico', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('vidrio', 'flavor-platform'); ?>" <?php selected($material_filtro, 'vidrio'); ?>><?php echo esc_html__('Vidrio', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('organico', 'flavor-platform'); ?>" <?php selected($material_filtro, 'organico'); ?>><?php echo esc_html__('Orgánico', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('electronico', 'flavor-platform'); ?>" <?php selected($material_filtro, 'electronico'); ?>><?php echo esc_html__('Electrónico', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('ropa', 'flavor-platform'); ?>" <?php selected($material_filtro, 'ropa'); ?>><?php echo esc_html__('Ropa', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('aceite', 'flavor-platform'); ?>" <?php selected($material_filtro, 'aceite'); ?>><?php echo esc_html__('Aceite', 'flavor-platform'); ?></option>
-                <option value="<?php echo esc_attr__('pilas', 'flavor-platform'); ?>" <?php selected($material_filtro, 'pilas'); ?>><?php echo esc_html__('Pilas', 'flavor-platform'); ?></option>
+                <option value=""><?php echo esc_html__('Todos los materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('papel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'papel'); ?>><?php echo esc_html__('Papel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('plastico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'plastico'); ?>><?php echo esc_html__('Plástico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'vidrio'); ?>><?php echo esc_html__('Vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('organico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'organico'); ?>><?php echo esc_html__('Orgánico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('electronico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'electronico'); ?>><?php echo esc_html__('Electrónico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('ropa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'ropa'); ?>><?php echo esc_html__('Ropa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('aceite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'aceite'); ?>><?php echo esc_html__('Aceite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('pilas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($material_filtro, 'pilas'); ?>><?php echo esc_html__('Pilas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <button type="submit" class="button"><?php echo esc_html__('Aplicar Filtros', 'flavor-platform'); ?></button>
+            <button type="submit" class="button"><?php echo esc_html__('Aplicar Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-estadisticas'); ?>" class="button">
-                <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
+                <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </form>
     </div>
@@ -161,7 +161,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
             </div>
             <div class="flavor-stat-content">
                 <h3><?php echo number_format($stats_generales->total_kg, 2); ?> kg</h3>
-                <p><?php echo esc_html__('Total Reciclado', 'flavor-platform'); ?></p>
+                <p><?php echo esc_html__('Total Reciclado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php if ($variacion_kg != 0) : ?>
                     <span class="flavor-stat-trend <?php echo $variacion_kg > 0 ? 'positive' : 'negative'; ?>">
                         <span class="dashicons dashicons-arrow-<?php echo $variacion_kg > 0 ? 'up' : 'down'; ?>-alt"></span>
@@ -177,7 +177,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
             </div>
             <div class="flavor-stat-content">
                 <h3><?php echo number_format($stats_generales->total_depositos); ?></h3>
-                <p><?php echo esc_html__('Depósitos Realizados', 'flavor-platform'); ?></p>
+                <p><?php echo esc_html__('Depósitos Realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
@@ -187,7 +187,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
             </div>
             <div class="flavor-stat-content">
                 <h3><?php echo number_format($stats_generales->usuarios_activos); ?></h3>
-                <p><?php echo esc_html__('Usuarios Activos', 'flavor-platform'); ?></p>
+                <p><?php echo esc_html__('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
@@ -197,7 +197,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
             </div>
             <div class="flavor-stat-content">
                 <h3><?php echo number_format($stats_generales->puntos_totales); ?></h3>
-                <p><?php echo esc_html__('Puntos Generados', 'flavor-platform'); ?></p>
+                <p><?php echo esc_html__('Puntos Generados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -206,7 +206,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
         <!-- Gráfica de evolución -->
         <div class="flavor-dashboard-widget flavor-widget-large">
             <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Evolución Temporal', 'flavor-platform'); ?></h2>
+                <h2><?php echo esc_html__('Evolución Temporal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-widget-body">
                 <canvas id="grafica-evolucion" height="80"></canvas>
@@ -216,7 +216,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
         <!-- Distribución por material -->
         <div class="flavor-dashboard-widget">
             <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Distribución por Material', 'flavor-platform'); ?></h2>
+                <h2><?php echo esc_html__('Distribución por Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-widget-body">
                 <canvas id="grafica-materiales" height="200"></canvas>
@@ -226,7 +226,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
         <!-- Top usuarios -->
         <div class="flavor-dashboard-widget">
             <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Top Recicladores', 'flavor-platform'); ?></h2>
+                <h2><?php echo esc_html__('Top Recicladores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-widget-body">
                 <div class="flavor-ranking-list">
@@ -237,7 +237,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
                                 <?php echo get_avatar($usuario->ID, 32); ?>
                                 <div class="flavor-ranking-info">
                                     <strong><?php echo esc_html($usuario->display_name); ?></strong>
-                                    <span><?php echo sprintf(__('%s kg • %s depósitos', 'flavor-platform'), number_format($usuario->kg_total, 2), number_format($usuario->depositos)); ?></span>
+                                    <span><?php echo sprintf(__('%s kg • %s depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($usuario->kg_total, 2), number_format($usuario->depositos)); ?></span>
                                 </div>
                             </div>
                             <span class="flavor-ranking-points"><?php echo number_format($usuario->puntos); ?> pts</span>
@@ -250,7 +250,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
         <!-- Estadísticas por día de la semana -->
         <div class="flavor-dashboard-widget">
             <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Actividad por Día', 'flavor-platform'); ?></h2>
+                <h2><?php echo esc_html__('Actividad por Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-widget-body">
                 <canvas id="grafica-dias-semana" height="200"></canvas>
@@ -260,8 +260,8 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
         <!-- Impacto ambiental -->
         <div class="flavor-dashboard-widget flavor-widget-large flavor-widget-impacto">
             <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Impacto Ambiental', 'flavor-platform'); ?></h2>
-                <p class="flavor-widget-subtitle"><?php echo esc_html__('Equivalencias estimadas del reciclaje realizado', 'flavor-platform'); ?></p>
+                <h2><?php echo esc_html__('Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-widget-subtitle"><?php echo esc_html__('Equivalencias estimadas del reciclaje realizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flavor-widget-body">
                 <div class="flavor-impacto-grid">
@@ -269,7 +269,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
                         <div class="flavor-impacto-icon">🌍</div>
                         <div class="flavor-impacto-content">
                             <strong><?php echo number_format($co2_evitado, 2); ?> kg</strong>
-                            <span><?php echo esc_html__('CO₂ evitado', 'flavor-platform'); ?></span>
+                            <span><?php echo esc_html__('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
@@ -277,7 +277,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
                         <div class="flavor-impacto-icon">🌳</div>
                         <div class="flavor-impacto-content">
                             <strong><?php echo number_format($arboles_equivalentes, 0); ?></strong>
-                            <span><?php echo esc_html__('Árboles equivalentes', 'flavor-platform'); ?></span>
+                            <span><?php echo esc_html__('Árboles equivalentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
@@ -285,7 +285,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
                         <div class="flavor-impacto-icon">💧</div>
                         <div class="flavor-impacto-content">
                             <strong><?php echo number_format($agua_ahorrada, 0); ?> L</strong>
-                            <span><?php echo esc_html__('Agua ahorrada', 'flavor-platform'); ?></span>
+                            <span><?php echo esc_html__('Agua ahorrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
@@ -293,7 +293,7 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
                         <div class="flavor-impacto-icon">⚡</div>
                         <div class="flavor-impacto-content">
                             <strong><?php echo number_format($energia_ahorrada, 2); ?> kWh</strong>
-                            <span><?php echo esc_html__('Energía ahorrada', 'flavor-platform'); ?></span>
+                            <span><?php echo esc_html__('Energía ahorrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
@@ -303,14 +303,14 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
 
     <!-- Botones de exportación -->
     <div class="flavor-export-section">
-        <h3><?php echo esc_html__('Exportar Datos', 'flavor-platform'); ?></h3>
+        <h3><?php echo esc_html__('Exportar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <button class="button button-primary" onclick="exportarCSV()">
             <span class="dashicons dashicons-download"></span>
-            <?php echo esc_html__('Exportar a CSV', 'flavor-platform'); ?>
+            <?php echo esc_html__('Exportar a CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="button" onclick="window.print()">
             <span class="dashicons dashicons-media-document"></span>
-            <?php echo esc_html__('Imprimir Informe', 'flavor-platform'); ?>
+            <?php echo esc_html__('Imprimir Informe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
 </div>
@@ -329,7 +329,7 @@ jQuery(document).ready(function($) {
         data: {
             labels: datosEvolucion.map(d => d.periodo),
             datasets: [{
-                label: '<?php echo esc_js(__('Kg reciclados', 'flavor-platform')); ?>',
+                label: '<?php echo esc_js(__('Kg reciclados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                 data: datosEvolucion.map(d => parseFloat(d.kg)),
                 borderColor: '#28a745',
                 backgroundColor: 'rgba(40, 167, 69, 0.1)',
@@ -377,7 +377,7 @@ jQuery(document).ready(function($) {
         data: {
             labels: datosDiasSemana.map(d => diasSemanaLabels[d.dia_semana - 1]),
             datasets: [{
-                label: '<?php echo esc_js(__('Kg reciclados', 'flavor-platform')); ?>',
+                label: '<?php echo esc_js(__('Kg reciclados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                 data: datosDiasSemana.map(d => parseFloat(d.total_kg)),
                 backgroundColor: '#0073aa'
             }]

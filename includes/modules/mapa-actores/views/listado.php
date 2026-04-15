@@ -50,40 +50,40 @@ $actores = empty($params) ? $wpdb->get_results($sql) : $wpdb->get_results($wpdb-
 
 <section class="flavor-actores-listado">
     <header>
-        <h2><?php esc_html_e('Directorio de actores', 'flavor-platform'); ?></h2>
-        <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtros del directorio de actores', 'flavor-platform'); ?>" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0.5rem;align-items:end;">
+        <h2><?php esc_html_e('Directorio de actores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtros del directorio de actores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0.5rem;align-items:end;">
             <p>
-                <label for="act_q"><?php esc_html_e('Buscar', 'flavor-platform'); ?></label><br>
+                <label for="act_q"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label><br>
                 <input id="act_q" type="text" name="q" value="<?php echo esc_attr($busqueda); ?>" style="width:100%;">
             </p>
             <p>
-                <label for="act_tipo"><?php esc_html_e('Tipo', 'flavor-platform'); ?></label><br>
+                <label for="act_tipo"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label><br>
                 <input id="act_tipo" type="text" name="tipo" value="<?php echo esc_attr($tipo); ?>" style="width:100%;">
             </p>
             <p>
-                <label for="act_ambito"><?php esc_html_e('Ambito', 'flavor-platform'); ?></label><br>
+                <label for="act_ambito"><?php esc_html_e('Ambito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label><br>
                 <input id="act_ambito" type="text" name="ambito" value="<?php echo esc_attr($ambito); ?>" style="width:100%;">
             </p>
             <p>
-                <label for="act_posicion"><?php esc_html_e('Posicion', 'flavor-platform'); ?></label><br>
+                <label for="act_posicion"><?php esc_html_e('Posicion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label><br>
                 <input id="act_posicion" type="text" name="posicion" value="<?php echo esc_attr($posicion); ?>" style="width:100%;">
             </p>
-            <p><button type="submit" class="button"><?php esc_html_e('Aplicar', 'flavor-platform'); ?></button></p>
+            <p><button type="submit" class="button"><?php esc_html_e('Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button></p>
         </form>
     </header>
 
     <?php if (empty($actores)): ?>
-        <p><?php esc_html_e('No se encontraron actores con los filtros actuales.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('No se encontraron actores con los filtros actuales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Nombre', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Ambito', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Posicion', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Influencia', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Municipio', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ambito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Posicion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Influencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Municipio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -94,7 +94,7 @@ $actores = empty($params) ? $wpdb->get_results($sql) : $wpdb->get_results($wpdb-
                                 <?php echo esc_html($actor->nombre); ?>
                             </a>
                             <?php if (!empty($actor->web)): ?>
-                                <div><a href="<?php echo esc_url($actor->web); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Web', 'flavor-platform'); ?></a></div>
+                                <div><a href="<?php echo esc_url($actor->web); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></div>
                             <?php endif; ?>
                         </td>
                         <td><?php echo esc_html($actor->tipo); ?></td>

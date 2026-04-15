@@ -89,12 +89,12 @@ class Flavor_Talleres_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('talleres_nonce'),
             'i18n' => [
-                'inscrito' => __('Te has inscrito correctamente', 'flavor-platform'),
-                'cancelado' => __('Inscripción cancelada', 'flavor-platform'),
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                'confirmacion' => __('¿Estás seguro?', 'flavor-platform'),
-                'cargando' => __('Cargando...', 'flavor-platform'),
-                'sin_plazas' => __('No hay plazas disponibles', 'flavor-platform'),
+                'inscrito' => __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelado' => __('Inscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmacion' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_plazas' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -158,7 +158,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function shortcode_mis_inscripciones($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus inscripciones.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus inscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -194,7 +194,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function shortcode_proponer($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para proponer un taller.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para proponer un taller.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -217,7 +217,7 @@ class Flavor_Talleres_Frontend_Controller {
         $taller_id = $atts['id'] ?: (isset($_GET['taller_id']) ? absint($_GET['taller_id']) : 0);
 
         if (!$taller_id) {
-            return '<p class="flavor-error">' . __('Taller no especificado.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-error">' . __('Taller no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -230,7 +230,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function shortcode_organizador($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para acceder al panel de organizador.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para acceder al panel de organizador.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -252,7 +252,7 @@ class Flavor_Talleres_Frontend_Controller {
         ], $atts);
 
         if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
-            return '<p class="fmd-widget-empty">' . __('Módulo no configurado.', 'flavor-platform') . '</p>';
+            return '<p class="fmd-widget-empty">' . __('Módulo no configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $proximo = $wpdb->get_row(
@@ -265,7 +265,7 @@ class Flavor_Talleres_Frontend_Controller {
         if (!$proximo) {
             return '<div class="fmd-widget-empty-state">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <p>' . __('No hay talleres próximos programados.', 'flavor-platform') . '</p>
+                <p>' . __('No hay talleres próximos programados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -295,7 +295,7 @@ class Flavor_Talleres_Frontend_Controller {
                     <div class="fmd-progress-bar">
                         <div class="fmd-progress-fill" style="width: <?php echo $porcentaje_ocupacion; ?>%"></div>
                     </div>
-                    <span class="fmd-plazas-texto"><?php echo sprintf(__('%d plazas disponibles', 'flavor-platform'), $plazas_disponibles); ?></span>
+                    <span class="fmd-plazas-texto"><?php echo sprintf(__('%d plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles); ?></span>
                 </div>
             </div>
         </div>
@@ -323,7 +323,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function shortcode_materiales($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver los materiales.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver los materiales.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -333,7 +333,7 @@ class Flavor_Talleres_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!Flavor_Platform_Helpers::tabla_existe($tabla_materiales)) {
-            return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-error">' . __('El módulo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Obtener materiales de talleres en los que está inscrito el usuario
@@ -353,8 +353,8 @@ class Flavor_Talleres_Frontend_Controller {
             <?php if (empty($materiales)): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-media-document"></span>
-                    <p><?php _e('No hay materiales disponibles.', 'flavor-platform'); ?></p>
-                    <small><?php _e('Los materiales aparecerán aquí cuando te inscribas en talleres que los incluyan.', 'flavor-platform'); ?></small>
+                    <p><?php _e('No hay materiales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <small><?php _e('Los materiales aparecerán aquí cuando te inscribas en talleres que los incluyan.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
             <?php else: ?>
                 <?php
@@ -459,7 +459,7 @@ class Flavor_Talleres_Frontend_Controller {
         $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
-            echo '<p class="flavor-error">' . __('El módulo de talleres no está configurado.', 'flavor-platform') . '</p>';
+            echo '<p class="flavor-error">' . __('El módulo de talleres no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -532,22 +532,22 @@ class Flavor_Talleres_Frontend_Controller {
             include $template;
         } else {
             echo '<div class="flavor-proponer-taller">';
-            echo '<h3>' . __('Proponer un Taller', 'flavor-platform') . '</h3>';
-            echo '<p>' . __('¿Tienes una habilidad que quieres compartir? Propón un taller para la comunidad.', 'flavor-platform') . '</p>';
+            echo '<h3>' . __('Proponer un Taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+            echo '<p>' . __('¿Tienes una habilidad que quieres compartir? Propón un taller para la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '<form class="flavor-form" id="form-proponer-taller">';
-            echo '<p><label>' . __('Título del taller', 'flavor-platform') . '</label>';
+            echo '<p><label>' . __('Título del taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<input type="text" name="titulo" required></p>';
-            echo '<p><label>' . __('Descripción', 'flavor-platform') . '</label>';
+            echo '<p><label>' . __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<textarea name="descripcion" rows="4" required></textarea></p>';
-            echo '<p><label>' . __('Categoría', 'flavor-platform') . '</label>';
+            echo '<p><label>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<select name="categoria">';
-            echo '<option value="artesania">' . __('Artesanía', 'flavor-platform') . '</option>';
-            echo '<option value="cocina">' . __('Cocina', 'flavor-platform') . '</option>';
-            echo '<option value="tecnologia">' . __('Tecnología', 'flavor-platform') . '</option>';
-            echo '<option value="huerto">' . __('Huerto', 'flavor-platform') . '</option>';
-            echo '<option value="otros">' . __('Otros', 'flavor-platform') . '</option>';
+            echo '<option value="artesania">' . __('Artesanía', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="cocina">' . __('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="tecnologia">' . __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="huerto">' . __('Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="otros">' . __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
             echo '</select></p>';
-            echo '<p><button type="submit" class="flavor-btn flavor-btn-primary">' . __('Enviar Propuesta', 'flavor-platform') . '</button></p>';
+            echo '<p><button type="submit" class="flavor-btn flavor-btn-primary">' . __('Enviar Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button></p>';
             echo '</form>';
             echo '</div>';
         }
@@ -566,7 +566,7 @@ class Flavor_Talleres_Frontend_Controller {
         ));
 
         if (!$taller) {
-            echo '<p class="flavor-error">' . __('Taller no encontrado.', 'flavor-platform') . '</p>';
+            echo '<p class="flavor-error">' . __('Taller no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -578,8 +578,8 @@ class Flavor_Talleres_Frontend_Controller {
             echo '<div class="flavor-taller-detalle">';
             echo '<h2>' . esc_html($taller->titulo) . '</h2>';
             echo '<div class="taller-meta">';
-            echo '<span class="fecha"><strong>' . __('Fecha:', 'flavor-platform') . '</strong> ' . esc_html(date_i18n('d/m/Y H:i', strtotime($taller->fecha_inicio))) . '</span>';
-            echo '<span class="ubicacion"><strong>' . __('Lugar:', 'flavor-platform') . '</strong> ' . esc_html($taller->ubicacion) . '</span>';
+            echo '<span class="fecha"><strong>' . __('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html(date_i18n('d/m/Y H:i', strtotime($taller->fecha_inicio))) . '</span>';
+            echo '<span class="ubicacion"><strong>' . __('Lugar:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html($taller->ubicacion) . '</span>';
             echo '</div>';
             echo '<div class="taller-descripcion">' . wp_kses_post($taller->descripcion) . '</div>';
             echo '</div>';
@@ -610,7 +610,7 @@ class Flavor_Talleres_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['talleres-inscripciones'] = [
-            'titulo' => __('Mis Talleres', 'flavor-platform'),
+            'titulo' => __('Mis Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-hammer',
             'callback' => [$this, 'render_tab_inscripciones'],
             'orden' => 35,
@@ -620,7 +620,7 @@ class Flavor_Talleres_Frontend_Controller {
         // Tab adicional para organizadores
         if ($this->usuario_es_organizador()) {
             $tabs['talleres-organizador'] = [
-                'titulo' => __('Organizar Talleres', 'flavor-platform'),
+                'titulo' => __('Organizar Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'callback' => [$this, 'render_tab_organizador'],
                 'orden' => 36,
@@ -688,14 +688,14 @@ class Flavor_Talleres_Frontend_Controller {
         check_ajax_referer('talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $taller_id = isset($_POST['taller_id']) ? absint($_POST['taller_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$taller_id) {
-            wp_send_json_error(__('Taller no válido', 'flavor-platform'));
+            wp_send_json_error(__('Taller no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -710,14 +710,14 @@ class Flavor_Talleres_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(__('Ya estás inscrito en este taller', 'flavor-platform'));
+            wp_send_json_error(__('Ya estás inscrito en este taller', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar plazas disponibles
         $taller = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_talleres WHERE id = %d", $taller_id));
 
         if (!$taller) {
-            wp_send_json_error(__('Taller no encontrado', 'flavor-platform'));
+            wp_send_json_error(__('Taller no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $inscritos = $wpdb->get_var($wpdb->prepare(
@@ -726,7 +726,7 @@ class Flavor_Talleres_Frontend_Controller {
         ));
 
         if ($taller->max_participantes > 0 && $inscritos >= $taller->max_participantes) {
-            wp_send_json_error(__('No hay plazas disponibles', 'flavor-platform'));
+            wp_send_json_error(__('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Realizar inscripción
@@ -739,10 +739,10 @@ class Flavor_Talleres_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'mensaje' => __('Te has inscrito correctamente', 'flavor-platform'),
+                'mensaje' => __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(__('Error al procesar la inscripción', 'flavor-platform'));
+            wp_send_json_error(__('Error al procesar la inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -753,7 +753,7 @@ class Flavor_Talleres_Frontend_Controller {
         check_ajax_referer('talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $inscripcion_id = isset($_POST['inscripcion_id']) ? absint($_POST['inscripcion_id']) : 0;
@@ -769,9 +769,9 @@ class Flavor_Talleres_Frontend_Controller {
         );
 
         if ($resultado !== false) {
-            wp_send_json_success(['mensaje' => __('Inscripción cancelada', 'flavor-platform')]);
+            wp_send_json_success(['mensaje' => __('Inscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al cancelar', 'flavor-platform'));
+            wp_send_json_error(__('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -782,7 +782,7 @@ class Flavor_Talleres_Frontend_Controller {
         check_ajax_referer('talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $taller_id = isset($_POST['taller_id']) ? absint($_POST['taller_id']) : 0;
@@ -791,7 +791,7 @@ class Flavor_Talleres_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$taller_id || $valoracion < 1 || $valoracion > 5) {
-            wp_send_json_error(__('Datos no válidos', 'flavor-platform'));
+            wp_send_json_error(__('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -806,9 +806,9 @@ class Flavor_Talleres_Frontend_Controller {
         ]);
 
         if ($resultado) {
-            wp_send_json_success(['mensaje' => __('Gracias por tu valoración', 'flavor-platform')]);
+            wp_send_json_success(['mensaje' => __('Gracias por tu valoración', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al guardar valoración', 'flavor-platform'));
+            wp_send_json_error(__('Error al guardar valoración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -859,7 +859,7 @@ class Flavor_Talleres_Frontend_Controller {
                 $this->render_taller_card($taller);
             }
         } else {
-            echo '<p class="no-resultados">' . __('No se encontraron talleres', 'flavor-platform') . '</p>';
+            echo '<p class="no-resultados">' . __('No se encontraron talleres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         $html = ob_get_clean();
 
@@ -885,7 +885,7 @@ class Flavor_Talleres_Frontend_Controller {
                 </div>
                 <p class="taller-descripcion"><?php echo esc_html(wp_trim_words($taller->descripcion, 20)); ?></p>
                 <a href="<?php echo esc_url(home_url('/talleres/?taller_id=' . $taller->id)); ?>" class="flavor-btn flavor-btn-sm">
-                    <?php _e('Ver Detalles', 'flavor-platform'); ?>
+                    <?php _e('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

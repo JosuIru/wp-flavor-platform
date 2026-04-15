@@ -32,7 +32,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
      */
     public function __construct() {
         $this->name = 'Stripe';
-        $this->description = __('Paga de forma segura con tu tarjeta.', 'flavor-platform');
+        $this->description = __('Paga de forma segura con tu tarjeta.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-credit-card';
 
         parent::__construct();
@@ -105,7 +105,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (empty($secret_key)) {
             return [
                 'success' => false,
-                'error' => __('Stripe no está configurado correctamente.', 'flavor-platform'),
+                'error' => __('Stripe no está configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -127,7 +127,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
                 'metadata[user_id]' => get_current_user_id(),
                 'metadata[source]' => 'grupos_consumo',
                 'description' => sprintf(
-                    __('Pedido Grupos de Consumo #%d', 'flavor-platform'),
+                    __('Pedido Grupos de Consumo #%d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $entrega_id
                 ),
                 'receipt_email' => $user->user_email,
@@ -147,7 +147,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (isset($body['error'])) {
             return [
                 'success' => false,
-                'error' => $body['error']['message'] ?? __('Error de Stripe.', 'flavor-platform'),
+                'error' => $body['error']['message'] ?? __('Error de Stripe.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -438,46 +438,46 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar Stripe', 'flavor-platform'),
+                'label' => __('Habilitar Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
             [
                 'id' => 'sandbox',
                 'type' => 'checkbox',
-                'label' => __('Modo de pruebas (sandbox)', 'flavor-platform'),
-                'description' => __('Usa las claves de prueba de Stripe.', 'flavor-platform'),
+                'label' => __('Modo de pruebas (sandbox)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Usa las claves de prueba de Stripe.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             [
                 'id' => 'test_publishable_key',
                 'type' => 'text',
-                'label' => __('Clave pública de pruebas', 'flavor-platform'),
-                'description' => __('Empieza con pk_test_', 'flavor-platform'),
+                'label' => __('Clave pública de pruebas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Empieza con pk_test_', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'test_secret_key',
                 'type' => 'password',
-                'label' => __('Clave secreta de pruebas', 'flavor-platform'),
-                'description' => __('Empieza con sk_test_', 'flavor-platform'),
+                'label' => __('Clave secreta de pruebas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Empieza con sk_test_', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'live_publishable_key',
                 'type' => 'text',
-                'label' => __('Clave pública de producción', 'flavor-platform'),
-                'description' => __('Empieza con pk_live_', 'flavor-platform'),
+                'label' => __('Clave pública de producción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Empieza con pk_live_', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'live_secret_key',
                 'type' => 'password',
-                'label' => __('Clave secreta de producción', 'flavor-platform'),
-                'description' => __('Empieza con sk_live_', 'flavor-platform'),
+                'label' => __('Clave secreta de producción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Empieza con sk_live_', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'webhook_secret',
                 'type' => 'password',
-                'label' => __('Secreto del Webhook', 'flavor-platform'),
+                'label' => __('Secreto del Webhook', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'description' => sprintf(
-                    __('URL del webhook: %s', 'flavor-platform'),
+                    __('URL del webhook: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     rest_url('flavor-gc/v1/webhook/stripe')
                 ),
             ],
@@ -504,7 +504,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (!$transaccion) {
             return [
                 'success' => false,
-                'error' => __('Transacción no encontrada.', 'flavor-platform'),
+                'error' => __('Transacción no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -514,7 +514,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (empty($payment_intent_id)) {
             return [
                 'success' => false,
-                'error' => __('No se encontró el ID del pago en Stripe.', 'flavor-platform'),
+                'error' => __('No se encontró el ID del pago en Stripe.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -559,7 +559,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         return [
             'success' => true,
             'refund_id' => $body['id'],
-            'message' => __('Reembolso procesado correctamente.', 'flavor-platform'),
+            'message' => __('Reembolso procesado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 }

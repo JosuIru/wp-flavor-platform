@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 
 if (!is_user_logged_in()) {
     echo '<div class="gc-cesta-login">';
-    echo '<p>' . esc_html__('Inicia sesión para ver tu pedido.', 'flavor-platform') . '</p>';
+    echo '<p>' . esc_html__('Inicia sesión para ver tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesión', 'flavor-platform');
+    echo esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN);
     echo '</a></div>';
     return;
 }
@@ -66,14 +66,14 @@ if ($query->have_posts()) {
 <div class="gc-cesta-container">
     <h2 class="gc-cesta-title">
         <span class="dashicons dashicons-cart"></span>
-        <?php esc_html_e('Pedido actual', 'flavor-platform'); ?>
+        <?php esc_html_e('Pedido actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h2>
     <div class="gc-inline-notice" id="gc-cesta-notice" style="display:none;"></div>
 
     <?php if (!$ciclo_activo) : ?>
     <div class="gc-cesta-notice gc-notice-warning">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('No hay ningún ciclo de pedido activo en este momento.', 'flavor-platform'); ?>
+        <?php esc_html_e('No hay ningún ciclo de pedido activo en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php else : ?>
     <div class="gc-cesta-ciclo-info">
@@ -85,21 +85,21 @@ if ($query->have_posts()) {
             if ($tiempo_restante > 0) :
         ?>
         <span class="gc-ciclo-cierre">
-            <?php esc_html_e('Cierra en:', 'flavor-platform'); ?>
+            <?php esc_html_e('Cierra en:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <strong>
             <?php
             if ($tiempo_restante < 3600) {
-                printf(__('%d minutos', 'flavor-platform'), ceil($tiempo_restante / 60));
+                printf(__('%d minutos', FLAVOR_PLATFORM_TEXT_DOMAIN), ceil($tiempo_restante / 60));
             } elseif ($tiempo_restante < 86400) {
-                printf(__('%d horas', 'flavor-platform'), ceil($tiempo_restante / 3600));
+                printf(__('%d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), ceil($tiempo_restante / 3600));
             } else {
-                printf(_n('%d día', '%d días', ceil($tiempo_restante / 86400), 'flavor-platform'), ceil($tiempo_restante / 86400));
+                printf(_n('%d día', '%d días', ceil($tiempo_restante / 86400), FLAVOR_PLATFORM_TEXT_DOMAIN), ceil($tiempo_restante / 86400));
             }
             ?>
             </strong>
         </span>
         <?php else : ?>
-        <span class="gc-ciclo-cerrado"><?php esc_html_e('Ciclo cerrado', 'flavor-platform'); ?></span>
+        <span class="gc-ciclo-cerrado"><?php esc_html_e('Ciclo cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <?php
             endif;
         endif;
@@ -110,9 +110,9 @@ if ($query->have_posts()) {
     <?php if (empty($items)) : ?>
     <div class="gc-cesta-empty">
         <span class="dashicons dashicons-products"></span>
-        <p><?php esc_html_e('Tu pedido está vacío.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Tu pedido está vacío.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
-            <?php esc_html_e('Ver productos', 'flavor-platform'); ?>
+            <?php esc_html_e('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php else : ?>
@@ -123,10 +123,10 @@ if ($query->have_posts()) {
         <table class="gc-cesta-table">
             <thead>
                 <tr>
-                    <th class="gc-col-producto"><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
-                    <th class="gc-col-precio"><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
-                    <th class="gc-col-cantidad"><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
-                    <th class="gc-col-subtotal"><?php esc_html_e('Subtotal', 'flavor-platform'); ?></th>
+                    <th class="gc-col-producto"><?php esc_html_e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th class="gc-col-precio"><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th class="gc-col-cantidad"><?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th class="gc-col-subtotal"><?php esc_html_e('Subtotal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <th class="gc-col-acciones"></th>
                 </tr>
             </thead>
@@ -139,7 +139,7 @@ if ($query->have_posts()) {
                 ?>
                 <tr class="gc-cesta-item" data-item-id="<?php echo esc_attr($item->id); ?>">
                     <td class="gc-col-producto">
-                        <span class="gc-producto-nombre"><?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-platform')); ?></span>
+                        <span class="gc-producto-nombre"><?php echo esc_html($item->producto_nombre ?: __('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                         <?php if ($item->notas) : ?>
                         <span class="gc-producto-notas"><?php echo esc_html($item->notas); ?></span>
                         <?php endif; ?>
@@ -149,7 +149,7 @@ if ($query->have_posts()) {
                     </td>
                     <td class="gc-col-cantidad">
                         <div class="gc-cantidad-control">
-                            <button type="button" class="gc-btn-cantidad gc-btn-menos" aria-label="<?php esc_attr_e('Reducir cantidad', 'flavor-platform'); ?>">-</button>
+                            <button type="button" class="gc-btn-cantidad gc-btn-menos" aria-label="<?php esc_attr_e('Reducir cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">-</button>
                             <input type="number"
                                    name="items[<?php echo esc_attr($item->id); ?>][cantidad]"
                                    value="<?php echo esc_attr($cantidad); ?>"
@@ -157,14 +157,14 @@ if ($query->have_posts()) {
                                    step="0.5"
                                    class="gc-input-cantidad"
                                    data-precio="<?php echo esc_attr($precio); ?>">
-                            <button type="button" class="gc-btn-cantidad gc-btn-mas" aria-label="<?php esc_attr_e('Aumentar cantidad', 'flavor-platform'); ?>">+</button>
+                            <button type="button" class="gc-btn-cantidad gc-btn-mas" aria-label="<?php esc_attr_e('Aumentar cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">+</button>
                         </div>
                     </td>
                     <td class="gc-col-subtotal">
                         <span class="gc-item-subtotal"><?php echo number_format($item_subtotal, 2, ',', '.'); ?></span> €
                     </td>
                     <td class="gc-col-acciones">
-                        <button type="button" class="gc-btn-eliminar" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
+                        <button type="button" class="gc-btn-eliminar" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </td>
@@ -173,7 +173,7 @@ if ($query->have_posts()) {
             </tbody>
             <tfoot>
                 <tr class="gc-cesta-total">
-                    <td colspan="3"><?php esc_html_e('Total', 'flavor-platform'); ?></td>
+                    <td colspan="3"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     <td colspan="2">
                         <strong><span id="gc-cesta-total"><?php echo number_format($subtotal, 2, ',', '.'); ?></span> €</strong>
                     </td>
@@ -184,17 +184,17 @@ if ($query->have_posts()) {
         <div class="gc-cesta-actions">
             <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php esc_html_e('Seguir añadiendo productos', 'flavor-platform'); ?>
+                <?php esc_html_e('Seguir añadiendo productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <div class="gc-cesta-actions-right">
                 <button type="button" id="gc-btn-actualizar" class="gc-btn gc-btn-secondary">
-                    <?php esc_html_e('Actualizar pedido', 'flavor-platform'); ?>
+                    <?php esc_html_e('Actualizar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
 
                 <?php if ($ciclo_activo && $tiempo_restante > 0) : ?>
                 <button type="submit" id="gc-btn-confirmar" class="gc-btn gc-btn-primary">
-                    <?php esc_html_e('Confirmar pedido', 'flavor-platform'); ?>
+                    <?php esc_html_e('Confirmar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </button>
                 <?php endif; ?>
@@ -223,7 +223,7 @@ if ($query->have_posts()) {
         var $notice = gcTabCestaNotice();
         $notice.removeClass('success error')
             .addClass('error')
-            .html('<p>' + mensaje + '</p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div>')
+            .html('<p>' + mensaje + '</p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button></div>')
             .show();
 
         $notice.off('click', '.gc-confirmar').on('click', '.gc-confirmar', function() {
@@ -279,7 +279,7 @@ if ($query->have_posts()) {
         var $row = $(this).closest('.gc-cesta-item');
         var itemId = $row.data('item-id');
 
-        gcTabCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', 'flavor-platform')); ?>', function() {
+        gcTabCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', function() {
             $.ajax({
                 url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
                 type: 'POST',
@@ -306,7 +306,7 @@ if ($query->have_posts()) {
     // Actualizar pedido actual
     $('#gc-btn-actualizar').on('click', function() {
         var $btn = $(this);
-        $btn.prop('disabled', true).text('<?php echo esc_js(__('Actualizando...', 'flavor-platform')); ?>');
+        $btn.prop('disabled', true).text('<?php echo esc_js(__('Actualizando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
         var items = {};
         $('.gc-cesta-item').each(function() {
@@ -324,7 +324,7 @@ if ($query->have_posts()) {
                 items: items
             },
             success: function(response) {
-                $btn.prop('disabled', false).text('<?php echo esc_js(__('Actualizar pedido', 'flavor-platform')); ?>');
+                $btn.prop('disabled', false).text('<?php echo esc_js(__('Actualizar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 if (response.success) {
                     location.reload();
                 }
@@ -343,7 +343,7 @@ if ($query->have_posts()) {
             $notice.addClass('error').text(mensaje).show();
         }
 
-        $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', 'flavor-platform')); ?>');
+        $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
         $.ajax({
             url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
@@ -353,13 +353,13 @@ if ($query->have_posts()) {
                 if (response.success && response.data.entrega_id) {
                     window.location.href = '<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'checkout')); ?>?entrega_id=' + response.data.entrega_id;
                 } else {
-                    gcAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-platform')); ?>');
-                    $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', 'flavor-platform')); ?>');
+                    gcAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+                    $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             },
             error: function() {
-                gcAviso('<?php echo esc_js(__('Error de conexión.', 'flavor-platform')); ?>');
-                $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', 'flavor-platform')); ?>');
+                gcAviso('<?php echo esc_js(__('Error de conexión.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+                $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     });

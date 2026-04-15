@@ -19,9 +19,9 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
     <header class="he-header">
         <h2>
             <span class="dashicons dashicons-palmtree"></span>
-            <?php esc_html_e('Calculadora de Huella Ecológica', 'flavor-platform'); ?>
+            <?php esc_html_e('Calculadora de Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
-        <p><?php esc_html_e('Descubre tu impacto ambiental diario y cómo reducirlo', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Descubre tu impacto ambiental diario y cómo reducirlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <div class="he-calculadora">
@@ -29,19 +29,19 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
         <div class="he-calculadora__pasos">
             <div class="he-paso activo" data-paso="1">
                 <span class="he-paso__numero">1</span>
-                <span><?php esc_html_e('Transporte', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="he-paso" data-paso="2">
                 <span class="he-paso__numero">2</span>
-                <span><?php esc_html_e('Energía', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="he-paso" data-paso="3">
                 <span class="he-paso__numero">3</span>
-                <span><?php esc_html_e('Alimentación', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Alimentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="he-paso" data-paso="4">
                 <span class="he-paso__numero">4</span>
-                <span><?php esc_html_e('Consumo', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -50,19 +50,19 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <section class="he-calculadora__seccion activa" data-paso="1">
                 <div class="he-categoria-header" style="color: <?php echo esc_attr($categorias['transporte']['color']); ?>">
                     <span class="dashicons <?php echo esc_attr($categorias['transporte']['icono']); ?>"></span>
-                    <h3><?php esc_html_e('Transporte', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="he-form-row">
                     <div class="he-form-grupo">
-                        <label for="km_coche"><?php esc_html_e('Kilómetros en coche/moto por semana', 'flavor-platform'); ?></label>
+                        <label for="km_coche"><?php esc_html_e('Kilómetros en coche/moto por semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="he-input-con-unidad">
                             <input type="number" name="km_coche" id="km_coche" min="0" step="1" value="0">
                             <span class="he-unidad">km</span>
                         </div>
                     </div>
                     <div class="he-form-grupo">
-                        <label for="km_avion"><?php esc_html_e('Kilómetros en avión al año', 'flavor-platform'); ?></label>
+                        <label for="km_avion"><?php esc_html_e('Kilómetros en avión al año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="he-input-con-unidad">
                             <input type="number" name="km_avion" id="km_avion" min="0" step="100" value="0">
                             <span class="he-unidad">km</span>
@@ -71,15 +71,15 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="transporte_principal"><?php esc_html_e('Tu medio de transporte principal', 'flavor-platform'); ?></label>
+                    <label for="transporte_principal"><?php esc_html_e('Tu medio de transporte principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="transporte_principal" id="transporte_principal">
-                        <option value="coche_solo"><?php esc_html_e('Coche (solo/a)', 'flavor-platform'); ?></option>
-                        <option value="coche_compartido"><?php esc_html_e('Coche compartido', 'flavor-platform'); ?></option>
-                        <option value="moto"><?php esc_html_e('Moto/Scooter', 'flavor-platform'); ?></option>
-                        <option value="transporte_publico"><?php esc_html_e('Transporte público', 'flavor-platform'); ?></option>
-                        <option value="bicicleta"><?php esc_html_e('Bicicleta', 'flavor-platform'); ?></option>
-                        <option value="andando"><?php esc_html_e('Caminar', 'flavor-platform'); ?></option>
-                        <option value="electrico"><?php esc_html_e('Vehículo eléctrico', 'flavor-platform'); ?></option>
+                        <option value="coche_solo"><?php esc_html_e('Coche (solo/a)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="coche_compartido"><?php esc_html_e('Coche compartido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="moto"><?php esc_html_e('Moto/Scooter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="transporte_publico"><?php esc_html_e('Transporte público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bicicleta"><?php esc_html_e('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="andando"><?php esc_html_e('Caminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="electrico"><?php esc_html_e('Vehículo eléctrico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </section>
@@ -88,20 +88,20 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <section class="he-calculadora__seccion" data-paso="2">
                 <div class="he-categoria-header" style="color: <?php echo esc_attr($categorias['energia']['color']); ?>">
                     <span class="dashicons <?php echo esc_attr($categorias['energia']['icono']); ?>"></span>
-                    <h3><?php esc_html_e('Energía en el hogar', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Energía en el hogar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="he-form-row">
                     <div class="he-form-grupo">
-                        <label for="kwh_mes"><?php esc_html_e('Consumo eléctrico mensual', 'flavor-platform'); ?></label>
+                        <label for="kwh_mes"><?php esc_html_e('Consumo eléctrico mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="he-input-con-unidad">
                             <input type="number" name="kwh_mes" id="kwh_mes" min="0" step="10" value="200">
                             <span class="he-unidad">kWh</span>
                         </div>
-                        <p class="description"><?php esc_html_e('Lo encuentras en tu factura de luz', 'flavor-platform'); ?></p>
+                        <p class="description"><?php esc_html_e('Lo encuentras en tu factura de luz', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="he-form-grupo">
-                        <label for="gas_mes"><?php esc_html_e('Consumo de gas mensual', 'flavor-platform'); ?></label>
+                        <label for="gas_mes"><?php esc_html_e('Consumo de gas mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="he-input-con-unidad">
                             <input type="number" name="gas_mes" id="gas_mes" min="0" step="5" value="0">
                             <span class="he-unidad">m³</span>
@@ -110,24 +110,24 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="energia_renovable"><?php esc_html_e('¿Usas energía renovable?', 'flavor-platform'); ?></label>
+                    <label for="energia_renovable"><?php esc_html_e('¿Usas energía renovable?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="energia_renovable" id="energia_renovable">
-                        <option value="no"><?php esc_html_e('No / No lo sé', 'flavor-platform'); ?></option>
-                        <option value="parcial"><?php esc_html_e('Parcialmente', 'flavor-platform'); ?></option>
-                        <option value="si"><?php esc_html_e('Sí, 100% renovable', 'flavor-platform'); ?></option>
-                        <option value="autoconsumo"><?php esc_html_e('Autoconsumo (paneles solares)', 'flavor-platform'); ?></option>
+                        <option value="no"><?php esc_html_e('No / No lo sé', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="parcial"><?php esc_html_e('Parcialmente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="si"><?php esc_html_e('Sí, 100% renovable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="autoconsumo"><?php esc_html_e('Autoconsumo (paneles solares)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="calefaccion"><?php esc_html_e('Sistema de calefacción principal', 'flavor-platform'); ?></label>
+                    <label for="calefaccion"><?php esc_html_e('Sistema de calefacción principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="calefaccion" id="calefaccion">
-                        <option value="gas_natural"><?php esc_html_e('Gas natural', 'flavor-platform'); ?></option>
-                        <option value="electrica"><?php esc_html_e('Eléctrica', 'flavor-platform'); ?></option>
-                        <option value="bomba_calor"><?php esc_html_e('Bomba de calor / Aerotermia', 'flavor-platform'); ?></option>
-                        <option value="pellets"><?php esc_html_e('Pellets / Biomasa', 'flavor-platform'); ?></option>
-                        <option value="gasoil"><?php esc_html_e('Gasóleo', 'flavor-platform'); ?></option>
-                        <option value="no_tengo"><?php esc_html_e('No tengo calefacción', 'flavor-platform'); ?></option>
+                        <option value="gas_natural"><?php esc_html_e('Gas natural', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="electrica"><?php esc_html_e('Eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bomba_calor"><?php esc_html_e('Bomba de calor / Aerotermia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="pellets"><?php esc_html_e('Pellets / Biomasa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="gasoil"><?php esc_html_e('Gasóleo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="no_tengo"><?php esc_html_e('No tengo calefacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </section>
@@ -136,43 +136,43 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <section class="he-calculadora__seccion" data-paso="3">
                 <div class="he-categoria-header" style="color: <?php echo esc_attr($categorias['alimentacion']['color']); ?>">
                     <span class="dashicons <?php echo esc_attr($categorias['alimentacion']['icono']); ?>"></span>
-                    <h3><?php esc_html_e('Alimentación', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Alimentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="tipo_dieta"><?php esc_html_e('Tu tipo de dieta', 'flavor-platform'); ?></label>
+                    <label for="tipo_dieta"><?php esc_html_e('Tu tipo de dieta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo_dieta" id="tipo_dieta">
-                        <option value="omnivora"><?php esc_html_e('Omnívora (como de todo)', 'flavor-platform'); ?></option>
-                        <option value="flexitariana"><?php esc_html_e('Flexitariana (poca carne)', 'flavor-platform'); ?></option>
-                        <option value="vegetariana"><?php esc_html_e('Vegetariana', 'flavor-platform'); ?></option>
-                        <option value="vegana"><?php esc_html_e('Vegana', 'flavor-platform'); ?></option>
+                        <option value="omnivora"><?php esc_html_e('Omnívora (como de todo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="flexitariana"><?php esc_html_e('Flexitariana (poca carne)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="vegetariana"><?php esc_html_e('Vegetariana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="vegana"><?php esc_html_e('Vegana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="he-form-row">
                     <div class="he-form-grupo">
-                        <label for="consumo_carne"><?php esc_html_e('Días con carne a la semana', 'flavor-platform'); ?></label>
+                        <label for="consumo_carne"><?php esc_html_e('Días con carne a la semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="consumo_carne" id="consumo_carne" min="0" max="7" value="4">
                     </div>
                     <div class="he-form-grupo">
-                        <label for="comida_local"><?php esc_html_e('% de comida local/km0', 'flavor-platform'); ?></label>
+                        <label for="comida_local"><?php esc_html_e('% de comida local/km0', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="comida_local" id="comida_local">
-                            <option value="0"><?php esc_html_e('Casi nada', 'flavor-platform'); ?></option>
-                            <option value="25"><?php esc_html_e('~25%', 'flavor-platform'); ?></option>
-                            <option value="50"><?php esc_html_e('~50%', 'flavor-platform'); ?></option>
-                            <option value="75"><?php esc_html_e('~75%', 'flavor-platform'); ?></option>
-                            <option value="100"><?php esc_html_e('Casi todo local', 'flavor-platform'); ?></option>
+                            <option value="0"><?php esc_html_e('Casi nada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="25"><?php esc_html_e('~25%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="50"><?php esc_html_e('~50%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="75"><?php esc_html_e('~75%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="100"><?php esc_html_e('Casi todo local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="desperdicio"><?php esc_html_e('¿Cuánta comida desperdicias?', 'flavor-platform'); ?></label>
+                    <label for="desperdicio"><?php esc_html_e('¿Cuánta comida desperdicias?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="desperdicio" id="desperdicio">
-                        <option value="mucho"><?php esc_html_e('Bastante (tiro comida frecuentemente)', 'flavor-platform'); ?></option>
-                        <option value="algo"><?php esc_html_e('Algo (a veces sobra comida)', 'flavor-platform'); ?></option>
-                        <option value="poco"><?php esc_html_e('Poco (aprovecho casi todo)', 'flavor-platform'); ?></option>
-                        <option value="nada"><?php esc_html_e('Nada (zero waste)', 'flavor-platform'); ?></option>
+                        <option value="mucho"><?php esc_html_e('Bastante (tiro comida frecuentemente)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="algo"><?php esc_html_e('Algo (a veces sobra comida)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="poco"><?php esc_html_e('Poco (aprovecho casi todo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="nada"><?php esc_html_e('Nada (zero waste)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </section>
@@ -181,48 +181,48 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <section class="he-calculadora__seccion" data-paso="4">
                 <div class="he-categoria-header" style="color: <?php echo esc_attr($categorias['consumo']['color']); ?>">
                     <span class="dashicons <?php echo esc_attr($categorias['consumo']['icono']); ?>"></span>
-                    <h3><?php esc_html_e('Consumo y residuos', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Consumo y residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="compras_nuevas"><?php esc_html_e('Compras de productos nuevos al mes', 'flavor-platform'); ?></label>
+                    <label for="compras_nuevas"><?php esc_html_e('Compras de productos nuevos al mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="compras_nuevas" id="compras_nuevas">
-                        <option value="1"><?php esc_html_e('Casi nada (solo necesidades)', 'flavor-platform'); ?></option>
-                        <option value="3"><?php esc_html_e('Pocas (compro poco)', 'flavor-platform'); ?></option>
-                        <option value="5"><?php esc_html_e('Moderadas', 'flavor-platform'); ?></option>
-                        <option value="8"><?php esc_html_e('Bastantes', 'flavor-platform'); ?></option>
-                        <option value="12"><?php esc_html_e('Muchas (compras frecuentes)', 'flavor-platform'); ?></option>
+                        <option value="1"><?php esc_html_e('Casi nada (solo necesidades)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="3"><?php esc_html_e('Pocas (compro poco)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="5"><?php esc_html_e('Moderadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="8"><?php esc_html_e('Bastantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="12"><?php esc_html_e('Muchas (compras frecuentes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="he-form-row">
                     <div class="he-form-grupo">
-                        <label for="ropa_nueva"><?php esc_html_e('Prendas de ropa nuevas al año', 'flavor-platform'); ?></label>
+                        <label for="ropa_nueva"><?php esc_html_e('Prendas de ropa nuevas al año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="ropa_nueva" id="ropa_nueva" min="0" value="12">
                     </div>
                     <div class="he-form-grupo">
-                        <label for="electronica"><?php esc_html_e('Dispositivos electrónicos nuevos al año', 'flavor-platform'); ?></label>
+                        <label for="electronica"><?php esc_html_e('Dispositivos electrónicos nuevos al año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="electronica" id="electronica" min="0" value="2">
                     </div>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="reciclaje"><?php esc_html_e('¿Reciclas?', 'flavor-platform'); ?></label>
+                    <label for="reciclaje"><?php esc_html_e('¿Reciclas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="reciclaje" id="reciclaje">
-                        <option value="no"><?php esc_html_e('No / Rara vez', 'flavor-platform'); ?></option>
-                        <option value="algo"><?php esc_html_e('A veces', 'flavor-platform'); ?></option>
-                        <option value="si"><?php esc_html_e('Sí, separo los residuos', 'flavor-platform'); ?></option>
-                        <option value="compostar"><?php esc_html_e('Sí, y compostar orgánico', 'flavor-platform'); ?></option>
+                        <option value="no"><?php esc_html_e('No / Rara vez', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="algo"><?php esc_html_e('A veces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="si"><?php esc_html_e('Sí, separo los residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="compostar"><?php esc_html_e('Sí, y compostar orgánico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="he-form-grupo">
-                    <label for="agua_consumo"><?php esc_html_e('Consumo de agua', 'flavor-platform'); ?></label>
+                    <label for="agua_consumo"><?php esc_html_e('Consumo de agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="agua_consumo" id="agua_consumo">
-                        <option value="alto"><?php esc_html_e('Alto (duchas largas, riego frecuente)', 'flavor-platform'); ?></option>
-                        <option value="medio"><?php esc_html_e('Medio', 'flavor-platform'); ?></option>
-                        <option value="bajo"><?php esc_html_e('Bajo (ahorro activamente)', 'flavor-platform'); ?></option>
-                        <option value="muy_bajo"><?php esc_html_e('Muy bajo (reutilizo agua, recojo lluvia)', 'flavor-platform'); ?></option>
+                        <option value="alto"><?php esc_html_e('Alto (duchas largas, riego frecuente)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="medio"><?php esc_html_e('Medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bajo"><?php esc_html_e('Bajo (ahorro activamente)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="muy_bajo"><?php esc_html_e('Muy bajo (reutilizo agua, recojo lluvia)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </section>
@@ -231,15 +231,15 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <div class="he-calculadora__acciones">
                 <button type="button" class="he-btn he-btn--secondary he-btn-anterior" style="display: none;">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php esc_html_e('Anterior', 'flavor-platform'); ?>
+                    <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="he-btn he-btn--primary he-btn-siguiente">
-                    <?php esc_html_e('Siguiente', 'flavor-platform'); ?>
+                    <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
                 <button type="button" class="he-btn he-btn--primary he-btn-calcular" style="display: none;">
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Calcular mi huella', 'flavor-platform'); ?>
+                    <?php esc_html_e('Calcular mi huella', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -247,20 +247,20 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
         <!-- Resultado -->
         <div class="he-resultado" style="display: none;">
             <div class="he-resultado__huella">0<small> kg CO2/día</small></div>
-            <div class="he-resultado__label"><?php esc_html_e('Tu huella ecológica diaria estimada', 'flavor-platform'); ?></div>
+            <div class="he-resultado__label"><?php esc_html_e('Tu huella ecológica diaria estimada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
 
             <div class="he-resultado__comparativa">
                 <div class="he-comparativa-item">
                     <div class="he-comparativa-item__valor">0 kg</div>
-                    <div class="he-comparativa-item__label"><?php esc_html_e('Por mes', 'flavor-platform'); ?></div>
+                    <div class="he-comparativa-item__label"><?php esc_html_e('Por mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="he-comparativa-item">
                     <div class="he-comparativa-item__valor">0 kg</div>
-                    <div class="he-comparativa-item__label"><?php esc_html_e('Por año', 'flavor-platform'); ?></div>
+                    <div class="he-comparativa-item__label"><?php esc_html_e('Por año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="he-comparativa-item">
                     <div class="he-comparativa-item__valor">7.5 kg</div>
-                    <div class="he-comparativa-item__label"><?php esc_html_e('Media España', 'flavor-platform'); ?></div>
+                    <div class="he-comparativa-item__label"><?php esc_html_e('Media España', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -272,11 +272,11 @@ $categorias = $huella_ecologica_module_class::CATEGORIAS_HUELLA;
             <div style="margin-top: 2rem;">
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'mis-registros')); ?>" class="he-btn he-btn--secondary">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Ver mi historial', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver mi historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Empezar a reducir', 'flavor-platform'); ?>
+                    <?php esc_html_e('Empezar a reducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php endif; ?>

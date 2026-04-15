@@ -194,13 +194,13 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
             'estados' => $this->estados,
             'ambitos' => $this->ambitos,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-platform'),
-                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
-                'exito' => __('Operación completada', 'flavor-platform'),
-                'confirmar_eliminar' => __('¿Estás seguro de que deseas eliminar esta denuncia?', 'flavor-platform'),
-                'sin_resultados' => __('No se encontraron denuncias', 'flavor-platform'),
-                'plazo_vencido' => __('Plazo vencido', 'flavor-platform'),
-                'dias_restantes' => __('días restantes', 'flavor-platform'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exito' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_eliminar' => __('¿Estás seguro de que deseas eliminar esta denuncia?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'plazo_vencido' => __('Plazo vencido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'dias_restantes' => __('días restantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'usuarioId' => get_current_user_id()
         ]);

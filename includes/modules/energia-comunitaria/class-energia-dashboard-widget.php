@@ -23,8 +23,8 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
     protected $priority = 36;
 
     public function __construct() {
-        $this->title = __('Energia Comunitaria', 'flavor-platform');
-        $this->description = __('Produccion, consumo, incidencias y comunidades energeticas activas.', 'flavor-platform');
+        $this->title = __('Energia Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Produccion, consumo, incidencias y comunidades energeticas activas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -113,28 +113,28 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
             [
                 'icon' => 'dashicons-groups',
                 'valor' => $comunidades_activas,
-                'label' => __('Comunidades', 'flavor-platform'),
+                'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $comunidades_activas > 0 ? 'success' : 'gray',
                 'url' => $this->get_context_url('/mi-portal/energia-comunitaria/comunidades/', 'energia-comunitaria'),
             ],
             [
                 'icon' => 'dashicons-admin-tools',
                 'valor' => $instalaciones_activas,
-                'label' => __('Instalaciones', 'flavor-platform'),
+                'label' => __('Instalaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $instalaciones_activas > 0 ? 'primary' : 'gray',
                 'url' => $this->get_context_url('/mi-portal/energia-comunitaria/instalaciones/', 'energia-comunitaria'),
             ],
             [
                 'icon' => 'dashicons-chart-pie',
                 'valor' => $autosuficiencia . '%',
-                'label' => __('Autosuficiencia', 'flavor-platform'),
+                'label' => __('Autosuficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $autosuficiencia >= 70 ? 'success' : 'warning',
                 'url' => $this->get_context_url('/mi-portal/energia-comunitaria/balance/', 'energia-comunitaria'),
             ],
             [
                 'icon' => 'dashicons-warning',
                 'valor' => $incidencias_abiertas,
-                'label' => __('Incidencias', 'flavor-platform'),
+                'label' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $incidencias_abiertas > 0 ? 'danger' : 'success',
                 'url' => $this->get_context_url('/mi-portal/energia-comunitaria/mantenimiento/', 'energia-comunitaria'),
             ],
@@ -159,10 +159,10 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
                 'autosuficiencia' => $autosuficiencia,
                 'incidencias_abiertas' => $incidencias_abiertas,
             ],
-            'empty_state' => __('Todavia no hay comunidades energeticas registradas', 'flavor-platform'),
+            'empty_state' => __('Todavia no hay comunidades energeticas registradas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Abrir energia comunitaria', 'flavor-platform'),
+                    'label' => __('Abrir energia comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/energia-comunitaria/', 'energia-comunitaria'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -185,24 +185,24 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
 
         if ($incidencias_abiertas > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('attention');
-            $severity['reason'] = __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', 'flavor-platform');
+            $severity['reason'] = __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($instalaciones_activas > 0 && $autosuficiencia > 0 && $autosuficiencia < 60) {
             $severity = Flavor_Dashboard_Severity::get_payload('followup');
-            $severity['reason'] = __('La autosuficiencia del periodo actual está por debajo del nivel deseable.', 'flavor-platform');
+            $severity['reason'] = __('La autosuficiencia del periodo actual está por debajo del nivel deseable.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($comunidades_activas > 0 || $instalaciones_activas > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('stable');
-            $severity['reason'] = __('El ecosistema energético está activo y sin alertas operativas inmediatas.', 'flavor-platform');
+            $severity['reason'] = __('El ecosistema energético está activo y sin alertas operativas inmediatas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         $severity = Flavor_Dashboard_Severity::get_payload('stable');
-        $severity['reason'] = __('Todavía no hay actividad suficiente para elevar prioridad en este módulo.', 'flavor-platform');
+        $severity['reason'] = __('Todavía no hay actividad suficiente para elevar prioridad en este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         return $severity;
     }
 }

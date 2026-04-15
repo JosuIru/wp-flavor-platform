@@ -84,8 +84,8 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_gc_';
-        $this->title = __('Grupos de Consumo', 'flavor-platform');
-        $this->description = __('Gestiona tus pedidos y compras colaborativas', 'flavor-platform');
+        $this->title = __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Gestiona tus pedidos y compras colaborativas', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -112,7 +112,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tus datos', 'flavor-platform'),
+                'empty_state' => __('Inicia sesión para ver tus datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'footer' => [],
             ];
         }
@@ -193,7 +193,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $ciclo_activo['titulo'],
-                'label' => __('Ciclo activo', 'flavor-platform'),
+                'label' => __('Ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'success',
                 'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
             ];
@@ -203,14 +203,14 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-clock',
                 'valor' => $tiempo_restante,
-                'label' => __('Cierra en', 'flavor-platform'),
+                'label' => __('Cierra en', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $this->get_urgencia_color($ciclo_activo['fecha_cierre']),
             ];
         } else {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
-                'valor' => __('Sin ciclo', 'flavor-platform'),
-                'label' => __('Ciclo activo', 'flavor-platform'),
+                'valor' => __('Sin ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gray',
             ];
         }
@@ -219,7 +219,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-chart-line',
             'valor' => number_format($gasto_mes, 2, ',', '.') . ' €',
-            'label' => __('Este mes', 'flavor-platform'),
+            'label' => __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
@@ -228,7 +228,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-cart',
             'valor' => $items_cesta,
-            'label' => __('En cesta', 'flavor-platform'),
+            'label' => __('En cesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $items_cesta > 0 ? 'warning' : 'gray',
             'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
         ];
@@ -239,10 +239,10 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No tienes productos en tu cesta', 'flavor-platform'),
+            'empty_state' => __('No tienes productos en tu cesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $es_admin ? __('Ver panel', 'flavor-platform') : __('Ver productos', 'flavor-platform'),
+                    'label' => $es_admin ? __('Ver panel', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -329,24 +329,24 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $diferencia = $timestamp_cierre - $timestamp_actual;
 
         if ($diferencia <= 0) {
-            return __('Cerrado', 'flavor-platform');
+            return __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if ($diferencia < 3600) {
             // Menos de 1 hora
             $minutos = ceil($diferencia / 60);
-            return sprintf(__('%d min', 'flavor-platform'), $minutos);
+            return sprintf(__('%d min', FLAVOR_PLATFORM_TEXT_DOMAIN), $minutos);
         }
 
         if ($diferencia < 86400) {
             // Menos de 24 horas
             $horas = ceil($diferencia / 3600);
-            return sprintf(__('%d h', 'flavor-platform'), $horas);
+            return sprintf(__('%d h', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas);
         }
 
         // Días
         $dias = ceil($diferencia / 86400);
-        return sprintf(_n('%d día', '%d días', $dias, 'flavor-platform'), $dias);
+        return sprintf(_n('%d día', '%d días', $dias, FLAVOR_PLATFORM_TEXT_DOMAIN), $dias);
     }
 
     /**
@@ -416,8 +416,8 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($items_db as $item) {
             $items[] = [
                 'icon' => 'dashicons-carrot',
-                'title' => $item->nombre_producto ?: __('Producto', 'flavor-platform'),
-                'meta' => sprintf(__('Cantidad: %d', 'flavor-platform'), $item->cantidad),
+                'title' => $item->nombre_producto ?: __('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'meta' => sprintf(__('Cantidad: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $item->cantidad),
                 'url' => $url_cesta,
             ];
         }

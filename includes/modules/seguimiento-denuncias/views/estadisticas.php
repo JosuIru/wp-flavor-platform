@@ -22,17 +22,17 @@ $resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla} WHERE estado IN
 ?>
 
 <section class="flavor-denuncias-estadisticas">
-    <h2><?php esc_html_e('Estadisticas de denuncias', 'flavor-platform'); ?></h2>
+    <h2><?php esc_html_e('Estadisticas de denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;margin-bottom:1rem;">
-        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Total', 'flavor-platform'); ?>:</strong> <?php echo esc_html($total_general); ?></div>
-        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Abiertas', 'flavor-platform'); ?>:</strong> <?php echo esc_html($abiertas); ?></div>
-        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Resueltas', 'flavor-platform'); ?>:</strong> <?php echo esc_html($resueltas); ?></div>
+        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong> <?php echo esc_html($total_general); ?></div>
+        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong> <?php echo esc_html($abiertas); ?></div>
+        <div style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;"><strong><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong> <?php echo esc_html($resueltas); ?></div>
     </div>
 
-    <h3><?php esc_html_e('Por estado', 'flavor-platform'); ?></h3>
+    <h3><?php esc_html_e('Por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     <?php if (empty($totales_estado)): ?>
-        <p><?php esc_html_e('Sin datos.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Sin datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <ul>
             <?php foreach ($totales_estado as $fila): ?>
@@ -41,9 +41,9 @@ $resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla} WHERE estado IN
         </ul>
     <?php endif; ?>
 
-    <h3><?php esc_html_e('Por tipo', 'flavor-platform'); ?></h3>
+    <h3><?php esc_html_e('Por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     <?php if (empty($totales_tipo)): ?>
-        <p><?php esc_html_e('Sin datos.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Sin datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <ul>
             <?php foreach ($totales_tipo as $fila): ?>
@@ -52,9 +52,9 @@ $resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla} WHERE estado IN
         </ul>
     <?php endif; ?>
 
-    <h3><?php esc_html_e('Por prioridad', 'flavor-platform'); ?></h3>
+    <h3><?php esc_html_e('Por prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     <?php if (empty($totales_prioridad)): ?>
-        <p><?php esc_html_e('Sin datos.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Sin datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <ul>
             <?php foreach ($totales_prioridad as $fila): ?>

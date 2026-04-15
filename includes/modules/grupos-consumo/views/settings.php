@@ -29,7 +29,7 @@ if (isset($_POST['gc_guardar_config']) && wp_verify_nonce($_POST['gc_config_nonc
 
     update_option('flavor_gc_settings', $opciones);
 
-    echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'flavor-platform') . '</p></div>';
+    echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
 }
 
 // Obtener configuración actual
@@ -55,78 +55,78 @@ $config = get_option('flavor_gc_settings', [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=grupos-consumo'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-store" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Grupos de Consumo', 'flavor-platform'); ?>
+            <?php _e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-platform'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
-    <h1><?php _e('Configuración de Grupos de Consumo', 'flavor-platform'); ?></h1>
+    <h1><?php _e('Configuración de Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <form method="post" action="">
         <?php wp_nonce_field('gc_guardar_configuracion', 'gc_config_nonce'); ?>
 
         <!-- Configuración General -->
         <div class="gc-settings-section">
-            <h2><?php _e('Configuración General', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Configuración General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="dias_anticipacion_pedido"><?php _e('Días de anticipación para pedidos', 'flavor-platform'); ?></label>
+                        <label for="dias_anticipacion_pedido"><?php _e('Días de anticipación para pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="number" id="dias_anticipacion_pedido" name="dias_anticipacion_pedido"
                                value="<?php echo esc_attr($config['dias_anticipacion_pedido']); ?>" min="1" max="30" class="small-text">
-                        <p class="description"><?php _e('Cuántos días antes de la entrega se abre el ciclo de pedidos.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Cuántos días antes de la entrega se abre el ciclo de pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="hora_cierre_pedidos"><?php _e('Hora de cierre de pedidos', 'flavor-platform'); ?></label>
+                        <label for="hora_cierre_pedidos"><?php _e('Hora de cierre de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="time" id="hora_cierre_pedidos" name="hora_cierre_pedidos"
                                value="<?php echo esc_attr($config['hora_cierre_pedidos']); ?>">
-                        <p class="description"><?php _e('Hora a la que se cierran automáticamente los pedidos.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Hora a la que se cierran automáticamente los pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Permitir modificar pedidos', 'flavor-platform'); ?></th>
+                    <th scope="row"><?php _e('Permitir modificar pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="permitir_modificar_pedido" value="1"
                                    <?php checked($config['permitir_modificar_pedido'], 1); ?>>
-                            <?php _e('Permitir a los usuarios modificar sus pedidos', 'flavor-platform'); ?>
+                            <?php _e('Permitir a los usuarios modificar sus pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="horas_limite_modificacion"><?php _e('Horas límite para modificar', 'flavor-platform'); ?></label>
+                        <label for="horas_limite_modificacion"><?php _e('Horas límite para modificar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="number" id="horas_limite_modificacion" name="horas_limite_modificacion"
                                value="<?php echo esc_attr($config['horas_limite_modificacion']); ?>" min="0" max="72" class="small-text">
-                        <p class="description"><?php _e('Horas antes del cierre hasta las que se puede modificar un pedido.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Horas antes del cierre hasta las que se puede modificar un pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="porcentaje_gestion"><?php _e('Porcentaje de gestión', 'flavor-platform'); ?></label>
+                        <label for="porcentaje_gestion"><?php _e('Porcentaje de gestión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="number" id="porcentaje_gestion" name="porcentaje_gestion"
                                value="<?php echo esc_attr($config['porcentaje_gestion']); ?>" min="0" max="20" step="0.5" class="small-text"> %
-                        <p class="description"><?php _e('Porcentaje adicional para gastos de gestión del grupo.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Porcentaje adicional para gastos de gestión del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Aprobación de productores', 'flavor-platform'); ?></th>
+                    <th scope="row"><?php _e('Aprobación de productores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="requiere_aprobacion_productores" value="1"
                                    <?php checked($config['requiere_aprobacion_productores'], 1); ?>>
-                            <?php _e('Requiere aprobación de productores antes de confirmar pedidos', 'flavor-platform'); ?>
+                            <?php _e('Requiere aprobación de productores antes de confirmar pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
@@ -135,26 +135,26 @@ $config = get_option('flavor_gc_settings', [
 
         <!-- Notificaciones -->
         <div class="gc-settings-section">
-            <h2><?php _e('Notificaciones', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php _e('Notificar nuevos productos', 'flavor-platform'); ?></th>
+                    <th scope="row"><?php _e('Notificar nuevos productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="notificar_nuevos_productos" value="1"
                                    <?php checked($config['notificar_nuevos_productos'], 1); ?>>
-                            <?php _e('Enviar notificación cuando se añaden nuevos productos', 'flavor-platform'); ?>
+                            <?php _e('Enviar notificación cuando se añaden nuevos productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="email_notificaciones"><?php _e('Email para notificaciones', 'flavor-platform'); ?></label>
+                        <label for="email_notificaciones"><?php _e('Email para notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="email" id="email_notificaciones" name="email_notificaciones"
                                value="<?php echo esc_attr($config['email_notificaciones']); ?>" class="regular-text">
-                        <p class="description"><?php _e('Email del coordinador para recibir notificaciones del sistema.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Email del coordinador para recibir notificaciones del sistema.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
@@ -162,36 +162,36 @@ $config = get_option('flavor_gc_settings', [
 
         <!-- WhatsApp Business API -->
         <div class="gc-settings-section">
-            <h2><?php _e('WhatsApp Business API', 'flavor-platform'); ?></h2>
+            <h2><?php _e('WhatsApp Business API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php _e('Habilitar WhatsApp', 'flavor-platform'); ?></th>
+                    <th scope="row"><?php _e('Habilitar WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="whatsapp_enabled" value="1"
                                    <?php checked($config['whatsapp_enabled'] ?? 0, 1); ?>>
-                            <?php _e('Enviar notificaciones por WhatsApp', 'flavor-platform'); ?>
+                            <?php _e('Enviar notificaciones por WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whatsapp_phone_id"><?php _e('Phone Number ID', 'flavor-platform'); ?></label>
+                        <label for="whatsapp_phone_id"><?php _e('Phone Number ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="text" id="whatsapp_phone_id" name="whatsapp_phone_id"
                                value="<?php echo esc_attr($config['whatsapp_phone_id'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><?php _e('ID del número de teléfono de WhatsApp Business.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('ID del número de teléfono de WhatsApp Business.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whatsapp_token"><?php _e('Access Token', 'flavor-platform'); ?></label>
+                        <label for="whatsapp_token"><?php _e('Access Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="password" id="whatsapp_token" name="whatsapp_token"
                                value="<?php echo esc_attr($config['whatsapp_token'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><?php _e('Token de acceso de la API de WhatsApp Business.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Token de acceso de la API de WhatsApp Business.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
@@ -199,26 +199,26 @@ $config = get_option('flavor_gc_settings', [
 
         <!-- Telegram Bot -->
         <div class="gc-settings-section">
-            <h2><?php _e('Telegram Bot', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Telegram Bot', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php _e('Habilitar Telegram', 'flavor-platform'); ?></th>
+                    <th scope="row"><?php _e('Habilitar Telegram', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="telegram_enabled" value="1"
                                    <?php checked($config['telegram_enabled'] ?? 0, 1); ?>>
-                            <?php _e('Enviar notificaciones por Telegram', 'flavor-platform'); ?>
+                            <?php _e('Enviar notificaciones por Telegram', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="telegram_bot_token"><?php _e('Bot Token', 'flavor-platform'); ?></label>
+                        <label for="telegram_bot_token"><?php _e('Bot Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="password" id="telegram_bot_token" name="telegram_bot_token"
                                value="<?php echo esc_attr($config['telegram_bot_token'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><?php _e('Token del bot de Telegram obtenido de @BotFather.', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('Token del bot de Telegram obtenido de @BotFather.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
@@ -226,21 +226,21 @@ $config = get_option('flavor_gc_settings', [
 
         <!-- Acciones -->
         <p class="submit">
-            <input type="submit" name="gc_guardar_config" class="button button-primary" value="<?php _e('Guardar Cambios', 'flavor-platform'); ?>">
+            <input type="submit" name="gc_guardar_config" class="button button-primary" value="<?php _e('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </p>
     </form>
 
     <!-- Información del Sistema -->
     <div class="gc-settings-section gc-system-info">
-        <h2><?php _e('Información del Sistema', 'flavor-platform'); ?></h2>
+        <h2><?php _e('Información del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="widefat">
             <tbody>
                 <tr>
-                    <td><strong><?php _e('Versión del módulo', 'flavor-platform'); ?></strong></td>
+                    <td><strong><?php _e('Versión del módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td>1.0.0</td>
                 </tr>
                 <tr>
-                    <td><strong><?php _e('Tablas de base de datos', 'flavor-platform'); ?></strong></td>
+                    <td><strong><?php _e('Tablas de base de datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td>
                         <?php
                         global $wpdb;
@@ -265,7 +265,7 @@ $config = get_option('flavor_gc_settings', [
                     </td>
                 </tr>
                 <tr>
-                    <td><strong><?php _e('Cron programado', 'flavor-platform'); ?></strong></td>
+                    <td><strong><?php _e('Cron programado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td>
                         <?php
                         $cron_cerrar = wp_next_scheduled('gc_cerrar_ciclos_automatico');
@@ -286,7 +286,7 @@ $config = get_option('flavor_gc_settings', [
                     </td>
                 </tr>
                 <tr>
-                    <td><strong><?php _e('Endpoints API REST', 'flavor-platform'); ?></strong></td>
+                    <td><strong><?php _e('Endpoints API REST', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td>
                         <code><?php echo rest_url(FLAVOR_PLATFORM_REST_NAMESPACE . '/gc/'); ?></code>
                     </td>

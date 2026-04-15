@@ -53,7 +53,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas del DEX Solana no estan creadas.', 'flavor-platform');
+            return __('Las tablas del DEX Solana no estan creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -162,7 +162,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $shown = true;
 
         echo '<div class="notice notice-warning"><p>';
-        echo esc_html__('DEX Solana está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', 'flavor-platform');
+        echo esc_html__('DEX Solana está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         echo '</p></div>';
     }
 
@@ -239,18 +239,18 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
             'paginas'    => array(
                 array(
                     'slug'     => 'dex-solana-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-platform'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => array($this, 'render_admin_dashboard'),
                 ),
                 array(
                     'slug'     => 'dex-solana-operaciones',
-                    'titulo'   => __('Operaciones', 'flavor-platform'),
+                    'titulo'   => __('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => array($this, 'render_admin_operaciones'),
                     'badge'    => array($this, 'contar_swaps_recientes'),
                 ),
                 array(
                     'slug'     => 'dex-solana-configuracion',
-                    'titulo'   => __('Configuracion', 'flavor-platform'),
+                    'titulo'   => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => array($this, 'render_admin_configuracion'),
                 ),
             ),
@@ -285,7 +285,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
      * Renderiza el dashboard de administracion
      */
     public function render_admin_dashboard() {
-        $this->render_page_header(__('DEX Solana - Dashboard', 'flavor-platform'));
+        $this->render_page_header(__('DEX Solana - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '<div class="wrap dex-solana-admin-dashboard">';
 
         // Estadisticas generales
@@ -308,15 +308,15 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         // Modo actual
         $modo_activo = $this->get_setting('modo_activo', 'paper');
         $modo_texto = ($modo_activo === 'paper')
-            ? __('Paper Trading (Simulacion)', 'flavor-platform')
-            : __('Modo Real', 'flavor-platform');
+            ? __('Paper Trading (Simulacion)', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            : __('Modo Real', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         echo '<div class="postbox" style="margin-top: 20px;">';
-        echo '<h2 class="hndle" style="padding: 12px;"><span class="dashicons dashicons-info" style="margin-right: 8px;"></span>' . __('Estado del DEX', 'flavor-platform') . '</h2>';
+        echo '<h2 class="hndle" style="padding: 12px;"><span class="dashicons dashicons-info" style="margin-right: 8px;"></span>' . __('Estado del DEX', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
         echo '<div class="inside">';
-        echo '<p><strong>' . __('Modo activo:', 'flavor-platform') . '</strong> ' . esc_html($modo_texto) . '</p>';
-        echo '<p><strong>' . __('Balance inicial USDC:', 'flavor-platform') . '</strong> $' . number_format($this->get_setting('balance_inicial_usdc', 1000), 2) . '</p>';
-        echo '<p><strong>' . __('Slippage por defecto:', 'flavor-platform') . '</strong> ' . esc_html($this->get_setting('slippage_defecto_porcentaje', 0.5)) . '%</p>';
+        echo '<p><strong>' . __('Modo activo:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html($modo_texto) . '</p>';
+        echo '<p><strong>' . __('Balance inicial USDC:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> $' . number_format($this->get_setting('balance_inicial_usdc', 1000), 2) . '</p>';
+        echo '<p><strong>' . __('Slippage por defecto:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html($this->get_setting('slippage_defecto_porcentaje', 0.5)) . '%</p>';
         echo '</div>';
         echo '</div>';
 
@@ -328,10 +328,10 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
      */
     public function render_admin_operaciones() {
         $this->render_page_header(
-            __('DEX Solana - Operaciones', 'flavor-platform'),
+            __('DEX Solana - Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             array(
                 array(
-                    'label' => __('Ver pools', 'flavor-platform'),
+                    'label' => __('Ver pools', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => '#pools-liquidez',
                     'class' => 'button-secondary',
                 ),
@@ -342,9 +342,9 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         // Tabs para filtrar
         $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'swaps';
         $this->render_page_tabs(array(
-            array('slug' => 'swaps', 'label' => __('Swaps', 'flavor-platform')),
-            array('slug' => 'pools', 'label' => __('Pools LP', 'flavor-platform')),
-            array('slug' => 'farming', 'label' => __('Farming', 'flavor-platform')),
+            array('slug' => 'swaps', 'label' => __('Swaps', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            array('slug' => 'pools', 'label' => __('Pools LP', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            array('slug' => 'farming', 'label' => __('Farming', FLAVOR_PLATFORM_TEXT_DOMAIN)),
         ), $tab_actual);
 
         // Contenido segun tab
@@ -377,18 +377,18 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         ), ARRAY_A);
 
         if (empty($swaps_recientes)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay swaps registrados aun.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay swaps registrados aun.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . __('Fecha', 'flavor-platform') . '</th>';
-        echo '<th>' . __('De', 'flavor-platform') . '</th>';
-        echo '<th>' . __('A', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Cantidad', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Recibido', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Modo', 'flavor-platform') . '</th>';
+        echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('De', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('A', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Recibido', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Modo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead>';
         echo '<tbody>';
 
@@ -413,18 +413,18 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $pools = $this->pool_manager ? $this->pool_manager->listar_pools(true) : array();
 
         if (empty($pools)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay pools de liquidez configurados.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay pools de liquidez configurados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . __('Pool', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Reserva A', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Reserva B', 'flavor-platform') . '</th>';
-        echo '<th>' . __('TVL', 'flavor-platform') . '</th>';
-        echo '<th>' . __('APY', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Estado', 'flavor-platform') . '</th>';
+        echo '<th>' . __('Pool', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Reserva A', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Reserva B', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('TVL', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('APY', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead>';
         echo '<tbody>';
 
@@ -432,7 +432,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
             $nombre_pool = (isset($pool['token_a_simbolo']) ? $pool['token_a_simbolo'] : '-') . '/' . (isset($pool['token_b_simbolo']) ? $pool['token_b_simbolo'] : '-');
             $apy = isset($pool['apy']) ? number_format((float)$pool['apy'], 2) . '%' : '-';
             $tvl = isset($pool['tvl_usd']) ? '$' . number_format((float)$pool['tvl_usd'], 2) : '-';
-            $estado = isset($pool['activo']) && $pool['activo'] ? __('Activo', 'flavor-platform') : __('Inactivo', 'flavor-platform');
+            $estado = isset($pool['activo']) && $pool['activo'] ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
             echo '<tr>';
             echo '<td><strong>' . esc_html($nombre_pool) . '</strong></td>';
@@ -454,25 +454,25 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $programas = $this->farming ? $this->farming->listar_programas(true) : array();
 
         if (empty($programas)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay programas de farming activos.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay programas de farming activos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . __('Programa', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Pool', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Token Reward', 'flavor-platform') . '</th>';
-        echo '<th>' . __('APR', 'flavor-platform') . '</th>';
-        echo '<th>' . __('TVL Staked', 'flavor-platform') . '</th>';
-        echo '<th>' . __('Estado', 'flavor-platform') . '</th>';
+        echo '<th>' . __('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Pool', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Token Reward', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('APR', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('TVL Staked', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead>';
         echo '<tbody>';
 
         foreach ($programas as $programa) {
             $apr = isset($programa['apr']) ? number_format((float)$programa['apr'], 2) . '%' : '-';
             $tvl = isset($programa['tvl_staked']) ? '$' . number_format((float)$programa['tvl_staked'], 2) : '-';
-            $estado = isset($programa['activo']) && $programa['activo'] ? __('Activo', 'flavor-platform') : __('Finalizado', 'flavor-platform');
+            $estado = isset($programa['activo']) && $programa['activo'] ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
             echo '<tr>';
             echo '<td><strong>' . esc_html($programa['nombre'] ?? $programa['programa_id'] ?? '-') . '</strong></td>';
@@ -491,7 +491,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
      * Renderiza la pagina de configuracion
      */
     public function render_admin_configuracion() {
-        $this->render_page_header(__('DEX Solana - Configuracion', 'flavor-platform'));
+        $this->render_page_header(__('DEX Solana - Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '<div class="wrap dex-solana-admin-configuracion">';
 
         // Formulario de configuracion
@@ -502,65 +502,65 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
         // Modo activo
         echo '<tr>';
-        echo '<th scope="row"><label for="modo_activo">' . __('Modo de operacion', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="modo_activo">' . __('Modo de operacion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<select name="modo_activo" id="modo_activo">';
-        echo '<option value="paper"' . selected($this->get_setting('modo_activo'), 'paper', false) . '>' . __('Paper Trading (Simulacion)', 'flavor-platform') . '</option>';
-        echo '<option value="real"' . selected($this->get_setting('modo_activo'), 'real', false) . '>' . __('Modo Real', 'flavor-platform') . '</option>';
+        echo '<option value="paper"' . selected($this->get_setting('modo_activo'), 'paper', false) . '>' . __('Paper Trading (Simulacion)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+        echo '<option value="real"' . selected($this->get_setting('modo_activo'), 'real', false) . '>' . __('Modo Real', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         echo '</select>';
-        echo '<p class="description">' . __('En modo real, las transacciones se preparan sin firmar para tu wallet.', 'flavor-platform') . '</p>';
+        echo '<p class="description">' . __('En modo real, las transacciones se preparan sin firmar para tu wallet.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</td>';
         echo '</tr>';
 
         // Balance inicial
         echo '<tr>';
-        echo '<th scope="row"><label for="balance_inicial_usdc">' . __('Balance inicial (USDC)', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="balance_inicial_usdc">' . __('Balance inicial (USDC)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<input type="number" name="balance_inicial_usdc" id="balance_inicial_usdc" value="' . esc_attr($this->get_setting('balance_inicial_usdc', 1000)) . '" step="0.01" min="0" class="regular-text">';
-        echo '<p class="description">' . __('Balance inicial para nuevos usuarios en paper trading.', 'flavor-platform') . '</p>';
+        echo '<p class="description">' . __('Balance inicial para nuevos usuarios en paper trading.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</td>';
         echo '</tr>';
 
         // Slippage por defecto
         echo '<tr>';
-        echo '<th scope="row"><label for="slippage_defecto_porcentaje">' . __('Slippage por defecto (%)', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="slippage_defecto_porcentaje">' . __('Slippage por defecto (%)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<input type="number" name="slippage_defecto_porcentaje" id="slippage_defecto_porcentaje" value="' . esc_attr($this->get_setting('slippage_defecto_porcentaje', 0.5)) . '" step="0.1" min="0.1" max="5" class="small-text">';
-        echo '<p class="description">' . __('Slippage maximo permitido en swaps (0.1% - 5%).', 'flavor-platform') . '</p>';
+        echo '<p class="description">' . __('Slippage maximo permitido en swaps (0.1% - 5%).', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</td>';
         echo '</tr>';
 
         // Max swaps por hora
         echo '<tr>';
-        echo '<th scope="row"><label for="max_swaps_por_hora">' . __('Max swaps por hora', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="max_swaps_por_hora">' . __('Max swaps por hora', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<input type="number" name="max_swaps_por_hora" id="max_swaps_por_hora" value="' . esc_attr($this->get_setting('max_swaps_por_hora', 20)) . '" min="1" max="100" class="small-text">';
-        echo '<p class="description">' . __('Limite de operaciones por hora por usuario.', 'flavor-platform') . '</p>';
+        echo '<p class="description">' . __('Limite de operaciones por hora por usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</td>';
         echo '</tr>';
 
         // Pools semilla
         echo '<tr>';
-        echo '<th scope="row"><label for="pools_semilla_activos">' . __('Pools semilla', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="pools_semilla_activos">' . __('Pools semilla', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<label><input type="checkbox" name="pools_semilla_activos" id="pools_semilla_activos" value="1"' . checked($this->get_setting('pools_semilla_activos', true), true, false) . '>';
-        echo ' ' . __('Crear pools de liquidez por defecto (SOL/USDC, RAY/USDC, etc.)', 'flavor-platform') . '</label>';
+        echo ' ' . __('Crear pools de liquidez por defecto (SOL/USDC, RAY/USDC, etc.)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
         echo '</td>';
         echo '</tr>';
 
         // Farming activo
         echo '<tr>';
-        echo '<th scope="row"><label for="farming_activo">' . __('Yield Farming', 'flavor-platform') . '</label></th>';
+        echo '<th scope="row"><label for="farming_activo">' . __('Yield Farming', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td>';
         echo '<label><input type="checkbox" name="farming_activo" id="farming_activo" value="1"' . checked($this->get_setting('farming_activo', true), true, false) . '>';
-        echo ' ' . __('Habilitar programas de yield farming', 'flavor-platform') . '</label>';
+        echo ' ' . __('Habilitar programas de yield farming', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
         echo '</td>';
         echo '</tr>';
 
         echo '</table>';
 
         echo '<p class="submit">';
-        echo '<input type="submit" name="guardar_config_dex" class="button-primary" value="' . __('Guardar cambios', 'flavor-platform') . '">';
+        echo '<input type="submit" name="guardar_config_dex" class="button-primary" value="' . __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '">';
         echo '</p>';
 
         echo '</form>';
@@ -573,19 +573,19 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
     public function render_dashboard_widget() {
         $modo_activo = $this->get_setting('modo_activo', 'paper');
         $estado_modo = ($modo_activo === 'paper')
-            ? __('Paper Trading', 'flavor-platform')
-            : __('Modo Real', 'flavor-platform');
+            ? __('Paper Trading', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            : __('Modo Real', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $swaps_24h = $this->contar_swaps_recientes();
         $pools_activos = $this->pool_manager ? count($this->pool_manager->listar_pools(true)) : 0;
         ?>
         <div class="dex-solana-widget">
-            <p><strong><?php esc_html_e('Modo:', 'flavor-platform'); ?></strong> <?php echo esc_html($estado_modo); ?></p>
-            <p><strong><?php esc_html_e('Swaps (24h):', 'flavor-platform'); ?></strong> <?php echo esc_html($swaps_24h); ?></p>
-            <p><strong><?php esc_html_e('Pools activos:', 'flavor-platform'); ?></strong> <?php echo esc_html($pools_activos); ?></p>
+            <p><strong><?php esc_html_e('Modo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($estado_modo); ?></p>
+            <p><strong><?php esc_html_e('Swaps (24h):', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($swaps_24h); ?></p>
+            <p><strong><?php esc_html_e('Pools activos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($pools_activos); ?></p>
             <p style="margin-top: 10px;">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dex-solana-dashboard')); ?>" class="button button-small">
-                    <?php esc_html_e('Ver Dashboard', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -606,7 +606,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $estadisticas[] = array(
             'icon'  => 'dashicons-randomize',
             'valor' => $swaps_24h,
-            'label' => __('Swaps (24h)', 'flavor-platform'),
+            'label' => __('Swaps (24h)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $swaps_24h > 0 ? 'blue' : 'gray',
             'enlace' => admin_url('admin.php?page=dex-solana-operaciones'),
         );
@@ -620,7 +620,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $estadisticas[] = array(
             'icon'  => 'dashicons-chart-pie',
             'valor' => $total_pools,
-            'label' => __('Pools activos', 'flavor-platform'),
+            'label' => __('Pools activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_pools > 0 ? 'green' : 'gray',
             'enlace' => admin_url('admin.php?page=dex-solana-operaciones&tab=pools'),
         );
@@ -634,7 +634,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $estadisticas[] = array(
             'icon'  => 'dashicons-carrot',
             'valor' => $total_farming,
-            'label' => __('Programas farming', 'flavor-platform'),
+            'label' => __('Programas farming', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_farming > 0 ? 'purple' : 'gray',
             'enlace' => admin_url('admin.php?page=dex-solana-operaciones&tab=farming'),
         );
@@ -652,7 +652,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
                 $estadisticas[] = array(
                     'icon'  => 'dashicons-chart-bar',
                     'valor' => '$' . number_format((float)$volumen_mes, 2),
-                    'label' => __('Volumen este mes', 'flavor-platform'),
+                    'label' => __('Volumen este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green',
                     'enlace' => admin_url('admin.php?page=dex-solana-dashboard'),
                 );
@@ -693,7 +693,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $estadisticas[] = [
             'icon'  => 'dashicons-randomize',
             'valor' => $mis_swaps_hoy,
-            'label' => __('Swaps hoy', 'flavor-platform'),
+            'label' => __('Swaps hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $mis_swaps_hoy > 0 ? 'blue' : 'gray'
         ];
 
@@ -715,7 +715,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
             $estadisticas[] = [
                 'icon'  => 'dashicons-portfolio',
                 'valor' => $tokens_portfolio,
-                'label' => __('Tokens en cartera', 'flavor-platform'),
+                'label' => __('Tokens en cartera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $tokens_portfolio > 0 ? 'green' : 'gray'
             ];
 
@@ -739,7 +739,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
                 $estadisticas[] = [
                     'icon'  => 'dashicons-chart-line',
                     'valor' => '$' . number_format($valor_total, 2),
-                    'label' => __('Valor portfolio', 'flavor-platform'),
+                    'label' => __('Valor portfolio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green'
                 ];
             }
@@ -937,7 +937,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
         return array(
             'success' => false,
-            'error'   => sprintf(__('Accion no implementada: %s', 'flavor-platform'), $nombre_accion),
+            'error'   => sprintf(__('Accion no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         );
     }
 
@@ -957,14 +957,14 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($token_entrada) || empty($token_salida)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar token de entrada y salida (ej: SOL, USDC)', 'flavor-platform'),
+                'error'   => __('Debes especificar token de entrada y salida (ej: SOL, USDC)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
         if ($cantidad <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('La cantidad debe ser mayor a 0', 'flavor-platform'),
+                'error'   => __('La cantidad debe ser mayor a 0', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1006,14 +1006,14 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($token_entrada) || empty($token_salida)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar token de entrada y salida', 'flavor-platform'),
+                'error'   => __('Debes especificar token de entrada y salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
         if ($cantidad <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('La cantidad debe ser mayor a 0', 'flavor-platform'),
+                'error'   => __('La cantidad debe ser mayor a 0', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1045,7 +1045,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($token_entrada) || empty($token_salida) || $cantidad <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar token de entrada, salida y cantidad', 'flavor-platform'),
+                'error'   => __('Debes especificar token de entrada, salida y cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1061,7 +1061,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($wallet_publica)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes configurar tu wallet address para modo real. Usa cambiar_modo con tu direccion de wallet.', 'flavor-platform'),
+                'error'   => __('Debes configurar tu wallet address para modo real. Usa cambiar_modo con tu direccion de wallet.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1137,7 +1137,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($busqueda)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar un termino de busqueda', 'flavor-platform'),
+                'error'   => __('Debes especificar un termino de busqueda', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1196,7 +1196,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($mints)) {
             return array(
                 'success' => false,
-                'error'   => __('No se encontraron los tokens especificados', 'flavor-platform'),
+                'error'   => __('No se encontraron los tokens especificados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1241,7 +1241,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($pool_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el pool_id', 'flavor-platform'),
+                'error'   => __('Debes especificar el pool_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1250,7 +1250,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!$pool) {
             return array(
                 'success' => false,
-                'error'   => __('Pool no encontrado', 'flavor-platform'),
+                'error'   => __('Pool no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1274,14 +1274,14 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($pool_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el pool_id', 'flavor-platform'),
+                'error'   => __('Debes especificar el pool_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
         if ($cantidad_token_a <= 0 || $cantidad_token_b <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('Las cantidades de ambos tokens deben ser mayores a 0', 'flavor-platform'),
+                'error'   => __('Las cantidades de ambos tokens deben ser mayores a 0', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1294,7 +1294,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!$pool) {
             return array(
                 'success' => false,
-                'error'   => __('Pool no encontrado', 'flavor-platform'),
+                'error'   => __('Pool no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1309,7 +1309,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
             return array(
                 'success' => false,
                 'error'   => sprintf(
-                    __('Balance insuficiente. Tienes %s %s y %s %s', 'flavor-platform'),
+                    __('Balance insuficiente. Tienes %s %s y %s %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     number_format($balance_a, 4),
                     $simbolo_a,
                     number_format($balance_b, 4),
@@ -1324,7 +1324,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!$resultado || !($resultado['success'] ?? true)) {
             return array(
                 'success' => false,
-                'error'   => $resultado['error'] ?? __('Error al agregar liquidez', 'flavor-platform'),
+                'error'   => $resultado['error'] ?? __('Error al agregar liquidez', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1372,7 +1372,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($pool_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el pool_id', 'flavor-platform'),
+                'error'   => __('Debes especificar el pool_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1385,7 +1385,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!$resultado || !($resultado['success'] ?? true)) {
             return array(
                 'success' => false,
-                'error'   => $resultado['error'] ?? __('Error al retirar liquidez', 'flavor-platform'),
+                'error'   => $resultado['error'] ?? __('Error al retirar liquidez', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1478,7 +1478,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($programa_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el programa_id de farming', 'flavor-platform'),
+                'error'   => __('Debes especificar el programa_id de farming', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1502,7 +1502,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!$programa) {
             return array(
                 'success' => false,
-                'error'   => __('Programa de farming no encontrado', 'flavor-platform'),
+                'error'   => __('Programa de farming no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1511,7 +1511,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!isset($posiciones_lp[$pool_id_programa])) {
             return array(
                 'success' => false,
-                'error'   => __('No tienes LP tokens en el pool de este programa. Primero agrega liquidez al pool.', 'flavor-platform'),
+                'error'   => __('No tienes LP tokens en el pool de este programa. Primero agrega liquidez al pool.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1520,7 +1520,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if ($lp_tokens_disponibles <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('No tienes LP tokens disponibles para stakear', 'flavor-platform'),
+                'error'   => __('No tienes LP tokens disponibles para stakear', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1540,7 +1540,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
         return $resultado ?? array(
             'success' => false,
-            'error'   => __('Error al stakear LP tokens', 'flavor-platform'),
+            'error'   => __('Error al stakear LP tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
         );
     }
 
@@ -1553,7 +1553,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($programa_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el programa_id', 'flavor-platform'),
+                'error'   => __('Debes especificar el programa_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1582,7 +1582,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
         return $resultado ?? array(
             'success' => false,
-            'error'   => __('Error al unstakear LP tokens', 'flavor-platform'),
+            'error'   => __('Error al unstakear LP tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
         );
     }
 
@@ -1595,7 +1595,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (empty($programa_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el programa_id', 'flavor-platform'),
+                'error'   => __('Debes especificar el programa_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1627,7 +1627,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
 
         return $resultado ?? array(
             'success' => false,
-            'error'   => __('Error al cosechar rewards', 'flavor-platform'),
+            'error'   => __('Error al cosechar rewards', FLAVOR_PLATFORM_TEXT_DOMAIN),
         );
     }
 
@@ -1641,7 +1641,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if (!in_array($modo_nuevo, array('paper', 'real'), true)) {
             return array(
                 'success' => false,
-                'error'   => __('Modo invalido. Usa "paper" o "real".', 'flavor-platform'),
+                'error'   => __('Modo invalido. Usa "paper" o "real".', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1654,7 +1654,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         if ($resultado_cambio === false) {
             return array(
                 'success' => false,
-                'error'   => __('No se pudo cambiar el modo', 'flavor-platform'),
+                'error'   => __('No se pudo cambiar el modo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
         }
 
@@ -1665,8 +1665,8 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         $this->update_setting('modo_activo', $modo_nuevo);
 
         $mensaje_modo = ($modo_nuevo === 'paper')
-            ? __('Modo paper activado. Las operaciones son simuladas con precios reales de Jupiter.', 'flavor-platform')
-            : __('Modo real activado. Las transacciones se prepararan sin firmar para tu wallet.', 'flavor-platform');
+            ? __('Modo paper activado. Las operaciones son simuladas con precios reales de Jupiter.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            : __('Modo real activado. Las transacciones se prepararan sin firmar para tu wallet.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         return array(
             'success' => true,
@@ -1688,7 +1688,7 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
         return array(
             'success' => true,
             'mensaje' => sprintf(
-                __('DEX reiniciado. Balance inicial: $%s USDC. Modo: paper.', 'flavor-platform'),
+                __('DEX reiniciado. Balance inicial: $%s USDC. Modo: paper.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 number_format($balance_inicial, 2)
             ),
         );
@@ -2098,13 +2098,13 @@ KNOWLEDGE;
     public function get_web_components() {
         return array(
             'hero' => array(
-                'label'       => __('Hero DEX Solana', 'flavor-platform'),
-                'description' => __('Seccion hero del DEX con estadisticas TVL, tokens listados y volumen 24h', 'flavor-platform'),
+                'label'       => __('Hero DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero del DEX con estadisticas TVL, tokens listados y volumen 24h', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'hero',
                 'icon'        => 'dashicons-money-alt',
                 'fields'      => array(
-                    'titulo_hero'      => array('type' => 'text', 'default' => __('DEX en Solana', 'flavor-platform')),
-                    'subtitulo_hero'   => array('type' => 'textarea', 'default' => __('Intercambia tokens de forma descentralizada en la blockchain de Solana', 'flavor-platform')),
+                    'titulo_hero'      => array('type' => 'text', 'default' => __('DEX en Solana', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+                    'subtitulo_hero'   => array('type' => 'textarea', 'default' => __('Intercambia tokens de forma descentralizada en la blockchain de Solana', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     'total_tvl'        => array('type' => 'text', 'default' => '$2.4M'),
                     'tokens_listados'  => array('type' => 'number', 'default' => 156),
                     'volumen_24h'      => array('type' => 'text', 'default' => '$890K'),
@@ -2113,24 +2113,24 @@ KNOWLEDGE;
                 'template'    => 'dex-solana/hero',
             ),
             'features' => array(
-                'label'       => __('Features DEX Solana', 'flavor-platform'),
-                'description' => __('Grid de funcionalidades DeFi del DEX: swap, pools, staking, gobernanza', 'flavor-platform'),
+                'label'       => __('Features DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de funcionalidades DeFi del DEX: swap, pools, staking, gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'features',
                 'icon'        => 'dashicons-grid-view',
                 'fields'      => array(
-                    'titulo_features'      => array('type' => 'text', 'default' => __('Funcionalidades DeFi', 'flavor-platform')),
+                    'titulo_features'      => array('type' => 'text', 'default' => __('Funcionalidades DeFi', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     'funcionalidades_dex'  => array('type' => 'repeater', 'default' => array()),
                 ),
                 'template'    => 'dex-solana/features',
             ),
             'cta_conectar' => array(
-                'label'       => __('CTA Conectar Wallet', 'flavor-platform'),
-                'description' => __('Seccion CTA para conectar wallet de Solana con wallets soportadas', 'flavor-platform'),
+                'label'       => __('CTA Conectar Wallet', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion CTA para conectar wallet de Solana con wallets soportadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'cta',
                 'icon'        => 'dashicons-admin-links',
                 'fields'      => array(
-                    'titulo_cta'          => array('type' => 'text', 'default' => __('Conecta tu wallet y empieza', 'flavor-platform')),
-                    'descripcion_cta'     => array('type' => 'textarea', 'default' => __('Conecta tu wallet de Solana para acceder al intercambio descentralizado, pools de liquidez y staking.', 'flavor-platform')),
+                    'titulo_cta'          => array('type' => 'text', 'default' => __('Conecta tu wallet y empieza', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+                    'descripcion_cta'     => array('type' => 'textarea', 'default' => __('Conecta tu wallet de Solana para acceder al intercambio descentralizado, pools de liquidez y staking.', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     'url_conectar'        => array('type' => 'url', 'default' => '#conectar-wallet'),
                     'wallets_soportadas'  => array('type' => 'repeater', 'default' => array()),
                 ),
@@ -2152,12 +2152,12 @@ KNOWLEDGE;
     public function get_form_config($nombre_accion) {
         $configuraciones_formulario = array(
             'ejecutar_swap' => array(
-                'title'       => __('Ejecutar Swap de Tokens', 'flavor-platform'),
-                'description' => __('Intercambia tokens en el DEX de Solana', 'flavor-platform'),
+                'title'       => __('Ejecutar Swap de Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Intercambia tokens en el DEX de Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields'      => array(
                     'token_entrada' => array(
                         'type'        => 'select',
-                        'label'       => __('Token de entrada', 'flavor-platform'),
+                        'label'       => __('Token de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                         'options'     => array(
                             'SOL'  => 'SOL',
@@ -2174,7 +2174,7 @@ KNOWLEDGE;
                     ),
                     'token_salida' => array(
                         'type'        => 'select',
-                        'label'       => __('Token de salida', 'flavor-platform'),
+                        'label'       => __('Token de salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                         'options'     => array(
                             'SOL'  => 'SOL',
@@ -2191,28 +2191,28 @@ KNOWLEDGE;
                     ),
                     'cantidad' => array(
                         'type'        => 'number',
-                        'label'       => __('Cantidad', 'flavor-platform'),
+                        'label'       => __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                         'min'         => 0,
                         'step'        => '0.000001',
-                        'placeholder' => __('Cantidad del token de entrada', 'flavor-platform'),
+                        'placeholder' => __('Cantidad del token de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ),
                     'slippage' => array(
                         'type'        => 'number',
-                        'label'       => __('Slippage maximo (%)', 'flavor-platform'),
+                        'label'       => __('Slippage maximo (%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'min'         => 0.1,
                         'max'         => 5.0,
                         'step'        => '0.1',
                         'default'     => 0.5,
-                        'description' => __('Porcentaje maximo de deslizamiento permitido (por defecto 0.5%)', 'flavor-platform'),
+                        'description' => __('Porcentaje maximo de deslizamiento permitido (por defecto 0.5%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ),
                 ),
-                'submit_text'     => __('Ejecutar Swap', 'flavor-platform'),
-                'success_message' => __('Swap ejecutado correctamente.', 'flavor-platform'),
+                'submit_text'     => __('Ejecutar Swap', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Swap ejecutado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ),
             'agregar_liquidez' => array(
-                'title'       => __('Agregar Liquidez al Pool', 'flavor-platform'),
-                'description' => __('Deposita pares de tokens en un pool AMM para ganar comisiones', 'flavor-platform'),
+                'title'       => __('Agregar Liquidez al Pool', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Deposita pares de tokens en un pool AMM para ganar comisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields'      => array(
                     'pool_id' => array(
                         'type'     => 'hidden',
@@ -2220,47 +2220,47 @@ KNOWLEDGE;
                     ),
                     'cantidad_token_a' => array(
                         'type'        => 'number',
-                        'label'       => __('Cantidad Token A', 'flavor-platform'),
+                        'label'       => __('Cantidad Token A', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                         'min'         => 0,
                         'step'        => '0.000001',
-                        'placeholder' => __('Cantidad del primer token del par', 'flavor-platform'),
+                        'placeholder' => __('Cantidad del primer token del par', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ),
                     'cantidad_token_b' => array(
                         'type'        => 'number',
-                        'label'       => __('Cantidad Token B', 'flavor-platform'),
+                        'label'       => __('Cantidad Token B', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                         'min'         => 0,
                         'step'        => '0.000001',
-                        'placeholder' => __('Cantidad del segundo token del par', 'flavor-platform'),
+                        'placeholder' => __('Cantidad del segundo token del par', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ),
                 ),
-                'submit_text'     => __('Agregar Liquidez', 'flavor-platform'),
-                'success_message' => __('Liquidez agregada correctamente. Recibiras LP tokens proporcionales a tu aporte.', 'flavor-platform'),
+                'submit_text'     => __('Agregar Liquidez', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Liquidez agregada correctamente. Recibiras LP tokens proporcionales a tu aporte.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ),
             'cambiar_modo' => array(
-                'title'       => __('Cambiar Modo de Operacion', 'flavor-platform'),
-                'description' => __('Alterna entre modo paper (simulacion) y modo real (transacciones sin firmar)', 'flavor-platform'),
+                'title'       => __('Cambiar Modo de Operacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Alterna entre modo paper (simulacion) y modo real (transacciones sin firmar)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields'      => array(
                     'modo' => array(
                         'type'     => 'select',
-                        'label'    => __('Modo', 'flavor-platform'),
+                        'label'    => __('Modo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options'  => array(
-                            'paper' => __('Paper Trading (simulacion)', 'flavor-platform'),
-                            'real'  => __('Real (transacciones sin firmar)', 'flavor-platform'),
+                            'paper' => __('Paper Trading (simulacion)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'real'  => __('Real (transacciones sin firmar)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ),
                         'default' => 'paper',
                     ),
                     'wallet_address' => array(
                         'type'        => 'text',
-                        'label'       => __('Direccion de Wallet Solana', 'flavor-platform'),
-                        'placeholder' => __('Tu direccion publica de wallet (requerida para modo real)', 'flavor-platform'),
-                        'description' => __('Necesaria para el modo real. Compatible con Phantom, Solflare, Backpack y Ledger.', 'flavor-platform'),
+                        'label'       => __('Direccion de Wallet Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Tu direccion publica de wallet (requerida para modo real)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('Necesaria para el modo real. Compatible con Phantom, Solflare, Backpack y Ledger.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ),
                 ),
-                'submit_text'     => __('Cambiar Modo', 'flavor-platform'),
-                'success_message' => __('Modo de operacion actualizado correctamente.', 'flavor-platform'),
+                'submit_text'     => __('Cambiar Modo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Modo de operacion actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ),
         );
 
@@ -2287,7 +2287,7 @@ KNOWLEDGE;
             'args'                => array(
                 'busqueda' => array(
                     'type'              => 'string',
-                    'description'       => __('Termino de busqueda para filtrar tokens', 'flavor-platform'),
+                    'description'       => __('Termino de busqueda para filtrar tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
                 'limite' => array(
@@ -2320,7 +2320,7 @@ KNOWLEDGE;
             'args'                => array(
                 'tokens' => array(
                     'type'              => 'string',
-                    'description'       => __('Lista de simbolos de tokens separados por coma (ej: SOL,USDC,JUP)', 'flavor-platform'),
+                    'description'       => __('Lista de simbolos de tokens separados por coma (ej: SOL,USDC,JUP)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
             ),
@@ -2335,25 +2335,25 @@ KNOWLEDGE;
                 'token_entrada' => array(
                     'type'              => 'string',
                     'required'          => true,
-                    'description'       => __('Simbolo del token a vender (ej: SOL)', 'flavor-platform'),
+                    'description'       => __('Simbolo del token a vender (ej: SOL)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
                 'token_salida' => array(
                     'type'              => 'string',
                     'required'          => true,
-                    'description'       => __('Simbolo del token a comprar (ej: USDC)', 'flavor-platform'),
+                    'description'       => __('Simbolo del token a comprar (ej: USDC)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
                 'cantidad' => array(
                     'type'              => 'number',
                     'required'          => true,
-                    'description'       => __('Cantidad del token de entrada', 'flavor-platform'),
+                    'description'       => __('Cantidad del token de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     
                 ),
                 'slippage' => array(
                     'type'              => 'number',
                     'default'           => 0.5,
-                    'description'       => __('Slippage maximo en porcentaje (por defecto 0.5%)', 'flavor-platform'),
+                    'description'       => __('Slippage maximo en porcentaje (por defecto 0.5%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     
                 ),
             ),
@@ -2372,7 +2372,7 @@ KNOWLEDGE;
                 ),
                 'tipo' => array(
                     'type'              => 'string',
-                    'description'       => __('Tipo de operacion: swap, liquidez, farming o todos', 'flavor-platform'),
+                    'description'       => __('Tipo de operacion: swap, liquidez, farming o todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'default'           => 'todos',
                     'sanitize_callback' => 'sanitize_text_field',
                     'enum'              => array('swap', 'liquidez', 'farming', 'todos'),
@@ -2396,19 +2396,19 @@ KNOWLEDGE;
                 'token_entrada' => array(
                     'type'              => 'string',
                     'required'          => true,
-                    'description'       => __('Simbolo del token de entrada', 'flavor-platform'),
+                    'description'       => __('Simbolo del token de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
                 'token_salida' => array(
                     'type'              => 'string',
                     'required'          => true,
-                    'description'       => __('Simbolo del token de salida', 'flavor-platform'),
+                    'description'       => __('Simbolo del token de salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'sanitize_callback' => 'sanitize_text_field',
                 ),
                 'cantidad' => array(
                     'type'              => 'number',
                     'required'          => true,
-                    'description'       => __('Cantidad del token de entrada', 'flavor-platform'),
+                    'description'       => __('Cantidad del token de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     
                 ),
                 'slippage' => array(
@@ -2442,7 +2442,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return new \WP_Error(
                 'rest_forbidden',
-                __('Debes iniciar sesion para realizar esta operacion.', 'flavor-platform'),
+                __('Debes iniciar sesion para realizar esta operacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 array('status' => 401)
             );
         }
@@ -2651,37 +2651,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('DEX Solana', 'flavor-platform'),
+                'title' => __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'dex-solana',
-                'content' => '<h1>' . __('DEX Solana', 'flavor-platform') . '</h1>
-<p>' . __('Exchange descentralizado en la red Solana', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Exchange descentralizado en la red Solana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="dex_solana" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Swap', 'flavor-platform'),
+                'title' => __('Swap', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'swap-solana',
-                'content' => '<h1>' . __('Swap de Tokens', 'flavor-platform') . '</h1>
-<p>' . __('Intercambia tokens en Solana', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Swap de Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Intercambia tokens en Solana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="dex_solana" action="swap"]',
                 'parent' => 'dex-solana',
             ],
             [
-                'title' => __('Pools', 'flavor-platform'),
+                'title' => __('Pools', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'pools-solana',
-                'content' => '<h1>' . __('Pools de Liquidez', 'flavor-platform') . '</h1>
-<p>' . __('Gestiona tus pools de liquidez', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Pools de Liquidez', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus pools de liquidez', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="dex_solana" action="pools"]',
                 'parent' => 'dex-solana',
             ],
             [
-                'title' => __('Mi Cartera', 'flavor-platform'),
+                'title' => __('Mi Cartera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-cartera-solana',
-                'content' => '<h1>' . __('Mi Cartera', 'flavor-platform') . '</h1>
-<p>' . __('Consulta el estado de tu cartera', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Mi Cartera', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de tu cartera', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="dex_solana" action="cartera"]',
                 'parent' => 'dex-solana',

@@ -27,28 +27,28 @@ $modules_count = count(glob($plugin_path . '/includes/modules/*/'));
 $stats = [
     [
         'value' => $css_count,
-        'label' => __('Archivos CSS', 'flavor-platform'),
+        'label' => __('Archivos CSS', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-admin-appearance',
         'color' => 'primary',
-        'meta' => __('Estilos compartidos', 'flavor-platform'),
+        'meta' => __('Estilos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     [
         'value' => $js_count,
-        'label' => __('Archivos JS', 'flavor-platform'),
+        'label' => __('Archivos JS', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-media-code',
         'color' => 'success',
-        'meta' => __('Scripts helpers', 'flavor-platform'),
+        'meta' => __('Scripts helpers', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     [
         'value' => '2',
-        'label' => __('Shortcodes', 'flavor-platform'),
+        'label' => __('Shortcodes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-shortcode',
         'color' => 'info',
-        'meta' => __('Utilidades disponibles', 'flavor-platform'),
+        'meta' => __('Utilidades disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     [
         'value' => $modules_count,
-        'label' => __('Módulos Soportados', 'flavor-platform'),
+        'label' => __('Módulos Soportados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-admin-plugins',
         'color' => 'eco',
         'highlight' => true,
@@ -57,37 +57,37 @@ $stats = [
 
 // Recursos principales
 $recursos_table = [
-    'title' => __('Recursos Principales', 'flavor-platform'),
+    'title' => __('Recursos Principales', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'icon' => 'dashicons-editor-code',
     'columns' => [
-        'resource' => __('Recurso', 'flavor-platform'),
-        'type' => __('Tipo', 'flavor-platform'),
-        'description' => __('Descripción', 'flavor-platform'),
-        'status' => __('Estado', 'flavor-platform'),
+        'resource' => __('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'type' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'description' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'status' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'data' => [
         [
             'resource' => '<strong>flavor-admin-common</strong>',
             'type' => 'CSS',
-            'description' => __('Estilos comunes para admin', 'flavor-platform'),
+            'description' => __('Estilos comunes para admin', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'status' => $DC::badge('Activo', 'success'),
         ],
         [
             'resource' => '<strong>flavor-utilities</strong>',
             'type' => 'CSS',
-            'description' => __('Clases de utilidad frontend', 'flavor-platform'),
+            'description' => __('Clases de utilidad frontend', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'status' => $DC::badge('Registrado', 'info'),
         ],
         [
             'resource' => '<strong>flavor-helpers</strong>',
             'type' => 'JS',
-            'description' => __('Funciones JavaScript comunes', 'flavor-platform'),
+            'description' => __('Funciones JavaScript comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'status' => $DC::badge('Registrado', 'info'),
         ],
         [
             'resource' => '<strong>dashboard-components-enhanced</strong>',
             'type' => 'CSS',
-            'description' => __('Componentes visuales mejorados', 'flavor-platform'),
+            'description' => __('Componentes visuales mejorados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'status' => $DC::badge('Nuevo', 'success'),
         ],
     ],
@@ -97,22 +97,22 @@ $recursos_table = [
 
 // Shortcodes disponibles
 $shortcodes_table = [
-    'title' => __('Shortcodes Disponibles', 'flavor-platform'),
+    'title' => __('Shortcodes Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'icon' => 'dashicons-shortcode',
     'columns' => [
-        'shortcode' => __('Shortcode', 'flavor-platform'),
-        'description' => __('Descripción', 'flavor-platform'),
-        'example' => __('Ejemplo de Uso', 'flavor-platform'),
+        'shortcode' => __('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'description' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'example' => __('Ejemplo de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'data' => [
         [
             'shortcode' => '<code>[flavor_icon]</code>',
-            'description' => __('Renderiza iconos dashicons personalizables', 'flavor-platform'),
+            'description' => __('Renderiza iconos dashicons personalizables', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'example' => '<code>[flavor_icon icon="dashicons-star" color="#f59e0b" size="20"]</code>',
         ],
         [
             'shortcode' => '<code>[flavor_badge]</code>',
-            'description' => __('Crea badges coloridos', 'flavor-platform'),
+            'description' => __('Crea badges coloridos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'example' => '<code>[flavor_badge text="Nuevo" color="green"]</code>',
         ],
     ],
@@ -126,17 +126,17 @@ $shortcodes_table = [
     <div class="dm-dashboard-header">
         <h1 class="dm-dashboard-title">
             <span class="dashicons dashicons-media-code"></span>
-            <?php _e('Assets y Recursos Compartidos', 'flavor-platform'); ?>
+            <?php _e('Assets y Recursos Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
         <p class="dm-dashboard-subtitle">
-            <?php _e('Sistema centralizado de recursos CSS, JS y plantillas para todos los módulos', 'flavor-platform'); ?>
+            <?php _e('Sistema centralizado de recursos CSS, JS y plantillas para todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <!-- Alerta de bienvenida -->
     <?php echo $DC::alert(
         sprintf(
-            __('Este dashboard utiliza <strong>componentes visuales mejorados</strong> para una mejor experiencia. Los datos se actualizan automáticamente. %s', 'flavor-platform'),
+            __('Este dashboard utiliza <strong>componentes visuales mejorados</strong> para una mejor experiencia. Los datos se actualizan automáticamente. %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             '<a href="?page=flavor-modules-assets&tab=example" style="color: inherit; text-decoration: underline;">Ver ejemplo completo</a>'
         ),
         'info',
@@ -156,12 +156,12 @@ $shortcodes_table = [
             <!-- Progreso de assets -->
             <?php
             $progress_html = '';
-            $progress_html .= $DC::progress_bar($css_count, 100, __('CSS Files Coverage', 'flavor-platform'), 'primary');
-            $progress_html .= $DC::progress_bar($js_count, 50, __('JS Helpers Coverage', 'flavor-platform'), 'success');
-            $progress_html .= $DC::progress_bar($modules_count, 70, __('Module Support', 'flavor-platform'), 'info');
+            $progress_html .= $DC::progress_bar($css_count, 100, __('CSS Files Coverage', FLAVOR_PLATFORM_TEXT_DOMAIN), 'primary');
+            $progress_html .= $DC::progress_bar($js_count, 50, __('JS Helpers Coverage', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
+            $progress_html .= $DC::progress_bar($modules_count, 70, __('Module Support', FLAVOR_PLATFORM_TEXT_DOMAIN), 'info');
 
             echo $DC::section(
-                __('Cobertura del Sistema', 'flavor-platform'),
+                __('Cobertura del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $progress_html,
                 [
                     'icon' => 'dashicons-chart-bar',
@@ -182,39 +182,39 @@ $shortcodes_table = [
                 <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--dm-bg-secondary); border-radius: 8px;">
                     <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
                     <div>
-                        <strong>' . __('Stat Cards', 'flavor-platform') . '</strong>
-                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Tarjetas de estadísticas con variantes de color', 'flavor-platform') . '</p>
+                        <strong>' . __('Stat Cards', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong>
+                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Tarjetas de estadísticas con variantes de color', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                     </div>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--dm-bg-secondary); border-radius: 8px;">
                     <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
                     <div>
-                        <strong>' . __('Data Tables', 'flavor-platform') . '</strong>
-                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Tablas responsivas con estilos mejorados', 'flavor-platform') . '</p>
+                        <strong>' . __('Data Tables', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong>
+                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Tablas responsivas con estilos mejorados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                     </div>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--dm-bg-secondary); border-radius: 8px;">
                     <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
                     <div>
-                        <strong>' . __('Progress Bars', 'flavor-platform') . '</strong>
-                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Barras de progreso animadas', 'flavor-platform') . '</p>
+                        <strong>' . __('Progress Bars', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong>
+                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Barras de progreso animadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                     </div>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--dm-bg-secondary); border-radius: 8px;">
                     <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
                     <div>
-                        <strong>' . __('Alerts & Badges', 'flavor-platform') . '</strong>
-                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Alertas descartables y badges de estado', 'flavor-platform') . '</p>
+                        <strong>' . __('Alerts & Badges', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong>
+                        <p style="margin: 0; font-size: 13px; color: var(--dm-text-secondary);">' . __('Alertas descartables y badges de estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                     </div>
                 </div>
             </div>
             ';
 
             echo $DC::section(
-                __('Componentes Disponibles', 'flavor-platform'),
+                __('Componentes Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $components_html,
                 [
                     'icon' => 'dashicons-admin-generic',
@@ -226,8 +226,8 @@ $shortcodes_table = [
             <!-- Ayuda -->
             <?php
             $help_html = '
-            <p><strong>' . __('¿Cómo usar estos componentes?', 'flavor-platform') . '</strong></p>
-            <p>' . __('Todos los módulos pueden usar estos componentes para crear dashboards consistentes y atractivos:', 'flavor-platform') . '</p>
+            <p><strong>' . __('¿Cómo usar estos componentes?', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong></p>
+            <p>' . __('Todos los módulos pueden usar estos componentes para crear dashboards consistentes y atractivos:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             <pre style="background: var(--dm-bg-secondary); padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
 require_once FLAVOR_PLATFORM_PATH . \'/includes/dashboard/class-dashboard-components.php\';
 $DC = \'Flavor_Dashboard_Components\';
@@ -250,7 +250,7 @@ echo $DC::data_table([
             ';
 
             echo $DC::section(
-                __('Documentación', 'flavor-platform'),
+                __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $help_html,
                 [
                     'icon' => 'dashicons-book',

@@ -25,12 +25,12 @@ $porcentajes = [];
 
 if ($precio_final > 0) {
     $campos = [
-        'precio_productor' => ['label' => __('Productor', 'flavor-platform'), 'color' => '#2e7d32'],
-        'coste_transporte' => ['label' => __('Transporte', 'flavor-platform'), 'color' => '#1976d2'],
-        'coste_gestion'    => ['label' => __('Gestión', 'flavor-platform'), 'color' => '#7b1fa2'],
-        'coste_mermas'     => ['label' => __('Mermas', 'flavor-platform'), 'color' => '#f57c00'],
-        'aportacion_fondo_social' => ['label' => __('Fondo social', 'flavor-platform'), 'color' => '#c2185b'],
-        'iva'              => ['label' => __('IVA', 'flavor-platform'), 'color' => '#616161'],
+        'precio_productor' => ['label' => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#2e7d32'],
+        'coste_transporte' => ['label' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#1976d2'],
+        'coste_gestion'    => ['label' => __('Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#7b1fa2'],
+        'coste_mermas'     => ['label' => __('Mermas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f57c00'],
+        'aportacion_fondo_social' => ['label' => __('Fondo social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#c2185b'],
+        'iva'              => ['label' => __('IVA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#616161'],
     ];
 
     foreach ($campos as $campo => $info) {
@@ -53,7 +53,7 @@ $es_estimado = !empty($desglose['es_estimado']);
 <?php if ($estilo === 'compacto'): ?>
     <div class="gc-precio-compacto">
         <span class="gc-precio-compacto__final"><?php echo esc_html(number_format($precio_final, 2)); ?>&euro;</span>
-        <span class="gc-precio-compacto__productor" title="<?php esc_attr_e('El productor recibe el', 'flavor-platform'); ?> <?php echo esc_attr(number_format($margen_productor, 0)); ?>%">
+        <span class="gc-precio-compacto__productor" title="<?php esc_attr_e('El productor recibe el', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_attr(number_format($margen_productor, 0)); ?>%">
             <span class="dashicons dashicons-store"></span>
             <?php echo esc_html(number_format($margen_productor, 0)); ?>%
         </span>
@@ -63,16 +63,16 @@ $es_estimado = !empty($desglose['es_estimado']);
     <div class="gc-precio-tabla">
         <table class="gc-precio-tabla__table">
             <caption>
-                <?php printf(esc_html__('Desglose de precio: %s', 'flavor-platform'), esc_html($producto_nombre)); ?>
+                <?php printf(esc_html__('Desglose de precio: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($producto_nombre)); ?>
                 <?php if ($es_estimado): ?>
-                    <small>(<?php esc_html_e('estimado', 'flavor-platform'); ?>)</small>
+                    <small>(<?php esc_html_e('estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</small>
                 <?php endif; ?>
             </caption>
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Concepto', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Importe', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('%', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -89,7 +89,7 @@ $es_estimado = !empty($desglose['es_estimado']);
             </tbody>
             <tfoot>
                 <tr>
-                    <th><?php esc_html_e('Total', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <th><?php echo esc_html(number_format($precio_final, 2)); ?>&euro;</th>
                     <th>100%</th>
                 </tr>
@@ -102,11 +102,11 @@ $es_estimado = !empty($desglose['es_estimado']);
         <div class="gc-precio-grafico__header">
             <h4 class="gc-precio-grafico__titulo">
                 <span class="dashicons dashicons-visibility"></span>
-                <?php esc_html_e('Precio Justo Visible', 'flavor-platform'); ?>
+                <?php esc_html_e('Precio Justo Visible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <?php if ($es_estimado): ?>
                 <span class="gc-precio-grafico__estimado">
-                    <?php esc_html_e('Estimado', 'flavor-platform'); ?>
+                    <?php esc_html_e('Estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -151,7 +151,7 @@ $es_estimado = !empty($desglose['es_estimado']);
             </div>
             <div class="gc-precio-grafico__productor-info">
                 <strong><?php echo esc_html(number_format($margen_productor, 0)); ?>%</strong>
-                <span><?php esc_html_e('llega al productor', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('llega al productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="gc-precio-grafico__productor-barra">
                 <div class="gc-precio-grafico__productor-fill" style="width: <?php echo esc_attr(min(100, $margen_productor)); ?>%"></div>
@@ -161,7 +161,7 @@ $es_estimado = !empty($desglose['es_estimado']);
         <?php if (!empty($desglose['origen_km'])): ?>
             <div class="gc-precio-grafico__origen">
                 <span class="dashicons dashicons-location"></span>
-                <?php printf(esc_html__('Origen a %d km', 'flavor-platform'), intval($desglose['origen_km'])); ?>
+                <?php printf(esc_html__('Origen a %d km', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($desglose['origen_km'])); ?>
             </div>
         <?php endif; ?>
 

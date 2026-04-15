@@ -158,13 +158,13 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                     'isLoggedIn' => is_user_logged_in(),
                     'loginUrl'   => wp_login_url(home_url('/mi-portal/grupos-consumo/')),
                     'i18n'       => [
-                        'agregado'         => __('Producto agregado a la lista', 'flavor-platform'),
-                        'eliminado'        => __('Producto eliminado de la lista', 'flavor-platform'),
-                        'error'            => __('Ha ocurrido un error', 'flavor-platform'),
-                        'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-platform'),
-                        'pedidoCreado'     => __('Pedido creado correctamente', 'flavor-platform'),
-                        'cargando'         => __('Cargando...', 'flavor-platform'),
-                        'sinProductos'     => __('Tu lista está vacía', 'flavor-platform'),
+                        'agregado'         => __('Producto agregado a la lista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'eliminado'        => __('Producto eliminado de la lista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'error'            => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'confirmarEliminar' => __('¿Eliminar este producto?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'pedidoCreado'     => __('Pedido creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'cargando'         => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'sinProductos'     => __('Tu lista está vacía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ]);
             }
@@ -220,13 +220,13 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                 'type'      => 'post',
                 'post_type' => 'gc_producto',
                 'context'   => 'side',
-                'label'     => __('Contenido del Producto', 'flavor-platform'),
+                'label'     => __('Contenido del Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'type'      => 'post',
                 'post_type' => 'gc_productor',
                 'context'   => 'normal',
-                'label'     => __('Contenido del Productor', 'flavor-platform'),
+                'label'     => __('Contenido del Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -250,13 +250,13 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         return [
             'catalogo' => [
-                'label'    => __('Catálogo', 'flavor-platform'),
+                'label'    => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-products',
                 'content'  => '[gc_productos vista="catalogo" limit="12"]',
                 'priority' => 10,
             ],
             'pedidos' => [
-                'label'    => __('Historial', 'flavor-platform'),
+                'label'    => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-cart',
                 'content'  => '[gc_mis_pedidos]',
                 'priority' => 20,
@@ -264,13 +264,13 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                 'badge'    => [$this, 'contar_pedidos_pendientes'],
             ],
             'productores' => [
-                'label'    => __('Productores', 'flavor-platform'),
+                'label'    => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-groups',
                 'content'  => '[gc_productores vista="grid" limit="12"]',
                 'priority' => 30,
             ],
             'ciclos' => [
-                'label'    => __('Ciclos', 'flavor-platform'),
+                'label'    => __('Ciclos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-calendar-alt',
                 'content'  => '[gc_ciclos vista="listado"]',
                 'priority' => 40,
@@ -287,24 +287,24 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_agregar_a_lista() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
-            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión para añadir productos.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión para añadir productos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $producto_id = absint($_POST['producto_id'] ?? 0);
         $cantidad = max(1, min(99, absint($_POST['cantidad'] ?? 1)));
 
         if (!$producto_id) {
-            wp_send_json_error(['message' => __('Producto no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Producto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el producto existe
         $producto = get_post($producto_id);
         if (!$producto || $producto->post_type !== 'gc_producto') {
-            wp_send_json_error(['message' => __('Producto no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Producto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener lista actual del usuario
@@ -321,7 +321,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         update_user_meta($user_id, 'gc_lista_compra', $lista);
 
         wp_send_json_success([
-            'message' => sprintf(__('%s añadido al pedido.', 'flavor-platform'), $producto->post_title),
+            'message' => sprintf(__('%s añadido al pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN), $producto->post_title),
             'lista_count' => count($lista),
         ]);
     }
@@ -331,17 +331,17 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_quitar_de_lista() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
-            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $producto_id = absint($_POST['producto_id'] ?? 0);
 
         if (!$producto_id) {
-            wp_send_json_error(['message' => __('Producto no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Producto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -357,7 +357,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         update_user_meta($user_id, 'gc_lista_compra', $lista);
 
         wp_send_json_success([
-            'message' => __('Producto eliminado de la lista.', 'flavor-platform'),
+            'message' => __('Producto eliminado de la lista.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'lista_count' => count($lista),
         ]);
     }
@@ -367,18 +367,18 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_convertir_lista_en_pedido() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
-            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
         $lista = get_user_meta($user_id, 'gc_lista_compra', true);
 
         if (!is_array($lista) || empty($lista)) {
-            wp_send_json_error(['message' => __('Tu lista de compra está vacía.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Tu lista de compra está vacía.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Convertir la lista en formato de productos para el pedido
@@ -398,10 +398,10 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             delete_user_meta($user_id, 'gc_lista_compra');
 
             wp_send_json_success([
-                'message' => $resultado['mensaje'] ?? __('Pedido realizado correctamente.', 'flavor-platform'),
+                'message' => $resultado['mensaje'] ?? __('Pedido realizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al crear el pedido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al crear el pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -414,11 +414,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_cambiar_estado_pedido() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
-            wp_send_json_error(__('Nonce inválido', 'flavor-platform'));
+            wp_send_json_error(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -430,7 +430,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $estados_validos = ['pendiente', 'confirmado', 'completado', 'cancelado', 'sin_stock'];
 
         if (!$pedido_id || !in_array($nuevo_estado, $estados_validos)) {
-            wp_send_json_error(__('Datos inválidos', 'flavor-platform'));
+            wp_send_json_error(__('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->update(
@@ -444,7 +444,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         if ($resultado !== false) {
             wp_send_json_success(['estado' => $nuevo_estado]);
         } else {
-            wp_send_json_error(__('Error al actualizar', 'flavor-platform'));
+            wp_send_json_error(__('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -453,11 +453,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_marcar_pedidos_completados() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
-            wp_send_json_error(__('Nonce inválido', 'flavor-platform'));
+            wp_send_json_error(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -467,7 +467,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $ciclo_id = absint($_POST['ciclo_id'] ?? 0);
 
         if (!$usuario_id) {
-            wp_send_json_error(__('Usuario no especificado', 'flavor-platform'));
+            wp_send_json_error(__('Usuario no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $where = ['usuario_id = %d'];
@@ -488,7 +488,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         if ($resultado !== false) {
             wp_send_json_success(['updated' => $resultado]);
         } else {
-            wp_send_json_error(__('Error al actualizar', 'flavor-platform'));
+            wp_send_json_error(__('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -497,11 +497,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_alta_consumidor() {
         if (!wp_verify_nonce($_POST['gc_admin_nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
@@ -511,7 +511,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $alergias = sanitize_textarea_field($_POST['alergias'] ?? '');
 
         if (!$grupo_id || !$usuario_id) {
-            wp_send_json_error(['error' => __('Datos requeridos faltantes', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Datos requeridos faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -525,7 +525,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ));
 
         if ($existe) {
-            wp_send_json_error(['error' => __('Este usuario ya es miembro del grupo', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Este usuario ya es miembro del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->insert(
@@ -543,9 +543,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         );
 
         if ($resultado) {
-            wp_send_json_success(['mensaje' => __('Consumidor añadido correctamente', 'flavor-platform')]);
+            wp_send_json_success(['mensaje' => __('Consumidor añadido correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['error' => __('Error al añadir consumidor', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Error al añadir consumidor', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -554,11 +554,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_cambiar_estado_consumidor() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
@@ -567,7 +567,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $estados_validos = ['pendiente', 'activo', 'suspendido', 'baja'];
 
         if (!$consumidor_id || !in_array($nuevo_estado, $estados_validos)) {
-            wp_send_json_error(['error' => __('Datos inválidos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -584,7 +584,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         if ($resultado !== false) {
             wp_send_json_success(['estado' => $nuevo_estado]);
         } else {
-            wp_send_json_error(['error' => __('Error al actualizar estado', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Error al actualizar estado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -593,18 +593,18 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_cambiar_rol_consumidor() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
         $roles_input = sanitize_text_field($_POST['rol'] ?? '');
 
         if (!$consumidor_id || empty($roles_input)) {
-            wp_send_json_error(['error' => __('Datos inválidos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Validar cada rol
@@ -639,7 +639,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         if ($resultado !== false) {
             wp_send_json_success(['rol' => $roles_string, 'roles' => $roles_finales]);
         } else {
-            wp_send_json_error(['error' => __('Error al actualizar rol', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Error al actualizar rol', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -648,22 +648,22 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_importar_usuarios_wp() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
         $usuarios_ids = isset($_POST['usuarios']) ? array_map('absint', $_POST['usuarios']) : [];
 
         if (!$grupo_id) {
-            wp_send_json_error(['error' => __('Grupo no especificado', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Grupo no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($usuarios_ids)) {
-            wp_send_json_error(['error' => __('No se seleccionaron usuarios', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('No se seleccionaron usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -704,7 +704,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         wp_send_json_success([
             'mensaje' => sprintf(
-                __('%d usuarios importados, %d ya existían en el grupo', 'flavor-platform'),
+                __('%d usuarios importados, %d ya existían en el grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $importados,
                 $omitidos
             ),
@@ -718,11 +718,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_listar_usuarios_wp() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
@@ -766,17 +766,17 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function ajax_obtener_detalles_consumidor() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
 
         if (!$consumidor_id) {
-            wp_send_json_error(['error' => __('ID de consumidor no especificado', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('ID de consumidor no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -793,7 +793,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ));
 
         if (!$consumidor) {
-            wp_send_json_error(['error' => __('Consumidor no encontrado', 'flavor-platform')]);
+            wp_send_json_error(['error' => __('Consumidor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener total de pedidos
@@ -810,16 +810,16 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         // Labels para estados y roles
         $estados_labels = [
-            'pendiente' => __('Pendiente', 'flavor-platform'),
-            'activo' => __('Activo', 'flavor-platform'),
-            'suspendido' => __('Suspendido', 'flavor-platform'),
-            'baja' => __('Baja', 'flavor-platform'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'suspendido' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $roles_labels = [
-            'consumidor' => __('Consumidor', 'flavor-platform'),
-            'coordinador' => __('Coordinador', 'flavor-platform'),
-            'productor' => __('Productor', 'flavor-platform'),
+            'consumidor' => __('Consumidor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'coordinador' => __('Coordinador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'productor' => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $datos = [
@@ -866,8 +866,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         $nc->send(
             $user_id,
-            __('Pedido registrado', 'flavor-platform'),
-            sprintf(__('Tu pedido #%d ha sido registrado correctamente.', 'flavor-platform'), $order_id),
+            __('Pedido registrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu pedido #%d ha sido registrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -892,8 +892,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         $nc->send(
             $user_id,
-            __('Pedido confirmado', 'flavor-platform'),
-            sprintf(__('Tu pedido #%d ha sido confirmado por el coordinador.', 'flavor-platform'), $order_id),
+            __('Pedido confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu pedido #%d ha sido confirmado por el coordinador.', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -918,8 +918,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         $nc->send(
             $user_id,
-            __('Pedido listo para recoger', 'flavor-platform'),
-            sprintf(__('Tu pedido #%d ya está listo. Pasa a recogerlo cuando puedas.', 'flavor-platform'), $order_id),
+            __('Pedido listo para recoger', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu pedido #%d ya está listo. Pasa a recogerlo cuando puedas.', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -944,8 +944,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         $nc->send(
             $user_id,
-            __('Recordatorio de recogida', 'flavor-platform'),
-            sprintf(__('Recuerda recoger tu pedido #%d mañana. No olvides traer tus bolsas reutilizables.', 'flavor-platform'), $order_id),
+            __('Recordatorio de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Recuerda recoger tu pedido #%d mañana. No olvides traer tus bolsas reutilizables.', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id),
             [
                 'module_id' => $this->id,
                 'type' => 'warning',
@@ -982,9 +982,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         foreach ($user_ids as $user_id) {
             $messages[] = [
                 'user_id' => $user_id,
-                'title' => __('Nuevo producto disponible', 'flavor-platform'),
+                'title' => __('Nuevo producto disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'message' => sprintf(
-                    __('Ya puedes pedir: %s. ¡No te quedes sin tu parte!', 'flavor-platform'),
+                    __('Ya puedes pedir: %s. ¡No te quedes sin tu parte!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $product->post_title
                 ),
                 'options' => [
@@ -1267,10 +1267,10 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             $entrega_ts = $ciclo['fecha_entrega'] ? strtotime($ciclo['fecha_entrega']) : 0;
             $ahora = current_time('timestamp');
             if ($cierre_ts && ($cierre_ts - $ahora) <= 48 * HOUR_IN_SECONDS && ($cierre_ts - $ahora) > 0) {
-                $alertas[] = __('El ciclo cierra en menos de 48 horas.', 'flavor-platform');
+                $alertas[] = __('El ciclo cierra en menos de 48 horas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
             if ($entrega_ts && ($entrega_ts - $ahora) <= 24 * HOUR_IN_SECONDS && ($entrega_ts - $ahora) > 0) {
-                $alertas[] = __('La entrega es en menos de 24 horas.', 'flavor-platform');
+                $alertas[] = __('La entrega es en menos de 24 horas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
         }
 
@@ -1368,23 +1368,23 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         $links = [
             [
-                'label' => __('Ver productos', 'flavor-platform'),
+                'label' => __('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mi-portal/grupos-consumo/productos/'),
             ],
             [
-                'label' => __('Mi cesta', 'flavor-platform'),
+                'label' => __('Mi cesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
             ],
             [
-                'label' => __('Pedido actual', 'flavor-platform'),
+                'label' => __('Pedido actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mi-portal/grupos-consumo/mi-pedido/'),
             ],
             [
-                'label' => __('Historial', 'flavor-platform'),
+                'label' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
             ],
             [
-                'label' => __('Suscripciones', 'flavor-platform'),
+                'label' => __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mi-portal/grupos-consumo/suscripciones/'),
             ],
         ];
@@ -1395,7 +1395,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             <?php if (!$has_user): ?>
                 <div class="gc-panel-alerts">
                     <div class="gc-panel-alert gc-panel-alert-info">
-                        <?php _e('Inicia sesión para ver tu actividad y gestionar tus pedidos.', 'flavor-platform'); ?>
+                        <?php _e('Inicia sesión para ver tu actividad y gestionar tus pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -1408,83 +1408,83 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             <?php endif; ?>
             <div class="gc-panel-kpis">
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Productores', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($total_productores); ?></strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Productos', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($total_productos); ?></strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Mis pedidos', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Mis pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($pedidos_usuario); ?></strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Mis suscripciones', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Mis suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($suscripciones_usuario); ?></strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Gasto total', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Gasto total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($gasto_total, 2); ?> €</strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Ticket medio', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Ticket medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($ticket_medio, 2); ?> €</strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Pedidos este mes', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Pedidos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($pedidos_mes); ?></strong>
                 </div>
                 <div class="gc-panel-card">
-                    <span class="gc-panel-label"><?php _e('Facturación este mes', 'flavor-platform'); ?></span>
+                    <span class="gc-panel-label"><?php _e('Facturación este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <strong class="gc-panel-value"><?php echo number_format_i18n($importe_mes, 2); ?> €</strong>
                 </div>
             </div>
 
             <div class="gc-panel-section">
-                <h3><?php _e('Ciclo actual', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Ciclo actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if ($ciclo): ?>
                     <div class="gc-panel-ciclo">
                         <p><strong><?php echo esc_html($ciclo['titulo']); ?></strong></p>
-                        <p><?php printf(__('Cierre: %s', 'flavor-platform'), esc_html($ciclo['fecha_cierre'])); ?></p>
-                        <p><?php printf(__('Entrega: %s', 'flavor-platform'), esc_html($ciclo['fecha_entrega'])); ?></p>
+                        <p><?php printf(__('Cierre: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($ciclo['fecha_cierre'])); ?></p>
+                        <p><?php printf(__('Entrega: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($ciclo['fecha_entrega'])); ?></p>
                         <?php if (!empty($ciclo['lugar_entrega'])): ?>
-                            <p><?php printf(__('Lugar: %s', 'flavor-platform'), esc_html($ciclo['lugar_entrega'])); ?></p>
+                            <p><?php printf(__('Lugar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($ciclo['lugar_entrega'])); ?></p>
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <p class="gc-panel-muted"><?php _e('No hay ciclo abierto en este momento.', 'flavor-platform'); ?></p>
+                    <p class="gc-panel-muted"><?php _e('No hay ciclo abierto en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="gc-panel-section">
-                <h3><?php _e('Comparativa mensual', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Comparativa mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if ($has_user && $pedidos_usuario > 0): ?>
                     <p class="gc-panel-muted">
-                        <?php _e('Variación respecto al mes anterior', 'flavor-platform'); ?>:
+                        <?php _e('Variación respecto al mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:
                         <strong class="gc-panel-trend <?php echo $variacion_mes >= 0 ? 'gc-trend-up' : 'gc-trend-down'; ?>">
                             <?php echo number_format_i18n($variacion_mes, 1); ?>%
                         </strong>
                     </p>
                 <?php else: ?>
-                    <p class="gc-panel-muted"><?php _e('Aún no hay suficientes datos para comparar.', 'flavor-platform'); ?></p>
+                    <p class="gc-panel-muted"><?php _e('Aún no hay suficientes datos para comparar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="gc-panel-section">
-                <h3><?php _e('Último ciclo', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Último ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if ($ultimo_ciclo): ?>
                     <p><strong><?php echo esc_html($ultimo_ciclo); ?></strong></p>
-                    <p><?php printf(__('Importe: %s', 'flavor-platform'), number_format_i18n($importe_ultimo_ciclo, 2) . ' €'); ?></p>
+                    <p><?php printf(__('Importe: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($importe_ultimo_ciclo, 2) . ' €'); ?></p>
                 <?php else: ?>
-                    <p class="gc-panel-muted"><?php _e('Aún no tienes pedidos cerrados.', 'flavor-platform'); ?></p>
+                    <p class="gc-panel-muted"><?php _e('Aún no tienes pedidos cerrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <?php if ($ciclo): ?>
                 <div class="gc-panel-section">
-                    <h3><?php _e('Pedido actual en el ciclo activo', 'flavor-platform'); ?></h3>
-                    <p><?php printf(__('Importe: %s', 'flavor-platform'), number_format_i18n($importe_ciclo_activo, 2) . ' €'); ?></p>
+                    <h3><?php _e('Pedido actual en el ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php printf(__('Importe: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($importe_ciclo_activo, 2) . ' €'); ?></p>
                 </div>
             <?php endif; ?>
 
@@ -1507,16 +1507,16 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function shortcode_nav() {
         $items = [
-            ['label' => __('Inicio', 'flavor-platform'), 'path' => 'grupos-consumo'],
-            ['label' => __('Panel', 'flavor-platform'), 'path' => 'grupos-consumo/panel'],
-            ['label' => __('Catálogo', 'flavor-platform'), 'path' => 'grupos-consumo/productos'],
-            ['label' => __('Mi cesta', 'flavor-platform'), 'path' => 'grupos-consumo/mi-cesta'],
-            ['label' => __('Pedido actual', 'flavor-platform'), 'path' => 'grupos-consumo/mi-pedido'],
-            ['label' => __('Mis pedidos', 'flavor-platform'), 'path' => 'grupos-consumo/mis-pedidos'],
-            ['label' => __('Suscripciones', 'flavor-platform'), 'path' => 'grupos-consumo/suscripciones'],
-            ['label' => __('Productores', 'flavor-platform'), 'path' => 'grupos-consumo/productores-cercanos'],
-            ['label' => __('Ciclo', 'flavor-platform'), 'path' => 'grupos-consumo/ciclo'],
-            ['label' => __('Unirme', 'flavor-platform'), 'path' => 'grupos-consumo/unirme'],
+            ['label' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo'],
+            ['label' => __('Panel', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/panel'],
+            ['label' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/productos'],
+            ['label' => __('Mi cesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/mi-cesta'],
+            ['label' => __('Pedido actual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/mi-pedido'],
+            ['label' => __('Mis pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/mis-pedidos'],
+            ['label' => __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/suscripciones'],
+            ['label' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/productores-cercanos'],
+            ['label' => __('Ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/ciclo'],
+            ['label' => __('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN), 'path' => 'grupos-consumo/unirme'],
         ];
 
         $current = trim(parse_url(home_url(add_query_arg([])), PHP_URL_PATH), '/');
@@ -1537,7 +1537,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         ob_start();
         ?>
-        <nav class="gc-nav" aria-label="<?php echo esc_attr__('Navegación Grupos de Consumo', 'flavor-platform'); ?>">
+        <nav class="gc-nav" aria-label="<?php echo esc_attr__('Navegación Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php foreach ($links as $link): ?>
                 <a class="gc-nav-link <?php echo $link['active'] ? 'is-active' : ''; ?>" href="<?php echo esc_url($link['url']); ?>">
                     <?php echo esc_html($link['label']); ?>
@@ -1585,56 +1585,56 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
     protected function get_admin_config() {
         return [
             'id' => 'grupos_consumo',
-            'label' => __('Grupos de Consumo', 'flavor-platform'),
+            'label' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-carrot',
             'capability' => 'manage_options',
             'categoria' => 'comunidad', // personas|economia|operaciones|recursos|comunicacion|actividades|servicios|comunidad|sostenibilidad
             'paginas' => [
                 [
                     'slug' => 'gc-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'gc-consumidores',
-                    'titulo' => __('Consumidores', 'flavor-platform'),
+                    'titulo' => __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_consumidores'],
                 ],
                 [
                     'slug' => 'gc-solicitudes',
-                    'titulo' => __('Solicitudes', 'flavor-platform'),
+                    'titulo' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_solicitudes'],
                     'badge' => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
                     'slug' => 'gc-pedidos',
-                    'titulo' => __('Pedidos', 'flavor-platform'),
+                    'titulo' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_pedidos'],
                     'badge' => [$this, 'contar_pedidos_pendientes'],
                 ],
                 [
                     'slug' => 'gc-suscripciones',
-                    'titulo' => __('Suscripciones', 'flavor-platform'),
+                    'titulo' => __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_suscripciones'],
                 ],
                 [
                     'slug' => 'gc-consolidado',
-                    'titulo' => __('Consolidado', 'flavor-platform'),
+                    'titulo' => __('Consolidado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_consolidado'],
                 ],
                 [
                     'slug' => 'gc-reportes',
-                    'titulo' => __('Reportes', 'flavor-platform'),
+                    'titulo' => __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_reportes'],
                 ],
                 [
                     'slug' => 'gc-configuracion',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_configuracion'],
                 ],
                 [
                     'slug' => 'gc-pagos',
-                    'titulo' => __('Pagos', 'flavor-platform'),
+                    'titulo' => __('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_pagos'],
                     'icon' => 'dashicons-money-alt',
                 ],
@@ -1692,7 +1692,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             $stats[] = [
                 'icon' => 'dashicons-clipboard',
                 'valor' => $pendientes,
-                'label' => __('Pedidos pendientes', 'flavor-platform'),
+                'label' => __('Pedidos pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $pendientes > 0 ? 'orange' : 'green',
                 'enlace' => admin_url('admin.php?page=gc-pedidos'),
             ];
@@ -1704,7 +1704,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             $stats[] = [
                 'icon' => 'dashicons-groups',
                 'valor' => $activos,
-                'label' => __('Consumidores activos', 'flavor-platform'),
+                'label' => __('Consumidores activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=gc-consumidores'),
             ];
@@ -1718,8 +1718,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ]);
         $stats[] = [
             'icon' => 'dashicons-calendar-alt',
-            'valor' => count($ciclo_activo) > 0 ? __('Activo', 'flavor-platform') : __('Cerrado', 'flavor-platform'),
-            'label' => __('Ciclo de pedidos', 'flavor-platform'),
+            'valor' => count($ciclo_activo) > 0 ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'label' => __('Ciclo de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => count($ciclo_activo) > 0 ? 'green' : 'red',
             'enlace' => admin_url('edit.php?post_type=gc_ciclo'),
         ];
@@ -1784,11 +1784,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // CPT: Productores
         register_post_type('gc_productor', [
             'labels' => [
-                'name' => __('Productores', 'flavor-platform'),
-                'singular_name' => __('Productor', 'flavor-platform'),
-                'add_new' => __('Añadir Productor', 'flavor-platform'),
-                'add_new_item' => __('Añadir Nuevo Productor', 'flavor-platform'),
-                'edit_item' => __('Editar Productor', 'flavor-platform'),
+                'name' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Añadir Nuevo Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -1803,9 +1803,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // CPT: Productos
         register_post_type('gc_producto', [
             'labels' => [
-                'name' => __('Productos', 'flavor-platform'),
-                'singular_name' => __('Producto', 'flavor-platform'),
-                'add_new' => __('Añadir Producto', 'flavor-platform'),
+                'name' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -1819,9 +1819,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // CPT: Ciclos de pedido
         register_post_type('gc_ciclo', [
             'labels' => [
-                'name' => __('Ciclos de Pedido', 'flavor-platform'),
-                'singular_name' => __('Ciclo', 'flavor-platform'),
-                'add_new' => __('Crear Ciclo', 'flavor-platform'),
+                'name' => __('Ciclos de Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Crear Ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_in_menu' => 'edit.php?post_type=gc_productor',
@@ -1835,13 +1835,13 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // CPT: Grupos de Consumo
         register_post_type('gc_grupo', [
             'labels' => [
-                'name' => __('Grupos de Consumo', 'flavor-platform'),
-                'singular_name' => __('Grupo', 'flavor-platform'),
-                'add_new' => __('Crear Grupo', 'flavor-platform'),
-                'add_new_item' => __('Crear Nuevo Grupo', 'flavor-platform'),
-                'edit_item' => __('Editar Grupo', 'flavor-platform'),
-                'view_item' => __('Ver Grupo', 'flavor-platform'),
-                'all_items' => __('Todos los Grupos', 'flavor-platform'),
+                'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Crear Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Crear Nuevo Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'view_item' => __('Ver Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'all_items' => __('Todos los Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => 'gc-grupos',
@@ -1861,8 +1861,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // Taxonomía: Categoría de productos
         register_taxonomy('gc_categoria', 'gc_producto', [
             'labels' => [
-                'name' => __('Categorías', 'flavor-platform'),
-                'singular_name' => __('Categoría', 'flavor-platform'),
+                'name' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_in_rest' => true,
@@ -1871,15 +1871,15 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         // Términos por defecto
         $categorias_defecto = [
-            'frutas' => __('Frutas', 'flavor-platform'),
-            'verduras' => __('Verduras', 'flavor-platform'),
-            'lacteos' => __('Lácteos', 'flavor-platform'),
-            'carne' => __('Carne', 'flavor-platform'),
-            'pescado' => __('Pescado', 'flavor-platform'),
-            'pan' => __('Pan y Cereales', 'flavor-platform'),
-            'conservas' => __('Conservas', 'flavor-platform'),
-            'bebidas' => __('Bebidas', 'flavor-platform'),
-            'otros' => __('Otros', 'flavor-platform'),
+            'frutas' => __('Frutas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'verduras' => __('Verduras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'lacteos' => __('Lácteos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'carne' => __('Carne', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pescado' => __('Pescado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pan' => __('Pan y Cereales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'conservas' => __('Conservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bebidas' => __('Bebidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         foreach ($categorias_defecto as $slug => $nombre) {
@@ -1894,27 +1894,27 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
      */
     public function registrar_estados_ciclo() {
         register_post_status('gc_abierto', [
-            'label' => __('Abierto', 'flavor-platform'),
+            'label' => __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'public' => true,
             'show_in_admin_all_list' => true,
             'show_in_admin_status_list' => true,
-            'label_count' => _n_noop('Abierto <span class="count">(%s)</span>', 'Abiertos <span class="count">(%s)</span>', 'flavor-platform'),
+            'label_count' => _n_noop('Abierto <span class="count">(%s)</span>', 'Abiertos <span class="count">(%s)</span>', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
 
         register_post_status('gc_cerrado', [
-            'label' => __('Cerrado', 'flavor-platform'),
+            'label' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'public' => true,
             'show_in_admin_all_list' => true,
             'show_in_admin_status_list' => true,
-            'label_count' => _n_noop('Cerrado <span class="count">(%s)</span>', 'Cerrados <span class="count">(%s)</span>', 'flavor-platform'),
+            'label_count' => _n_noop('Cerrado <span class="count">(%s)</span>', 'Cerrados <span class="count">(%s)</span>', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
 
         register_post_status('gc_entregado', [
-            'label' => __('Entregado', 'flavor-platform'),
+            'label' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'public' => true,
             'show_in_admin_all_list' => true,
             'show_in_admin_status_list' => true,
-            'label_count' => _n_noop('Entregado <span class="count">(%s)</span>', 'Entregados <span class="count">(%s)</span>', 'flavor-platform'),
+            'label_count' => _n_noop('Entregado <span class="count">(%s)</span>', 'Entregados <span class="count">(%s)</span>', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1925,7 +1925,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // Meta box para productores
         add_meta_box(
             'gc_productor_info',
-            __('Información del Productor', 'flavor-platform'),
+            __('Información del Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_productor'],
             'gc_productor',
             'normal',
@@ -1935,7 +1935,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // Meta box para productos
         add_meta_box(
             'gc_producto_info',
-            __('Información del Producto', 'flavor-platform'),
+            __('Información del Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_producto'],
             'gc_producto',
             'normal',
@@ -1945,7 +1945,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // Meta box para ciclos
         add_meta_box(
             'gc_ciclo_info',
-            __('Información del Ciclo', 'flavor-platform'),
+            __('Información del Ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_ciclo'],
             'gc_ciclo',
             'normal',
@@ -1955,7 +1955,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         // Meta box resumen pedidos del ciclo
         add_meta_box(
             'gc_ciclo_pedidos',
-            __('Resumen de Pedidos', 'flavor-platform'),
+            __('Resumen de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_ciclo_pedidos'],
             'gc_ciclo',
             'side',
@@ -1985,47 +1985,47 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="gc_contacto_nombre"><?php _e('Nombre de Contacto', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_contacto_nombre"><?php _e('Nombre de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="text" id="gc_contacto_nombre" name="gc_contacto_nombre"
                            value="<?php echo esc_attr($contacto_nombre); ?>" class="regular-text" /></td>
             </tr>
             <tr>
-                <th><label for="gc_contacto_telefono"><?php _e('Teléfono', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_contacto_telefono"><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="tel" id="gc_contacto_telefono" name="gc_contacto_telefono"
                            value="<?php echo esc_attr($contacto_telefono); ?>" class="regular-text" /></td>
             </tr>
             <tr>
-                <th><label for="gc_contacto_email"><?php _e('Email', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_contacto_email"><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="email" id="gc_contacto_email" name="gc_contacto_email"
                            value="<?php echo esc_attr($contacto_email); ?>" class="regular-text" /></td>
             </tr>
             <tr>
-                <th><label for="gc_ubicacion"><?php _e('Ubicación', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="text" id="gc_ubicacion" name="gc_ubicacion"
                            value="<?php echo esc_attr($ubicacion_ciudad); ?>" class="regular-text"
-                           placeholder="<?php _e('Ciudad, Provincia', 'flavor-platform'); ?>" /></td>
+                           placeholder="<?php _e('Ciudad, Provincia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" /></td>
             </tr>
             <tr>
-                <th><label for="gc_certificacion_eco"><?php _e('Certificación Ecológica', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_certificacion_eco"><?php _e('Certificación Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="gc_certificacion_eco" name="gc_certificacion_eco"
                                value="1" <?php checked($certificacion_ecologica, '1'); ?> />
-                        <?php _e('Productor certificado ecológico', 'flavor-platform'); ?>
+                        <?php _e('Productor certificado ecológico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_numero_certificado"><?php _e('Nº Certificado', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_numero_certificado"><?php _e('Nº Certificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="text" id="gc_numero_certificado" name="gc_numero_certificado"
                            value="<?php echo esc_attr($numero_certificado); ?>" class="regular-text" /></td>
             </tr>
             <tr>
-                <th><label for="gc_metodos_produccion"><?php _e('Métodos de Producción', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_metodos_produccion"><?php _e('Métodos de Producción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <textarea id="gc_metodos_produccion" name="gc_metodos_produccion"
                               rows="4" class="large-text"><?php echo esc_textarea($metodos_produccion); ?></textarea>
-                    <p class="description"><?php _e('Describe los métodos y prácticas de producción', 'flavor-platform'); ?></p>
+                    <p class="description"><?php _e('Describe los métodos y prácticas de producción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -2033,75 +2033,75 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         <!-- Sección de Zona de Entrega -->
         <h3 style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
             <span class="dashicons dashicons-location-alt" style="color: #2271b1;"></span>
-            <?php _e('Zona de Entrega a Domicilio', 'flavor-platform'); ?>
+            <?php _e('Zona de Entrega a Domicilio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <p class="description" style="margin-bottom: 15px;">
-            <?php _e('Configura el área geográfica donde el productor puede realizar entregas a domicilio.', 'flavor-platform'); ?>
+            <?php _e('Configura el área geográfica donde el productor puede realizar entregas a domicilio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <table class="form-table">
             <tr>
-                <th><label for="gc_radio_entrega_km"><?php _e('Radio de Entrega (km)', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_radio_entrega_km"><?php _e('Radio de Entrega (km)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" id="gc_radio_entrega_km" name="gc_radio_entrega_km"
                            value="<?php echo esc_attr($radio_entrega_km); ?>"
                            min="0" max="500" step="1" style="width: 100px;" />
-                    <span class="description"><?php _e('km desde la ubicación del productor', 'flavor-platform'); ?></span>
+                    <span class="description"><?php _e('km desde la ubicación del productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <p class="description">
-                        <?php _e('Deja en 0 o vacío si no ofrece entrega a domicilio.', 'flavor-platform'); ?>
+                        <?php _e('Deja en 0 o vacío si no ofrece entrega a domicilio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_direccion_completa"><?php _e('Dirección Completa', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_direccion_completa"><?php _e('Dirección Completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" id="gc_direccion_completa" name="gc_direccion_completa"
                            value="<?php echo esc_attr($direccion_completa); ?>" class="large-text"
-                           placeholder="<?php _e('Calle, número, ciudad, código postal...', 'flavor-platform'); ?>" />
+                           placeholder="<?php _e('Calle, número, ciudad, código postal...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
                     <p class="description">
-                        <?php _e('Escribe la dirección y pulsa el botón para obtener las coordenadas.', 'flavor-platform'); ?>
+                        <?php _e('Escribe la dirección y pulsa el botón para obtener las coordenadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <button type="button" id="gc_geocodificar_btn" class="button button-secondary" style="margin-top: 5px;">
                         <span class="dashicons dashicons-search" style="vertical-align: middle;"></span>
-                        <?php _e('Obtener coordenadas', 'flavor-platform'); ?>
+                        <?php _e('Obtener coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <span id="gc_geocoding_status" style="margin-left: 10px;"></span>
                 </td>
             </tr>
             <tr>
-                <th><label><?php _e('Coordenadas', 'flavor-platform'); ?></label></th>
+                <th><label><?php _e('Coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <div style="display: flex; gap: 15px; align-items: center;">
                         <div>
-                            <label for="gc_lat" style="font-weight: normal;"><?php _e('Latitud:', 'flavor-platform'); ?></label>
+                            <label for="gc_lat" style="font-weight: normal;"><?php _e('Latitud:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="gc_lat" name="gc_lat"
                                    value="<?php echo esc_attr($latitud_productor); ?>"
                                    style="width: 150px;" readonly />
                         </div>
                         <div>
-                            <label for="gc_lng" style="font-weight: normal;"><?php _e('Longitud:', 'flavor-platform'); ?></label>
+                            <label for="gc_lng" style="font-weight: normal;"><?php _e('Longitud:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="gc_lng" name="gc_lng"
                                    value="<?php echo esc_attr($longitud_productor); ?>"
                                    style="width: 150px;" readonly />
                         </div>
-                        <button type="button" id="gc_limpiar_coords_btn" class="button" title="<?php esc_attr_e('Limpiar coordenadas', 'flavor-platform'); ?>">
+                        <button type="button" id="gc_limpiar_coords_btn" class="button" title="<?php esc_attr_e('Limpiar coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-no" style="vertical-align: middle;"></span>
                         </button>
                     </div>
                 </td>
             </tr>
             <tr>
-                <th><label><?php _e('Vista Previa del Área', 'flavor-platform'); ?></label></th>
+                <th><label><?php _e('Vista Previa del Área', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <div id="gc_mapa_preview" style="width: 100%; max-width: 500px; height: 300px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
                         <?php if ($latitud_productor && $longitud_productor): ?>
                             <div id="gc_mapa_container" style="width: 100%; height: 100%;"></div>
                         <?php else: ?>
-                            <span style="color: #666;"><?php _e('El mapa aparecerá cuando se establezcan las coordenadas', 'flavor-platform'); ?></span>
+                            <span style="color: #666;"><?php _e('El mapa aparecerá cuando se establezcan las coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                     <p class="description" style="margin-top: 5px;">
-                        <?php _e('El círculo azul muestra el área de cobertura de entrega.', 'flavor-platform'); ?>
+                        <?php _e('El círculo azul muestra el área de cobertura de entrega.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
@@ -2119,52 +2119,52 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ?>
         <h3 style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
             <span class="dashicons dashicons-networking" style="color: #9b59b6;"></span>
-            <?php _e('Compartir en Red de Nodos', 'flavor-platform'); ?>
+            <?php _e('Compartir en Red de Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <p class="description" style="margin-bottom: 15px;">
-            <?php _e('Permite que otros nodos de la red puedan ver este productor y sus productos.', 'flavor-platform'); ?>
+            <?php _e('Permite que otros nodos de la red puedan ver este productor y sus productos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <table class="form-table">
             <tr>
-                <th><label for="gc_compartir_en_red"><?php _e('Compartir en Red', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_compartir_en_red"><?php _e('Compartir en Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="gc_compartir_en_red" name="gc_compartir_en_red"
                                value="1" <?php checked($compartir_en_red, '1'); ?> />
-                        <?php _e('Permitir que este productor sea visible en otros nodos de la red', 'flavor-platform'); ?>
+                        <?php _e('Permitir que este productor sea visible en otros nodos de la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <p class="description">
-                        <?php _e('Los nodos cercanos (dentro del radio de entrega) podrán ver y contactar a este productor.', 'flavor-platform'); ?>
+                        <?php _e('Los nodos cercanos (dentro del radio de entrega) podrán ver y contactar a este productor.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_acepta_mensajeria"><?php _e('Envío por Mensajería', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_acepta_mensajeria"><?php _e('Envío por Mensajería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="gc_acepta_mensajeria" name="gc_acepta_mensajeria"
                                value="1" <?php checked($acepta_mensajeria, '1'); ?> />
-                        <?php _e('Acepta envíos por mensajería a cualquier destino', 'flavor-platform'); ?>
+                        <?php _e('Acepta envíos por mensajería a cualquier destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <p class="description">
-                        <?php _e('Si está activo, el productor será visible en todos los nodos independientemente de la distancia.', 'flavor-platform'); ?>
+                        <?php _e('Si está activo, el productor será visible en todos los nodos independientemente de la distancia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr id="gc_nodos_visibles_row" style="<?php echo ($compartir_en_red && !$acepta_mensajeria) ? '' : 'display:none;'; ?>">
-                <th><label><?php _e('Visibilidad', 'flavor-platform'); ?></label></th>
+                <th><label><?php _e('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <p class="description" style="margin-bottom: 10px;">
                         <span class="dashicons dashicons-info-outline" style="color: #2271b1;"></span>
                         <?php
                         if ($latitud_productor && $longitud_productor && $radio_entrega_km) {
                             printf(
-                                __('Este productor será visible en nodos que se encuentren a menos de %d km de su ubicación.', 'flavor-platform'),
+                                __('Este productor será visible en nodos que se encuentren a menos de %d km de su ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 intval($radio_entrega_km)
                             );
                         } else {
-                            _e('Configura la ubicación y el radio de entrega para definir el área de visibilidad en la red.', 'flavor-platform');
+                            _e('Configura la ubicación y el radio de entrega para definir el área de visibilidad en la red.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         ?>
                     </p>
@@ -2205,7 +2205,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
                 if (!latitud || !longitud) {
                     $('#gc_mapa_container').hide();
-                    $('#gc_mapa_preview').html('<span style="color: #666;"><?php echo esc_js(__('El mapa aparecerá cuando se establezcan las coordenadas', 'flavor-platform')); ?></span>');
+                    $('#gc_mapa_preview').html('<span style="color: #666;"><?php echo esc_js(__('El mapa aparecerá cuando se establezcan las coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                     return;
                 }
 
@@ -2251,7 +2251,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
                 // Añadir marcador del productor
                 marcadorProductor = L.marker([latitud, longitud]).addTo(mapaLeaflet)
-                    .bindPopup('<?php echo esc_js(__('Ubicación del productor', 'flavor-platform')); ?>');
+                    .bindPopup('<?php echo esc_js(__('Ubicación del productor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                 // Añadir círculo de cobertura si hay radio
                 if (radioKm > 0) {
@@ -2279,12 +2279,12 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                 var $btn = $(this);
 
                 if (!direccion) {
-                    $status.html('<span style="color: #d63638;"><?php echo esc_js(__('Introduce una dirección', 'flavor-platform')); ?></span>');
+                    $status.html('<span style="color: #d63638;"><?php echo esc_js(__('Introduce una dirección', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                     return;
                 }
 
                 $btn.prop('disabled', true);
-                $status.html('<span style="color: #2271b1;"><span class="spinner is-active" style="float: none; margin: 0;"></span> <?php echo esc_js(__('Buscando...', 'flavor-platform')); ?></span>');
+                $status.html('<span style="color: #2271b1;"><span class="spinner is-active" style="float: none; margin: 0;"></span> <?php echo esc_js(__('Buscando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
 
                 // Usar Nominatim de OpenStreetMap (gratuito, sin API key)
                 $.ajax({
@@ -2303,17 +2303,17 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                             var resultado = resultados[0];
                             $('#gc_lat').val(resultado.lat);
                             $('#gc_lng').val(resultado.lon);
-                            $status.html('<span style="color: #00a32a;"><span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Coordenadas encontradas', 'flavor-platform')); ?></span>');
+                            $status.html('<span style="color: #00a32a;"><span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Coordenadas encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
 
                             // Actualizar mapa
                             actualizarMapa();
                         } else {
-                            $status.html('<span style="color: #d63638;"><?php echo esc_js(__('No se encontró la dirección', 'flavor-platform')); ?></span>');
+                            $status.html('<span style="color: #d63638;"><?php echo esc_js(__('No se encontró la dirección', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                         }
                     },
                     error: function() {
                         $btn.prop('disabled', false);
-                        $status.html('<span style="color: #d63638;"><?php echo esc_js(__('Error al buscar', 'flavor-platform')); ?></span>');
+                        $status.html('<span style="color: #d63638;"><?php echo esc_js(__('Error al buscar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                     }
                 });
             });
@@ -2365,10 +2365,10 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="gc_productor_id"><?php _e('Productor', 'flavor-platform'); ?> *</label></th>
+                <th><label for="gc_productor_id"><?php _e('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                 <td>
                     <select id="gc_productor_id" name="gc_productor_id" class="regular-text" required>
-                        <option value=""><?php _e('Selecciona un productor', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Selecciona un productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($productores as $productor): ?>
                             <option value="<?php echo $productor->ID; ?>"
                                     <?php selected($productor_id, $productor->ID); ?>>
@@ -2379,50 +2379,50 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_precio"><?php _e('Precio', 'flavor-platform'); ?> *</label></th>
+                <th><label for="gc_precio"><?php _e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                 <td>
                     <input type="number" step="0.01" id="gc_precio" name="gc_precio"
                            value="<?php echo esc_attr($precio); ?>" required /> €
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_unidad"><?php _e('Unidad', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_unidad"><?php _e('Unidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select id="gc_unidad" name="gc_unidad">
-                        <option value="<?php echo esc_attr__('kg', 'flavor-platform'); ?>" <?php selected($unidad, 'kg'); ?>><?php echo esc_html__('Kg', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('g', 'flavor-platform'); ?>" <?php selected($unidad, 'g'); ?>><?php echo esc_html__('g', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('l', 'flavor-platform'); ?>" <?php selected($unidad, 'l'); ?>><?php echo esc_html__('L', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('unidad', 'flavor-platform'); ?>" <?php selected($unidad, 'unidad'); ?>><?php _e('Unidad', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('caja', 'flavor-platform'); ?>" <?php selected($unidad, 'caja'); ?>><?php _e('Caja', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('ramo', 'flavor-platform'); ?>" <?php selected($unidad, 'ramo'); ?>><?php _e('Ramo', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('kg', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'kg'); ?>><?php echo esc_html__('Kg', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('g', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'g'); ?>><?php echo esc_html__('g', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('l', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'l'); ?>><?php echo esc_html__('L', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('unidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'unidad'); ?>><?php _e('Unidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('caja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'caja'); ?>><?php _e('Caja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('ramo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($unidad, 'ramo'); ?>><?php _e('Ramo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_cantidad_minima"><?php _e('Cantidad Mínima', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_cantidad_minima"><?php _e('Cantidad Mínima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" step="0.1" id="gc_cantidad_minima" name="gc_cantidad_minima"
                            value="<?php echo esc_attr($cantidad_minima ?: 1); ?>" />
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_stock"><?php _e('Stock Disponible', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_stock"><?php _e('Stock Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" step="0.1" id="gc_stock" name="gc_stock"
                            value="<?php echo esc_attr($stock_disponible); ?>" />
-                    <p class="description"><?php _e('Dejar vacío si es ilimitado', 'flavor-platform'); ?></p>
+                    <p class="description"><?php _e('Dejar vacío si es ilimitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_temporada"><?php _e('Temporada', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_temporada"><?php _e('Temporada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" id="gc_temporada" name="gc_temporada"
                            value="<?php echo esc_attr($temporada); ?>" class="regular-text"
-                           placeholder="<?php _e('Ej: Primavera-Verano', 'flavor-platform'); ?>" />
+                           placeholder="<?php _e('Ej: Primavera-Verano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
                 </td>
             </tr>
             <tr>
-                <th><label for="gc_origen"><?php _e('Origen', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_origen"><?php _e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" id="gc_origen" name="gc_origen"
                            value="<?php echo esc_attr($origen); ?>" class="regular-text" />
@@ -2454,32 +2454,32 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="gc_fecha_inicio"><?php _e('Fecha Apertura', 'flavor-platform'); ?> *</label></th>
+                <th><label for="gc_fecha_inicio"><?php _e('Fecha Apertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                 <td><input type="datetime-local" id="gc_fecha_inicio" name="gc_fecha_inicio"
                            value="<?php echo esc_attr($fecha_inicio); ?>" required /></td>
             </tr>
             <tr>
-                <th><label for="gc_fecha_cierre"><?php _e('Fecha Cierre', 'flavor-platform'); ?> *</label></th>
+                <th><label for="gc_fecha_cierre"><?php _e('Fecha Cierre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                 <td><input type="datetime-local" id="gc_fecha_cierre" name="gc_fecha_cierre"
                            value="<?php echo esc_attr($fecha_cierre); ?>" required /></td>
             </tr>
             <tr>
-                <th><label for="gc_fecha_entrega"><?php _e('Fecha Entrega', 'flavor-platform'); ?> *</label></th>
+                <th><label for="gc_fecha_entrega"><?php _e('Fecha Entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                 <td><input type="date" id="gc_fecha_entrega" name="gc_fecha_entrega"
                            value="<?php echo esc_attr($fecha_entrega); ?>" required /></td>
             </tr>
             <tr>
-                <th><label for="gc_hora_entrega"><?php _e('Hora Entrega', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_hora_entrega"><?php _e('Hora Entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="time" id="gc_hora_entrega" name="gc_hora_entrega"
                            value="<?php echo esc_attr($hora_entrega); ?>" /></td>
             </tr>
             <tr>
-                <th><label for="gc_lugar_entrega"><?php _e('Lugar de Entrega', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_lugar_entrega"><?php _e('Lugar de Entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="text" id="gc_lugar_entrega" name="gc_lugar_entrega"
                            value="<?php echo esc_attr($lugar_entrega); ?>" class="large-text" /></td>
             </tr>
             <tr>
-                <th><label for="gc_notas"><?php _e('Notas', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_notas"><?php _e('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <textarea id="gc_notas" name="gc_notas" rows="4"
                               class="large-text"><?php echo esc_textarea($notas); ?></textarea>
@@ -2490,7 +2490,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         <!-- Sección de Recurrencia -->
         <h3 style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd;">
             <span class="dashicons dashicons-update" style="color: #2271b1;"></span>
-            <?php _e('Configuración de Recurrencia', 'flavor-platform'); ?>
+            <?php _e('Configuración de Recurrencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
 
         <?php if ($ciclo_padre_id): ?>
@@ -2500,7 +2500,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
                     <?php
                     $ciclo_padre = get_post($ciclo_padre_id);
                     printf(
-                        __('Este ciclo fue generado automáticamente a partir del ciclo plantilla: %s', 'flavor-platform'),
+                        __('Este ciclo fue generado automáticamente a partir del ciclo plantilla: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         '<a href="' . get_edit_post_link($ciclo_padre_id) . '">' . esc_html($ciclo_padre->post_title) . '</a>'
                     );
                     ?>
@@ -2510,49 +2510,49 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         <table class="form-table">
             <tr>
-                <th><label for="gc_es_recurrente"><?php _e('Ciclo Recurrente', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_es_recurrente"><?php _e('Ciclo Recurrente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="gc_es_recurrente" name="gc_es_recurrente"
                                value="1" <?php checked($es_recurrente, '1'); ?> />
-                        <?php _e('Generar automáticamente el siguiente ciclo al cerrar este', 'flavor-platform'); ?>
+                        <?php _e('Generar automáticamente el siguiente ciclo al cerrar este', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <p class="description">
-                        <?php _e('Al activar esta opción, cuando el ciclo actual se cierre, se creará automáticamente uno nuevo con las mismas características.', 'flavor-platform'); ?>
+                        <?php _e('Al activar esta opción, cuando el ciclo actual se cierre, se creará automáticamente uno nuevo con las mismas características.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
-                <th><label for="gc_tipo_recurrencia"><?php _e('Frecuencia', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_tipo_recurrencia"><?php _e('Frecuencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select id="gc_tipo_recurrencia" name="gc_tipo_recurrencia">
-                        <option value="semanal" <?php selected($tipo_recurrencia, 'semanal'); ?>><?php _e('Semanal (cada 7 días)', 'flavor-platform'); ?></option>
-                        <option value="quincenal" <?php selected($tipo_recurrencia, 'quincenal'); ?>><?php _e('Quincenal (cada 14 días)', 'flavor-platform'); ?></option>
-                        <option value="mensual" <?php selected($tipo_recurrencia, 'mensual'); ?>><?php _e('Mensual (cada 30 días)', 'flavor-platform'); ?></option>
-                        <option value="bimensual" <?php selected($tipo_recurrencia, 'bimensual'); ?>><?php _e('Bimensual (cada 60 días)', 'flavor-platform'); ?></option>
+                        <option value="semanal" <?php selected($tipo_recurrencia, 'semanal'); ?>><?php _e('Semanal (cada 7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="quincenal" <?php selected($tipo_recurrencia, 'quincenal'); ?>><?php _e('Quincenal (cada 14 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="mensual" <?php selected($tipo_recurrencia, 'mensual'); ?>><?php _e('Mensual (cada 30 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bimensual" <?php selected($tipo_recurrencia, 'bimensual'); ?>><?php _e('Bimensual (cada 60 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                     <p class="description">
-                        <?php _e('Define cada cuánto tiempo se creará un nuevo ciclo.', 'flavor-platform'); ?>
+                        <?php _e('Define cada cuánto tiempo se creará un nuevo ciclo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
-                <th><label for="gc_auto_publicar"><?php _e('Auto-publicar', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_auto_publicar"><?php _e('Auto-publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="gc_auto_publicar" name="gc_auto_publicar"
                                value="1" <?php checked($auto_publicar, '1'); ?> />
-                        <?php _e('Publicar automáticamente el nuevo ciclo (si no, quedará como borrador)', 'flavor-platform'); ?>
+                        <?php _e('Publicar automáticamente el nuevo ciclo (si no, quedará como borrador)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
-                <th><label for="gc_recurrencia_fin"><?php _e('Fecha Fin Recurrencia', 'flavor-platform'); ?></label></th>
+                <th><label for="gc_recurrencia_fin"><?php _e('Fecha Fin Recurrencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="date" id="gc_recurrencia_fin" name="gc_recurrencia_fin"
                            value="<?php echo esc_attr($recurrencia_fin); ?>" />
                     <p class="description">
-                        <?php _e('Opcional. Si se define, la recurrencia se detendrá en esta fecha.', 'flavor-platform'); ?>
+                        <?php _e('Opcional. Si se define, la recurrencia se detendrá en esta fecha.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
@@ -2603,11 +2603,11 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         ));
 
         echo '<div class="gc-resumen-pedidos">';
-        echo '<p><strong>' . __('Total Pedidos:', 'flavor-platform') . '</strong> ' . intval($total_pedidos) . '</p>';
-        echo '<p><strong>' . __('Importe Total:', 'flavor-platform') . '</strong> ' . number_format($total_importe, 2) . ' €</p>';
+        echo '<p><strong>' . __('Total Pedidos:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . intval($total_pedidos) . '</p>';
+        echo '<p><strong>' . __('Importe Total:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . number_format($total_importe, 2) . ' €</p>';
 
         if (!empty($productos_top)) {
-            echo '<h4>' . __('Productos Más Pedidos:', 'flavor-platform') . '</h4>';
+            echo '<h4>' . __('Productos Más Pedidos:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h4>';
             echo '<ul>';
             foreach ($productos_top as $prod) {
                 $producto = get_post($prod->producto_id);
@@ -3064,9 +3064,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $nuevas_columnas = [
             'cb' => $columnas['cb'],
             'title' => $columnas['title'],
-            'gc_fechas' => __('Fechas', 'flavor-platform'),
-            'gc_estado_ciclo' => __('Estado', 'flavor-platform'),
-            'gc_total_pedidos' => __('Pedidos', 'flavor-platform'),
+            'gc_fechas' => __('Fechas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gc_estado_ciclo' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gc_total_pedidos' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'date' => $columnas['date'],
         ];
         return $nuevas_columnas;
@@ -3080,18 +3080,18 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
             case 'gc_fechas':
                 $fecha_cierre = get_post_meta($post_id, '_gc_fecha_cierre', true);
                 $fecha_entrega = get_post_meta($post_id, '_gc_fecha_entrega', true);
-                echo '<strong>' . __('Cierre:', 'flavor-platform') . '</strong> ' .
+                echo '<strong>' . __('Cierre:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' .
                      esc_html(date('d/m/Y H:i', strtotime($fecha_cierre))) . '<br>';
-                echo '<strong>' . __('Entrega:', 'flavor-platform') . '</strong> ' .
+                echo '<strong>' . __('Entrega:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' .
                      esc_html(date('d/m/Y', strtotime($fecha_entrega)));
                 break;
 
             case 'gc_estado_ciclo':
                 $estado = get_post_status($post_id);
                 $etiquetas = [
-                    'gc_abierto' => '<span style="color: green;">⬤ ' . __('Abierto', 'flavor-platform') . '</span>',
-                    'gc_cerrado' => '<span style="color: orange;">⬤ ' . __('Cerrado', 'flavor-platform') . '</span>',
-                    'gc_entregado' => '<span style="color: blue;">⬤ ' . __('Entregado', 'flavor-platform') . '</span>',
+                    'gc_abierto' => '<span style="color: green;">⬤ ' . __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>',
+                    'gc_cerrado' => '<span style="color: orange;">⬤ ' . __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>',
+                    'gc_entregado' => '<span style="color: blue;">⬤ ' . __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>',
                 ];
                 echo $etiquetas[$estado] ?? $estado;
                 break;
@@ -3115,9 +3115,9 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $nuevas_columnas = [
             'cb' => $columnas['cb'],
             'title' => $columnas['title'],
-            'gc_productor' => __('Productor', 'flavor-platform'),
-            'gc_precio_producto' => __('Precio', 'flavor-platform'),
-            'gc_stock_producto' => __('Stock', 'flavor-platform'),
+            'gc_productor' => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gc_precio_producto' => __('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gc_stock_producto' => __('Stock', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'date' => $columnas['date'],
         ];
         return $nuevas_columnas;
@@ -3144,7 +3144,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
             case 'gc_stock_producto':
                 $stock = get_post_meta($post_id, '_gc_stock', true);
-                echo $stock ? esc_html($stock) : __('Ilimitado', 'flavor-platform');
+                echo $stock ? esc_html($stock) : __('Ilimitado', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
         }
     }
@@ -3270,7 +3270,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no está disponible en Grupos de Consumo.', 'flavor-platform'),
+            'error' => __('La vista solicitada no está disponible en Grupos de Consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3356,7 +3356,7 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         if (empty($ciclo_actual)) {
             return [
                 'success' => false,
-                'error' => __('No hay ningún ciclo abierto actualmente.', 'flavor-platform'),
+                'error' => __('No hay ningún ciclo abierto actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3511,13 +3511,13 @@ KNOWLEDGE;
         ?>
         <div class="gc-ciclo-actual">
             <h3><?php echo esc_html($ciclo['nombre']); ?></h3>
-            <p><strong><?php _e('Cierra:', 'flavor-platform'); ?></strong> <?php echo esc_html($ciclo['fecha_cierre']); ?></p>
-            <p><strong><?php _e('Entrega:', 'flavor-platform'); ?></strong> <?php echo esc_html($ciclo['fecha_entrega']); ?></p>
+            <p><strong><?php _e('Cierra:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($ciclo['fecha_cierre']); ?></p>
+            <p><strong><?php _e('Entrega:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($ciclo['fecha_entrega']); ?></p>
             <?php if (!empty($ciclo['lugar_entrega'])): ?>
-                <p><strong><?php _e('Lugar:', 'flavor-platform'); ?></strong> <?php echo esc_html($ciclo['lugar_entrega']); ?></p>
+                <p><strong><?php _e('Lugar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($ciclo['lugar_entrega']); ?></p>
             <?php endif; ?>
             <?php if (!empty($ciclo['tiempo_restante'])): ?>
-                <p class="gc-tiempo-restante"><?php printf(__('Quedan %s para cerrar el ciclo', 'flavor-platform'), $ciclo['tiempo_restante']); ?></p>
+                <p class="gc-tiempo-restante"><?php printf(__('Quedan %s para cerrar el ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN), $ciclo['tiempo_restante']); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -3556,7 +3556,7 @@ KNOWLEDGE;
         ]);
 
         if (empty($ciclos)) {
-            return '<p class="gc-sin-ciclos">' . __('No hay ciclos programados próximamente.', 'flavor-platform') . '</p>';
+            return '<p class="gc-sin-ciclos">' . __('No hay ciclos programados próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -3564,7 +3564,7 @@ KNOWLEDGE;
         <div class="gc-ciclos-listado">
             <h3 class="gc-seccion-titulo">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php _e('Ciclos de Pedido', 'flavor-platform'); ?>
+                <?php _e('Ciclos de Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="gc-ciclos-grid">
                 <?php foreach ($ciclos as $ciclo_post):
@@ -3584,12 +3584,12 @@ KNOWLEDGE;
                         <div class="gc-ciclo-fechas">
                             <p>
                                 <span class="dashicons dashicons-clock"></span>
-                                <strong><?php _e('Cierre:', 'flavor-platform'); ?></strong>
+                                <strong><?php _e('Cierre:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <?php echo $fecha_cierre ? date_i18n('j M Y', strtotime($fecha_cierre)) : '-'; ?>
                             </p>
                             <p>
                                 <span class="dashicons dashicons-location"></span>
-                                <strong><?php _e('Entrega:', 'flavor-platform'); ?></strong>
+                                <strong><?php _e('Entrega:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <?php echo $fecha_entrega ? date_i18n('j M Y', strtotime($fecha_entrega)) : '-'; ?>
                             </p>
                             <?php if ($lugar_entrega): ?>
@@ -3601,7 +3601,7 @@ KNOWLEDGE;
                         </div>
                         <?php if ($es_abierto): ?>
                             <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo_post->ID), home_url('/mi-portal/grupos-consumo/ciclo/'))); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
-                                <?php _e('Ver productos', 'flavor-platform'); ?>
+                                <?php _e('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -3673,7 +3673,7 @@ KNOWLEDGE;
                     <p class="gc-productor"><?php echo esc_html($producto['productor']); ?></p>
                     <p class="gc-precio"><?php echo number_format($producto['precio'], 2); ?> € / <?php echo esc_html($producto['unidad']); ?></p>
                     <button class="gc-anadir-pedido" data-producto-id="<?php echo $producto['id']; ?>">
-                        <?php _e('Añadir al pedido', 'flavor-platform'); ?>
+                        <?php _e('Añadir al pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endforeach; ?>
@@ -3885,11 +3885,11 @@ KNOWLEDGE;
         ?>
         <div class="gc-catalogo gc-catalogo-completo">
             <div class="gc-catalogo-header">
-                <h2><?php _e('Catálogo de Productos', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Catálogo de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="gc-productos-grid gc-productos-catalogo">
                 <?php if (empty($resultado['productos'])): ?>
-                    <p class="gc-sin-productos"><?php _e('No hay productos disponibles en este momento.', 'flavor-platform'); ?></p>
+                    <p class="gc-sin-productos"><?php _e('No hay productos disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($resultado['productos'] as $producto): ?>
                         <div class="gc-producto-card">
@@ -3907,7 +3907,7 @@ KNOWLEDGE;
                             </div>
                             <?php if (is_user_logged_in()): ?>
                                 <button class="gc-anadir-pedido" data-producto-id="<?php echo esc_attr($producto['id']); ?>">
-                                    <?php _e('Añadir al pedido', 'flavor-platform'); ?>
+                                    <?php _e('Añadir al pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -3974,13 +3974,13 @@ KNOWLEDGE;
         }
 
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tu pedido.', 'flavor-platform') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $resultado = $this->action_ver_mi_pedido([]);
 
         if (!$resultado['success']) {
-            return '<p>' . esc_html($resultado['error'] ?? __('No se pudo cargar tu pedido.', 'flavor-platform')) . '</p>';
+            return '<p>' . esc_html($resultado['error'] ?? __('No se pudo cargar tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</p>';
         }
 
         return '<div class="gc-mi-pedido"></div>';
@@ -3993,13 +3993,13 @@ KNOWLEDGE;
         check_ajax_referer('gc_pedido_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesion.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permiso granular para crear pedidos
         if (!Flavor_Permission_Helper::can('gc_crear_pedido')) {
             wp_send_json_error([
-                'mensaje' => __('No tienes permisos para crear pedidos.', 'flavor-platform'),
+                'mensaje' => __('No tienes permisos para crear pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'code' => 'permission_denied',
             ], 403);
         }
@@ -4007,13 +4007,13 @@ KNOWLEDGE;
         $productos = isset($_POST['productos']) ? json_decode(stripslashes($_POST['productos']), true) : [];
 
         if (empty($productos)) {
-            wp_send_json_error(['mensaje' => __('No hay productos en el pedido.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No hay productos en el pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->action_hacer_pedido(['productos' => $productos]);
 
         if ($resultado['success']) {
-            wp_send_json_success(['mensaje' => $resultado['mensaje'] ?? __('Pedido realizado correctamente.', 'flavor-platform')]);
+            wp_send_json_success(['mensaje' => $resultado['mensaje'] ?? __('Pedido realizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
             wp_send_json_error(['mensaje' => $resultado['error']]);
         }
@@ -4026,19 +4026,19 @@ KNOWLEDGE;
         check_ajax_referer('gc_pedido_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $productos = isset($_POST['productos']) ? json_decode(stripslashes($_POST['productos']), true) : [];
 
         if (empty($productos)) {
-            wp_send_json_error(['mensaje' => __('No hay productos para modificar.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No hay productos para modificar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->action_modificar_pedido(['productos' => $productos]);
 
         if ($resultado['success']) {
-            wp_send_json_success(['mensaje' => $resultado['mensaje'] ?? __('Pedido modificado correctamente.', 'flavor-platform')]);
+            wp_send_json_success(['mensaje' => $resultado['mensaje'] ?? __('Pedido modificado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
             wp_send_json_error(['mensaje' => $resultado['error']]);
         }
@@ -4053,18 +4053,18 @@ KNOWLEDGE;
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
 
         if (!$grupo_id) {
-            wp_send_json_error(['mensaje' => __('Debes seleccionar un grupo de consumo.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Debes seleccionar un grupo de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el grupo existe y acepta miembros
         $grupo = get_post($grupo_id);
         if (!$grupo || $grupo->post_type !== 'gc_grupo') {
-            wp_send_json_error(['mensaje' => __('El grupo de consumo no existe.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('El grupo de consumo no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $acepta_miembros = get_post_meta($grupo_id, '_gc_acepta_miembros', true);
         if ($acepta_miembros === '0') {
-            wp_send_json_error(['mensaje' => __('Este grupo no está aceptando nuevos miembros en este momento.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Este grupo no está aceptando nuevos miembros en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Datos del usuario
@@ -4084,7 +4084,7 @@ KNOWLEDGE;
             $telefono_solicitante = sanitize_text_field($_POST['telefono'] ?? '');
 
             if (empty($nombre_solicitante) || empty($email_solicitante)) {
-                wp_send_json_error(['mensaje' => __('El nombre y email son obligatorios.', 'flavor-platform')]);
+                wp_send_json_error(['mensaje' => __('El nombre y email son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             // Verificar si ya existe un usuario con ese email
@@ -4101,9 +4101,9 @@ KNOWLEDGE;
 
             if ($consumidor_existente) {
                 if ($consumidor_existente->estado === 'activo') {
-                    wp_send_json_error(['mensaje' => __('Ya eres miembro de este grupo de consumo.', 'flavor-platform')]);
+                    wp_send_json_error(['mensaje' => __('Ya eres miembro de este grupo de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 } elseif ($consumidor_existente->estado === 'pendiente') {
-                    wp_send_json_error(['mensaje' => __('Ya tienes una solicitud pendiente para este grupo.', 'flavor-platform')]);
+                    wp_send_json_error(['mensaje' => __('Ya tienes una solicitud pendiente para este grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 }
             }
         }
@@ -4142,14 +4142,14 @@ KNOWLEDGE;
         );
 
         if ($resultado_insert === false) {
-            wp_send_json_error(['mensaje' => __('Error al procesar la solicitud. Inténtalo de nuevo.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Error al procesar la solicitud. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Notificar al administrador del grupo
         $admin_email = get_option('admin_email');
-        $asunto = sprintf(__('[%s] Nueva solicitud de unión al grupo de consumo', 'flavor-platform'), get_bloginfo('name'));
+        $asunto = sprintf(__('[%s] Nueva solicitud de unión al grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
         $mensaje_email = sprintf(
-            __("Nueva solicitud de unión:\n\nGrupo: %s\nNombre: %s\nEmail: %s\nTeléfono: %s\n\nMotivación:\n%s\n\nPreferencias:\n%s\n\nDirección:\n%s", 'flavor-platform'),
+            __("Nueva solicitud de unión:\n\nGrupo: %s\nNombre: %s\nEmail: %s\nTeléfono: %s\n\nMotivación:\n%s\n\nPreferencias:\n%s\n\nDirección:\n%s", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $grupo->post_title,
             $nombre_solicitante,
             $email_solicitante,
@@ -4161,7 +4161,7 @@ KNOWLEDGE;
         wp_mail($admin_email, $asunto, $mensaje_email);
 
         wp_send_json_success([
-            'mensaje' => __('Tu solicitud ha sido enviada correctamente. Te contactaremos pronto para confirmar tu incorporación al grupo.', 'flavor-platform'),
+            'mensaje' => __('Tu solicitud ha sido enviada correctamente. Te contactaremos pronto para confirmar tu incorporación al grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -4202,7 +4202,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión.', 'flavor-platform'),
+                'error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4229,7 +4229,7 @@ KNOWLEDGE;
         if (empty($items_pedido)) {
             return [
                 'success' => false,
-                'error' => __('No tienes pedidos en el ciclo actual.', 'flavor-platform'),
+                'error' => __('No tienes pedidos en el ciclo actual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4263,7 +4263,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión.', 'flavor-platform'),
+                'error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4280,7 +4280,7 @@ KNOWLEDGE;
         if (empty($productos)) {
             return [
                 'success' => false,
-                'error' => __('No hay productos en el pedido.', 'flavor-platform'),
+                'error' => __('No hay productos en el pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4297,7 +4297,7 @@ KNOWLEDGE;
         if ($pedido_existente > 0) {
             return [
                 'success' => false,
-                'error' => __('Ya tienes un pedido en este ciclo. Puedes modificarlo.', 'flavor-platform'),
+                'error' => __('Ya tienes un pedido en este ciclo. Puedes modificarlo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4328,7 +4328,7 @@ KNOWLEDGE;
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Pedido realizado correctamente. Total: %.2f €', 'flavor-platform'),
+                __('Pedido realizado correctamente. Total: %.2f €', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_importe
             ),
             'total' => $total_importe,
@@ -4342,7 +4342,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión.', 'flavor-platform'),
+                'error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4359,7 +4359,7 @@ KNOWLEDGE;
         if (empty($productos)) {
             return [
                 'success' => false,
-                'error' => __('No hay productos para modificar.', 'flavor-platform'),
+                'error' => __('No hay productos para modificar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -4374,7 +4374,7 @@ KNOWLEDGE;
             return [
                 'success' => false,
                 'error' => sprintf(
-                    __('No se puede modificar el pedido. Límite: %d horas antes del cierre.', 'flavor-platform'),
+                    __('No se puede modificar el pedido. Límite: %d horas antes del cierre.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $limite_modificacion
                 ),
             ];
@@ -4420,7 +4420,7 @@ KNOWLEDGE;
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Pedido modificado correctamente. Total: %.2f €', 'flavor-platform'),
+                __('Pedido modificado correctamente. Total: %.2f €', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_importe
             ),
             'total' => $total_importe,
@@ -4483,97 +4483,97 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Grupos de Consumo', 'flavor-platform'),
-                'description' => __('Sección hero con buscador de grupos', 'flavor-platform'),
+                'label' => __('Hero Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con buscador de grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-carrot',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Grupos de Consumo', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
-                        'default' => __('Consume local, apoya a productores cercanos', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Consume local, apoya a productores cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_buscador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar buscador', 'flavor-platform'),
+                        'label' => __('Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'grupos-consumo/hero',
             ],
             'grupos_grid' => [
-                'label' => __('Grid de Grupos', 'flavor-platform'),
-                'description' => __('Listado de grupos de consumo activos', 'flavor-platform'),
+                'label' => __('Grid de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de grupos de consumo activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-groups',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Grupos Activos', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Grupos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-platform'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-platform'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 6,
                     ],
                 ],
                 'template' => 'grupos-consumo/grupos-grid',
             ],
             'productores' => [
-                'label' => __('Productores Locales', 'flavor-platform'),
-                'description' => __('Listado de productores asociados', 'flavor-platform'),
+                'label' => __('Productores Locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de productores asociados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-store',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Nuestros Productores', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Nuestros Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-platform'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 8,
                     ],
                 ],
                 'template' => 'grupos-consumo/productores',
             ],
             'como_funciona' => [
-                'label' => __('Cómo Funciona', 'flavor-platform'),
-                'description' => __('Pasos para unirse a un grupo', 'flavor-platform'),
+                'label' => __('Cómo Funciona', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Pasos para unirse a un grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-info',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('¿Cómo funciona?', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'grupos-consumo/como-funciona',
             ],
             'proximo_pedido' => [
-                'label' => __('Próximo Pedido', 'flavor-platform'),
-                'description' => __('Información del próximo pedido colectivo', 'flavor-platform'),
+                'label' => __('Próximo Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Información del próximo pedido colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Próximo Pedido', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Próximo Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'grupos-consumo/proximo-pedido',
@@ -4628,7 +4628,7 @@ KNOWLEDGE;
             <?php if ($mostrar_filtros): ?>
             <div class="gc-catalogo-filtros">
                 <select class="gc-filtro-categoria" data-filtro="categoria">
-                    <option value=""><?php _e('Todas las categorías', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $cat): ?>
                         <option value="<?php echo esc_attr($cat->slug); ?>" <?php selected($atributos['categoria'], $cat->slug); ?>>
                             <?php echo esc_html($cat->name); ?>
@@ -4636,7 +4636,7 @@ KNOWLEDGE;
                     <?php endforeach; ?>
                 </select>
                 <select class="gc-filtro-productor" data-filtro="productor">
-                    <option value=""><?php _e('Todos los productores', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los productores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($productores as $prod): ?>
                         <option value="<?php echo esc_attr($prod->ID); ?>" <?php selected($atributos['productor'], $prod->ID); ?>>
                             <?php echo esc_html($prod->post_title); ?>
@@ -4666,21 +4666,21 @@ KNOWLEDGE;
                                 <span class="gc-precio"><?php echo number_format($producto['precio'], 2); ?> € / <?php echo esc_html($producto['unidad']); ?></span>
                                 <button type="button" class="gc-btn gc-btn-primary gc-agregar-lista gc-anadir-pedido" data-producto-id="<?php echo esc_attr($producto['id']); ?>">
                                     <span class="dashicons dashicons-plus"></span>
-                                    <?php _e('Añadir', 'flavor-platform'); ?>
+                                    <?php _e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p class="gc-sin-resultados"><?php _e('No se encontraron productos.', 'flavor-platform'); ?></p>
+                    <p class="gc-sin-resultados"><?php _e('No se encontraron productos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <?php if (!empty($resultado['hay_mas'])): ?>
                 <div class="flavor-gc-cargar-mas">
                     <button type="button" id="gc-btn-cargar-mas" class="gc-btn gc-btn-outline">
-                        <span class="flavor-gc-btn-texto"><?php _e('Cargar más productos', 'flavor-platform'); ?></span>
-                        <span class="flavor-gc-btn-loading" style="display:none;"><?php _e('Cargando...', 'flavor-platform'); ?></span>
+                        <span class="flavor-gc-btn-texto"><?php _e('Cargar más productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="flavor-gc-btn-loading" style="display:none;"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
             <?php endif; ?>
@@ -4694,7 +4694,7 @@ KNOWLEDGE;
      */
     public function shortcode_carrito($atributos) {
         if (!is_user_logged_in()) {
-            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu lista de compra.', 'flavor-platform') . '</p>';
+            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu lista de compra.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $dashboard_tab = Flavor_GC_Dashboard_Tab::get_instance();
@@ -4710,7 +4710,7 @@ KNOWLEDGE;
         <div class="gc-mini-carrito">
             <div class="gc-carrito-header">
                 <span class="dashicons dashicons-cart"></span>
-                <span class="gc-carrito-titulo"><?php _e('Mi Lista', 'flavor-platform'); ?></span>
+                <span class="gc-carrito-titulo"><?php _e('Mi Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="gc-carrito-count"><?php echo count($items); ?></span>
             </div>
             <?php if (!empty($items)): ?>
@@ -4722,15 +4722,15 @@ KNOWLEDGE;
                         </div>
                     <?php endforeach; ?>
                     <?php if (count($items) > 5): ?>
-                        <p class="gc-carrito-mas"><?php printf(__('y %d más...', 'flavor-platform'), count($items) - 5); ?></p>
+                        <p class="gc-carrito-mas"><?php printf(__('y %d más...', FLAVOR_PLATFORM_TEXT_DOMAIN), count($items) - 5); ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="gc-carrito-footer">
-                    <span class="gc-carrito-total"><?php printf(__('Total: %s €', 'flavor-platform'), number_format($total, 2)); ?></span>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver pedido', 'flavor-platform'); ?></a>
+                    <span class="gc-carrito-total"><?php printf(__('Total: %s €', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total, 2)); ?></span>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             <?php else: ?>
-                <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', 'flavor-platform'); ?></p>
+                <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -4770,11 +4770,11 @@ KNOWLEDGE;
         ?>
         <div class="gc-calendario">
             <div class="gc-calendario-header">
-                <h3><?php _e('Calendario de Entregas', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Calendario de Entregas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="gc-calendario-lista">
                 <?php if (empty($ciclos)): ?>
-                    <p class="gc-sin-ciclos"><?php _e('No hay ciclos programados próximamente.', 'flavor-platform'); ?></p>
+                    <p class="gc-sin-ciclos"><?php _e('No hay ciclos programados próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($ciclos as $ciclo):
                         $fecha_cierre = get_post_meta($ciclo->ID, '_gc_fecha_cierre', true);
@@ -4799,16 +4799,16 @@ KNOWLEDGE;
                                 </p>
                                 <?php if ($estado === 'gc_abierto'): ?>
                                     <p class="gc-cierre">
-                                        <?php printf(__('Pedidos hasta: %s', 'flavor-platform'), date_i18n(get_option('date_format') . ' H:i', strtotime($fecha_cierre))); ?>
+                                        <?php printf(__('Pedidos hasta: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n(get_option('date_format') . ' H:i', strtotime($fecha_cierre))); ?>
                                     </p>
                                 <?php endif; ?>
                             </div>
                             <div class="gc-estado-badge gc-estado-<?php echo esc_attr($estado); ?>">
                                 <?php
                                 $estados_texto = [
-                                    'gc_abierto' => __('Abierto', 'flavor-platform'),
-                                    'gc_cerrado' => __('Cerrado', 'flavor-platform'),
-                                    'gc_entregado' => __('Entregado', 'flavor-platform'),
+                                    'gc_abierto' => __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'gc_cerrado' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'gc_entregado' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ];
                                 echo esc_html($estados_texto[$estado] ?? $estado);
                                 ?>
@@ -4827,7 +4827,7 @@ KNOWLEDGE;
      */
     public function shortcode_historial($atributos) {
         if (!is_user_logged_in()) {
-            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu historial.', 'flavor-platform') . '</p>';
+            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu historial.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $atributos = shortcode_atts([
@@ -4863,9 +4863,9 @@ KNOWLEDGE;
         ob_start();
         ?>
         <div class="gc-historial">
-            <h3><?php _e('Mi Historial', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Mi Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (empty($pedidos)): ?>
-                <p class="gc-sin-historial"><?php _e('No tienes pedidos anteriores.', 'flavor-platform'); ?></p>
+                <p class="gc-sin-historial"><?php _e('No tienes pedidos anteriores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <div class="gc-historial-lista">
                     <?php foreach ($pedidos as $pedido):
@@ -4878,8 +4878,8 @@ KNOWLEDGE;
                                 <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($fecha_entrega))); ?>
                             </div>
                             <div class="gc-historial-info">
-                                <strong><?php echo $ciclo ? esc_html($ciclo->post_title) : __('Ciclo eliminado', 'flavor-platform'); ?></strong>
-                                <span><?php printf(_n('%d producto', '%d productos', $pedido->num_items, 'flavor-platform'), $pedido->num_items); ?></span>
+                                <strong><?php echo $ciclo ? esc_html($ciclo->post_title) : __('Ciclo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php printf(_n('%d producto', '%d productos', $pedido->num_items, FLAVOR_PLATFORM_TEXT_DOMAIN), $pedido->num_items); ?></span>
                             </div>
                             <div class="gc-historial-total">
                                 <?php echo number_format($pedido->total, 2); ?> €
@@ -4895,8 +4895,8 @@ KNOWLEDGE;
                             'format' => '',
                             'current' => $pagina,
                             'total' => $total_paginas,
-                            'prev_text' => __('Anterior', 'flavor-platform'),
-                            'next_text' => __('Siguiente', 'flavor-platform'),
+                            'prev_text' => __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]);
                         ?>
                     </div>
@@ -4921,8 +4921,8 @@ KNOWLEDGE;
         ob_start();
         ?>
         <div class="gc-cestas-disponibles">
-            <h3><?php _e('Nuestras Cestas', 'flavor-platform'); ?></h3>
-            <p class="gc-cestas-intro"><?php _e('Suscríbete a una cesta y recibe productos frescos de forma regular.', 'flavor-platform'); ?></p>
+            <h3><?php _e('Nuestras Cestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="gc-cestas-intro"><?php _e('Suscríbete a una cesta y recibe productos frescos de forma regular.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="gc-cestas-grid gc-columnas-<?php echo esc_attr($atributos['columnas']); ?>">
                 <?php foreach ($cestas as $cesta): ?>
                     <div class="gc-cesta-card">
@@ -4939,19 +4939,19 @@ KNOWLEDGE;
                             <p class="gc-cesta-precio">
                                 <?php if ($cesta->precio_base > 0): ?>
                                     <strong><?php echo number_format($cesta->precio_base, 2); ?> €</strong>
-                                    <span><?php _e('/ entrega', 'flavor-platform'); ?></span>
+                                    <span><?php _e('/ entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <?php _e('Precio según contenido', 'flavor-platform'); ?>
+                                    <?php _e('Precio según contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                             </p>
                         </div>
                         <?php if (is_user_logged_in()): ?>
                             <button type="button" class="gc-btn gc-btn-primary gc-suscribirse-cesta" data-cesta-id="<?php echo esc_attr($cesta->id); ?>">
-                                <?php _e('Suscribirse', 'flavor-platform'); ?>
+                                <?php _e('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php else: ?>
                             <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/suscripciones/'))); ?>" class="gc-btn gc-btn-outline">
-                                <?php _e('Inicia sesión para suscribirte', 'flavor-platform'); ?>
+                                <?php _e('Inicia sesión para suscribirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -4967,7 +4967,7 @@ KNOWLEDGE;
      */
     public function shortcode_mi_cesta($atributos) {
         if (!is_user_logged_in()) {
-            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu cesta.', 'flavor-platform') . '</p>';
+            return '<p class="gc-aviso">' . __('Inicia sesión para ver tu cesta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
@@ -4981,13 +4981,13 @@ KNOWLEDGE;
         ]);
 
         if (empty($grupos)) {
-            return '<p class="gc-aviso">' . __('No hay grupos de consumo disponibles.', 'flavor-platform') . '</p>';
+            return '<p class="gc-aviso">' . __('No hay grupos de consumo disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
 
         if (!$consumidor) {
-            return '<div class="gc-aviso gc-aviso-info"><p>' . __('No eres miembro de ningún grupo de consumo todavía.', 'flavor-platform') . '</p></div>';
+            return '<div class="gc-aviso gc-aviso-info"><p>' . __('No eres miembro de ningún grupo de consumo todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -4999,27 +4999,27 @@ KNOWLEDGE;
             <?php if (empty($suscripciones)): ?>
                 <div class="gc-sin-suscripcion">
                     <span class="dashicons dashicons-heart"></span>
-                    <p><?php _e('No tienes ninguna suscripción activa.', 'flavor-platform'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>" class="gc-btn gc-btn-primary"><?php _e('Ver Cestas Disponibles', 'flavor-platform'); ?></a>
+                    <p><?php _e('No tienes ninguna suscripción activa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>" class="gc-btn gc-btn-primary"><?php _e('Ver Cestas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             <?php else: ?>
                 <?php foreach ($suscripciones as $suscripcion): ?>
                     <div class="gc-suscripcion-activa">
                         <div class="gc-suscripcion-header">
                             <h4><?php echo esc_html($suscripcion->cesta_nombre); ?></h4>
-                            <span class="gc-estado-activa"><?php _e('Activa', 'flavor-platform'); ?></span>
+                            <span class="gc-estado-activa"><?php _e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="gc-suscripcion-detalles">
-                            <p><strong><?php _e('Frecuencia:', 'flavor-platform'); ?></strong> <?php echo esc_html($suscripciones_manager->obtener_etiqueta_frecuencia($suscripcion->frecuencia)); ?></p>
-                            <p><strong><?php _e('Importe:', 'flavor-platform'); ?></strong> <?php echo number_format($suscripcion->importe, 2); ?> €</p>
-                            <p><strong><?php _e('Próxima entrega:', 'flavor-platform'); ?></strong> <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($suscripcion->fecha_proximo_cargo))); ?></p>
+                            <p><strong><?php _e('Frecuencia:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($suscripciones_manager->obtener_etiqueta_frecuencia($suscripcion->frecuencia)); ?></p>
+                            <p><strong><?php _e('Importe:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo number_format($suscripcion->importe, 2); ?> €</p>
+                            <p><strong><?php _e('Próxima entrega:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($suscripcion->fecha_proximo_cargo))); ?></p>
                         </div>
                         <div class="gc-suscripcion-acciones">
                             <button type="button" class="gc-btn gc-btn-outline gc-pausar-suscripcion" data-suscripcion-id="<?php echo esc_attr($suscripcion->id); ?>">
-                                <?php _e('Pausar', 'flavor-platform'); ?>
+                                <?php _e('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button type="button" class="gc-btn gc-btn-danger gc-cancelar-suscripcion" data-suscripcion-id="<?php echo esc_attr($suscripcion->id); ?>">
-                                <?php _e('Cancelar', 'flavor-platform'); ?>
+                                <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -5051,8 +5051,8 @@ KNOWLEDGE;
         // Pagina principal de Grupos de Consumo (OCULTA - sin menu visible)
         add_submenu_page(
             null, // null = página oculta, no aparece en sidebar
-            __('Grupos de Consumo', 'flavor-platform'),
-            __('Dashboard', 'flavor-platform'),
+            __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'grupos-consumo',
             [$this, 'render_pagina_dashboard']
@@ -5061,8 +5061,8 @@ KNOWLEDGE;
         // Pagina: Consumidores (OCULTA)
         add_submenu_page(
             null,
-            __('Consumidores', 'flavor-platform'),
-            __('Consumidores', 'flavor-platform'),
+            __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-consumidores',
             [$this, 'render_pagina_consumidores']
@@ -5071,8 +5071,8 @@ KNOWLEDGE;
         // Pagina: Solicitudes (OCULTA)
         add_submenu_page(
             null,
-            __('Solicitudes de Unión', 'flavor-platform'),
-            __('Solicitudes', 'flavor-platform'),
+            __('Solicitudes de Unión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-solicitudes',
             [$this, 'render_pagina_solicitudes']
@@ -5081,8 +5081,8 @@ KNOWLEDGE;
         // Pagina: Suscripciones (OCULTA)
         add_submenu_page(
             null,
-            __('Suscripciones', 'flavor-platform'),
-            __('Suscripciones', 'flavor-platform'),
+            __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-suscripciones',
             [$this, 'render_pagina_suscripciones']
@@ -5091,8 +5091,8 @@ KNOWLEDGE;
         // Pagina: Pedidos (OCULTA)
         add_submenu_page(
             null,
-            __('Pedidos', 'flavor-platform'),
-            __('Pedidos', 'flavor-platform'),
+            __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-pedidos',
             [$this, 'render_pagina_pedidos']
@@ -5101,8 +5101,8 @@ KNOWLEDGE;
         // Pagina: Consolidado (OCULTA)
         add_submenu_page(
             null,
-            __('Consolidado', 'flavor-platform'),
-            __('Consolidado', 'flavor-platform'),
+            __('Consolidado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Consolidado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-consolidado',
             [$this, 'render_pagina_consolidado']
@@ -5111,8 +5111,8 @@ KNOWLEDGE;
         // Pagina: Reportes (OCULTA)
         add_submenu_page(
             null,
-            __('Reportes', 'flavor-platform'),
-            __('Reportes', 'flavor-platform'),
+            __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-reportes',
             [$this, 'render_pagina_reportes']
@@ -5121,8 +5121,8 @@ KNOWLEDGE;
         // Pagina: Configuración (OCULTA)
         add_submenu_page(
             null,
-            __('Configuración', 'flavor-platform'),
-            __('Configuración', 'flavor-platform'),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability_base,
             'gc-configuracion',
             [$this, 'render_pagina_configuracion']
@@ -5144,7 +5144,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . __('Dashboard Grupos de Consumo', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . __('Dashboard Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -5282,13 +5282,13 @@ KNOWLEDGE;
                     'restNonce' => wp_create_nonce('wp_rest'),
                     'isLoggedIn' => is_user_logged_in(),
                     'i18n' => [
-                        'agregado' => __('Producto agregado a la lista', 'flavor-platform'),
-                        'eliminado' => __('Producto eliminado de la lista', 'flavor-platform'),
-                        'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                        'confirmarEliminar' => __('¿Eliminar este producto de la lista?', 'flavor-platform'),
-                        'cargando' => __('Cargando...', 'flavor-platform'),
-                        'sinProductos' => __('No hay productos disponibles', 'flavor-platform'),
-                        'pedidoCreado' => __('Pedido creado correctamente', 'flavor-platform'),
+                        'agregado' => __('Producto agregado a la lista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'eliminado' => __('Producto eliminado de la lista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'confirmarEliminar' => __('¿Eliminar este producto de la lista?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'sinProductos' => __('No hay productos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'pedidoCreado' => __('Pedido creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ]);
             }
@@ -5411,9 +5411,9 @@ KNOWLEDGE;
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($acepta): ?>
-                                    <span class="gc-badge gc-badge-success"><?php _e('Abierto', 'flavor-platform'); ?></span>
+                                    <span class="gc-badge gc-badge-success"><?php _e('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <span class="gc-badge gc-badge-warning"><?php _e('Completo', 'flavor-platform'); ?></span>
+                                    <span class="gc-badge gc-badge-warning"><?php _e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="gc-grupo-contenido">
@@ -5428,17 +5428,17 @@ KNOWLEDGE;
                                 <div class="gc-grupo-meta">
                                     <span class="gc-grupo-miembros">
                                         <span class="dashicons dashicons-admin-users"></span>
-                                        <?php printf(_n('%d miembro', '%d miembros', $numero_miembros, 'flavor-platform'), $numero_miembros); ?>
+                                        <?php printf(_n('%d miembro', '%d miembros', $numero_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN), $numero_miembros); ?>
                                     </span>
                                 </div>
                             </div>
                             <div class="gc-grupo-footer">
                                 <a href="<?php the_permalink(); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
-                                    <?php _e('Ver grupo', 'flavor-platform'); ?>
+                                    <?php _e('Ver grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <?php if ($acepta): ?>
                                     <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/unirme/?grupo=' . $grupo_id)); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
-                                        <?php _e('Unirme', 'flavor-platform'); ?>
+                                        <?php _e('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -5448,7 +5448,7 @@ KNOWLEDGE;
                 <?php else: ?>
                     <div class="gc-sin-grupos">
                         <span class="dashicons dashicons-groups"></span>
-                        <p><?php _e('No hay grupos de consumo disponibles en este momento.', 'flavor-platform'); ?></p>
+                        <p><?php _e('No hay grupos de consumo disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -5460,8 +5460,8 @@ KNOWLEDGE;
                         'format' => '',
                         'current' => $pagina,
                         'total' => $grupos->max_num_pages,
-                        'prev_text' => __('Anterior', 'flavor-platform'),
-                        'next_text' => __('Siguiente', 'flavor-platform'),
+                        'prev_text' => __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ]);
                     ?>
                 </div>
@@ -5545,7 +5545,7 @@ KNOWLEDGE;
 
         $nombre = sanitize_text_field($datos['nombre'] ?? '');
         if ($nombre === '') {
-            $nombre = sprintf(__('Grupo de consumo %d', 'flavor-platform'), $comunidad_id);
+            $nombre = sprintf(__('Grupo de consumo %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $comunidad_id);
         }
 
         $descripcion = wp_kses_post($datos['descripcion'] ?? '');
@@ -5554,7 +5554,7 @@ KNOWLEDGE;
         $grupo_id = wp_insert_post([
             'post_type' => 'gc_grupo',
             'post_status' => 'publish',
-            'post_title' => sprintf(__('Grupo de consumo de %s', 'flavor-platform'), $nombre),
+            'post_title' => sprintf(__('Grupo de consumo de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre),
             'post_content' => $descripcion,
             'post_excerpt' => $descripcion ? wp_trim_words(wp_strip_all_tags($descripcion), 26, '...') : '',
         ], true);
@@ -5630,13 +5630,13 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">💬</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Foro del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su foro asociado.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Foro del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su foro asociado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100">';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Foro del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Foro del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
 
@@ -5652,8 +5652,8 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">💬</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder al chat del grupo.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder al chat del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -5661,19 +5661,19 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">💬</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para abrir su chat asociado.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para abrir su chat asociado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Chat del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Chat del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/chat-grupos/mensajes/'))) . '">';
         $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
-        $header .= esc_html__('Abrir chat completo', 'flavor-platform');
+        $header .= esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $header .= '</a>';
         $header .= '</div>';
 
@@ -5690,20 +5690,20 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">🖼️</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Galería del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su galería multimedia.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Galería del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su galería multimedia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Galería del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Galería del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         if (is_user_logged_in()) {
             $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/multimedia/subir/'))) . '">';
             $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
-            $header .= esc_html__('Subir archivo', 'flavor-platform');
+            $header .= esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $header .= '</a>';
         }
         $header .= '</div>';
@@ -5720,8 +5720,8 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">🫂</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para ver la actividad social del grupo.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para ver la actividad social del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -5729,19 +5729,19 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">🫂</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su actividad social.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Actividad social del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Actividad social del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/red-social/crear/'))) . '">';
         $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
-        $header .= esc_html__('Publicar', 'flavor-platform');
+        $header .= esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $header .= '</a>';
         $header .= '</div>';
 
@@ -5758,20 +5758,20 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">🍳</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Recetas del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para descubrir sus recetas relacionadas.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Recetas del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para descubrir sus recetas relacionadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Recetas del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Recetas del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         if (is_user_logged_in()) {
             $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/recetas/nueva/'))) . '">';
             $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
-            $header .= esc_html__('Compartir receta', 'flavor-platform');
+            $header .= esc_html__('Compartir receta', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $header .= '</a>';
         }
         $header .= '</div>';
@@ -5789,20 +5789,20 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">📚</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Biblioteca del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para explorar su biblioteca compartida.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Biblioteca del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para explorar su biblioteca compartida.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Biblioteca del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Biblioteca del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         if (is_user_logged_in()) {
             $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/biblioteca/anadir/'))) . '">';
             $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
-            $header .= esc_html__('Añadir libro', 'flavor-platform');
+            $header .= esc_html__('Añadir libro', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $header .= '</a>';
         }
         $header .= '</div>';
@@ -5820,19 +5820,19 @@ KNOWLEDGE;
         if (!$grupo) {
             return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
                 <span class="text-5xl mb-4 block">🎙️</span>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Podcast del grupo', 'flavor-platform') . '</h3>
-                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para escuchar sus programas y episodios.', 'flavor-platform') . '</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Podcast del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para escuchar sus programas y episodios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
         $header .= '<div>';
-        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Podcast del grupo', 'flavor-platform') . '</h3>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Podcast del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
         $header .= '</div>';
         $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/podcast/programas/'))) . '">';
         $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
-        $header .= esc_html__('Abrir módulo completo', 'flavor-platform');
+        $header .= esc_html__('Abrir módulo completo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $header .= '</a>';
         $header .= '</div>';
 
@@ -5860,9 +5860,9 @@ KNOWLEDGE;
 
             if ($consumidor && $consumidor->estado === 'activo') {
                 return '<div class="gc-aviso gc-aviso-info"><p>' .
-                    __('Ya eres miembro de este grupo de consumo.', 'flavor-platform') .
+                    __('Ya eres miembro de este grupo de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                     '</p><a href="' . esc_url(home_url('/mi-portal/grupos-consumo/productos/')) . '" class="gc-btn gc-btn-primary">' .
-                    __('Ver productos', 'flavor-platform') . '</a></div>';
+                    __('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
             }
         }
 
@@ -5900,21 +5900,21 @@ KNOWLEDGE;
         <div class="gc-formulario-union">
             <?php if (empty($grupos_disponibles)): ?>
                 <div class="gc-aviso gc-aviso-warning">
-                    <p><?php _e('No hay grupos de consumo aceptando nuevos miembros en este momento.', 'flavor-platform'); ?></p>
+                    <p><?php _e('No hay grupos de consumo aceptando nuevos miembros en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <form id="gc-form-union" class="gc-form" method="post" action="">
                     <?php wp_nonce_field('gc_union_nonce', 'gc_union_nonce'); ?>
 
                     <div class="gc-form-header">
-                        <h3><?php _e('Unirme a un Grupo de Consumo', 'flavor-platform'); ?></h3>
-                        <p><?php _e('Completa el formulario para solicitar tu incorporación al grupo.', 'flavor-platform'); ?></p>
+                        <h3><?php _e('Unirme a un Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Completa el formulario para solicitar tu incorporación al grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <div class="gc-form-group">
-                        <label for="gc_grupo_id"><?php _e('Grupo de Consumo', 'flavor-platform'); ?> *</label>
+                        <label for="gc_grupo_id"><?php _e('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select id="gc_grupo_id" name="grupo_id" required>
-                            <option value=""><?php _e('Selecciona un grupo', 'flavor-platform'); ?></option>
+                            <option value=""><?php _e('Selecciona un grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($grupos_disponibles as $grupo):
                                 $ubicacion_grupo = get_post_meta($grupo->ID, '_gc_ubicacion', true);
                             ?>
@@ -5930,51 +5930,51 @@ KNOWLEDGE;
 
                     <?php if (!$usuario_logueado): ?>
                         <div class="gc-form-group">
-                            <label for="gc_nombre"><?php _e('Nombre completo', 'flavor-platform'); ?> *</label>
+                            <label for="gc_nombre"><?php _e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="gc_nombre" name="nombre" required>
                         </div>
 
                         <div class="gc-form-group">
-                            <label for="gc_email"><?php _e('Email', 'flavor-platform'); ?> *</label>
+                            <label for="gc_email"><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="email" id="gc_email" name="email" required>
                         </div>
 
                         <div class="gc-form-group">
-                            <label for="gc_telefono"><?php _e('Teléfono', 'flavor-platform'); ?></label>
+                            <label for="gc_telefono"><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" id="gc_telefono" name="telefono">
                         </div>
                     <?php else: ?>
                         <div class="gc-form-info">
-                            <p><strong><?php _e('Nombre:', 'flavor-platform'); ?></strong> <?php echo esc_html($usuario_actual->display_name); ?></p>
-                            <p><strong><?php _e('Email:', 'flavor-platform'); ?></strong> <?php echo esc_html($usuario_actual->user_email); ?></p>
+                            <p><strong><?php _e('Nombre:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($usuario_actual->display_name); ?></p>
+                            <p><strong><?php _e('Email:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($usuario_actual->user_email); ?></p>
                         </div>
                     <?php endif; ?>
 
                     <div class="gc-form-group">
-                        <label for="gc_direccion"><?php _e('Dirección de entrega', 'flavor-platform'); ?></label>
-                        <textarea id="gc_direccion" name="direccion" rows="2" placeholder="<?php esc_attr_e('Calle, número, piso...', 'flavor-platform'); ?>"></textarea>
+                        <label for="gc_direccion"><?php _e('Dirección de entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <textarea id="gc_direccion" name="direccion" rows="2" placeholder="<?php esc_attr_e('Calle, número, piso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="gc-form-group">
-                        <label for="gc_preferencias"><?php _e('Preferencias alimentarias', 'flavor-platform'); ?></label>
-                        <textarea id="gc_preferencias" name="preferencias" rows="3" placeholder="<?php esc_attr_e('Alergias, intolerancias, preferencias...', 'flavor-platform'); ?>"></textarea>
+                        <label for="gc_preferencias"><?php _e('Preferencias alimentarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <textarea id="gc_preferencias" name="preferencias" rows="3" placeholder="<?php esc_attr_e('Alergias, intolerancias, preferencias...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="gc-form-group">
-                        <label for="gc_motivacion"><?php _e('¿Por qué quieres unirte?', 'flavor-platform'); ?></label>
-                        <textarea id="gc_motivacion" name="motivacion" rows="3" placeholder="<?php esc_attr_e('Cuéntanos brevemente tu motivación...', 'flavor-platform'); ?>"></textarea>
+                        <label for="gc_motivacion"><?php _e('¿Por qué quieres unirte?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <textarea id="gc_motivacion" name="motivacion" rows="3" placeholder="<?php esc_attr_e('Cuéntanos brevemente tu motivación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="gc-form-group gc-form-checkbox">
                         <label>
                             <input type="checkbox" name="acepta_condiciones" required>
-                            <?php _e('Acepto las condiciones de participación del grupo de consumo', 'flavor-platform'); ?> *
+                            <?php _e('Acepto las condiciones de participación del grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                         </label>
                     </div>
 
                     <div class="gc-form-actions">
                         <button type="submit" class="gc-btn gc-btn-primary gc-btn-lg">
-                            <?php _e('Enviar solicitud', 'flavor-platform'); ?>
+                            <?php _e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
 
@@ -5989,7 +5989,7 @@ KNOWLEDGE;
                         var $mensaje = $form.find('.gc-form-mensaje');
                         var $boton = $form.find('button[type="submit"]');
 
-                        $boton.prop('disabled', true).text('<?php echo esc_js(__('Enviando...', 'flavor-platform')); ?>');
+                        $boton.prop('disabled', true).text('<?php echo esc_js(__('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                         $.ajax({
                             url: gcFrontend.ajaxUrl,
@@ -6013,13 +6013,13 @@ KNOWLEDGE;
                                 } else {
                                     $mensaje.removeClass('gc-success').addClass('gc-error')
                                         .html('<p>' + response.data.mensaje + '</p>').show();
-                                    $boton.prop('disabled', false).text('<?php echo esc_js(__('Enviar solicitud', 'flavor-platform')); ?>');
+                                    $boton.prop('disabled', false).text('<?php echo esc_js(__('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                                 }
                             },
                             error: function() {
                                 $mensaje.removeClass('gc-success').addClass('gc-error')
-                                    .html('<p><?php echo esc_js(__('Error al procesar la solicitud. Inténtalo de nuevo.', 'flavor-platform')); ?></p>').show();
-                                $boton.prop('disabled', false).text('<?php echo esc_js(__('Enviar solicitud', 'flavor-platform')); ?>');
+                                    .html('<p><?php echo esc_js(__('Error al procesar la solicitud. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>').show();
+                                $boton.prop('disabled', false).text('<?php echo esc_js(__('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
                         });
                     });
@@ -6050,7 +6050,7 @@ KNOWLEDGE;
             'limite'      => 12,
             'limit'       => 12, // Alias
             'mostrar_mapa' => 'si',
-            'titulo'      => __('Productores que entregan en tu zona', 'flavor-platform'),
+            'titulo'      => __('Productores que entregan en tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atributos);
 
         // Usar limit si se proporciona
@@ -6074,7 +6074,7 @@ KNOWLEDGE;
                     <?php echo esc_html($atributos['titulo']); ?>
                 </h2>
                 <p class="gc-seccion-descripcion">
-                    <?php _e('Descubre productores locales que entregan directamente a tu domicilio.', 'flavor-platform'); ?>
+                    <?php _e('Descubre productores locales que entregan directamente a tu domicilio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -6086,25 +6086,25 @@ KNOWLEDGE;
                         <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/>
                     </svg>
                 </div>
-                <p><?php _e('Para mostrarte productores que entregan en tu zona, necesitamos conocer tu ubicación.', 'flavor-platform'); ?></p>
+                <p><?php _e('Para mostrarte productores que entregan en tu zona, necesitamos conocer tu ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button type="button" id="gc-obtener-ubicacion-btn" class="gc-btn gc-btn-primary gc-btn-lg">
                     <span class="dashicons dashicons-location" style="vertical-align: middle;"></span>
-                    <?php _e('Compartir mi ubicación', 'flavor-platform'); ?>
+                    <?php _e('Compartir mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
             <!-- Estado: cargando -->
             <div id="gc-cargando-productores" class="gc-cargando" style="display: none;">
                 <div class="gc-spinner"></div>
-                <p><?php _e('Buscando productores cercanos...', 'flavor-platform'); ?></p>
+                <p><?php _e('Buscando productores cercanos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Estado: sin ubicación / error -->
             <div id="gc-error-ubicacion" class="gc-error-ubicacion" style="display: none;">
                 <span class="dashicons dashicons-warning" style="color: #dc2626;"></span>
-                <p id="gc-error-mensaje"><?php _e('No pudimos obtener tu ubicación.', 'flavor-platform'); ?></p>
+                <p id="gc-error-mensaje"><?php _e('No pudimos obtener tu ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button type="button" id="gc-reintentar-ubicacion-btn" class="gc-btn gc-btn-outline">
-                    <?php _e('Reintentar', 'flavor-platform'); ?>
+                    <?php _e('Reintentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -6116,10 +6116,10 @@ KNOWLEDGE;
             <!-- Sin resultados -->
             <div id="gc-sin-productores" class="gc-sin-resultados" style="display: none;">
                 <span class="dashicons dashicons-store" style="color: #9ca3af;"></span>
-                <h3><?php _e('No hay productores que entreguen en tu zona', 'flavor-platform'); ?></h3>
-                <p><?php _e('Por ahora no hay productores que realicen entregas a domicilio en tu ubicación. Puedes explorar todos nuestros productores.', 'flavor-platform'); ?></p>
+                <h3><?php _e('No hay productores que entreguen en tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Por ahora no hay productores que realicen entregas a domicilio en tu ubicación. Puedes explorar todos nuestros productores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(get_post_type_archive_link('gc_productor')); ?>" class="gc-btn gc-btn-outline">
-                    <?php _e('Ver todos los productores', 'flavor-platform'); ?>
+                    <?php _e('Ver todos los productores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -6276,7 +6276,7 @@ KNOWLEDGE;
             function obtenerUbicacion() {
                 if (!navigator.geolocation) {
                     mostrarEstado('#gc-error-ubicacion');
-                    $('#gc-error-mensaje').text('<?php echo esc_js(__('Tu navegador no soporta geolocalización.', 'flavor-platform')); ?>');
+                    $('#gc-error-mensaje').text('<?php echo esc_js(__('Tu navegador no soporta geolocalización.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     return;
                 }
 
@@ -6289,11 +6289,11 @@ KNOWLEDGE;
                     function(error) {
                         mostrarEstado('#gc-error-ubicacion');
                         var mensajesError = {
-                            1: '<?php echo esc_js(__('Permiso de ubicación denegado.', 'flavor-platform')); ?>',
-                            2: '<?php echo esc_js(__('No se pudo obtener la ubicación.', 'flavor-platform')); ?>',
-                            3: '<?php echo esc_js(__('Tiempo de espera agotado.', 'flavor-platform')); ?>'
+                            1: '<?php echo esc_js(__('Permiso de ubicación denegado.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                            2: '<?php echo esc_js(__('No se pudo obtener la ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                            3: '<?php echo esc_js(__('Tiempo de espera agotado.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
                         };
-                        $('#gc-error-mensaje').text(mensajesError[error.code] || '<?php echo esc_js(__('Error desconocido.', 'flavor-platform')); ?>');
+                        $('#gc-error-mensaje').text(mensajesError[error.code] || '<?php echo esc_js(__('Error desconocido.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     },
                     {
                         enableHighAccuracy: true,
@@ -6329,7 +6329,7 @@ KNOWLEDGE;
                     },
                     error: function() {
                         mostrarEstado('#gc-error-ubicacion');
-                        $('#gc-error-mensaje').text('<?php echo esc_js(__('Error al buscar productores.', 'flavor-platform')); ?>');
+                        $('#gc-error-mensaje').text('<?php echo esc_js(__('Error al buscar productores.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     }
                 });
             }
@@ -6341,19 +6341,19 @@ KNOWLEDGE;
                 productores.forEach(function(productor) {
                     var htmlCard = '<div class="gc-productor-card">' +
                         '<div class="gc-productor-imagen">' +
-                            (productor.imagen ? '<img src="' + productor.imagen + '" alt="<?php echo esc_attr__('\' + productor.nombre + \'', 'flavor-platform'); ?>">' : '<span style="font-size: 48px;">🌾</span>') +
+                            (productor.imagen ? '<img src="' + productor.imagen + '" alt="<?php echo esc_attr__('\' + productor.nombre + \'', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">' : '<span style="font-size: 48px;">🌾</span>') +
                             '<div class="gc-productor-badges">' +
-                                '<span class="gc-badge-entrega"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg> <?php echo esc_js(__('Entrega', 'flavor-platform')); ?></span>' +
+                                '<span class="gc-badge-entrega"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg> <?php echo esc_js(__('Entrega', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>' +
                                 (productor.certificacion_eco ? '<span class="gc-badge-eco">ECO</span>' : '') +
                             '</div>' +
                         '</div>' +
                         '<div class="gc-productor-info">' +
                             '<h3 class="gc-productor-nombre">' + productor.nombre + '</h3>' +
                             '<p class="gc-productor-descripcion">' + (productor.descripcion || '') + '</p>' +
-                            '<p class="gc-productor-distancia"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg> ' + productor.distancia_km + ' km - <?php echo esc_js(__('Entrega hasta', 'flavor-platform')); ?> ' + productor.radio_entrega_km + ' km</p>' +
+                            '<p class="gc-productor-distancia"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg> ' + productor.distancia_km + ' km - <?php echo esc_js(__('Entrega hasta', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + productor.radio_entrega_km + ' km</p>' +
                         '</div>' +
                         '<div class="gc-productor-footer">' +
-                            '<a href="' + productor.url + '" class="gc-btn gc-btn-primary gc-btn-block"><?php echo esc_js(__('Ver productor', 'flavor-platform')); ?></a>' +
+                            '<a href="' + productor.url + '" class="gc-btn gc-btn-primary gc-btn-block"><?php echo esc_js(__('Ver productor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></a>' +
                         '</div>' +
                     '</div>';
 
@@ -6395,7 +6395,7 @@ KNOWLEDGE;
                 });
                 L.marker([latUsuario, lngUsuario], {icon: iconoUsuario})
                     .addTo(mapaLeaflet)
-                    .bindPopup('<?php echo esc_js(__('Tu ubicación', 'flavor-platform')); ?>');
+                    .bindPopup('<?php echo esc_js(__('Tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                 // Marcadores de productores
                 productores.forEach(function(productor) {
@@ -6456,7 +6456,7 @@ KNOWLEDGE;
         ]);
 
         if (empty($productores)) {
-            return '<p class="gc-sin-productores">' . __('No hay productores disponibles en este momento.', 'flavor-platform') . '</p>';
+            return '<p class="gc-sin-productores">' . __('No hay productores disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -6492,7 +6492,7 @@ KNOWLEDGE;
                             </div>
                         <?php endif; ?>
                         <?php if ($certificacion_eco): ?>
-                            <span class="gc-badge-eco" title="<?php esc_attr_e('Productor ecológico certificado', 'flavor-platform'); ?>">
+                            <span class="gc-badge-eco" title="<?php esc_attr_e('Productor ecológico certificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-awards"></span>
                             </span>
                         <?php endif; ?>
@@ -6510,12 +6510,12 @@ KNOWLEDGE;
                         <?php endif; ?>
                         <p class="gc-productor-productos">
                             <span class="dashicons dashicons-products"></span>
-                            <?php printf(_n('%d producto', '%d productos', $productos_count, 'flavor-platform'), $productos_count); ?>
+                            <?php printf(_n('%d producto', '%d productos', $productos_count, FLAVOR_PLATFORM_TEXT_DOMAIN), $productos_count); ?>
                         </p>
                     </div>
                     <div class="gc-productor-acciones">
                         <a href="<?php echo esc_url(add_query_arg('productor', intval($productor->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
-                            <?php _e('Ver productos', 'flavor-platform'); ?>
+                            <?php _e('Ver productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -6559,11 +6559,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Grupos de Consumo', 'flavor-platform'),
+                'title' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'grupos-consumo',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Grupos de Consumo Responsable', 'flavor-platform'),
-                    'subtitle' => __('Productos locales y ecológicos de temporada', 'flavor-platform'),
+                    'title' => __('Grupos de Consumo Responsable', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Productos locales y ecológicos de temporada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'gradient',
                     'module' => 'grupos_consumo',
                     'current' => 'listado',
@@ -6574,11 +6574,11 @@ KNOWLEDGE;
 
             // Catálogo de productos
             [
-                'title' => __('Catálogo', 'flavor-platform'),
+                'title' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'catalogo',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Catálogo de Productos', 'flavor-platform'),
-                    'subtitle' => __('Explora nuestra selección de productos ecológicos', 'flavor-platform'),
+                    'title' => __('Catálogo de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Explora nuestra selección de productos ecológicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'grupos_consumo',
                     'current' => 'catalogo',
                     'content_after' => '[gc_catalogo]',
@@ -6588,11 +6588,11 @@ KNOWLEDGE;
 
             // Mis pedidos
             [
-                'title' => __('Historial', 'flavor-platform'),
+                'title' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-pedidos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Historial', 'flavor-platform'),
-                    'subtitle' => __('Gestiona tus pedidos y suscripciones', 'flavor-platform'),
+                    'title' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Gestiona tus pedidos y suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'grupos_consumo',
                     'current' => 'pedidos',
                     'content_after' => '[flavor_module_listing module="grupos_consumo" action="mis_pedidos" user_specific="yes"]',
@@ -6602,11 +6602,11 @@ KNOWLEDGE;
 
             // Calendario de pedidos
             [
-                'title' => __('Calendario', 'flavor-platform'),
+                'title' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'calendario',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Calendario de Pedidos', 'flavor-platform'),
-                    'subtitle' => __('Próximos cierres de pedidos y entregas', 'flavor-platform'),
+                    'title' => __('Calendario de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Próximos cierres de pedidos y entregas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'grupos_consumo',
                     'current' => 'calendario',
                     'content_after' => '[gc_calendario]',
@@ -6616,11 +6616,11 @@ KNOWLEDGE;
 
             // Productores
             [
-                'title' => __('Productores', 'flavor-platform'),
+                'title' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'productores',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Nuestros Productores', 'flavor-platform'),
-                    'subtitle' => __('Conoce a los productores locales que nos abastecen', 'flavor-platform'),
+                    'title' => __('Nuestros Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Conoce a los productores locales que nos abastecen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'grupos_consumo',
                     'current' => 'productores',
                     'content_after' => '[flavor_module_listing module="grupos_consumo" action="productores" columnas="3"]',
@@ -6723,18 +6723,18 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
 
         if (!$ciclo_id) {
-            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $ciclo = get_post($ciclo_id);
         if (!$ciclo || $ciclo->post_type !== 'gc_ciclo') {
-            wp_send_json_error(['mensaje' => __('Ciclo no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Ciclo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -6756,7 +6756,7 @@ KNOWLEDGE;
         ));
 
         if (empty($consolidado_por_productor)) {
-            wp_send_json_error(['mensaje' => __('No hay datos de consolidado para este ciclo.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No hay datos de consolidado para este ciclo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $enviados = 0;
@@ -6768,7 +6768,7 @@ KNOWLEDGE;
 
             if (empty($email_productor) || !is_email($email_productor)) {
                 $errores[] = sprintf(
-                    __('Productor "%s" sin email válido.', 'flavor-platform'),
+                    __('Productor "%s" sin email válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $productor_data->productor_nombre
                 );
                 continue;
@@ -6781,9 +6781,9 @@ KNOWLEDGE;
 
             $tabla_productos = '<table style="width:100%;border-collapse:collapse;margin:20px 0;">';
             $tabla_productos .= '<thead><tr style="background:#f5f5f5;">';
-            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:left;">' . esc_html__('Producto', 'flavor-platform') . '</th>';
-            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Cantidad', 'flavor-platform') . '</th>';
-            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Total', 'flavor-platform') . '</th>';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:left;">' . esc_html__('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            $tabla_productos .= '<th style="border:1px solid #ddd;padding:10px;text-align:right;">' . esc_html__('Total', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             $tabla_productos .= '</tr></thead><tbody>';
 
             for ($i = 0; $i < count($productos_array); $i++) {
@@ -6795,14 +6795,14 @@ KNOWLEDGE;
             }
 
             $tabla_productos .= '<tr style="background:#f9f9f9;font-weight:bold;">';
-            $tabla_productos .= '<td colspan="2" style="border:1px solid #ddd;padding:10px;">' . esc_html__('TOTAL', 'flavor-platform') . '</td>';
+            $tabla_productos .= '<td colspan="2" style="border:1px solid #ddd;padding:10px;">' . esc_html__('TOTAL', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</td>';
             $tabla_productos .= '<td style="border:1px solid #ddd;padding:10px;text-align:right;">' . number_format((float) $productor_data->total_productor, 2, ',', '.') . ' €</td>';
             $tabla_productos .= '</tr></tbody></table>';
 
             // Construir email
             $asunto = sprintf(
                 /* translators: 1: Site name, 2: Cycle name */
-                __('[%1$s] Pedido consolidado - %2$s', 'flavor-platform'),
+                __('[%1$s] Pedido consolidado - %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $sitio_nombre,
                 $ciclo->post_title
             );
@@ -6810,17 +6810,17 @@ KNOWLEDGE;
             $mensaje = '<html><body style="font-family:Arial,sans-serif;color:#333;">';
             $mensaje .= '<h2 style="color:#2c5530;">' . sprintf(
                 /* translators: %s: Producer name */
-                esc_html__('Hola %s,', 'flavor-platform'),
+                esc_html__('Hola %s,', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($productor_data->productor_nombre)
             ) . '</h2>';
             $mensaje .= '<p>' . sprintf(
                 /* translators: %s: Cycle name */
-                esc_html__('Te enviamos el consolidado de pedidos para el ciclo: %s', 'flavor-platform'),
+                esc_html__('Te enviamos el consolidado de pedidos para el ciclo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 '<strong>' . esc_html($ciclo->post_title) . '</strong>'
             ) . '</p>';
             $mensaje .= $tabla_productos;
-            $mensaje .= '<p style="margin-top:20px;">' . esc_html__('Por favor, prepara los productos para la fecha de entrega acordada.', 'flavor-platform') . '</p>';
-            $mensaje .= '<p style="color:#666;font-size:12px;margin-top:30px;">' . esc_html__('Este es un mensaje automático generado por', 'flavor-platform') . ' ' . esc_html($sitio_nombre) . '</p>';
+            $mensaje .= '<p style="margin-top:20px;">' . esc_html__('Por favor, prepara los productos para la fecha de entrega acordada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            $mensaje .= '<p style="color:#666;font-size:12px;margin-top:30px;">' . esc_html__('Este es un mensaje automático generado por', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . esc_html($sitio_nombre) . '</p>';
             $mensaje .= '</body></html>';
 
             $headers = [
@@ -6835,7 +6835,7 @@ KNOWLEDGE;
             } else {
                 $errores[] = sprintf(
                     /* translators: %s: Producer name */
-                    __('Error al enviar a "%s".', 'flavor-platform'),
+                    __('Error al enviar a "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $productor_data->productor_nombre
                 );
             }
@@ -6855,7 +6855,7 @@ KNOWLEDGE;
                         'Consolidado enviado a %d productor.',
                         'Consolidado enviado a %d productores.',
                         $enviados,
-                        'flavor-platform'
+                        FLAVOR_PLATFORM_TEXT_DOMAIN
                     ),
                     $enviados
                 ),
@@ -6868,7 +6868,7 @@ KNOWLEDGE;
                         'Consolidado enviado a %d productor.',
                         'Consolidado enviado a %d productores.',
                         $enviados,
-                        'flavor-platform'
+                        FLAVOR_PLATFORM_TEXT_DOMAIN
                     ),
                     $enviados
                 ),
@@ -6876,7 +6876,7 @@ KNOWLEDGE;
             ]);
         } else {
             wp_send_json_error([
-                'mensaje' => __('No se pudo enviar ningún email.', 'flavor-platform'),
+                'mensaje' => __('No se pudo enviar ningún email.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'errores' => $errores,
             ]);
         }
@@ -6892,14 +6892,14 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
         $formato = isset($_POST['formato']) ? sanitize_text_field($_POST['formato']) : 'excel';
 
         if (!$ciclo_id) {
-            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Ciclo no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar URL de descarga via admin-post
@@ -6912,7 +6912,7 @@ KNOWLEDGE;
 
         wp_send_json_success([
             'url' => $url_descarga,
-            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+            'mensaje' => __('Descarga preparada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -6926,7 +6926,7 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $grupo_id = isset($_POST['grupo_id']) ? absint($_POST['grupo_id']) : 0;
@@ -6949,7 +6949,7 @@ KNOWLEDGE;
 
         wp_send_json_success([
             'url' => $url_descarga,
-            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+            'mensaje' => __('Descarga preparada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -6963,7 +6963,7 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
@@ -6984,7 +6984,7 @@ KNOWLEDGE;
 
         wp_send_json_success([
             'url' => $url_descarga,
-            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+            'mensaje' => __('Descarga preparada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -6998,7 +6998,7 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_exportar_datos') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar datos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $ciclo_id = isset($_POST['ciclo_id']) ? absint($_POST['ciclo_id']) : 0;
@@ -7009,10 +7009,10 @@ KNOWLEDGE;
 
         // Validar fechas si se proporcionan
         if ($desde && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $desde)) {
-            wp_send_json_error(['mensaje' => __('Formato de fecha "desde" inválido. Use YYYY-MM-DD.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Formato de fecha "desde" inválido. Use YYYY-MM-DD.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
         if ($hasta && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $hasta)) {
-            wp_send_json_error(['mensaje' => __('Formato de fecha "hasta" inválido. Use YYYY-MM-DD.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Formato de fecha "hasta" inválido. Use YYYY-MM-DD.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar URL de descarga via admin-post
@@ -7041,7 +7041,7 @@ KNOWLEDGE;
 
         wp_send_json_success([
             'url' => $url_descarga,
-            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+            'mensaje' => __('Descarga preparada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -7055,7 +7055,7 @@ KNOWLEDGE;
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('gc_gestionar_suscripciones') && !current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar suscripciones.', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos para exportar suscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
@@ -7078,7 +7078,7 @@ KNOWLEDGE;
 
         wp_send_json_success([
             'url' => $url_descarga,
-            'mensaje' => __('Descarga preparada.', 'flavor-platform'),
+            'mensaje' => __('Descarga preparada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -7090,8 +7090,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'grupos-consumo',
-            'title'    => __('Grupos de Consumo', 'flavor-platform'),
-            'subtitle' => __('Compra colectiva directa a productores locales', 'flavor-platform'),
+            'title'    => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Compra colectiva directa a productores locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🥬',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -7101,27 +7101,27 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', 'flavor-platform'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'ubicacion'    => ['type' => 'text', 'label' => __('Punto de recogida', 'flavor-platform')],
-                'dia_recogida' => ['type' => 'select', 'label' => __('Día de recogida', 'flavor-platform')],
-                'hora_recogida' => ['type' => 'time', 'label' => __('Hora de recogida', 'flavor-platform')],
-                'cuota_mensual' => ['type' => 'number', 'label' => __('Cuota mensual', 'flavor-platform'), 'step' => '0.5'],
-                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', 'flavor-platform')],
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ubicacion'    => ['type' => 'text', 'label' => __('Punto de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'dia_recogida' => ['type' => 'select', 'label' => __('Día de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'hora_recogida' => ['type' => 'time', 'label' => __('Hora de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'cuota_mensual' => ['type' => 'number', 'label' => __('Cuota mensual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'step' => '0.5'],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'activo'    => ['label' => __('Activo', 'flavor-platform'), 'color' => 'green', 'icon' => '🟢'],
-                'pausado'   => ['label' => __('Pausado', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'cerrado'   => ['label' => __('Cerrado', 'flavor-platform'), 'color' => 'red', 'icon' => '🔴'],
-                'completo'  => ['label' => __('Completo', 'flavor-platform'), 'color' => 'blue', 'icon' => '✅'],
+                'activo'    => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'   => ['label' => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cerrado'   => ['label' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔴'],
+                'completo'  => ['label' => __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '✅'],
             ],
 
             'stats' => [
-                'grupos_activos'    => ['label' => __('Grupos activos', 'flavor-platform'), 'icon' => '🥬', 'color' => 'emerald'],
-                'consumidores'      => ['label' => __('Consumidores', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
-                'productores'       => ['label' => __('Productores', 'flavor-platform'), 'icon' => '🌾', 'color' => 'amber'],
-                'pedidos_mes'       => ['label' => __('Pedidos/mes', 'flavor-platform'), 'icon' => '📦', 'color' => 'purple'],
+                'grupos_activos'    => ['label' => __('Grupos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🥬', 'color' => 'emerald'],
+                'consumidores'      => ['label' => __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
+                'productores'       => ['label' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌾', 'color' => 'amber'],
+                'pedidos_mes'       => ['label' => __('Pedidos/mes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📦', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -7136,19 +7136,19 @@ KNOWLEDGE;
             'tabs' => [
                 // === TABS PÚBLICOS (visibles sin login) ===
                 'grupos' => [
-                    'label'   => __('Grupos', 'flavor-platform'),
+                    'label'   => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-groups',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'productos' => [
-                    'label'   => __('Productos', 'flavor-platform'),
+                    'label'   => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-products',
                     'content' => '[gc_catalogo]',
                     'public'  => true,
                 ],
                 'productores' => [
-                    'label'   => __('Productores', 'flavor-platform'),
+                    'label'   => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-store',
                     'content' => '[gc_productores]',
                     'public'  => true,
@@ -7156,38 +7156,38 @@ KNOWLEDGE;
 
                 // === TABS PRIVADOS (requieren login) ===
                 'mi-cesta' => [
-                    'label'      => __('Mi cesta', 'flavor-platform'),
+                    'label'      => __('Mi cesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-cart',
                     'content'    => '[gc_mi_cesta]',
                     'requires_login' => true,
                 ],
                 'mi-pedido' => [
-                    'label'      => __('Pedido actual', 'flavor-platform'),
+                    'label'      => __('Pedido actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-list-view',
                     'content'    => '[gc_mi_pedido]',
                     'requires_login' => true,
                 ],
                 'mis-pedidos' => [
-                    'label'      => __('Historial', 'flavor-platform'),
+                    'label'      => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-clipboard',
                     'content'    => '[gc_historial]',
                     'requires_login' => true,
                 ],
                 'ciclos' => [
-                    'label'      => __('Ciclos', 'flavor-platform'),
+                    'label'      => __('Ciclos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-calendar-alt',
                     'content'    => '[gc_ciclo_actual]',
                     'requires_login' => true,
                 ],
                 'suscripciones' => [
-                    'label'      => __('Suscripciones', 'flavor-platform'),
+                    'label'      => __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-heart',
                     'content'    => '[gc_suscripciones]',
                     'requires_login' => true,
                     'hidden_nav' => true,
                 ],
                 'panel' => [
-                    'label'      => __('Panel', 'flavor-platform'),
+                    'label'      => __('Panel', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-dashboard',
                     'content'    => '[gc_panel]',
                     'requires_login' => true,
@@ -7196,7 +7196,7 @@ KNOWLEDGE;
 
                 // === ACCIONES (accesibles solo por URL) ===
                 'unirme' => [
-                    'label'         => __('Unirme', 'flavor-platform'),
+                    'label'         => __('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-plus-alt',
                     'content'       => '[gc_formulario_union]',
                     'requires_login' => true,
@@ -7205,39 +7205,39 @@ KNOWLEDGE;
 
                 // === INTEGRACIONES CON OTROS MÓDULOS ===
                 'foro' => [
-                    'label'         => __('Foro', 'flavor-platform'),
+                    'label'         => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-admin-comments',
                     'content'       => 'callback:render_tab_foro',
                 ],
                 'chat' => [
-                    'label'         => __('Chat', 'flavor-platform'),
+                    'label'         => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-format-chat',
                     'content'       => 'callback:render_tab_chat',
                     'requires_login' => true,
                 ],
                 'multimedia' => [
-                    'label'         => __('Multimedia', 'flavor-platform'),
+                    'label'         => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-format-gallery',
                     'content'       => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
-                    'label'         => __('Red social', 'flavor-platform'),
+                    'label'         => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-share',
                     'content'       => 'callback:render_tab_red_social',
                     'requires_login' => true,
                 ],
                 'recetas' => [
-                    'label'         => __('Recetas', 'flavor-platform'),
+                    'label'         => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-carrot',
                     'content'       => 'callback:render_tab_recetas',
                 ],
                 'biblioteca' => [
-                    'label'         => __('Biblioteca', 'flavor-platform'),
+                    'label'         => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-book',
                     'content'       => 'callback:render_tab_biblioteca',
                 ],
                 'podcast' => [
-                    'label'         => __('Podcast', 'flavor-platform'),
+                    'label'         => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'          => 'dashicons-microphone',
                     'content'       => 'callback:render_tab_podcast',
                 ],
@@ -7254,8 +7254,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['ciclo_actual', 'mi_cesta', 'proxima_recogida', 'mis_grupos'],
                 'actions' => [
-                    'pedir'   => ['label' => __('Hacer pedido', 'flavor-platform'), 'icon' => '🛒', 'color' => 'emerald'],
-                    'unirse'  => ['label' => __('Unirse a grupo', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
+                    'pedir'   => ['label' => __('Hacer pedido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🛒', 'color' => 'emerald'],
+                    'unirse'  => ['label' => __('Unirse a grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
                 ],
             ],
 

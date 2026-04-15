@@ -20,21 +20,21 @@ if (isset($estadisticas) && is_array($estadisticas)) {
     <div class="flavor-admin-widget-mapa-actores">
         <ul class="flavor-widget-list">
             <li>
-                <strong><?php esc_html_e('Total actores', 'flavor-platform'); ?>:</strong>
+                <strong><?php esc_html_e('Total actores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($total)); ?>
             </li>
             <li>
-                <strong><?php esc_html_e('Aliados', 'flavor-platform'); ?>:</strong>
+                <strong><?php esc_html_e('Aliados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($aliados)); ?>
             </li>
             <li>
-                <strong><?php esc_html_e('Opositores', 'flavor-platform'); ?>:</strong>
+                <strong><?php esc_html_e('Opositores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($opositores)); ?>
             </li>
         </ul>
         <p style="margin: 10px 0 0;">
             <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button button-small">
-                <?php esc_html_e('Ver listado', 'flavor-platform'); ?>
+                <?php esc_html_e('Ver listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
     </div>
@@ -48,5 +48,5 @@ if (isset($this) && method_exists($this, 'render_admin_dashboard')) {
 }
 
 echo '<div class="notice notice-error"><p>'
-    . esc_html__('No se pudo renderizar el dashboard de mapa de actores.', 'flavor-platform')
+    . esc_html__('No se pudo renderizar el dashboard de mapa de actores.', FLAVOR_PLATFORM_TEXT_DOMAIN)
     . '</p></div>';

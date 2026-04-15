@@ -27,8 +27,8 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_encuestas_';
-        $this->title = __('Encuestas', 'flavor-platform');
-        $this->description = __('Participa en las encuestas de la comunidad', 'flavor-platform');
+        $this->title = __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Participa en las encuestas de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -78,7 +78,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-forms',
                 'valor' => $encuestas_activas,
-                'label' => __('Activas', 'flavor-platform'),
+                'label' => __('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $encuestas_activas > 0 ? 'warning' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', ''),
             ],
@@ -88,7 +88,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $mis_respuestas,
-                'label' => __('Respondidas', 'flavor-platform'),
+                'label' => __('Respondidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_respuestas > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=encuestas&tab=mis-respuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', 'mis-respuestas'),
             ];
@@ -99,10 +99,10 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay encuestas activas', 'flavor-platform'),
+            'empty_state' => __('No hay encuestas activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver encuestas', 'flavor-platform'),
+                    'label' => __('Ver encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Platform_Helpers::get_action_url('encuestas', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -132,7 +132,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($encuestas as $encuesta) {
             $meta = '';
             if (!empty($encuesta->fecha_fin)) {
-                $meta = sprintf(__('Cierra: %s', 'flavor-platform'), date_i18n('j M', strtotime($encuesta->fecha_fin)));
+                $meta = sprintf(__('Cierra: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('j M', strtotime($encuesta->fecha_fin)));
             }
 
             $items[] = [

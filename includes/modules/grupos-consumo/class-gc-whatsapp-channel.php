@@ -136,7 +136,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     public function enviar($evento, $destinatarios, $datos) {
         if (!$this->esta_configurado()) {
-            return ['error' => __('WhatsApp no está configurado', 'flavor-platform')];
+            return ['error' => __('WhatsApp no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $resultados = [
@@ -235,7 +235,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     private function enviar_texto($telefono, $mensaje) {
         if (empty($mensaje)) {
-            return ['success' => false, 'error' => __('Mensaje vacío', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Mensaje vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $telefono_formateado = $this->formatear_telefono($telefono);
@@ -558,7 +558,7 @@ class Flavor_GC_WhatsApp_Channel {
         if (!$this->esta_configurado()) {
             return [
                 'configurado' => false,
-                'mensaje' => __('WhatsApp no está configurado', 'flavor-platform'),
+                'mensaje' => __('WhatsApp no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -575,7 +575,7 @@ class Flavor_GC_WhatsApp_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => __('Error de conexión: ', 'flavor-platform') . $response->get_error_message(),
+                'mensaje' => __('Error de conexión: ', FLAVOR_PLATFORM_TEXT_DOMAIN) . $response->get_error_message(),
             ];
         }
 
@@ -585,7 +585,7 @@ class Flavor_GC_WhatsApp_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => __('Error de autenticación', 'flavor-platform'),
+                'mensaje' => __('Error de autenticación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -596,7 +596,7 @@ class Flavor_GC_WhatsApp_Channel {
             'conectado' => true,
             'phone_number' => $body['display_phone_number'] ?? '',
             'quality_rating' => $body['quality_rating'] ?? '',
-            'mensaje' => __('Conectado correctamente', 'flavor-platform'),
+            'mensaje' => __('Conectado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

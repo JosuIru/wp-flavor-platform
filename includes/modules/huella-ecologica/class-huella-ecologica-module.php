@@ -173,8 +173,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      */
     public function __construct() {
         $this->module_id = 'huella_ecologica';
-        $this->module_name = __('Huella Ecológica Comunitaria', 'flavor-platform');
-        $this->module_description = __('Sistema de medición y reducción del impacto ambiental colectivo', 'flavor-platform');
+        $this->module_name = __('Huella Ecológica Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->module_description = __('Sistema de medición y reducción del impacto ambiental colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->module_icon = 'dashicons-palmtree';
         $this->module_color = '#27ae60';
         $this->module_role = 'transversal';
@@ -384,8 +384,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         // Registros de huella individual
         register_post_type('he_registro', [
             'labels' => [
-                'name' => __('Registros de Huella', 'flavor-platform'),
-                'singular_name' => __('Registro de Huella', 'flavor-platform'),
+                'name' => __('Registros de Huella', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Registro de Huella', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -397,8 +397,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         // Acciones reductoras
         register_post_type('he_accion', [
             'labels' => [
-                'name' => __('Acciones Reductoras', 'flavor-platform'),
-                'singular_name' => __('Acción Reductora', 'flavor-platform'),
+                'name' => __('Acciones Reductoras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Acción Reductora', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -410,8 +410,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         // Proyectos de compensación comunitarios
         register_post_type('he_proyecto', [
             'labels' => [
-                'name' => __('Proyectos de Compensación', 'flavor-platform'),
-                'singular_name' => __('Proyecto de Compensación', 'flavor-platform'),
+                'name' => __('Proyectos de Compensación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Proyecto de Compensación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -423,8 +423,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         // Logros obtenidos
         register_post_type('he_logro', [
             'labels' => [
-                'name' => __('Logros Ecológicos', 'flavor-platform'),
-                'singular_name' => __('Logro Ecológico', 'flavor-platform'),
+                'name' => __('Logros Ecológicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Logro Ecológico', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => false,
@@ -493,9 +493,9 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             'categorias' => self::CATEGORIAS_HUELLA,
             'acciones' => self::TIPOS_ACCION,
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                'success' => __('Registro guardado', 'flavor-platform'),
-                'confirmar' => __('¿Estás seguro?', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Registro guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -528,7 +528,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -538,11 +538,11 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (!isset(self::CATEGORIAS_HUELLA[$categoria])) {
-            wp_send_json_error(['message' => __('Categoría no válida', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Categoría no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($valor <= 0) {
-            wp_send_json_error(['message' => __('El valor debe ser positivo', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El valor debe ser positivo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $registro_id = wp_insert_post([
@@ -553,7 +553,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         ], true);
 
         if (is_wp_error($registro_id) || empty($registro_id)) {
-            $error = is_wp_error($registro_id) ? $registro_id->get_error_message() : __('No se pudo registrar la huella.', 'flavor-platform');
+            $error = is_wp_error($registro_id) ? $registro_id->get_error_message() : __('No se pudo registrar la huella.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -566,7 +566,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $this->verificar_logros($user_id);
 
         wp_send_json_success([
-            'message' => __('Registro guardado correctamente', 'flavor-platform'),
+            'message' => __('Registro guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'registro_id' => $registro_id,
         ]);
     }
@@ -578,7 +578,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -588,7 +588,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $notas = sanitize_textarea_field($_POST['notas'] ?? '');
 
         if (!isset(self::TIPOS_ACCION[$tipo])) {
-            wp_send_json_error(['message' => __('Tipo de acción no válido', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Tipo de acción no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $accion_data = self::TIPOS_ACCION[$tipo];
@@ -602,7 +602,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         ], true);
 
         if (is_wp_error($accion_id) || empty($accion_id)) {
-            $error = is_wp_error($accion_id) ? $accion_id->get_error_message() : __('No se pudo registrar la acción.', 'flavor-platform');
+            $error = is_wp_error($accion_id) ? $accion_id->get_error_message() : __('No se pudo registrar la acción.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -617,7 +617,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         wp_send_json_success([
             'message' => sprintf(
-                __('¡Genial! Has compensado %.1f kg de CO2', 'flavor-platform'),
+                __('¡Genial! Has compensado %.1f kg de CO2', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $reduccion_total
             ),
             'accion_id' => $accion_id,
@@ -632,7 +632,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -643,7 +643,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $tipo_proyecto = sanitize_key($_POST['tipo_proyecto'] ?? 'reforestacion');
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son requeridos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Título y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $proyecto_id = wp_insert_post([
@@ -655,7 +655,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         ], true);
 
         if (is_wp_error($proyecto_id) || empty($proyecto_id)) {
-            $error = is_wp_error($proyecto_id) ? $proyecto_id->get_error_message() : __('No se pudo crear el proyecto.', 'flavor-platform');
+            $error = is_wp_error($proyecto_id) ? $proyecto_id->get_error_message() : __('No se pudo crear el proyecto.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -671,7 +671,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $this->otorgar_logro($user_id, 'embajador');
 
         wp_send_json_success([
-            'message' => __('Proyecto propuesto correctamente. Será revisado pronto.', 'flavor-platform'),
+            'message' => __('Proyecto propuesto correctamente. Será revisado pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'proyecto_id' => $proyecto_id,
         ]);
     }
@@ -683,7 +683,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -691,17 +691,17 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         $proyecto = get_post($proyecto_id);
         if (!$proyecto || $proyecto->post_type !== 'he_proyecto') {
-            wp_send_json_error(['message' => __('Proyecto no encontrado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Proyecto no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estado = get_post_meta($proyecto_id, '_he_estado', true);
         if (!in_array($estado, ['aprobado', 'en_curso'])) {
-            wp_send_json_error(['message' => __('Este proyecto no está abierto a participantes', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Este proyecto no está abierto a participantes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $participantes = get_post_meta($proyecto_id, '_he_participantes', true) ?: [];
         if (in_array($user_id, $participantes)) {
-            wp_send_json_error(['message' => __('Ya participas en este proyecto', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Ya participas en este proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $participantes[] = $user_id;
@@ -711,7 +711,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         $this->otorgar_logro($user_id, 'compensador');
 
         wp_send_json_success([
-            'message' => __('Te has unido al proyecto', 'flavor-platform'),
+            'message' => __('Te has unido al proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'participantes' => count($participantes),
         ]);
     }
@@ -723,7 +723,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('huella_ecologica_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -1076,7 +1076,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      */
     public function shortcode_mis_registros($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="he-login-required">' . __('Inicia sesión para ver tus registros', 'flavor-platform') . '</p>';
+            return '<p class="he-login-required">' . __('Inicia sesión para ver tus registros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/mis-registros.php';
@@ -1106,7 +1106,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      */
     public function shortcode_logros($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="he-login-required">' . __('Inicia sesión para ver tus logros', 'flavor-platform') . '</p>';
+            return '<p class="he-login-required">' . __('Inicia sesión para ver tus logros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/logros.php';
@@ -1132,24 +1132,24 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
     public function get_admin_config(): array {
         return [
             'id' => 'huella_ecologica',
-            'label' => __('Huella Ecológica', 'flavor-platform'),
+            'label' => __('Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-palmtree',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'huella-ecologica',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'he-usuarios',
-                    'titulo' => __('Usuarios', 'flavor-platform'),
+                    'titulo' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_usuarios'],
                 ],
                 [
                     'slug' => 'he-proyectos',
-                    'titulo' => __('Proyectos', 'flavor-platform'),
+                    'titulo' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_proyectos'],
                     'badge' => [$this, 'contar_proyectos_pendientes'],
                 ],
@@ -1157,12 +1157,12 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             'estadisticas' => [$this, 'get_admin_estadisticas'],
             'settings' => [
                 'he_meta_reduccion_anual' => [
-                    'label' => __('Meta de reducción anual (kg CO2)', 'flavor-platform'),
+                    'label' => __('Meta de reducción anual (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type' => 'number',
                     'default' => 10000,
                 ],
                 'he_factores_emision_personalizados' => [
-                    'label' => __('Usar factores de emisión personalizados', 'flavor-platform'),
+                    'label' => __('Usar factores de emisión personalizados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type' => 'checkbox',
                     'default' => false,
                 ],
@@ -1244,8 +1244,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Huella Ecológica - Dashboard', 'flavor-platform'), [
-                ['label' => __('Exportar Informe', 'flavor-platform'), 'url' => '#', 'class' => 'button'],
+            <?php $this->render_page_header(__('Huella Ecológica - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Exportar Informe', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => 'button'],
             ]); ?>
 
             <!-- KPIs principales -->
@@ -1255,7 +1255,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <span class="dashicons dashicons-groups" style="font-size: 32px; color: #3498db;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html($stats['usuarios_activos']); ?></div>
-                            <div style="color: #646970; font-size: 13px;"><?php _e('Usuarios participando', 'flavor-platform'); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Usuarios participando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1265,7 +1265,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <span class="dashicons dashicons-chart-area" style="font-size: 32px; color: #e74c3c;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html(number_format($stats['huella_comunidad'], 1)); ?></div>
-                            <div style="color: #646970; font-size: 13px;"><?php _e('Huella total (kg CO2)', 'flavor-platform'); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Huella total (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1275,7 +1275,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #27ae60;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: bold; color: #27ae60;"><?php echo esc_html(number_format($stats['reduccion_comunidad'], 1)); ?></div>
-                            <div style="color: #646970; font-size: 13px;"><?php _e('Reducción lograda (kg CO2)', 'flavor-platform'); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Reducción lograda (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1285,7 +1285,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <span class="dashicons dashicons-portfolio" style="font-size: 32px; color: #9b59b6;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html($stats['proyectos_activos']); ?></div>
-                            <div style="color: #646970; font-size: 13px;"><?php _e('Proyectos activos', 'flavor-platform'); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1293,7 +1293,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
             <!-- Progreso hacia meta anual -->
             <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                <h3 style="margin-top: 0;"><?php _e('Progreso hacia la meta anual', 'flavor-platform'); ?></h3>
+                <h3 style="margin-top: 0;"><?php _e('Progreso hacia la meta anual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <div style="flex: 1;">
                         <div style="background: #f0f0f0; border-radius: 10px; height: 20px; overflow: hidden;">
@@ -1310,13 +1310,13 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
                 <!-- Tabla de categorías -->
                 <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0;"><?php _e('Huella por categoría', 'flavor-platform'); ?></h3>
+                    <h3 style="margin-top: 0;"><?php _e('Huella por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Categoría', 'flavor-platform'); ?></th>
-                                <th style="text-align: right;"><?php _e('Total (kg CO2)', 'flavor-platform'); ?></th>
-                                <th style="text-align: right;"><?php _e('% del total', 'flavor-platform'); ?></th>
+                                <th><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="text-align: right;"><?php _e('Total (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="text-align: right;"><?php _e('% del total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1343,7 +1343,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                             <?php if (empty($huella_categorias)): ?>
                             <tr>
                                 <td colspan="3" style="text-align: center; color: #646970; padding: 20px;">
-                                    <?php _e('No hay datos de huella registrados aún', 'flavor-platform'); ?>
+                                    <?php _e('No hay datos de huella registrados aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                             <?php endif; ?>
@@ -1353,12 +1353,12 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
                 <!-- Top contribuyentes -->
                 <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0;"><?php _e('Top contribuyentes', 'flavor-platform'); ?></h3>
+                    <h3 style="margin-top: 0;"><?php _e('Top contribuyentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <?php if (!empty($stats['top_contribuyentes'])): ?>
                     <ol style="margin: 0; padding-left: 20px;">
                         <?php foreach ($stats['top_contribuyentes'] as $index => $contribuyente):
                             $usuario = get_userdata($contribuyente->post_author);
-                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', 'flavor-platform');
+                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             $medallas = ['🥇', '🥈', '🥉', '4.', '5.'];
                         ?>
                         <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
@@ -1371,7 +1371,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <?php endforeach; ?>
                     </ol>
                     <?php else: ?>
-                    <p style="color: #646970; text-align: center; padding: 20px;"><?php _e('No hay contribuyentes aún', 'flavor-platform'); ?></p>
+                    <p style="color: #646970; text-align: center; padding: 20px;"><?php _e('No hay contribuyentes aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1419,28 +1419,28 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Usuarios - Huella Ecológica', 'flavor-platform'), [
-                ['label' => __('Exportar CSV', 'flavor-platform'), 'url' => '#', 'class' => 'button'],
+            <?php $this->render_page_header(__('Usuarios - Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => 'button'],
             ]); ?>
 
             <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Usuario', 'flavor-platform'); ?></th>
-                            <th style="text-align: center;"><?php _e('Registros', 'flavor-platform'); ?></th>
-                            <th style="text-align: center;"><?php _e('Acciones', 'flavor-platform'); ?></th>
-                            <th style="text-align: right;"><?php _e('Huella (kg CO2)', 'flavor-platform'); ?></th>
-                            <th style="text-align: right;"><?php _e('Reducción (kg CO2)', 'flavor-platform'); ?></th>
-                            <th style="text-align: right;"><?php _e('Balance neto', 'flavor-platform'); ?></th>
-                            <th><?php _e('Última actividad', 'flavor-platform'); ?></th>
-                            <th><?php _e('Logros', 'flavor-platform'); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: center;"><?php _e('Registros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: center;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php _e('Huella (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php _e('Reducción (kg CO2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php _e('Balance neto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Última actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Logros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($usuarios_query as $usuario_data):
                             $usuario = get_userdata($usuario_data['usuario_id']);
-                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario #', 'flavor-platform') . $usuario_data['usuario_id'];
+                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario #', FLAVOR_PLATFORM_TEXT_DOMAIN) . $usuario_data['usuario_id'];
                             $email_usuario = $usuario ? $usuario->user_email : '';
                             $balance = floatval($usuario_data['huella_total']) - floatval($usuario_data['reduccion_total']);
                             $logros_usuario = $this->get_logros_usuario($usuario_data['usuario_id']);
@@ -1488,7 +1488,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <?php if (empty($usuarios_query)): ?>
                         <tr>
                             <td colspan="8" style="text-align: center; color: #646970; padding: 40px;">
-                                <?php _e('No hay usuarios con actividad registrada', 'flavor-platform'); ?>
+                                <?php _e('No hay usuarios con actividad registrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                         <?php endif; ?>
@@ -1498,7 +1498,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                 <?php if ($total_paginas > 1): ?>
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
-                        <span class="displaying-num"><?php printf(__('%d usuarios', 'flavor-platform'), $total_usuarios); ?></span>
+                        <span class="displaying-num"><?php printf(__('%d usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_usuarios); ?></span>
                         <span class="pagination-links">
                             <?php
                             echo paginate_links([
@@ -1535,7 +1535,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                     if ($nuevo_estado === 'aprobado') {
                         wp_update_post(['ID' => $proyecto_id, 'post_status' => 'publish']);
                     }
-                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Estado del proyecto actualizado.', 'flavor-platform') . '</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Estado del proyecto actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 }
             }
         }
@@ -1561,15 +1561,15 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Proyectos de Compensación', 'flavor-platform'), [
-                ['label' => __('Añadir proyecto', 'flavor-platform'), 'url' => admin_url('post-new.php?post_type=he_proyecto'), 'class' => 'button button-primary'],
+            <?php $this->render_page_header(__('Proyectos de Compensación', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Añadir proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=he_proyecto'), 'class' => 'button button-primary'],
             ]); ?>
 
             <!-- Filtros -->
             <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 <a href="<?php echo esc_url(remove_query_arg('estado')); ?>"
                    class="button <?php echo empty($filtro_estado) ? 'button-primary' : ''; ?>">
-                    <?php _e('Todos', 'flavor-platform'); ?>
+                    <?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php foreach (self::ESTADOS_PROYECTO as $estado_key => $estado_info):
                     $count_estado = $wpdb->get_var($wpdb->prepare(
@@ -1591,14 +1591,14 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Proyecto', 'flavor-platform'); ?></th>
-                            <th><?php _e('Proponente', 'flavor-platform'); ?></th>
-                            <th style="text-align: center;"><?php _e('Estado', 'flavor-platform'); ?></th>
-                            <th style="text-align: right;"><?php _e('Meta CO2', 'flavor-platform'); ?></th>
-                            <th style="text-align: right;"><?php _e('Logrado', 'flavor-platform'); ?></th>
-                            <th style="text-align: center;"><?php _e('Participantes', 'flavor-platform'); ?></th>
-                            <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                            <th><?php _e('Acciones', 'flavor-platform'); ?></th>
+                            <th><?php _e('Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Proponente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: center;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php _e('Meta CO2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php _e('Logrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: center;"><?php _e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1623,7 +1623,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                             </td>
                             <td>
                                 <?php echo get_avatar(get_the_author_meta('ID'), 24, '', '', ['style' => 'vertical-align: middle; margin-right: 5px; border-radius: 50%;']); ?>
-                                <?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-platform')); ?>
+                                <?php echo esc_html($autor ? $autor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </td>
                             <td style="text-align: center;">
                                 <span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: <?php echo esc_attr($estado_info['color']); ?>; color: #fff; font-size: 12px;">
@@ -1653,9 +1653,9 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <button type="submit" class="button button-small"><?php _e('Cambiar', 'flavor-platform'); ?></button>
+                                    <button type="submit" class="button button-small"><?php _e('Cambiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                 </form>
-                                <a href="<?php echo get_edit_post_link($proyecto_id); ?>" class="button button-small" title="<?php _e('Editar', 'flavor-platform'); ?>">
+                                <a href="<?php echo get_edit_post_link($proyecto_id); ?>" class="button button-small" title="<?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit" style="line-height: 1.3;"></span>
                                 </a>
                             </td>
@@ -1664,7 +1664,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                         <?php if (!$proyectos_query->have_posts()): ?>
                         <tr>
                             <td colspan="8" style="text-align: center; color: #646970; padding: 40px;">
-                                <?php _e('No hay proyectos que coincidan con los filtros', 'flavor-platform'); ?>
+                                <?php _e('No hay proyectos que coincidan con los filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                         <?php endif; ?>
@@ -1674,7 +1674,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
                 <?php if ($proyectos_query->max_num_pages > 1): ?>
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
-                        <span class="displaying-num"><?php printf(__('%d proyectos', 'flavor-platform'), $proyectos_query->found_posts); ?></span>
+                        <span class="displaying-num"><?php printf(__('%d proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), $proyectos_query->found_posts); ?></span>
                         <span class="pagination-links">
                             <?php
                             echo paginate_links([
@@ -1775,7 +1775,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-platform'),
+            'error' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1810,7 +1810,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('La Huella Ecológica mide el impacto ambiental personal y comunitario, permitiendo calcular, registrar y compensar emisiones de CO2.', 'flavor-platform');
+        return __('La Huella Ecológica mide el impacto ambiental personal y comunitario, permitiendo calcular, registrar y compensar emisiones de CO2.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -1821,8 +1821,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
     public static function get_renderer_config(): array {
         return [
             'module'   => 'huella-ecologica',
-            'title'    => __('Huella Ecológica', 'flavor-platform'),
-            'subtitle' => __('Mide y reduce tu impacto ambiental', 'flavor-platform'),
+            'title'    => __('Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Mide y reduce tu impacto ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🌍',
             'color'    => 'info', // Usa variable CSS --flavor-info del tema
 
@@ -1832,24 +1832,24 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             ],
 
             'fields' => [
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform'), 'options' => ['transporte', 'energia', 'alimentacion', 'consumo', 'residuos']],
-                'tipo'        => ['type' => 'select', 'label' => __('Tipo', 'flavor-platform'), 'options' => ['emision', 'compensacion']],
-                'cantidad'    => ['type' => 'number', 'label' => __('Cantidad CO₂ (kg)', 'flavor-platform'), 'step' => '0.1'],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'fecha'       => ['type' => 'date', 'label' => __('Fecha', 'flavor-platform')],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['transporte', 'energia', 'alimentacion', 'consumo', 'residuos']],
+                'tipo'        => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['emision', 'compensacion']],
+                'cantidad'    => ['type' => 'number', 'label' => __('Cantidad CO₂ (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'step' => '0.1'],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha'       => ['type' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'registrado' => ['label' => __('Registrado', 'flavor-platform'), 'color' => 'blue', 'icon' => '📝'],
-                'verificado' => ['label' => __('Verificado', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'compensado' => ['label' => __('Compensado', 'flavor-platform'), 'color' => 'teal', 'icon' => '🌱'],
+                'registrado' => ['label' => __('Registrado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📝'],
+                'verificado' => ['label' => __('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'compensado' => ['label' => __('Compensado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'teal', 'icon' => '🌱'],
             ],
 
             'stats' => [
-                'huella_total'    => ['label' => __('Mi huella (kg CO₂)', 'flavor-platform'), 'icon' => '🌍', 'color' => 'teal'],
-                'compensado'      => ['label' => __('Compensado', 'flavor-platform'), 'icon' => '🌱', 'color' => 'green'],
-                'balance'         => ['label' => __('Balance neto', 'flavor-platform'), 'icon' => '⚖️', 'color' => 'blue'],
-                'ranking_comunidad' => ['label' => __('Posición ranking', 'flavor-platform'), 'icon' => '🏆', 'color' => 'amber'],
+                'huella_total'    => ['label' => __('Mi huella (kg CO₂)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌍', 'color' => 'teal'],
+                'compensado'      => ['label' => __('Compensado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'green'],
+                'balance'         => ['label' => __('Balance neto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚖️', 'color' => 'blue'],
+                'ranking_comunidad' => ['label' => __('Posición ranking', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏆', 'color' => 'amber'],
             ],
 
             'card' => [
@@ -1862,31 +1862,31 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
 
             'tabs' => [
                 'calculadora' => [
-                    'label'   => __('Calculadora', 'flavor-platform'),
+                    'label'   => __('Calculadora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-calculator',
                     'content' => 'shortcode:huella_ecologica_calculadora',
                     'public'  => true,
                 ],
                 'mi-huella' => [
-                    'label'      => __('Mi huella', 'flavor-platform'),
+                    'label'      => __('Mi huella', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-chart-pie',
                     'content'    => 'shortcode:huella_ecologica_mis_registros',
                     'requires_login' => true,
                 ],
                 'registrar' => [
-                    'label'      => __('Registrar', 'flavor-platform'),
+                    'label'      => __('Registrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:huella_ecologica_calculadora',
                     'requires_login' => true,
                 ],
                 'compensar' => [
-                    'label'      => __('Compensar', 'flavor-platform'),
+                    'label'      => __('Compensar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-palmtree',
                     'content'    => 'shortcode:huella_ecologica_proyectos',
                     'requires_login' => true,
                 ],
                 'ranking' => [
-                    'label'   => __('Ranking', 'flavor-platform'),
+                    'label'   => __('Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-awards',
                     'content' => 'shortcode:huella_ecologica_logros',
                     'public'  => true,
@@ -1904,8 +1904,8 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             'dashboard' => [
                 'widgets' => ['grafico_huella', 'balance_mensual', 'consejos', 'comparativa_comunidad'],
                 'actions' => [
-                    'calcular'  => ['label' => __('Calcular huella', 'flavor-platform'), 'icon' => '📊', 'color' => 'teal'],
-                    'compensar' => ['label' => __('Compensar', 'flavor-platform'), 'icon' => '🌱', 'color' => 'green'],
+                    'calcular'  => ['label' => __('Calcular huella', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📊', 'color' => 'teal'],
+                    'compensar' => ['label' => __('Compensar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'green'],
                 ],
             ],
 

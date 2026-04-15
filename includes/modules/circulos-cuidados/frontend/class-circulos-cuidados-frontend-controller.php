@@ -120,7 +120,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
     public function registrar_dashboard_tabs($tabs) {
         $tabs['circulos-cuidados'] = [
             'id' => 'circulos-cuidados',
-            'label' => __('Cuidados', 'flavor-platform'),
+            'label' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-heart',
             'orden' => 50,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -128,7 +128,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         $tabs['circulos-necesidades'] = [
             'id' => 'circulos-necesidades',
-            'label' => __('Necesidades', 'flavor-platform'),
+            'label' => __('Necesidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-sos',
             'orden' => 51,
             'parent' => 'circulos-cuidados',
@@ -161,10 +161,10 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_circulos_nonce'),
             'strings' => [
-                'confirmar' => __('¿Confirmar esta acción?', 'flavor-platform'),
-                'enviando' => __('Enviando...', 'flavor-platform'),
-                'error' => __('Error al procesar', 'flavor-platform'),
-                'gracias' => __('Gracias por tu solidaridad', 'flavor-platform'),
+                'confirmar' => __('¿Confirmar esta acción?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias' => __('Gracias por tu solidaridad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -194,7 +194,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_circulos)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('El sistema de círculos de cuidados no está configurado.', 'flavor-platform') . '</div>';
+                   __('El sistema de círculos de cuidados no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         global $wpdb;
@@ -225,16 +225,16 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ?>
         <div class="flavor-circulos-listado">
             <div class="flavor-circulos-header">
-                <h2><?php _e('Círculos de Cuidados', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Círculos de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-circulos-intro">
-                    <?php _e('Redes de apoyo mutuo para cuidarnos entre vecinos/as.', 'flavor-platform'); ?>
+                    <?php _e('Redes de apoyo mutuo para cuidarnos entre vecinos/as.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <div class="flavor-filtros">
                 <form method="get" class="flavor-filtros-form">
                     <select name="tipo" onchange="this.form.submit()">
-                        <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->tipos_circulo as $clave => $tipo): ?>
                             <option value="<?php echo esc_attr($clave); ?>" <?php selected($filtro_tipo, $clave); ?>>
                                 <?php echo esc_html($tipo['nombre']); ?>
@@ -244,7 +244,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                     <?php if (is_user_logged_in()): ?>
                         <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos-cuidados', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
-                            <?php _e('Crear Círculo', 'flavor-platform'); ?>
+                            <?php _e('Crear Círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </form>
@@ -252,7 +252,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
             <?php if (empty($circulos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay círculos de cuidados activos. ¡Sé el primero en crear uno!', 'flavor-platform'); ?>
+                    <?php _e('No hay círculos de cuidados activos. ¡Sé el primero en crear uno!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-circulos-grid">
@@ -293,12 +293,12 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                 <div class="flavor-circulo-stats">
                     <span class="flavor-stat">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php printf(_n('%d persona', '%d personas', $circulo->total_miembros, 'flavor-platform'), $circulo->total_miembros); ?>
+                        <?php printf(_n('%d persona', '%d personas', $circulo->total_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN), $circulo->total_miembros); ?>
                     </span>
                     <?php if ($circulo->necesidades_abiertas > 0): ?>
                         <span class="flavor-stat flavor-stat-urgente">
                             <span class="dashicons dashicons-sos"></span>
-                            <?php printf(_n('%d necesidad', '%d necesidades', $circulo->necesidades_abiertas, 'flavor-platform'), $circulo->necesidades_abiertas); ?>
+                            <?php printf(_n('%d necesidad', '%d necesidades', $circulo->necesidades_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN), $circulo->necesidades_abiertas); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -333,7 +333,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         if (!$circulo) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Círculo no encontrado.', 'flavor-platform') . '</div>';
+                   __('Círculo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $tipo_info = $this->tipos_circulo[$circulo->tipo] ?? ['nombre' => $circulo->tipo, 'icono' => 'dashicons-groups', 'color' => '#6b7280'];
@@ -367,7 +367,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         <div class="flavor-circulo-detalle">
             <div class="flavor-circulos-breadcrumb">
                 <a href="<?php echo esc_url(remove_query_arg('circulo_id')); ?>">
-                    <?php _e('Círculos', 'flavor-platform'); ?>
+                    <?php _e('Círculos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                 <span><?php echo esc_html($circulo->nombre); ?></span>
@@ -392,11 +392,11 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                     <div class="flavor-circulo-stats-grandes">
                         <div class="flavor-stat-grande">
                             <span class="valor"><?php echo absint($circulo->total_miembros); ?></span>
-                            <span class="label"><?php _e('personas', 'flavor-platform'); ?></span>
+                            <span class="label"><?php _e('personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-stat-grande">
                             <span class="valor"><?php echo absint($circulo->total_horas ?: 0); ?></span>
-                            <span class="label"><?php _e('horas cuidando', 'flavor-platform'); ?></span>
+                            <span class="label"><?php _e('horas cuidando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
@@ -404,13 +404,13 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <?php if ($es_miembro): ?>
                             <span class="flavor-badge flavor-badge-success">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Formas parte de este círculo', 'flavor-platform'); ?>
+                                <?php _e('Formas parte de este círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php else: ?>
                             <button class="flavor-btn flavor-btn-primary flavor-unirse-circulo"
                                     data-circulo-id="<?php echo esc_attr($circulo_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php _e('Unirme al círculo', 'flavor-platform'); ?>
+                                <?php _e('Unirme al círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -421,24 +421,24 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                 <div class="flavor-circulo-main">
                     <?php if (!empty($circulo->descripcion)): ?>
                         <section class="flavor-panel">
-                            <h2><?php _e('Sobre este círculo', 'flavor-platform'); ?></h2>
+                            <h2><?php _e('Sobre este círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             <?php echo wp_kses_post(wpautop($circulo->descripcion)); ?>
                         </section>
                     <?php endif; ?>
 
                     <section class="flavor-panel">
                         <h2>
-                            <?php _e('Necesidades Abiertas', 'flavor-platform'); ?>
+                            <?php _e('Necesidades Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if ($es_miembro): ?>
                                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('circulos-cuidados', 'publicar-necesidad', ['circulo_id' => $circulo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline" style="float: right;">
                                     <span class="dashicons dashicons-plus"></span>
-                                    <?php _e('Publicar', 'flavor-platform'); ?>
+                                    <?php _e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </h2>
                         <?php if (empty($necesidades)): ?>
-                            <p class="flavor-no-datos"><?php _e('No hay necesidades abiertas en este momento.', 'flavor-platform'); ?></p>
+                            <p class="flavor-no-datos"><?php _e('No hay necesidades abiertas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else: ?>
                             <div class="flavor-necesidades-lista">
                                 <?php foreach ($necesidades as $necesidad): ?>
@@ -451,14 +451,14 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
                 <aside class="flavor-circulo-sidebar">
                     <section class="flavor-panel">
-                        <h3><?php _e('Personas del círculo', 'flavor-platform'); ?></h3>
+                        <h3><?php _e('Personas del círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-miembros-circulo">
                             <?php foreach ($miembros as $miembro): ?>
                                 <div class="flavor-miembro-item-circulo">
                                     <?php echo get_avatar($miembro->usuario_id, 40); ?>
                                     <div class="flavor-miembro-info">
                                         <span class="nombre"><?php echo esc_html($miembro->display_name); ?></span>
-                                        <span class="horas"><?php printf(__('%dh aportadas', 'flavor-platform'), $miembro->horas_aportadas); ?></span>
+                                        <span class="horas"><?php printf(__('%dh aportadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $miembro->horas_aportadas); ?></span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -467,7 +467,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
                     <?php if (!empty($circulo->valores)): ?>
                         <section class="flavor-panel">
-                            <h3><?php _e('Valores del círculo', 'flavor-platform'); ?></h3>
+                            <h3><?php _e('Valores del círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <?php echo wp_kses_post(wpautop($circulo->valores)); ?>
                         </section>
                     <?php endif; ?>
@@ -514,7 +514,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                 <button class="flavor-btn flavor-btn-sm flavor-btn-primary flavor-responder-necesidad"
                         data-necesidad-id="<?php echo esc_attr($necesidad->id); ?>">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Puedo ayudar', 'flavor-platform'); ?>
+                    <?php _e('Puedo ayudar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -527,7 +527,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
     public function shortcode_crear($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un círculo.', 'flavor-platform'), wp_login_url(flavor_current_request_url())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 
@@ -536,22 +536,22 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-crear-circulo">
-            <h2><?php _e('Crear Círculo de Cuidados', 'flavor-platform'); ?></h2>
-            <p class="flavor-intro"><?php _e('Los círculos de cuidados son redes de apoyo mutuo donde nos cuidamos entre vecinos/as.', 'flavor-platform'); ?></p>
+            <h2><?php _e('Crear Círculo de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-intro"><?php _e('Los círculos de cuidados son redes de apoyo mutuo donde nos cuidamos entre vecinos/as.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="flavor-form-crear-circulo" class="flavor-form">
                 <?php wp_nonce_field('flavor_circulos_nonce', 'nonce'); ?>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="nombre"><?php _e('Nombre del círculo', 'flavor-platform'); ?> *</label>
+                        <label for="nombre"><?php _e('Nombre del círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" name="nombre" id="nombre" required maxlength="150"
-                               placeholder="<?php esc_attr_e('Ej: Círculo de cuidados del barrio...', 'flavor-platform'); ?>">
+                               placeholder="<?php esc_attr_e('Ej: Círculo de cuidados del barrio...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="tipo"><?php _e('Tipo de cuidados', 'flavor-platform'); ?> *</label>
+                        <label for="tipo"><?php _e('Tipo de cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select name="tipo" id="tipo" required>
-                            <option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>
+                            <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($this->tipos_circulo as $clave => $tipo): ?>
                                 <option value="<?php echo esc_attr($clave); ?>"><?php echo esc_html($tipo['nombre']); ?></option>
                             <?php endforeach; ?>
@@ -560,30 +560,30 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="barrio"><?php _e('Barrio / Zona', 'flavor-platform'); ?></label>
+                    <label for="barrio"><?php _e('Barrio / Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="barrio" id="barrio"
-                           placeholder="<?php esc_attr_e('¿Dónde se ubica el círculo?', 'flavor-platform'); ?>">
+                           placeholder="<?php esc_attr_e('¿Dónde se ubica el círculo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción', 'flavor-platform'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="descripcion" id="descripcion" rows="5" required
-                              placeholder="<?php esc_attr_e('¿Qué tipo de apoyo ofrece este círculo?', 'flavor-platform'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('¿Qué tipo de apoyo ofrece este círculo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="valores"><?php _e('Valores del círculo', 'flavor-platform'); ?></label>
+                    <label for="valores"><?php _e('Valores del círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="valores" id="valores" rows="3"
-                              placeholder="<?php esc_attr_e('¿Qué valores guían este círculo? Ej: Reciprocidad, confidencialidad...', 'flavor-platform'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('¿Qué valores guían este círculo? Ej: Reciprocidad, confidencialidad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php _e('Crear Círculo', 'flavor-platform'); ?>
+                        <?php _e('Crear Círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_module_url('circulos-cuidados')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Cancelar', 'flavor-platform'); ?>
+                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -612,12 +612,12 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-necesidades-generales">
-            <h2><?php _e('Necesidades de Cuidados', 'flavor-platform'); ?></h2>
-            <p class="flavor-intro"><?php _e('Personas de la comunidad que necesitan apoyo.', 'flavor-platform'); ?></p>
+            <h2><?php _e('Necesidades de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-intro"><?php _e('Personas de la comunidad que necesitan apoyo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <?php if (empty($necesidades)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay necesidades abiertas en este momento.', 'flavor-platform'); ?>
+                    <?php _e('No hay necesidades abiertas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-necesidades-grid">
@@ -645,48 +645,48 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-publicar-necesidad">
-            <h2><?php _e('Publicar Necesidad de Cuidados', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Publicar Necesidad de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="flavor-form-necesidad" class="flavor-form">
                 <?php wp_nonce_field('flavor_circulos_nonce', 'nonce'); ?>
                 <input type="hidden" name="circulo_id" value="<?php echo esc_attr($circulo_id); ?>">
 
                 <div class="flavor-form-group">
-                    <label for="titulo"><?php _e('¿Qué necesitas?', 'flavor-platform'); ?> *</label>
+                    <label for="titulo"><?php _e('¿Qué necesitas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="titulo" id="titulo" required
-                           placeholder="<?php esc_attr_e('Ej: Acompañamiento para cita médica', 'flavor-platform'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Acompañamiento para cita médica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción', 'flavor-platform'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="descripcion" id="descripcion" rows="4" required
-                              placeholder="<?php esc_attr_e('Explica con más detalle qué necesitas...', 'flavor-platform'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Explica con más detalle qué necesitas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="urgencia"><?php _e('Urgencia', 'flavor-platform'); ?></label>
+                        <label for="urgencia"><?php _e('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="urgencia" id="urgencia">
-                            <option value="baja"><?php _e('Baja - Cuando sea posible', 'flavor-platform'); ?></option>
-                            <option value="media" selected><?php _e('Media - Esta semana', 'flavor-platform'); ?></option>
-                            <option value="alta"><?php _e('Alta - En 1-2 días', 'flavor-platform'); ?></option>
-                            <option value="urgente"><?php _e('Urgente - Hoy', 'flavor-platform'); ?></option>
+                            <option value="baja"><?php _e('Baja - Cuando sea posible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="media" selected><?php _e('Media - Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="alta"><?php _e('Alta - En 1-2 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="urgente"><?php _e('Urgente - Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                     <div class="flavor-form-group">
-                        <label for="fecha_necesaria"><?php _e('Fecha deseada', 'flavor-platform'); ?></label>
+                        <label for="fecha_necesaria"><?php _e('Fecha deseada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="fecha_necesaria" id="fecha_necesaria">
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="horas_estimadas"><?php _e('Horas estimadas', 'flavor-platform'); ?></label>
+                    <label for="horas_estimadas"><?php _e('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" name="horas_estimadas" id="horas_estimadas" min="0.5" step="0.5" value="1">
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Publicar Necesidad', 'flavor-platform'); ?>
+                        <?php _e('Publicar Necesidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -719,13 +719,13 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-circulos">
-            <h2><?php _e('Mis Círculos de Cuidados', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Mis Círculos de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($circulos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No perteneces a ningún círculo todavía.', 'flavor-platform'); ?>
+                    <?php _e('No perteneces a ningún círculo todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <a href="<?php echo esc_url(remove_query_arg('tab')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Explorar Círculos', 'flavor-platform'); ?>
+                        <?php _e('Explorar Círculos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -746,7 +746,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                             </div>
                             <div class="flavor-circulo-mis-stats">
                                 <span class="flavor-mis-horas">
-                                    <strong><?php echo absint($circulo->mis_horas); ?></strong> <?php _e('horas aportadas', 'flavor-platform'); ?>
+                                    <strong><?php echo absint($circulo->mis_horas); ?></strong> <?php _e('horas aportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                         </div>
@@ -786,26 +786,26 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-horas">
-            <h2><?php _e('Mis Horas de Cuidados', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Mis Horas de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="flavor-resumen-horas">
                 <div class="flavor-total-horas">
                     <span class="valor"><?php echo number_format($total_horas, 1); ?></span>
-                    <span class="label"><?php _e('horas aportadas', 'flavor-platform'); ?></span>
+                    <span class="label"><?php _e('horas aportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if (empty($horas)): ?>
-                <p class="flavor-no-datos"><?php _e('Aún no has registrado horas de cuidados.', 'flavor-platform'); ?></p>
+                <p class="flavor-no-datos"><?php _e('Aún no has registrado horas de cuidados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <table class="flavor-table">
                     <thead>
                         <tr>
-                            <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                            <th><?php _e('Círculo', 'flavor-platform'); ?></th>
-                            <th><?php _e('Actividad', 'flavor-platform'); ?></th>
-                            <th><?php _e('Horas', 'flavor-platform'); ?></th>
-                            <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Círculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -882,28 +882,28 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-heart"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($mis_circulos); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Círculos', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Círculos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-clock"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($mis_horas, 1); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Horas cuidando', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Horas cuidando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-groups"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($necesidades_ayudadas); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Personas ayudadas', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Personas ayudadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel">
-                <h3><?php _e('Gracias por cuidar', 'flavor-platform'); ?></h3>
-                <p><?php _e('Cada hora que dedicas a cuidar a otras personas fortalece los vínculos de nuestra comunidad.', 'flavor-platform'); ?></p>
+                <h3><?php _e('Gracias por cuidar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Cada hora que dedicas a cuidar a otras personas fortalece los vínculos de nuestra comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <?php
@@ -927,7 +927,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
@@ -935,7 +935,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         $descripcion = wp_kses_post($_POST['descripcion'] ?? '');
 
         if (empty($nombre) || empty($tipo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Completa todos los campos requeridos.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Completa todos los campos requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -964,12 +964,12 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
             ]);
 
             wp_send_json_success([
-                'message' => __('Círculo creado. ¡Gracias por tejer comunidad!', 'flavor-platform'),
+                'message' => __('Círculo creado. ¡Gracias por tejer comunidad!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'circulo_id' => $circulo_id,
                 'redirect' => Flavor_Platform_Helpers::get_item_url('circulos-cuidados', $circulo_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear el círculo.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al crear el círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -980,14 +980,14 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $circulo_id = absint($_POST['circulo_id'] ?? 0);
         $usuario_id = get_current_user_id();
 
         if ($this->es_miembro($circulo_id, $usuario_id)) {
-            wp_send_json_error(['message' => __('Ya formas parte de este círculo.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Ya formas parte de este círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1001,10 +1001,10 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('¡Bienvenido/a al círculo!', 'flavor-platform'),
+                'message' => __('¡Bienvenido/a al círculo!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al unirse.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al unirse.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1015,14 +1015,14 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
         $descripcion = wp_kses_post($_POST['descripcion'] ?? '');
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son requeridos.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Título y descripción son requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1040,10 +1040,10 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Necesidad publicada. Pronto alguien te contactará.', 'flavor-platform'),
+                'message' => __('Necesidad publicada. Pronto alguien te contactará.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al publicar.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1054,7 +1054,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $necesidad_id = absint($_POST['necesidad_id'] ?? 0);
@@ -1069,7 +1069,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ));
 
         if (!$necesidad || $necesidad->usuario_id == $usuario_id) {
-            wp_send_json_error(['message' => __('No puedes responder a esta necesidad.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No puedes responder a esta necesidad.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->insert($this->tabla_respuestas, [
@@ -1082,10 +1082,10 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('¡Gracias por tu solidaridad! Se notificará a quien lo necesita.', 'flavor-platform'),
+                'message' => __('¡Gracias por tu solidaridad! Se notificará a quien lo necesita.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al responder.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al responder.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1096,7 +1096,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
         // Implementar confirmación de horas
-        wp_send_json_success(['message' => __('Horas confirmadas.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Horas confirmadas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

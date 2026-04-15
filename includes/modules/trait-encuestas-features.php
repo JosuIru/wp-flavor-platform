@@ -105,7 +105,7 @@ trait Flavor_Encuestas_Features {
     protected function crear_encuesta_vinculada($entidad_id, $datos_encuesta) {
         $module = $this->get_encuestas_module();
         if (!$module) {
-            return new WP_Error('no_module', __('Módulo de encuestas no disponible', 'flavor-platform'));
+            return new WP_Error('no_module', __('Módulo de encuestas no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Añadir contexto
@@ -237,7 +237,7 @@ trait Flavor_Encuestas_Features {
     protected function responder_encuesta($encuesta_id, $respuestas) {
         $module = $this->get_encuestas_module();
         if (!$module) {
-            return new WP_Error('no_module', __('Módulo de encuestas no disponible', 'flavor-platform'));
+            return new WP_Error('no_module', __('Módulo de encuestas no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $module->registrar_respuestas($encuesta_id, $respuestas);
@@ -400,7 +400,7 @@ trait Flavor_Encuestas_Features {
     protected function cerrar_encuesta($encuesta_id) {
         $module = $this->get_encuestas_module();
         if (!$module) {
-            return new WP_Error('no_module', __('Módulo de encuestas no disponible', 'flavor-platform'));
+            return new WP_Error('no_module', __('Módulo de encuestas no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $module->cerrar_encuesta($encuesta_id);
@@ -415,7 +415,7 @@ trait Flavor_Encuestas_Features {
     protected function eliminar_encuesta($encuesta_id) {
         $module = $this->get_encuestas_module();
         if (!$module) {
-            return new WP_Error('no_module', __('Módulo de encuestas no disponible', 'flavor-platform'));
+            return new WP_Error('no_module', __('Módulo de encuestas no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $module->eliminar_encuesta($encuesta_id);
@@ -480,7 +480,7 @@ trait Flavor_Encuestas_Features {
 
         $tabs['encuestas'] = [
             'label'    => sprintf(
-                __('Encuestas %s', 'flavor-platform'),
+                __('Encuestas %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_encuestas > 0 ? "($total_encuestas)" : ''
             ),
             'icon'     => 'dashicons-forms',
@@ -504,13 +504,13 @@ trait Flavor_Encuestas_Features {
         ?>
         <div class="flavor-encuestas-tab">
             <div class="flavor-encuestas-tab__header">
-                <h3><?php esc_html_e('Encuestas', 'flavor-platform'); ?></h3>
+                <h3><?php esc_html_e('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <?php if (is_user_logged_in()): ?>
                     <button type="button"
                             class="flavor-encuestas-tab__crear"
                             data-toggle="crear-encuesta">
-                        + <?php esc_html_e('Crear encuesta', 'flavor-platform'); ?>
+                        + <?php esc_html_e('Crear encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>

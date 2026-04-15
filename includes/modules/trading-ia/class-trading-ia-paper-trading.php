@@ -231,7 +231,7 @@ class Flavor_Trading_IA_Paper_Trading {
             return array(
                 'exito' => false,
                 'error' => sprintf(
-                    __('Balance insuficiente. Disponible: $%.2f', 'flavor-platform'),
+                    __('Balance insuficiente. Disponible: $%.2f', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $this->balance_usd
                 ),
             );
@@ -313,7 +313,7 @@ class Flavor_Trading_IA_Paper_Trading {
         if ($cantidad_disponible <= 0) {
             return array(
                 'exito' => false,
-                'error' => sprintf(__('No tienes %s para vender', 'flavor-platform'), $token),
+                'error' => sprintf(__('No tienes %s para vender', FLAVOR_PLATFORM_TEXT_DOMAIN), $token),
             );
         }
 

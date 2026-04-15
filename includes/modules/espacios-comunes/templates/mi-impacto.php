@@ -20,24 +20,24 @@ $cesiones_realizadas = $impacto['cesiones_realizadas'] ?? 0;
 
 // Determinar nivel basado en puntos
 $nivel = 1;
-$titulo_nivel = __('Vecino', 'flavor-platform');
+$titulo_nivel = __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $siguiente_nivel = 50;
 
 if ($puntos >= 200) {
     $nivel = 5;
-    $titulo_nivel = __('Guardián', 'flavor-platform');
+    $titulo_nivel = __('Guardián', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = null;
 } elseif ($puntos >= 100) {
     $nivel = 4;
-    $titulo_nivel = __('Cuidador', 'flavor-platform');
+    $titulo_nivel = __('Cuidador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 200;
 } elseif ($puntos >= 50) {
     $nivel = 3;
-    $titulo_nivel = __('Colaborador', 'flavor-platform');
+    $titulo_nivel = __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 100;
 } elseif ($puntos >= 20) {
     $nivel = 2;
-    $titulo_nivel = __('Participante', 'flavor-platform');
+    $titulo_nivel = __('Participante', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 50;
 }
 
@@ -60,11 +60,11 @@ $usuario = wp_get_current_user();
     <!-- Progreso de nivel -->
     <div class="ec-mi-impacto__progreso">
         <div class="ec-mi-impacto__progreso-header">
-            <span><?php printf(esc_html__('%d puntos', 'flavor-platform'), $puntos); ?></span>
+            <span><?php printf(esc_html__('%d puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), $puntos); ?></span>
             <?php if ($siguiente_nivel): ?>
-                <span><?php printf(esc_html__('Siguiente nivel: %d pts', 'flavor-platform'), $siguiente_nivel); ?></span>
+                <span><?php printf(esc_html__('Siguiente nivel: %d pts', FLAVOR_PLATFORM_TEXT_DOMAIN), $siguiente_nivel); ?></span>
             <?php else: ?>
-                <span><?php esc_html_e('¡Nivel máximo!', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('¡Nivel máximo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </div>
         <div class="ec-mi-impacto__progreso-bar">
@@ -80,7 +80,7 @@ $usuario = wp_get_current_user();
             </span>
             <div class="ec-mi-impacto__stat-info">
                 <span class="ec-mi-impacto__stat-valor"><?php echo esc_html($horas_voluntariado); ?>h</span>
-                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Voluntariado', 'flavor-platform'); ?></span>
+                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -90,7 +90,7 @@ $usuario = wp_get_current_user();
             </span>
             <div class="ec-mi-impacto__stat-info">
                 <span class="ec-mi-impacto__stat-valor"><?php echo esc_html($cesiones_realizadas); ?></span>
-                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Cesiones', 'flavor-platform'); ?></span>
+                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Cesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -100,54 +100,54 @@ $usuario = wp_get_current_user();
             </span>
             <div class="ec-mi-impacto__stat-info">
                 <span class="ec-mi-impacto__stat-valor"><?php echo esc_html($puntos); ?></span>
-                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Puntos', 'flavor-platform'); ?></span>
+                <span class="ec-mi-impacto__stat-label"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
 
     <!-- Logros -->
     <div class="ec-mi-impacto__logros">
-        <h4><?php esc_html_e('Logros desbloqueados', 'flavor-platform'); ?></h4>
+        <h4><?php esc_html_e('Logros desbloqueados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="ec-mi-impacto__logros-grid">
             <?php if ($horas_voluntariado >= 1): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-hammer"></span>
-                    <span><?php esc_html_e('Primer voluntariado', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('Primer voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($cesiones_realizadas >= 1): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-heart"></span>
-                    <span><?php esc_html_e('Primer cesión', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('Primer cesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($horas_voluntariado >= 10): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-awards"></span>
-                    <span><?php esc_html_e('10h voluntariado', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('10h voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($cesiones_realizadas >= 5): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-superhero"></span>
-                    <span><?php esc_html_e('5 cesiones', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('5 cesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($nivel >= 3): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <span><?php esc_html_e('Colaborador', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($nivel >= 5): ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--desbloqueado">
                     <span class="dashicons dashicons-shield"></span>
-                    <span><?php esc_html_e('Guardián', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('Guardián', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
@@ -159,7 +159,7 @@ $usuario = wp_get_current_user();
             ?>
                 <div class="ec-mi-impacto__logro ec-mi-impacto__logro--bloqueado">
                     <span class="dashicons dashicons-lock"></span>
-                    <span><?php esc_html_e('Participa para desbloquear', 'flavor-platform'); ?></span>
+                    <span><?php esc_html_e('Participa para desbloquear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
         </div>
@@ -167,24 +167,24 @@ $usuario = wp_get_current_user();
 
     <!-- Beneficios del nivel -->
     <div class="ec-mi-impacto__beneficios">
-        <h4><?php esc_html_e('Beneficios de tu nivel', 'flavor-platform'); ?></h4>
+        <h4><?php esc_html_e('Beneficios de tu nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul>
             <?php if ($nivel >= 2): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Prioridad en lista de espera', 'flavor-platform'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Prioridad en lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 3): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Reservas con más anticipación', 'flavor-platform'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Reservas con más anticipación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 4): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Descuento en fianza', 'flavor-platform'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Descuento en fianza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 5): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Sin necesidad de aprobación', 'flavor-platform'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Sin necesidad de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel == 1): ?>
                 <li class="ec-mi-impacto__beneficio-bloqueado">
                     <span class="dashicons dashicons-lock"></span>
-                    <?php esc_html_e('Sube de nivel para obtener beneficios', 'flavor-platform'); ?>
+                    <?php esc_html_e('Sube de nivel para obtener beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </li>
             <?php endif; ?>
         </ul>

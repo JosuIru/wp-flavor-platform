@@ -10,11 +10,11 @@ if (!defined('ABSPATH')) {
 }
 
 $roles_labels = [
-    'admin' => __('Administrador', 'flavor-platform'),
-    'contable' => __('Contable', 'flavor-platform'),
-    'empleado' => __('Empleado', 'flavor-platform'),
-    'colaborador' => __('Colaborador', 'flavor-platform'),
-    'observador' => __('Observador', 'flavor-platform'),
+    'admin' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'contable' => __('Contable', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'empleado' => __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'colaborador' => __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'observador' => __('Observador', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $roles_colores = [
@@ -29,7 +29,7 @@ $roles_colores = [
     <!-- Navegación -->
     <div style="margin-bottom:20px;">
         <a href="<?php echo esc_url(remove_query_arg('vista')); ?>" class="flavor-btn flavor-btn-link">
-            ← <?php esc_html_e('Volver al dashboard', 'flavor-platform'); ?>
+            ← <?php esc_html_e('Volver al dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -37,13 +37,13 @@ $roles_colores = [
     <div class="flavor-card" style="margin-bottom:24px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
-                <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Miembros del equipo', 'flavor-platform'); ?></h2>
-                <p style="margin:0;color:#666;"><?php printf(esc_html__('%d miembros en %s', 'flavor-platform'), count($miembros), esc_html($empresa->nombre)); ?></p>
+                <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Miembros del equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p style="margin:0;color:#666;"><?php printf(esc_html__('%d miembros en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), count($miembros), esc_html($empresa->nombre)); ?></p>
             </div>
             <?php if ($es_admin): ?>
             <button type="button" class="flavor-btn flavor-btn-primary" onclick="document.getElementById('modal-invitar').style.display='flex';">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Invitar miembro', 'flavor-platform'); ?>
+                <?php esc_html_e('Invitar miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -73,11 +73,11 @@ $roles_colores = [
             </div>
 
             <div class="flavor-miembro-contacto">
-                <a href="mailto:<?php echo esc_attr($m->user_email); ?>" title="<?php esc_attr_e('Enviar email', 'flavor-platform'); ?>">
+                <a href="mailto:<?php echo esc_attr($m->user_email); ?>" title="<?php esc_attr_e('Enviar email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-email"></span>
                 </a>
                 <?php if ($m->telefono_corporativo): ?>
-                <a href="tel:<?php echo esc_attr($m->telefono_corporativo); ?>" title="<?php esc_attr_e('Llamar', 'flavor-platform'); ?>">
+                <a href="tel:<?php echo esc_attr($m->telefono_corporativo); ?>" title="<?php esc_attr_e('Llamar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-phone"></span>
                 </a>
                 <?php endif; ?>
@@ -99,8 +99,8 @@ $roles_colores = [
     <?php else: ?>
     <div class="flavor-card" style="text-align:center;padding:60px;">
         <span class="dashicons dashicons-groups" style="font-size:48px;width:48px;height:48px;color:#94a3b8;"></span>
-        <h3><?php esc_html_e('Sin miembros', 'flavor-platform'); ?></h3>
-        <p style="color:#666;"><?php esc_html_e('Esta empresa aún no tiene miembros registrados.', 'flavor-platform'); ?></p>
+        <h3><?php esc_html_e('Sin miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p style="color:#666;"><?php esc_html_e('Esta empresa aún no tiene miembros registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>
@@ -110,7 +110,7 @@ $roles_colores = [
 <div id="modal-invitar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;">
     <div style="background:#fff;padding:32px;border-radius:16px;max-width:450px;width:90%;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Invitar miembro', 'flavor-platform'); ?></h3>
+            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Invitar miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button type="button" onclick="document.getElementById('modal-invitar').style.display='none';" style="background:none;border:none;cursor:pointer;">
                 <span class="dashicons dashicons-no-alt" style="font-size:24px;"></span>
             </button>
@@ -121,13 +121,13 @@ $roles_colores = [
             <input type="hidden" name="empresa_id" value="<?php echo esc_attr($empresa->id); ?>" />
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Email del usuario', 'flavor-platform'); ?> *</label>
+                <label><?php esc_html_e('Email del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <input type="email" name="email" required class="flavor-input" placeholder="usuario@email.com" />
-                <p class="flavor-description"><?php esc_html_e('El usuario debe tener una cuenta registrada.', 'flavor-platform'); ?></p>
+                <p class="flavor-description"><?php esc_html_e('El usuario debe tener una cuenta registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Rol', 'flavor-platform'); ?></label>
+                <label><?php esc_html_e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="rol" class="flavor-select">
                     <?php foreach ($roles_labels as $rol => $label): ?>
                     <option value="<?php echo esc_attr($rol); ?>" <?php selected($rol, 'empleado'); ?>><?php echo esc_html($label); ?></option>
@@ -136,16 +136,16 @@ $roles_colores = [
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Cargo', 'flavor-platform'); ?></label>
-                <input type="text" name="cargo" class="flavor-input" placeholder="<?php esc_attr_e('Ej: Director comercial', 'flavor-platform'); ?>" />
+                <label><?php esc_html_e('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="cargo" class="flavor-input" placeholder="<?php esc_attr_e('Ej: Director comercial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
             </div>
 
             <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end;">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="document.getElementById('modal-invitar').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" name="invitar_miembro" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Enviar invitación', 'flavor-platform'); ?>
+                    <?php esc_html_e('Enviar invitación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -156,7 +156,7 @@ $roles_colores = [
 <div id="modal-editar-miembro" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;">
     <div style="background:#fff;padding:32px;border-radius:16px;max-width:400px;width:90%;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Editar miembro', 'flavor-platform'); ?></h3>
+            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Editar miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button type="button" onclick="document.getElementById('modal-editar-miembro').style.display='none';" style="background:none;border:none;cursor:pointer;">
                 <span class="dashicons dashicons-no-alt" style="font-size:24px;"></span>
             </button>
@@ -167,7 +167,7 @@ $roles_colores = [
             <input type="hidden" name="miembro_id" id="editar-miembro-id" value="" />
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Rol', 'flavor-platform'); ?></label>
+                <label><?php esc_html_e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="rol" id="editar-miembro-rol" class="flavor-select">
                     <?php foreach ($roles_labels as $rol => $label): ?>
                     <option value="<?php echo esc_attr($rol); ?>"><?php echo esc_html($label); ?></option>
@@ -176,16 +176,16 @@ $roles_colores = [
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Cargo', 'flavor-platform'); ?></label>
+                <label><?php esc_html_e('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="cargo" id="editar-miembro-cargo" class="flavor-input" />
             </div>
 
             <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end;">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="document.getElementById('modal-editar-miembro').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" name="actualizar_miembro" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Guardar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -288,7 +288,7 @@ function editarMiembro(id, rol, cargo) {
 }
 
 function eliminarMiembro(id) {
-    if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este miembro del equipo?', 'flavor-platform')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este miembro del equipo?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
         var form = document.createElement('form');
         form.method = 'POST';
         form.innerHTML = '<?php echo wp_nonce_field('eliminar_miembro', '_wpnonce', true, false); ?>' +

@@ -49,8 +49,8 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
      */
     protected function init() {
         $this->id = 'stripe';
-        $this->name = __('Stripe', 'flavor-platform');
-        $this->description = __('Pago seguro con tarjeta de crédito/débito via Stripe', 'flavor-platform');
+        $this->name = __('Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Pago seguro con tarjeta de crédito/débito via Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Cargar credenciales según modo
         $this->load_credentials();
@@ -93,7 +93,7 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
      */
     public function process_payment($payment_data) {
         if (!$this->is_available()) {
-            return new WP_Error('gateway_no_disponible', __('Stripe no está disponible', 'flavor-platform'));
+            return new WP_Error('gateway_no_disponible', __('Stripe no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $factura_id = absint($payment_data['factura_id']);
@@ -101,7 +101,7 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
         $factura = $payment_data['factura'];
 
         if ($importe <= 0) {
-            return new WP_Error('importe_invalido', __('Importe inválido', 'flavor-platform'));
+            return new WP_Error('importe_invalido', __('Importe inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         try {
@@ -141,7 +141,7 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
                 'price_data' => [
                     'currency' => $moneda,
                     'product_data' => [
-                        'name' => sprintf(__('Factura %s', 'flavor-platform'), $factura['numero_factura'] ?? ''),
+                        'name' => sprintf(__('Factura %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $factura['numero_factura'] ?? ''),
                         'description' => $this->create_payment_description($factura),
                     ],
                     'unit_amount' => $cantidad_centavos,
@@ -209,7 +209,7 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
         $datos_respuesta = json_decode($cuerpo, true);
 
         if ($codigo_respuesta !== 200) {
-            $mensaje_error = $datos_respuesta['error']['message'] ?? __('Error desconocido de Stripe', 'flavor-platform');
+            $mensaje_error = $datos_respuesta['error']['message'] ?? __('Error desconocido de Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $this->log("Error API (código {$codigo_respuesta}): {$mensaje_error}", 'error');
             return new WP_Error('stripe_api_error', $mensaje_error);
         }
@@ -356,7 +356,7 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
             'fecha_pago' => current_time('Y-m-d'),
             'metodo_pago' => 'stripe',
             'referencia' => $payment_intent,
-            'notas' => sprintf(__('Pago procesado automáticamente via Stripe. Session ID: %s', 'flavor-platform'), $session['id']),
+            'notas' => sprintf(__('Pago procesado automáticamente via Stripe. Session ID: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $session['id']),
             'estado' => 'confirmado',
         ]);
 

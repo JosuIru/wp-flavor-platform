@@ -27,8 +27,8 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_talleres_';
-        $this->title = __('Talleres', 'flavor-platform');
-        $this->description = __('Talleres prácticos de la comunidad', 'flavor-platform');
+        $this->title = __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Talleres prácticos de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -68,7 +68,7 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-hammer',
                 'valor' => $talleres_proximos,
-                'label' => __('Talleres próximos', 'flavor-platform'),
+                'label' => __('Talleres próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=talleres') : Flavor_Platform_Helpers::get_action_url('talleres', ''),
             ],
@@ -79,10 +79,10 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay talleres programados', 'flavor-platform'),
+            'empty_state' => __('No hay talleres programados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver talleres', 'flavor-platform'),
+                    'label' => __('Ver talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=talleres') : Flavor_Platform_Helpers::get_action_url('talleres', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

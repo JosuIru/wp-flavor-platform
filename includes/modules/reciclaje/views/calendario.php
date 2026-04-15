@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('flavor_recicla
 
         $resultado = $wpdb->insert($tabla_recogidas, $datos_recogida);
         if ($resultado) {
-            $mensaje_exito = __('Recogida programada correctamente.', 'flavor-platform');
+            $mensaje_exito = __('Recogida programada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
-            $mensaje_error = __('Error al programar la recogida.', 'flavor-platform');
+            $mensaje_error = __('Error al programar la recogida.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
     } elseif (isset($_POST['actualizar_estado'])) {
         $recogida_id = intval($_POST['recogida_id']);
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('flavor_recicla
             ['estado' => $nuevo_estado],
             ['id' => $recogida_id]
         );
-        $mensaje_exito = __('Estado actualizado correctamente.', 'flavor-platform');
+        $mensaje_exito = __('Estado actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 }
 
@@ -90,29 +90,29 @@ $primer_dia_semana = date('N', strtotime($primer_dia_mes));
 $total_dias_mes = date('t', strtotime($primer_dia_mes));
 
 $nombres_meses = [
-    1 => __('Enero', 'flavor-platform'),
-    2 => __('Febrero', 'flavor-platform'),
-    3 => __('Marzo', 'flavor-platform'),
-    4 => __('Abril', 'flavor-platform'),
-    5 => __('Mayo', 'flavor-platform'),
-    6 => __('Junio', 'flavor-platform'),
-    7 => __('Julio', 'flavor-platform'),
-    8 => __('Agosto', 'flavor-platform'),
-    9 => __('Septiembre', 'flavor-platform'),
-    10 => __('Octubre', 'flavor-platform'),
-    11 => __('Noviembre', 'flavor-platform'),
-    12 => __('Diciembre', 'flavor-platform'),
+    1 => __('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    11 => __('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    12 => __('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="wrap flavor-reciclaje-calendario">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-calendar-alt"></span>
-        <?php echo esc_html__('Calendario de Recogidas', 'flavor-platform'); ?>
+        <?php echo esc_html__('Calendario de Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <button type="button" class="page-title-action" onclick="abrirModalRecogida()">
-        <?php echo esc_html__('Programar Recogida', 'flavor-platform'); ?>
+        <?php echo esc_html__('Programar Recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
 
     <hr class="wp-header-end">
@@ -150,13 +150,13 @@ $nombres_meses = [
 
             <a href="?page=flavor-reciclaje-calendario&mes=<?php echo $mes_anterior; ?>&anio=<?php echo $anio_anterior; ?>" class="button">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php echo esc_html__('Anterior', 'flavor-platform'); ?>
+                <?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <h2><?php echo esc_html($nombres_meses[$mes_actual]) . ' ' . $anio_actual; ?></h2>
 
             <a href="?page=flavor-reciclaje-calendario&mes=<?php echo $mes_siguiente; ?>&anio=<?php echo $anio_siguiente; ?>" class="button">
-                <?php echo esc_html__('Siguiente', 'flavor-platform'); ?>
+                <?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
@@ -166,13 +166,13 @@ $nombres_meses = [
             <div class="flavor-calendario-grid-wrapper">
                 <div class="flavor-calendario-grid">
                     <!-- Encabezados de días -->
-                    <div class="flavor-dia-header"><?php echo esc_html__('Lun', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Mar', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Mié', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Jue', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Vie', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Sáb', 'flavor-platform'); ?></div>
-                    <div class="flavor-dia-header"><?php echo esc_html__('Dom', 'flavor-platform'); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="flavor-dia-header"><?php echo esc_html__('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
 
                     <?php
                     // Celdas vacías antes del primer día
@@ -224,7 +224,7 @@ $nombres_meses = [
 
             <!-- Panel lateral: Próximas recogidas -->
             <div class="flavor-proximas-recogidas">
-                <h3><?php echo esc_html__('Próximas Recogidas', 'flavor-platform'); ?></h3>
+                <h3><?php echo esc_html__('Próximas Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <?php if (!empty($proximas_recogidas)) : ?>
                     <?php foreach ($proximas_recogidas as $recogida) : ?>
@@ -260,13 +260,13 @@ $nombres_meses = [
                             </div>
                             <div class="flavor-recogida-acciones">
                                 <button class="button button-small" onclick="verDetalleRecogida(<?php echo $recogida->id; ?>)">
-                                    <?php echo esc_html__('Ver', 'flavor-platform'); ?>
+                                    <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('No hay recogidas programadas próximamente.', 'flavor-platform'); ?></p>
+                    <p class="flavor-no-data"><?php echo esc_html__('No hay recogidas programadas próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -277,31 +277,31 @@ $nombres_meses = [
 <div id="modal-recogida" class="flavor-modal" style="display: none;">
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2><?php echo esc_html__('Programar Recogida', 'flavor-platform'); ?></h2>
-            <button type="button" class="flavor-modal-close" onclick="cerrarModalRecogida()"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
+            <h2><?php echo esc_html__('Programar Recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <button type="button" class="flavor-modal-close" onclick="cerrarModalRecogida()"><?php echo esc_html__('&times;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
         <form method="post" action="">
             <?php wp_nonce_field('flavor_reciclaje_recogida_action'); ?>
             <div class="flavor-modal-body">
                 <table class="form-table">
                     <tr>
-                        <th><label for="tipo_recogida"><?php echo esc_html__('Tipo de Recogida', 'flavor-platform'); ?></label></th>
+                        <th><label for="tipo_recogida"><?php echo esc_html__('Tipo de Recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <select name="tipo_recogida" id="tipo_recogida" required>
-                                <option value="<?php echo esc_attr__('programada', 'flavor-platform'); ?>"><?php echo esc_html__('Programada', 'flavor-platform'); ?></option>
-                                <option value="<?php echo esc_attr__('a_demanda', 'flavor-platform'); ?>"><?php echo esc_html__('A Demanda', 'flavor-platform'); ?></option>
-                                <option value="<?php echo esc_attr__('urgente', 'flavor-platform'); ?>"><?php echo esc_html__('Urgente', 'flavor-platform'); ?></option>
+                                <option value="<?php echo esc_attr__('programada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Programada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('a_demanda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('A Demanda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="zona"><?php echo esc_html__('Zona', 'flavor-platform'); ?></label></th>
+                        <th><label for="zona"><?php echo esc_html__('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="text" name="zona" id="zona" class="regular-text" required>
                         </td>
                     </tr>
                     <tr>
-                        <th><label><?php echo esc_html__('Tipos de Residuos', 'flavor-platform'); ?></label></th>
+                        <th><label><?php echo esc_html__('Tipos de Residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <?php
                             $tipos_residuos = ['papel', 'plastico', 'vidrio', 'organico', 'electronico', 'voluminosos'];
@@ -315,25 +315,25 @@ $nombres_meses = [
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="fecha_programada"><?php echo esc_html__('Fecha', 'flavor-platform'); ?></label></th>
+                        <th><label for="fecha_programada"><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="date" name="fecha_programada" id="fecha_programada" required>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="hora_inicio"><?php echo esc_html__('Hora Inicio', 'flavor-platform'); ?></label></th>
+                        <th><label for="hora_inicio"><?php echo esc_html__('Hora Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="time" name="hora_inicio" id="hora_inicio" required>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="hora_fin"><?php echo esc_html__('Hora Fin', 'flavor-platform'); ?></label></th>
+                        <th><label for="hora_fin"><?php echo esc_html__('Hora Fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="time" name="hora_fin" id="hora_fin" required>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="notas"><?php echo esc_html__('Notas', 'flavor-platform'); ?></label></th>
+                        <th><label for="notas"><?php echo esc_html__('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <textarea name="notas" id="notas" rows="4" class="large-text"></textarea>
                         </td>
@@ -342,10 +342,10 @@ $nombres_meses = [
             </div>
             <div class="flavor-modal-footer">
                 <button type="submit" name="crear_recogida" class="button button-primary">
-                    <?php echo esc_html__('Programar', 'flavor-platform'); ?>
+                    <?php echo esc_html__('Programar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" onclick="cerrarModalRecogida()">
-                    <?php echo esc_html__('Cancelar', 'flavor-platform'); ?>
+                    <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -370,10 +370,10 @@ function verDetalleRecogida(id) {
         if (response.success) {
             var r = response.data;
             var html = '<h3>' + r.tipo + '</h3>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-platform')); ?></strong> ' + r.fecha + '</p>' +
-                '<p><strong><?php echo esc_js(__('Horario:', 'flavor-platform')); ?></strong> ' + r.horario + '</p>' +
-                '<p><strong><?php echo esc_js(__('Zona:', 'flavor-platform')); ?></strong> ' + r.zona + '</p>' +
-                (r.notas ? '<p><strong><?php echo esc_js(__('Notas:', 'flavor-platform')); ?></strong> ' + r.notas + '</p>' : '');
+                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Horario:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.horario + '</p>' +
+                '<p><strong><?php echo esc_js(__('Zona:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.zona + '</p>' +
+                (r.notas ? '<p><strong><?php echo esc_js(__('Notas:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.notas + '</p>' : '');
 
             if (!document.getElementById('modal-detalle-recogida')) {
                 jQuery('body').append('<div id="modal-detalle-recogida" class="flavor-modal" style="display:none;"><div class="flavor-modal-overlay" onclick="cerrarDetalleRecogida()"></div><div class="flavor-modal-content" style="min-width:400px;"><button class="flavor-modal-close" onclick="cerrarDetalleRecogida()">&times;</button><div id="contenido-detalle-recogida"></div></div></div>');
@@ -381,7 +381,7 @@ function verDetalleRecogida(id) {
             document.getElementById('contenido-detalle-recogida').innerHTML = html;
             document.getElementById('modal-detalle-recogida').style.display = 'block';
         } else {
-            alert('<?php echo esc_js(__('Error al cargar', 'flavor-platform')); ?>');
+            alert('<?php echo esc_js(__('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
         }
     });
 }

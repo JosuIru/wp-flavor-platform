@@ -35,20 +35,20 @@ $campanias_participando = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <section class="flavor-mis-campanias">
-    <h2><?php esc_html_e('Mis campanias', 'flavor-platform'); ?></h2>
+    <h2><?php esc_html_e('Mis campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
-    <h3><?php esc_html_e('Como creador/a', 'flavor-platform'); ?></h3>
+    <h3><?php esc_html_e('Como creador/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     <?php if (empty($mis_campanias)): ?>
-        <p><?php esc_html_e('No has creado campanias todavia.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('No has creado campanias todavia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Campania', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Firmas', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -69,17 +69,17 @@ $campanias_participando = $wpdb->get_results($wpdb->prepare(
         </table>
     <?php endif; ?>
 
-    <h3 style="margin-top:1.5rem;"><?php esc_html_e('Donde participas', 'flavor-platform'); ?></h3>
+    <h3 style="margin-top:1.5rem;"><?php esc_html_e('Donde participas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     <?php if (empty($campanias_participando)): ?>
-        <p><?php esc_html_e('No participas en ninguna campania por ahora.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('No participas en ninguna campania por ahora.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Campania', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Rol', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>

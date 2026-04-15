@@ -88,18 +88,18 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-lightbulb"></span>
-            <?php esc_html_e('Energía Comunitaria', 'flavor-platform'); ?>
+            <?php esc_html_e('Energía Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
         <p class="dm-header__description">
-            <?php esc_html_e('Gestión de comunidades energéticas, instalaciones y consumo compartido', 'flavor-platform'); ?>
+            <?php esc_html_e('Gestión de comunidades energéticas, instalaciones y consumo compartido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-platform'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Energía Comunitaria o aún no hay actividad registrada.', 'flavor-platform'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Energía Comunitaria o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
@@ -110,7 +110,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-groups"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['comunidades']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Comunidades Energéticas', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Comunidades Energéticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-success) 0%, var(--dm-success-hover) 100%);">
@@ -118,7 +118,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-admin-tools"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['instalaciones']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Instalaciones Activas', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Instalaciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-primary) 0%, var(--dm-primary-hover) 100%);">
@@ -126,7 +126,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-chart-area"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['kwh_mes'], 1); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('kWh este mes', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('kWh este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-purple) 0%, #7c3aed 100%);">
@@ -134,7 +134,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-money-alt"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['ahorro_mes'], 0); ?>€</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Ahorro estimado', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Ahorro estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-info) 0%, #0891b2 100%);">
@@ -142,7 +142,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-admin-site"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['co2_evitado'], 0); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('kg CO₂ evitados', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('kg CO₂ evitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-pink) 0%, #db2777 100%);">
@@ -150,26 +150,26 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <span class="dashicons dashicons-admin-users"></span>
             </div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['participantes']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
     <!-- Tabs -->
     <div class="dm-tabs">
         <button class="dm-tabs__item" :class="{ 'dm-tabs__item--active': tab === 'comunidades' }" @click="tab = 'comunidades'">
-            <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Comunidades', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="dm-tabs__item" :class="{ 'dm-tabs__item--active': tab === 'instalaciones' }" @click="tab = 'instalaciones'">
-            <span class="dashicons dashicons-admin-tools"></span> <?php esc_html_e('Instalaciones', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-admin-tools"></span> <?php esc_html_e('Instalaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="dm-tabs__item" :class="{ 'dm-tabs__item--active': tab === 'lecturas' }" @click="tab = 'lecturas'">
-            <span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Lecturas', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Lecturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="dm-tabs__item" :class="{ 'dm-tabs__item--active': tab === 'reparto' }" @click="tab = 'reparto'">
-            <span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Reparto', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Reparto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="dm-tabs__item" :class="{ 'dm-tabs__item--active': tab === 'incidencias' }" @click="tab = 'incidencias'">
-            <span class="dashicons dashicons-warning"></span> <?php esc_html_e('Incidencias', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-warning"></span> <?php esc_html_e('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($stats['incidencias_abiertas'] > 0): ?>
                 <span class="dm-badge dm-badge--error" style="margin-left: 6px;">
                     <?php echo $stats['incidencias_abiertas']; ?>
@@ -181,10 +181,10 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <!-- Tab: Comunidades -->
     <div x-show="tab === 'comunidades'" x-cloak class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Comunidades Energéticas', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Comunidades Energéticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button class="dm-btn dm-btn--primary dm-btn--sm" @click="showModalComunidad = true">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Comunidad', 'flavor-platform'); ?>
+                <?php esc_html_e('Nueva Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
 
@@ -211,22 +211,22 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
                 <div class="dm-stats-grid dm-stats-grid--3" style="margin: 12px 0;">
                     <div class="dm-mini-stat">
                         <span class="dm-mini-stat__value dm-text-warning"><?php echo intval($comunidad->num_instalaciones); ?></span>
-                        <span class="dm-mini-stat__label"><?php esc_html_e('Inst.', 'flavor-platform'); ?></span>
+                        <span class="dm-mini-stat__label"><?php esc_html_e('Inst.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="dm-mini-stat">
                         <span class="dm-mini-stat__value dm-text-success"><?php echo intval($comunidad->num_participantes); ?></span>
-                        <span class="dm-mini-stat__label"><?php esc_html_e('Miembros', 'flavor-platform'); ?></span>
+                        <span class="dm-mini-stat__label"><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="dm-mini-stat">
                         <span class="dm-mini-stat__value dm-text-primary"><?php echo number_format(floatval($comunidad->potencia_total), 1); ?></span>
-                        <span class="dm-mini-stat__label"><?php esc_html_e('kW', 'flavor-platform'); ?></span>
+                        <span class="dm-mini-stat__label"><?php esc_html_e('kW', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: auto;">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-energia-comunidad&id=' . $comunidad->id)); ?>"
                        class="dm-btn dm-btn--primary dm-btn--sm" style="flex: 1;">
-                        <?php esc_html_e('Gestionar', 'flavor-platform'); ?>
+                        <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <button class="dm-btn dm-btn--ghost dm-btn--sm" @click="verDetalle(<?php echo $comunidad->id; ?>)">
                         <span class="dashicons dashicons-visibility"></span>
@@ -238,9 +238,9 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
         <?php else: ?>
         <div class="dm-empty">
             <span class="dashicons dashicons-lightbulb"></span>
-            <p><?php esc_html_e('No hay comunidades energéticas registradas.', 'flavor-platform'); ?></p>
+            <p><?php esc_html_e('No hay comunidades energéticas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button class="dm-btn dm-btn--primary" @click="showModalComunidad = true">
-                <?php esc_html_e('Crear primera comunidad', 'flavor-platform'); ?>
+                <?php esc_html_e('Crear primera comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -256,10 +256,10 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <!-- Tab: Lecturas -->
     <div x-show="tab === 'lecturas'" x-cloak class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Registro de Lecturas', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Registro de Lecturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button class="dm-btn dm-btn--primary dm-btn--sm" @click="showModalLectura = true">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Lectura', 'flavor-platform'); ?>
+                <?php esc_html_e('Nueva Lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <div style="padding: 20px;">
@@ -277,10 +277,10 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <!-- Tab: Incidencias -->
     <div x-show="tab === 'incidencias'" x-cloak class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Incidencias y Mantenimiento', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Incidencias y Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button class="dm-btn dm-btn--primary dm-btn--sm" @click="showModalIncidencia = true">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Reportar Incidencia', 'flavor-platform'); ?>
+                <?php esc_html_e('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <div style="padding: 20px;">
@@ -292,7 +292,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <div x-show="showModalComunidad" x-cloak class="dm-modal-backdrop" @click.self="showModalComunidad = false">
         <div class="dm-modal">
             <div class="dm-modal__header">
-                <h2><?php esc_html_e('Nueva Comunidad Energética', 'flavor-platform'); ?></h2>
+                <h2><?php esc_html_e('Nueva Comunidad Energética', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <button class="dm-modal__close" @click="showModalComunidad = false">&times;</button>
             </div>
             <div class="dm-modal__body">
@@ -305,7 +305,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <div x-show="showModalLectura" x-cloak class="dm-modal-backdrop" @click.self="showModalLectura = false">
         <div class="dm-modal">
             <div class="dm-modal__header">
-                <h2><?php esc_html_e('Registrar Lectura', 'flavor-platform'); ?></h2>
+                <h2><?php esc_html_e('Registrar Lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <button class="dm-modal__close" @click="showModalLectura = false">&times;</button>
             </div>
             <div class="dm-modal__body">
@@ -318,7 +318,7 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     <div x-show="showModalIncidencia" x-cloak class="dm-modal-backdrop" @click.self="showModalIncidencia = false">
         <div class="dm-modal">
             <div class="dm-modal__header">
-                <h2><?php esc_html_e('Reportar Incidencia', 'flavor-platform'); ?></h2>
+                <h2><?php esc_html_e('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <button class="dm-modal__close" @click="showModalIncidencia = false">&times;</button>
             </div>
             <div class="dm-modal__body">

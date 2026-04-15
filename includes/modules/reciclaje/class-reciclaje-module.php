@@ -53,7 +53,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Reciclaje no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Reciclaje no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -217,15 +217,15 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         // Post type para recompensas canjeables
         register_post_type('recompensa_reciclaje', [
             'labels' => [
-                'name' => __('Recompensas', 'flavor-platform'),
-                'singular_name' => __('Recompensa', 'flavor-platform'),
-                'add_new' => __('Añadir Recompensa', 'flavor-platform'),
-                'add_new_item' => __('Añadir Nueva Recompensa', 'flavor-platform'),
-                'edit_item' => __('Editar Recompensa', 'flavor-platform'),
-                'new_item' => __('Nueva Recompensa', 'flavor-platform'),
-                'view_item' => __('Ver Recompensa', 'flavor-platform'),
-                'search_items' => __('Buscar Recompensas', 'flavor-platform'),
-                'not_found' => __('No se encontraron recompensas', 'flavor-platform'),
+                'name' => __('Recompensas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Añadir Nueva Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'new_item' => __('Nueva Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'view_item' => __('Ver Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'search_items' => __('Buscar Recompensas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'not_found' => __('No se encontraron recompensas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -238,9 +238,9 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         // Post type para guías de reciclaje
         register_post_type('guia_reciclaje', [
             'labels' => [
-                'name' => __('Guías', 'flavor-platform'),
-                'singular_name' => __('Guía', 'flavor-platform'),
-                'add_new' => __('Añadir Guía', 'flavor-platform'),
+                'name' => __('Guías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Guía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Guía', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -257,8 +257,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
     public function register_taxonomies() {
         register_taxonomy('tipo_material', ['guia_reciclaje'], [
             'labels' => [
-                'name' => __('Tipos de Material', 'flavor-platform'),
-                'singular_name' => __('Tipo de Material', 'flavor-platform'),
+                'name' => __('Tipos de Material', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Tipo de Material', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'public' => true,
@@ -268,8 +268,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
         register_taxonomy('categoria_recompensa', ['recompensa_reciclaje'], [
             'labels' => [
-                'name' => __('Categorías de Recompensa', 'flavor-platform'),
-                'singular_name' => __('Categoría de Recompensa', 'flavor-platform'),
+                'name' => __('Categorías de Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría de Recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'public' => true,
@@ -562,9 +562,9 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      */
     public function register_admin_menu() {
         add_submenu_page(
-            'flavor-platform',
-            __('Reciclaje', 'flavor-platform'),
-            __('Reciclaje', 'flavor-platform'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-reciclaje',
             [$this, 'render_admin_page']
@@ -579,35 +579,35 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'reciclaje',
-            'label' => __('Reciclaje', 'flavor-platform'),
+            'label' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-image-rotate',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'reciclaje-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'reciclaje-puntos',
-                    'titulo' => __('Puntos de Reciclaje', 'flavor-platform'),
+                    'titulo' => __('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_puntos_reciclaje'],
                     'badge' => [$this, 'contar_puntos_reciclaje'],
                 ],
                 [
                     'slug' => 'reciclaje-estadisticas',
-                    'titulo' => __('Estadísticas', 'flavor-platform'),
+                    'titulo' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_estadisticas'],
                 ],
                 [
                     'slug' => 'reciclaje-campanas',
-                    'titulo' => __('Campañas', 'flavor-platform'),
+                    'titulo' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_campanas'],
                 ],
                 [
                     'slug' => 'reciclaje-config',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -658,7 +658,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-image-rotate',
             'valor' => number_format_i18n($kg_este_mes, 1) . ' kg',
-            'label' => __('Kg reciclados este mes', 'flavor-platform'),
+            'label' => __('Kg reciclados este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $kg_este_mes > 0 ? 'green' : 'gray',
             'enlace' => admin_url('admin.php?page=reciclaje-estadisticas'),
         ];
@@ -675,17 +675,17 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Reciclaje', 'flavor-platform'), [
-            ['label' => __('Nuevo Punto', 'flavor-platform'), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Punto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
         if (method_exists($this, 'render_admin_module_hub')) {
             $this->render_admin_module_hub([
-                'description' => __('Acceso visible a puntos, estadísticas, campañas, configuración y al bloque principal de métricas.', 'flavor-platform'),
+                'description' => __('Acceso visible a puntos, estadísticas, campañas, configuración y al bloque principal de métricas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'stats_anchor' => '#reciclaje-stats',
                 'extra_items' => [
                     [
-                        'label' => __('Portal', 'flavor-platform'),
+                        'label' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => home_url('/mi-portal/reciclaje/'),
                         'icon' => 'dashicons-external',
                     ],
@@ -709,13 +709,13 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         }
 
         echo '<div id="reciclaje-stats" class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas['kg_mes'] ?? 0, 1)) . ' kg</span><span class="stat-label">' . __('Reciclado este mes', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['total_depositos'] ?? 0) . '</span><span class="stat-label">' . __('Depósitos totales', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['usuarios_activos'] ?? 0) . '</span><span class="stat-label">' . __('Usuarios activos', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['puntos_activos'] ?? 0) . '</span><span class="stat-label">' . __('Puntos de reciclaje', 'flavor-platform') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas['kg_mes'] ?? 0, 1)) . ' kg</span><span class="stat-label">' . __('Reciclado este mes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['total_depositos'] ?? 0) . '</span><span class="stat-label">' . __('Depósitos totales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['usuarios_activos'] ?? 0) . '</span><span class="stat-label">' . __('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['puntos_activos'] ?? 0) . '</span><span class="stat-label">' . __('Puntos de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
-        echo '<p>' . __('Panel de control del módulo de reciclaje con métricas ambientales y accesos rápidos.', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de reciclaje con métricas ambientales y accesos rápidos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -739,15 +739,15 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Puntos de Reciclaje', 'flavor-platform'), [
-            ['label' => __('Nuevo Punto', 'flavor-platform'), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Punto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
         $puntos = $wpdb->get_results("SELECT * FROM $tabla_puntos ORDER BY nombre");
 
         if (!empty($puntos)) {
             echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Nombre', 'flavor-platform') . '</th><th>' . __('Tipo', 'flavor-platform') . '</th><th>' . __('Dirección', 'flavor-platform') . '</th><th>' . __('Estado', 'flavor-platform') . '</th><th>' . __('Acciones', 'flavor-platform') . '</th></tr></thead>';
+            echo '<thead><tr><th>' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead>';
             echo '<tbody>';
             foreach ($puntos as $punto) {
                 $clase_estado = $punto->estado === 'activo' ? 'status-active' : 'status-inactive';
@@ -756,12 +756,12 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                 echo '<td>' . esc_html(ucfirst(str_replace('_', ' ', $punto->tipo))) . '</td>';
                 echo '<td>' . esc_html($punto->direccion) . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($punto->estado)) . '</span></td>';
-                echo '<td><a href="' . esc_url(admin_url('admin.php?page=reciclaje-puntos&action=editar&id=' . $punto->id)) . '" class="button button-small">' . __('Editar', 'flavor-platform') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=reciclaje-puntos&action=editar&id=' . $punto->id)) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay puntos de reciclaje registrados.', 'flavor-platform') . '</p>';
+            echo '<p>' . __('No hay puntos de reciclaje registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -775,7 +775,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Estadísticas de Reciclaje', 'flavor-platform'));
+        $this->render_page_header(__('Estadísticas de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         // Estadísticas generales
         $estadisticas = $wpdb->get_row("
@@ -789,10 +789,10 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ");
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_depositos)) . '</span><span class="stat-label">' . __('Depósitos Totales', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_kg, 2)) . ' kg</span><span class="stat-label">' . __('Material Reciclado', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_puntos)) . '</span><span class="stat-label">' . __('Puntos Otorgados', 'flavor-platform') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->usuarios_activos)) . '</span><span class="stat-label">' . __('Usuarios Activos', 'flavor-platform') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_depositos)) . '</span><span class="stat-label">' . __('Depósitos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_kg, 2)) . ' kg</span><span class="stat-label">' . __('Material Reciclado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_puntos)) . '</span><span class="stat-label">' . __('Puntos Otorgados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->usuarios_activos)) . '</span><span class="stat-label">' . __('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
         // Estadísticas por tipo de material
@@ -807,9 +807,9 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ");
 
         if (!empty($por_material)) {
-            echo '<h3>' . __('Por Tipo de Material', 'flavor-platform') . '</h3>';
+            echo '<h3>' . __('Por Tipo de Material', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
             echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Material', 'flavor-platform') . '</th><th>' . __('Total (kg)', 'flavor-platform') . '</th><th>' . __('Depósitos', 'flavor-platform') . '</th></tr></thead>';
+            echo '<thead><tr><th>' . __('Material', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Total (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead>';
             echo '<tbody>';
             foreach ($por_material as $material) {
                 echo '<tr>';
@@ -837,8 +837,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Campañas de Reciclaje', 'flavor-platform'));
-        echo '<div class="notice notice-error"><p>' . __('No se encontró la vista de campañas.', 'flavor-platform') . '</p></div>';
+        $this->render_page_header(__('Campañas de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<div class="notice notice-error"><p>' . __('No se encontró la vista de campañas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         echo '</div>';
     }
 
@@ -847,29 +847,29 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      */
     public function render_admin_configuracion() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Reciclaje', 'flavor-platform'));
+        $this->render_page_header(__('Configuración de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_settings();
 
         echo '<form method="post" action="">';
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="puntos_por_kg">' . __('Puntos por Kg', 'flavor-platform') . '</label></th>';
+        echo '<tr><th scope="row"><label for="puntos_por_kg">' . __('Puntos por Kg', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="puntos_por_kg" id="puntos_por_kg" value="' . esc_attr($configuracion_actual['puntos_por_kg'] ?? 10) . '" min="1" class="small-text" />';
-        echo '<p class="description">' . __('Puntos otorgados por cada kilogramo reciclado.', 'flavor-platform') . '</p></td></tr>';
+        echo '<p class="description">' . __('Puntos otorgados por cada kilogramo reciclado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permite_canje_puntos">' . __('Permitir canje de puntos', 'flavor-platform') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permite_canje_puntos">' . __('Permitir canje de puntos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permite_canje_puntos" id="permite_canje_puntos" ' . checked($configuracion_actual['permite_canje_puntos'] ?? true, true, false) . ' /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="notificar_recogidas">' . __('Notificar recogidas', 'flavor-platform') . '</label></th>';
+        echo '<tr><th scope="row"><label for="notificar_recogidas">' . __('Notificar recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="notificar_recogidas" id="notificar_recogidas" ' . checked($configuracion_actual['notificar_recogidas'] ?? true, true, false) . ' />';
-        echo '<p class="description">' . __('Enviar recordatorios de recogidas programadas.', 'flavor-platform') . '</p></td></tr>';
+        echo '<p class="description">' . __('Enviar recordatorios de recogidas programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permite_reportar_contenedores">' . __('Permitir reportes de contenedores', 'flavor-platform') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permite_reportar_contenedores">' . __('Permitir reportes de contenedores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permite_reportar_contenedores" id="permite_reportar_contenedores" ' . checked($configuracion_actual['permite_reportar_contenedores'] ?? true, true, false) . ' /></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-platform') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -881,20 +881,20 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $tab = $_GET['tab'] ?? 'puntos';
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html__('Gestión de Reciclaje', 'flavor-platform'); ?></h1>
+            <h1><?php echo esc_html__('Gestión de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <nav class="nav-tab-wrapper">
                 <a href="?page=flavor-reciclaje&tab=puntos" class="nav-tab <?php echo $tab === 'puntos' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Puntos de Reciclaje', 'flavor-platform'); ?>
+                    <?php esc_html_e('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=flavor-reciclaje&tab=recogidas" class="nav-tab <?php echo $tab === 'recogidas' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Recogidas', 'flavor-platform'); ?>
+                    <?php esc_html_e('Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=flavor-reciclaje&tab=depositos" class="nav-tab <?php echo $tab === 'depositos' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Depósitos', 'flavor-platform'); ?>
+                    <?php esc_html_e('Depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=flavor-reciclaje&tab=estadisticas" class="nav-tab <?php echo $tab === 'estadisticas' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Estadísticas', 'flavor-platform'); ?>
+                    <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </nav>
 
@@ -930,15 +930,15 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $puntos = $wpdb->get_results("SELECT * FROM $tabla_puntos ORDER BY nombre");
         ?>
         <div class="reciclaje-puntos-admin">
-            <h2><?php esc_html_e('Puntos de Reciclaje', 'flavor-platform'); ?></h2>
+            <h2><?php esc_html_e('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Nombre', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Dirección', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -953,7 +953,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                             </span>
                         </td>
                         <td>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=reciclaje&tab=puntos&action=editar&id=' . $punto->id)); ?>" class="button button-small"><?php esc_html_e('Editar', 'flavor-platform'); ?></a>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=reciclaje&tab=puntos&action=editar&id=' . $punto->id)); ?>" class="button button-small"><?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -972,14 +972,14 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $recogidas = $wpdb->get_results("SELECT * FROM $tabla_recogidas ORDER BY fecha_programada DESC LIMIT 50");
         ?>
         <div class="reciclaje-recogidas-admin">
-            <h2><?php esc_html_e('Calendario de Recogidas', 'flavor-platform'); ?></h2>
+            <h2><?php esc_html_e('Calendario de Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Zona', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1013,17 +1013,17 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ");
         ?>
         <div class="reciclaje-depositos-admin">
-            <h2><?php esc_html_e('Depósitos Recientes', 'flavor-platform'); ?></h2>
+            <h2><?php esc_html_e('Depósitos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Usuario', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Punto', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Material', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Cantidad (kg)', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Puntos', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Verificado', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Punto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Cantidad (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1074,34 +1074,34 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ");
         ?>
         <div class="reciclaje-stats-admin">
-            <h2><?php esc_html_e('Estadísticas de Reciclaje', 'flavor-platform'); ?></h2>
+            <h2><?php esc_html_e('Estadísticas de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3><?php echo number_format_i18n($stats->total_depositos); ?></h3>
-                    <p><?php esc_html_e('Depósitos Totales', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Depósitos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="stat-card">
                     <h3><?php echo number_format_i18n($stats->total_kg, 2); ?> kg</h3>
-                    <p><?php esc_html_e('Material Reciclado', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Material Reciclado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="stat-card">
                     <h3><?php echo number_format_i18n($stats->total_puntos); ?></h3>
-                    <p><?php esc_html_e('Puntos Otorgados', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Puntos Otorgados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="stat-card">
                     <h3><?php echo number_format_i18n($stats->usuarios_activos); ?></h3>
-                    <p><?php esc_html_e('Usuarios Activos', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
-            <h3><?php esc_html_e('Por Tipo de Material', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Por Tipo de Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Material', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Total (kg)', 'flavor-platform'); ?></th>
-                        <th><?php esc_html_e('Depósitos', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Total (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1170,9 +1170,9 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('reciclaje_nonce'),
             'i18n' => [
-                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
-                'success' => __('Operación realizada correctamente', 'flavor-platform'),
-                'loading' => __('Cargando...', 'flavor-platform'),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Operación realizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1199,7 +1199,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1211,7 +1211,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $cantidad_kg = floatval($_POST['cantidad_kg'] ?? 0);
 
         if (!$punto_id || !$tipo_material || $cantidad_kg <= 0) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $settings = $this->get_settings();
@@ -1238,8 +1238,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                     $usuario_id,
                     'reciclaje_deposito_registrado',
                     [
-                        'title' => __('Depósito Registrado', 'flavor-platform'),
-                        'message' => sprintf(__('Has registrado %s kg de %s. Ganarás %d puntos al verificar.', 'flavor-platform'), $cantidad_kg, $tipo_material, $puntos_ganados),
+                        'title' => __('Depósito Registrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'message' => sprintf(__('Has registrado %s kg de %s. Ganarás %d puntos al verificar.', FLAVOR_PLATFORM_TEXT_DOMAIN), $cantidad_kg, $tipo_material, $puntos_ganados),
                         'icon' => 'dashicons-yes-alt',
                     ]
                 );
@@ -1253,11 +1253,11 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             }
 
             wp_send_json_success([
-                'message' => __('Depósito registrado correctamente', 'flavor-platform'),
+                'message' => __('Depósito registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'puntos_ganados' => $puntos_ganados,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al registrar el depósito', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al registrar el depósito', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1278,7 +1278,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1288,7 +1288,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $problema = sanitize_text_field($_POST['problema'] ?? '');
 
         if (!$contenedor_id || !$problema) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Incrementar reportes
@@ -1313,7 +1313,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             );
         }
 
-        wp_send_json_success(['message' => __('Reporte enviado correctamente', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Reporte enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1358,7 +1358,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1389,14 +1389,14 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $recompensa_id = intval($_POST['recompensa_id'] ?? 0);
         $usuario_id = get_current_user_id();
 
         if (!$recompensa_id) {
-            wp_send_json_error(['message' => __('Recompensa no válida', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Recompensa no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $puntos_necesarios = intval(get_post_meta($recompensa_id, '_puntos_necesarios', true));
@@ -1410,14 +1410,14 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($puntos_usuario < $puntos_necesarios) {
-            wp_send_json_error(['message' => __('No tienes suficientes puntos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes suficientes puntos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Registrar canje
         update_user_meta($usuario_id, '_reciclaje_puntos_canjeados', intval(get_user_meta($usuario_id, '_reciclaje_puntos_canjeados', true)) + $puntos_necesarios);
         update_user_meta($usuario_id, '_reciclaje_ultimo_canje', current_time('mysql'));
 
-        wp_send_json_success(['message' => __('Puntos canjeados correctamente', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Puntos canjeados correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1427,7 +1427,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in() || !current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para exportar datos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para exportar datos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1438,7 +1438,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
         $tipos_permitidos = ['depositos', 'recogidas', 'puntos'];
         if (!in_array($tipo, $tipos_permitidos, true)) {
-            wp_send_json_error(['message' => __('Tipo de exportacion no valido', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Tipo de exportacion no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos_csv = [];
@@ -1477,12 +1477,12 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                 foreach ($resultados as $fila) {
                     $datos_csv[] = [
                         $fila['id'],
-                        $fila['display_name'] ?? __('Usuario desconocido', 'flavor-platform'),
+                        $fila['display_name'] ?? __('Usuario desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $fila['punto_reciclaje_id'],
                         $fila['tipo_material'],
                         number_format((float) $fila['cantidad_kg'], 2, ',', '.'),
                         $fila['puntos_ganados'],
-                        $fila['verificado'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform'),
+                        $fila['verificado'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $fila['fecha_deposito'],
                     ];
                 }
@@ -1548,7 +1548,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                         $fila['tipo'] ?? '',
                         $fila['latitud'] ?? '',
                         $fila['longitud'] ?? '',
-                        $fila['activo'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform'),
+                        $fila['activo'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                 }
                 break;
@@ -1556,7 +1556,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
         $stream = fopen('php://temp', 'r+');
         if (!$stream) {
-            wp_send_json_error(['message' => __('Error al generar el CSV', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al generar el CSV', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         fputcsv($stream, $cabeceras, ';');
@@ -1588,13 +1588,13 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $recogida_id = absint($_POST['recogida_id'] ?? 0);
 
         if ($recogida_id <= 0) {
-            wp_send_json_error(['message' => __('ID de recogida no valido', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de recogida no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tabla_recogidas = $wpdb->prefix . 'flavor_reciclaje_recogidas';
 
         if (!Flavor_Platform_Helpers::tabla_existe($tabla_recogidas)) {
-            wp_send_json_error(['message' => __('La tabla de recogidas no existe', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La tabla de recogidas no existe', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $recogida = $wpdb->get_row($wpdb->prepare(
@@ -1603,7 +1603,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ), ARRAY_A);
 
         if (!$recogida) {
-            wp_send_json_error(['message' => __('Recogida no encontrada', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Recogida no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos_recogida = [
@@ -1634,11 +1634,11 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      */
     private function get_estado_recogida_label($estado) {
         $estados = [
-            'programada' => __('Programada', 'flavor-platform'),
-            'en_curso' => __('En curso', 'flavor-platform'),
-            'completada' => __('Completada', 'flavor-platform'),
-            'cancelada' => __('Cancelada', 'flavor-platform'),
-            'retrasada' => __('Retrasada', 'flavor-platform'),
+            'programada' => __('Programada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'retrasada' => __('Retrasada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $estados[$estado] ?? ucfirst($estado);
@@ -1703,7 +1703,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $cantidad_kg = floatval($request->get_param('cantidad_kg'));
 
         if (!$punto_id || !$tipo_material || $cantidad_kg <= 0) {
-            return new WP_Error('datos_invalidos', __('Datos incompletos', 'flavor-platform'), ['status' => 400]);
+            return new WP_Error('datos_invalidos', __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $settings = $this->get_settings();
@@ -1731,7 +1731,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             ]);
         }
 
-        return new WP_Error('error_bd', __('Error al registrar', 'flavor-platform'), ['status' => 500]);
+        return new WP_Error('error_bd', __('Error al registrar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -1814,8 +1814,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                     $usuario->ID,
                     'reciclaje_recordatorio_recogida',
                     [
-                        'title' => __('Recogida de Reciclaje Mañana', 'flavor-platform'),
-                        'message' => sprintf(__('Recogida de %s en %s', 'flavor-platform'), $recogida->tipos_residuos, $recogida->zona),
+                        'title' => __('Recogida de Reciclaje Mañana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'message' => sprintf(__('Recogida de %s en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $recogida->tipos_residuos, $recogida->zona),
                         'icon' => 'dashicons-calendar-alt',
                     ]
                 );
@@ -1849,8 +1849,8 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                     $admin->ID,
                     'reciclaje_contenedores_llenos',
                     [
-                        'title' => __('Contenedores que Necesitan Vaciado', 'flavor-platform'),
-                        'message' => sprintf(__('Hay %d contenedores que necesitan ser vaciados', 'flavor-platform'), $contenedores_llenos),
+                        'title' => __('Contenedores que Necesitan Vaciado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'message' => sprintf(__('Hay %d contenedores que necesitan ser vaciados', FLAVOR_PLATFORM_TEXT_DOMAIN), $contenedores_llenos),
                         'icon' => 'dashicons-warning',
                         'priority' => 'high',
                     ]
@@ -1898,7 +1898,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ob_start();
         ?>
         <div class="flavor-reciclaje-calendario">
-            <h3><?php esc_html_e('Próximas Recogidas', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Próximas Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <ul class="recogidas-lista">
                 <?php foreach ($recogidas as $recogida): ?>
                 <li>
@@ -1918,7 +1918,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
      */
     public function shortcode_mis_puntos($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus puntos', 'flavor-platform') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus puntos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -1941,15 +1941,15 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             <div class="puntos-grid">
                 <div class="punto-stat">
                     <span class="numero"><?php echo number_format_i18n($stats->total_puntos ?? 0); ?></span>
-                    <span class="label"><?php esc_html_e('Puntos', 'flavor-platform'); ?></span>
+                    <span class="label"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="punto-stat">
                     <span class="numero"><?php echo number_format_i18n($stats->total_kg ?? 0, 2); ?> kg</span>
-                    <span class="label"><?php esc_html_e('Reciclado', 'flavor-platform'); ?></span>
+                    <span class="label"><?php esc_html_e('Reciclado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="punto-stat">
                     <span class="numero"><?php echo number_format_i18n($stats->total_depositos ?? 0); ?></span>
-                    <span class="label"><?php esc_html_e('Depósitos', 'flavor-platform'); ?></span>
+                    <span class="label"><?php esc_html_e('Depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -1982,7 +1982,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         ob_start();
         ?>
         <div class="flavor-reciclaje-ranking">
-            <h3><?php esc_html_e('Top Recicladores', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Top Recicladores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <ol class="ranking-lista">
                 <?php foreach ($ranking as $index => $usuario): ?>
                 <li class="ranking-item <?php echo $index < 3 ? 'top-' . ($index + 1) : ''; ?>">
@@ -2054,7 +2054,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                         <?php echo number_format_i18n(get_post_meta($recompensa->ID, '_puntos_necesarios', true)); ?> puntos
                     </div>
                     <button class="btn-canjear" data-recompensa="<?php echo esc_attr($recompensa->ID); ?>">
-                        <?php esc_html_e('Canjear', 'flavor-platform'); ?>
+                        <?php esc_html_e('Canjear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <?php endforeach; ?>
@@ -2076,23 +2076,23 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
     public function get_web_components() {
         return [
             'hero_reciclaje' => [
-                'label' => __('Hero Reciclaje', 'flavor-platform'),
+                'label' => __('Hero Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-admin-site',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Reciclaje Comunitario', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Recicla, gana puntos y cuida el planeta', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Reciclaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Recicla, gana puntos y cuida el planeta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_puntos' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'reciclaje/hero',
             ],
             'puntos_reciclaje' => [
-                'label' => __('Puntos de Reciclaje', 'flavor-platform'),
+                'label' => __('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Reciclaje', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'altura_mapa' => ['type' => 'number', 'default' => 500],
                     'mostrar_materiales' => ['type' => 'toggle', 'default' => true],
                     'filtrar_por_tipo' => ['type' => 'toggle', 'default' => true],
@@ -2100,22 +2100,22 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
                 'template' => 'reciclaje/puntos',
             ],
             'calendario_recogidas' => [
-                'label' => __('Calendario de Recogidas', 'flavor-platform'),
+                'label' => __('Calendario de Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Calendario de Recogidas', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Calendario de Recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'vista' => ['type' => 'select', 'options' => ['mensual', 'semanal'], 'default' => 'mensual'],
                     'mostrar_zona' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'reciclaje/calendario',
             ],
             'guia_reciclaje' => [
-                'label' => __('Guía de Reciclaje', 'flavor-platform'),
+                'label' => __('Guía de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-book-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Qué va en cada Contenedor', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Qué va en cada Contenedor', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'estilo' => ['type' => 'select', 'options' => ['tarjetas', 'acordeon'], 'default' => 'tarjetas'],
                     'mostrar_colores' => ['type' => 'toggle', 'default' => true],
                 ],
@@ -2245,35 +2245,35 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Reciclaje', 'flavor-platform'),
+                'title' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'reciclaje',
-                'content' => '<h1>' . __('Reciclaje en la Comunidad', 'flavor-platform') . '</h1>
-<p>' . __('Encuentra puntos de reciclaje y registra tu contribución', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Reciclaje en la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Encuentra puntos de reciclaje y registra tu contribución', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="reciclaje" action="listar_puntos" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Mapa de Puntos', 'flavor-platform'),
+                'title' => __('Mapa de Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mapa',
-                'content' => '<h1>' . __('Mapa de Puntos de Reciclaje', 'flavor-platform') . '</h1>
+                'content' => '<h1>' . __('Mapa de Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_reciclaje_mapa]',
                 'parent' => 'reciclaje',
             ],
             [
-                'title' => __('Registrar Reciclaje', 'flavor-platform'),
+                'title' => __('Registrar Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'registrar',
-                'content' => '<h1>' . __('Registrar Reciclaje', 'flavor-platform') . '</h1>
-<p>' . __('Registra tu aportación y gana puntos', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Registrar Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Registra tu aportación y gana puntos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="reciclaje" action="registrar_aportacion"]',
                 'parent' => 'reciclaje',
             ],
             [
-                'title' => __('Mis Estadísticas', 'flavor-platform'),
+                'title' => __('Mis Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-estadisticas',
-                'content' => '<h1>' . __('Mis Estadísticas de Reciclaje', 'flavor-platform') . '</h1>
+                'content' => '<h1>' . __('Mis Estadísticas de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="reciclaje"]',
                 'parent' => 'reciclaje',
@@ -2289,8 +2289,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'reciclaje',
-            'title'    => __('Reciclaje Comunitario', 'flavor-platform'),
-            'subtitle' => __('Puntos de reciclaje y gestión de residuos', 'flavor-platform'),
+            'title'    => __('Reciclaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Puntos de reciclaje y gestión de residuos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '♻️',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -2300,27 +2300,27 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'        => ['label' => __('Nombre', 'flavor-platform'), 'type' => 'text', 'required' => true],
-                'direccion'     => ['label' => __('Dirección', 'flavor-platform'), 'type' => 'text', 'required' => true],
-                'tipo_material' => ['label' => __('Tipo de material', 'flavor-platform'), 'type' => 'multiselect'],
-                'latitud'       => ['label' => __('Latitud', 'flavor-platform'), 'type' => 'number'],
-                'longitud'      => ['label' => __('Longitud', 'flavor-platform'), 'type' => 'number'],
-                'horario'       => ['label' => __('Horario', 'flavor-platform'), 'type' => 'text'],
-                'estado'        => ['label' => __('Estado', 'flavor-platform'), 'type' => 'select'],
+                'nombre'        => ['label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'direccion'     => ['label' => __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'tipo_material' => ['label' => __('Tipo de material', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'multiselect'],
+                'latitud'       => ['label' => __('Latitud', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number'],
+                'longitud'      => ['label' => __('Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number'],
+                'horario'       => ['label' => __('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text'],
+                'estado'        => ['label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             ],
 
             'estados' => [
-                'activo'       => ['label' => __('Activo', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'mantenimiento'=> ['label' => __('En mantenimiento', 'flavor-platform'), 'color' => 'yellow', 'icon' => '🔧'],
-                'lleno'        => ['label' => __('Lleno', 'flavor-platform'), 'color' => 'orange', 'icon' => '📦'],
-                'inactivo'     => ['label' => __('Inactivo', 'flavor-platform'), 'color' => 'gray', 'icon' => '⛔'],
+                'activo'       => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'mantenimiento'=> ['label' => __('En mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🔧'],
+                'lleno'        => ['label' => __('Lleno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '📦'],
+                'inactivo'     => ['label' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⛔'],
             ],
 
             'stats' => [
-                'total_puntos'     => ['label' => __('Puntos activos', 'flavor-platform'), 'icon' => '📍', 'color' => 'emerald'],
-                'kg_reciclados'    => ['label' => __('Kg reciclados', 'flavor-platform'), 'icon' => '♻️', 'color' => 'green'],
-                'usuarios_activos' => ['label' => __('Usuarios', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
-                'co2_evitado'      => ['label' => __('CO₂ evitado', 'flavor-platform'), 'icon' => '🌱', 'color' => 'teal'],
+                'total_puntos'     => ['label' => __('Puntos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📍', 'color' => 'emerald'],
+                'kg_reciclados'    => ['label' => __('Kg reciclados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '♻️', 'color' => 'green'],
+                'usuarios_activos' => ['label' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
+                'co2_evitado'      => ['label' => __('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'teal'],
             ],
 
             'card' => [
@@ -2332,22 +2332,22 @@ KNOWLEDGE;
 
             'tabs' => [
                 'mapa' => [
-                    'label'   => __('Mapa', 'flavor-platform'),
+                    'label'   => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-location-alt',
                     'content' => 'template:mapa.php',
                 ],
                 'puntos' => [
-                    'label'   => __('Puntos', 'flavor-platform'),
+                    'label'   => __('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-site-alt3',
                     'content' => 'template:_archive.php',
                 ],
                 'mi-impacto' => [
-                    'label'   => __('Mi impacto', 'flavor-platform'),
+                    'label'   => __('Mi impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-line',
                     'content' => 'template:mi-impacto.php',
                 ],
                 'guia' => [
-                    'label'   => __('Guía', 'flavor-platform'),
+                    'label'   => __('Guía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-book',
                     'content' => 'template:guia.php',
                 ],
@@ -2365,8 +2365,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'registrar'   => ['label' => __('Registrar reciclaje', 'flavor-platform'), 'icon' => '♻️', 'color' => 'emerald'],
-                    'ver_mapa'    => ['label' => __('Ver mapa', 'flavor-platform'), 'icon' => '🗺️', 'color' => 'blue'],
+                    'registrar'   => ['label' => __('Registrar reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '♻️', 'color' => 'emerald'],
+                    'ver_mapa'    => ['label' => __('Ver mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗺️', 'color' => 'blue'],
                 ],
             ],
         ];
@@ -2401,8 +2401,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Puntos de Reciclaje', 'flavor-platform'),
-            __('Puntos de Reciclaje', 'flavor-platform'),
+            __('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-reciclaje-puntos',
             [$this, 'render_pagina_puntos']
@@ -2417,8 +2417,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Puntos de Reciclaje', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de puntos de reciclaje comunitarios.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de puntos de reciclaje comunitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

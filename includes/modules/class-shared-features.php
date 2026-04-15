@@ -57,8 +57,8 @@ class Flavor_Shared_Features {
     private function register_core_features() {
         // Valoraciones / Ratings
         $this->register_feature('ratings', [
-            'label'       => __('Valoraciones', 'flavor-platform'),
-            'description' => __('Permite a los usuarios valorar con estrellas', 'flavor-platform'),
+            'label'       => __('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Permite a los usuarios valorar con estrellas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-star-filled',
             'handler'     => 'Flavor_Feature_Ratings',
             'default'     => true,
@@ -66,8 +66,8 @@ class Flavor_Shared_Features {
 
         // Favoritos
         $this->register_feature('favorites', [
-            'label'       => __('Favoritos', 'flavor-platform'),
-            'description' => __('Permite guardar elementos como favoritos', 'flavor-platform'),
+            'label'       => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Permite guardar elementos como favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-heart',
             'handler'     => 'Flavor_Feature_Favorites',
             'default'     => true,
@@ -75,8 +75,8 @@ class Flavor_Shared_Features {
 
         // Comentarios
         $this->register_feature('comments', [
-            'label'       => __('Comentarios', 'flavor-platform'),
-            'description' => __('Sistema de comentarios integrado', 'flavor-platform'),
+            'label'       => __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de comentarios integrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-admin-comments',
             'handler'     => 'Flavor_Feature_Comments',
             'default'     => true,
@@ -84,8 +84,8 @@ class Flavor_Shared_Features {
 
         // Seguimiento / Follow
         $this->register_feature('follow', [
-            'label'       => __('Seguir', 'flavor-platform'),
-            'description' => __('Permite seguir entidades para recibir actualizaciones', 'flavor-platform'),
+            'label'       => __('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Permite seguir entidades para recibir actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-visibility',
             'handler'     => 'Flavor_Feature_Follow',
             'default'     => false,
@@ -93,8 +93,8 @@ class Flavor_Shared_Features {
 
         // Compartir
         $this->register_feature('share', [
-            'label'       => __('Compartir', 'flavor-platform'),
-            'description' => __('Botones para compartir en redes sociales', 'flavor-platform'),
+            'label'       => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Botones para compartir en redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-share',
             'handler'     => 'Flavor_Feature_Share',
             'default'     => true,
@@ -102,8 +102,8 @@ class Flavor_Shared_Features {
 
         // Reportar
         $this->register_feature('report', [
-            'label'       => __('Reportar', 'flavor-platform'),
-            'description' => __('Permite reportar contenido inapropiado', 'flavor-platform'),
+            'label'       => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Permite reportar contenido inapropiado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-flag',
             'handler'     => 'Flavor_Feature_Report',
             'default'     => false,
@@ -111,8 +111,8 @@ class Flavor_Shared_Features {
 
         // Etiquetas / Tags
         $this->register_feature('tags', [
-            'label'       => __('Etiquetas', 'flavor-platform'),
-            'description' => __('Sistema de etiquetas para organización', 'flavor-platform'),
+            'label'       => __('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de etiquetas para organización', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-tag',
             'handler'     => 'Flavor_Feature_Tags',
             'default'     => false,
@@ -120,8 +120,8 @@ class Flavor_Shared_Features {
 
         // Historial de vistas
         $this->register_feature('views', [
-            'label'       => __('Contador de vistas', 'flavor-platform'),
-            'description' => __('Registra y muestra el número de vistas', 'flavor-platform'),
+            'label'       => __('Contador de vistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Registra y muestra el número de vistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-visibility',
             'handler'     => 'Flavor_Feature_Views',
             'default'     => true,
@@ -129,8 +129,8 @@ class Flavor_Shared_Features {
 
         // Reacciones (like, love, etc)
         $this->register_feature('reactions', [
-            'label'       => __('Reacciones', 'flavor-platform'),
-            'description' => __('Reacciones tipo emoji (me gusta, me encanta, etc)', 'flavor-platform'),
+            'label'       => __('Reacciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Reacciones tipo emoji (me gusta, me encanta, etc)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-smiley',
             'handler'     => 'Flavor_Feature_Reactions',
             'default'     => false,
@@ -138,8 +138,8 @@ class Flavor_Shared_Features {
 
         // Bookmarks / Guardar para después
         $this->register_feature('bookmarks', [
-            'label'       => __('Guardar', 'flavor-platform'),
-            'description' => __('Guardar elementos para ver después', 'flavor-platform'),
+            'label'       => __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Guardar elementos para ver después', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-bookmark',
             'handler'     => 'Flavor_Feature_Bookmarks',
             'default'     => false,
@@ -147,8 +147,8 @@ class Flavor_Shared_Features {
 
         // Versiones / Historial
         $this->register_feature('versions', [
-            'label'       => __('Historial de versiones', 'flavor-platform'),
-            'description' => __('Guarda versiones anteriores del contenido', 'flavor-platform'),
+            'label'       => __('Historial de versiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Guarda versiones anteriores del contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-backup',
             'handler'     => 'Flavor_Feature_Versions',
             'default'     => false,
@@ -156,8 +156,8 @@ class Flavor_Shared_Features {
 
         // QR Code
         $this->register_feature('qrcode', [
-            'label'       => __('Código QR', 'flavor-platform'),
-            'description' => __('Genera código QR para acceso rápido', 'flavor-platform'),
+            'label'       => __('Código QR', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Genera código QR para acceso rápido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-smartphone',
             'handler'     => 'Flavor_Feature_QRCode',
             'default'     => false,
@@ -165,8 +165,8 @@ class Flavor_Shared_Features {
 
         // Exportar
         $this->register_feature('export', [
-            'label'       => __('Exportar', 'flavor-platform'),
-            'description' => __('Permite exportar contenido (PDF, JSON, etc)', 'flavor-platform'),
+            'label'       => __('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Permite exportar contenido (PDF, JSON, etc)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-download',
             'handler'     => 'Flavor_Feature_Export',
             'default'     => false,
@@ -661,8 +661,8 @@ class Flavor_Shared_Features {
     public function render_features_settings($module_id, $settings) {
         ?>
         <div class="flavor-features-settings" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd;">
-            <h3><?php _e('Funcionalidades Compartidas', 'flavor-platform'); ?></h3>
-            <p class="description"><?php _e('Selecciona las funcionalidades que deseas habilitar para este módulo.', 'flavor-platform'); ?></p>
+            <h3><?php _e('Funcionalidades Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="description"><?php _e('Selecciona las funcionalidades que deseas habilitar para este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <table class="form-table">
                 <?php foreach ($this->features as $feature_id => $feature): ?>
@@ -677,7 +677,7 @@ class Flavor_Shared_Features {
                                    name="flavor_features[<?php echo esc_attr($feature_id); ?>]"
                                    value="1"
                                    <?php checked($this->entity_has_feature($module_id, $feature_id)); ?> />
-                            <?php _e('Habilitar', 'flavor-platform'); ?>
+                            <?php _e('Habilitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <p class="description"><?php echo esc_html($feature['description']); ?></p>
                     </td>
@@ -730,7 +730,7 @@ class Flavor_Shared_Features {
                 ?>
                 <button class="flavor-feature-btn flavor-favorite <?php echo $active_class; ?>"
                         data-action="favorite"
-                        title="<?php echo $user_has ? __('Quitar de favoritos', 'flavor-platform') : __('Añadir a favoritos', 'flavor-platform'); ?>">
+                        title="<?php echo $user_has ? __('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-heart"></span>
                     <span class="count"><?php echo esc_html($count); ?></span>
                 </button>
@@ -747,7 +747,7 @@ class Flavor_Shared_Features {
                             <span class="star <?php echo $i <= $avg ? 'filled' : ''; ?>" data-value="<?php echo $i; ?>">★</span>
                         <?php endfor; ?>
                     </div>
-                    <span class="rating-info"><?php printf(__('%s (%d votos)', 'flavor-platform'), number_format($avg, 1), $count); ?></span>
+                    <span class="rating-info"><?php printf(__('%s (%d votos)', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($avg, 1), $count); ?></span>
                 </div>
                 <?php
                 break;
@@ -778,7 +778,7 @@ class Flavor_Shared_Features {
                 ?>
                 <span class="flavor-views">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php printf(_n('%d vista', '%d vistas', $view_count, 'flavor-platform'), $view_count); ?>
+                    <?php printf(_n('%d vista', '%d vistas', $view_count, FLAVOR_PLATFORM_TEXT_DOMAIN), $view_count); ?>
                 </span>
                 <?php
                 break;
@@ -788,7 +788,7 @@ class Flavor_Shared_Features {
                 <button class="flavor-feature-btn flavor-follow <?php echo $active_class; ?>"
                         data-action="follow">
                     <span class="dashicons dashicons-<?php echo $user_has ? 'yes' : 'plus'; ?>"></span>
-                    <?php echo $user_has ? __('Siguiendo', 'flavor-platform') : __('Seguir', 'flavor-platform'); ?>
+                    <?php echo $user_has ? __('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="count">(<?php echo esc_html($count); ?>)</span>
                 </button>
                 <?php
@@ -798,7 +798,7 @@ class Flavor_Shared_Features {
                 ?>
                 <button class="flavor-feature-btn flavor-bookmark <?php echo $active_class; ?>"
                         data-action="bookmark"
-                        title="<?php echo $user_has ? __('Guardado', 'flavor-platform') : __('Guardar para después', 'flavor-platform'); ?>">
+                        title="<?php echo $user_has ? __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Guardar para después', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-bookmark"></span>
                 </button>
                 <?php
@@ -836,8 +836,8 @@ class Flavor_Shared_Features {
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'strings' => [
-                'loginRequired' => __('Debes iniciar sesión para realizar esta acción', 'flavor-platform'),
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'loginRequired' => __('Debes iniciar sesión para realizar esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

@@ -28,8 +28,8 @@ if (!$tabla_saberes_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Saberes Ancestrales aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Saberes Ancestrales aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@ $saberes_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-book-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_saberes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Saberes Registrados', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Saberes Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -128,7 +128,7 @@ $saberes_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-welcome-learn-more dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_transmisiones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Transmisiones', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Transmisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -136,7 +136,7 @@ $saberes_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-businessman dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_maestros); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Maestros', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Maestros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -144,7 +144,7 @@ $saberes_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_aprendices); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Aprendices', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Aprendices', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -153,8 +153,8 @@ $saberes_recientes = $wpdb->get_results(
 <div class="dm-alert dm-alert--success">
     <span class="dashicons dashicons-yes-alt"></span>
     <div>
-        <strong><?php printf(esc_html__('%s transmisiones en curso', 'flavor-platform'), number_format_i18n($transmisiones_activas)); ?></strong>
-        <span><?php esc_html_e('El conocimiento se está transmitiendo activamente.', 'flavor-platform'); ?></span>
+        <strong><?php printf(esc_html__('%s transmisiones en curso', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($transmisiones_activas)); ?></strong>
+        <span><?php esc_html_e('El conocimiento se está transmitiendo activamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 </div>
 <?php endif; ?>
@@ -164,23 +164,23 @@ $saberes_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Saberes Esta Semana', 'flavor-platform'); ?>
+                <?php esc_html_e('Saberes Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-platform'), number_format_i18n($saberes_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($saberes_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay registros esta semana.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay registros esta semana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_saberes = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
-                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
-                    __('Sáb', 'flavor-platform')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -205,14 +205,14 @@ $saberes_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Por Categoría', 'flavor-platform'); ?>
+                <?php esc_html_e('Por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_categoria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay saberes registrados.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay saberes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -233,14 +233,14 @@ $saberes_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Saberes Más Transmitidos', 'flavor-platform'); ?>
+                <?php esc_html_e('Saberes Más Transmitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($saberes_populares)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-book"></span>
-                    <p><?php esc_html_e('No hay transmisiones todavía.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay transmisiones todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -252,7 +252,7 @@ $saberes_recientes = $wpdb->get_results(
                                 <span class="dm-ranking__meta">
                                     <?php echo esc_html(ucfirst($saber->categoria)); ?>
                                     <?php if ($saber->documentado): ?>
-                                        &bull; <span style="color: var(--dm-success);">✓ <?php esc_html_e('Documentado', 'flavor-platform'); ?></span>
+                                        &bull; <span style="color: var(--dm-success);">✓ <?php esc_html_e('Documentado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                 </span>
                             </div>
@@ -270,14 +270,14 @@ $saberes_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Maestros Destacados', 'flavor-platform'); ?>
+                <?php esc_html_e('Maestros Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($maestros_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-businessman"></span>
-                    <p><?php esc_html_e('No hay maestros registrados.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay maestros registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -285,16 +285,16 @@ $saberes_recientes = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: #b45309;">
-                                <?php echo mb_substr($maestro->nombre ?: __('M', 'flavor-platform'), 0, 1); ?>
+                                <?php echo mb_substr($maestro->nombre ?: __('M', FLAVOR_PLATFORM_TEXT_DOMAIN), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($maestro->nombre ?: __('Maestro', 'flavor-platform')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($maestro->nombre ?: __('Maestro', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <?php if ($maestro->especialidad): ?>
                                 <span class="dm-ranking__meta"><?php echo esc_html($maestro->especialidad); ?></span>
                                 <?php endif; ?>
                             </div>
                             <span class="dm-badge dm-badge--success">
-                                <?php echo esc_html($maestro->transmisiones); ?> <?php esc_html_e('trans.', 'flavor-platform'); ?>
+                                <?php echo esc_html($maestro->transmisiones); ?> <?php esc_html_e('trans.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -308,14 +308,14 @@ $saberes_recientes = $wpdb->get_results(
     <div class="dm-card__header">
         <h3 class="dm-card__title">
             <span class="dashicons dashicons-clock"></span>
-            <?php esc_html_e('Saberes Recientes', 'flavor-platform'); ?>
+            <?php esc_html_e('Saberes Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
     </div>
     <div class="dm-card__body">
         <?php if (empty($saberes_recientes)): ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-book-alt"></span>
-                <p><?php esc_html_e('No hay saberes registrados todavía.', 'flavor-platform'); ?></p>
+                <p><?php esc_html_e('No hay saberes registrados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php else: ?>
             <ul class="dm-list">
@@ -330,7 +330,7 @@ $saberes_recientes = $wpdb->get_results(
                             </span>
                         </div>
                         <span class="dm-badge dm-badge--<?php echo $saber->documentado ? 'success' : 'secondary'; ?>">
-                            <?php echo $saber->documentado ? esc_html__('Documentado', 'flavor-platform') : esc_html__('Pendiente', 'flavor-platform'); ?>
+                            <?php echo $saber->documentado ? esc_html__('Documentado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </li>
                 <?php endforeach; ?>
@@ -343,24 +343,24 @@ $saberes_recientes = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-media-document dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($saberes_documentados); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Documentados', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Documentados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($transmisiones_completadas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Trans. Completadas', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Trans. Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($maestros_activos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Maestros Activos', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Maestros Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($tasa_documentacion); ?>%</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Documentación', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

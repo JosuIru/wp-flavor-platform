@@ -41,14 +41,14 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
 
         parent::__construct([
             'id' => 'sello-conciencia',
-            'title' => __('Sello de Conciencia', 'flavor-platform'),
+            'title' => __('Sello de Conciencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-heart',
             'size' => 'medium',
             'category' => 'sistema',
             'priority' => 5,
             'refreshable' => true,
             'cache_time' => 300,
-            'description' => __('Nivel de conciencia de la aplicación', 'flavor-platform'),
+            'description' => __('Nivel de conciencia de la aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -78,19 +78,19 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => $nivel['icono'],
                 'valor' => $nivel['nombre'],
-                'label' => __('Nivel actual', 'flavor-platform'),
+                'label' => __('Nivel actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $this->map_color($nivel['color']),
             ],
             [
                 'icon' => 'dashicons-chart-bar',
                 'valor' => $evaluacion['puntuacion_global'] . '/100',
-                'label' => __('Puntuación', 'flavor-platform'),
+                'label' => __('Puntuación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $this->map_color($nivel['color']),
             ],
             [
                 'icon' => 'dashicons-admin-plugins',
                 'valor' => $evaluacion['num_modulos'],
-                'label' => __('Módulos', 'flavor-platform'),
+                'label' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
             ],
         ];
@@ -111,10 +111,10 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('Activa módulos para ver tu nivel de conciencia', 'flavor-platform'),
+            'empty_state' => __('Activa módulos para ver tu nivel de conciencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver detalles', 'flavor-platform'),
+                    'label' => __('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/sello-conciencia/', 'sello-conciencia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -154,15 +154,15 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
      */
     private function get_badge_nivel(int $puntuacion): string {
         if ($puntuacion >= 76) {
-            return __('Excelente', 'flavor-platform');
+            return __('Excelente', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         if ($puntuacion >= 51) {
-            return __('Bueno', 'flavor-platform');
+            return __('Bueno', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         if ($puntuacion >= 26) {
-            return __('Regular', 'flavor-platform');
+            return __('Regular', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
-        return __('Bajo', 'flavor-platform');
+        return __('Bajo', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**

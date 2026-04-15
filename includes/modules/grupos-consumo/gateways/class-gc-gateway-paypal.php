@@ -39,7 +39,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
      */
     public function __construct() {
         $this->name = 'PayPal';
-        $this->description = __('Paga de forma segura con PayPal.', 'flavor-platform');
+        $this->description = __('Paga de forma segura con PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-money';
 
         parent::__construct();
@@ -145,7 +145,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (!$access_token) {
             return [
                 'success' => false,
-                'error' => __('Error de autenticación con PayPal.', 'flavor-platform'),
+                'error' => __('Error de autenticación con PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -160,7 +160,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
                 'intent' => 'CAPTURE',
                 'purchase_units' => [[
                     'reference_id' => 'entrega-' . $entrega_id,
-                    'description' => sprintf(__('Pedido Grupos de Consumo #%d', 'flavor-platform'), $entrega_id),
+                    'description' => sprintf(__('Pedido Grupos de Consumo #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $entrega_id),
                     'custom_id' => (string) $entrega_id,
                     'amount' => [
                         'currency_code' => 'EUR',
@@ -197,14 +197,14 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (isset($body['error'])) {
             return [
                 'success' => false,
-                'error' => $body['error_description'] ?? $body['message'] ?? __('Error de PayPal.', 'flavor-platform'),
+                'error' => $body['error_description'] ?? $body['message'] ?? __('Error de PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (empty($body['id'])) {
             return [
                 'success' => false,
-                'error' => __('No se pudo crear la orden en PayPal.', 'flavor-platform'),
+                'error' => __('No se pudo crear la orden en PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -246,7 +246,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (!$access_token) {
             return [
                 'success' => false,
-                'error' => __('Error de autenticación con PayPal.', 'flavor-platform'),
+                'error' => __('Error de autenticación con PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -271,7 +271,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if ($body['status'] !== 'COMPLETED') {
             return [
                 'success' => false,
-                'error' => __('El pago no se completó.', 'flavor-platform'),
+                'error' => __('El pago no se completó.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -287,7 +287,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (!$entrega_id) {
             return [
                 'success' => false,
-                'error' => __('No se encontró la entrega asociada.', 'flavor-platform'),
+                'error' => __('No se encontró la entrega asociada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -316,7 +316,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
 
         return [
             'success' => true,
-            'message' => __('Pago completado correctamente.', 'flavor-platform'),
+            'message' => __('Pago completado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'entrega_id' => $entrega_id,
         ];
     }
@@ -332,7 +332,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         <div class="gc-gateway-paypal-wrapper">
             <div id="gc-paypal-button-container"></div>
             <p class="gc-paypal-message">
-                <?php esc_html_e('Serás redirigido a PayPal para completar el pago de forma segura.', 'flavor-platform'); ?>
+                <?php esc_html_e('Serás redirigido a PayPal para completar el pago de forma segura.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -362,11 +362,11 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
                     window.location.href = captureUrl + '?action=gc_paypal_capture&order_id=' + encodeURIComponent(data.orderID) + '&nonce=' + encodeURIComponent(nonce);
                 },
                 onCancel: function(data) {
-                    document.getElementById('gc-paypal-message').textContent = '<?php echo esc_js(__('Pago cancelado.', 'flavor-platform')); ?>';
+                    document.getElementById('gc-paypal-message').textContent = '<?php echo esc_js(__('Pago cancelado.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 },
                 onError: function(err) {
                     console.error('PayPal error:', err);
-                    document.getElementById('gc-paypal-message').textContent = '<?php echo esc_js(__('Error en el pago. Inténtalo de nuevo.', 'flavor-platform')); ?>';
+                    document.getElementById('gc-paypal-message').textContent = '<?php echo esc_js(__('Error en el pago. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 }
             }).render('#gc-paypal-button-container');
         })();
@@ -471,34 +471,34 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar PayPal', 'flavor-platform'),
+                'label' => __('Habilitar PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
             [
                 'id' => 'sandbox',
                 'type' => 'checkbox',
-                'label' => __('Modo sandbox (pruebas)', 'flavor-platform'),
+                'label' => __('Modo sandbox (pruebas)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             [
                 'id' => 'sandbox_client_id',
                 'type' => 'text',
-                'label' => __('Client ID (Sandbox)', 'flavor-platform'),
+                'label' => __('Client ID (Sandbox)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'sandbox_client_secret',
                 'type' => 'password',
-                'label' => __('Client Secret (Sandbox)', 'flavor-platform'),
+                'label' => __('Client Secret (Sandbox)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'live_client_id',
                 'type' => 'text',
-                'label' => __('Client ID (Producción)', 'flavor-platform'),
+                'label' => __('Client ID (Producción)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'live_client_secret',
                 'type' => 'password',
-                'label' => __('Client Secret (Producción)', 'flavor-platform'),
+                'label' => __('Client Secret (Producción)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -523,7 +523,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (!$transaccion) {
             return [
                 'success' => false,
-                'error' => __('Transacción no encontrada.', 'flavor-platform'),
+                'error' => __('Transacción no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -533,7 +533,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (empty($capture_id)) {
             return [
                 'success' => false,
-                'error' => __('No se encontró el ID de captura de PayPal.', 'flavor-platform'),
+                'error' => __('No se encontró el ID de captura de PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -542,7 +542,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if (!$access_token) {
             return [
                 'success' => false,
-                'error' => __('Error de autenticación con PayPal.', 'flavor-platform'),
+                'error' => __('Error de autenticación con PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -573,7 +573,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         if ($body['status'] !== 'COMPLETED') {
             return [
                 'success' => false,
-                'error' => $body['message'] ?? __('Error al procesar el reembolso.', 'flavor-platform'),
+                'error' => $body['message'] ?? __('Error al procesar el reembolso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -586,7 +586,7 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
         return [
             'success' => true,
             'refund_id' => $body['id'],
-            'message' => __('Reembolso procesado correctamente.', 'flavor-platform'),
+            'message' => __('Reembolso procesado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 }

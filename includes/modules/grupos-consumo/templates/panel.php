@@ -16,10 +16,10 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-panel-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-platform') . '</h3>';
-    echo '<p>' . esc_html__('Inicia sesion para acceder a tu panel de consumidor.', 'flavor-platform') . '</p>';
+    echo '<h3>' . esc_html__('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('Inicia sesion para acceder a tu panel de consumidor.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', ''))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesion', 'flavor-platform');
+    echo esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN);
     echo '</a></div>';
     return;
 }
@@ -109,31 +109,31 @@ $notificaciones_count = (int) $wpdb->get_var($wpdb->prepare(
 // Accesos rapidos
 $accesos_rapidos = [
     [
-        'titulo' => __('Catalogo', 'flavor-platform'),
-        'desc'   => __('Ver productos disponibles', 'flavor-platform'),
+        'titulo' => __('Catalogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'   => __('Ver productos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url'    => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos'),
         'icon'   => 'products',
         'color'  => '#4caf50',
     ],
     [
-        'titulo' => __('Pedido actual', 'flavor-platform'),
-        'desc'   => sprintf(_n('%d producto', '%d productos', $estadisticas['items_cesta'], 'flavor-platform'), $estadisticas['items_cesta']),
+        'titulo' => __('Pedido actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'   => sprintf(_n('%d producto', '%d productos', $estadisticas['items_cesta'], FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['items_cesta']),
         'url'    => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
         'icon'   => 'cart',
         'color'  => '#2196f3',
         'badge'  => $estadisticas['items_cesta'],
     ],
     [
-        'titulo' => __('Historial', 'flavor-platform'),
-        'desc'   => __('Pedidos confirmados', 'flavor-platform'),
+        'titulo' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'   => __('Pedidos confirmados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url'    => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         'icon'   => 'clipboard',
         'color'  => '#ff9800',
         'badge'  => $estadisticas['pedidos_pendientes'],
     ],
     [
-        'titulo' => __('Productores', 'flavor-platform'),
-        'desc'   => __('Conoce a los productores', 'flavor-platform'),
+        'titulo' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'   => __('Conoce a los productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url'    => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productores-cercanos'),
         'icon'   => 'store',
         'color'  => '#9c27b0',
@@ -149,11 +149,11 @@ $accesos_rapidos = [
                 <?php
                 $hora = (int) date('H');
                 if ($hora < 12) {
-                    $saludo = __('Buenos dias', 'flavor-platform');
+                    $saludo = __('Buenos dias', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } elseif ($hora < 20) {
-                    $saludo = __('Buenas tardes', 'flavor-platform');
+                    $saludo = __('Buenas tardes', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    $saludo = __('Buenas noches', 'flavor-platform');
+                    $saludo = __('Buenas noches', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 echo esc_html($saludo . ', ' . $user->display_name);
                 ?>
@@ -179,24 +179,24 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
             <div class="gc-ciclo-info">
-                <span class="gc-ciclo-estado"><?php esc_html_e('Ciclo de pedidos abierto', 'flavor-platform'); ?></span>
+                <span class="gc-ciclo-estado"><?php esc_html_e('Ciclo de pedidos abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <h3><?php echo esc_html($ciclo_activo->post_title); ?></h3>
                 <div class="gc-ciclo-fechas">
                     <span>
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Cierra:', 'flavor-platform'); ?>
+                        <?php esc_html_e('Cierra:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php echo esc_html(date_i18n('j M, H:i', strtotime($meta_ciclo['fecha_cierre']))); ?>
                     </span>
                     <span>
                         <span class="dashicons dashicons-location"></span>
-                        <?php esc_html_e('Entrega:', 'flavor-platform'); ?>
+                        <?php esc_html_e('Entrega:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php echo esc_html(date_i18n('j M', strtotime($meta_ciclo['fecha_entrega']))); ?>
                     </span>
                 </div>
             </div>
             <div class="gc-ciclo-acciones">
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
-                    <?php esc_html_e('Hacer pedido', 'flavor-platform'); ?>
+                    <?php esc_html_e('Hacer pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -208,8 +208,8 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-calendar-alt"></span>
             </div>
             <div class="gc-ciclo-info">
-                <span class="gc-ciclo-estado"><?php esc_html_e('Sin ciclo activo', 'flavor-platform'); ?></span>
-                <p><?php esc_html_e('No hay ciclos de pedidos abiertos actualmente. Te notificaremos cuando se abra el proximo.', 'flavor-platform'); ?></p>
+                <span class="gc-ciclo-estado"><?php esc_html_e('Sin ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <p><?php esc_html_e('No hay ciclos de pedidos abiertos actualmente. Te notificaremos cuando se abra el proximo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </section>
@@ -217,7 +217,7 @@ $accesos_rapidos = [
 
     <!-- Accesos rapidos -->
     <section class="gc-panel-accesos">
-        <h3 class="gc-section-title"><?php esc_html_e('Acceso rapido', 'flavor-platform'); ?></h3>
+        <h3 class="gc-section-title"><?php esc_html_e('Acceso rapido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="gc-accesos-grid">
             <?php foreach ($accesos_rapidos as $acceso) : ?>
             <a href="<?php echo esc_url($acceso['url']); ?>" class="gc-acceso-card">
@@ -242,7 +242,7 @@ $accesos_rapidos = [
     <div class="gc-panel-grid">
         <!-- Resumen de actividad -->
         <section class="gc-panel-resumen">
-            <h3 class="gc-section-title"><?php esc_html_e('Tu actividad', 'flavor-platform'); ?></h3>
+            <h3 class="gc-section-title"><?php esc_html_e('Tu actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="gc-stats-grid">
                 <div class="gc-stat-card">
                     <span class="gc-stat-icon" style="background: #e8f5e9; color: #4caf50;">
@@ -250,7 +250,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo esc_html($estadisticas['total_pedidos']); ?></span>
-                        <span class="gc-stat-label"><?php esc_html_e('Pedidos realizados', 'flavor-platform'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Pedidos realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo number_format($estadisticas['gasto_total'], 0, ',', '.'); ?> &euro;</span>
-                        <span class="gc-stat-label"><?php esc_html_e('Total consumido', 'flavor-platform'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Total consumido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -271,7 +271,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo esc_html($estadisticas['pedidos_pendientes']); ?></span>
-                        <span class="gc-stat-label"><?php esc_html_e('Pedidos pendientes', 'flavor-platform'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Pedidos pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -281,18 +281,18 @@ $accesos_rapidos = [
         <!-- Pedidos recientes -->
         <section class="gc-panel-pedidos">
             <div class="gc-section-header">
-                <h3 class="gc-section-title"><?php esc_html_e('Pedidos recientes', 'flavor-platform'); ?></h3>
+                <h3 class="gc-section-title"><?php esc_html_e('Pedidos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>" class="gc-link-ver-todos">
-                    <?php esc_html_e('Ver todos', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($pedidos_recientes)) : ?>
             <div class="gc-pedidos-empty">
                 <span class="dashicons dashicons-clipboard"></span>
-                <p><?php esc_html_e('Aun no has realizado ningun pedido.', 'flavor-platform'); ?></p>
+                <p><?php esc_html_e('Aun no has realizado ningun pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-sm gc-btn-primary">
-                    <?php esc_html_e('Ver catalogo', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver catalogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php else : ?>
@@ -303,12 +303,12 @@ $accesos_rapidos = [
                     switch ($pedido->estado_pago) {
                         case 'completado':
                             $estado_class = 'gc-estado-pagado';
-                            $estado_label = __('Pagado', 'flavor-platform');
+                            $estado_label = __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             break;
                         case 'pendiente':
                         case 'pendiente_recogida':
                             $estado_class = 'gc-estado-pendiente';
-                            $estado_label = __('Pendiente', 'flavor-platform');
+                            $estado_label = __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             break;
                         default:
                             $estado_class = 'gc-estado-otro';
@@ -338,7 +338,7 @@ $accesos_rapidos = [
     <!-- Mis grupos -->
     <?php if (!empty($mis_grupos)) : ?>
     <section class="gc-panel-grupos">
-        <h3 class="gc-section-title"><?php esc_html_e('Mis grupos', 'flavor-platform'); ?></h3>
+        <h3 class="gc-section-title"><?php esc_html_e('Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="gc-grupos-lista">
             <?php foreach ($mis_grupos as $grupo) : ?>
             <a href="<?php echo esc_url(add_query_arg('grupo', $grupo->grupo_id, Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-grupo-item">
@@ -350,9 +350,9 @@ $accesos_rapidos = [
                     <span class="gc-grupo-rol">
                         <?php
                         $roles = [
-                            'consumidor'  => __('Consumidor', 'flavor-platform'),
-                            'coordinador' => __('Coordinador', 'flavor-platform'),
-                            'productor'   => __('Productor', 'flavor-platform'),
+                            'consumidor'  => __('Consumidor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'coordinador' => __('Coordinador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'productor'   => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         echo esc_html($roles[$grupo->rol] ?? $grupo->rol);
                         ?>
@@ -372,11 +372,11 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-editor-help"></span>
             </span>
             <div class="gc-ayuda-content">
-                <strong><?php esc_html_e('Necesitas ayuda?', 'flavor-platform'); ?></strong>
-                <p><?php esc_html_e('Consulta nuestras guias o contacta con los coordinadores del grupo.', 'flavor-platform'); ?></p>
+                <strong><?php esc_html_e('Necesitas ayuda?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Consulta nuestras guias o contacta con los coordinadores del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('ayuda', '')); ?>" class="gc-btn gc-btn-sm gc-btn-secondary">
-                <?php esc_html_e('Ver ayuda', 'flavor-platform'); ?>
+                <?php esc_html_e('Ver ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </section>

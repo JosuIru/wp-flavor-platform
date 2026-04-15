@@ -17,7 +17,7 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'saberes-ancestrales';
-        $this->title = __('Saberes Ancestrales', 'flavor-platform');
+        $this->title = __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-book';
         $this->size = 'small';
         $this->category = 'cultura';
@@ -32,13 +32,13 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-book-alt',
                 'valor' => $stats['saberes_total'],
-                'label' => __('Saberes', 'flavor-platform'),
+                'label' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'brown',
             ],
             [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $stats['talleres_proximos'],
-                'label' => __('Talleres', 'flavor-platform'),
+                'label' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
             ],
         ];
@@ -48,7 +48,7 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'title' => sprintf(
-                    _n('%d taller próximo', '%d talleres próximos', $stats['talleres_proximos'], 'flavor-platform'),
+                    _n('%d taller próximo', '%d talleres próximos', $stats['talleres_proximos'], FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $stats['talleres_proximos']
                 ),
                 'url' => $this->get_context_url('/mi-portal/saberes-ancestrales/talleres/', 'flavor-saberes-ancestrales'),
@@ -58,10 +58,10 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats_array,
             'items' => $items,
-            'empty_state' => __('Explora los saberes de la comunidad', 'flavor-platform'),
+            'empty_state' => __('Explora los saberes de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver catálogo', 'flavor-platform'),
+                    'label' => __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/saberes-ancestrales/', 'flavor-saberes-ancestrales'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

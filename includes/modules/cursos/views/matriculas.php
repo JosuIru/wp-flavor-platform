@@ -84,7 +84,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Matrículas', 'flavor-platform'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas rápidas -->
@@ -95,7 +95,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_hoy); ?></div>
-                <div class="flavor-stat-label"><?php echo esc_html__('Hoy', 'flavor-platform'); ?></div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -105,7 +105,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_semana); ?></div>
-                <div class="flavor-stat-label"><?php echo esc_html__('Esta Semana', 'flavor-platform'); ?></div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -115,7 +115,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_mes); ?></div>
-                <div class="flavor-stat-label"><?php echo esc_html__('Este Mes', 'flavor-platform'); ?></div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -123,18 +123,18 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-platform'); ?>">
-            <input type="hidden" name="tab" value="<?php echo esc_attr__('matriculas', 'flavor-platform'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('matriculas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="<?php echo esc_attr__('Buscar alumno o curso...', 'flavor-platform'); ?>"
+                       placeholder="<?php echo esc_attr__('Buscar alumno o curso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        class="flavor-filter-search">
 
                 <select name="curso_id" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todos los cursos', 'flavor-platform'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($cursos_para_filtro as $curso): ?>
                         <option value="<?php echo $curso->id; ?>" <?php selected($filtro_curso, $curso->id); ?>>
                             <?php echo esc_html($curso->titulo); ?>
@@ -143,16 +143,16 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                 </select>
 
                 <select name="estado" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('activa', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activa', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('completada', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php echo esc_html__('Completada', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('abandonada', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'abandonada'); ?>><?php echo esc_html__('Abandonada', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('suspendida', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'suspendida'); ?>><?php echo esc_html__('Suspendida', 'flavor-platform'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php echo esc_html__('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('abandonada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'abandonada'); ?>><?php echo esc_html__('Abandonada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('suspendida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'suspendida'); ?>><?php echo esc_html__('Suspendida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
-                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-platform'); ?></button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($search || $filtro_estado || $filtro_curso): ?>
-                    <a href="?page=flavor-chat-cursos&tab=matriculas" class="button"><?php echo esc_html__('Limpiar', 'flavor-platform'); ?></a>
+                    <a href="?page=flavor-chat-cursos&tab=matriculas" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
@@ -164,15 +164,15 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
-                        <th><?php echo esc_html__('Alumno', 'flavor-platform'); ?></th>
-                        <th><?php echo esc_html__('Curso', 'flavor-platform'); ?></th>
-                        <th><?php echo esc_html__('Instructor', 'flavor-platform'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Progreso', 'flavor-platform'); ?></th>
-                        <th style="width: 80px;"><?php echo esc_html__('Precio', 'flavor-platform'); ?></th>
-                        <th style="width: 120px;"><?php echo esc_html__('Fecha', 'flavor-platform'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Alumno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Instructor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -198,7 +198,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                                     <?php if ($inscripcion->precio_pagado > 0): ?>
                                         <?php echo number_format($inscripcion->precio_pagado, 2); ?>€
                                     <?php else: ?>
-                                        <span class="flavor-text-success"><?php echo esc_html__('Gratis', 'flavor-platform'); ?></span>
+                                        <span class="flavor-text-success"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -219,7 +219,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                                 </td>
                                 <td>
                                     <button class="button button-small btn-ver-inscripcion" data-id="<?php echo $inscripcion->id; ?>">
-                                        <?php echo esc_html__('Ver', 'flavor-platform'); ?>
+                                        <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -227,7 +227,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="flavor-no-data">
-                                <?php echo esc_html__('No se encontraron inscripciones', 'flavor-platform'); ?>
+                                <?php echo esc_html__('No se encontraron inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>

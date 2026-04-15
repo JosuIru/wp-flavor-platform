@@ -21,8 +21,8 @@ $tipos_labels = [
 ];
 ?>
 <div class="wrap flavor-modulo-page">
-    <?php $this->render_page_header(__('Empresas', 'flavor-platform'), [
-        ['label' => __('Nueva empresa', 'flavor-platform'), 'url' => admin_url('admin.php?page=empresas-listado&action=crear'), 'class' => 'button-primary'],
+    <?php $this->render_page_header(__('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+        ['label' => __('Nueva empresa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=empresas-listado&action=crear'), 'class' => 'button-primary'],
     ]); ?>
 
     <!-- Filtros -->
@@ -31,19 +31,19 @@ $tipos_labels = [
             <input type="hidden" name="page" value="empresas-listado" />
 
             <div>
-                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Estado', 'flavor-platform'); ?></label>
+                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="estado">
-                    <option value="activa" <?php selected($filtros['estado'], 'activa'); ?>><?php esc_html_e('Activas', 'flavor-platform'); ?></option>
-                    <option value="pendiente" <?php selected($filtros['estado'], 'pendiente'); ?>><?php esc_html_e('Pendientes', 'flavor-platform'); ?></option>
-                    <option value="suspendida" <?php selected($filtros['estado'], 'suspendida'); ?>><?php esc_html_e('Suspendidas', 'flavor-platform'); ?></option>
-                    <option value="" <?php selected($filtros['estado'], ''); ?>><?php esc_html_e('Todas', 'flavor-platform'); ?></option>
+                    <option value="activa" <?php selected($filtros['estado'], 'activa'); ?>><?php esc_html_e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="pendiente" <?php selected($filtros['estado'], 'pendiente'); ?>><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="suspendida" <?php selected($filtros['estado'], 'suspendida'); ?>><?php esc_html_e('Suspendidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="" <?php selected($filtros['estado'], ''); ?>><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div>
-                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo', 'flavor-platform'); ?></label>
+                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="tipo">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-platform'); ?></option>
+                    <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_labels as $key => $label): ?>
                     <option value="<?php echo esc_attr($key); ?>" <?php selected($filtros['tipo'], $key); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
@@ -51,30 +51,30 @@ $tipos_labels = [
             </div>
 
             <div>
-                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Buscar', 'flavor-platform'); ?></label>
-                <input type="text" name="s" value="<?php echo esc_attr($filtros['busqueda']); ?>" placeholder="<?php esc_attr_e('Nombre, razón social o CIF...', 'flavor-platform'); ?>" style="min-width:200px;" />
+                <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="s" value="<?php echo esc_attr($filtros['busqueda']); ?>" placeholder="<?php esc_attr_e('Nombre, razón social o CIF...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="min-width:200px;" />
             </div>
 
-            <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
+            <button type="submit" class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </form>
     </div>
 
     <!-- Resumen -->
     <div style="margin-bottom:16px;color:#666;">
-        <?php printf(esc_html__('Mostrando %d empresas', 'flavor-platform'), count($empresas)); ?>
+        <?php printf(esc_html__('Mostrando %d empresas', FLAVOR_PLATFORM_TEXT_DOMAIN), count($empresas)); ?>
     </div>
 
     <!-- Tabla -->
     <table class="widefat striped" style="background:#fff;border-radius:8px;overflow:hidden;">
         <thead>
             <tr>
-                <th style="padding:12px;"><?php esc_html_e('Empresa', 'flavor-platform'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('CIF/NIF', 'flavor-platform'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Sector', 'flavor-platform'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Contacto', 'flavor-platform'); ?></th>
-                <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('CIF/NIF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Sector', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -130,13 +130,13 @@ $tipos_labels = [
                         </span>
                     </td>
                     <td style="padding:12px;text-align:center;">
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=ver&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Ver', 'flavor-platform'); ?>" style="margin-right:4px;">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=ver&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="margin-right:4px;">
                             <span class="dashicons dashicons-visibility" style="color:#666;"></span>
                         </a>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=editar&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Editar', 'flavor-platform'); ?>" style="margin-right:4px;">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=editar&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="margin-right:4px;">
                             <span class="dashicons dashicons-edit" style="color:#2563eb;"></span>
                         </a>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=miembros&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Miembros', 'flavor-platform'); ?>">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=miembros&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-groups" style="color:#10b981;"></span>
                         </a>
                     </td>
@@ -145,7 +145,7 @@ $tipos_labels = [
             <?php else: ?>
                 <tr>
                     <td colspan="7" style="padding:40px;text-align:center;color:#666;">
-                        <?php esc_html_e('No se encontraron empresas.', 'flavor-platform'); ?>
+                        <?php esc_html_e('No se encontraron empresas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </td>
                 </tr>
             <?php endif; ?>

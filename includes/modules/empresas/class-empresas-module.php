@@ -35,8 +35,8 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
     public function __construct() {
         $this->id = 'empresas';
-        $this->name = __('Empresas', 'flavor-platform');
-        $this->description = __('Gestión de empresas con contabilidad, facturación y miembros independientes dentro de comunidades.', 'flavor-platform');
+        $this->name = __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Gestión de empresas con contabilidad, facturación y miembros independientes dentro de comunidades.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         global $wpdb;
         $this->tabla_empresas = $wpdb->prefix . 'flavor_empresas';
@@ -53,8 +53,8 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
     public static function get_module_info() {
         return [
             'id' => 'empresas',
-            'name' => __('Empresas', 'flavor-platform'),
-            'description' => __('Crea y gestiona empresas dentro de tu comunidad. Cada empresa tiene su propia contabilidad, facturas, miembros y documentación.', 'flavor-platform'),
+            'name' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Crea y gestiona empresas dentro de tu comunidad. Cada empresa tiene su propia contabilidad, facturas, miembros y documentación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-building',
             'category' => 'economia',
             'tags' => ['empresas', 'negocios', 'contabilidad', 'facturación', 'b2b'],
@@ -63,13 +63,13 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
             'requires' => [],
             'recommends' => ['contabilidad', 'facturas', 'comunidades'],
             'features' => [
-                __('Registro de empresas con datos fiscales', 'flavor-platform'),
-                __('Miembros con roles (admin, contable, empleado)', 'flavor-platform'),
-                __('Contabilidad independiente por empresa', 'flavor-platform'),
-                __('Facturación propia', 'flavor-platform'),
-                __('Documentación centralizada', 'flavor-platform'),
-                __('Dashboard de cliente para empresas', 'flavor-platform'),
-                __('API para aplicaciones móviles', 'flavor-platform'),
+                __('Registro de empresas con datos fiscales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Miembros con roles (admin, contable, empleado)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Contabilidad independiente por empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Facturación propia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Documentación centralizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Dashboard de cliente para empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('API para aplicaciones móviles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'screenshots' => [],
             'documentation_url' => '',
@@ -83,7 +83,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Empresas no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Empresas no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -128,29 +128,29 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'empresas',
-            'label' => __('Empresas', 'flavor-platform'),
+            'label' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-building',
             'capability' => 'manage_options',
             'categoria' => 'negocios',
             'paginas' => [
                 [
                     'slug' => 'empresas-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'empresas-listado',
-                    'titulo' => __('Empresas', 'flavor-platform'),
+                    'titulo' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
                     'slug' => 'empresas-solicitudes',
-                    'titulo' => __('Solicitudes', 'flavor-platform'),
+                    'titulo' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_solicitudes'],
                 ],
                 [
                     'slug' => 'empresas-config',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -314,19 +314,19 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $resultado = $wpdb->insert($this->tabla_empresas, $datos_insert);
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al crear la empresa.', 'flavor-platform'));
+            return new WP_Error('db_error', __('Error al crear la empresa.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $empresa_id = $wpdb->insert_id;
 
         // Añadir al creador como admin
         $this->agregar_miembro($empresa_id, get_current_user_id(), 'admin', [
-            'cargo' => __('Administrador', 'flavor-platform'),
+            'cargo' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'estado' => 'activo',
         ]);
 
         // Registrar actividad
-        $this->registrar_actividad($empresa_id, 'empresa_creada', __('Empresa creada', 'flavor-platform'));
+        $this->registrar_actividad($empresa_id, 'empresa_creada', __('Empresa creada', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         do_action('flavor_empresa_creada', $empresa_id, $datos_insert);
 
@@ -377,7 +377,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         );
 
         if ($resultado !== false) {
-            $this->registrar_actividad($empresa_id, 'empresa_actualizada', __('Datos actualizados', 'flavor-platform'));
+            $this->registrar_actividad($empresa_id, 'empresa_actualizada', __('Datos actualizados', FLAVOR_PLATFORM_TEXT_DOMAIN));
             do_action('flavor_empresa_actualizada', $empresa_id, $datos_update);
         }
 
@@ -479,7 +479,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
         if ($resultado !== false) {
             $this->registrar_actividad($empresa_id, 'miembro_agregado', sprintf(
-                __('Miembro añadido: %s', 'flavor-platform'),
+                __('Miembro añadido: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 get_userdata($user_id)->display_name ?? ''
             ));
             do_action('flavor_empresa_miembro_agregado', $empresa_id, $user_id, $rol);
@@ -668,21 +668,21 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
             [
                 'icon' => 'dashicons-building',
                 'valor' => $total_empresas,
-                'label' => __('Empresas activas', 'flavor-platform'),
+                'label' => __('Empresas activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=empresas-listado'),
             ],
             [
                 'icon' => 'dashicons-clock',
                 'valor' => $pendientes,
-                'label' => __('Pendientes', 'flavor-platform'),
+                'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $pendientes > 0 ? 'orange' : 'gray',
                 'enlace' => admin_url('admin.php?page=empresas-solicitudes'),
             ],
             [
                 'icon' => 'dashicons-groups',
                 'valor' => $total_miembros,
-                'label' => __('Miembros totales', 'flavor-platform'),
+                'label' => __('Miembros totales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
             ],
         ];
@@ -765,10 +765,10 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
                 if ($accion === 'aprobar') {
                     $this->actualizar_empresa($empresa_id, ['estado' => 'activa']);
-                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa aprobada.', 'flavor-platform') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa aprobada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 } elseif ($accion === 'rechazar') {
                     $this->actualizar_empresa($empresa_id, ['estado' => 'baja', 'motivo_baja' => sanitize_textarea_field($_POST['motivo'] ?? '')]);
-                    echo '<div class="notice notice-warning"><p>' . esc_html__('Solicitud rechazada.', 'flavor-platform') . '</p></div>';
+                    echo '<div class="notice notice-warning"><p>' . esc_html__('Solicitud rechazada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 }
             }
         }
@@ -789,7 +789,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
                 $this->update_setting('integracion_contabilidad', isset($_POST['integracion_contabilidad']));
                 $this->update_setting('integracion_facturas', isset($_POST['integracion_facturas']));
 
-                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
@@ -823,7 +823,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
                 if ($es_edicion) {
                     $this->actualizar_empresa($empresa_id, $datos);
-                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa actualizada.', 'flavor-platform') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                     $empresa = $this->obtener_empresa($empresa_id);
                 } else {
                     $resultado = $this->crear_empresa($datos);
@@ -844,7 +844,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -861,7 +861,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -994,7 +994,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
 
         // Fallback si no existe el controlador
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesión para ver tu dashboard de empresa.', 'flavor-platform') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para ver tu dashboard de empresa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $empresas = $this->obtener_empresas_usuario();
@@ -1062,13 +1062,13 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $empresa_id = absint($atts['id']) ?: (isset($_GET['empresa_id']) ? absint($_GET['empresa_id']) : 0);
 
         if (!$empresa_id) {
-            return '<p>' . esc_html__('Empresa no especificada.', 'flavor-platform') . '</p>';
+            return '<p>' . esc_html__('Empresa no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa || $empresa->estado !== 'activa') {
-            return '<p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p>';
+            return '<p>' . esc_html__('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $miembros = $this->obtener_miembros($empresa_id, 'activo');
@@ -1142,7 +1142,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $empresa = $this->obtener_empresa($request->get_param('id'));
 
         if (!$empresa) {
-            return new WP_Error('not_found', __('Empresa no encontrada.', 'flavor-platform'), ['status' => 404]);
+            return new WP_Error('not_found', __('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return rest_ensure_response([
@@ -1216,19 +1216,19 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
     public function get_actions() {
         return [
             'listar_empresas' => [
-                'description' => __('Listar empresas con filtros', 'flavor-platform'),
+                'description' => __('Listar empresas con filtros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['estado', 'tipo', 'sector', 'busqueda', 'limite'],
             ],
             'obtener_empresa' => [
-                'description' => __('Obtener detalles de una empresa', 'flavor-platform'),
+                'description' => __('Obtener detalles de una empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['empresa_id'],
             ],
             'mis_empresas' => [
-                'description' => __('Obtener empresas del usuario actual', 'flavor-platform'),
+                'description' => __('Obtener empresas del usuario actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => [],
             ],
             'estadisticas_empresa' => [
-                'description' => __('Obtener estadísticas de una empresa', 'flavor-platform'),
+                'description' => __('Obtener estadísticas de una empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['empresa_id'],
             ],
         ];
@@ -1249,7 +1249,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
             case 'detalle':
                 $empresa = $this->obtener_empresa(absint($params['empresa_id'] ?? 0));
                 if (!$empresa) {
-                    return ['success' => false, 'error' => __('Empresa no encontrada.', 'flavor-platform')];
+                    return ['success' => false, 'error' => __('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
                 return [
                     'success' => true,
@@ -1268,7 +1268,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
             case 'stats':
                 $empresa_id = absint($params['empresa_id'] ?? 0);
                 if (!$empresa_id) {
-                    return ['success' => false, 'error' => __('ID de empresa requerido.', 'flavor-platform')];
+                    return ['success' => false, 'error' => __('ID de empresa requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
                 return [
                     'success' => true,
@@ -1276,7 +1276,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
                 ];
 
             default:
-                return ['success' => false, 'error' => __('Acción no disponible.', 'flavor-platform')];
+                return ['success' => false, 'error' => __('Acción no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
     }
 
@@ -1322,7 +1322,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         $pendientes = $this->contar_empresas(['estado' => 'pendiente']);
 
         return sprintf(
-            __("Módulo de Empresas:\n- Empresas activas: %d\n- Solicitudes pendientes: %d\n\nPermite crear y gestionar empresas dentro de comunidades, con su propia contabilidad, facturación y miembros.", 'flavor-platform'),
+            __("Módulo de Empresas:\n- Empresas activas: %d\n- Solicitudes pendientes: %d\n\nPermite crear y gestionar empresas dentro de comunidades, con su propia contabilidad, facturación y miembros.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $total,
             $pendientes
         );

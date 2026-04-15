@@ -55,18 +55,18 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-store"></span>
-                <?php esc_html_e('Productores', 'flavor-platform'); ?>
+                <?php esc_html_e('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Directorio operativo de productores y datos de contacto para logística del ciclo.', 'flavor-platform'); ?>
+                <?php esc_html_e('Directorio operativo de productores y datos de contacto para logística del ciclo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_productor')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo productor', 'flavor-platform'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_productor')); ?>" class="dm-btn dm-btn--secondary">
-                <?php esc_html_e('Editor nativo', 'flavor-platform'); ?>
+                <?php esc_html_e('Editor nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -75,25 +75,25 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-stat-card">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productores); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Productores activos', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productores activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productos_asignados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Productos asignados', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productos asignados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($promedio_productos, 1); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Productos por productor', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productos por productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($productores_con_email); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Con email de contacto', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Con email de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -101,11 +101,11 @@ $base_url = admin_url('admin.php?page=' . $current_page);
     <form method="get" class="dm-card" style="padding:16px; margin-bottom:16px; display:flex; gap:10px; align-items:end;">
         <input type="hidden" name="page" value="<?php echo esc_attr($current_page); ?>" />
         <div style="flex:1;">
-            <label for="gc-productores-search"><strong><?php esc_html_e('Buscar productor', 'flavor-platform'); ?></strong></label>
-            <input id="gc-productores-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Nombre o descripción', 'flavor-platform'); ?>" />
+            <label for="gc-productores-search"><strong><?php esc_html_e('Buscar productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
+            <input id="gc-productores-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Nombre o descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
         </div>
         <div>
-            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </form>
 
@@ -113,12 +113,12 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Productor', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Contacto', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Ubicación', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Productos', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Actualizado', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -158,15 +158,15 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                             </td>
                             <td><?php echo esc_html(get_the_modified_date(get_option('date_format'))); ?></td>
                             <td>
-                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($productor_id)); ?>"><?php esc_html_e('Editar', 'flavor-platform'); ?></a>
-                                <a class="button button-small" href="<?php echo esc_url(admin_url('edit.php?post_type=gc_producto&meta_key=_gc_productor_id&meta_value=' . $productor_id)); ?>"><?php esc_html_e('Productos', 'flavor-platform'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($productor_id)); ?>"><?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(admin_url('edit.php?post_type=gc_producto&meta_key=_gc_productor_id&meta_value=' . $productor_id)); ?>"><?php esc_html_e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                     <?php wp_reset_postdata(); ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="6"><?php esc_html_e('No hay productores para los filtros seleccionados.', 'flavor-platform'); ?></td>
+                        <td colspan="6"><?php esc_html_e('No hay productores para los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

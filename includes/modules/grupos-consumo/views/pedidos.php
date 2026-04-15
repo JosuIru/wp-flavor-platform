@@ -281,14 +281,14 @@ $colores_estado = [
 
 <div class="wrap">
     <div class="gc-pedidos-header">
-        <h1><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Gestión de Pedidos', 'flavor-platform'); ?></h1>
+        <h1><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Gestión de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
         <div class="gc-vista-toggle">
             <a href="<?php echo esc_url(add_query_arg('vista', 'usuario')); ?>" class="<?php echo $vista === 'usuario' ? 'active' : ''; ?>">
-                <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Por Usuario', 'flavor-platform'); ?>
+                <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Por Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('vista', 'lista')); ?>" class="<?php echo $vista === 'lista' ? 'active' : ''; ?>">
-                <span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Lista', 'flavor-platform'); ?>
+                <span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -299,32 +299,32 @@ $colores_estado = [
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
             <input type="hidden" name="vista" value="<?php echo esc_attr($vista); ?>">
             <select name="estado">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-platform'); ?></option>
-                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-platform'); ?></option>
-                <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-platform'); ?></option>
-                <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-platform'); ?></option>
-                <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-platform'); ?></option>
-                <option value="sin_stock" <?php selected($filtro_estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-platform'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="sin_stock" <?php selected($filtro_estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
             <select name="ciclo">
-                <option value="0"><?php esc_html_e('Todos los ciclos', 'flavor-platform'); ?></option>
+                <option value="0"><?php esc_html_e('Todos los ciclos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($ciclos as $ciclo): ?>
                     <option value="<?php echo $ciclo->ID; ?>" <?php selected($filtro_ciclo, $ciclo->ID); ?>>
                         <?php echo esc_html($ciclo->post_title); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-            <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
+            <button type="submit" class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if ($vista === 'usuario' && !empty($pedidos)): ?>
                 <button type="button" class="button" onclick="window.print();">
-                    <span class="dashicons dashicons-printer" style="margin-top: 3px;"></span> <?php esc_html_e('Imprimir Todo', 'flavor-platform'); ?>
+                    <span class="dashicons dashicons-printer" style="margin-top: 3px;"></span> <?php esc_html_e('Imprimir Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <span style="margin-left: 10px; border-left: 1px solid #c3c4c7; padding-left: 10px;">
-                    <button type="button" class="button gc-expandir-todos" title="<?php esc_attr_e('Expandir todos', 'flavor-platform'); ?>">
+                    <button type="button" class="button gc-expandir-todos" title="<?php esc_attr_e('Expandir todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-arrow-down-alt2" style="margin-top: 3px;"></span>
                     </button>
-                    <button type="button" class="button gc-colapsar-todos" title="<?php esc_attr_e('Colapsar todos', 'flavor-platform'); ?>">
+                    <button type="button" class="button gc-colapsar-todos" title="<?php esc_attr_e('Colapsar todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-arrow-up-alt2" style="margin-top: 3px;"></span>
                     </button>
                 </span>
@@ -337,19 +337,19 @@ $colores_estado = [
         <!-- Resumen para preparación -->
         <?php if (!empty($pedidos)): ?>
         <div class="gc-resumen-preparacion">
-            <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Resumen de Preparación', 'flavor-platform'); ?></h3>
+            <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Resumen de Preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="gc-resumen-stats">
                 <div class="gc-resumen-stat">
                     <div class="gc-resumen-stat-valor"><?php echo count($pedidos_por_usuario); ?></div>
-                    <div class="gc-resumen-stat-label"><?php esc_html_e('Usuarios', 'flavor-platform'); ?></div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="gc-resumen-stat">
                     <div class="gc-resumen-stat-valor"><?php echo count($pedidos); ?></div>
-                    <div class="gc-resumen-stat-label"><?php esc_html_e('Líneas de pedido', 'flavor-platform'); ?></div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Líneas de pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="gc-resumen-stat">
                     <div class="gc-resumen-stat-valor"><?php echo number_format(array_sum($totales_usuario), 2); ?> €</div>
-                    <div class="gc-resumen-stat-label"><?php esc_html_e('Total general', 'flavor-platform'); ?></div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Total general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>
@@ -358,7 +358,7 @@ $colores_estado = [
         <!-- Vista agrupada por usuario -->
         <?php foreach ($pedidos_por_usuario as $usuario_id => $pedidos_usuario):
             $usuario = get_userdata($usuario_id);
-            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario desconocido', 'flavor-platform');
+            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $email_usuario = $usuario ? $usuario->user_email : '';
             $total_usuario = $totales_usuario[$usuario_id];
         ?>
@@ -377,7 +377,7 @@ $colores_estado = [
                 </div>
                 <div class="gc-usuario-total">
                     <div class="gc-usuario-total-cantidad"><?php echo number_format($total_usuario, 2); ?> €</div>
-                    <div class="gc-usuario-total-label"><?php echo sprintf(_n('%d producto', '%d productos', count($pedidos_usuario), 'flavor-platform'), count($pedidos_usuario)); ?></div>
+                    <div class="gc-usuario-total-label"><?php echo sprintf(_n('%d producto', '%d productos', count($pedidos_usuario), FLAVOR_PLATFORM_TEXT_DOMAIN), count($pedidos_usuario)); ?></div>
                 </div>
                 <div class="gc-usuario-toggle">
                     <span class="dashicons dashicons-arrow-down-alt2"></span>
@@ -389,11 +389,11 @@ $colores_estado = [
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 40%;"><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e('Precio/u', 'flavor-platform'); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e('Subtotal', 'flavor-platform'); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                            <th style="width: 40%;"><?php esc_html_e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Precio/u', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Subtotal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -411,11 +411,11 @@ $colores_estado = [
                             <td><strong><?php echo number_format($subtotal, 2); ?> €</strong></td>
                             <td>
                                 <select class="gc-estado-select" data-pedido-id="<?php echo $pedido->id; ?>" data-estado-original="<?php echo esc_attr($pedido->estado); ?>">
-                                    <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-platform'); ?></option>
-                                    <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-platform'); ?></option>
-                                    <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-platform'); ?></option>
-                                    <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-platform'); ?></option>
-                                    <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-platform'); ?></option>
+                                    <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </td>
                         </tr>
@@ -426,10 +426,10 @@ $colores_estado = [
 
             <div class="gc-acciones-usuario">
                 <button type="button" class="button gc-btn-imprimir" onclick="imprimirUsuario(<?php echo $usuario_id; ?>)">
-                    <span class="dashicons dashicons-printer"></span> <?php esc_html_e('Imprimir', 'flavor-platform'); ?>
+                    <span class="dashicons dashicons-printer"></span> <?php esc_html_e('Imprimir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button gc-btn-marcar-completado" data-usuario="<?php echo $usuario_id; ?>">
-                    <span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Marcar como preparado', 'flavor-platform'); ?>
+                    <span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Marcar como preparado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             </div><!-- /.gc-usuario-body -->
@@ -439,7 +439,7 @@ $colores_estado = [
         <?php if (empty($pedidos)): ?>
             <div class="gc-usuario-card" style="padding: 40px; text-align: center;">
                 <span class="dashicons dashicons-clipboard" style="font-size: 48px; color: #c3c4c7;"></span>
-                <p style="color: #646970; margin-top: 15px;"><?php esc_html_e('No hay pedidos con los filtros seleccionados', 'flavor-platform'); ?></p>
+                <p style="color: #646970; margin-top: 15px;"><?php esc_html_e('No hay pedidos con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
 
@@ -449,21 +449,21 @@ $colores_estado = [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('ID', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Usuario', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Total', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($pedidos)): ?>
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 20px;">
-                            <?php esc_html_e('No hay pedidos con los filtros seleccionados', 'flavor-platform'); ?>
+                            <?php esc_html_e('No hay pedidos con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -482,11 +482,11 @@ $colores_estado = [
                         <td><strong><?php echo number_format($total, 2); ?> €</strong></td>
                         <td>
                             <select class="gc-estado-select" data-pedido-id="<?php echo $pedido->id; ?>" data-estado-original="<?php echo esc_attr($pedido->estado); ?>">
-                                <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-platform'); ?></option>
-                                <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-platform'); ?></option>
-                                <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-platform'); ?></option>
-                                <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-platform'); ?></option>
-                                <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-platform'); ?></option>
+                                <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </td>
                         <td><?php echo date_i18n('d/m/Y', strtotime($pedido->fecha_pedido)); ?></td>
@@ -525,8 +525,8 @@ jQuery(document).ready(function($) {
         $notice.removeClass('success error').addClass('error').html(
             '<p>' + mensaje + '</p>' +
             '<div class="gc-inline-confirm-actions">' +
-                '<button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button>' +
-                '<button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button>' +
+                '<button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button>' +
+                '<button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button>' +
             '</div>'
         ).show();
 
@@ -615,13 +615,13 @@ jQuery(document).ready(function($) {
                         $select.css('box-shadow', '');
                     }, 1000);
                 } else {
-                    gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-platform')); ?>', 'error');
+                    gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                     $select.val(estadoOriginal);
                     aplicarColorSelect($select);
                 }
             },
             error: function() {
-                gcPedidosAviso('<?php echo esc_js(__('Error de conexión', 'flavor-platform')); ?>', 'error');
+                gcPedidosAviso('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 $select.val(estadoOriginal);
                 aplicarColorSelect($select);
             },
@@ -637,7 +637,7 @@ jQuery(document).ready(function($) {
         var $btn = $(this);
         var $card = $btn.closest('.gc-usuario-card');
 
-        gcPedidosConfirmar('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', 'flavor-platform')); ?>', function() {
+        gcPedidosConfirmar('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', function() {
             $btn.prop('disabled', true);
 
             $.ajax({
@@ -657,15 +657,15 @@ jQuery(document).ready(function($) {
                             aplicarColorSelect($(this));
                         });
                         $card.find('.gc-usuario-header').css('background', 'linear-gradient(135deg, #00a32a 0%, #008a20 100%)');
-                        $btn.html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', 'flavor-platform')); ?>');
-                        gcPedidosAviso('<?php echo esc_js(__('Pedidos marcados como completados.', 'flavor-platform')); ?>', 'success');
+                        $btn.html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+                        gcPedidosAviso('<?php echo esc_js(__('Pedidos marcados como completados.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');
                     } else {
-                        gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-platform')); ?>', 'error');
+                        gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                         $btn.prop('disabled', false);
                     }
                 },
                 error: function() {
-                    gcPedidosAviso('<?php echo esc_js(__('Error de conexión', 'flavor-platform')); ?>', 'error');
+                    gcPedidosAviso('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                     $btn.prop('disabled', false);
                 }
             });

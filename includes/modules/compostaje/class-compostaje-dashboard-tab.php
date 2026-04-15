@@ -134,39 +134,39 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         // Tab principal de compostaje con sub-tabs
         $tabs['compostaje-mis-aportes'] = [
-            'titulo' => __('Mis Aportes', 'flavor-platform'),
+            'titulo' => __('Mis Aportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-carrot',
             'callback' => [$this, 'render_tab_mis_aportes'],
             'orden' => 56,
             'parent' => 'compostaje',
-            'descripcion' => __('Historial de aportaciones a composteras', 'flavor-platform'),
+            'descripcion' => __('Historial de aportaciones a composteras', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $tabs['compostaje-mi-balance'] = [
-            'titulo' => __('Mi Balance', 'flavor-platform'),
+            'titulo' => __('Mi Balance', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-chart-area',
             'callback' => [$this, 'render_tab_mi_balance'],
             'orden' => 57,
             'parent' => 'compostaje',
-            'descripcion' => __('Puntos acumulados y kg compostados', 'flavor-platform'),
+            'descripcion' => __('Puntos acumulados y kg compostados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $tabs['compostaje-turnos'] = [
-            'titulo' => __('Mis Turnos', 'flavor-platform'),
+            'titulo' => __('Mis Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-calendar-alt',
             'callback' => [$this, 'render_tab_turnos'],
             'orden' => 58,
             'parent' => 'compostaje',
-            'descripcion' => __('Turnos de mantenimiento asignados', 'flavor-platform'),
+            'descripcion' => __('Turnos de mantenimiento asignados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $tabs['compostaje-ranking'] = [
-            'titulo' => __('Ranking', 'flavor-platform'),
+            'titulo' => __('Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-awards',
             'callback' => [$this, 'render_tab_ranking'],
             'orden' => 59,
             'parent' => 'compostaje',
-            'descripcion' => __('Posicion en el ranking comunitario', 'flavor-platform'),
+            'descripcion' => __('Posicion en el ranking comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $tabs;
@@ -221,12 +221,12 @@ class Flavor_Compostaje_Dashboard_Tab {
             'usuarioId' => get_current_user_id(),
             'co2Factor' => self::CO2_POR_KG_ORGANICO,
             'strings' => [
-                'cargando' => __('Cargando datos...', 'flavor-platform'),
-                'error' => __('Error al cargar los datos', 'flavor-platform'),
-                'sin_datos' => __('No hay datos disponibles', 'flavor-platform'),
-                'kg_compostados' => __('kg compostados', 'flavor-platform'),
-                'co2_evitado' => __('kg CO2 evitado', 'flavor-platform'),
-                'puntos' => __('puntos', 'flavor-platform'),
+                'cargando' => __('Cargando datos...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar los datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_datos' => __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'kg_compostados' => __('kg compostados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'co2_evitado' => __('kg CO2 evitado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'puntos' => __('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -257,7 +257,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($totales['total_aportaciones']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Aportaciones', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -267,7 +267,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($totales['total_kg'], 1); ?> kg</span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Total Compostado', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Total Compostado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -277,7 +277,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($totales['total_co2'], 1); ?> kg</span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('CO2 Evitado', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('CO2 Evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -287,7 +287,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($totales['total_puntos']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos Ganados', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos Ganados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -295,7 +295,7 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Grafico de evolucion mensual -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Evolucion Mensual', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Evolucion Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <canvas id="compostaje-grafico-mensual" height="200"
@@ -306,7 +306,7 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Distribucion por categoria -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Distribucion por Tipo de Material', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Distribucion por Tipo de Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <div class="flavor-distribucion-grid">
@@ -335,13 +335,13 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Listado de aportaciones -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Historial de Aportaciones', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Historial de Aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-panel-actions">
                         <select id="filtro-periodo-aportes" class="flavor-select flavor-select-sm">
-                            <option value=""><?php esc_html_e('Todos', 'flavor-platform'); ?></option>
-                            <option value="7"><?php esc_html_e('Ultimos 7 dias', 'flavor-platform'); ?></option>
-                            <option value="30"><?php esc_html_e('Ultimo mes', 'flavor-platform'); ?></option>
-                            <option value="90"><?php esc_html_e('Ultimos 3 meses', 'flavor-platform'); ?></option>
+                            <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="7"><?php esc_html_e('Ultimos 7 dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="30"><?php esc_html_e('Ultimo mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="90"><?php esc_html_e('Ultimos 3 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
@@ -351,12 +351,12 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <table class="flavor-tabla flavor-tabla-striped">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Compostera', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Material', 'flavor-platform'); ?></th>
-                                        <th class="text-right"><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
-                                        <th class="text-right"><?php esc_html_e('Puntos', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Compostera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th class="text-right"><?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th class="text-right"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody id="lista-aportaciones">
@@ -372,7 +372,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                                             </td>
                                             <td>
                                                 <span class="flavor-truncate" title="<?php echo esc_attr($aportacion->nombre_punto); ?>">
-                                                    <?php echo esc_html($aportacion->nombre_punto ?: __('Punto eliminado', 'flavor-platform')); ?>
+                                                    <?php echo esc_html($aportacion->nombre_punto ?: __('Punto eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                                 </span>
                                             </td>
                                             <td>
@@ -390,12 +390,12 @@ class Flavor_Compostaje_Dashboard_Tab {
                                                 <?php if ($aportacion->validado): ?>
                                                     <span class="flavor-badge flavor-badge-success">
                                                         <span class="dashicons dashicons-yes-alt"></span>
-                                                        <?php esc_html_e('Validado', 'flavor-platform'); ?>
+                                                        <?php esc_html_e('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                     </span>
                                                 <?php else: ?>
                                                     <span class="flavor-badge flavor-badge-warning">
                                                         <span class="dashicons dashicons-clock"></span>
-                                                        <?php esc_html_e('Pendiente', 'flavor-platform'); ?>
+                                                        <?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                     </span>
                                                 <?php endif; ?>
                                             </td>
@@ -407,10 +407,10 @@ class Flavor_Compostaje_Dashboard_Tab {
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-carrot"></span>
-                            <h4><?php esc_html_e('Sin aportaciones todavia', 'flavor-platform'); ?></h4>
-                            <p><?php esc_html_e('Empieza a compostar y registra tu primera aportacion.', 'flavor-platform'); ?></p>
+                            <h4><?php esc_html_e('Sin aportaciones todavia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p><?php esc_html_e('Empieza a compostar y registra tu primera aportacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <a href="<?php echo esc_url(home_url('/compostaje/')); ?>" class="flavor-btn flavor-btn-primary">
-                                <?php esc_html_e('Ir a Compostar', 'flavor-platform'); ?>
+                                <?php esc_html_e('Ir a Compostar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -447,7 +447,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     <span class="flavor-nivel-emoji"><?php echo esc_html($nivel_actual['emoji']); ?></span>
                     <div class="flavor-nivel-info">
                         <span class="flavor-nivel-nombre"><?php echo esc_html($nivel_actual['nombre']); ?></span>
-                        <span class="flavor-nivel-numero"><?php printf(esc_html__('Nivel %d', 'flavor-platform'), $nivel_actual['nivel']); ?></span>
+                        <span class="flavor-nivel-numero"><?php printf(esc_html__('Nivel %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $nivel_actual['nivel']); ?></span>
                     </div>
                 </div>
 
@@ -465,14 +465,14 @@ class Flavor_Compostaje_Dashboard_Tab {
                     <?php if ($progreso['kg_faltantes'] > 0): ?>
                         <p class="flavor-progreso-meta">
                             <?php printf(
-                                esc_html__('Faltan %.1f kg para alcanzar el nivel %s', 'flavor-platform'),
+                                esc_html__('Faltan %.1f kg para alcanzar el nivel %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $progreso['kg_faltantes'],
                                 $progreso['siguiente_nombre']
                             ); ?>
                         </p>
                     <?php else: ?>
                         <p class="flavor-progreso-meta flavor-texto-success">
-                            <?php esc_html_e('Has alcanzado el nivel maximo', 'flavor-platform'); ?>
+                            <?php esc_html_e('Has alcanzado el nivel maximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -486,7 +486,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($balance['puntos_totales']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos Totales', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -496,7 +496,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($balance['total_kg'], 1); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('kg Compostados', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('kg Compostados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -506,7 +506,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($balance['turnos_completados']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Turnos Completados', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Turnos Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -515,7 +515,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e('Mis Solicitudes de Compost', 'flavor-platform'); ?>
+                        <?php esc_html_e('Mis Solicitudes de Compost', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="flavor-panel-body">
@@ -526,7 +526,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             </div>
                             <div class="flavor-kpi-content">
                                 <span class="flavor-kpi-valor"><?php echo intval($resumen_solicitudes['pendientes']); ?></span>
-                                <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <div class="flavor-kpi-card">
@@ -535,7 +535,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             </div>
                             <div class="flavor-kpi-content">
                                 <span class="flavor-kpi-valor"><?php echo intval($resumen_solicitudes['aprobadas']); ?></span>
-                                <span class="flavor-kpi-label"><?php esc_html_e('Aprobadas', 'flavor-platform'); ?></span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <div class="flavor-kpi-card">
@@ -544,7 +544,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             </div>
                             <div class="flavor-kpi-content">
                                 <span class="flavor-kpi-valor"><?php echo number_format($resumen_solicitudes['kg_solicitados'], 1); ?> kg</span>
-                                <span class="flavor-kpi-label"><?php esc_html_e('Solicitados', 'flavor-platform'); ?></span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Solicitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     </div>
@@ -558,11 +558,11 @@ class Flavor_Compostaje_Dashboard_Tab {
                                 ?>
                                 <div class="flavor-item-simple">
                                     <div class="flavor-item-simple__main">
-                                        <strong><?php echo esc_html($solicitud->nombre_punto ?: __('Punto de compostaje', 'flavor-platform')); ?></strong>
+                                        <strong><?php echo esc_html($solicitud->nombre_punto ?: __('Punto de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                         <span>
                                             <?php
                                             printf(
-                                                esc_html__('%1$s kg solicitados el %2$s', 'flavor-platform'),
+                                                esc_html__('%1$s kg solicitados el %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 number_format((float) $solicitud->cantidad_kg, 1),
                                                 esc_html(date_i18n(get_option('date_format'), strtotime($solicitud->fecha_solicitud)))
                                             );
@@ -578,7 +578,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <p class="flavor-texto-muted"><?php esc_html_e('Aún no has solicitado compost maduro.', 'flavor-platform'); ?></p>
+                        <p class="flavor-texto-muted"><?php esc_html_e('Aún no has solicitado compost maduro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -588,7 +588,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-palmtree"></span>
-                        <?php esc_html_e('Tu Impacto Ambiental', 'flavor-platform'); ?>
+                        <?php esc_html_e('Tu Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="flavor-panel-body">
@@ -600,13 +600,13 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <div class="flavor-impacto-datos">
                                 <span class="flavor-impacto-valor"><?php echo number_format($impacto_ambiental['co2_evitado'], 1); ?></span>
                                 <span class="flavor-impacto-unidad">kg CO2</span>
-                                <span class="flavor-impacto-label"><?php esc_html_e('Emisiones evitadas', 'flavor-platform'); ?></span>
+                                <span class="flavor-impacto-label"><?php esc_html_e('Emisiones evitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="flavor-impacto-equivalencia">
                                 <span class="dashicons dashicons-car"></span>
                                 <span>
                                     <?php printf(
-                                        esc_html__('Equivale a %s km en coche', 'flavor-platform'),
+                                        esc_html__('Equivale a %s km en coche', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         number_format($impacto_ambiental['km_coche'], 0)
                                     ); ?>
                                 </span>
@@ -619,14 +619,14 @@ class Flavor_Compostaje_Dashboard_Tab {
                             </div>
                             <div class="flavor-impacto-datos">
                                 <span class="flavor-impacto-valor"><?php echo number_format($impacto_ambiental['arboles_equivalentes'], 1); ?></span>
-                                <span class="flavor-impacto-unidad"><?php esc_html_e('arboles', 'flavor-platform'); ?></span>
-                                <span class="flavor-impacto-label"><?php esc_html_e('Absorcion anual equivalente', 'flavor-platform'); ?></span>
+                                <span class="flavor-impacto-unidad"><?php esc_html_e('arboles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <span class="flavor-impacto-label"><?php esc_html_e('Absorcion anual equivalente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="flavor-impacto-equivalencia">
                                 <span class="dashicons dashicons-admin-page"></span>
                                 <span>
                                     <?php printf(
-                                        esc_html__('Como plantar %s arboles nuevos', 'flavor-platform'),
+                                        esc_html__('Como plantar %s arboles nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         number_format($impacto_ambiental['arboles_equivalentes'], 0)
                                     ); ?>
                                 </span>
@@ -640,13 +640,13 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <div class="flavor-impacto-datos">
                                 <span class="flavor-impacto-valor"><?php echo number_format($impacto_ambiental['kg_vertedero'], 1); ?></span>
                                 <span class="flavor-impacto-unidad">kg</span>
-                                <span class="flavor-impacto-label"><?php esc_html_e('Desviados del vertedero', 'flavor-platform'); ?></span>
+                                <span class="flavor-impacto-label"><?php esc_html_e('Desviados del vertedero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="flavor-impacto-equivalencia">
                                 <span class="dashicons dashicons-update"></span>
                                 <span>
                                     <?php printf(
-                                        esc_html__('Transformados en %s kg de compost', 'flavor-platform'),
+                                        esc_html__('Transformados en %s kg de compost', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         number_format($impacto_ambiental['kg_compost_generado'], 1)
                                     ); ?>
                                 </span>
@@ -659,7 +659,7 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Grafico de impacto acumulado -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Evolucion del Impacto', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Evolucion del Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <canvas id="compostaje-grafico-impacto" height="250"
@@ -670,7 +670,7 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Desglose de puntos -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Desglose de Puntos', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Desglose de Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <div class="flavor-desglose-lista">
@@ -678,7 +678,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <span class="flavor-desglose-icono verde">
                                 <span class="dashicons dashicons-carrot"></span>
                             </span>
-                            <span class="flavor-desglose-concepto"><?php esc_html_e('Por aportaciones', 'flavor-platform'); ?></span>
+                            <span class="flavor-desglose-concepto"><?php esc_html_e('Por aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-desglose-valor">+<?php echo number_format($balance['puntos_aportaciones']); ?></span>
                         </div>
 
@@ -686,7 +686,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <span class="flavor-desglose-icono azul">
                                 <span class="dashicons dashicons-groups"></span>
                             </span>
-                            <span class="flavor-desglose-concepto"><?php esc_html_e('Por turnos completados', 'flavor-platform'); ?></span>
+                            <span class="flavor-desglose-concepto"><?php esc_html_e('Por turnos completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-desglose-valor">+<?php echo number_format($balance['puntos_turnos']); ?></span>
                         </div>
 
@@ -694,12 +694,12 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <span class="flavor-desglose-icono morado">
                                 <span class="dashicons dashicons-star-filled"></span>
                             </span>
-                            <span class="flavor-desglose-concepto"><?php esc_html_e('Bonus de nivel', 'flavor-platform'); ?></span>
+                            <span class="flavor-desglose-concepto"><?php esc_html_e('Bonus de nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-desglose-valor">+<?php echo number_format($balance['puntos_bonus']); ?></span>
                         </div>
 
                         <div class="flavor-desglose-total">
-                            <span class="flavor-desglose-concepto"><?php esc_html_e('Total acumulado', 'flavor-platform'); ?></span>
+                            <span class="flavor-desglose-concepto"><?php esc_html_e('Total acumulado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-desglose-valor"><?php echo number_format($balance['puntos_totales']); ?></span>
                         </div>
                     </div>
@@ -735,7 +735,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas_turnos['total_inscrito']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Turnos Inscritos', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Turnos Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -745,7 +745,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas_turnos['completados']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -755,7 +755,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas_turnos['pendientes']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -765,7 +765,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas_turnos['puntos_ganados']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos por Turnos', 'flavor-platform'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Puntos por Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -775,10 +775,10 @@ class Flavor_Compostaje_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Proximos Turnos', 'flavor-platform'); ?>
+                        <?php esc_html_e('Proximos Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <a href="<?php echo esc_url(home_url('/compostaje/turnos/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php esc_html_e('Ver Disponibles', 'flavor-platform'); ?>
+                        <?php esc_html_e('Ver Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-panel-body">
@@ -829,7 +829,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                                             <button class="flavor-btn flavor-btn-sm flavor-btn-danger flavor-btn-cancelar-turno"
                                                     data-turno-id="<?php echo esc_attr($turno->turno_id); ?>">
                                                 <span class="dashicons dashicons-no"></span>
-                                                <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
+                                                <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -839,10 +839,10 @@ class Flavor_Compostaje_Dashboard_Tab {
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-calendar-alt"></span>
-                            <h4><?php esc_html_e('Sin turnos programados', 'flavor-platform'); ?></h4>
-                            <p><?php esc_html_e('No tienes turnos de mantenimiento asignados. Inscribete a uno para ganar puntos extra.', 'flavor-platform'); ?></p>
+                            <h4><?php esc_html_e('Sin turnos programados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p><?php esc_html_e('No tienes turnos de mantenimiento asignados. Inscribete a uno para ganar puntos extra.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <a href="<?php echo esc_url(home_url('/compostaje/turnos/')); ?>" class="flavor-btn flavor-btn-primary">
-                                <?php esc_html_e('Ver Turnos Disponibles', 'flavor-platform'); ?>
+                                <?php esc_html_e('Ver Turnos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -852,7 +852,7 @@ class Flavor_Compostaje_Dashboard_Tab {
             <!-- Historial de turnos -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php esc_html_e('Historial de Turnos', 'flavor-platform'); ?></h3>
+                    <h3><?php esc_html_e('Historial de Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <?php if (!empty($turnos_pasados)): ?>
@@ -860,11 +860,11 @@ class Flavor_Compostaje_Dashboard_Tab {
                             <table class="flavor-tabla flavor-tabla-striped">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Compostera', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Tarea', 'flavor-platform'); ?></th>
-                                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
-                                        <th class="text-right"><?php esc_html_e('Puntos', 'flavor-platform'); ?></th>
+                                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Compostera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Tarea', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th class="text-right"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -875,7 +875,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                                             <td><?php echo esc_html(ucfirst($turno->tipo_tarea)); ?></td>
                                             <td>
                                                 <span class="flavor-badge flavor-badge-<?php echo $turno->estado_inscripcion === 'asistio' ? 'success' : 'danger'; ?>">
-                                                    <?php echo esc_html($turno->estado_inscripcion === 'asistio' ? __('Asistio', 'flavor-platform') : __('No asistio', 'flavor-platform')); ?>
+                                                    <?php echo esc_html($turno->estado_inscripcion === 'asistio' ? __('Asistio', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No asistio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                                 </span>
                                             </td>
                                             <td class="text-right">
@@ -892,7 +892,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                         </div>
                     <?php else: ?>
                         <p class="flavor-texto-muted flavor-text-center">
-                            <?php esc_html_e('No hay turnos en el historial todavia.', 'flavor-platform'); ?>
+                            <?php esc_html_e('No hay turnos en el historial todavia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -924,20 +924,20 @@ class Flavor_Compostaje_Dashboard_Tab {
             <div class="flavor-ranking-hero">
                 <div class="flavor-ranking-posicion">
                     <span class="flavor-ranking-numero">#<?php echo intval($posicion_usuario['posicion']); ?></span>
-                    <span class="flavor-ranking-label"><?php esc_html_e('Tu posicion en el ranking general', 'flavor-platform'); ?></span>
+                    <span class="flavor-ranking-label"><?php esc_html_e('Tu posicion en el ranking general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-ranking-stats">
                     <div class="flavor-ranking-stat">
                         <span class="flavor-ranking-stat-valor"><?php echo number_format($posicion_usuario['total_kg'], 1); ?></span>
-                        <span class="flavor-ranking-stat-label"><?php esc_html_e('kg compostados', 'flavor-platform'); ?></span>
+                        <span class="flavor-ranking-stat-label"><?php esc_html_e('kg compostados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-ranking-stat">
                         <span class="flavor-ranking-stat-valor"><?php echo number_format($posicion_usuario['total_puntos']); ?></span>
-                        <span class="flavor-ranking-stat-label"><?php esc_html_e('puntos totales', 'flavor-platform'); ?></span>
+                        <span class="flavor-ranking-stat-label"><?php esc_html_e('puntos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-ranking-stat">
                         <span class="flavor-ranking-stat-valor"><?php echo intval($posicion_usuario['participantes_por_detras']); ?></span>
-                        <span class="flavor-ranking-stat-label"><?php esc_html_e('personas por detras', 'flavor-platform'); ?></span>
+                        <span class="flavor-ranking-stat-label"><?php esc_html_e('personas por detras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -947,15 +947,15 @@ class Flavor_Compostaje_Dashboard_Tab {
                 <div class="flavor-tabs" role="tablist">
                     <button class="flavor-tab active" data-tab="ranking-general" role="tab">
                         <span class="dashicons dashicons-chart-bar"></span>
-                        <?php esc_html_e('General', 'flavor-platform'); ?>
+                        <?php esc_html_e('General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="flavor-tab" data-tab="ranking-mensual" role="tab">
                         <span class="dashicons dashicons-calendar"></span>
-                        <?php esc_html_e('Este Mes', 'flavor-platform'); ?>
+                        <?php esc_html_e('Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="flavor-tab" data-tab="ranking-semanal" role="tab">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Esta Semana', 'flavor-platform'); ?>
+                        <?php esc_html_e('Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -980,7 +980,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-awards"></span>
-                        <?php esc_html_e('Tus Logros', 'flavor-platform'); ?>
+                        <?php esc_html_e('Tus Logros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="flavor-panel-body">
@@ -996,7 +996,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                                     </div>
                                     <div class="flavor-logro-info">
                                         <span class="flavor-logro-nombre"><?php echo esc_html($this->obtener_nombre_logro($logro->tipo_logro)); ?></span>
-                                        <span class="flavor-logro-nivel"><?php printf(esc_html__('Nivel %d', 'flavor-platform'), $logro->nivel); ?></span>
+                                        <span class="flavor-logro-nivel"><?php printf(esc_html__('Nivel %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $logro->nivel); ?></span>
                                         <span class="flavor-logro-fecha">
                                             <?php echo esc_html(date_i18n('d M Y', strtotime($logro->fecha_obtencion))); ?>
                                         </span>
@@ -1007,7 +1007,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                     <?php else: ?>
                         <div class="flavor-empty-state flavor-empty-state-sm">
                             <span class="dashicons dashicons-awards"></span>
-                            <p><?php esc_html_e('Sigue compostando para desbloquear logros', 'flavor-platform'); ?></p>
+                            <p><?php esc_html_e('Sigue compostando para desbloquear logros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1027,7 +1027,7 @@ class Flavor_Compostaje_Dashboard_Tab {
         if (empty($ranking)) {
             echo '<div class="flavor-empty-state flavor-empty-state-sm">';
             echo '<span class="dashicons dashicons-chart-bar"></span>';
-            echo '<p>' . esc_html__('No hay datos de ranking todavia', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay datos de ranking todavia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -1068,7 +1068,7 @@ class Flavor_Compostaje_Dashboard_Tab {
                         <span class="flavor-ranking-nombre">
                             <?php echo esc_html($participante->display_name); ?>
                             <?php if ($es_usuario_actual): ?>
-                                <span class="flavor-badge flavor-badge-info"><?php esc_html_e('Tu', 'flavor-platform'); ?></span>
+                                <span class="flavor-badge flavor-badge-info"><?php esc_html_e('Tu', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </span>
                         <span class="flavor-ranking-nivel">
@@ -1618,18 +1618,18 @@ class Flavor_Compostaje_Dashboard_Tab {
      */
     private function obtener_nombre_material($codigo) {
         $materiales = [
-            'frutas_verduras' => __('Frutas y verduras', 'flavor-platform'),
-            'posos_cafe' => __('Posos de cafe', 'flavor-platform'),
-            'cesped_fresco' => __('Cesped fresco', 'flavor-platform'),
-            'restos_cocina' => __('Restos de cocina', 'flavor-platform'),
-            'plantas_verdes' => __('Plantas verdes', 'flavor-platform'),
-            'hojas_secas' => __('Hojas secas', 'flavor-platform'),
-            'papel_carton' => __('Papel y carton', 'flavor-platform'),
-            'ramas_poda' => __('Ramas y poda', 'flavor-platform'),
-            'serrin' => __('Serrin', 'flavor-platform'),
-            'paja' => __('Paja', 'flavor-platform'),
-            'cascaras_huevo' => __('Cascaras de huevo', 'flavor-platform'),
-            'bolsas_te' => __('Bolsas de te', 'flavor-platform'),
+            'frutas_verduras' => __('Frutas y verduras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'posos_cafe' => __('Posos de cafe', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cesped_fresco' => __('Cesped fresco', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'restos_cocina' => __('Restos de cocina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'plantas_verdes' => __('Plantas verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'hojas_secas' => __('Hojas secas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'papel_carton' => __('Papel y carton', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ramas_poda' => __('Ramas y poda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'serrin' => __('Serrin', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'paja' => __('Paja', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cascaras_huevo' => __('Cascaras de huevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bolsas_te' => __('Bolsas de te', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $materiales[$codigo] ?? ucfirst(str_replace('_', ' ', $codigo));
@@ -1681,12 +1681,12 @@ class Flavor_Compostaje_Dashboard_Tab {
      */
     private function obtener_nombre_logro($tipo_logro) {
         $nombres = [
-            'primera_aportacion' => __('Primera Aportacion', 'flavor-platform'),
-            'kg_total' => __('Compostador Experto', 'flavor-platform'),
-            'aportaciones_consecutivas' => __('Constancia', 'flavor-platform'),
-            'turno_completado' => __('Voluntario', 'flavor-platform'),
-            'nivel_alcanzado' => __('Nivel Alcanzado', 'flavor-platform'),
-            'mentor' => __('Mentor', 'flavor-platform'),
+            'primera_aportacion' => __('Primera Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'kg_total' => __('Compostador Experto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aportaciones_consecutivas' => __('Constancia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'turno_completado' => __('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'nivel_alcanzado' => __('Nivel Alcanzado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mentor' => __('Mentor', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $nombres[$tipo_logro] ?? ucfirst(str_replace('_', ' ', $tipo_logro));
@@ -1706,7 +1706,7 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $dias = intval($_POST['dias'] ?? 0);
@@ -1759,7 +1759,7 @@ class Flavor_Compostaje_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $formato = sanitize_text_field($_POST['formato'] ?? 'json');

@@ -30,8 +30,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      */
     public function __construct() {
         $this->id = 'recetas';
-        $this->name = __('Recetas', 'flavor-platform');
-        $this->description = __('Gestiona recetas vinculables a productos. Incluye ingredientes, pasos y tiempos de preparacion.', 'flavor-platform');
+        $this->name = __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Gestiona recetas vinculables a productos. Incluye ingredientes, pasos y tiempos de preparacion.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct();
         $this->cargar_frontend_controller();
@@ -45,7 +45,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     protected function get_integration_content_type() {
         return [
             'id'         => 'recetas',
-            'label'      => __('Recetas', 'flavor-platform'),
+            'label'      => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-carrot',
             'post_type'  => 'flavor_receta',
             'capability' => 'edit_posts',
@@ -84,10 +84,10 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'recetas',
-            'label' => __('Recetas', 'flavor-platform'),
-            'titulo' => __('Recetas', 'flavor-platform'),
+            'label' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'titulo' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'categoria' => 'recursos',
-            'descripcion' => __('Gestionar recetas vinculables a productos', 'flavor-platform'),
+            'descripcion' => __('Gestionar recetas vinculables a productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-carrot',
             'icono' => 'dashicons-carrot',
             'capability' => 'edit_posts',
@@ -97,7 +97,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             'paginas' => [
                 [
                     'slug' => 'flavor-recetas-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_page'],
                 ],
             ],
@@ -502,18 +502,18 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      */
     public function registrar_post_type_receta() {
         $labels = [
-            'name'                  => __('Recetas', 'flavor-platform'),
-            'singular_name'         => __('Receta', 'flavor-platform'),
-            'menu_name'             => __('Recetas', 'flavor-platform'),
-            'add_new'               => __('Agregar Nueva', 'flavor-platform'),
-            'add_new_item'          => __('Agregar Nueva Receta', 'flavor-platform'),
-            'edit_item'             => __('Editar Receta', 'flavor-platform'),
-            'new_item'              => __('Nueva Receta', 'flavor-platform'),
-            'view_item'             => __('Ver Receta', 'flavor-platform'),
-            'search_items'          => __('Buscar Recetas', 'flavor-platform'),
-            'not_found'             => __('No se encontraron recetas', 'flavor-platform'),
-            'not_found_in_trash'    => __('No hay recetas en la papelera', 'flavor-platform'),
-            'all_items'             => __('Todas las Recetas', 'flavor-platform'),
+            'name'                  => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'singular_name'         => __('Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'menu_name'             => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'add_new'               => __('Agregar Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'add_new_item'          => __('Agregar Nueva Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_item'             => __('Editar Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'new_item'              => __('Nueva Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'view_item'             => __('Ver Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'search_items'          => __('Buscar Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'not_found'             => __('No se encontraron recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'not_found_in_trash'    => __('No hay recetas en la papelera', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'all_items'             => __('Todas las Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $args = [
@@ -543,12 +543,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Categoria de receta
         register_taxonomy('receta_categoria', 'flavor_receta', [
             'labels' => [
-                'name'              => __('Categorias de Receta', 'flavor-platform'),
-                'singular_name'     => __('Categoria', 'flavor-platform'),
-                'search_items'      => __('Buscar Categorias', 'flavor-platform'),
-                'all_items'         => __('Todas las Categorias', 'flavor-platform'),
-                'edit_item'         => __('Editar Categoria', 'flavor-platform'),
-                'add_new_item'      => __('Agregar Nueva Categoria', 'flavor-platform'),
+                'name'              => __('Categorias de Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name'     => __('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'search_items'      => __('Buscar Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'all_items'         => __('Todas las Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item'         => __('Editar Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item'      => __('Agregar Nueva Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical'      => true,
             'show_ui'           => true,
@@ -559,14 +559,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         // Insertar categorias por defecto
         $categorias_defecto = [
-            'entrantes'    => __('Entrantes', 'flavor-platform'),
-            'principales'  => __('Platos Principales', 'flavor-platform'),
-            'postres'      => __('Postres', 'flavor-platform'),
-            'bebidas'      => __('Bebidas', 'flavor-platform'),
-            'ensaladas'    => __('Ensaladas', 'flavor-platform'),
-            'sopas'        => __('Sopas y Cremas', 'flavor-platform'),
-            'aperitivos'   => __('Aperitivos', 'flavor-platform'),
-            'conservas'    => __('Conservas', 'flavor-platform'),
+            'entrantes'    => __('Entrantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'principales'  => __('Platos Principales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'postres'      => __('Postres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bebidas'      => __('Bebidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ensaladas'    => __('Ensaladas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sopas'        => __('Sopas y Cremas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aperitivos'   => __('Aperitivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'conservas'    => __('Conservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         foreach ($categorias_defecto as $slug => $nombre) {
@@ -578,8 +578,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Tipo de dieta
         register_taxonomy('receta_dieta', 'flavor_receta', [
             'labels' => [
-                'name'              => __('Tipos de Dieta', 'flavor-platform'),
-                'singular_name'     => __('Tipo de Dieta', 'flavor-platform'),
+                'name'              => __('Tipos de Dieta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name'     => __('Tipo de Dieta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical'      => false,
             'show_ui'           => true,
@@ -590,12 +590,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         // Insertar tipos de dieta
         $dietas_defecto = [
-            'vegetariana'  => __('Vegetariana', 'flavor-platform'),
-            'vegana'       => __('Vegana', 'flavor-platform'),
-            'sin-gluten'   => __('Sin Gluten', 'flavor-platform'),
-            'sin-lactosa'  => __('Sin Lactosa', 'flavor-platform'),
-            'keto'         => __('Keto', 'flavor-platform'),
-            'mediterranea' => __('Mediterranea', 'flavor-platform'),
+            'vegetariana'  => __('Vegetariana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vegana'       => __('Vegana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sin-gluten'   => __('Sin Gluten', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sin-lactosa'  => __('Sin Lactosa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'keto'         => __('Keto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mediterranea' => __('Mediterranea', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         foreach ($dietas_defecto as $slug => $nombre) {
@@ -611,7 +611,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     public function registrar_meta_boxes_receta() {
         add_meta_box(
             'flavor_receta_detalles',
-            __('Detalles de la Receta', 'flavor-platform'),
+            __('Detalles de la Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_detalles'],
             'flavor_receta',
             'normal',
@@ -620,7 +620,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         add_meta_box(
             'flavor_receta_ingredientes',
-            __('Ingredientes', 'flavor-platform'),
+            __('Ingredientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_ingredientes'],
             'flavor_receta',
             'normal',
@@ -629,7 +629,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         add_meta_box(
             'flavor_receta_pasos',
-            __('Pasos de Preparacion', 'flavor-platform'),
+            __('Pasos de Preparacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_pasos'],
             'flavor_receta',
             'normal',
@@ -638,7 +638,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         add_meta_box(
             'flavor_receta_productos',
-            __('Productos Vinculados', 'flavor-platform'),
+            __('Productos Vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_productos'],
             'flavor_receta',
             'side',
@@ -648,7 +648,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Meta box de Grupos de Consumo - siempre registrar, verificar disponibilidad en render
         add_meta_box(
             'flavor_receta_gc_productos',
-            __('Productos del Grupo de Consumo', 'flavor-platform'),
+            __('Productos del Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_gc_productos'],
             'flavor_receta',
             'normal',
@@ -658,7 +658,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Meta box de Videos - siempre registrar, verificar disponibilidad en render
         add_meta_box(
             'flavor_receta_videos',
-            __('Videos de la Receta', 'flavor-platform'),
+            __('Videos de la Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_videos'],
             'flavor_receta',
             'normal',
@@ -704,39 +704,39 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="receta_tiempo_preparacion"><?php _e('Tiempo de Preparacion (min)', 'flavor-platform'); ?></label></th>
+                <th><label for="receta_tiempo_preparacion"><?php _e('Tiempo de Preparacion (min)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" id="receta_tiempo_preparacion" name="receta_tiempo_preparacion"
                            value="<?php echo esc_attr($tiempo_preparacion); ?>" min="0" class="small-text" />
                 </td>
             </tr>
             <tr>
-                <th><label for="receta_tiempo_coccion"><?php _e('Tiempo de Coccion (min)', 'flavor-platform'); ?></label></th>
+                <th><label for="receta_tiempo_coccion"><?php _e('Tiempo de Coccion (min)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" id="receta_tiempo_coccion" name="receta_tiempo_coccion"
                            value="<?php echo esc_attr($tiempo_coccion); ?>" min="0" class="small-text" />
                 </td>
             </tr>
             <tr>
-                <th><label for="receta_porciones"><?php _e('Porciones', 'flavor-platform'); ?></label></th>
+                <th><label for="receta_porciones"><?php _e('Porciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" id="receta_porciones" name="receta_porciones"
                            value="<?php echo esc_attr($porciones); ?>" min="1" class="small-text" />
                 </td>
             </tr>
             <tr>
-                <th><label for="receta_dificultad"><?php _e('Dificultad', 'flavor-platform'); ?></label></th>
+                <th><label for="receta_dificultad"><?php _e('Dificultad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select id="receta_dificultad" name="receta_dificultad">
-                        <option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>
-                        <option value="facil" <?php selected($dificultad, 'facil'); ?>><?php _e('Facil', 'flavor-platform'); ?></option>
-                        <option value="media" <?php selected($dificultad, 'media'); ?>><?php _e('Media', 'flavor-platform'); ?></option>
-                        <option value="dificil" <?php selected($dificultad, 'dificil'); ?>><?php _e('Dificil', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="facil" <?php selected($dificultad, 'facil'); ?>><?php _e('Facil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="media" <?php selected($dificultad, 'media'); ?>><?php _e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="dificil" <?php selected($dificultad, 'dificil'); ?>><?php _e('Dificil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="receta_calorias"><?php _e('Calorias por porcion', 'flavor-platform'); ?></label></th>
+                <th><label for="receta_calorias"><?php _e('Calorias por porcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" id="receta_calorias" name="receta_calorias"
                            value="<?php echo esc_attr($calorias); ?>" min="0" class="small-text" />
@@ -759,9 +759,9 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             <table class="widefat" id="tabla-ingredientes">
                 <thead>
                     <tr>
-                        <th style="width: 100px;"><?php _e('Cantidad', 'flavor-platform'); ?></th>
-                        <th style="width: 80px;"><?php _e('Unidad', 'flavor-platform'); ?></th>
-                        <th><?php _e('Ingrediente', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php _e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php _e('Unidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Ingrediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <th style="width: 50px;"></th>
                     </tr>
                 </thead>
@@ -780,7 +780,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             <p>
                 <button type="button" class="button" id="agregar-ingrediente">
                     <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
-                    <?php _e('Agregar Ingrediente', 'flavor-platform'); ?>
+                    <?php _e('Agregar Ingrediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </p>
         </div>
@@ -827,10 +827,10 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             </td>
             <td>
                 <input type="text" name="receta_ingredientes[<?php echo esc_attr($indice); ?>][nombre]"
-                       value="<?php echo esc_attr($nombre); ?>" class="widefat" placeholder="<?php esc_attr_e('Nombre del ingrediente', 'flavor-platform'); ?>" />
+                       value="<?php echo esc_attr($nombre); ?>" class="widefat" placeholder="<?php esc_attr_e('Nombre del ingrediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
             </td>
             <td>
-                <button type="button" class="button eliminar-ingrediente" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
+                <button type="button" class="button eliminar-ingrediente" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
                 </button>
             </td>
@@ -862,7 +862,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             <p>
                 <button type="button" class="button" id="agregar-paso">
                     <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
-                    <?php _e('Agregar Paso', 'flavor-platform'); ?>
+                    <?php _e('Agregar Paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </p>
         </div>
@@ -909,8 +909,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             </span>
             <textarea name="receta_pasos[<?php echo esc_attr($indice); ?>]"
                       rows="2" class="widefat"
-                      placeholder="<?php esc_attr_e('Describe este paso...', 'flavor-platform'); ?>"><?php echo esc_textarea($texto); ?></textarea>
-            <button type="button" class="button eliminar-paso" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
+                      placeholder="<?php esc_attr_e('Describe este paso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($texto); ?></textarea>
+            <button type="button" class="button eliminar-paso" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
             </button>
         </div>
@@ -927,11 +927,11 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         }
 
         if (!class_exists('WooCommerce')) {
-            echo '<p class="description">' . __('WooCommerce no esta activo. Activa WooCommerce para vincular productos.', 'flavor-platform') . '</p>';
+            echo '<p class="description">' . __('WooCommerce no esta activo. Activa WooCommerce para vincular productos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
         ?>
-        <p class="description"><?php _e('Selecciona los productos que se usan en esta receta.', 'flavor-platform'); ?></p>
+        <p class="description"><?php _e('Selecciona los productos que se usan en esta receta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div id="productos-vinculados-lista" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; margin: 10px 0;">
             <?php
@@ -951,14 +951,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                     }
                 }
             } else {
-                echo '<p class="no-productos" style="color: #666; font-style: italic;">' . __('Sin productos vinculados', 'flavor-platform') . '</p>';
+                echo '<p class="no-productos" style="color: #666; font-style: italic;">' . __('Sin productos vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             ?>
         </div>
 
         <p>
             <select id="agregar-producto-selector" class="widefat">
-                <option value=""><?php _e('Seleccionar producto...', 'flavor-platform'); ?></option>
+                <option value=""><?php _e('Seleccionar producto...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php
                 $productos = wc_get_products(['limit' => -1, 'status' => 'publish']);
                 foreach ($productos as $producto) {
@@ -971,7 +971,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         </p>
         <p>
             <button type="button" class="button" id="agregar-producto-btn">
-                <?php _e('Vincular Producto', 'flavor-platform'); ?>
+                <?php _e('Vincular Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </p>
 
@@ -1007,7 +1007,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                 $('#agregar-producto-selector').append('<option value="' + productoId + '">' + productoNombre + '</option>');
 
                 if ($('#productos-vinculados-lista .producto-vinculado').length === 0) {
-                    $('#productos-vinculados-lista').html('<p class="no-productos" style="color: #666; font-style: italic;"><?php echo esc_js(__('Sin productos vinculados', 'flavor-platform')); ?></p>');
+                    $('#productos-vinculados-lista').html('<p class="no-productos" style="color: #666; font-style: italic;"><?php echo esc_js(__('Sin productos vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>');
                 }
             });
         });
@@ -1036,7 +1036,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Si no hay productos GC y el CPT no existe, mostrar mensaje
         if (empty($productos_gc) && !post_type_exists('gc_producto')) {
             echo '<div class="notice notice-info inline" style="margin: 0;"><p>';
-            echo __('El módulo de Grupos de Consumo no está activo o no hay productos disponibles.', 'flavor-platform');
+            echo __('El módulo de Grupos de Consumo no está activo o no hay productos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</p></div>';
             return;
         }
@@ -1044,13 +1044,13 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Si el CPT existe pero no hay productos
         if (empty($productos_gc)) {
             echo '<div class="notice notice-warning inline" style="margin: 0;"><p>';
-            echo __('No hay productos de Grupos de Consumo creados aún.', 'flavor-platform');
-            echo ' <a href="' . admin_url('post-new.php?post_type=gc_producto') . '">' . __('Crear producto', 'flavor-platform') . '</a>';
+            echo __('No hay productos de Grupos de Consumo creados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+            echo ' <a href="' . admin_url('post-new.php?post_type=gc_producto') . '">' . __('Crear producto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</p></div>';
             return;
         }
         ?>
-        <p class="description"><?php _e('Vincula productos del Grupo de Consumo que se usan en esta receta.', 'flavor-platform'); ?></p>
+        <p class="description"><?php _e('Vincula productos del Grupo de Consumo que se usan en esta receta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div id="gc-productos-lista" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
             <?php
@@ -1073,7 +1073,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                                     <br><small style="color: #666;"><?php echo esc_html($productor_nombre); ?></small>
                                 <?php endif; ?>
                             </div>
-                            <button type="button" class="button-link desvincular-gc-producto" data-id="<?php echo esc_attr($producto_id); ?>" title="<?php esc_attr_e('Quitar', 'flavor-platform'); ?>">
+                            <button type="button" class="button-link desvincular-gc-producto" data-id="<?php echo esc_attr($producto_id); ?>" title="<?php esc_attr_e('Quitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>
                             </button>
                             <input type="hidden" name="receta_gc_productos[]" value="<?php echo esc_attr($producto_id); ?>" />
@@ -1082,14 +1082,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                     }
                 }
             } else {
-                echo '<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin productos de Grupos de Consumo vinculados', 'flavor-platform') . '</p>';
+                echo '<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin productos de Grupos de Consumo vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             ?>
         </div>
 
         <div style="display: flex; gap: 5px;">
             <select id="agregar-gc-producto-selector" class="widefat" style="flex: 1;">
-                <option value=""><?php _e('Seleccionar producto del grupo...', 'flavor-platform'); ?></option>
+                <option value=""><?php _e('Seleccionar producto del grupo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php
                 // Usar $productos_gc ya obtenido arriba
                 foreach ($productos_gc as $producto) {
@@ -1139,7 +1139,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                 $('#agregar-gc-producto-selector').append('<option value="' + productoId + '">' + productoNombre + '</option>');
 
                 if ($('#gc-productos-lista .gc-producto-item').length === 0) {
-                    $('#gc-productos-lista').html('<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin productos de Grupos de Consumo vinculados', 'flavor-platform')); ?></p>');
+                    $('#gc-productos-lista').html('<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin productos de Grupos de Consumo vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>');
                 }
             });
         });
@@ -1163,7 +1163,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Verificar que la tabla existe
         if (!Flavor_Platform_Helpers::tabla_existe($tabla_multimedia)) {
             echo '<div class="notice notice-info inline" style="margin: 0;"><p>';
-            echo __('El módulo de Multimedia no está activo.', 'flavor-platform');
+            echo __('El módulo de Multimedia no está activo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</p></div>';
             return;
         }
@@ -1179,13 +1179,13 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         // Si no hay videos
         if (empty($videos_disponibles) && empty($videos_ids)) {
             echo '<div class="notice notice-warning inline" style="margin: 0;"><p>';
-            echo __('No hay videos disponibles en el módulo Multimedia.', 'flavor-platform');
-            echo ' <a href="' . admin_url('admin.php?page=multimedia') . '">' . __('Subir videos', 'flavor-platform') . '</a>';
+            echo __('No hay videos disponibles en el módulo Multimedia.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+            echo ' <a href="' . admin_url('admin.php?page=multimedia') . '">' . __('Subir videos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</p></div>';
             return;
         }
         ?>
-        <p class="description"><?php _e('Vincula videos del módulo multimedia a esta receta (tutoriales, paso a paso, etc.).', 'flavor-platform'); ?></p>
+        <p class="description"><?php _e('Vincula videos del módulo multimedia a esta receta (tutoriales, paso a paso, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div id="receta-videos-lista" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
             <?php
@@ -1202,7 +1202,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                                 <span class="dashicons dashicons-video-alt3" style="font-size: 24px; color: #0073aa;"></span>
                                 <strong><?php echo esc_html($video->titulo); ?></strong>
                             </div>
-                            <button type="button" class="button-link desvincular-video" data-id="<?php echo esc_attr($video_id); ?>" title="<?php esc_attr_e('Quitar', 'flavor-platform'); ?>">
+                            <button type="button" class="button-link desvincular-video" data-id="<?php echo esc_attr($video_id); ?>" title="<?php esc_attr_e('Quitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>
                             </button>
                             <input type="hidden" name="receta_videos[]" value="<?php echo esc_attr($video_id); ?>" />
@@ -1211,14 +1211,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                     }
                 }
             } else {
-                echo '<p class="no-videos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin videos vinculados', 'flavor-platform') . '</p>';
+                echo '<p class="no-videos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin videos vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             ?>
         </div>
 
         <div style="display: flex; gap: 5px;">
             <select id="agregar-video-selector" class="widefat" style="flex: 1;">
-                <option value=""><?php _e('Seleccionar video...', 'flavor-platform'); ?></option>
+                <option value=""><?php _e('Seleccionar video...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php
                 // Usar $videos_disponibles ya obtenido arriba
                 foreach ($videos_disponibles as $video) {
@@ -1236,7 +1236,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         <p style="margin-top: 10px;">
             <a href="<?php echo admin_url('admin.php?page=multimedia'); ?>" class="button button-small" target="_blank">
                 <span class="dashicons dashicons-upload" style="vertical-align: middle;"></span>
-                <?php _e('Subir Video', 'flavor-platform'); ?>
+                <?php _e('Subir Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
 
@@ -1275,7 +1275,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                 $('#agregar-video-selector').append('<option value="' + videoId + '">🎬 ' + videoNombre + '</option>');
 
                 if ($('#receta-videos-lista .video-item').length === 0) {
-                    $('#receta-videos-lista').html('<p class="no-videos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin videos vinculados', 'flavor-platform')); ?></p>');
+                    $('#receta-videos-lista').html('<p class="no-videos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin videos vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>');
                 }
             });
         });
@@ -1418,7 +1418,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      */
     public function agregar_tab_producto($tabs) {
         $tabs['flavor_recetas'] = [
-            'label'    => __('Recetas y Notas', 'flavor-platform'),
+            'label'    => __('Recetas y Notas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'target'   => 'flavor_recetas_data',
             'class'    => [],
             'priority' => 80,
@@ -1441,9 +1441,9 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         ?>
         <div id="flavor_recetas_data" class="panel woocommerce_options_panel">
             <div class="options_group">
-                <h4 style="padding-left: 12px;"><?php _e('Recetas Vinculadas', 'flavor-platform'); ?></h4>
+                <h4 style="padding-left: 12px;"><?php _e('Recetas Vinculadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <p class="form-field" style="padding-left: 12px;">
-                    <label><?php _e('Seleccionar Recetas', 'flavor-platform'); ?></label>
+                    <label><?php _e('Seleccionar Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="producto_recetas_vinculadas" name="producto_recetas_vinculadas[]" multiple="multiple" class="wc-enhanced-select" style="width: 50%;">
                         <?php
                         $recetas = get_posts([
@@ -1458,12 +1458,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                         }
                         ?>
                     </select>
-                    <?php echo wc_help_tip(__('Selecciona las recetas que usan este producto como ingrediente.', 'flavor-platform')); ?>
+                    <?php echo wc_help_tip(__('Selecciona las recetas que usan este producto como ingrediente.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 </p>
 
                 <?php if (!empty($recetas_vinculadas)): ?>
                 <div style="padding: 0 12px;">
-                    <strong><?php _e('Recetas actualmente vinculadas:', 'flavor-platform'); ?></strong>
+                    <strong><?php _e('Recetas actualmente vinculadas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <ul style="margin-top: 5px;">
                         <?php foreach ($recetas_vinculadas as $receta_id):
                             $receta = get_post($receta_id);
@@ -1481,12 +1481,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             </div>
 
             <div class="options_group">
-                <h4 style="padding-left: 12px;"><?php _e('Notas del Producto', 'flavor-platform'); ?></h4>
+                <h4 style="padding-left: 12px;"><?php _e('Notas del Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <?php
                 woocommerce_wp_textarea_input([
                     'id'          => 'producto_notas',
-                    'label'       => __('Notas internas', 'flavor-platform'),
-                    'description' => __('Notas internas sobre el producto. No se muestran al cliente.', 'flavor-platform'),
+                    'label'       => __('Notas internas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Notas internas sobre el producto. No se muestran al cliente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'desc_tip'    => true,
                     'value'       => $notas_producto,
                 ]);
@@ -1567,7 +1567,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         if (empty($recetas)) return;
         ?>
         <div class="flavor-recetas-producto" style="margin-top: 30px;">
-            <h2><?php _e('Recetas con este producto', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Recetas con este producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="recetas-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 15px;">
                 <?php foreach ($recetas as $receta):
                     $imagen = get_the_post_thumbnail_url($receta->ID, 'medium');
@@ -1611,10 +1611,10 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="wrap flavor-recetas-admin">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h1><?php _e('Gestion de Recetas', 'flavor-platform'); ?></h1>
+                <h1><?php _e('Gestion de Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
                 <a href="<?php echo admin_url('post-new.php?post_type=flavor_receta'); ?>" class="button button-primary">
                     <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
-                    <?php _e('Nueva Receta', 'flavor-platform'); ?>
+                    <?php _e('Nueva Receta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -1626,11 +1626,11 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             <div class="flavor-stats-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
                 <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div style="font-size: 28px; font-weight: bold; color: #0073aa;"><?php echo $total_recetas; ?></div>
-                    <div style="color: #666;"><?php _e('Total Recetas', 'flavor-platform'); ?></div>
+                    <div style="color: #666;"><?php _e('Total Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div style="font-size: 28px; font-weight: bold; color: #00a32a;"><?php echo $recetas_con_productos; ?></div>
-                    <div style="color: #666;"><?php _e('Con Productos Vinculados', 'flavor-platform'); ?></div>
+                    <div style="color: #666;"><?php _e('Con Productos Vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -1666,20 +1666,20 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         ]);
 
         if (empty($recetas)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay recetas creadas aun.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay recetas creadas aun.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
         ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php _e('Receta', 'flavor-platform'); ?></th>
-                    <th><?php _e('Categoria', 'flavor-platform'); ?></th>
-                    <th><?php _e('Tiempo Total', 'flavor-platform'); ?></th>
-                    <th><?php _e('Dificultad', 'flavor-platform'); ?></th>
-                    <th><?php _e('Productos', 'flavor-platform'); ?></th>
-                    <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                    <th><?php _e('Acciones', 'flavor-platform'); ?></th>
+                    <th><?php _e('Receta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Tiempo Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Dificultad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -1709,8 +1709,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
                         <td><?php echo $num_productos; ?></td>
                         <td><?php echo get_the_date('d/m/Y', $receta->ID); ?></td>
                         <td>
-                            <a href="<?php echo get_edit_post_link($receta->ID); ?>" class="button button-small"><?php _e('Editar', 'flavor-platform'); ?></a>
-                            <a href="<?php echo get_permalink($receta->ID); ?>" class="button button-small" target="_blank"><?php _e('Ver', 'flavor-platform'); ?></a>
+                            <a href="<?php echo get_edit_post_link($receta->ID); ?>" class="button button-small"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                            <a href="<?php echo get_permalink($receta->ID); ?>" class="button button-small" target="_blank"><?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -1773,7 +1773,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         $recetas = get_posts($args);
 
         if (empty($recetas)) {
-            return '<p>' . __('No hay recetas disponibles.', 'flavor-platform') . '</p>';
+            return '<p>' . __('No hay recetas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1832,19 +1832,19 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         }
 
         if (!$receta_id) {
-            return '<p class="flavor-notice">' . esc_html__('Receta no encontrada.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Receta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $receta = get_post($receta_id);
 
         if (!$receta || $receta->post_type !== 'flavor_receta' || $receta->post_status !== 'publish') {
-            return '<p class="flavor-notice">' . esc_html__('Receta no disponible.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Receta no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $template = dirname(__FILE__) . '/templates/receta-single.php';
 
         if (!file_exists($template)) {
-            return '<p class="flavor-notice">' . esc_html__('Vista de receta no disponible.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Vista de receta no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1949,7 +1949,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-platform'),
+            'error' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2041,14 +2041,14 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     private function action_foro_receta($params) {
         $receta = $this->resolve_contextual_receta((array) $params);
         if (!$receta) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su foro.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-tab flavor-contextual-foro">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;">
-                <h2><?php esc_html_e('Foro de la receta', 'flavor-platform'); ?></h2>
+                <h2><?php esc_html_e('Foro de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p><?php echo esc_html(get_the_title($receta)); ?></p>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2069,7 +2069,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     private function action_multimedia_receta($params) {
         $receta = $this->resolve_contextual_receta((array) $params);
         if (!$receta) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su galería.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su galería.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -2077,11 +2077,11 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-multimedia">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div>
-                    <h2><?php esc_html_e('Multimedia de la receta', 'flavor-platform'); ?></h2>
+                    <h2><?php esc_html_e('Multimedia de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('multimedia', 'subir') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
-                    <?php esc_html_e('Subir archivo', 'flavor-platform'); ?>
+                    <?php esc_html_e('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2102,11 +2102,11 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     private function action_red_social_receta($params) {
         $receta = $this->resolve_contextual_receta((array) $params);
         if (!$receta) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su actividad social.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de esta receta.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de esta receta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -2114,11 +2114,11 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-red-social">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div>
-                    <h2><?php esc_html_e('Actividad social de la receta', 'flavor-platform'); ?></h2>
+                    <h2><?php esc_html_e('Actividad social de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
                 <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('red_social', 'crear') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
-                    <?php esc_html_e('Publicar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2141,7 +2141,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('El módulo de Recetas permite compartir y descubrir recetas de la comunidad, con enfoque en cocina local y sostenible.', 'flavor-platform');
+        return __('El módulo de Recetas permite compartir y descubrir recetas de la comunidad, con enfoque en cocina local y sostenible.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -2153,80 +2153,80 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     public function get_form_config($action_name) {
         $configs = [
             'crear_receta' => [
-                'title' => __('Compartir Receta', 'flavor-platform'),
-                'description' => __('Comparte una receta con la comunidad', 'flavor-platform'),
+                'title' => __('Compartir Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Comparte una receta con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Nombre de la receta', 'flavor-platform'),
+                        'label' => __('Nombre de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('Ej: Paella valenciana tradicional', 'flavor-platform'),
+                        'placeholder' => __('Ej: Paella valenciana tradicional', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción', 'flavor-platform'),
+                        'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 3,
-                        'placeholder' => __('Breve descripción de la receta...', 'flavor-platform'),
+                        'placeholder' => __('Breve descripción de la receta...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'categoria' => [
                         'type' => 'select',
-                        'label' => __('Categoría', 'flavor-platform'),
+                        'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'entrante' => __('Entrante', 'flavor-platform'),
-                            'principal' => __('Plato principal', 'flavor-platform'),
-                            'postre' => __('Postre', 'flavor-platform'),
-                            'bebida' => __('Bebida', 'flavor-platform'),
-                            'snack' => __('Snack/Aperitivo', 'flavor-platform'),
-                            'conserva' => __('Conserva', 'flavor-platform'),
+                            'entrante' => __('Entrante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'principal' => __('Plato principal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'postre' => __('Postre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'bebida' => __('Bebida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'snack' => __('Snack/Aperitivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'conserva' => __('Conserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'dificultad' => [
                         'type' => 'select',
-                        'label' => __('Dificultad', 'flavor-platform'),
+                        'label' => __('Dificultad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'facil' => __('Fácil', 'flavor-platform'),
-                            'media' => __('Media', 'flavor-platform'),
-                            'dificil' => __('Difícil', 'flavor-platform'),
+                            'facil' => __('Fácil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'media' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'dificil' => __('Difícil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'tiempo_preparacion' => [
                         'type' => 'number',
-                        'label' => __('Tiempo de preparación (minutos)', 'flavor-platform'),
+                        'label' => __('Tiempo de preparación (minutos)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => 1,
                     ],
                     'porciones' => [
                         'type' => 'number',
-                        'label' => __('Número de porciones', 'flavor-platform'),
+                        'label' => __('Número de porciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => 1,
                         'default' => 4,
                     ],
                     'ingredientes' => [
                         'type' => 'textarea',
-                        'label' => __('Ingredientes', 'flavor-platform'),
+                        'label' => __('Ingredientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 6,
-                        'placeholder' => __('Un ingrediente por línea...', 'flavor-platform'),
+                        'placeholder' => __('Un ingrediente por línea...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'pasos' => [
                         'type' => 'textarea',
-                        'label' => __('Pasos de preparación', 'flavor-platform'),
+                        'label' => __('Pasos de preparación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 8,
-                        'placeholder' => __('Describe los pasos de preparación...', 'flavor-platform'),
+                        'placeholder' => __('Describe los pasos de preparación...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'imagen' => [
                         'type' => 'file',
-                        'label' => __('Imagen de la receta', 'flavor-platform'),
+                        'label' => __('Imagen de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => false,
                         'accept' => 'image/*',
                     ],
                 ],
-                'submit_text' => __('Enviar Receta', 'flavor-platform'),
+                'submit_text' => __('Enviar Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'ajax' => true,
             ],
         ];
@@ -2242,8 +2242,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'recetas',
-            'title'    => __('Recetario Comunitario', 'flavor-platform'),
-            'subtitle' => __('Comparte y descubre recetas de la comunidad', 'flavor-platform'),
+            'title'    => __('Recetario Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Comparte y descubre recetas de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🍳',
             'color'    => 'warning', // Usa variable CSS --flavor-warning del tema
 
@@ -2253,48 +2253,48 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             ],
 
             'fields' => [
-                'titulo'       => ['type' => 'text', 'label' => __('Nombre de la receta', 'flavor-platform'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform')],
-                'dificultad'   => ['type' => 'select', 'label' => __('Dificultad', 'flavor-platform')],
-                'tiempo'       => ['type' => 'number', 'label' => __('Tiempo (minutos)', 'flavor-platform')],
-                'porciones'    => ['type' => 'number', 'label' => __('Porciones', 'flavor-platform')],
-                'ingredientes' => ['type' => 'textarea', 'label' => __('Ingredientes', 'flavor-platform'), 'required' => true],
-                'pasos'        => ['type' => 'textarea', 'label' => __('Preparación', 'flavor-platform'), 'required' => true],
-                'imagen'       => ['type' => 'file', 'label' => __('Imagen', 'flavor-platform')],
+                'titulo'       => ['type' => 'text', 'label' => __('Nombre de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'dificultad'   => ['type' => 'select', 'label' => __('Dificultad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tiempo'       => ['type' => 'number', 'label' => __('Tiempo (minutos)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'porciones'    => ['type' => 'number', 'label' => __('Porciones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ingredientes' => ['type' => 'textarea', 'label' => __('Ingredientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'pasos'        => ['type' => 'textarea', 'label' => __('Preparación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'imagen'       => ['type' => 'file', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-platform'), 'color' => 'gray', 'icon' => '📝'],
-                'publicada'  => ['label' => __('Publicada', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'destacada'  => ['label' => __('Destacada', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⭐'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'publicada'  => ['label' => __('Publicada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'destacada'  => ['label' => __('Destacada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⭐'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_recetas',
-                    'label' => __('Recetas', 'flavor-platform'),
+                    'label' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '🍳',
                     'color' => 'orange',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas WHERE estado = 'publicada'",
                 ],
                 [
                     'key'   => 'cocineros',
-                    'label' => __('Cocineros', 'flavor-platform'),
+                    'label' => __('Cocineros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '👨‍🍳',
                     'color' => 'blue',
                     'query' => "SELECT COUNT(DISTINCT user_id) FROM {prefix}flavor_recetas",
                 ],
                 [
                     'key'   => 'valoraciones',
-                    'label' => __('Valoraciones', 'flavor-platform'),
+                    'label' => __('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '⭐',
                     'color' => 'yellow',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas_valoraciones",
                 ],
                 [
                     'key'   => 'mis_recetas',
-                    'label' => __('Mis recetas', 'flavor-platform'),
+                    'label' => __('Mis recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📖',
                     'color' => 'green',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas WHERE user_id = {user_id}",
@@ -2313,45 +2313,45 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Recetas', 'flavor-platform'),
+                    'label'   => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '🍳',
                     'content' => '[flavor_recetas cantidad="12" columnas="3"]',
                 ],
                 'mis-recetas' => [
-                    'label'   => __('Mis recetas', 'flavor-platform'),
+                    'label'   => __('Mis recetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📖',
                     'content' => 'shortcode:flavor_recetas_mis_recetas',
                     'requires_login' => true,
                 ],
                 'favoritas' => [
-                    'label'   => __('Favoritas', 'flavor-platform'),
+                    'label'   => __('Favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '❤️',
                     'content' => 'shortcode:flavor_recetas_favoritas',
                     'requires_login' => true,
                 ],
                 'nueva' => [
-                    'label'   => __('Añadir', 'flavor-platform'),
+                    'label'   => __('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '➕',
                     'content' => 'shortcode:flavor_recetas_crear',
                     'requires_login' => true,
                 ],
                 'buscar' => [
-                    'label'   => __('Buscar', 'flavor-platform'),
+                    'label'   => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '🔍',
                     'content' => 'shortcode:flavor_recetas_buscador',
                 ],
                 'foro' => [
-                    'label'   => __('Foro', 'flavor-platform'),
+                    'label'   => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-comments',
                     'content' => 'callback:render_tab_foro',
                 ],
                 'multimedia' => [
-                    'label'   => __('Multimedia', 'flavor-platform'),
+                    'label'   => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-format-gallery',
                     'content' => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
-                    'label'   => __('Red social', 'flavor-platform'),
+                    'label'   => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-share',
                     'content' => 'callback:render_tab_red_social',
                     'requires_login' => true,
@@ -2368,12 +2368,12 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
 
             'dashboard' => [
                 'widgets' => [
-                    'recetas_destacadas' => ['type' => 'carousel', 'title' => __('Recetas destacadas', 'flavor-platform')],
-                    'mis_recetas'        => ['type' => 'list', 'title' => __('Mis recetas', 'flavor-platform')],
+                    'recetas_destacadas' => ['type' => 'carousel', 'title' => __('Recetas destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mis_recetas'        => ['type' => 'list', 'title' => __('Mis recetas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
                     'nueva_receta' => [
-                        'label' => __('Nueva receta', 'flavor-platform'),
+                        'label' => __('Nueva receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '➕',
                         'modal' => 'recetas-nueva',
                     ],

@@ -41,13 +41,13 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
                 <?php endif; ?>
 
                 <span class="talleres-badge <?php echo $plazas_disponibles > 0 ? 'talleres-badge-disponible' : 'talleres-badge-completo'; ?>">
-                    <?php echo $plazas_disponibles > 0 ? sprintf(__('%d plazas', 'flavor-platform'), $plazas_disponibles) : __('Completo', 'flavor-platform'); ?>
+                    <?php echo $plazas_disponibles > 0 ? sprintf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles) : __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
             <?php if (!empty($taller->organizador_nombre)): ?>
             <p class="talleres-detalle-organizador">
-                <strong><?php _e('Organiza:', 'flavor-platform'); ?></strong>
+                <strong><?php _e('Organiza:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 <?php echo esc_html($taller->organizador_nombre); ?>
             </p>
             <?php endif; ?>
@@ -56,20 +56,20 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
 
     <div class="talleres-detalle-body">
         <div class="talleres-detalle-contenido">
-            <h2><?php _e('Descripcion', 'flavor-platform'); ?></h2>
+            <h2><?php _e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="talleres-descripcion">
                 <?php echo wp_kses_post($taller->descripcion ?? ''); ?>
             </div>
 
             <?php if (!empty($taller->requisitos)): ?>
-            <h3><?php _e('Requisitos', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="talleres-requisitos">
                 <?php echo wp_kses_post($taller->requisitos); ?>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($taller->materiales)): ?>
-            <h3><?php _e('Materiales necesarios', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Materiales necesarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="talleres-materiales">
                 <?php echo wp_kses_post($taller->materiales); ?>
             </div>
@@ -78,7 +78,7 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
 
         <div class="talleres-detalle-sidebar">
             <div class="talleres-card">
-                <h3><?php _e('Sesiones', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if (!empty($sesiones)): ?>
                 <ul class="talleres-sesiones-lista">
                     <?php foreach ($sesiones as $sesion): ?>
@@ -92,7 +92,7 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
-                <p><?php _e('Fechas por confirmar', 'flavor-platform'); ?></p>
+                <p><?php _e('Fechas por confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -100,13 +100,13 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
                 <?php if ($esta_inscrito): ?>
                 <p class="talleres-inscrito-msg">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php _e('Ya estas inscrito', 'flavor-platform'); ?>
+                    <?php _e('Ya estas inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <form method="post" class="talleres-cancelar-form">
                     <?php wp_nonce_field('talleres_cancelar_' . $taller->id); ?>
                     <input type="hidden" name="taller_id" value="<?php echo esc_attr($taller->id); ?>">
                     <button type="submit" name="talleres_cancelar" class="talleres-btn talleres-btn-secondary">
-                        <?php _e('Cancelar inscripcion', 'flavor-platform'); ?>
+                        <?php _e('Cancelar inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
                 <?php elseif ($plazas_disponibles > 0): ?>
@@ -114,11 +114,11 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
                     <?php wp_nonce_field('talleres_inscribir_' . $taller->id); ?>
                     <input type="hidden" name="taller_id" value="<?php echo esc_attr($taller->id); ?>">
                     <button type="submit" name="talleres_inscribir" class="talleres-btn talleres-btn-primary">
-                        <?php _e('Inscribirme', 'flavor-platform'); ?>
+                        <?php _e('Inscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
                 <?php else: ?>
-                <p class="talleres-completo-msg"><?php _e('Este taller esta completo', 'flavor-platform'); ?></p>
+                <p class="talleres-completo-msg"><?php _e('Este taller esta completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -126,12 +126,12 @@ $plazas_disponibles = max(0, ($taller->capacidad ?? 20) - ($taller->inscritos ??
 
     <?php if (!empty($valoraciones)): ?>
     <div class="talleres-valoraciones">
-        <h2><?php _e('Valoraciones', 'flavor-platform'); ?></h2>
+        <h2><?php _e('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="talleres-valoraciones-lista">
             <?php foreach ($valoraciones as $val): ?>
             <div class="talleres-valoracion">
                 <div class="talleres-valoracion-header">
-                    <span class="talleres-valoracion-autor"><?php echo esc_html($val->autor_nombre ?? __('Anonimo', 'flavor-platform')); ?></span>
+                    <span class="talleres-valoracion-autor"><?php echo esc_html($val->autor_nombre ?? __('Anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     <span class="talleres-valoracion-fecha"><?php echo esc_html(date_i18n('d/m/Y', strtotime($val->fecha))); ?></span>
                     <span class="talleres-valoracion-estrellas">
                         <?php echo str_repeat('★', intval($val->puntuacion)); ?>

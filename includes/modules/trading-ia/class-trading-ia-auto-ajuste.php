@@ -87,7 +87,7 @@ class Flavor_Trading_IA_Auto_Ajuste {
             if (!$this->puede_ajustar_parametro($nombre_config)) {
                 $resultados[$nombre_corto] = array(
                     'aplicado' => false,
-                    'razon'    => __('Parametro en cooldown', 'flavor-platform'),
+                    'razon'    => __('Parametro en cooldown', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 );
                 continue;
             }
@@ -100,7 +100,7 @@ class Flavor_Trading_IA_Auto_Ajuste {
             if ($valor_ajustado == $valor_actual) {
                 $resultados[$nombre_corto] = array(
                     'aplicado' => false,
-                    'razon'    => __('Sin cambio efectivo', 'flavor-platform'),
+                    'razon'    => __('Sin cambio efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 );
                 continue;
             }

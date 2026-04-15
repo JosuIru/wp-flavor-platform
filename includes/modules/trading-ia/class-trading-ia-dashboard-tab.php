@@ -29,7 +29,7 @@ class Flavor_Trading_Ia_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['trading-ia'] = [
-            'label' => __('Trading IA', 'flavor-platform'),
+            'label' => __('Trading IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-chart-area',
             'callback' => [$this, 'render_tab'],
             'priority' => 86,

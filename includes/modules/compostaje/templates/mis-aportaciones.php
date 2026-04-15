@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="compostaje-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión para ver tus aportaciones', 'flavor-platform') . '</h3>';
-    echo '<p>' . esc_html__('Necesitas estar conectado para acceder a tu historial de compostaje.', 'flavor-platform') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-platform') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesión para ver tus aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('Necesitas estar conectado para acceder a tu historial de compostaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -47,19 +47,19 @@ $aportaciones = $wpdb->get_results($wpdb->prepare(
 
 // Materiales disponibles para mostrar nombres
 $materiales_labels = [
-    'frutas_verduras' => __('Frutas y verduras', 'flavor-platform'),
-    'posos_cafe' => __('Posos de café', 'flavor-platform'),
-    'cesped_fresco' => __('Césped fresco', 'flavor-platform'),
-    'restos_cocina' => __('Restos de cocina', 'flavor-platform'),
-    'plantas_verdes' => __('Plantas verdes', 'flavor-platform'),
-    'hojas_secas' => __('Hojas secas', 'flavor-platform'),
-    'papel_carton' => __('Papel y cartón', 'flavor-platform'),
-    'ramas_poda' => __('Ramas y poda', 'flavor-platform'),
-    'serrin' => __('Serrín', 'flavor-platform'),
-    'paja' => __('Paja', 'flavor-platform'),
-    'cascaras_huevo' => __('Cáscaras de huevo', 'flavor-platform'),
-    'bolsas_te' => __('Bolsas de té', 'flavor-platform'),
-    'otro' => __('Otro', 'flavor-platform'),
+    'frutas_verduras' => __('Frutas y verduras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'posos_cafe' => __('Posos de café', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cesped_fresco' => __('Césped fresco', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'restos_cocina' => __('Restos de cocina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'plantas_verdes' => __('Plantas verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'hojas_secas' => __('Hojas secas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'papel_carton' => __('Papel y cartón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'ramas_poda' => __('Ramas y poda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'serrin' => __('Serrín', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'paja' => __('Paja', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cascaras_huevo' => __('Cáscaras de huevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'bolsas_te' => __('Bolsas de té', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $categoria_colors = [
@@ -76,28 +76,28 @@ $categoria_colors = [
             <span class="stat-icon dashicons dashicons-archive"></span>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html(number_format($estadisticas_usuario->total_aportaciones ?? 0)); ?></span>
-                <span class="stat-label"><?php esc_html_e('Aportaciones', 'flavor-platform'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="compostaje-stat-card">
             <span class="stat-icon dashicons dashicons-scale"></span>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html(number_format($estadisticas_usuario->total_kg ?? 0, 1)); ?> kg</span>
-                <span class="stat-label"><?php esc_html_e('Total compostado', 'flavor-platform'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Total compostado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="compostaje-stat-card">
             <span class="stat-icon dashicons dashicons-star-filled"></span>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html(number_format($estadisticas_usuario->total_puntos ?? 0)); ?></span>
-                <span class="stat-label"><?php esc_html_e('Puntos ganados', 'flavor-platform'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Puntos ganados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="compostaje-stat-card eco">
             <span class="stat-icon dashicons dashicons-cloud"></span>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html(number_format($estadisticas_usuario->co2_evitado ?? 0, 1)); ?> kg</span>
-                <span class="stat-label"><?php esc_html_e('CO₂ evitado', 'flavor-platform'); ?></span>
+                <span class="stat-label"><?php esc_html_e('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -106,17 +106,17 @@ $categoria_colors = [
     <div class="compostaje-actions">
         <a href="<?php echo esc_url(add_query_arg('vista', 'registrar', get_permalink())); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nueva aportación', 'flavor-platform'); ?>
+            <?php esc_html_e('Nueva aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('vista', 'mapa', get_permalink())); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-location-alt"></span>
-            <?php esc_html_e('Ver mapa', 'flavor-platform'); ?>
+            <?php esc_html_e('Ver mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <!-- Historial de aportaciones -->
     <div class="compostaje-historial">
-        <h3><?php esc_html_e('Historial de aportaciones', 'flavor-platform'); ?></h3>
+        <h3><?php esc_html_e('Historial de aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if ($aportaciones): ?>
             <div class="aportaciones-lista">
@@ -134,7 +134,7 @@ $categoria_colors = [
                             </div>
                             <div class="aportacion-punto">
                                 <span class="dashicons dashicons-location"></span>
-                                <?php echo esc_html($aportacion->punto_nombre ?? __('Punto no especificado', 'flavor-platform')); ?>
+                                <?php echo esc_html($aportacion->punto_nombre ?? __('Punto no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </div>
                             <?php if ($aportacion->notas): ?>
                                 <p class="aportacion-notas"><?php echo esc_html($aportacion->notas); ?></p>
@@ -145,7 +145,7 @@ $categoria_colors = [
                             <span class="puntos">+<?php echo esc_html($aportacion->puntos_obtenidos); ?> pts</span>
                         </div>
                         <?php if (!$aportacion->validado): ?>
-                            <span class="aportacion-estado pendiente"><?php esc_html_e('Pendiente', 'flavor-platform'); ?></span>
+                            <span class="aportacion-estado pendiente"><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -153,10 +153,10 @@ $categoria_colors = [
         <?php else: ?>
             <div class="compostaje-empty">
                 <span class="dashicons dashicons-archive"></span>
-                <h4><?php esc_html_e('Sin aportaciones todavía', 'flavor-platform'); ?></h4>
-                <p><?php esc_html_e('¡Empieza a compostar y gana puntos mientras ayudas al medio ambiente!', 'flavor-platform'); ?></p>
+                <h4><?php esc_html_e('Sin aportaciones todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                <p><?php esc_html_e('¡Empieza a compostar y gana puntos mientras ayudas al medio ambiente!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(add_query_arg('vista', 'registrar', get_permalink())); ?>" class="btn btn-primary">
-                    <?php esc_html_e('Registrar primera aportación', 'flavor-platform'); ?>
+                    <?php esc_html_e('Registrar primera aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php endif; ?>

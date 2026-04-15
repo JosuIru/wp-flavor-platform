@@ -625,10 +625,10 @@ abstract class Flavor_Platform_Module_Base implements Flavor_Platform_Module_Int
      */
     public function get_display_ecosystem_role_label() {
         $labels = [
-            'base' => __('Base', 'flavor-platform'),
-            'base-standalone' => __('Base local', 'flavor-platform'),
-            'vertical' => __('Vertical', 'flavor-platform'),
-            'transversal' => __('Transversal', 'flavor-platform'),
+            'base' => __('Base', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base-standalone' => __('Base local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vertical' => __('Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transversal' => __('Transversal', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $role = $this->get_display_ecosystem_role();

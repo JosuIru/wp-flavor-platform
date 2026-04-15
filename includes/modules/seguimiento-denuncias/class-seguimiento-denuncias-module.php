@@ -1247,36 +1247,36 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
     public function get_admin_config() {
         return [
             'id'         => 'seguimiento_denuncias',
-            'label'      => __('Seguimiento de Denuncias', 'flavor-platform'),
+            'label'      => __('Seguimiento de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-clipboard',
             'capability' => 'manage_options',
             'categoria'  => 'servicios',
             'paginas'    => [
                 [
                     'slug'     => 'denuncias-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-platform'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                     'badge'    => [$this, 'contar_denuncias_pendientes'],
                 ],
                 [
                     'slug'     => 'denuncias-listado',
-                    'titulo'   => __('Listado', 'flavor-platform'),
+                    'titulo'   => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
                     'slug'     => 'denuncias-asignar',
-                    'titulo'   => __('Asignar', 'flavor-platform'),
+                    'titulo'   => __('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_asignar'],
                     'badge'    => [$this, 'contar_sin_asignar'],
                 ],
                 [
                     'slug'     => 'denuncias-estadisticas',
-                    'titulo'   => __('Estadisticas', 'flavor-platform'),
+                    'titulo'   => __('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_estadisticas'],
                 ],
                 [
                     'slug'     => 'denuncias-config',
-                    'titulo'   => __('Configuracion', 'flavor-platform'),
+                    'titulo'   => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1344,21 +1344,21 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
             [
                 'icon'   => 'dashicons-clipboard',
                 'valor'  => $total_abiertas,
-                'label'  => __('Denuncias abiertas', 'flavor-platform'),
+                'label'  => __('Denuncias abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'  => 'blue',
                 'enlace' => admin_url('admin.php?page=denuncias-listado&estado=abiertas'),
             ],
             [
                 'icon'   => 'dashicons-yes-alt',
                 'valor'  => $resueltas_mes,
-                'label'  => __('Resueltas este mes', 'flavor-platform'),
+                'label'  => __('Resueltas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'  => 'green',
                 'enlace' => admin_url('admin.php?page=denuncias-listado&estado=resueltas'),
             ],
             [
                 'icon'   => 'dashicons-warning',
                 'valor'  => $en_silencio,
-                'label'  => __('En silencio adm.', 'flavor-platform'),
+                'label'  => __('En silencio adm.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'  => 'red',
                 'enlace' => admin_url('admin.php?page=denuncias-listado&estado=silencio'),
             ],
@@ -1417,18 +1417,18 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
         $estados = $this->get_estados();
         ?>
         <div class="wrap flavor-admin-dashboard">
-            <?php $this->render_page_header(__('Dashboard de Denuncias', 'flavor-platform'), [
-                ['label' => __('Nueva denuncia', 'flavor-platform'), 'url' => admin_url('admin.php?page=denuncias-listado&action=nueva'), 'class' => 'button-primary'],
-                ['label' => __('Exportar', 'flavor-platform'), 'url' => admin_url('admin.php?page=denuncias-listado&action=exportar'), 'class' => ''],
+            <?php $this->render_page_header(__('Dashboard de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Nueva denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=denuncias-listado&action=nueva'), 'class' => 'button-primary'],
+                ['label' => __('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=denuncias-listado&action=exportar'), 'class' => ''],
             ]); ?>
 
             <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
                 <?php $this->render_admin_module_hub([
-                    'description' => __('Acceso visible a listado, asignación, estadísticas, configuración y al bloque principal de KPIs.', 'flavor-platform'),
+                    'description' => __('Acceso visible a listado, asignación, estadísticas, configuración y al bloque principal de KPIs.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'stats_anchor' => '#denuncias-stats',
                     'extra_items' => [
                         [
-                            'label' => __('Portal', 'flavor-platform'),
+                            'label' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => home_url('/mi-portal/seguimiento-denuncias/'),
                             'icon' => 'dashicons-external',
                         ],
@@ -1443,7 +1443,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         <span class="dashicons dashicons-clipboard"></span>
                     </div>
                     <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($total_abiertas); ?></div>
-                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Denuncias abiertas', 'flavor-platform'); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Denuncias abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--amber">
@@ -1451,7 +1451,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         <span class="dashicons dashicons-clock"></span>
                     </div>
                     <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($pendientes_asignacion); ?></div>
-                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Pendientes asignacion', 'flavor-platform'); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Pendientes asignacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--green">
@@ -1459,15 +1459,15 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
                     <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($resueltas_mes); ?></div>
-                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Resueltas este mes', 'flavor-platform'); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Resueltas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--purple">
                     <div class="kpi-icon denuncias-admin-dashboard__kpi-icon">
                         <span class="dashicons dashicons-calendar-alt"></span>
                     </div>
-                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($tiempo_medio_resolucion); ?> <small class="denuncias-admin-dashboard__kpi-unit"><?php _e('dias', 'flavor-platform'); ?></small></div>
-                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Tiempo medio resolucion', 'flavor-platform'); ?></div>
+                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($tiempo_medio_resolucion); ?> <small class="denuncias-admin-dashboard__kpi-unit"><?php _e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Tiempo medio resolucion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -1476,17 +1476,17 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-admin-card denuncias-admin-dashboard__card">
                     <h2 class="denuncias-admin-dashboard__card-title">
                         <span class="dashicons dashicons-list-view"></span>
-                        <?php _e('Denuncias recientes', 'flavor-platform'); ?>
+                        <?php _e('Denuncias recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('ID', 'flavor-platform'); ?></th>
-                                <th><?php _e('Titulo', 'flavor-platform'); ?></th>
-                                <th><?php _e('Estado', 'flavor-platform'); ?></th>
-                                <th><?php _e('Organismo', 'flavor-platform'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                                <th><?php _e('Acciones', 'flavor-platform'); ?></th>
+                                <th><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Organismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1508,18 +1508,18 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_presentacion))); ?></td>
                                         <td>
                                             <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado&action=ver&id=' . $denuncia->id)); ?>" class="button button-small">
-                                                <?php _e('Ver', 'flavor-platform'); ?>
+                                                <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="6"><?php _e('No hay denuncias registradas', 'flavor-platform'); ?></td></tr>
+                                <tr><td colspan="6"><?php _e('No hay denuncias registradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
                     <p class="denuncias-admin-dashboard__card-footer-link">
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado')); ?>"><?php _e('Ver todas', 'flavor-platform'); ?> &rarr;</a>
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado')); ?>"><?php _e('Ver todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &rarr;</a>
                     </p>
                 </div>
 
@@ -1527,7 +1527,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-admin-card denuncias-admin-dashboard__card">
                     <h2 class="denuncias-admin-dashboard__card-title">
                         <span class="dashicons dashicons-warning"></span>
-                        <?php _e('Proximos vencimientos', 'flavor-platform'); ?>
+                        <?php _e('Proximos vencimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
                     <?php if ($proximos_vencimientos): ?>
                         <ul class="flavor-timeline denuncias-admin-dashboard__timeline">
@@ -1542,12 +1542,12 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                             <span><?php echo esc_html(wp_trim_words($denuncia->titulo, 5)); ?></span>
                                         </div>
                                         <span class="flavor-badge denuncias-admin-dashboard__badge <?php echo $urgente ? 'denuncias-vencimiento-urgente' : 'denuncias-vencimiento-proximo'; ?>">
-                                            <?php echo sprintf(_n('%d dia', '%d dias', $dias_restantes, 'flavor-platform'), $dias_restantes); ?>
+                                            <?php echo sprintf(_n('%d dia', '%d dias', $dias_restantes, FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>
                                         </span>
                                     </div>
                                     <small class="denuncias-admin-dashboard__timeline-meta">
                                         <?php echo esc_html($denuncia->organismo_destino); ?> -
-                                        <?php _e('Vence:', 'flavor-platform'); ?> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_limite_respuesta))); ?>
+                                        <?php _e('Vence:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_limite_respuesta))); ?>
                                     </small>
                                 </li>
                             <?php endforeach; ?>
@@ -1555,7 +1555,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <?php else: ?>
                         <p class="denuncias-admin-dashboard__empty">
                             <span class="dashicons dashicons-yes-alt denuncias-admin-dashboard__empty-icon"></span><br>
-                            <?php _e('No hay vencimientos proximos', 'flavor-platform'); ?>
+                            <?php _e('No hay vencimientos proximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -1637,8 +1637,8 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
         $total_paginas = ceil($total / $por_pagina);
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Listado de Denuncias', 'flavor-platform'), [
-                ['label' => __('Nueva denuncia', 'flavor-platform'), 'url' => admin_url('admin.php?page=denuncias-listado&action=nueva'), 'class' => 'button-primary'],
+            <?php $this->render_page_header(__('Listado de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Nueva denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=denuncias-listado&action=nueva'), 'class' => 'button-primary'],
             ]); ?>
 
             <!-- Filtros -->
@@ -1647,9 +1647,9 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <input type="hidden" name="page" value="denuncias-listado">
 
                     <select name="estado">
-                        <option value=""><?php _e('Todos los estados', 'flavor-platform'); ?></option>
-                        <option value="abiertas" <?php selected($estado_filtro, 'abiertas'); ?>><?php _e('Abiertas', 'flavor-platform'); ?></option>
-                        <option value="resueltas" <?php selected($estado_filtro, 'resueltas'); ?>><?php _e('Resueltas', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="abiertas" <?php selected($estado_filtro, 'abiertas'); ?>><?php _e('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="resueltas" <?php selected($estado_filtro, 'resueltas'); ?>><?php _e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados as $estado_key => $estado_data): ?>
                             <option value="<?php echo esc_attr($estado_key); ?>" <?php selected($estado_filtro, $estado_key); ?>>
                                 <?php echo esc_html($estado_data['label']); ?>
@@ -1658,17 +1658,17 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     </select>
 
                     <select name="prioridad">
-                        <option value=""><?php _e('Todas las prioridades', 'flavor-platform'); ?></option>
-                        <option value="urgente" <?php selected($prioridad_filtro, 'urgente'); ?>><?php _e('Urgente', 'flavor-platform'); ?></option>
-                        <option value="alta" <?php selected($prioridad_filtro, 'alta'); ?>><?php _e('Alta', 'flavor-platform'); ?></option>
-                        <option value="media" <?php selected($prioridad_filtro, 'media'); ?>><?php _e('Media', 'flavor-platform'); ?></option>
-                        <option value="baja" <?php selected($prioridad_filtro, 'baja'); ?>><?php _e('Baja', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Todas las prioridades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="urgente" <?php selected($prioridad_filtro, 'urgente'); ?>><?php _e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="alta" <?php selected($prioridad_filtro, 'alta'); ?>><?php _e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="media" <?php selected($prioridad_filtro, 'media'); ?>><?php _e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="baja" <?php selected($prioridad_filtro, 'baja'); ?>><?php _e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
 
-                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar...', 'flavor-platform'); ?>">
+                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado')); ?>" class="button"><?php _e('Limpiar', 'flavor-platform'); ?></a>
+                    <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado')); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </form>
             </div>
 
@@ -1676,15 +1676,15 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th class="denuncias-admin-list__col-id"><?php _e('ID', 'flavor-platform'); ?></th>
-                        <th><?php _e('Titulo', 'flavor-platform'); ?></th>
-                        <th><?php _e('Estado', 'flavor-platform'); ?></th>
-                        <th><?php _e('Prioridad', 'flavor-platform'); ?></th>
-                        <th><?php _e('Organismo', 'flavor-platform'); ?></th>
-                        <th><?php _e('Denunciante', 'flavor-platform'); ?></th>
-                        <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                        <th><?php _e('Vencimiento', 'flavor-platform'); ?></th>
-                        <th class="denuncias-admin-list__col-actions"><?php _e('Acciones', 'flavor-platform'); ?></th>
+                        <th class="denuncias-admin-list__col-id"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Organismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Denunciante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Vencimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="denuncias-admin-list__col-actions"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1724,10 +1724,10 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado&action=ver&id=' . $denuncia->id)); ?>" class="button button-small" title="<?php _e('Ver', 'flavor-platform'); ?>">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado&action=ver&id=' . $denuncia->id)); ?>" class="button button-small" title="<?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-visibility"></span>
                                     </a>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado&action=editar&id=' . $denuncia->id)); ?>" class="button button-small" title="<?php _e('Editar', 'flavor-platform'); ?>">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado&action=editar&id=' . $denuncia->id)); ?>" class="button button-small" title="<?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-edit"></span>
                                     </a>
                                 </td>
@@ -1736,7 +1736,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="denuncias-admin-list__empty-cell">
-                                <?php _e('No se encontraron denuncias', 'flavor-platform'); ?>
+                                <?php _e('No se encontraron denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -1747,7 +1747,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
             <?php if ($total_paginas > 1): ?>
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
-                        <span class="displaying-num"><?php echo sprintf(_n('%s elemento', '%s elementos', $total, 'flavor-platform'), number_format_i18n($total)); ?></span>
+                        <span class="displaying-num"><?php echo sprintf(_n('%s elemento', '%s elementos', $total, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total)); ?></span>
                         <span class="pagination-links">
                             <?php
                             echo paginate_links([
@@ -1792,7 +1792,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
         $estados = $this->get_estados();
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Asignar Denuncias', 'flavor-platform')); ?>
+            <?php $this->render_page_header(__('Asignar Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <?php if ($denuncias_pendientes): ?>
                 <div class="flavor-asignar-grid denuncias-admin-asignar__grid">
@@ -1807,12 +1807,12 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                     </span>
                                 </h3>
                                 <p class="denuncias-admin-asignar__meta">
-                                    <strong><?php _e('Organismo:', 'flavor-platform'); ?></strong> <?php echo esc_html($denuncia->organismo_destino); ?><br>
-                                    <strong><?php _e('Denunciante:', 'flavor-platform'); ?></strong> <?php echo esc_html($denuncia->denunciante_nombre_usuario ?: $denuncia->denunciante_nombre); ?><br>
-                                    <strong><?php _e('Fecha:', 'flavor-platform'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_presentacion))); ?>
+                                    <strong><?php _e('Organismo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($denuncia->organismo_destino); ?><br>
+                                    <strong><?php _e('Denunciante:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($denuncia->denunciante_nombre_usuario ?: $denuncia->denunciante_nombre); ?><br>
+                                    <strong><?php _e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_presentacion))); ?>
                                     <?php if ($denuncia->prioridad === 'urgente' || $denuncia->prioridad === 'alta'): ?>
                                         <span class="denuncias-admin-asignar__priority">
-                                            <?php _e('Prioridad:', 'flavor-platform'); ?> <?php echo esc_html(ucfirst($denuncia->prioridad)); ?>
+                                            <?php _e('Prioridad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(ucfirst($denuncia->prioridad)); ?>
                                         </span>
                                     <?php endif; ?>
                                 </p>
@@ -1824,7 +1824,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                     <?php wp_nonce_field('denuncias_asignar_' . $denuncia->id); ?>
 
                                     <select name="responsable_id" required class="denuncias-admin-asignar__select">
-                                        <option value=""><?php _e('Seleccionar responsable...', 'flavor-platform'); ?></option>
+                                        <option value=""><?php _e('Seleccionar responsable...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                         <?php foreach ($responsables as $usuario): ?>
                                             <option value="<?php echo esc_attr($usuario->ID); ?>">
                                                 <?php echo esc_html($usuario->display_name); ?>
@@ -1832,7 +1832,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                         <?php endforeach; ?>
                                     </select>
 
-                                    <button type="submit" class="button button-primary"><?php _e('Asignar', 'flavor-platform'); ?></button>
+                                    <button type="submit" class="button button-primary"><?php _e('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                 </form>
                             </div>
                         </div>
@@ -1842,7 +1842,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="notice notice-success">
                     <p>
                         <span class="dashicons dashicons-yes-alt denuncias-admin-asignar__icon-ok"></span>
-                        <?php _e('No hay denuncias pendientes de asignacion.', 'flavor-platform'); ?>
+                        <?php _e('No hay denuncias pendientes de asignacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             <?php endif; ?>
@@ -1901,8 +1901,8 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
         $estados = $this->get_estados();
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Estadisticas de Denuncias', 'flavor-platform'), [
-                ['label' => __('Exportar PDF', 'flavor-platform'), 'url' => '#', 'class' => ''],
+            <?php $this->render_page_header(__('Estadisticas de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => ''],
             ]); ?>
 
             <div class="flavor-stats-grid denuncias-admin-estadisticas__grid">
@@ -1911,7 +1911,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-stats-card denuncias-admin-estadisticas__card">
                     <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php _e('Por estado', 'flavor-platform'); ?>
+                        <?php _e('Por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <table class="widefat">
                         <tbody>
@@ -1934,7 +1934,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-stats-card denuncias-admin-estadisticas__card">
                     <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-category"></span>
-                        <?php _e('Por tipo', 'flavor-platform'); ?>
+                        <?php _e('Por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <table class="widefat">
                         <tbody>
@@ -1952,7 +1952,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-stats-card denuncias-admin-estadisticas__card denuncias-admin-estadisticas__card--span2">
                     <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-chart-line"></span>
-                        <?php _e('Evolucion mensual (ultimos 12 meses)', 'flavor-platform'); ?>
+                        <?php _e('Evolucion mensual (ultimos 12 meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-chart-container denuncias-admin-estadisticas__chart">
                         <?php
@@ -1975,8 +1975,8 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         <?php endforeach; ?>
                     </div>
                     <div class="denuncias-admin-estadisticas__legend">
-                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--blue"></span><?php _e('Total', 'flavor-platform'); ?></span>
-                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--green"></span><?php _e('Resueltas', 'flavor-platform'); ?></span>
+                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--blue"></span><?php _e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--green"></span><?php _e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -1984,15 +1984,15 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 <div class="flavor-stats-card denuncias-admin-estadisticas__card denuncias-admin-estadisticas__card--span2">
                     <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-clock"></span>
-                        <?php _e('Tiempos medios de resolucion por organismo', 'flavor-platform'); ?>
+                        <?php _e('Tiempos medios de resolucion por organismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if ($tiempos_organismo): ?>
                         <table class="widefat">
                             <thead>
                                 <tr>
-                                    <th><?php _e('Organismo', 'flavor-platform'); ?></th>
-                                    <th><?php _e('Denuncias resueltas', 'flavor-platform'); ?></th>
-                                    <th><?php _e('Tiempo medio (dias)', 'flavor-platform'); ?></th>
+                                    <th><?php _e('Organismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('Denuncias resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('Tiempo medio (dias)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2002,14 +2002,14 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                                         <td><?php echo esc_html($organismo->total); ?></td>
                                         <td>
                                             <strong><?php echo esc_html(round($organismo->tiempo_medio, 1)); ?></strong>
-                                            <?php _e('dias', 'flavor-platform'); ?>
+                                            <?php _e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="denuncias-admin-estadisticas__empty"><?php _e('No hay suficientes datos para mostrar', 'flavor-platform'); ?></p>
+                        <p class="denuncias-admin-estadisticas__empty"><?php _e('No hay suficientes datos para mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -2025,7 +2025,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
         // Guardar configuracion si se envia el formulario
         if (isset($_POST['denuncias_config_submit']) && check_admin_referer('denuncias_config_nonce')) {
             $this->guardar_configuracion();
-            echo '<div class="notice notice-success"><p>' . __('Configuracion guardada correctamente.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Configuracion guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $configuracion = $this->get_default_settings();
@@ -2033,18 +2033,18 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
 
         // Categorias guardadas
         $categorias = get_option('flavor_denuncias_categorias', [
-            'urbanismo' => __('Urbanismo', 'flavor-platform'),
-            'medioambiente' => __('Medio Ambiente', 'flavor-platform'),
-            'consumo' => __('Consumo', 'flavor-platform'),
-            'administracion' => __('Administracion Publica', 'flavor-platform'),
-            'transporte' => __('Transporte', 'flavor-platform'),
-            'sanidad' => __('Sanidad', 'flavor-platform'),
-            'educacion' => __('Educacion', 'flavor-platform'),
-            'otro' => __('Otro', 'flavor-platform'),
+            'urbanismo' => __('Urbanismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'medioambiente' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'consumo' => __('Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'administracion' => __('Administracion Publica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sanidad' => __('Sanidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion' => __('Educacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Configuracion de Denuncias', 'flavor-platform')); ?>
+            <?php $this->render_page_header(__('Configuracion de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <form method="post">
                 <?php wp_nonce_field('denuncias_config_nonce'); ?>
@@ -2055,48 +2055,48 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <div class="flavor-config-card denuncias-admin-config__card">
                         <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-admin-settings"></span>
-                            <?php _e('Configuracion general', 'flavor-platform'); ?>
+                            <?php _e('Configuracion general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <table class="form-table">
                             <tr>
-                                <th><?php _e('Plazo de respuesta por defecto', 'flavor-platform'); ?></th>
+                                <th><?php _e('Plazo de respuesta por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <input type="number" name="plazo_respuesta_defecto" value="<?php echo esc_attr($configuracion['plazo_respuesta_defecto']); ?>" min="1" max="365" class="small-text">
-                                    <?php _e('dias', 'flavor-platform'); ?>
+                                    <?php _e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <th><?php _e('Dias de aviso antes del vencimiento', 'flavor-platform'); ?></th>
+                                <th><?php _e('Dias de aviso antes del vencimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <input type="number" name="dias_aviso_plazo" value="<?php echo esc_attr($configuracion['dias_aviso_plazo']); ?>" min="1" max="30" class="small-text">
-                                    <?php _e('dias', 'flavor-platform'); ?>
+                                    <?php _e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <th><?php _e('Notificar plazos', 'flavor-platform'); ?></th>
+                                <th><?php _e('Notificar plazos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="notificar_plazos" value="1" <?php checked($configuracion['notificar_plazos']); ?>>
-                                        <?php _e('Enviar notificaciones cuando un plazo este proximo a vencer', 'flavor-platform'); ?>
+                                        <?php _e('Enviar notificaciones cuando un plazo este proximo a vencer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th><?php _e('Permitir denuncias anonimas', 'flavor-platform'); ?></th>
+                                <th><?php _e('Permitir denuncias anonimas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="permitir_denuncias_anonimas" value="1" <?php checked($configuracion['permitir_denuncias_anonimas']); ?>>
-                                        <?php _e('Permitir registrar denuncias sin identificacion', 'flavor-platform'); ?>
+                                        <?php _e('Permitir registrar denuncias sin identificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th><?php _e('Requiere aprobacion', 'flavor-platform'); ?></th>
+                                <th><?php _e('Requiere aprobacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="requiere_aprobacion" value="1" <?php checked($configuracion['requiere_aprobacion']); ?>>
-                                        <?php _e('Las denuncias requieren aprobacion antes de publicarse', 'flavor-platform'); ?>
+                                        <?php _e('Las denuncias requieren aprobacion antes de publicarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
@@ -2107,15 +2107,15 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <div class="flavor-config-card denuncias-admin-config__card">
                         <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-category"></span>
-                            <?php _e('Categorias de denuncias', 'flavor-platform'); ?>
+                            <?php _e('Categorias de denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <div id="categorias-list">
                             <?php foreach ($categorias as $slug => $nombre): ?>
                                 <div class="categoria-item denuncias-admin-config__categoria-item">
-                                    <input type="text" name="categorias_slug[]" value="<?php echo esc_attr($slug); ?>" placeholder="<?php _e('Slug', 'flavor-platform'); ?>" class="denuncias-admin-config__categoria-slug">
-                                    <input type="text" name="categorias_nombre[]" value="<?php echo esc_attr($nombre); ?>" placeholder="<?php _e('Nombre', 'flavor-platform'); ?>" class="denuncias-admin-config__categoria-nombre">
-                                    <button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', 'flavor-platform'); ?>">
+                                    <input type="text" name="categorias_slug[]" value="<?php echo esc_attr($slug); ?>" placeholder="<?php _e('Slug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="denuncias-admin-config__categoria-slug">
+                                    <input type="text" name="categorias_nombre[]" value="<?php echo esc_attr($nombre); ?>" placeholder="<?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="denuncias-admin-config__categoria-nombre">
+                                    <button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-trash"></span>
                                     </button>
                                 </div>
@@ -2123,7 +2123,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         </div>
                         <button type="button" id="agregar-categoria" class="button">
                             <span class="dashicons dashicons-plus-alt2"></span>
-                            <?php _e('Agregar categoria', 'flavor-platform'); ?>
+                            <?php _e('Agregar categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
 
@@ -2131,10 +2131,10 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <div class="flavor-config-card denuncias-admin-config__card denuncias-admin-config__card--span2">
                         <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-randomize"></span>
-                            <?php _e('Flujo de estados', 'flavor-platform'); ?>
+                            <?php _e('Flujo de estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
-                        <p><?php _e('Los estados disponibles y sus transiciones:', 'flavor-platform'); ?></p>
+                        <p><?php _e('Los estados disponibles y sus transiciones:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                         <div class="flujo-estados denuncias-admin-config__flujo-estados">
                             <?php
@@ -2147,7 +2147,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                         </div>
 
                         <p class="denuncias-admin-config__help">
-                            <?php _e('El flujo de estados esta predefinido: Presentada -> En tramite -> (Requerimiento) -> Resuelta/Silencio -> Archivada. Las denuncias pueden ser recurridas en cualquier momento.', 'flavor-platform'); ?>
+                            <?php _e('El flujo de estados esta predefinido: Presentada -> En tramite -> (Requerimiento) -> Resuelta/Silencio -> Archivada. Las denuncias pueden ser recurridas en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
 
@@ -2155,36 +2155,36 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                     <div class="flavor-config-card denuncias-admin-config__card denuncias-admin-config__card--span2">
                         <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-email"></span>
-                            <?php _e('Configuracion de notificaciones', 'flavor-platform'); ?>
+                            <?php _e('Configuracion de notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <table class="form-table">
                             <tr>
-                                <th><?php _e('Notificar al denunciante cuando:', 'flavor-platform'); ?></th>
+                                <th><?php _e('Notificar al denunciante cuando:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_cambio_estado" value="1" checked>
-                                        <?php _e('Cambia el estado de su denuncia', 'flavor-platform'); ?>
+                                        <?php _e('Cambia el estado de su denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                     <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_nuevo_evento" value="1" checked>
-                                        <?php _e('Se agrega un nuevo evento al timeline', 'flavor-platform'); ?>
+                                        <?php _e('Se agrega un nuevo evento al timeline', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                     <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_plazo_proximo" value="1" checked>
-                                        <?php _e('El plazo de respuesta esta proximo a vencer', 'flavor-platform'); ?>
+                                        <?php _e('El plazo de respuesta esta proximo a vencer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                     <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_silencio" value="1" checked>
-                                        <?php _e('Se detecta silencio administrativo', 'flavor-platform'); ?>
+                                        <?php _e('Se detecta silencio administrativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th><?php _e('Email de administracion', 'flavor-platform'); ?></th>
+                                <th><?php _e('Email de administracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <input type="email" name="email_admin" value="<?php echo esc_attr(get_option('admin_email')); ?>" class="regular-text">
-                                    <p class="description"><?php _e('Recibira notificaciones de nuevas denuncias', 'flavor-platform'); ?></p>
+                                    <p class="description"><?php _e('Recibira notificaciones de nuevas denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                         </table>
@@ -2193,7 +2193,7 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 </div>
 
                 <p class="submit">
-                    <input type="submit" name="denuncias_config_submit" class="button-primary" value="<?php _e('Guardar configuracion', 'flavor-platform'); ?>">
+                    <input type="submit" name="denuncias_config_submit" class="button-primary" value="<?php _e('Guardar configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </p>
             </form>
 
@@ -2202,9 +2202,9 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
                 // Agregar categoria
                 $('#agregar-categoria').on('click', function() {
                     var html = '<div class="categoria-item denuncias-admin-config__categoria-item">' +
-                        '<input type="text" name="categorias_slug[]" placeholder="<?php _e('Slug', 'flavor-platform'); ?>" class="denuncias-admin-config__categoria-slug">' +
-                        '<input type="text" name="categorias_nombre[]" placeholder="<?php _e('Nombre', 'flavor-platform'); ?>" class="denuncias-admin-config__categoria-nombre">' +
-                        '<button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', 'flavor-platform'); ?>">' +
+                        '<input type="text" name="categorias_slug[]" placeholder="<?php _e('Slug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="denuncias-admin-config__categoria-slug">' +
+                        '<input type="text" name="categorias_nombre[]" placeholder="<?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="denuncias-admin-config__categoria-nombre">' +
+                        '<button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">' +
                         '<span class="dashicons dashicons-trash"></span></button></div>';
                     $('#categorias-list').append(html);
                 });
@@ -2257,8 +2257,8 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
     public static function get_renderer_config(): array {
         return [
             'module'   => 'seguimiento-denuncias',
-            'title'    => __('Seguimiento de Denuncias', 'flavor-platform'),
-            'subtitle' => __('Registra y sigue denuncias formales', 'flavor-platform'),
+            'title'    => __('Seguimiento de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Registra y sigue denuncias formales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📝',
             'color'    => 'error', // Usa variable CSS --flavor-error del tema
 
@@ -2268,52 +2268,52 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
             ],
 
             'fields' => [
-                'titulo'           => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
-                'descripcion'      => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'administracion'   => ['type' => 'text', 'label' => __('Administración', 'flavor-platform'), 'required' => true],
-                'fecha_presentacion'=> ['type' => 'date', 'label' => __('Fecha presentación', 'flavor-platform'), 'required' => true],
-                'numero_registro'  => ['type' => 'text', 'label' => __('Nº registro', 'flavor-platform')],
-                'plazo_dias'       => ['type' => 'number', 'label' => __('Plazo (días)', 'flavor-platform'), 'default' => 30],
-                'documentos'       => ['type' => 'file', 'label' => __('Documentos', 'flavor-platform'), 'multiple' => true],
-                'estado'           => ['type' => 'select', 'label' => __('Estado', 'flavor-platform')],
+                'titulo'           => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'      => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'administracion'   => ['type' => 'text', 'label' => __('Administración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'fecha_presentacion'=> ['type' => 'date', 'label' => __('Fecha presentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'numero_registro'  => ['type' => 'text', 'label' => __('Nº registro', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'plazo_dias'       => ['type' => 'number', 'label' => __('Plazo (días)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 30],
+                'documentos'       => ['type' => 'file', 'label' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'multiple' => true],
+                'estado'           => ['type' => 'select', 'label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'presentada'       => ['label' => __('Presentada', 'flavor-platform'), 'color' => 'blue', 'icon' => '📤'],
-                'en_tramite'       => ['label' => __('En trámite', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏳'],
-                'requerimiento'    => ['label' => __('Requerimiento', 'flavor-platform'), 'color' => 'orange', 'icon' => '📋'],
-                'silencio'         => ['label' => __('Silencio administrativo', 'flavor-platform'), 'color' => 'red', 'icon' => '🔇'],
-                'favorable'        => ['label' => __('Resuelta favorable', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'desfavorable'     => ['label' => __('Resuelta desfavorable', 'flavor-platform'), 'color' => 'red', 'icon' => '❌'],
-                'archivada'        => ['label' => __('Archivada', 'flavor-platform'), 'color' => 'gray', 'icon' => '📁'],
-                'recurrida'        => ['label' => __('Recurrida', 'flavor-platform'), 'color' => 'purple', 'icon' => '🔄'],
+                'presentada'       => ['label' => __('Presentada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📤'],
+                'en_tramite'       => ['label' => __('En trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'requerimiento'    => ['label' => __('Requerimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '📋'],
+                'silencio'         => ['label' => __('Silencio administrativo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔇'],
+                'favorable'        => ['label' => __('Resuelta favorable', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'desfavorable'     => ['label' => __('Resuelta desfavorable', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
+                'archivada'        => ['label' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📁'],
+                'recurrida'        => ['label' => __('Recurrida', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'purple', 'icon' => '🔄'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_denuncias',
-                    'label' => __('Denuncias', 'flavor-platform'),
+                    'label' => __('Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📝',
                     'color' => 'red',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_seguimiento_denuncias WHERE user_id = {user_id}",
                 ],
                 [
                     'key'   => 'en_tramite',
-                    'label' => __('En trámite', 'flavor-platform'),
+                    'label' => __('En trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '⏳',
                     'color' => 'yellow',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_seguimiento_denuncias WHERE user_id = {user_id} AND estado IN ('presentada', 'en_tramite', 'requerimiento')",
                 ],
                 [
                     'key'   => 'silencio',
-                    'label' => __('Silencio adm.', 'flavor-platform'),
+                    'label' => __('Silencio adm.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '🔇',
                     'color' => 'red',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_seguimiento_denuncias WHERE user_id = {user_id} AND estado = 'silencio'",
                 ],
                 [
                     'key'   => 'resueltas',
-                    'label' => __('Resueltas', 'flavor-platform'),
+                    'label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '✅',
                     'color' => 'green',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_seguimiento_denuncias WHERE user_id = {user_id} AND estado IN ('favorable', 'desfavorable')",
@@ -2330,22 +2330,22 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Mis denuncias', 'flavor-platform'),
+                    'label'   => __('Mis denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📝',
                     'content' => 'template:seguimiento-denuncias/_listado.php',
                 ],
                 'nueva' => [
-                    'label'   => __('Nueva', 'flavor-platform'),
+                    'label'   => __('Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '➕',
                     'content' => 'shortcode:denuncias_formulario',
                 ],
                 'alertas' => [
-                    'label'   => __('Alertas', 'flavor-platform'),
+                    'label'   => __('Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '🔔',
                     'content' => 'shortcode:denuncias_alertas',
                 ],
                 'archivadas' => [
-                    'label'   => __('Archivadas', 'flavor-platform'),
+                    'label'   => __('Archivadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📁',
                     'content' => 'shortcode:denuncias_archivadas',
                 ],
@@ -2362,12 +2362,12 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
 
             'dashboard' => [
                 'widgets' => [
-                    'proximos_plazos'  => ['type' => 'alert', 'title' => __('Próximos vencimientos', 'flavor-platform')],
-                    'denuncias_activas'=> ['type' => 'list', 'title' => __('Denuncias activas', 'flavor-platform')],
+                    'proximos_plazos'  => ['type' => 'alert', 'title' => __('Próximos vencimientos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'denuncias_activas'=> ['type' => 'list', 'title' => __('Denuncias activas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
                     'nueva_denuncia' => [
-                        'label' => __('Registrar denuncia', 'flavor-platform'),
+                        'label' => __('Registrar denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '➕',
                         'modal' => 'denuncias-nueva',
                     ],

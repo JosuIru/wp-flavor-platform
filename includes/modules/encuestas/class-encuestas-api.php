@@ -107,7 +107,7 @@ class Flavor_Encuestas_API {
                 'respuestas' => [
                     'required'    => true,
                     'type'        => 'object',
-                    'description' => __('Respuestas en formato {campo_id: valor}', 'flavor-platform'),
+                    'description' => __('Respuestas en formato {campo_id: valor}', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
         ]);
@@ -195,7 +195,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success' => true,
             'data'    => $this->preparar_encuesta_response($encuesta),
-            'message' => __('Encuesta creada correctamente', 'flavor-platform'),
+            'message' => __('Encuesta creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -212,7 +212,7 @@ class Flavor_Encuestas_API {
         if (!$encuesta) {
             return new WP_Error(
                 'not_found',
-                __('Encuesta no encontrada', 'flavor-platform'),
+                __('Encuesta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -222,7 +222,7 @@ class Flavor_Encuestas_API {
             if (!$this->module->puede_editar_encuesta($encuesta_id)) {
                 return new WP_Error(
                     'forbidden',
-                    __('No tienes acceso a esta encuesta', 'flavor-platform'),
+                    __('No tienes acceso a esta encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 403]
                 );
             }
@@ -267,7 +267,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success' => true,
             'data'    => $this->preparar_encuesta_response($encuesta),
-            'message' => __('Encuesta actualizada', 'flavor-platform'),
+            'message' => __('Encuesta actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -287,7 +287,7 @@ class Flavor_Encuestas_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Encuesta eliminada', 'flavor-platform'),
+            'message' => __('Encuesta eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -319,7 +319,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success'  => true,
             'campo_id' => $resultado,
-            'message'  => __('Campo agregado', 'flavor-platform'),
+            'message'  => __('Campo agregado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -341,7 +341,7 @@ class Flavor_Encuestas_API {
 
         $response = [
             'success' => true,
-            'message' => __('Gracias por tu respuesta', 'flavor-platform'),
+            'message' => __('Gracias por tu respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Incluir resultados si el usuario puede verlos
@@ -384,7 +384,7 @@ class Flavor_Encuestas_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Encuesta cerrada', 'flavor-platform'),
+            'message' => __('Encuesta cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 

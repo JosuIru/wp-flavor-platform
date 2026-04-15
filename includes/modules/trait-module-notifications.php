@@ -94,19 +94,19 @@ trait Flavor_Module_Notifications_Trait {
 
         // Títulos genéricos por tipo de evento
         $titulos = [
-            'nuevo_registro' => sprintf(__('Nuevo registro en %s', 'flavor-platform'), $modulo_nombre),
-            'nueva_reserva' => __('Nueva reserva confirmada', 'flavor-platform'),
-            'reserva_cancelada' => __('Reserva cancelada', 'flavor-platform'),
-            'nuevo_pedido' => __('Nuevo pedido recibido', 'flavor-platform'),
-            'pedido_listo' => __('Tu pedido está listo', 'flavor-platform'),
-            'nuevo_mensaje' => __('Nuevo mensaje', 'flavor-platform'),
-            'nueva_incidencia' => __('Nueva incidencia reportada', 'flavor-platform'),
-            'incidencia_resuelta' => __('Incidencia resuelta', 'flavor-platform'),
-            'recordatorio' => __('Recordatorio', 'flavor-platform'),
-            'actualizacion' => sprintf(__('Actualización en %s', 'flavor-platform'), $modulo_nombre),
+            'nuevo_registro' => sprintf(__('Nuevo registro en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_nombre),
+            'nueva_reserva' => __('Nueva reserva confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reserva_cancelada' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'nuevo_pedido' => __('Nuevo pedido recibido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pedido_listo' => __('Tu pedido está listo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'nuevo_mensaje' => __('Nuevo mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'nueva_incidencia' => __('Nueva incidencia reportada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'incidencia_resuelta' => __('Incidencia resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'recordatorio' => __('Recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'actualizacion' => sprintf(__('Actualización en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_nombre),
         ];
 
-        return $titulos[$tipo_evento] ?? sprintf(__('Notificación de %s', 'flavor-platform'), $modulo_nombre);
+        return $titulos[$tipo_evento] ?? sprintf(__('Notificación de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_nombre);
     }
 
     /**

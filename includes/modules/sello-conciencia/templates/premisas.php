@@ -20,10 +20,10 @@ $premisas = $sello_conciencia_module_class::PREMISAS;
 <div class="fsc-premisas">
     <header class="fsc-premisas__header">
         <h2 class="fsc-premisas__title">
-            <?php esc_html_e('Las 5 Premisas de una Economía Consciente', 'flavor-platform'); ?>
+            <?php esc_html_e('Las 5 Premisas de una Economía Consciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p class="fsc-premisas__intro">
-            <?php esc_html_e('Estas premisas constituyen el marco ético y filosófico sobre el cual se evalúa cada módulo de la aplicación.', 'flavor-platform'); ?>
+            <?php esc_html_e('Estas premisas constituyen el marco ético y filosófico sobre el cual se evalúa cada módulo de la aplicación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -42,12 +42,12 @@ $premisas = $sello_conciencia_module_class::PREMISAS;
             </p>
 
             <div class="fsc-premisa__principio">
-                <strong><?php esc_html_e('Principio:', 'flavor-platform'); ?></strong>
+                <strong><?php esc_html_e('Principio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 <p><?php echo esc_html($premisa['principio']); ?></p>
             </div>
 
             <div class="fsc-premisa__consecuencia">
-                <strong><?php esc_html_e('En la práctica:', 'flavor-platform'); ?></strong>
+                <strong><?php esc_html_e('En la práctica:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 <p><?php echo esc_html($premisa['consecuencia']); ?></p>
             </div>
         </article>

@@ -184,7 +184,7 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                                             <span class="dashicons dashicons-visibility"></span>
                                         </a>
                                         <?php if ($order_status === 'processing'): ?>
-                                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=completed&order_id=' . $order_id), 'woocommerce-mark-order-status')); ?>"
+                                            <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=completed&order_id=' . $order_id . '&nonce=' . wp_create_nonce('flavor_woocommerce_nonce'))); ?>"
                                                class="button button-small button-primary"
                                                title="<?php esc_attr_e('Marcar como completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-yes"></span>

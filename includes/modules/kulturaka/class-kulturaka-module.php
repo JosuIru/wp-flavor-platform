@@ -27,8 +27,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
      */
     public function __construct() {
         $this->id = 'kulturaka';
-        $this->name = __('Kulturaka', 'flavor-platform');
-        $this->description = __('Red cultural descentralizada que conecta artistas, espacios y comunidades. Integra eventos, crowdfunding, banco de tiempo y economía solidaria.', 'flavor-platform');
+        $this->name = __('Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Red cultural descentralizada que conecta artistas, espacios y comunidades. Integra eventos, crowdfunding, banco de tiempo y economía solidaria.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->module_role = 'ecosystem';
         $this->ecosystem_requires_modules = ['eventos', 'espacios-comunes', 'socios'];
         $this->ecosystem_supports_modules = ['crowdfunding', 'banco-tiempo', 'comunidades', 'colectivos'];
@@ -69,7 +69,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Miembros activos.', 'flavor-platform');
+            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Miembros activos.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -90,25 +90,25 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
             // Tipos de espacio cultural
             'tipos_espacio' => [
-                'gaztetxe' => __('Gaztetxe', 'flavor-platform'),
-                'sala_conciertos' => __('Sala de conciertos', 'flavor-platform'),
-                'teatro' => __('Teatro', 'flavor-platform'),
-                'galeria' => __('Galería', 'flavor-platform'),
-                'centro_cultural' => __('Centro cultural', 'flavor-platform'),
-                'espacio_publico' => __('Espacio público', 'flavor-platform'),
-                'online' => __('Online', 'flavor-platform'),
+                'gaztetxe' => __('Gaztetxe', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sala_conciertos' => __('Sala de conciertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'teatro' => __('Teatro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'galeria' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'centro_cultural' => __('Centro cultural', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacio_publico' => __('Espacio público', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'online' => __('Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Tipos de evento cultural
             'tipos_evento' => [
-                'concierto' => __('Concierto', 'flavor-platform'),
-                'teatro' => __('Teatro', 'flavor-platform'),
-                'danza' => __('Danza', 'flavor-platform'),
-                'exposicion' => __('Exposición', 'flavor-platform'),
-                'cine' => __('Cine', 'flavor-platform'),
-                'poesia' => __('Poesía', 'flavor-platform'),
-                'taller' => __('Taller', 'flavor-platform'),
-                'festival' => __('Festival', 'flavor-platform'),
+                'concierto' => __('Concierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'teatro' => __('Teatro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'danza' => __('Danza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exposicion' => __('Exposición', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cine' => __('Cine', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'poesia' => __('Poesía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'taller' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'festival' => __('Festival', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Nodos geográficos iniciales
@@ -568,7 +568,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $artista = $artista_manager->get_artista_by_usuario($artista_id);
 
         if (!$artista) {
-            return new WP_Error('sin_perfil_artista', __('Necesitas un perfil de artista para enviar propuestas.', 'flavor-platform'));
+            return new WP_Error('sin_perfil_artista', __('Necesitas un perfil de artista para enviar propuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Crear evento en estado borrador con metadata de propuesta
@@ -596,7 +596,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $insertado = $wpdb->insert($tabla_eventos, $datos_evento);
 
         if (!$insertado) {
-            return new WP_Error('error_crear', __('Error al crear la propuesta.', 'flavor-platform'));
+            return new WP_Error('error_crear', __('Error al crear la propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $propuesta_id = $wpdb->insert_id;
@@ -617,7 +617,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $propuesta = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla WHERE id = %d", $propuesta_id));
 
         if (!$propuesta) {
-            return new WP_Error('no_existe', __('Propuesta no encontrada.', 'flavor-platform'));
+            return new WP_Error('no_existe', __('Propuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $metadata = json_decode($propuesta->metadata, true) ?: [];
@@ -740,12 +740,12 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
         if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
-            return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', 'flavor-platform'));
+            return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $de_usuario_id = get_current_user_id();
         if (!$de_usuario_id) {
-            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', 'flavor-platform'));
+            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $datos_insertar = [
@@ -763,7 +763,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
             do_action('flavor_kulturaka_agradecimiento_enviado', $wpdb->insert_id, $datos_insertar);
         }
 
-        return $insertado ? $wpdb->insert_id : new WP_Error('error', __('Error al enviar agradecimiento.', 'flavor-platform'));
+        return $insertado ? $wpdb->insert_id : new WP_Error('error', __('Error al enviar agradecimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     // =========================================================
@@ -943,8 +943,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
 
         add_menu_page(
-            __('Kulturaka', 'flavor-platform'),
-            __('Kulturaka', 'flavor-platform'),
+            __('Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-kulturaka',
             [$this, 'render_pagina_admin'],
@@ -954,8 +954,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Dashboard', 'flavor-platform'),
-            __('Dashboard', 'flavor-platform'),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-kulturaka',
             [$this, 'render_pagina_admin']
@@ -963,8 +963,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Nodos de la Red', 'flavor-platform'),
-            __('Nodos', 'flavor-platform'),
+            __('Nodos de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-kulturaka-nodos',
             [$this, 'render_pagina_nodos']
@@ -972,8 +972,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Propuestas', 'flavor-platform'),
-            __('Propuestas', 'flavor-platform'),
+            __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-kulturaka-propuestas',
             [$this, 'render_pagina_propuestas']
@@ -981,8 +981,8 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Métricas', 'flavor-platform'),
-            __('Métricas', 'flavor-platform'),
+            __('Métricas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Métricas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-kulturaka-metricas',
             [$this, 'render_pagina_metricas']
@@ -1022,7 +1022,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
             LIMIT 50
         ");
 
-        echo '<div class="wrap"><h1>' . esc_html__('Propuestas Kulturaka', 'flavor-platform') . '</h1>';
+        echo '<div class="wrap"><h1>' . esc_html__('Propuestas Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr><th>Artista</th><th>Espacio</th><th>Título</th><th>Estado</th><th>Fecha</th></tr></thead><tbody>';
 
@@ -1060,7 +1060,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         ];
 
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Métricas de la Red Kulturaka', 'flavor-platform') . '</h1>';
+        echo '<h1>' . esc_html__('Métricas de la Red Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
 
         echo '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:20px 0;">';
         foreach ([
@@ -1303,7 +1303,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $data = $this->get_vista_espacio_data($espacio_id);
 
         if (!$data || !$data['espacio']) {
-            return new WP_Error('not_found', __('Espacio no encontrado', 'flavor-platform'), ['status' => 404]);
+            return new WP_Error('not_found', __('Espacio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return rest_ensure_response($data);
@@ -1368,7 +1368,7 @@ class Flavor_Platform_Kulturaka_Module extends Flavor_Platform_Module_Base {
         $data = $this->get_vista_artista_data($artista_id);
 
         if (!$data || !$data['artista']) {
-            return new WP_Error('not_found', __('Artista no encontrado', 'flavor-platform'), ['status' => 404]);
+            return new WP_Error('not_found', __('Artista no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Añadir si el usuario actual sigue al artista

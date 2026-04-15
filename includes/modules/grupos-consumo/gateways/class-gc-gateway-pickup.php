@@ -31,8 +31,8 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
      * Constructor
      */
     public function __construct() {
-        $this->name = __('Pago en recogida', 'flavor-platform');
-        $this->description = __('Paga cuando recojas tu pedido.', 'flavor-platform');
+        $this->name = __('Pago en recogida', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Paga cuando recojas tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-store';
 
         parent::__construct();
@@ -84,7 +84,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
         if (!$transaction_id) {
             return [
                 'success' => false,
-                'error' => __('Error al registrar el pedido.', 'flavor-platform'),
+                'error' => __('Error al registrar el pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -114,7 +114,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
 
         return [
             'success' => true,
-            'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', 'flavor-platform'),
+            'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'transaction_id' => $transaction_id,
             'redirect_url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
@@ -129,7 +129,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
         $instrucciones = $this->get_setting('instrucciones', '');
 
         if (empty($instrucciones)) {
-            $instrucciones = __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-platform');
+            $instrucciones = __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         ?>
         <div class="gc-gateway-pickup-info">
@@ -143,22 +143,22 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             if ($punto_recogida) :
             ?>
             <div class="gc-pickup-location">
-                <strong><?php esc_html_e('Punto de recogida:', 'flavor-platform'); ?></strong>
+                <strong><?php esc_html_e('Punto de recogida:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 <p><?php echo esc_html($punto_recogida); ?></p>
             </div>
             <?php endif; ?>
 
             <div class="gc-pickup-accepted-methods">
-                <strong><?php esc_html_e('Formas de pago aceptadas:', 'flavor-platform'); ?></strong>
+                <strong><?php esc_html_e('Formas de pago aceptadas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 <ul>
                     <?php if ($this->get_setting('acepta_efectivo', true)) : ?>
-                    <li><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Efectivo', 'flavor-platform'); ?></li>
+                    <li><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     <?php endif; ?>
                     <?php if ($this->get_setting('acepta_bizum', false)) : ?>
-                    <li><span class="dashicons dashicons-smartphone"></span> <?php esc_html_e('Bizum', 'flavor-platform'); ?></li>
+                    <li><span class="dashicons dashicons-smartphone"></span> <?php esc_html_e('Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     <?php endif; ?>
                     <?php if ($this->get_setting('acepta_transferencia', false)) : ?>
-                    <li><span class="dashicons dashicons-bank"></span> <?php esc_html_e('Transferencia bancaria', 'flavor-platform'); ?></li>
+                    <li><span class="dashicons dashicons-bank"></span> <?php esc_html_e('Transferencia bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -176,38 +176,38 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar pago en recogida', 'flavor-platform'),
+                'label' => __('Habilitar pago en recogida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             [
                 'id' => 'instrucciones',
                 'type' => 'textarea',
-                'label' => __('Instrucciones', 'flavor-platform'),
-                'description' => __('Mensaje que verán los usuarios al seleccionar este método de pago.', 'flavor-platform'),
-                'default' => __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-platform'),
+                'label' => __('Instrucciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mensaje que verán los usuarios al seleccionar este método de pago.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'default' => __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'punto_recogida',
                 'type' => 'text',
-                'label' => __('Punto de recogida', 'flavor-platform'),
-                'description' => __('Dirección o descripción del punto de recogida.', 'flavor-platform'),
+                'label' => __('Punto de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Dirección o descripción del punto de recogida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'id' => 'acepta_efectivo',
                 'type' => 'checkbox',
-                'label' => __('Aceptar efectivo', 'flavor-platform'),
+                'label' => __('Aceptar efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             [
                 'id' => 'acepta_bizum',
                 'type' => 'checkbox',
-                'label' => __('Aceptar Bizum', 'flavor-platform'),
+                'label' => __('Aceptar Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
             [
                 'id' => 'acepta_transferencia',
                 'type' => 'checkbox',
-                'label' => __('Aceptar transferencia bancaria', 'flavor-platform'),
+                'label' => __('Aceptar transferencia bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
         ];

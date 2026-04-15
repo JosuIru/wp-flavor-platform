@@ -51,7 +51,7 @@ if (in_array('multimedia', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">🎬</span>
-                    <h4><?php esc_html_e('Multimedia', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($multimedia_recientes as $item): ?>
@@ -91,7 +91,7 @@ if (in_array('podcast', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">🎙️</span>
-                    <h4><?php esc_html_e('Podcast', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($episodios_recientes as $item): ?>
@@ -131,7 +131,7 @@ if (in_array('radio', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">📻</span>
-                    <h4><?php esc_html_e('Radio', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($programas_recientes as $item): ?>
@@ -172,7 +172,7 @@ if (in_array('eventos', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">📅</span>
-                    <h4><?php esc_html_e('Eventos', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($eventos_proximos as $item): ?>
@@ -212,7 +212,7 @@ if (in_array('comunidades', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">🏘️</span>
-                    <h4><?php esc_html_e('Comunidades', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($comunidades_activas as $item): ?>
@@ -252,7 +252,7 @@ if (in_array('foros', $active_modules)) {
             <div class="dm-widget-card">
                 <div class="dm-widget-header">
                     <span class="dm-widget-icon">💬</span>
-                    <h4><?php esc_html_e('Foros', 'flavor-platform'); ?></h4>
+                    <h4><?php esc_html_e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 </div>
                 <div class="dm-widget-items">
                     <?php foreach ($hilos_recientes as $item): ?>
@@ -366,13 +366,13 @@ if (in_array('foros', $active_modules)) {
 <div class="wrap flavor-admin-page">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-rss" style="margin-right: 10px;"></span>
-        <?php esc_html_e( 'Agregador de Contenido Comunitario', 'flavor-platform' ); ?>
+        <?php esc_html_e( 'Agregador de Contenido Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
     </h1>
 
     <?php if (!empty($modulos_relacionados)): ?>
     <!-- WIDGETS DE DATOS EN VIVO -->
     <div class="dm-widgets-relacionados" style="margin-top: 20px;">
-        <h2><span>🔗</span> <?php esc_html_e('Actividad en Módulos Relacionados', 'flavor-platform'); ?></h2>
+        <h2><span>🔗</span> <?php esc_html_e('Actividad en Módulos Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="dm-widgets-grid">
             <?php foreach ($modulos_relacionados as $widget_html): ?>
                 <?php echo $widget_html; ?>
@@ -384,19 +384,19 @@ if (in_array('foros', $active_modules)) {
     <nav class="nav-tab-wrapper">
         <a href="?page=flavor-agregador&tab=overview"
            class="nav-tab <?php echo $active_tab === 'overview' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e( 'Resumen', 'flavor-platform' ); ?>
+            <?php esc_html_e( 'Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </a>
         <a href="?page=flavor-agregador&tab=fuentes"
            class="nav-tab <?php echo $active_tab === 'fuentes' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e( 'Fuentes RSS', 'flavor-platform' ); ?>
+            <?php esc_html_e( 'Fuentes RSS', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </a>
         <a href="?page=flavor-agregador&tab=videos"
            class="nav-tab <?php echo $active_tab === 'videos' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e( 'Videos YouTube', 'flavor-platform' ); ?>
+            <?php esc_html_e( 'Videos YouTube', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </a>
         <a href="?page=flavor-agregador&tab=shortcodes"
            class="nav-tab <?php echo $active_tab === 'shortcodes' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e( 'Shortcodes', 'flavor-platform' ); ?>
+            <?php esc_html_e( 'Shortcodes', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </a>
     </nav>
 
@@ -406,25 +406,25 @@ if (in_array('foros', $active_modules)) {
             <div class="flavor-dashboard-widgets" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <div style="font-size: 36px; font-weight: bold; color: #3b82f6;"><?php echo esc_html( $total_fuentes ); ?></div>
-                    <div style="color: #64748b;"><?php esc_html_e( 'Fuentes RSS', 'flavor-platform' ); ?></div>
+                    <div style="color: #64748b;"><?php esc_html_e( 'Fuentes RSS', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     <a href="<?php echo admin_url( 'edit.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_FUENTE ); ?>" style="font-size: 12px;">
-                        <?php esc_html_e( 'Gestionar →', 'flavor-platform' ); ?>
+                        <?php esc_html_e( 'Gestionar →', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 </div>
 
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <div style="font-size: 36px; font-weight: bold; color: #22c55e;"><?php echo esc_html( $total_noticias ); ?></div>
-                    <div style="color: #64748b;"><?php esc_html_e( 'Noticias Importadas', 'flavor-platform' ); ?></div>
+                    <div style="color: #64748b;"><?php esc_html_e( 'Noticias Importadas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     <a href="<?php echo admin_url( 'edit.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_NOTICIA ); ?>" style="font-size: 12px;">
-                        <?php esc_html_e( 'Ver todas →', 'flavor-platform' ); ?>
+                        <?php esc_html_e( 'Ver todas →', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 </div>
 
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <div style="font-size: 36px; font-weight: bold; color: #ef4444;"><?php echo esc_html( $total_videos ); ?></div>
-                    <div style="color: #64748b;"><?php esc_html_e( 'Videos YouTube', 'flavor-platform' ); ?></div>
+                    <div style="color: #64748b;"><?php esc_html_e( 'Videos YouTube', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     <a href="<?php echo admin_url( 'edit.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_VIDEO ); ?>" style="font-size: 12px;">
-                        <?php esc_html_e( 'Ver todos →', 'flavor-platform' ); ?>
+                        <?php esc_html_e( 'Ver todos →', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 </div>
             </div>
@@ -432,7 +432,7 @@ if (in_array('foros', $active_modules)) {
             <!-- Últimas noticias -->
             <div class="postbox" style="margin-bottom: 20px;">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0; border-bottom: 1px solid #ccd0d4;">
-                    <?php esc_html_e( 'Últimas Noticias Importadas', 'flavor-platform' ); ?>
+                    <?php esc_html_e( 'Últimas Noticias Importadas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h2>
                 <div class="inside" style="padding: 0;">
                     <?php
@@ -447,9 +447,9 @@ if (in_array('foros', $active_modules)) {
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e( 'Título', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Fuente', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Fecha', 'flavor-platform' ); ?></th>
+                                    <th><?php esc_html_e( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Fuente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -468,7 +468,7 @@ if (in_array('foros', $active_modules)) {
                         </table>
                     <?php else : ?>
                         <p style="padding: 20px; color: #64748b; text-align: center;">
-                            <?php esc_html_e( 'No hay noticias importadas aún. Añade una fuente RSS para empezar.', 'flavor-platform' ); ?>
+                            <?php esc_html_e( 'No hay noticias importadas aún. Añade una fuente RSS para empezar.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -478,9 +478,9 @@ if (in_array('foros', $active_modules)) {
             <!-- Gestión de Fuentes RSS -->
             <div class="postbox">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0; display: flex; justify-content: space-between; align-items: center;">
-                    <span><?php esc_html_e( 'Fuentes RSS Configuradas', 'flavor-platform' ); ?></span>
+                    <span><?php esc_html_e( 'Fuentes RSS Configuradas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                     <a href="<?php echo admin_url( 'post-new.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_FUENTE ); ?>" class="button button-primary">
-                        <?php esc_html_e( '+ Añadir Fuente', 'flavor-platform' ); ?>
+                        <?php esc_html_e( '+ Añadir Fuente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 </h2>
                 <div class="inside" style="padding: 0;">
@@ -488,12 +488,12 @@ if (in_array('foros', $active_modules)) {
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e( 'Nombre', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'URL', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Filtro', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Auto', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Última Import.', 'flavor-platform' ); ?></th>
-                                    <th><?php esc_html_e( 'Acciones', 'flavor-platform' ); ?></th>
+                                    <th><?php esc_html_e( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Filtro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Auto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Última Import.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -531,10 +531,10 @@ if (in_array('foros', $active_modules)) {
                                         </td>
                                         <td>
                                             <a href="<?php echo get_edit_post_link( $fuente ); ?>" class="button button-small">
-                                                <?php esc_html_e( 'Editar', 'flavor-platform' ); ?>
+                                                <?php esc_html_e( 'Editar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                             </a>
                                             <button type="button" class="button button-small import-feed-btn" data-fuente-id="<?php echo esc_attr( $fuente->ID ); ?>">
-                                                <?php esc_html_e( 'Importar', 'flavor-platform' ); ?>
+                                                <?php esc_html_e( 'Importar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                             </button>
                                         </td>
                                     </tr>
@@ -545,10 +545,10 @@ if (in_array('foros', $active_modules)) {
                         <div style="padding: 40px; text-align: center;">
                             <span class="dashicons dashicons-rss" style="font-size: 48px; color: #94a3b8;"></span>
                             <p style="color: #64748b; margin: 15px 0;">
-                                <?php esc_html_e( 'No hay fuentes RSS configuradas.', 'flavor-platform' ); ?>
+                                <?php esc_html_e( 'No hay fuentes RSS configuradas.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </p>
                             <a href="<?php echo admin_url( 'post-new.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_FUENTE ); ?>" class="button button-primary button-large">
-                                <?php esc_html_e( 'Añadir Primera Fuente', 'flavor-platform' ); ?>
+                                <?php esc_html_e( 'Añadir Primera Fuente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -557,10 +557,10 @@ if (in_array('foros', $active_modules)) {
 
             <div class="postbox" style="margin-top: 20px;">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0;">
-                    <?php esc_html_e( 'Ejemplos de Fuentes RSS', 'flavor-platform' ); ?>
+                    <?php esc_html_e( 'Ejemplos de Fuentes RSS', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h2>
                 <div class="inside">
-                    <p><?php esc_html_e( 'Algunos ejemplos de feeds RSS de medios:', 'flavor-platform' ); ?></p>
+                    <p><?php esc_html_e( 'Algunos ejemplos de feeds RSS de medios:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                     <ul style="list-style: disc; margin-left: 20px;">
                         <li><code>https://elpais.com/rss/elpais/portada.xml</code> - El País</li>
                         <li><code>https://www.20minutos.es/rss/</code> - 20 Minutos</li>
@@ -568,7 +568,7 @@ if (in_array('foros', $active_modules)) {
                         <li><code>https://www.naiz.eus/rss/</code> - Naiz</li>
                     </ul>
                     <p style="color: #64748b; font-size: 12px;">
-                        <?php esc_html_e( 'Usa el campo "Palabras clave" para filtrar solo las noticias que mencionen tu comunidad, pueblo o asociación.', 'flavor-platform' ); ?>
+                        <?php esc_html_e( 'Usa el campo "Palabras clave" para filtrar solo las noticias que mencionen tu comunidad, pueblo o asociación.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </p>
                 </div>
             </div>
@@ -577,16 +577,16 @@ if (in_array('foros', $active_modules)) {
             <!-- Añadir Videos YouTube -->
             <div class="postbox" style="margin-bottom: 20px;">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0;">
-                    <?php esc_html_e( 'Añadir Video de YouTube', 'flavor-platform' ); ?>
+                    <?php esc_html_e( 'Añadir Video de YouTube', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h2>
                 <div class="inside">
                     <form id="add-youtube-form" style="display: flex; gap: 10px; align-items: flex-start;">
                         <div style="flex: 1;">
                             <input type="url" id="youtube-url" placeholder="https://youtube.com/watch?v=..." class="large-text" required>
-                            <p class="description"><?php esc_html_e( 'Pega la URL de un video de YouTube', 'flavor-platform' ); ?></p>
+                            <p class="description"><?php esc_html_e( 'Pega la URL de un video de YouTube', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
                         <button type="submit" class="button button-primary">
-                            <?php esc_html_e( 'Añadir Video', 'flavor-platform' ); ?>
+                            <?php esc_html_e( 'Añadir Video', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </button>
                     </form>
                     <div id="youtube-result" style="margin-top: 15px;"></div>
@@ -596,9 +596,9 @@ if (in_array('foros', $active_modules)) {
             <!-- Lista de Videos -->
             <div class="postbox">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0; display: flex; justify-content: space-between;">
-                    <span><?php esc_html_e( 'Videos Añadidos', 'flavor-platform' ); ?></span>
+                    <span><?php esc_html_e( 'Videos Añadidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                     <a href="<?php echo admin_url( 'edit.php?post_type=' . Flavor_Agregador_Contenido_Module::CPT_VIDEO ); ?>" class="button">
-                        <?php esc_html_e( 'Ver todos', 'flavor-platform' ); ?>
+                        <?php esc_html_e( 'Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 </h2>
                 <div class="inside" style="padding: 0;">
@@ -633,7 +633,7 @@ if (in_array('foros', $active_modules)) {
                         </div>
                     <?php else : ?>
                         <p style="padding: 30px; text-align: center; color: #64748b;">
-                            <?php esc_html_e( 'No hay videos añadidos aún.', 'flavor-platform' ); ?>
+                            <?php esc_html_e( 'No hay videos añadidos aún.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -643,10 +643,10 @@ if (in_array('foros', $active_modules)) {
             <!-- Documentación de Shortcodes -->
             <div class="postbox">
                 <h2 class="hndle" style="padding: 10px 15px; margin: 0;">
-                    <?php esc_html_e( 'Shortcodes Disponibles', 'flavor-platform' ); ?>
+                    <?php esc_html_e( 'Shortcodes Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h2>
                 <div class="inside">
-                    <h3><?php esc_html_e( 'Grid de Noticias', 'flavor-platform' ); ?></h3>
+                    <h3><?php esc_html_e( 'Grid de Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <code style="display: block; background: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
                         [agregador_noticias limite="6" columnas="3" categoria="local" mostrar_fuente="true"]
                     </code>
@@ -654,7 +654,7 @@ if (in_array('foros', $active_modules)) {
                         <strong>Atributos:</strong> limite, columnas (2-4), categoria, fuente (ID), mostrar_fuente, mostrar_fecha, mostrar_extracto
                     </p>
 
-                    <h3><?php esc_html_e( 'Grid de Videos', 'flavor-platform' ); ?></h3>
+                    <h3><?php esc_html_e( 'Grid de Videos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <code style="display: block; background: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
                         [agregador_videos limite="6" columnas="3" categoria="eventos" layout="grid"]
                     </code>
@@ -662,7 +662,7 @@ if (in_array('foros', $active_modules)) {
                         <strong>Atributos:</strong> limite, columnas (2-4), categoria, canal, layout (grid/list)
                     </p>
 
-                    <h3><?php esc_html_e( 'Feed Combinado', 'flavor-platform' ); ?></h3>
+                    <h3><?php esc_html_e( 'Feed Combinado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <code style="display: block; background: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
                         [agregador_feed_combinado limite="12" columnas="4" categoria="comunidad"]
                     </code>
@@ -670,7 +670,7 @@ if (in_array('foros', $active_modules)) {
                         Muestra noticias y videos mezclados ordenados por fecha.
                     </p>
 
-                    <h3><?php esc_html_e( 'Carrusel de Videos', 'flavor-platform' ); ?></h3>
+                    <h3><?php esc_html_e( 'Carrusel de Videos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <code style="display: block; background: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
                         [agregador_carrusel_videos limite="8" categoria="destacados" autoplay="true"]
                     </code>

@@ -39,18 +39,18 @@ $colores_urgencia = [
     <div class="ec-voluntariado__header">
         <div class="ec-voluntariado__titulo-wrap">
             <span class="dashicons dashicons-heart"></span>
-            <h3 class="ec-voluntariado__titulo"><?php esc_html_e('Cuidado Comunitario', 'flavor-platform'); ?></h3>
+            <h3 class="ec-voluntariado__titulo"><?php esc_html_e('Cuidado Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <p class="ec-voluntariado__descripcion">
-            <?php esc_html_e('Tareas de mantenimiento que necesitan voluntarios. ¡Colabora y gana puntos!', 'flavor-platform'); ?>
+            <?php esc_html_e('Tareas de mantenimiento que necesitan voluntarios. ¡Colabora y gana puntos!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <?php if (empty($tareas)): ?>
         <div class="ec-voluntariado__vacio">
             <span class="dashicons dashicons-smiley"></span>
-            <p><?php esc_html_e('¡Todo está en orden!', 'flavor-platform'); ?></p>
-            <small><?php esc_html_e('No hay tareas de mantenimiento pendientes.', 'flavor-platform'); ?></small>
+            <p><?php esc_html_e('¡Todo está en orden!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <small><?php esc_html_e('No hay tareas de mantenimiento pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
         </div>
     <?php else: ?>
         <div class="ec-voluntariado__lista">
@@ -104,7 +104,7 @@ $colores_urgencia = [
 
                     <?php if ($tarea->materiales_necesarios): ?>
                         <div class="ec-voluntariado__materiales">
-                            <strong><?php esc_html_e('Materiales:', 'flavor-platform'); ?></strong>
+                            <strong><?php esc_html_e('Materiales:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <?php echo esc_html($tarea->materiales_necesarios); ?>
                         </div>
                     <?php endif; ?>
@@ -118,7 +118,7 @@ $colores_urgencia = [
                             </div>
                             <span class="ec-voluntariado__plazas-texto">
                                 <?php printf(
-                                    esc_html(_n('%d plaza libre', '%d plazas libres', $plazas_libres, 'flavor-platform')),
+                                    esc_html(_n('%d plaza libre', '%d plazas libres', $plazas_libres, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                     $plazas_libres
                                 ); ?>
                             </span>
@@ -127,14 +127,14 @@ $colores_urgencia = [
                         <?php if ($usuario_logueado && $plazas_libres > 0): ?>
                             <button type="button" class="ec-btn ec-btn--primary ec-voluntariado__apuntarse" data-tarea="<?php echo esc_attr($tarea->id); ?>">
                                 <span class="dashicons dashicons-plus"></span>
-                                <?php esc_html_e('Apuntarme', 'flavor-platform'); ?>
+                                <?php esc_html_e('Apuntarme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php elseif (!$usuario_logueado): ?>
                             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ec-btn ec-btn--outline">
-                                <?php esc_html_e('Inicia sesión', 'flavor-platform'); ?>
+                                <?php esc_html_e('Inicia sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php elseif ($plazas_libres == 0): ?>
-                            <span class="ec-voluntariado__completo"><?php esc_html_e('Completo', 'flavor-platform'); ?></span>
+                            <span class="ec-voluntariado__completo"><?php esc_html_e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ $colores_urgencia = [
 
     <div class="ec-voluntariado__info-puntos">
         <span class="dashicons dashicons-info"></span>
-        <p><?php esc_html_e('Los puntos de cuidado comunitario se pueden usar para prioridad en reservas y beneficios en otros módulos.', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Los puntos de cuidado comunitario se pueden usar para prioridad en reservas y beneficios en otros módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 </div>
 
@@ -439,12 +439,12 @@ $colores_urgencia = [
                 })
                 .then(r => r.json())
                 .then(data => {
-                    alert(data.success ? data.message : (data.error || '<?php echo esc_js(__('Error', 'flavor-platform')); ?>'));
+                    alert(data.success ? data.message : (data.error || '<?php echo esc_js(__('Error', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'));
                     if (data.success) {
                         location.reload();
                     } else {
                         this.disabled = false;
-                        this.innerHTML = '<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Apuntarme', 'flavor-platform')); ?>';
+                        this.innerHTML = '<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Apuntarme', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                     }
                 });
             });

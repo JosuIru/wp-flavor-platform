@@ -19,12 +19,12 @@ $evaluacion_anterior = get_user_meta($user_id, '_es_evaluacion_necesidades', tru
 
 <div class="es-container">
     <header class="es-header">
-        <h2><?php esc_html_e('Evaluación de Necesidades', 'flavor-platform'); ?></h2>
-        <p><?php esc_html_e('¿Cómo de satisfechas están tus necesidades fundamentales? Evalúa cada área del 1 al 5.', 'flavor-platform'); ?></p>
+        <h2><?php esc_html_e('Evaluación de Necesidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('¿Cómo de satisfechas están tus necesidades fundamentales? Evalúa cada área del 1 al 5.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <div class="es-cita" style="margin-bottom: 2rem;">
-        <p class="es-cita__texto"><?php esc_html_e('Las necesidades humanas son pocas, finitas y clasificables. Los satisfactores son infinitos.', 'flavor-platform'); ?></p>
+        <p class="es-cita__texto"><?php esc_html_e('Las necesidades humanas son pocas, finitas y clasificables. Los satisfactores son infinitos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <span class="es-cita__autor">— Manfred Max-Neef</span>
     </div>
 
@@ -53,8 +53,8 @@ $evaluacion_anterior = get_user_meta($user_id, '_es_evaluacion_necesidades', tru
                 <?php endfor; ?>
             </div>
             <div class="es-escala-labels">
-                <span><?php esc_html_e('Insatisfecha', 'flavor-platform'); ?></span>
-                <span><?php esc_html_e('Plenamente satisfecha', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Insatisfecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><?php esc_html_e('Plenamente satisfecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php endforeach; ?>
@@ -62,7 +62,7 @@ $evaluacion_anterior = get_user_meta($user_id, '_es_evaluacion_necesidades', tru
         <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--es-border);">
             <button type="submit" class="es-btn es-btn--primary">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Guardar evaluación', 'flavor-platform'); ?>
+                <?php esc_html_e('Guardar evaluación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

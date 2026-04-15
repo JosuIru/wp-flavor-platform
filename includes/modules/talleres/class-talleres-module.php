@@ -53,7 +53,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Talleres no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Talleres no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -648,12 +648,12 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     private function action_foro_taller($params) {
         $taller = $this->resolve_contextual_taller((array) $params);
         if (!$taller) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su foro.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header = '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del taller', 'flavor-platform') . '</h2>'
+            . '<h2>' . esc_html__('Foro del taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($taller['titulo']) . '</p>'
             . '</div>';
 
@@ -663,14 +663,14 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     private function action_chat_taller($params) {
         $taller = $this->resolve_contextual_taller((array) $params);
         if (!$taller) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su chat.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header = '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del taller', 'flavor-platform') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?taller_id=' . absint($taller['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-platform')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>';
 
         return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
@@ -679,14 +679,14 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     private function action_multimedia_taller($params) {
         $taller = $this->resolve_contextual_taller((array) $params);
         if (!$taller) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver sus recursos.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver sus recursos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header = '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Recursos del taller', 'flavor-platform') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Recursos del taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?taller_id=' . absint($taller['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-platform')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>';
 
         return $header . do_shortcode('[flavor_multimedia_galeria entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
@@ -695,18 +695,18 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
     private function action_red_social_taller($params) {
         $taller = $this->resolve_contextual_taller((array) $params);
         if (!$taller) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su actividad social.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este taller.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este taller.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header = '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del taller', 'flavor-platform') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?taller_id=' . absint($taller['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-platform')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>';
 
         return $header . do_shortcode('[flavor_social_feed entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
@@ -766,7 +766,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_detalle_taller($params) {
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -782,7 +782,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$taller) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener sesiones
@@ -900,11 +900,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_inscribirse($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -923,12 +923,12 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$taller) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar fecha limite de inscripcion
         if ($taller->fecha_limite_inscripcion && strtotime($taller->fecha_limite_inscripcion) < time()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar que no este ya inscrito
@@ -939,7 +939,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => __('No hay plazas disponibles', 'flavor-platform')];
+            return ['success' => false, 'error' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar plazas
@@ -952,7 +952,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
                 $lista_espera = true;
                 $posicion_espera = $taller->lista_espera_count + 1;
             } else {
-                return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+                return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         }
 
@@ -993,7 +993,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ]);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar contadores
@@ -1034,11 +1034,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_cancelar_inscripcion($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['inscripcion_id'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1059,7 +1059,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar anticipacion de cancelacion
@@ -1112,7 +1112,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('flavor_talleres', 'flavor-platform'),
+            'mensaje' => __('flavor_talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1121,7 +1121,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_mis_talleres_inscritos($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1178,11 +1178,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_valorar_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('puntuacion', 'flavor-platform')];
+            return ['success' => false, 'error' => __('puntuacion', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['taller_id']) || !isset($params['puntuacion'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1202,7 +1202,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya valoro
@@ -1212,7 +1212,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($ya_valoro) {
-            return ['success' => false, 'error' => __('fecha_valoracion', 'flavor-platform')];
+            return ['success' => false, 'error' => __('fecha_valoracion', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Guardar valoracion
@@ -1246,7 +1246,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Datos incompletos', 'flavor-platform'),
+            'mensaje' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1255,11 +1255,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_marcar_asistencia($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('sesion_id', 'flavor-platform')];
+            return ['success' => false, 'error' => __('sesion_id', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['sesion_id']) || empty($params['participante_id'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1282,7 +1282,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$sesion || ($sesion->organizador_id != $usuario_id && !current_user_can('manage_options'))) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener inscripcion
@@ -1294,7 +1294,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Insertar o actualizar asistencia
@@ -1398,11 +1398,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_proponer_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['titulo']) || empty($params['descripcion'])) {
-            return ['success' => false, 'error' => __('slug', 'flavor-platform')];
+            return ['success' => false, 'error' => __('slug', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1437,7 +1437,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         $resultado = $wpdb->insert($tabla_talleres, $datos);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $taller_id = $wpdb->insert_id;
@@ -1447,7 +1447,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('taller_id', 'flavor-platform'),
+            'mensaje' => __('taller_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'taller_id' => $taller_id,
         ];
     }
@@ -1457,11 +1457,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_descargar_certificado($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1481,11 +1481,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!$inscripcion->permite_certificado) {
-            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de taller requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($inscripcion->porcentaje_asistencia < $inscripcion->porcentaje_asistencia_certificado) {
@@ -1535,11 +1535,11 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     private function action_estadisticas_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('taller_id', 'flavor-platform')];
+            return ['success' => false, 'error' => __('taller_id', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => __('SELECT * FROM $tabla_talleres WHERE id = %d AND organizador_id = %d', 'flavor-platform')];
+            return ['success' => false, 'error' => __('SELECT * FROM $tabla_talleres WHERE id = %d AND organizador_id = %d', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1560,7 +1560,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$taller && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('cancelada', 'flavor-platform')];
+            return ['success' => false, 'error' => __('cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!$taller) {
@@ -1701,7 +1701,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
     public function api_materiales($request) {
         if (!is_user_logged_in()) {
-            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')]);
+            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1757,7 +1757,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
     public function api_organizador_mis_talleres($request) {
         if (!is_user_logged_in()) {
-            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')]);
+            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1842,7 +1842,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         $material_id = isset($_POST['material_id']) ? intval($_POST['material_id']) : 0;
 
         if (!$material_id) {
-            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Incrementar contador de descargas
@@ -1887,7 +1887,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1904,7 +1904,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$es_organizador && !current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Manejar subida de archivo
@@ -1940,7 +1940,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('flavor_talleres', 'flavor-platform'),
+            'mensaje' => __('flavor_talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'material_id' => $wpdb->insert_id,
         ]);
     }
@@ -1949,7 +1949,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1959,7 +1959,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => __('max_participantes', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('max_participantes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -2005,7 +2005,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2017,7 +2017,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         $estados_validos = ['borrador', 'pendiente', 'publicado', 'confirmado', 'en_curso', 'finalizado', 'cancelado'];
 
         if (!in_array($estado, $estados_validos)) {
-            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->update($tabla_talleres, ['estado' => $estado], ['id' => $taller_id]);
@@ -2031,7 +2031,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('taller_id', 'flavor-platform'),
+            'mensaje' => __('taller_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -2171,7 +2171,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2330,10 +2330,10 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
             'nonce' => wp_create_nonce('talleres_nonce'),
             'rest_url' => rest_url('flavor/v1/talleres'),
             'i18n' => [
-                'confirmar_inscripcion' => __('¿Confirmar inscripción?', 'flavor-platform'),
-                'confirmar_cancelacion' => __('¿Estás seguro de cancelar tu inscripción?', 'flavor-platform'),
-                'cargando' => __('Cargando...', 'flavor-platform'),
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'confirmar_inscripcion' => __('¿Confirmar inscripción?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_cancelacion' => __('¿Estás seguro de cancelar tu inscripción?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -2465,7 +2465,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
         if (!$usuario) return;
 
         if ($lista_espera) {
-            $asunto = sprintf(__('Te has apuntado a la lista de espera - %s', 'flavor-platform'), $taller->titulo);
+            $asunto = sprintf(__('Te has apuntado a la lista de espera - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $taller->titulo);
             $mensaje = sprintf(
                 __('Hola %s,
 
@@ -2473,12 +2473,12 @@ Te has apuntado a la lista de espera del taller "%s".
 
 Te notificaremos si se libera alguna plaza.
 
-¡Gracias por tu interés!', 'flavor-platform'),
+¡Gracias por tu interés!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $usuario->display_name,
                 $taller->titulo
             );
         } else {
-            $asunto = sprintf(__('¡Inscripción confirmada! - %s', 'flavor-platform'), $taller->titulo);
+            $asunto = sprintf(__('¡Inscripción confirmada! - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $taller->titulo);
             $mensaje = sprintf(
                 __('Hola %s,
 
@@ -2488,7 +2488,7 @@ Ubicación: %s
 
 Consulta los detalles del taller en tu panel de usuario.
 
-¡Te esperamos!', 'flavor-platform'),
+¡Te esperamos!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $usuario->display_name,
                 $taller->titulo,
                 $taller->ubicacion
@@ -2502,7 +2502,7 @@ Consulta los detalles del taller en tu panel de usuario.
         $usuario = get_userdata($usuario_id);
         if (!$usuario) return;
 
-        $asunto = sprintf(__('¡Plaza disponible! - %s', 'flavor-platform'), $taller->titulo);
+        $asunto = sprintf(__('¡Plaza disponible! - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $taller->titulo);
         $mensaje = sprintf(
             __('Hola %s,
 
@@ -2510,7 +2510,7 @@ Consulta los detalles del taller en tu panel de usuario.
 
 Consulta los detalles en tu panel de usuario.
 
-¡Te esperamos!', 'flavor-platform'),
+¡Te esperamos!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $usuario->display_name,
             $taller->titulo
         );
@@ -2520,14 +2520,14 @@ Consulta los detalles en tu panel de usuario.
 
     private function notificar_nueva_propuesta($taller_id, $titulo) {
         $admin_email = get_option('admin_email');
-        $asunto = sprintf(__('Nueva propuesta de taller: %s', 'flavor-platform'), $titulo);
+        $asunto = sprintf(__('Nueva propuesta de taller: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo);
         $mensaje = sprintf(
             __('Se ha recibido una nueva propuesta de taller:
 
 Título: %s
 ID: %d
 
-Revísala en el panel de administración.', 'flavor-platform'),
+Revísala en el panel de administración.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $titulo,
             $taller_id
         );
@@ -2565,7 +2565,7 @@ Revísala en el panel de administración.', 'flavor-platform'),
             ));
 
             foreach ($inscritos as $inscrito) {
-                $asunto = sprintf(__('Recordatorio: Mañana tienes taller - %s', 'flavor-platform'), $sesion->titulo);
+                $asunto = sprintf(__('Recordatorio: Mañana tienes taller - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $sesion->titulo);
                 $mensaje = sprintf(
                     __('Hola %s,
 
@@ -2574,7 +2574,7 @@ Te recordamos que mañana tienes el taller "%s".
 Fecha y hora: %s
 Ubicación: %s
 
-¡Te esperamos!', 'flavor-platform'),
+¡Te esperamos!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $inscrito->display_name,
                     $sesion->titulo,
                     date_i18n('l j F Y - H:i', strtotime($sesion->fecha_hora)),
@@ -2619,66 +2619,66 @@ Ubicación: %s
 
         $configs = [
             'inscribirse' => [
-                'title' => __('Inscribirse en Taller', 'flavor-platform'),
-                'description' => __('Completa el formulario para inscribirte', 'flavor-platform'),
+                'title' => __('Inscribirse en Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Completa el formulario para inscribirte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'taller_id' => ['type' => 'hidden', 'required' => true],
                     'nombre_completo' => [
                         'type' => 'text',
-                        'label' => __('Nombre completo', 'flavor-platform'),
+                        'label' => __('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'email' => [
                         'type' => 'email',
-                        'label' => __('Email', 'flavor-platform'),
+                        'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'telefono' => [
                         'type' => 'tel',
-                        'label' => __('Teléfono', 'flavor-platform'),
+                        'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'notas' => [
                         'type' => 'textarea',
-                        'label' => __('Notas o requisitos especiales', 'flavor-platform'),
+                        'label' => __('Notas o requisitos especiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
                     ],
                 ],
-                'submit_text' => __('Confirmar Inscripción', 'flavor-platform'),
+                'submit_text' => __('Confirmar Inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'proponer_taller' => [
-                'title' => __('Proponer Taller', 'flavor-platform'),
-                'description' => __('Comparte tu conocimiento organizando un taller', 'flavor-platform'),
+                'title' => __('Proponer Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Comparte tu conocimiento organizando un taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título del taller', 'flavor-platform'),
+                        'label' => __('Título del taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción', 'flavor-platform'),
+                        'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 5,
                     ],
                     'categoria' => [
                         'type' => 'select',
-                        'label' => __('Categoría', 'flavor-platform'),
+                        'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => $this->get_default_settings()['categorias'],
                     ],
                     'nivel' => [
                         'type' => 'select',
-                        'label' => __('Nivel', 'flavor-platform'),
+                        'label' => __('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [
-                            'todos' => __('Todos los niveles', 'flavor-platform'),
-                            'principiante' => __('Principiante', 'flavor-platform'),
-                            'intermedio' => __('Intermedio', 'flavor-platform'),
-                            'avanzado' => __('Avanzado', 'flavor-platform'),
+                            'todos' => __('Todos los niveles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'principiante' => __('Principiante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'intermedio' => __('Intermedio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'avanzado' => __('Avanzado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'duracion_horas' => [
                         'type' => 'number',
-                        'label' => __('Duración (horas)', 'flavor-platform'),
+                        'label' => __('Duración (horas)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => 1,
                         'max' => 8,
@@ -2686,45 +2686,45 @@ Ubicación: %s
                     ],
                     'max_participantes' => [
                         'type' => 'number',
-                        'label' => __('Máximo participantes', 'flavor-platform'),
+                        'label' => __('Máximo participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'min' => 3,
                         'max' => 50,
                         'default' => 15,
                     ],
                     'precio' => [
                         'type' => 'number',
-                        'label' => __('Precio (€)', 'flavor-platform'),
+                        'label' => __('Precio (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'step' => '0.01',
                         'min' => 0,
                         'default' => 0,
-                        'description' => __('0 para gratuito', 'flavor-platform'),
+                        'description' => __('0 para gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'ubicacion' => [
                         'type' => 'text',
-                        'label' => __('Ubicación', 'flavor-platform'),
+                        'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                 ],
-                'submit_text' => __('Enviar Propuesta', 'flavor-platform'),
+                'submit_text' => __('Enviar Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'valorar_taller' => [
-                'title' => __('Valorar Taller', 'flavor-platform'),
+                'title' => __('Valorar Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'taller_id' => ['type' => 'hidden', 'required' => true],
                     'puntuacion' => [
                         'type' => 'number',
-                        'label' => __('Puntuación', 'flavor-platform'),
+                        'label' => __('Puntuación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => 1,
                         'max' => 5,
                     ],
                     'comentario' => [
                         'type' => 'textarea',
-                        'label' => __('Comentario', 'flavor-platform'),
+                        'label' => __('Comentario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 4,
                     ],
                 ],
-                'submit_text' => __('Enviar Valoración', 'flavor-platform'),
+                'submit_text' => __('Enviar Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -2738,23 +2738,23 @@ Ubicación: %s
     public function get_web_components() {
         return [
             'hero_talleres' => [
-                'label' => __('Hero Talleres', 'flavor-platform'),
+                'label' => __('Hero Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-welcome-learn-more',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Talleres Prácticos', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Aprende nuevas habilidades con tu comunidad', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Talleres Prácticos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Aprende nuevas habilidades con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_buscador' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'talleres/hero',
             ],
             'talleres_grid' => [
-                'label' => __('Grid de Talleres', 'flavor-platform'),
+                'label' => __('Grid de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Próximos Talleres', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Próximos Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'limite' => ['type' => 'number', 'default' => 9],
                     'categoria' => ['type' => 'text', 'default' => ''],
@@ -2763,34 +2763,34 @@ Ubicación: %s
                 'template' => 'talleres/grid',
             ],
             'categorias_talleres' => [
-                'label' => __('Categorías de Talleres', 'flavor-platform'),
+                'label' => __('Categorías de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-category',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Explora por Categoría', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Explora por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'estilo' => ['type' => 'select', 'options' => ['grid', 'carrusel'], 'default' => 'grid'],
                     'mostrar_contador' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'talleres/categorias',
             ],
             'calendario_talleres' => [
-                'label' => __('Calendario de Talleres', 'flavor-platform'),
+                'label' => __('Calendario de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Calendario', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'vista_inicial' => ['type' => 'select', 'options' => ['mes', 'semana', 'lista'], 'default' => 'mes'],
                 ],
                 'template' => 'talleres/calendario',
             ],
             'cta_organizador' => [
-                'label' => __('CTA Ser Organizador', 'flavor-platform'),
+                'label' => __('CTA Ser Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Comparte tu Conocimiento', 'flavor-platform')],
-                    'descripcion' => ['type' => 'textarea', 'default' => __('Organiza tu propio taller', 'flavor-platform')],
-                    'boton_texto' => ['type' => 'text', 'default' => __('Proponer Taller', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Comparte tu Conocimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'descripcion' => ['type' => 'textarea', 'default' => __('Organiza tu propio taller', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'boton_texto' => ['type' => 'text', 'default' => __('Proponer Taller', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'boton_url' => ['type' => 'url', 'default' => '#'],
                     'color_fondo' => ['type' => 'color', 'default' => '#3b82f6'],
                 ],
@@ -2929,36 +2929,36 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'talleres',
-            'label' => __('Talleres', 'flavor-platform'),
+            'label' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-welcome-learn-more',
             'capability' => 'manage_options',
             'categoria' => 'actividades',
             'paginas' => [
                 [
                     'slug' => 'talleres-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'talleres-activos',
-                    'titulo' => __('Talleres Activos', 'flavor-platform'),
+                    'titulo' => __('Talleres Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_talleres_activos'],
                     'badge' => [$this, 'contar_talleres_activos'],
                 ],
                 [
                     'slug' => 'talleres-inscripciones',
-                    'titulo' => __('Inscripciones', 'flavor-platform'),
+                    'titulo' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_inscripciones'],
                     'badge' => [$this, 'contar_inscripciones_pendientes'],
                 ],
                 [
                     'slug' => 'talleres-calendario',
-                    'titulo' => __('Calendario', 'flavor-platform'),
+                    'titulo' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_calendario'],
                 ],
                 [
                     'slug' => 'talleres-configuracion',
-                    'titulo' => __('Configuracion', 'flavor-platform'),
+                    'titulo' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -3027,7 +3027,7 @@ KNOWLEDGE;
             $estadisticas[] = [
                 'icon' => 'dashicons-welcome-learn-more',
                 'valor' => $talleres_activos,
-                'label' => __('Talleres activos', 'flavor-platform'),
+                'label' => __('Talleres activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $talleres_activos > 0 ? 'blue' : 'gray',
                 'enlace' => admin_url('admin.php?page=talleres-activos'),
             ];
@@ -3042,7 +3042,7 @@ KNOWLEDGE;
                 $estadisticas[] = [
                     'icon' => 'dashicons-groups',
                     'valor' => $inscripciones_pendientes,
-                    'label' => __('Inscripciones pendientes', 'flavor-platform'),
+                    'label' => __('Inscripciones pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'orange',
                     'enlace' => admin_url('admin.php?page=talleres-inscripciones&estado=pendiente'),
                 ];
@@ -3057,8 +3057,8 @@ KNOWLEDGE;
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Talleres', 'flavor-platform'), [
-            ['label' => __('Nuevo Taller', 'flavor-platform'), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
         ]);
 
         echo '<div class="flavor-dashboard-cards">';
@@ -3070,18 +3070,18 @@ KNOWLEDGE;
         echo '<div class="flavor-card">';
         echo '<span class="dashicons dashicons-welcome-learn-more"></span>';
         echo '<h3>' . esc_html($talleres_activos) . '</h3>';
-        echo '<p>' . __('Talleres Activos', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Talleres Activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
 
         echo '<div class="flavor-card">';
         echo '<span class="dashicons dashicons-groups"></span>';
         echo '<h3>' . esc_html($inscripciones_pendientes) . '</h3>';
-        echo '<p>' . __('Inscripciones Pendientes', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Inscripciones Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
 
         echo '</div>';
 
-        echo '<p>' . __('Panel de control para gestionar todos los talleres de la comunidad.', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Panel de control para gestionar todos los talleres de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -3090,11 +3090,11 @@ KNOWLEDGE;
      */
     public function render_admin_talleres_activos() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Talleres Activos', 'flavor-platform'), [
-            ['label' => __('Nuevo Taller', 'flavor-platform'), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Talleres Activos', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
         ]);
         $this->handle_admin_actions();
-        echo '<p>' . __('Listado de todos los talleres activos y programados.', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Listado de todos los talleres activos y programados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         global $wpdb;
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
@@ -3107,14 +3107,14 @@ KNOWLEDGE;
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="talleres-activos">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-platform') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['borrador','pendiente','publicado','confirmado','en_curso','finalizado','cancelado'] as $estado_key) {
             echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
         }
         echo '</select> ';
-        echo '<input type="text" name="categoria" placeholder="' . esc_attr__('Categoría', 'flavor-platform') . '" value="' . esc_attr($categoria) . '"> ';
-        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título', 'flavor-platform') . '" value="' . esc_attr($busqueda) . '"> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-platform') . '</button>';
+        echo '<input type="text" name="categoria" placeholder="' . esc_attr__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($categoria) . '"> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         $where = [];
@@ -3144,13 +3144,13 @@ KNOWLEDGE;
         $talleres = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($talleres)) {
-            echo '<p>' . esc_html__('No hay talleres con esos filtros.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay talleres con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-platform') . '</th><th>' . esc_html__('Categoría', 'flavor-platform') . '</th><th>' . esc_html__('Estado', 'flavor-platform') . '</th><th>' . esc_html__('Inscritos', 'flavor-platform') . '</th><th>' . esc_html__('Próxima sesión', 'flavor-platform') . '</th><th>' . esc_html__('Acciones', 'flavor-platform') . '</th>';
+        echo '<th>ID</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Próxima sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($talleres as $taller) {
             echo '<tr>';
@@ -3172,8 +3172,8 @@ KNOWLEDGE;
      */
     public function render_admin_inscripciones() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Inscripciones', 'flavor-platform'));
-        echo '<p>' . __('Gestion de inscripciones a talleres.', 'flavor-platform') . '</p>';
+        $this->render_page_header(__('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<p>' . __('Gestion de inscripciones a talleres.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         $this->handle_admin_actions();
 
         global $wpdb;
@@ -3188,18 +3188,18 @@ KNOWLEDGE;
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="talleres-inscripciones">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-platform') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['pendiente','confirmada','cancelada','completada','no_presentado'] as $estado_key) {
             echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
         }
         echo '</select> ';
         echo '<select name="taller_id">';
-        echo '<option value="0">' . esc_html__('Todos los talleres', 'flavor-platform') . '</option>';
+        echo '<option value="0">' . esc_html__('Todos los talleres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($talleres as $t) {
             echo '<option value="' . esc_attr($t->id) . '" ' . selected($taller_id, $t->id, false) . '>' . esc_html($t->titulo) . '</option>';
         }
         echo '</select> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-platform') . '</button>';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         $where = [];
@@ -3224,13 +3224,13 @@ KNOWLEDGE;
         $inscripciones = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($inscripciones)) {
-            echo '<p>' . esc_html__('No hay inscripciones con esos filtros.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay inscripciones con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>ID</th><th>' . esc_html__('Participante', 'flavor-platform') . '</th><th>Email</th><th>' . esc_html__('Taller', 'flavor-platform') . '</th><th>' . esc_html__('Estado', 'flavor-platform') . '</th><th>' . esc_html__('Fecha', 'flavor-platform') . '</th><th>' . esc_html__('Acciones', 'flavor-platform') . '</th>';
+        echo '<th>ID</th><th>' . esc_html__('Participante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>Email</th><th>' . esc_html__('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($inscripciones as $inscripcion) {
             echo '<tr>';
@@ -3252,8 +3252,8 @@ KNOWLEDGE;
      */
     public function render_admin_calendario() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Calendario de Talleres', 'flavor-platform'));
-        echo '<p>' . __('Vista de calendario con todos los talleres programados.', 'flavor-platform') . '</p>';
+        $this->render_page_header(__('Calendario de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<p>' . __('Vista de calendario con todos los talleres programados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         global $wpdb;
         $tabla_sesiones = $wpdb->prefix . 'flavor_talleres_sesiones';
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
@@ -3287,17 +3287,17 @@ KNOWLEDGE;
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="talleres-calendario">';
         echo '<input type="month" name="mes" value="' . esc_attr($mes) . '"> ';
-        echo '<button class="button">' . esc_html__('Ver', 'flavor-platform') . '</button>';
+        echo '<button class="button">' . esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         if (empty($sesiones)) {
-            echo '<p>' . esc_html__('No hay talleres programados en este mes.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay talleres programados en este mes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>' . esc_html__('Fecha', 'flavor-platform') . '</th><th>' . esc_html__('Sesiones', 'flavor-platform') . '</th>';
+        echo '<th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($por_dia as $fecha => $items) {
             echo '<tr>';
@@ -3305,7 +3305,7 @@ KNOWLEDGE;
             echo '<td>';
             foreach ($items as $item) {
                 echo '<div style="margin-bottom:6px;">';
-                echo '<strong>' . esc_html($item->taller_titulo ?: __('Sesión', 'flavor-platform')) . '</strong> ';
+                echo '<strong>' . esc_html($item->taller_titulo ?: __('Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</strong> ';
                 echo '<span style="color:#666;">' . esc_html(date_i18n('H:i', strtotime($item->fecha_hora))) . '</span>';
                 echo '</div>';
             }
@@ -3321,38 +3321,38 @@ KNOWLEDGE;
      */
     public function render_admin_configuracion() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuracion de Talleres', 'flavor-platform'));
-        echo '<p>' . __('Configuracion del sistema de talleres.', 'flavor-platform') . '</p>';
+        $this->render_page_header(__('Configuracion de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<p>' . __('Configuracion del sistema de talleres.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         // Mostrar configuracion actual
         $configuracion = $this->get_settings();
-        echo '<h3>' . __('Configuracion Actual', 'flavor-platform') . '</h3>';
+        echo '<h3>' . __('Configuracion Actual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<table class="form-table">';
-        echo '<tr><th>' . __('Requiere aprobacion de organizadores', 'flavor-platform') . '</th><td>' . ($configuracion['requiere_aprobacion_organizadores'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform')) . '</td></tr>';
-        echo '<tr><th>' . __('Permite talleres gratuitos', 'flavor-platform') . '</th><td>' . ($configuracion['permite_talleres_gratuitos'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform')) . '</td></tr>';
-        echo '<tr><th>' . __('Permite talleres de pago', 'flavor-platform') . '</th><td>' . ($configuracion['permite_talleres_pago'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform')) . '</td></tr>';
-        echo '<tr><th>' . __('Comision talleres de pago', 'flavor-platform') . '</th><td>' . esc_html($configuracion['comision_talleres_pago']) . '%</td></tr>';
-        echo '<tr><th>' . __('Max participantes por taller', 'flavor-platform') . '</th><td>' . esc_html($configuracion['max_participantes_por_taller']) . '</td></tr>';
-        echo '<tr><th>' . __('Min participantes para confirmar', 'flavor-platform') . '</th><td>' . esc_html($configuracion['min_participantes_para_confirmar']) . '</td></tr>';
-        echo '<tr><th>' . __('Permite lista de espera', 'flavor-platform') . '</th><td>' . ($configuracion['permite_lista_espera'] ? __('Si', 'flavor-platform') : __('No', 'flavor-platform')) . '</td></tr>';
-        echo '<tr><th>' . __('Dias anticipacion cancelacion', 'flavor-platform') . '</th><td>' . esc_html($configuracion['dias_anticipacion_cancelacion']) . '</td></tr>';
+        echo '<tr><th>' . __('Requiere aprobacion de organizadores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . ($configuracion['requiere_aprobacion_organizadores'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td></tr>';
+        echo '<tr><th>' . __('Permite talleres gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . ($configuracion['permite_talleres_gratuitos'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td></tr>';
+        echo '<tr><th>' . __('Permite talleres de pago', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . ($configuracion['permite_talleres_pago'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td></tr>';
+        echo '<tr><th>' . __('Comision talleres de pago', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($configuracion['comision_talleres_pago']) . '%</td></tr>';
+        echo '<tr><th>' . __('Max participantes por taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($configuracion['max_participantes_por_taller']) . '</td></tr>';
+        echo '<tr><th>' . __('Min participantes para confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($configuracion['min_participantes_para_confirmar']) . '</td></tr>';
+        echo '<tr><th>' . __('Permite lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . ($configuracion['permite_lista_espera'] ? __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td></tr>';
+        echo '<tr><th>' . __('Dias anticipacion cancelacion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($configuracion['dias_anticipacion_cancelacion']) . '</td></tr>';
         echo '</table>';
 
         $this->handle_admin_save_configuracion();
-        echo '<h3>' . __('Actualizar configuración', 'flavor-platform') . '</h3>';
+        echo '<h3>' . __('Actualizar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('talleres_config', 'talleres_config_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . __('Requiere aprobacion de organizadores', 'flavor-platform') . '</th><td><label><input type="checkbox" name="requiere_aprobacion_organizadores" value="1" ' . checked($configuracion['requiere_aprobacion_organizadores'], true, false) . '> ' . __('Si', 'flavor-platform') . '</label></td></tr>';
-        echo '<tr><th>' . __('Permite talleres gratuitos', 'flavor-platform') . '</th><td><label><input type="checkbox" name="permite_talleres_gratuitos" value="1" ' . checked($configuracion['permite_talleres_gratuitos'], true, false) . '> ' . __('Si', 'flavor-platform') . '</label></td></tr>';
-        echo '<tr><th>' . __('Permite talleres de pago', 'flavor-platform') . '</th><td><label><input type="checkbox" name="permite_talleres_pago" value="1" ' . checked($configuracion['permite_talleres_pago'], true, false) . '> ' . __('Si', 'flavor-platform') . '</label></td></tr>';
-        echo '<tr><th>' . __('Comision talleres de pago', 'flavor-platform') . '</th><td><input type="number" step="0.01" name="comision_talleres_pago" value="' . esc_attr($configuracion['comision_talleres_pago']) . '"></td></tr>';
-        echo '<tr><th>' . __('Max participantes por taller', 'flavor-platform') . '</th><td><input type="number" name="max_participantes_por_taller" value="' . esc_attr($configuracion['max_participantes_por_taller']) . '"></td></tr>';
-        echo '<tr><th>' . __('Min participantes para confirmar', 'flavor-platform') . '</th><td><input type="number" name="min_participantes_para_confirmar" value="' . esc_attr($configuracion['min_participantes_para_confirmar']) . '"></td></tr>';
-        echo '<tr><th>' . __('Permite lista de espera', 'flavor-platform') . '</th><td><label><input type="checkbox" name="permite_lista_espera" value="1" ' . checked($configuracion['permite_lista_espera'], true, false) . '> ' . __('Si', 'flavor-platform') . '</label></td></tr>';
-        echo '<tr><th>' . __('Dias anticipacion cancelacion', 'flavor-platform') . '</th><td><input type="number" name="dias_anticipacion_cancelacion" value="' . esc_attr($configuracion['dias_anticipacion_cancelacion']) . '"></td></tr>';
+        echo '<tr><th>' . __('Requiere aprobacion de organizadores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_aprobacion_organizadores" value="1" ' . checked($configuracion['requiere_aprobacion_organizadores'], true, false) . '> ' . __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . __('Permite talleres gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_talleres_gratuitos" value="1" ' . checked($configuracion['permite_talleres_gratuitos'], true, false) . '> ' . __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . __('Permite talleres de pago', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_talleres_pago" value="1" ' . checked($configuracion['permite_talleres_pago'], true, false) . '> ' . __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . __('Comision talleres de pago', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" step="0.01" name="comision_talleres_pago" value="' . esc_attr($configuracion['comision_talleres_pago']) . '"></td></tr>';
+        echo '<tr><th>' . __('Max participantes por taller', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="max_participantes_por_taller" value="' . esc_attr($configuracion['max_participantes_por_taller']) . '"></td></tr>';
+        echo '<tr><th>' . __('Min participantes para confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="min_participantes_para_confirmar" value="' . esc_attr($configuracion['min_participantes_para_confirmar']) . '"></td></tr>';
+        echo '<tr><th>' . __('Permite lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_lista_espera" value="1" ' . checked($configuracion['permite_lista_espera'], true, false) . '> ' . __('Si', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . __('Dias anticipacion cancelacion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="dias_anticipacion_cancelacion" value="' . esc_attr($configuracion['dias_anticipacion_cancelacion']) . '"></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar configuración', 'flavor-platform'));
+        submit_button(__('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -3379,7 +3379,7 @@ KNOWLEDGE;
         if (empty($links)) {
             return '';
         }
-        return '<div><strong>' . esc_html__('Estado:', 'flavor-platform') . '</strong> ' . implode(' | ', $links) . '</div>';
+        return '<div><strong>' . esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $links) . '</div>';
     }
 
     private function render_inscripcion_actions($inscripcion_id, $estado_actual) {
@@ -3404,7 +3404,7 @@ KNOWLEDGE;
         if (empty($links)) {
             return '';
         }
-        return '<div><strong>' . esc_html__('Estado:', 'flavor-platform') . '</strong> ' . implode(' | ', $links) . '</div>';
+        return '<div><strong>' . esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $links) . '</div>';
     }
 
     private function handle_admin_actions() {
@@ -3412,7 +3412,7 @@ KNOWLEDGE;
             $taller_id = absint($_GET['taller_id']);
             $nonce = $_GET['_wpnonce'] ?? '';
             if (!$taller_id || !wp_verify_nonce($nonce, 'talleres_admin_' . $taller_id)) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;
             }
             $estado = sanitize_text_field($_GET['estado'] ?? '');
@@ -3420,7 +3420,7 @@ KNOWLEDGE;
                 global $wpdb;
                 $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
                 $wpdb->update($tabla_talleres, ['estado' => $estado], ['id' => $taller_id], ['%s'], ['%d']);
-                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
@@ -3428,7 +3428,7 @@ KNOWLEDGE;
             $inscripcion_id = absint($_GET['inscripcion_id']);
             $nonce = $_GET['_wpnonce'] ?? '';
             if (!$inscripcion_id || !wp_verify_nonce($nonce, 'talleres_inscripcion_' . $inscripcion_id)) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;
             }
             $estado = sanitize_text_field($_GET['estado'] ?? '');
@@ -3436,7 +3436,7 @@ KNOWLEDGE;
                 global $wpdb;
                 $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
                 $wpdb->update($tabla_inscripciones, ['estado' => $estado], ['id' => $inscripcion_id], ['%s'], ['%d']);
-                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
     }
@@ -3446,7 +3446,7 @@ KNOWLEDGE;
             return;
         }
         if (!wp_verify_nonce($_POST['talleres_config_nonce'], 'talleres_config')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -3459,7 +3459,7 @@ KNOWLEDGE;
         $this->update_setting('permite_lista_espera', !empty($_POST['permite_lista_espera']));
         $this->update_setting('dias_anticipacion_cancelacion', absint($_POST['dias_anticipacion_cancelacion'] ?? 2));
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-platform') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     public function public_permission_check($request) {
@@ -3502,11 +3502,11 @@ KNOWLEDGE;
         return [
             // Página principal de talleres
             [
-                'title' => __('Talleres', 'flavor-platform'),
+                'title' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'talleres',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Talleres de la Comunidad', 'flavor-platform'),
-                    'subtitle' => __('Aprende nuevas habilidades y comparte tus conocimientos', 'flavor-platform'),
+                    'title' => __('Talleres de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Aprende nuevas habilidades y comparte tus conocimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'gradient',
                     'module' => 'talleres',
                     'current' => 'listado',
@@ -3518,11 +3518,11 @@ KNOWLEDGE;
 
             // Página para proponer taller
             [
-                'title' => __('Proponer Taller', 'flavor-platform'),
+                'title' => __('Proponer Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Proponer un Taller', 'flavor-platform'),
-                    'subtitle' => __('Comparte tu conocimiento con la comunidad', 'flavor-platform'),
+                    'title' => __('Proponer un Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte tu conocimiento con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'talleres',
                     'current' => 'crear',
                     'content_after' => '[flavor_module_form module="talleres" action="crear_taller"]',
@@ -3533,11 +3533,11 @@ KNOWLEDGE;
 
             // Página de inscripción
             [
-                'title' => __('Inscribirse en Taller', 'flavor-platform'),
+                'title' => __('Inscribirse en Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'inscribirse',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Inscribirse en el Taller', 'flavor-platform'),
-                    'subtitle' => __('Reserva tu plaza en el taller', 'flavor-platform'),
+                    'title' => __('Inscribirse en el Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Reserva tu plaza en el taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'talleres',
                     'current' => 'inscribirse',
                     'content_after' => '[flavor_module_form module="talleres" action="inscribirse"]',
@@ -3548,11 +3548,11 @@ KNOWLEDGE;
 
             // Página de mis talleres
             [
-                'title' => __('Mis Talleres', 'flavor-platform'),
+                'title' => __('Mis Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-talleres',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Talleres', 'flavor-platform'),
-                    'subtitle' => __('Talleres en los que estás inscrito', 'flavor-platform'),
+                    'title' => __('Mis Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Talleres en los que estás inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'talleres',
                     'current' => 'mis_talleres',
                     'content_after' => '[flavor_module_listing module="talleres" action="mis_talleres" user_specific="yes"]',
@@ -3579,8 +3579,8 @@ KNOWLEDGE;
         // Páginas ocultas del sidebar (primer parámetro null)
         add_submenu_page(
             null,
-            __('Talleres - Configuración', 'flavor-platform'),
-            __('Configuración', 'flavor-platform'),
+            __('Talleres - Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'talleres-configuracion',
             [$this, 'render_pagina_configuracion']
@@ -3588,8 +3588,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Talleres - Inscripciones', 'flavor-platform'),
-            __('Inscripciones', 'flavor-platform'),
+            __('Talleres - Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'talleres-inscripciones',
             [$this, 'render_pagina_inscripciones']
@@ -3597,8 +3597,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Talleres - Listado', 'flavor-platform'),
-            __('Listado', 'flavor-platform'),
+            __('Talleres - Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'talleres-listado',
             [$this, 'render_pagina_talleres']
@@ -3606,8 +3606,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Talleres - Materiales', 'flavor-platform'),
-            __('Materiales', 'flavor-platform'),
+            __('Talleres - Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'talleres-materiales',
             [$this, 'render_pagina_materiales']
@@ -3622,7 +3622,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Talleres', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3634,8 +3634,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Talleres', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Configuración del módulo de talleres prácticos.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Configuración del módulo de talleres prácticos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3647,7 +3647,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Talleres', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3659,7 +3659,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Inscripciones', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3671,7 +3671,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Materiales', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 

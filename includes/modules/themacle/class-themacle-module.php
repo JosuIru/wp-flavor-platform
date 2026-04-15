@@ -176,7 +176,7 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
         if (!isset($componentes_web[$identificador_componente])) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => __('Componente no encontrado', 'flavor-platform'),
+                'error' => __('Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -213,13 +213,13 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
         }
 
         $nombres_categorias = [
-            'hero' => __('Heroes', 'flavor-platform'),
-            'content' => __('Contenido', 'flavor-platform'),
-            'listings' => __('Listados', 'flavor-platform'),
-            'features' => __('Características', 'flavor-platform'),
-            'cta' => __('CTA', 'flavor-platform'),
-            'navigation' => __('Navegación', 'flavor-platform'),
-            'otros' => __('Otros', 'flavor-platform'),
+            'hero' => __('Heroes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'content' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'listings' => __('Listados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'features' => __('Características', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cta' => __('CTA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'navigation' => __('Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $categorias_resultado = [];
@@ -272,24 +272,24 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'themacle',
-            'label' => __('Themacle', 'flavor-platform'),
+            'label' => __('Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-admin-customizer',
             'capability' => 'manage_options',
             'categoria' => 'recursos',
             'paginas' => [
                 [
                     'slug' => 'themacle-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'themacle-temas',
-                    'titulo' => __('Temas', 'flavor-platform'),
+                    'titulo' => __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_temas'],
                 ],
                 [
                     'slug' => 'themacle-config',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -319,14 +319,14 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             [
                 'icon' => 'dashicons-layout',
                 'valor' => $total_componentes,
-                'label' => __('Componentes disponibles', 'flavor-platform'),
+                'label' => __('Componentes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=themacle-dashboard'),
             ],
             [
                 'icon' => 'dashicons-category',
                 'valor' => count($categorias_componentes),
-                'label' => __('Categorías', 'flavor-platform'),
+                'label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
                 'enlace' => admin_url('admin.php?page=themacle-dashboard'),
             ],
@@ -343,25 +343,25 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             include $dashboard_view_path;
         } else {
             echo '<div class="wrap flavor-modulo-page">';
-            $this->render_page_header(__('Dashboard de Themacle', 'flavor-platform'));
-            echo '<p>' . __('Panel de control del módulo de themacle.', 'flavor-platform') . '</p>';
+            $this->render_page_header(__('Dashboard de Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            echo '<p>' . __('Panel de control del módulo de themacle.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         }
     }
     public function render_admin_temas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Temas', 'flavor-platform'));
+        $this->render_page_header(__('Gestión de Temas', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
-        echo '<p>' . __('Los componentes Themacle se adaptan automáticamente al tema visual activo del sitio mediante CSS custom properties.', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Los componentes Themacle se adaptan automáticamente al tema visual activo del sitio mediante CSS custom properties.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         echo '<div class="card">';
-        echo '<h3>' . __('Tema Activo', 'flavor-platform') . '</h3>';
-        echo '<p>' . __('El tema visual actual define los colores, tipografías y espaciados que utilizan todos los componentes.', 'flavor-platform') . '</p>';
+        echo '<h3>' . __('Tema Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . __('El tema visual actual define los colores, tipografías y espaciados que utilizan todos los componentes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
 
         echo '<div class="card">';
-        echo '<h3>' . __('Personalización', 'flavor-platform') . '</h3>';
-        echo '<p>' . __('Puedes personalizar las variables CSS para adaptar los componentes a tu marca.', 'flavor-platform') . '</p>';
+        echo '<h3>' . __('Personalización', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . __('Puedes personalizar las variables CSS para adaptar los componentes a tu marca.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
 
         echo '</div>';
@@ -372,20 +372,20 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Themacle', 'flavor-platform'));
+        $this->render_page_header(__('Configuración de Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         echo '<form method="post" action="">';
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="componentes_activos">' . __('Componentes Activos', 'flavor-platform') . '</label></th>';
-        echo '<td><p class="description">' . __('Todos los componentes están activos por defecto. Puedes desactivar componentes específicos si no los necesitas.', 'flavor-platform') . '</p></td></tr>';
+        echo '<tr><th scope="row"><label for="componentes_activos">' . __('Componentes Activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
+        echo '<td><p class="description">' . __('Todos los componentes están activos por defecto. Puedes desactivar componentes específicos si no los necesitas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cache_templates">' . __('Cache de Templates', 'flavor-platform') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cache_templates">' . __('Cache de Templates', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="cache_templates" id="cache_templates" checked />';
-        echo '<p class="description">' . __('Cachear los templates de componentes para mejorar el rendimiento.', 'flavor-platform') . '</p></td></tr>';
+        echo '<p class="description">' . __('Cachear los templates de componentes para mejorar el rendimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-platform') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -443,7 +443,7 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
         if (empty($componentes)) {
             return '<div class="flavor-alert flavor-alert-info">' .
-                __('No hay componentes Themacle disponibles todavía.', 'flavor-platform') .
+                __('No hay componentes Themacle disponibles todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</div>';
         }
 
@@ -472,8 +472,8 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
      */
     public function shortcode_formulario() {
         return '<div class="flavor-panel flavor-panel-info">' .
-            '<h3>' . esc_html__('Insertar componente Themacle', 'flavor-platform') . '</h3>' .
-            '<p>' . esc_html__('Themacle actúa como librería de componentes reutilizables. Selecciona un componente desde la API o el panel de administración y úsalo en tus páginas o layouts.', 'flavor-platform') . '</p>' .
+            '<h3>' . esc_html__('Insertar componente Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>' .
+            '<p>' . esc_html__('Themacle actúa como librería de componentes reutilizables. Selecciona un componente desde la API o el panel de administración y úsalo en tus páginas o layouts.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' .
             '<p><code>/wp-json/flavor/v1/themacle/componentes</code></p>' .
             '</div>';
     }
@@ -570,49 +570,49 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
         return [
             // ─── HEROES ───────────────────────────────────────
             'hero_fullscreen' => [
-                'label' => __('Hero Fullscreen', 'flavor-platform'),
-                'description' => __('Sección hero a pantalla completa con imagen/video de fondo', 'flavor-platform'),
+                'label' => __('Hero Fullscreen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero a pantalla completa con imagen/video de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-cover-image',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Bienvenido a nuestra web', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Bienvenido a nuestra web', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-platform'),
+                        'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'video_fondo' => [
                         'type' => 'url',
-                        'label' => __('URL del vídeo de fondo', 'flavor-platform'),
+                        'label' => __('URL del vídeo de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón CTA', 'flavor-platform'),
-                        'default' => __('Saber más', 'flavor-platform'),
+                        'label' => __('Texto del botón CTA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón CTA', 'flavor-platform'),
+                        'label' => __('URL del botón CTA', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#',
                     ],
                     'overlay_color' => [
                         'type' => 'color',
-                        'label' => __('Color del overlay', 'flavor-platform'),
+                        'label' => __('Color del overlay', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#000000',
                     ],
                     'overlay_opacidad' => [
                         'type' => 'number',
-                        'label' => __('Opacidad del overlay (0-100)', 'flavor-platform'),
+                        'label' => __('Opacidad del overlay (0-100)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 50,
                     ],
                 ],
@@ -621,44 +621,44 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'hero_split' => [
-                'label' => __('Hero Split', 'flavor-platform'),
-                'description' => __('Hero con diseño 50/50: imagen y texto lado a lado', 'flavor-platform'),
+                'label' => __('Hero Split', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Hero con diseño 50/50: imagen y texto lado a lado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-columns',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Tu título aquí', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Tu título aquí', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-platform'),
-                        'default' => __('Empezar', 'flavor-platform'),
+                        'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Empezar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón', 'flavor-platform'),
+                        'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#',
                     ],
                     'imagen' => [
                         'type' => 'image',
-                        'label' => __('Imagen', 'flavor-platform'),
+                        'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'invertir' => [
                         'type' => 'toggle',
-                        'label' => __('Invertir orden (imagen a la izquierda)', 'flavor-platform'),
+                        'label' => __('Invertir orden (imagen a la izquierda)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-platform'),
+                        'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#ffffff',
                     ],
                 ],
@@ -667,32 +667,32 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'hero_slider' => [
-                'label' => __('Hero Slider', 'flavor-platform'),
-                'description' => __('Carrusel de slides con navegación por bullets', 'flavor-platform'),
+                'label' => __('Hero Slider', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Carrusel de slides con navegación por bullets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'slides' => [
                         'type' => 'repeater',
-                        'label' => __('Slides', 'flavor-platform'),
+                        'label' => __('Slides', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
-                            'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-platform'), 'default' => ''],
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-platform'), 'default' => ''],
-                            'url_cta' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-platform'), 'default' => '#'],
-                            'texto_cta' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-platform'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'url_cta' => ['type' => 'url', 'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#'],
+                            'texto_cta' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 10,
                     ],
                     'autoplay' => [
                         'type' => 'toggle',
-                        'label' => __('Autoplay', 'flavor-platform'),
+                        'label' => __('Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'intervalo' => [
                         'type' => 'number',
-                        'label' => __('Intervalo en milisegundos', 'flavor-platform'),
+                        'label' => __('Intervalo en milisegundos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 5000,
                     ],
                 ],
@@ -702,34 +702,34 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             // ─── CONTENIDO ────────────────────────────────────
             'text_media' => [
-                'label' => __('Texto + Media', 'flavor-platform'),
-                'description' => __('Bloque de texto con imagen lado a lado', 'flavor-platform'),
+                'label' => __('Texto + Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Bloque de texto con imagen lado a lado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-align-left',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'contenido' => [
                         'type' => 'textarea',
-                        'label' => __('Contenido', 'flavor-platform'),
+                        'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'imagen' => [
                         'type' => 'image',
-                        'label' => __('Imagen', 'flavor-platform'),
+                        'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'invertir' => [
                         'type' => 'toggle',
-                        'label' => __('Invertir orden', 'flavor-platform'),
+                        'label' => __('Invertir orden', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-platform'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['simple', 'overlay'],
                         'default' => 'simple',
                     ],
@@ -739,28 +739,28 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'gallery' => [
-                'label' => __('Galería', 'flavor-platform'),
-                'description' => __('Galería de imágenes en formato grid', 'flavor-platform'),
+                'label' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Galería de imágenes en formato grid', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-format-gallery',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-platform'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'imagenes' => [
                         'type' => 'repeater',
-                        'label' => __('Imágenes', 'flavor-platform'),
+                        'label' => __('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-platform'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 24,
@@ -771,22 +771,22 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'accordion' => [
-                'label' => __('Acordeón / FAQ', 'flavor-platform'),
-                'description' => __('Lista desplegable de preguntas y respuestas', 'flavor-platform'),
+                'label' => __('Acordeón / FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lista desplegable de preguntas y respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-list-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Preguntas Frecuentes', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Preguntas Frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Preguntas', 'flavor-platform'),
+                        'label' => __('Preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'pregunta' => ['type' => 'text', 'label' => __('Pregunta', 'flavor-platform'), 'default' => ''],
-                            'respuesta' => ['type' => 'textarea', 'label' => __('Respuesta', 'flavor-platform'), 'default' => ''],
+                            'pregunta' => ['type' => 'text', 'label' => __('Pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'respuesta' => ['type' => 'textarea', 'label' => __('Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 20,
@@ -797,39 +797,39 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'map_section' => [
-                'label' => __('Mapa + Contacto', 'flavor-platform'),
-                'description' => __('Sección con mapa embebido e información de contacto', 'flavor-platform'),
+                'label' => __('Mapa + Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección con mapa embebido e información de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Dónde Encontrarnos', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Dónde Encontrarnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'direccion' => [
                         'type' => 'text',
-                        'label' => __('Dirección', 'flavor-platform'),
+                        'label' => __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'telefono' => [
                         'type' => 'text',
-                        'label' => __('Teléfono', 'flavor-platform'),
+                        'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'email' => [
                         'type' => 'email',
-                        'label' => __('Email', 'flavor-platform'),
+                        'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'horario' => [
                         'type' => 'textarea',
-                        'label' => __('Horario', 'flavor-platform'),
+                        'label' => __('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'mostrar_formulario' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar formulario de contacto', 'flavor-platform'),
+                        'label' => __('Mostrar formulario de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                 ],
@@ -838,29 +838,29 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'post_content' => [
-                'label' => __('Contenido de Post', 'flavor-platform'),
-                'description' => __('Contenido de artículo o entrada individual', 'flavor-platform'),
+                'label' => __('Contenido de Post', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Contenido de artículo o entrada individual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-media-text',
                 'fields' => [
                     'mostrar_imagen_destacada' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar imagen destacada', 'flavor-platform'),
+                        'label' => __('Mostrar imagen destacada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_fecha' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar fecha', 'flavor-platform'),
+                        'label' => __('Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_autor' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar autor', 'flavor-platform'),
+                        'label' => __('Mostrar autor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_compartir' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar botones de compartir', 'flavor-platform'),
+                        'label' => __('Mostrar botones de compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -870,43 +870,43 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             // ─── LISTADOS ─────────────────────────────────────
             'card_grid' => [
-                'label' => __('Grid de Tarjetas', 'flavor-platform'),
-                'description' => __('Grid configurable de tarjetas con imagen, título y descripción', 'flavor-platform'),
+                'label' => __('Grid de Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid configurable de tarjetas con imagen, título y descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título de sección', 'flavor-platform'),
+                        'label' => __('Título de sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-platform'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'estilo_card' => [
                         'type' => 'select',
-                        'label' => __('Estilo de tarjeta', 'flavor-platform'),
+                        'label' => __('Estilo de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['shadow', 'border', 'flat'],
                         'default' => 'shadow',
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-platform'),
+                        'label' => __('Fuente de datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'post_types' => [],
                         'items_field' => 'items',
                         'default' => 'manual',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Tarjetas', 'flavor-platform'),
+                        'label' => __('Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-platform'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
-                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-platform'), 'default' => '#'],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'url' => ['type' => 'url', 'label' => __('URL', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#'],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -917,25 +917,25 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'related_items' => [
-                'label' => __('Items Relacionados', 'flavor-platform'),
-                'description' => __('Grid de elementos relacionados con datos dinámicos', 'flavor-platform'),
+                'label' => __('Items Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de elementos relacionados con datos dinámicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-networking',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Relacionados', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-platform'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-platform'),
+                        'label' => __('Fuente de datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'post_types' => [],
                         'items_field' => '',
                         'default' => 'manual',
@@ -947,34 +947,34 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             // ─── CARACTERÍSTICAS ──────────────────────────────
             'feature_grid' => [
-                'label' => __('Grid de Características', 'flavor-platform'),
-                'description' => __('Grid de iconos o imágenes con título y descripción', 'flavor-platform'),
+                'label' => __('Grid de Características', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de iconos o imágenes con título y descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-platform'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Características', 'flavor-platform'),
+                        'label' => __('Características', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'icono' => ['type' => 'text', 'label' => __('Icono (dashicons)', 'flavor-platform'), 'default' => 'dashicons-star-filled'],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
+                            'icono' => ['type' => 'text', 'label' => __('Icono (dashicons)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 'dashicons-star-filled'],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -985,31 +985,31 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'highlights' => [
-                'label' => __('Destacados', 'flavor-platform'),
-                'description' => __('Sección de elementos destacados con iconos o imágenes', 'flavor-platform'),
+                'label' => __('Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección de elementos destacados con iconos o imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-awards',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Destacados', 'flavor-platform'),
+                        'label' => __('Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen/Icono', 'flavor-platform'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
-                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-platform'), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen/Icono', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'url' => ['type' => 'url', 'label' => __('URL', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 8,
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-platform'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['cards', 'icons', 'minimal'],
                         'default' => 'cards',
                     ],
@@ -1020,39 +1020,39 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             // ─── CTA ──────────────────────────────────────────
             'cta_banner' => [
-                'label' => __('Banner CTA', 'flavor-platform'),
-                'description' => __('Llamada a la acción con fondo de color o imagen', 'flavor-platform'),
+                'label' => __('Banner CTA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Llamada a la acción con fondo de color o imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-platform'),
-                        'default' => __('Contactar', 'flavor-platform'),
+                        'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón', 'flavor-platform'),
+                        'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#',
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-platform'),
+                        'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-platform'),
+                        'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
@@ -1061,34 +1061,34 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'newsletter' => [
-                'label' => __('Newsletter', 'flavor-platform'),
-                'description' => __('Formulario de suscripción por email', 'flavor-platform'),
+                'label' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario de suscripción por email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-email-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-platform'),
-                        'default' => __('Suscríbete', 'flavor-platform'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Suscríbete', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-platform'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'texto_placeholder' => [
                         'type' => 'text',
-                        'label' => __('Placeholder del campo', 'flavor-platform'),
-                        'default' => __('Tu email', 'flavor-platform'),
+                        'label' => __('Placeholder del campo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'texto_boton' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-platform'),
-                        'default' => __('Suscribirme', 'flavor-platform'),
+                        'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-platform'),
+                        'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
@@ -1098,19 +1098,19 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             // ─── NAVEGACIÓN ───────────────────────────────────
             'filters_bar' => [
-                'label' => __('Barra de Filtros', 'flavor-platform'),
-                'description' => __('Barra de filtros por taxonomía con diferentes estilos', 'flavor-platform'),
+                'label' => __('Barra de Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Barra de filtros por taxonomía con diferentes estilos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-filter',
                 'fields' => [
                     'taxonomia' => [
                         'type' => 'text',
-                        'label' => __('Taxonomía (slug)', 'flavor-platform'),
+                        'label' => __('Taxonomía (slug)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'category',
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-platform'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['underline', 'pills', 'dropdown'],
                         'default' => 'pills',
                     ],
@@ -1120,14 +1120,14 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'pagination' => [
-                'label' => __('Paginación', 'flavor-platform'),
-                'description' => __('Navegación numérica entre páginas', 'flavor-platform'),
+                'label' => __('Paginación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Navegación numérica entre páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-controls-forward',
                 'fields' => [
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-platform'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['numbers', 'simple', 'load-more'],
                         'default' => 'numbers',
                     ],
@@ -1144,37 +1144,37 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Themacle', 'flavor-platform'),
+                'title' => __('Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'themacle',
-                'content' => '<h1>' . __('Themacle', 'flavor-platform') . '</h1>
-<p>' . __('Gestión de contenido temático', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestión de contenido temático', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="themacle" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Temas', 'flavor-platform'),
+                'title' => __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'temas-themacle',
-                'content' => '<h1>' . __('Temas', 'flavor-platform') . '</h1>
-<p>' . __('Explora los temas disponibles', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Explora los temas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="themacle" action="temas"]',
                 'parent' => 'themacle',
             ],
             [
-                'title' => __('Crear Tema', 'flavor-platform'),
+                'title' => __('Crear Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear-tema',
-                'content' => '<h1>' . __('Crear Tema', 'flavor-platform') . '</h1>
-<p>' . __('Crea un nuevo tema', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Crear Tema', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea un nuevo tema', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="themacle" action="crear_tema"]',
                 'parent' => 'themacle',
             ],
             [
-                'title' => __('Mis Temas', 'flavor-platform'),
+                'title' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-temas-themacle',
-                'content' => '<h1>' . __('Mis Temas', 'flavor-platform') . '</h1>
-<p>' . __('Gestiona tus temas creados', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus temas creados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="themacle" action="mis_temas"]',
                 'parent' => 'themacle',
@@ -1190,8 +1190,8 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'themacle',
-            'title'    => __('Themacle', 'flavor-platform'),
-            'subtitle' => __('Gestión de contenido temático', 'flavor-platform'),
+            'title'    => __('Themacle', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Gestión de contenido temático', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🎨',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -1201,39 +1201,39 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform')],
-                'imagen'      => ['type' => 'file', 'label' => __('Imagen', 'flavor-platform')],
-                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-platform')],
-                'etiquetas'   => ['type' => 'tags', 'label' => __('Etiquetas', 'flavor-platform')],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen'      => ['type' => 'file', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'etiquetas'   => ['type' => 'tags', 'label' => __('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-platform'), 'color' => 'gray', 'icon' => '📝'],
-                'publicado'  => ['label' => __('Publicado', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'destacado'  => ['label' => __('Destacado', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⭐'],
-                'archivado'  => ['label' => __('Archivado', 'flavor-platform'), 'color' => 'gray', 'icon' => '📁'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'destacado'  => ['label' => __('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⭐'],
+                'archivado'  => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📁'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_temas',
-                    'label' => __('Temas', 'flavor-platform'),
+                    'label' => __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '🎨',
                     'color' => 'purple',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE estado = 'publicado'",
                 ],
                 [
                     'key'   => 'mis_temas',
-                    'label' => __('Mis temas', 'flavor-platform'),
+                    'label' => __('Mis temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '👤',
                     'color' => 'blue',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
                 ],
                 [
                     'key'   => 'vistas',
-                    'label' => __('Vistas', 'flavor-platform'),
+                    'label' => __('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '👁️',
                     'color' => 'green',
                     'query' => "SELECT SUM(vistas) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
@@ -1251,17 +1251,17 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Temas', 'flavor-platform'),
+                    'label'   => __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '🎨',
                     'content' => 'template:themacle/_listado.php',
                 ],
                 'mis-temas' => [
-                    'label'   => __('Mis temas', 'flavor-platform'),
+                    'label'   => __('Mis temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '👤',
                     'content' => 'shortcode:themacle_mis_temas',
                 ],
                 'crear' => [
-                    'label'   => __('Crear', 'flavor-platform'),
+                    'label'   => __('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '➕',
                     'content' => 'shortcode:themacle_formulario',
                 ],
@@ -1277,12 +1277,12 @@ class Flavor_Platform_Themacle_Module extends Flavor_Platform_Module_Base {
 
             'dashboard' => [
                 'widgets' => [
-                    'temas_recientes'  => ['type' => 'list', 'title' => __('Temas recientes', 'flavor-platform')],
-                    'mis_temas'        => ['type' => 'list', 'title' => __('Mis temas', 'flavor-platform')],
+                    'temas_recientes'  => ['type' => 'list', 'title' => __('Temas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mis_temas'        => ['type' => 'list', 'title' => __('Mis temas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
                     'nuevo_tema' => [
-                        'label' => __('Crear tema', 'flavor-platform'),
+                        'label' => __('Crear tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '➕',
                         'modal' => 'themacle-nuevo',
                     ],

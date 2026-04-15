@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-platform'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // =============================================================================
@@ -26,11 +26,11 @@ if (!current_user_can('manage_options')) {
  */
 function obtener_badge_estado_taller_materiales($estado) {
     $estados = [
-        'publicado' => ['clase' => 'info', 'texto' => __('Publicado', 'flavor-platform'), 'icono' => 'visibility'],
-        'confirmado' => ['clase' => 'success', 'texto' => __('Confirmado', 'flavor-platform'), 'icono' => 'yes-alt'],
-        'en_curso' => ['clase' => 'warning', 'texto' => __('En curso', 'flavor-platform'), 'icono' => 'controls-play'],
-        'finalizado' => ['clase' => 'secondary', 'texto' => __('Finalizado', 'flavor-platform'), 'icono' => 'flag'],
-        'cancelado' => ['clase' => 'danger', 'texto' => __('Cancelado', 'flavor-platform'), 'icono' => 'dismiss'],
+        'publicado' => ['clase' => 'info', 'texto' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'visibility'],
+        'confirmado' => ['clase' => 'success', 'texto' => __('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'yes-alt'],
+        'en_curso' => ['clase' => 'warning', 'texto' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'controls-play'],
+        'finalizado' => ['clase' => 'secondary', 'texto' => __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'flag'],
+        'cancelado' => ['clase' => 'danger', 'texto' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dismiss'],
     ];
 
     if (isset($estados[$estado])) {
@@ -45,25 +45,25 @@ function obtener_badge_estado_taller_materiales($estado) {
  */
 function calcular_urgencia_materiales($fecha_inicio, $estado) {
     if ($estado === 'finalizado' || $estado === 'cancelado') {
-        return ['clase' => 'completado', 'texto' => __('N/A', 'flavor-platform'), 'icono' => 'minus'];
+        return ['clase' => 'completado', 'texto' => __('N/A', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'minus'];
     }
 
     if (empty($fecha_inicio)) {
-        return ['clase' => 'sin-fecha', 'texto' => __('Sin fecha', 'flavor-platform'), 'icono' => 'calendar'];
+        return ['clase' => 'sin-fecha', 'texto' => __('Sin fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'calendar'];
     }
 
     $dias_restantes = floor((strtotime($fecha_inicio) - time()) / 86400);
 
     if ($dias_restantes < 0) {
-        return ['clase' => 'pasado', 'texto' => __('Ya iniciado', 'flavor-platform'), 'icono' => 'warning'];
+        return ['clase' => 'pasado', 'texto' => __('Ya iniciado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'warning'];
     } elseif ($dias_restantes == 0) {
-        return ['clase' => 'hoy', 'texto' => __('Hoy', 'flavor-platform'), 'icono' => 'clock'];
+        return ['clase' => 'hoy', 'texto' => __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'clock'];
     } elseif ($dias_restantes <= 3) {
-        return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', 'flavor-platform'), $dias_restantes), 'icono' => 'warning'];
+        return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'warning'];
     } elseif ($dias_restantes <= 7) {
-        return ['clase' => 'pronto', 'texto' => sprintf(__('%d días', 'flavor-platform'), $dias_restantes), 'icono' => 'clock'];
+        return ['clase' => 'pronto', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'clock'];
     } else {
-        return ['clase' => 'normal', 'texto' => sprintf(__('%d días', 'flavor-platform'), $dias_restantes), 'icono' => 'calendar-alt'];
+        return ['clase' => 'normal', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'calendar-alt'];
     }
 }
 
@@ -553,7 +553,7 @@ if ($tablas_talleres_disponibles) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-archive" style="margin-right: 8px;"></span>
-        <?php echo esc_html__('Gestión de Materiales', 'flavor-platform'); ?>
+        <?php echo esc_html__('Gestión de Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -561,7 +561,7 @@ if ($tablas_talleres_disponibles) {
         <?php if (!$tablas_talleres_disponibles): ?>
             <div class="flavor-materiales-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', 'flavor-platform'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         <?php endif; ?>
 
@@ -573,7 +573,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-materiales-stat-content">
                     <h3><?php echo number_format($total_talleres_materiales); ?></h3>
-                    <span><?php echo esc_html__('Talleres con Materiales', 'flavor-platform'); ?></span>
+                    <span><?php echo esc_html__('Talleres con Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -583,7 +583,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-materiales-stat-content">
                     <h3><?php echo number_format($talleres_materiales_incluidos); ?></h3>
-                    <span><?php echo esc_html__('Materiales Incluidos', 'flavor-platform'); ?></span>
+                    <span><?php echo esc_html__('Materiales Incluidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -593,7 +593,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-materiales-stat-content">
                     <h3><?php echo number_format($talleres_material_propio); ?></h3>
-                    <span><?php echo esc_html__('Material Propio', 'flavor-platform'); ?></span>
+                    <span><?php echo esc_html__('Material Propio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -603,7 +603,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-materiales-stat-content">
                     <h3><?php echo number_format($talleres_urgentes); ?></h3>
-                    <span><?php echo esc_html__('Urgentes (7 días)', 'flavor-platform'); ?></span>
+                    <span><?php echo esc_html__('Urgentes (7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -613,7 +613,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-materiales-stat-content">
                     <h3><?php echo number_format($participantes_totales); ?></h3>
-                    <span><?php echo esc_html__('Participantes', 'flavor-platform'); ?></span>
+                    <span><?php echo esc_html__('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -627,45 +627,45 @@ if ($tablas_talleres_disponibles) {
 
             <div class="flavor-materiales-filters-grid">
                 <div class="flavor-materiales-filter-group">
-                    <label><?php echo esc_html__('Buscar', 'flavor-platform'); ?></label>
-                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Taller, organizador, material...', 'flavor-platform'); ?>">
+                    <label><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Taller, organizador, material...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-materiales-filter-group">
-                    <label><?php echo esc_html__('Estado', 'flavor-platform'); ?></label>
+                    <label><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado">
-                        <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
-                        <option value="publicado" <?php selected($filtro_estado, 'publicado'); ?>><?php echo esc_html__('Publicado', 'flavor-platform'); ?></option>
-                        <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php echo esc_html__('Confirmado', 'flavor-platform'); ?></option>
-                        <option value="en_curso" <?php selected($filtro_estado, 'en_curso'); ?>><?php echo esc_html__('En curso', 'flavor-platform'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="publicado" <?php selected($filtro_estado, 'publicado'); ?>><?php echo esc_html__('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php echo esc_html__('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="en_curso" <?php selected($filtro_estado, 'en_curso'); ?>><?php echo esc_html__('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-materiales-filter-group">
-                    <label><?php echo esc_html__('Materiales', 'flavor-platform'); ?></label>
+                    <label><?php echo esc_html__('Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="materiales_incluidos">
-                        <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
-                        <option value="1" <?php selected($filtro_materiales_incluidos, '1'); ?>><?php echo esc_html__('Incluidos', 'flavor-platform'); ?></option>
-                        <option value="0" <?php selected($filtro_materiales_incluidos, '0'); ?>><?php echo esc_html__('Propios', 'flavor-platform'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="1" <?php selected($filtro_materiales_incluidos, '1'); ?>><?php echo esc_html__('Incluidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="0" <?php selected($filtro_materiales_incluidos, '0'); ?>><?php echo esc_html__('Propios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-materiales-filter-group">
-                    <label><?php echo esc_html__('Ordenar por', 'flavor-platform'); ?></label>
+                    <label><?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="orderby">
-                        <option value="fecha_inicio" <?php selected($filtro_orden, 'fecha_inicio'); ?>><?php echo esc_html__('Fecha inicio', 'flavor-platform'); ?></option>
-                        <option value="titulo" <?php selected($filtro_orden, 'titulo'); ?>><?php echo esc_html__('Título', 'flavor-platform'); ?></option>
-                        <option value="inscritos_actuales" <?php selected($filtro_orden, 'inscritos_actuales'); ?>><?php echo esc_html__('Participantes', 'flavor-platform'); ?></option>
+                        <option value="fecha_inicio" <?php selected($filtro_orden, 'fecha_inicio'); ?>><?php echo esc_html__('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="titulo" <?php selected($filtro_orden, 'titulo'); ?>><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="inscritos_actuales" <?php selected($filtro_orden, 'inscritos_actuales'); ?>><?php echo esc_html__('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-materiales-filters-actions">
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-search" style="vertical-align: middle;"></span>
-                        <?php echo esc_html__('Filtrar', 'flavor-platform'); ?>
+                        <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(remove_query_arg(['s', 'estado', 'materiales_incluidos', 'orderby', 'order'])); ?>" class="button">
-                        <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
+                        <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -692,7 +692,7 @@ if ($tablas_talleres_disponibles) {
                             <div class="flavor-materiales-card-meta">
                                 <span class="flavor-materiales-card-meta-item">
                                     <span class="dashicons dashicons-admin-users"></span>
-                                    <?php echo esc_html($taller->organizador ?? __('Sin asignar', 'flavor-platform')); ?>
+                                    <?php echo esc_html($taller->organizador ?? __('Sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </span>
                                 <?php if (!empty($taller->fecha_inicio)): ?>
                                     <span class="flavor-materiales-card-meta-item">
@@ -711,16 +711,16 @@ if ($tablas_talleres_disponibles) {
                             <div class="flavor-materiales-lista">
                                 <h4>
                                     <span class="dashicons dashicons-list-view"></span>
-                                    <?php echo esc_html__('Materiales necesarios', 'flavor-platform'); ?>
+                                    <?php echo esc_html__('Materiales necesarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php if ($taller->materiales_incluidos): ?>
                                         <span class="flavor-materiales-tipo incluidos">
                                             <span class="dashicons dashicons-yes"></span>
-                                            <?php echo esc_html__('Incluidos', 'flavor-platform'); ?>
+                                            <?php echo esc_html__('Incluidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="flavor-materiales-tipo propios">
                                             <span class="dashicons dashicons-admin-users"></span>
-                                            <?php echo esc_html__('Propios', 'flavor-platform'); ?>
+                                            <?php echo esc_html__('Propios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     <?php endif; ?>
                                 </h4>
@@ -741,7 +741,7 @@ if ($tablas_talleres_disponibles) {
                             </div>
                             <button class="button button-small">
                                 <span class="dashicons dashicons-edit" style="font-size: 14px; line-height: 1.4;"></span>
-                                <?php echo esc_html__('Editar', 'flavor-platform'); ?>
+                                <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -750,11 +750,11 @@ if ($tablas_talleres_disponibles) {
         <?php else: ?>
             <div class="flavor-materiales-empty">
                 <span class="dashicons dashicons-archive"></span>
-                <h3><?php echo esc_html__('No hay talleres con materiales', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('No se encontraron talleres con materiales especificados.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('No hay talleres con materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('No se encontraron talleres con materiales especificados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php if (!empty($filtro_busqueda) || !empty($filtro_estado) || $filtro_materiales_incluidos !== ''): ?>
                     <a href="<?php echo esc_url(remove_query_arg(['s', 'estado', 'materiales_incluidos', 'orderby', 'order'])); ?>" class="button">
-                        <?php echo esc_html__('Ver todos los talleres', 'flavor-platform'); ?>
+                        <?php echo esc_html__('Ver todos los talleres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>

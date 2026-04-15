@@ -16,7 +16,7 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$module_name = $module_name ?? __('Módulo', 'flavor-platform');
+$module_name = $module_name ?? __('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $module_icon = $module_icon ?? 'dashicons-admin-generic';
 $module_color = $module_color ?? '#6366f1';
 $module_description = $module_description ?? '';
@@ -108,12 +108,12 @@ $module_description = $module_description ?? '';
     <div class="placeholder-message">
         <span class="dashicons dashicons-info"></span>
         <p>
-            <?php _e('Este módulo está activo en tu plataforma. El panel de administración detallado estará disponible próximamente.', 'flavor-platform'); ?>
+            <?php _e('Este módulo está activo en tu plataforma. El panel de administración detallado estará disponible próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <div class="module-status">
         <span class="dashicons dashicons-yes-alt"></span>
-        <?php _e('Módulo activo', 'flavor-platform'); ?>
+        <?php _e('Módulo activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
 </div>

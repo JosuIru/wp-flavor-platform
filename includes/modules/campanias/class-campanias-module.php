@@ -273,7 +273,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             }
 
             flavor_platform_log('Vista no encontrada en campanias sin fallback: ' . $path, 'warning');
-            return '<p class="flavor-info">' . esc_html__('No se pudo cargar la vista solicitada.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-info">' . esc_html__('No se pudo cargar la vista solicitada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1267,8 +1267,8 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'campanias',
-            'title'    => __('Campañas Ciudadanas', 'flavor-platform'),
-            'subtitle' => __('Coordina acciones colectivas y movilización social', 'flavor-platform'),
+            'title'    => __('Campañas Ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Coordina acciones colectivas y movilización social', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📣',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1278,48 +1278,48 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'objetivo'    => ['type' => 'textarea', 'label' => __('Objetivo', 'flavor-platform')],
-                'fecha_inicio'=> ['type' => 'date', 'label' => __('Fecha inicio', 'flavor-platform')],
-                'fecha_fin'   => ['type' => 'date', 'label' => __('Fecha fin', 'flavor-platform')],
-                'meta_firmas' => ['type' => 'number', 'label' => __('Meta de firmas', 'flavor-platform')],
-                'estado'      => ['type' => 'select', 'label' => __('Estado', 'flavor-platform')],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'objetivo'    => ['type' => 'textarea', 'label' => __('Objetivo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_inicio'=> ['type' => 'date', 'label' => __('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_fin'   => ['type' => 'date', 'label' => __('Fecha fin', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'meta_firmas' => ['type' => 'number', 'label' => __('Meta de firmas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'estado'      => ['type' => 'select', 'label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'    => ['label' => __('Borrador', 'flavor-platform'), 'color' => 'gray', 'icon' => '📝'],
-                'activa'      => ['label' => __('Activa', 'flavor-platform'), 'color' => 'green', 'icon' => '🟢'],
-                'pausada'     => ['label' => __('Pausada', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'finalizada'  => ['label' => __('Finalizada', 'flavor-platform'), 'color' => 'blue', 'icon' => '✅'],
-                'cancelada'   => ['label' => __('Cancelada', 'flavor-platform'), 'color' => 'red', 'icon' => '❌'],
+                'borrador'    => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'activa'      => ['label' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'pausada'     => ['label' => __('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'finalizada'  => ['label' => __('Finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '✅'],
+                'cancelada'   => ['label' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_campanias',
-                    'label' => __('Campañas', 'flavor-platform'),
+                    'label' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📣',
                     'color' => 'rose',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias",
                 ],
                 [
                     'key'   => 'campanias_activas',
-                    'label' => __('Activas', 'flavor-platform'),
+                    'label' => __('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '🟢',
                     'color' => 'green',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias WHERE estado = 'activa'",
                 ],
                 [
                     'key'   => 'total_firmas',
-                    'label' => __('Firmas', 'flavor-platform'),
+                    'label' => __('Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '✍️',
                     'color' => 'blue',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias_firmas",
                 ],
                 [
                     'key'   => 'total_acciones',
-                    'label' => __('Acciones', 'flavor-platform'),
+                    'label' => __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📅',
                     'color' => 'purple',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias_acciones",
@@ -1337,22 +1337,22 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Campañas', 'flavor-platform'),
+                    'label'   => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📣',
                     'content' => 'template:campanias/_listado.php',
                 ],
                 'mis-campanias' => [
-                    'label'   => __('Mis campañas', 'flavor-platform'),
+                    'label'   => __('Mis campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '👤',
                     'content' => 'shortcode:campanias_mis_campanias',
                 ],
                 'firmar' => [
-                    'label'   => __('Firmar', 'flavor-platform'),
+                    'label'   => __('Firmar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '✍️',
                     'content' => 'shortcode:campanias_firmar',
                 ],
                 'acciones' => [
-                    'label'   => __('Acciones', 'flavor-platform'),
+                    'label'   => __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📅',
                     'content' => 'shortcode:campanias_acciones',
                 ],
@@ -1368,12 +1368,12 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
             'dashboard' => [
                 'widgets' => [
-                    'mis_campanias'  => ['type' => 'list', 'title' => __('Mis campañas', 'flavor-platform')],
-                    'firmas_recientes' => ['type' => 'activity', 'title' => __('Últimas firmas', 'flavor-platform')],
+                    'mis_campanias'  => ['type' => 'list', 'title' => __('Mis campañas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'firmas_recientes' => ['type' => 'activity', 'title' => __('Últimas firmas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
                     'nueva_campania' => [
-                        'label' => __('Nueva campaña', 'flavor-platform'),
+                        'label' => __('Nueva campaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '➕',
                         'modal' => 'campanias-nueva',
                     ],
@@ -1401,35 +1401,35 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'campanias',
-            'label' => __('Campanias', 'flavor-platform'),
+            'label' => __('Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'campanias-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'campanias-listado',
-                    'titulo' => __('Listado', 'flavor-platform'),
+                    'titulo' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                     'badge' => [$this, 'contar_campanias_pendientes'],
                 ],
                 [
                     'slug' => 'campanias-firmas',
-                    'titulo' => __('Firmas', 'flavor-platform'),
+                    'titulo' => __('Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_firmas'],
                 ],
                 [
                     'slug' => 'campanias-estadisticas',
-                    'titulo' => __('Estadísticas', 'flavor-platform'),
+                    'titulo' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_estadisticas'],
                 ],
                 [
                     'slug' => 'campanias-config',
-                    'titulo' => __('Configuracion', 'flavor-platform'),
+                    'titulo' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1470,28 +1470,28 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             [
                 'icon' => 'dashicons-megaphone',
                 'valor' => $total_campanias,
-                'label' => __('Total campanias', 'flavor-platform'),
+                'label' => __('Total campanias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=campanias-listado'),
             ],
             [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $campanias_activas,
-                'label' => __('Campanias activas', 'flavor-platform'),
+                'label' => __('Campanias activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
                 'enlace' => admin_url('admin.php?page=campanias-listado&estado=activa'),
             ],
             [
                 'icon' => 'dashicons-edit',
                 'valor' => $total_firmas,
-                'label' => __('Total firmas', 'flavor-platform'),
+                'label' => __('Total firmas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
                 'enlace' => admin_url('admin.php?page=campanias-firmas'),
             ],
             [
                 'icon' => 'dashicons-awards',
                 'valor' => $campanias_exitosas,
-                'label' => __('Campanias exitosas', 'flavor-platform'),
+                'label' => __('Campanias exitosas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gold',
             ],
         ];
@@ -1513,7 +1513,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="flavor-admin-widget-campanias">
             <?php if (empty($campanias_recientes)): ?>
-                <p class="flavor-empty-state"><?php _e('No hay campanias registradas.', 'flavor-platform'); ?></p>
+                <p class="flavor-empty-state"><?php _e('No hay campanias registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <ul class="flavor-widget-list">
                     <?php foreach ($campanias_recientes as $campania): ?>
@@ -1604,31 +1604,31 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
         $acciones = $is_dashboard_viewer
             ? [
                 [
-                    'label' => __('Ver en portal', 'flavor-platform'),
+                    'label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => home_url('/mi-portal/participacion/'),
                     'class' => '',
                 ],
             ]
             : [
                 [
-                    'label' => __('Nueva Campania', 'flavor-platform'),
+                    'label' => __('Nueva Campania', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=campanias-listado&accion=nueva'),
                     'class' => 'button-primary',
                 ],
             ];
-        $this->render_page_header(__('Dashboard de Campanias', 'flavor-platform'), $acciones);
+        $this->render_page_header(__('Dashboard de Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
         ?>
         <div class="wrap flavor-admin-dashboard">
             <?php if ($is_dashboard_viewer) : ?>
-                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La edición de campañas, firmas y acciones sigue reservada a administración.', 'flavor-platform'); ?></p></div>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La edición de campañas, firmas y acciones sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php endif; ?>
             <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
                 <?php $this->render_admin_module_hub([
-                    'description' => __('Acceso visible al dashboard, listado, firmas, configuración y al bloque principal de métricas.', 'flavor-platform'),
+                    'description' => __('Acceso visible al dashboard, listado, firmas, configuración y al bloque principal de métricas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'stats_anchor' => '#campanias-stats',
                     'extra_items' => [
                         [
-                            'label' => __('Portal', 'flavor-platform'),
+                            'label' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => home_url('/mi-portal/participacion/'),
                             'icon' => 'dashicons-external',
                         ],
@@ -1642,7 +1642,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         <span class="dashicons dashicons-megaphone"></span>
                     </div>
                     <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $total_campanias; ?></div>
-                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Campanias', 'flavor-platform'); ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--green">
@@ -1650,7 +1650,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
                     <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $campanias_activas; ?></div>
-                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Activas', 'flavor-platform'); ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--purple">
@@ -1658,10 +1658,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         <span class="dashicons dashicons-edit"></span>
                     </div>
                     <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $total_firmas; ?></div>
-                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Firmas', 'flavor-platform'); ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="stat-extra campanias-admin-dashboard__stat-extra">
-                        +<?php echo $firmas_hoy; ?> <?php _e('hoy', 'flavor-platform'); ?> /
-                        +<?php echo $firmas_semana; ?> <?php _e('esta semana', 'flavor-platform'); ?>
+                        +<?php echo $firmas_hoy; ?> <?php _e('hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> /
+                        +<?php echo $firmas_semana; ?> <?php _e('esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
 
@@ -1670,12 +1670,12 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         <span class="dashicons dashicons-awards"></span>
                     </div>
                     <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $campanias_exitosas; ?></div>
-                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Exitosas', 'flavor-platform'); ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Exitosas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <?php if ($is_dashboard_viewer) : ?>
-                <p><?php esc_html_e('El resto de accesos administrativos del dashboard se ocultan en modo gestor para evitar flujos de edición o moderación fuera de alcance.', 'flavor-platform'); ?></p>
+                <p><?php esc_html_e('El resto de accesos administrativos del dashboard se ocultan en modo gestor para evitar flujos de edición o moderación fuera de alcance.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php
                 return;
@@ -1688,17 +1688,17 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
                         <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-bar"></span>
-                            <?php _e('Campanias con mas firmas', 'flavor-platform'); ?>
+                            <?php _e('Campanias con mas firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (empty($top_campanias)): ?>
-                            <p class="flavor-empty"><?php _e('No hay campanias con objetivo de firmas.', 'flavor-platform'); ?></p>
+                            <p class="flavor-empty"><?php _e('No hay campanias con objetivo de firmas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else: ?>
                             <table class="widefat striped campanias-admin-dashboard__table-clean">
                                 <thead>
                                     <tr>
-                                        <th><?php _e('Campania', 'flavor-platform'); ?></th>
-                                        <th><?php _e('Progreso', 'flavor-platform'); ?></th>
-                                        <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                                        <th><?php _e('Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php _e('Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1741,10 +1741,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
                         <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-line"></span>
-                            <?php _e('Tendencia de firmas (ultimos 7 dias)', 'flavor-platform'); ?>
+                            <?php _e('Tendencia de firmas (ultimos 7 dias)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (empty($tendencia_firmas)): ?>
-                            <p class="flavor-empty"><?php _e('No hay datos de firmas en los ultimos 7 dias.', 'flavor-platform'); ?></p>
+                            <p class="flavor-empty"><?php _e('No hay datos de firmas en los ultimos 7 dias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else: ?>
                             <div class="flavor-chart-simple campanias-admin-dashboard__chart">
                                 <?php
@@ -1768,10 +1768,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <div class="flavor-card campanias-admin-dashboard__card">
                         <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-calendar-alt"></span>
-                            <?php _e('Proximas acciones programadas', 'flavor-platform'); ?>
+                            <?php _e('Proximas acciones programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (empty($proximas_acciones)): ?>
-                            <p class="flavor-empty"><?php _e('No hay acciones programadas.', 'flavor-platform'); ?></p>
+                            <p class="flavor-empty"><?php _e('No hay acciones programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else: ?>
                             <ul class="flavor-timeline campanias-admin-dashboard__timeline">
                                 <?php foreach ($proximas_acciones as $accion): ?>
@@ -1806,19 +1806,19 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
                         <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-pie"></span>
-                            <?php _e('Por estado', 'flavor-platform'); ?>
+                            <?php _e('Por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <ul class="campanias-admin-dashboard__status-list">
                             <li class="campanias-admin-dashboard__status-item">
-                                <span><span class="dashicons dashicons-clock campanias-admin-dashboard__icon-muted"></span> <?php _e('Planificadas', 'flavor-platform'); ?></span>
+                                <span><span class="dashicons dashicons-clock campanias-admin-dashboard__icon-muted"></span> <?php _e('Planificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <strong><?php echo $campanias_planificadas; ?></strong>
                             </li>
                             <li class="campanias-admin-dashboard__status-item">
-                                <span><span class="dashicons dashicons-yes campanias-admin-dashboard__icon-green"></span> <?php _e('Activas', 'flavor-platform'); ?></span>
+                                <span><span class="dashicons dashicons-yes campanias-admin-dashboard__icon-green"></span> <?php _e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <strong><?php echo $campanias_activas; ?></strong>
                             </li>
                             <li class="campanias-admin-dashboard__status-item campanias-admin-dashboard__status-item--last">
-                                <span><span class="dashicons dashicons-flag campanias-admin-dashboard__icon-blue"></span> <?php _e('Completadas', 'flavor-platform'); ?></span>
+                                <span><span class="dashicons dashicons-flag campanias-admin-dashboard__icon-blue"></span> <?php _e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <strong><?php echo $campanias_completadas; ?></strong>
                             </li>
                         </ul>
@@ -1828,10 +1828,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <div class="flavor-card campanias-admin-dashboard__card">
                         <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-edit"></span>
-                            <?php _e('Firmas recientes', 'flavor-platform'); ?>
+                            <?php _e('Firmas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (empty($firmas_recientes)): ?>
-                            <p class="flavor-empty"><?php _e('No hay firmas registradas.', 'flavor-platform'); ?></p>
+                            <p class="flavor-empty"><?php _e('No hay firmas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else: ?>
                             <ul class="campanias-admin-dashboard__signatures-list">
                                 <?php foreach ($firmas_recientes as $firma): ?>
@@ -1841,7 +1841,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                             <?php echo esc_html($firma->campania_titulo); ?>
                                         </div>
                                         <div class="campanias-admin-dashboard__signatures-time">
-                                            <?php echo human_time_diff(strtotime($firma->created_at), current_time('timestamp')); ?> <?php _e('ago', 'flavor-platform'); ?>
+                                            <?php echo human_time_diff(strtotime($firma->created_at), current_time('timestamp')); ?> <?php _e('ago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
@@ -1849,7 +1849,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         <?php endif; ?>
                         <p class="campanias-admin-dashboard__signatures-link">
                             <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-firmas')); ?>" class="button">
-                                <?php _e('Ver todas las firmas', 'flavor-platform'); ?>
+                                <?php _e('Ver todas las firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </p>
                     </div>
@@ -1896,12 +1896,12 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
             if ($campania_id > 0) {
                 $wpdb->update($tabla_campanias, $datos, ['id' => $campania_id]);
-                $mensaje = __('Campania actualizada correctamente.', 'flavor-platform');
+                $mensaje = __('Campania actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } else {
                 $datos['creador_id'] = get_current_user_id();
                 $wpdb->insert($tabla_campanias, $datos);
                 $campania_id = $wpdb->insert_id;
-                $mensaje = __('Campania creada correctamente.', 'flavor-platform');
+                $mensaje = __('Campania creada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html($mensaje) . '</p></div>';
@@ -1914,7 +1914,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             $wpdb->delete($wpdb->prefix . 'flavor_campanias_firmas', ['campania_id' => $campania_id]);
             $wpdb->delete($wpdb->prefix . 'flavor_campanias_participantes', ['campania_id' => $campania_id]);
             $wpdb->delete($wpdb->prefix . 'flavor_campanias_acciones', ['campania_id' => $campania_id]);
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Campania eliminada correctamente.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Campania eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             $accion = '';
             $campania_id = 0;
         }
@@ -1927,10 +1927,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             }
 
             $this->render_page_header(
-                $campania ? __('Editar Campania', 'flavor-platform') : __('Nueva Campania', 'flavor-platform'),
+                $campania ? __('Editar Campania', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Nueva Campania', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [
                     [
-                        'label' => __('Volver al listado', 'flavor-platform'),
+                        'label' => __('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => admin_url('admin.php?page=campanias-listado'),
                         'class' => '',
                     ],
@@ -1942,11 +1942,11 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
                 <table class="form-table">
                     <tr>
-                        <th><label for="titulo"><?php _e('Titulo', 'flavor-platform'); ?> *</label></th>
+                        <th><label for="titulo"><?php _e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                         <td><input type="text" name="titulo" id="titulo" class="regular-text" required value="<?php echo esc_attr($campania->titulo ?? ''); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="descripcion"><?php _e('Descripcion', 'flavor-platform'); ?></label></th>
+                        <th><label for="descripcion"><?php _e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <?php
                             wp_editor(
@@ -1958,7 +1958,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="tipo"><?php _e('Tipo', 'flavor-platform'); ?></label></th>
+                        <th><label for="tipo"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <select name="tipo" id="tipo">
                                 <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
@@ -1970,57 +1970,57 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="estado"><?php _e('Estado', 'flavor-platform'); ?></label></th>
+                        <th><label for="estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <select name="estado" id="estado">
-                                <option value="planificada" <?php selected($campania->estado ?? '', 'planificada'); ?>><?php _e('Planificada', 'flavor-platform'); ?></option>
-                                <option value="activa" <?php selected($campania->estado ?? '', 'activa'); ?>><?php _e('Activa', 'flavor-platform'); ?></option>
-                                <option value="pausada" <?php selected($campania->estado ?? '', 'pausada'); ?>><?php _e('Pausada', 'flavor-platform'); ?></option>
-                                <option value="completada" <?php selected($campania->estado ?? '', 'completada'); ?>><?php _e('Completada', 'flavor-platform'); ?></option>
-                                <option value="cancelada" <?php selected($campania->estado ?? '', 'cancelada'); ?>><?php _e('Cancelada', 'flavor-platform'); ?></option>
+                                <option value="planificada" <?php selected($campania->estado ?? '', 'planificada'); ?>><?php _e('Planificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="activa" <?php selected($campania->estado ?? '', 'activa'); ?>><?php _e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="pausada" <?php selected($campania->estado ?? '', 'pausada'); ?>><?php _e('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="completada" <?php selected($campania->estado ?? '', 'completada'); ?>><?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="cancelada" <?php selected($campania->estado ?? '', 'cancelada'); ?>><?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="objetivo_descripcion"><?php _e('Objetivo', 'flavor-platform'); ?></label></th>
+                        <th><label for="objetivo_descripcion"><?php _e('Objetivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><textarea name="objetivo_descripcion" id="objetivo_descripcion" rows="3" class="large-text"><?php echo esc_textarea($campania->objetivo_descripcion ?? ''); ?></textarea></td>
                     </tr>
                     <tr>
-                        <th><label for="objetivo_firmas"><?php _e('Meta de firmas', 'flavor-platform'); ?></label></th>
+                        <th><label for="objetivo_firmas"><?php _e('Meta de firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><input type="number" name="objetivo_firmas" id="objetivo_firmas" min="0" value="<?php echo intval($campania->objetivo_firmas ?? 0); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="fecha_inicio"><?php _e('Fecha inicio', 'flavor-platform'); ?></label></th>
+                        <th><label for="fecha_inicio"><?php _e('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><input type="date" name="fecha_inicio" id="fecha_inicio" value="<?php echo esc_attr($campania->fecha_inicio ?? ''); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="fecha_fin"><?php _e('Fecha fin', 'flavor-platform'); ?></label></th>
+                        <th><label for="fecha_fin"><?php _e('Fecha fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><input type="date" name="fecha_fin" id="fecha_fin" value="<?php echo esc_attr($campania->fecha_fin ?? ''); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="ubicacion"><?php _e('Ubicacion', 'flavor-platform'); ?></label></th>
+                        <th><label for="ubicacion"><?php _e('Ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><input type="text" name="ubicacion" id="ubicacion" class="regular-text" value="<?php echo esc_attr($campania->ubicacion ?? ''); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="hashtags"><?php _e('Hashtags', 'flavor-platform'); ?></label></th>
+                        <th><label for="hashtags"><?php _e('Hashtags', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td><input type="text" name="hashtags" id="hashtags" class="regular-text" placeholder="#ejemplo #campania" value="<?php echo esc_attr($campania->hashtags ?? ''); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="visibilidad"><?php _e('Visibilidad', 'flavor-platform'); ?></label></th>
+                        <th><label for="visibilidad"><?php _e('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <select name="visibilidad" id="visibilidad">
-                                <option value="publica" <?php selected($campania->visibilidad ?? '', 'publica'); ?>><?php _e('Publica', 'flavor-platform'); ?></option>
-                                <option value="miembros" <?php selected($campania->visibilidad ?? '', 'miembros'); ?>><?php _e('Solo miembros', 'flavor-platform'); ?></option>
-                                <option value="privada" <?php selected($campania->visibilidad ?? '', 'privada'); ?>><?php _e('Privada', 'flavor-platform'); ?></option>
+                                <option value="publica" <?php selected($campania->visibilidad ?? '', 'publica'); ?>><?php _e('Publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="miembros" <?php selected($campania->visibilidad ?? '', 'miembros'); ?>><?php _e('Solo miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="privada" <?php selected($campania->visibilidad ?? '', 'privada'); ?>><?php _e('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="destacada"><?php _e('Destacada', 'flavor-platform'); ?></label></th>
+                        <th><label for="destacada"><?php _e('Destacada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="destacada" id="destacada" value="1" <?php checked($campania->destacada ?? 0, 1); ?>>
-                                <?php _e('Mostrar como destacada', 'flavor-platform'); ?>
+                                <?php _e('Mostrar como destacada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
@@ -2028,7 +2028,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
                 <p class="submit">
                     <button type="submit" name="guardar_campania" class="button button-primary">
-                        <?php echo $campania ? __('Actualizar Campania', 'flavor-platform') : __('Crear Campania', 'flavor-platform'); ?>
+                        <?php echo $campania ? __('Actualizar Campania', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Crear Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
@@ -2078,10 +2078,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
         $campanias = $wpdb->get_results($wpdb->prepare($query, $params));
 
         $this->render_page_header(
-            __('Listado de Campanias', 'flavor-platform'),
+            __('Listado de Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nueva Campania', 'flavor-platform'),
+                    'label' => __('Nueva Campania', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=campanias-listado&accion=nueva'),
                     'class' => 'button-primary',
                 ],
@@ -2094,16 +2094,16 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                 <input type="hidden" name="page" value="campanias-listado">
 
                 <select name="estado">
-                    <option value=""><?php _e('Todos los estados', 'flavor-platform'); ?></option>
-                    <option value="planificada" <?php selected($filtro_estado, 'planificada'); ?>><?php _e('Planificada', 'flavor-platform'); ?></option>
-                    <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php _e('Activa', 'flavor-platform'); ?></option>
-                    <option value="pausada" <?php selected($filtro_estado, 'pausada'); ?>><?php _e('Pausada', 'flavor-platform'); ?></option>
-                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php _e('Completada', 'flavor-platform'); ?></option>
-                    <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="planificada" <?php selected($filtro_estado, 'planificada'); ?>><?php _e('Planificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php _e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="pausada" <?php selected($filtro_estado, 'pausada'); ?>><?php _e('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
                 <select name="tipo">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
                         <option value="<?php echo esc_attr($valor); ?>" <?php selected($filtro_tipo, $valor); ?>>
                             <?php echo esc_html($etiqueta); ?>
@@ -2111,13 +2111,13 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     <?php endforeach; ?>
                 </select>
 
-                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar...', 'flavor-platform'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($filtro_estado || $filtro_tipo || $busqueda): ?>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado')); ?>" class="button">
-                        <?php _e('Limpiar filtros', 'flavor-platform'); ?>
+                        <?php _e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -2125,19 +2125,19 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             <!-- Tabla de campanias -->
             <?php if (empty($campanias)): ?>
                 <div class="notice notice-info">
-                    <p><?php _e('No se encontraron campanias.', 'flavor-platform'); ?></p>
+                    <p><?php _e('No se encontraron campanias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th class="campanias-admin-list__col-title"><?php _e('Titulo', 'flavor-platform'); ?></th>
-                            <th><?php _e('Tipo', 'flavor-platform'); ?></th>
-                            <th><?php _e('Estado', 'flavor-platform'); ?></th>
-                            <th><?php _e('Firmas', 'flavor-platform'); ?></th>
-                            <th><?php _e('Fecha inicio', 'flavor-platform'); ?></th>
-                            <th><?php _e('Creador', 'flavor-platform'); ?></th>
-                            <th class="campanias-admin-list__col-actions"><?php _e('Acciones', 'flavor-platform'); ?></th>
+                            <th class="campanias-admin-list__col-title"><?php _e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Creador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="campanias-admin-list__col-actions"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2151,7 +2151,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                         </a>
                                     </strong>
                                     <?php if ($campania->destacada): ?>
-                                        <span class="dashicons dashicons-star-filled campanias-admin-list__icon-star" title="<?php _e('Destacada', 'flavor-platform'); ?>"></span>
+                                        <span class="dashicons dashicons-star-filled campanias-admin-list__icon-star" title="<?php _e('Destacada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html($this->get_tipos_campania()[$campania->tipo] ?? $campania->tipo); ?></td>
@@ -2183,12 +2183,12 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                 <td><?php echo $creador ? esc_html($creador->display_name) : '-'; ?></td>
                                 <td>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $campania->id)); ?>" class="button button-small">
-                                        <?php _e('Editar', 'flavor-platform'); ?>
+                                        <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                     <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-listado&accion=eliminar&id=' . $campania->id), 'eliminar_campania_' . $campania->id)); ?>"
                                        class="button button-small button-link-delete"
-                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta campania?', 'flavor-platform'); ?>');">
-                                        <?php _e('Eliminar', 'flavor-platform'); ?>
+                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta campania?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
+                                        <?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </td>
                             </tr>
@@ -2200,7 +2200,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                 <?php if ($total_paginas > 1): ?>
                     <div class="tablenav bottom">
                         <div class="tablenav-pages">
-                            <span class="displaying-num"><?php printf(__('%d elementos', 'flavor-platform'), $total_items); ?></span>
+                            <span class="displaying-num"><?php printf(__('%d elementos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_items); ?></span>
                             <span class="pagination-links">
                                 <?php
                                 $base_url = admin_url('admin.php?page=campanias-listado');
@@ -2210,18 +2210,18 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
 
                                 if ($pagina_actual > 1): ?>
                                     <a class="prev-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $base_url)); ?>">
-                                        <span class="screen-reader-text"><?php _e('Anterior', 'flavor-platform'); ?></span>
+                                        <span class="screen-reader-text"><?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <span aria-hidden="true">&lsaquo;</span>
                                     </a>
                                 <?php endif; ?>
 
                                 <span class="paging-input">
-                                    <?php echo $pagina_actual; ?> <?php _e('de', 'flavor-platform'); ?> <?php echo $total_paginas; ?>
+                                    <?php echo $pagina_actual; ?> <?php _e('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo $total_paginas; ?>
                                 </span>
 
                                 <?php if ($pagina_actual < $total_paginas): ?>
                                     <a class="next-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $base_url)); ?>">
-                                        <span class="screen-reader-text"><?php _e('Siguiente', 'flavor-platform'); ?></span>
+                                        <span class="screen-reader-text"><?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <span aria-hidden="true">&rsaquo;</span>
                                     </a>
                                 <?php endif; ?>
@@ -2266,7 +2266,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                     ));
                 }
 
-                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma eliminada correctamente.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
@@ -2275,7 +2275,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             $firma_id = intval($_GET['id']);
             if (check_admin_referer('verificar_firma_' . $firma_id)) {
                 $wpdb->update($tabla_firmas, ['verificada' => 1], ['id' => $firma_id]);
-                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma verificada correctamente.', 'flavor-platform') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma verificada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
@@ -2322,10 +2322,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
         $campanias_disponibles = $wpdb->get_results("SELECT id, titulo FROM $tabla_campanias ORDER BY titulo ASC");
 
         $this->render_page_header(
-            __('Historico de Firmas', 'flavor-platform'),
+            __('Historico de Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Exportar CSV', 'flavor-platform'),
+                    'label' => __('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=campanias-firmas&accion=exportar' . ($filtro_campania ? '&campania_id=' . $filtro_campania : '')),
                     'class' => 'button-secondary',
                 ],
@@ -2337,15 +2337,15 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             <div class="flavor-stats-inline campanias-admin-firmas__stats-inline">
                 <div>
                     <strong><?php echo $total_items; ?></strong>
-                    <span class="campanias-admin-firmas__stats-label"><?php _e('Total firmas', 'flavor-platform'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Total firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div>
                     <strong><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_firmas WHERE verificada = 1"); ?></strong>
-                    <span class="campanias-admin-firmas__stats-label"><?php _e('Verificadas', 'flavor-platform'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div>
                     <strong><?php echo (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tabla_firmas WHERE DATE(created_at) = %s", current_time('Y-m-d'))); ?></strong>
-                    <span class="campanias-admin-firmas__stats-label"><?php _e('Hoy', 'flavor-platform'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -2354,7 +2354,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                 <input type="hidden" name="page" value="campanias-firmas">
 
                 <select name="campania_id">
-                    <option value=""><?php _e('Todas las campanias', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todas las campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($campanias_disponibles as $campania): ?>
                         <option value="<?php echo esc_attr($campania->id); ?>" <?php selected($filtro_campania, $campania->id); ?>>
                             <?php echo esc_html($campania->titulo); ?>
@@ -2363,18 +2363,18 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                 </select>
 
                 <select name="verificada">
-                    <option value=""><?php _e('Todas las firmas', 'flavor-platform'); ?></option>
-                    <option value="1" <?php selected($filtro_verificada, '1'); ?>><?php _e('Verificadas', 'flavor-platform'); ?></option>
-                    <option value="0" <?php selected($filtro_verificada, '0'); ?>><?php _e('No verificadas', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todas las firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="1" <?php selected($filtro_verificada, '1'); ?>><?php _e('Verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="0" <?php selected($filtro_verificada, '0'); ?>><?php _e('No verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
-                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar por nombre, email...', 'flavor-platform'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar por nombre, email...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($filtro_campania || $filtro_verificada !== '' || $busqueda): ?>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-firmas')); ?>" class="button">
-                        <?php _e('Limpiar filtros', 'flavor-platform'); ?>
+                        <?php _e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -2382,19 +2382,19 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             <!-- Tabla de firmas -->
             <?php if (empty($firmas)): ?>
                 <div class="notice notice-info">
-                    <p><?php _e('No se encontraron firmas.', 'flavor-platform'); ?></p>
+                    <p><?php _e('No se encontraron firmas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Nombre', 'flavor-platform'); ?></th>
-                            <th><?php _e('Email', 'flavor-platform'); ?></th>
-                            <th><?php _e('Localidad', 'flavor-platform'); ?></th>
-                            <th><?php _e('Campania', 'flavor-platform'); ?></th>
-                            <th><?php _e('Estado', 'flavor-platform'); ?></th>
-                            <th><?php _e('Fecha', 'flavor-platform'); ?></th>
-                            <th class="campanias-admin-firmas__col-actions"><?php _e('Acciones', 'flavor-platform'); ?></th>
+                            <th><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Localidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="campanias-admin-firmas__col-actions"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2403,7 +2403,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                 <td>
                                     <strong><?php echo esc_html($firma->nombre); ?></strong>
                                     <?php if ($firma->user_id): ?>
-                                        <span class="dashicons dashicons-admin-users campanias-admin-firmas__icon-user" title="<?php _e('Usuario registrado', 'flavor-platform'); ?>"></span>
+                                        <span class="dashicons dashicons-admin-users campanias-admin-firmas__icon-user" title="<?php _e('Usuario registrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html($firma->email); ?></td>
@@ -2416,10 +2416,10 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                 <td>
                                     <?php if ($firma->verificada): ?>
                                         <span class="dashicons dashicons-yes-alt campanias-admin-firmas__icon-verified"></span>
-                                        <?php _e('Verificada', 'flavor-platform'); ?>
+                                        <?php _e('Verificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php else: ?>
                                         <span class="dashicons dashicons-marker campanias-admin-firmas__icon-pending"></span>
-                                        <?php _e('Pendiente', 'flavor-platform'); ?>
+                                        <?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -2428,14 +2428,14 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                 <td>
                                     <?php if (!$firma->verificada): ?>
                                         <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=verificar&id=' . $firma->id), 'verificar_firma_' . $firma->id)); ?>"
-                                           class="button button-small" title="<?php _e('Verificar', 'flavor-platform'); ?>">
+                                           class="button button-small" title="<?php _e('Verificar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-yes campanias-admin-firmas__icon-action"></span>
                                         </a>
                                     <?php endif; ?>
                                     <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=eliminar&id=' . $firma->id), 'eliminar_firma_' . $firma->id)); ?>"
                                        class="button button-small button-link-delete"
-                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta firma?', 'flavor-platform'); ?>');"
-                                       title="<?php _e('Eliminar', 'flavor-platform'); ?>">
+                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta firma?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');"
+                                       title="<?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-trash campanias-admin-firmas__icon-action"></span>
                                     </a>
                                 </td>
@@ -2448,7 +2448,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                 <?php if ($total_paginas > 1): ?>
                     <div class="tablenav bottom">
                         <div class="tablenav-pages">
-                            <span class="displaying-num"><?php printf(__('%d firmas', 'flavor-platform'), $total_items); ?></span>
+                            <span class="displaying-num"><?php printf(__('%d firmas', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_items); ?></span>
                             <span class="pagination-links">
                                 <?php
                                 $base_url = admin_url('admin.php?page=campanias-firmas');
@@ -2463,7 +2463,7 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                                 <?php endif; ?>
 
                                 <span class="paging-input">
-                                    <?php echo $pagina_actual; ?> <?php _e('de', 'flavor-platform'); ?> <?php echo $total_paginas; ?>
+                                    <?php echo $pagina_actual; ?> <?php _e('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo $total_paginas; ?>
                                 </span>
 
                                 <?php if ($pagina_actual < $total_paginas): ?>
@@ -2501,39 +2501,39 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
             ];
 
             update_option('flavor_campanias_config', $opciones);
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuracion guardada correctamente.', 'flavor-platform') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuracion guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         // Obtener configuracion actual
         $config = get_option('flavor_campanias_config', $this->get_default_settings());
         $config = wp_parse_args($config, $this->get_default_settings());
 
-        $this->render_page_header(__('Configuracion de Campanias', 'flavor-platform'));
+        $this->render_page_header(__('Configuracion de Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN));
         ?>
         <div class="wrap">
             <form method="post" class="flavor-admin-form" style="background: #fff; padding: 20px; max-width: 800px;">
                 <?php wp_nonce_field('campanias_config', 'campanias_config_nonce'); ?>
 
-                <h2><?php _e('Configuracion General', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Configuracion General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th><?php _e('Aprobacion de campanias', 'flavor-platform'); ?></th>
+                        <th><?php _e('Aprobacion de campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="requiere_aprobacion" value="1" <?php checked($config['requiere_aprobacion'], true); ?>>
-                                <?php _e('Las nuevas campanias requieren aprobacion de un administrador', 'flavor-platform'); ?>
+                                <?php _e('Las nuevas campanias requieren aprobacion de un administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Campanias por usuario', 'flavor-platform'); ?></th>
+                        <th><?php _e('Campanias por usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="max_campanias_por_usuario" min="1" max="100" value="<?php echo intval($config['max_campanias_por_usuario']); ?>">
-                            <p class="description"><?php _e('Numero maximo de campanias que un usuario puede crear', 'flavor-platform'); ?></p>
+                            <p class="description"><?php _e('Numero maximo de campanias que un usuario puede crear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Tipos de campania permitidos', 'flavor-platform'); ?></th>
+                        <th><?php _e('Tipos de campania permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
                                 <label style="display: block; margin-bottom: 5px;">
@@ -2545,95 +2545,95 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Mostrar mapa de acciones', 'flavor-platform'); ?></th>
+                        <th><?php _e('Mostrar mapa de acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="mostrar_mapa_acciones" value="1" <?php checked($config['mostrar_mapa_acciones'], true); ?>>
-                                <?php _e('Mostrar mapa interactivo con las acciones programadas', 'flavor-platform'); ?>
+                                <?php _e('Mostrar mapa interactivo con las acciones programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                 </table>
 
-                <h2><?php _e('Configuracion de Firmas', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Configuracion de Firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th><?php _e('Firmas anonimas', 'flavor-platform'); ?></th>
+                        <th><?php _e('Firmas anonimas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="permitir_firmas_anonimas" value="1" <?php checked($config['permitir_firmas_anonimas'], true); ?>>
-                                <?php _e('Permitir firmar sin estar registrado', 'flavor-platform'); ?>
+                                <?php _e('Permitir firmar sin estar registrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Verificacion de email', 'flavor-platform'); ?></th>
+                        <th><?php _e('Verificacion de email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="verificar_email_firmas" value="1" <?php checked($config['verificar_email_firmas'], true); ?>>
-                                <?php _e('Requerir verificacion de email para validar firmas', 'flavor-platform'); ?>
+                                <?php _e('Requerir verificacion de email para validar firmas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Mostrar firmantes', 'flavor-platform'); ?></th>
+                        <th><?php _e('Mostrar firmantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="mostrar_firmantes_publicos" value="1" <?php checked($config['mostrar_firmantes_publicos'] ?? false, true); ?>>
-                                <?php _e('Mostrar lista de firmantes publicamente', 'flavor-platform'); ?>
+                                <?php _e('Mostrar lista de firmantes publicamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Limite por IP', 'flavor-platform'); ?></th>
+                        <th><?php _e('Limite por IP', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="limite_firmas_por_ip" min="0" max="100" value="<?php echo intval($config['limite_firmas_por_ip'] ?? 0); ?>">
-                            <p class="description"><?php _e('Numero maximo de firmas permitidas por IP (0 = sin limite)', 'flavor-platform'); ?></p>
+                            <p class="description"><?php _e('Numero maximo de firmas permitidas por IP (0 = sin limite)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Mensaje post-firma', 'flavor-platform'); ?></th>
+                        <th><?php _e('Mensaje post-firma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
-                            <textarea name="texto_firma_exitosa" rows="3" class="large-text"><?php echo esc_textarea($config['texto_firma_exitosa'] ?? __('Gracias por firmar. Tu apoyo es muy importante para esta causa.', 'flavor-platform')); ?></textarea>
-                            <p class="description"><?php _e('Mensaje que se muestra tras firmar exitosamente', 'flavor-platform'); ?></p>
+                            <textarea name="texto_firma_exitosa" rows="3" class="large-text"><?php echo esc_textarea($config['texto_firma_exitosa'] ?? __('Gracias por firmar. Tu apoyo es muy importante para esta causa.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></textarea>
+                            <p class="description"><?php _e('Mensaje que se muestra tras firmar exitosamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
 
-                <h2><?php _e('Notificaciones', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th><?php _e('Notificar nuevas campanias', 'flavor-platform'); ?></th>
+                        <th><?php _e('Notificar nuevas campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="notificar_nuevas_campanias" value="1" <?php checked($config['notificar_nuevas_campanias'], true); ?>>
-                                <?php _e('Enviar notificacion cuando se crea una nueva campania', 'flavor-platform'); ?>
+                                <?php _e('Enviar notificacion cuando se crea una nueva campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php _e('Email para notificaciones', 'flavor-platform'); ?></th>
+                        <th><?php _e('Email para notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="email" name="email_notificaciones" class="regular-text" value="<?php echo esc_attr($config['email_notificaciones'] ?? get_option('admin_email')); ?>">
-                            <p class="description"><?php _e('Email donde se enviaran las notificaciones de administracion', 'flavor-platform'); ?></p>
+                            <p class="description"><?php _e('Email donde se enviaran las notificaciones de administracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
 
-                <h2><?php _e('Shortcodes disponibles', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Shortcodes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div style="background: #f6f7f7; padding: 15px; border-radius: 4px;">
-                    <p><code>[campanias_listar]</code> - <?php _e('Muestra el listado de campanias', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_detalle id="X"]</code> - <?php _e('Muestra el detalle de una campania', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_crear]</code> - <?php _e('Formulario para crear campania', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_mis_campanias]</code> - <?php _e('Campanias del usuario actual', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_firmar id="X"]</code> - <?php _e('Formulario para firmar una campania', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_mapa]</code> - <?php _e('Mapa de acciones', 'flavor-platform'); ?></p>
-                    <p><code>[campanias_calendario]</code> - <?php _e('Calendario de acciones', 'flavor-platform'); ?></p>
+                    <p><code>[campanias_listar]</code> - <?php _e('Muestra el listado de campanias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_detalle id="X"]</code> - <?php _e('Muestra el detalle de una campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_crear]</code> - <?php _e('Formulario para crear campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_mis_campanias]</code> - <?php _e('Campanias del usuario actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_firmar id="X"]</code> - <?php _e('Formulario para firmar una campania', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_mapa]</code> - <?php _e('Mapa de acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><code>[campanias_calendario]</code> - <?php _e('Calendario de acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <p class="submit">
                     <button type="submit" name="guardar_config" class="button button-primary">
-                        <?php _e('Guardar Configuracion', 'flavor-platform'); ?>
+                        <?php _e('Guardar Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>

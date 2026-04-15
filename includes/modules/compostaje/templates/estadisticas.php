@@ -58,19 +58,19 @@ $top_materiales = $wpdb->get_results(
 
 // Materiales labels
 $materiales_labels = [
-    'frutas_verduras' => __('Frutas y verduras', 'flavor-platform'),
-    'posos_cafe' => __('Posos de café', 'flavor-platform'),
-    'cesped_fresco' => __('Césped fresco', 'flavor-platform'),
-    'restos_cocina' => __('Restos de cocina', 'flavor-platform'),
-    'plantas_verdes' => __('Plantas verdes', 'flavor-platform'),
-    'hojas_secas' => __('Hojas secas', 'flavor-platform'),
-    'papel_carton' => __('Papel y cartón', 'flavor-platform'),
-    'ramas_poda' => __('Ramas y poda', 'flavor-platform'),
-    'serrin' => __('Serrín', 'flavor-platform'),
-    'paja' => __('Paja', 'flavor-platform'),
-    'cascaras_huevo' => __('Cáscaras de huevo', 'flavor-platform'),
-    'bolsas_te' => __('Bolsas de té', 'flavor-platform'),
-    'otro' => __('Otro', 'flavor-platform'),
+    'frutas_verduras' => __('Frutas y verduras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'posos_cafe' => __('Posos de café', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cesped_fresco' => __('Césped fresco', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'restos_cocina' => __('Restos de cocina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'plantas_verdes' => __('Plantas verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'hojas_secas' => __('Hojas secas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'papel_carton' => __('Papel y cartón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'ramas_poda' => __('Ramas y poda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'serrin' => __('Serrín', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'paja' => __('Paja', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cascaras_huevo' => __('Cáscaras de huevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'bolsas_te' => __('Bolsas de té', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $categoria_colors = [
@@ -86,8 +86,8 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
 
 <div class="compostaje-estadisticas-wrapper">
     <div class="estadisticas-header">
-        <h2><?php esc_html_e('Impacto de nuestra comunidad', 'flavor-platform'); ?></h2>
-        <p><?php esc_html_e('Juntos estamos haciendo la diferencia por el medio ambiente', 'flavor-platform'); ?></p>
+        <h2><?php esc_html_e('Impacto de nuestra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Juntos estamos haciendo la diferencia por el medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <!-- Estadísticas principales -->
@@ -97,44 +97,44 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
                 <span class="dashicons dashicons-groups"></span>
             </div>
             <div class="stat-hero-value"><?php echo esc_html(number_format($stats_globales->total_usuarios ?? 0)); ?></div>
-            <div class="stat-hero-label"><?php esc_html_e('Participantes activos', 'flavor-platform'); ?></div>
+            <div class="stat-hero-label"><?php esc_html_e('Participantes activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="stat-hero-card">
             <div class="stat-hero-icon eco">
                 <span class="dashicons dashicons-image-rotate"></span>
             </div>
             <div class="stat-hero-value"><?php echo esc_html(number_format($stats_globales->total_kg ?? 0, 0)); ?> <small>kg</small></div>
-            <div class="stat-hero-label"><?php esc_html_e('Material compostado', 'flavor-platform'); ?></div>
+            <div class="stat-hero-label"><?php esc_html_e('Material compostado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="stat-hero-card">
             <div class="stat-hero-icon success">
                 <span class="dashicons dashicons-cloud"></span>
             </div>
             <div class="stat-hero-value"><?php echo esc_html(number_format($stats_globales->co2_evitado ?? 0, 0)); ?> <small>kg</small></div>
-            <div class="stat-hero-label"><?php esc_html_e('CO₂ evitado', 'flavor-platform'); ?></div>
+            <div class="stat-hero-label"><?php esc_html_e('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="stat-hero-card">
             <div class="stat-hero-icon">
                 <span class="dashicons dashicons-location-alt"></span>
             </div>
             <div class="stat-hero-value"><?php echo esc_html($puntos_activos ?? 0); ?></div>
-            <div class="stat-hero-label"><?php esc_html_e('Puntos de compostaje', 'flavor-platform'); ?></div>
+            <div class="stat-hero-label"><?php esc_html_e('Puntos de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
     <!-- Equivalencias medioambientales -->
     <div class="stats-equivalencias">
-        <h3><?php esc_html_e('Esto equivale a...', 'flavor-platform'); ?></h3>
+        <h3><?php esc_html_e('Esto equivale a...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="equivalencias-grid">
             <div class="equivalencia-item">
                 <span class="equiv-icon">🌳</span>
                 <span class="equiv-value"><?php echo esc_html(number_format($arboles_equivalentes, 0)); ?></span>
-                <span class="equiv-label"><?php esc_html_e('árboles plantados (CO₂ absorbido en 1 año)', 'flavor-platform'); ?></span>
+                <span class="equiv-label"><?php esc_html_e('árboles plantados (CO₂ absorbido en 1 año)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="equivalencia-item">
                 <span class="equiv-icon">🚗</span>
                 <span class="equiv-value"><?php echo esc_html(number_format($km_coche, 0)); ?></span>
-                <span class="equiv-label"><?php esc_html_e('km en coche evitados', 'flavor-platform'); ?></span>
+                <span class="equiv-label"><?php esc_html_e('km en coche evitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -142,7 +142,7 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
     <div class="stats-columns">
         <!-- Evolución mensual -->
         <div class="stats-section">
-            <h3><?php esc_html_e('Evolución mensual', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Evolución mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if ($stats_mensuales): ?>
                 <div class="stats-timeline">
                     <?php foreach ($stats_mensuales as $mes): ?>
@@ -155,8 +155,8 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
                             <div class="timeline-stats">
                                 <span class="timeline-kg"><?php echo esc_html(number_format($mes->kg_total, 1)); ?> kg</span>
                                 <span class="timeline-meta">
-                                    <?php echo esc_html($mes->aportaciones); ?> <?php esc_html_e('aportaciones', 'flavor-platform'); ?> •
-                                    <?php echo esc_html($mes->usuarios_activos); ?> <?php esc_html_e('usuarios', 'flavor-platform'); ?>
+                                    <?php echo esc_html($mes->aportaciones); ?> <?php esc_html_e('aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> •
+                                    <?php echo esc_html($mes->usuarios_activos); ?> <?php esc_html_e('usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                             <div class="timeline-bar">
@@ -170,13 +170,13 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="stats-empty"><?php esc_html_e('Aún no hay datos mensuales disponibles.', 'flavor-platform'); ?></p>
+                <p class="stats-empty"><?php esc_html_e('Aún no hay datos mensuales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Top materiales -->
         <div class="stats-section">
-            <h3><?php esc_html_e('Materiales más compostados', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Materiales más compostados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if ($top_materiales): ?>
                 <div class="materiales-ranking">
                     <?php foreach ($top_materiales as $index => $material): ?>
@@ -193,21 +193,21 @@ $km_coche = ($stats_globales->co2_evitado ?? 0) / 0.12; // ~120g CO2 por km
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="stats-empty"><?php esc_html_e('Aún no hay datos de materiales disponibles.', 'flavor-platform'); ?></p>
+                <p class="stats-empty"><?php esc_html_e('Aún no hay datos de materiales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
     </div>
 
     <!-- Call to action -->
     <div class="stats-cta">
-        <h3><?php esc_html_e('¡Únete al movimiento!', 'flavor-platform'); ?></h3>
-        <p><?php esc_html_e('Cada aportación cuenta. Empieza a compostar hoy y ayuda a reducir residuos.', 'flavor-platform'); ?></p>
+        <h3><?php esc_html_e('¡Únete al movimiento!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('Cada aportación cuenta. Empieza a compostar hoy y ayuda a reducir residuos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <div class="cta-buttons">
             <a href="<?php echo esc_url(add_query_arg('vista', 'registrar', get_permalink())); ?>" class="btn btn-primary">
-                <?php esc_html_e('Registrar aportación', 'flavor-platform'); ?>
+                <?php esc_html_e('Registrar aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('vista', 'mapa', get_permalink())); ?>" class="btn btn-outline">
-                <?php esc_html_e('Ver puntos de compostaje', 'flavor-platform'); ?>
+                <?php esc_html_e('Ver puntos de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

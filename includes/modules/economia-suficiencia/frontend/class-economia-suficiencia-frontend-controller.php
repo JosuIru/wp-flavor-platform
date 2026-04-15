@@ -79,8 +79,8 @@ class Flavor_Economia_Suficiencia_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('economia-suficiencia_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                'cargando' => __('Cargando...', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Economia_Suficiencia_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-economia-suficiencia-listado">';
-        echo '<p>' . __('Módulo Economía de Suficiencia - Listado', 'flavor-platform') . '</p>';
+        echo '<p>' . __('Módulo Economía de Suficiencia - Listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Economia_Suficiencia_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['economia-suficiencia'] = [
-            'titulo' => __('Economía de Suficiencia', 'flavor-platform'),
+            'titulo' => __('Economía de Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Economia_Suficiencia_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-economia-suficiencia-tab">';
-        echo '<h3>' . esc_html__('Economía de Suficiencia', 'flavor-platform') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Economía de Suficiencia.', 'flavor-platform') . '</p>';
+        echo '<h3>' . esc_html__('Economía de Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Economía de Suficiencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 }

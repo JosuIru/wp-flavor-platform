@@ -51,12 +51,12 @@ if (empty($locutor_token)) {
 <div class="wrap locutor-panel">
     <h1>
         <span class="dashicons dashicons-microphone"></span>
-        <?php _e('Panel del Locutor', 'flavor-platform'); ?>
+        <?php _e('Panel del Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if (!$es_locutor): ?>
     <div class="notice notice-warning">
-        <p><?php _e('No tienes permisos de locutor. Contacta con el administrador para obtener acceso.', 'flavor-platform'); ?></p>
+        <p><?php _e('No tienes permisos de locutor. Contacta con el administrador para obtener acceso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php return; endif; ?>
 
@@ -65,15 +65,15 @@ if (empty($locutor_token)) {
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h2 style="margin: 0 0 10px 0; color: #fff;">
-                    <?php printf(__('¡Hola, %s!', 'flavor-platform'), esc_html($user->display_name)); ?>
+                    <?php printf(__('¡Hola, %s!', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($user->display_name)); ?>
                 </h2>
                 <p style="margin: 0; opacity: 0.9;">
-                    <?php echo count($mis_programas); ?> <?php _e('programa(s) activo(s)', 'flavor-platform'); ?>
+                    <?php echo count($mis_programas); ?> <?php _e('programa(s) activo(s)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
             <div id="status-indicator" style="text-align: center;">
                 <div style="width: 20px; height: 20px; background: #ff4444; border-radius: 50%; margin: 0 auto 5px;"></div>
-                <span style="font-size: 12px;"><?php _e('Desconectado', 'flavor-platform'); ?></span>
+                <span style="font-size: 12px;"><?php _e('Desconectado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@ if (empty($locutor_token)) {
             <div class="card" style="background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <h2 style="margin-top: 0;">
                     <span class="dashicons dashicons-admin-plugins"></span>
-                    <?php _e('Cómo conectarte para emitir en vivo', 'flavor-platform'); ?>
+                    <?php _e('Cómo conectarte para emitir en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <!-- Tabs de software -->
@@ -99,42 +99,42 @@ if (empty($locutor_token)) {
                 <!-- Instrucciones BUTT -->
                 <div id="instructions-butt" class="software-instructions">
                     <h3>BUTT (Broadcast Using This Tool)</h3>
-                    <p><?php _e('BUTT es un software gratuito y simple para transmitir audio.', 'flavor-platform'); ?></p>
+                    <p><?php _e('BUTT es un software gratuito y simple para transmitir audio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <ol style="line-height: 2;">
                         <li>
-                            <strong><?php _e('Descargar BUTT:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Descargar BUTT:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="https://danielnoethen.de/butt/" target="_blank" class="button button-small">
-                                <?php _e('Descargar BUTT', 'flavor-platform'); ?> <span class="dashicons dashicons-external"></span>
+                                <?php _e('Descargar BUTT', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="dashicons dashicons-external"></span>
                             </a>
                         </li>
                         <li>
-                            <strong><?php _e('Instalar y abrir BUTT', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Instalar y abrir BUTT', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         </li>
                         <li>
-                            <strong><?php _e('Ir a Settings > Main:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Ir a Settings > Main:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <ul style="margin-top: 10px;">
                                 <li>Server Type: <code>Icecast</code></li>
                                 <li>Address: <code id="copy-server"><?php echo esc_html($stream_server ?: 'tu-servidor.com'); ?></code>
-                                    <button class="button button-small copy-btn" data-target="copy-server"><?php _e('Copiar', 'flavor-platform'); ?></button>
+                                    <button class="button button-small copy-btn" data-target="copy-server"><?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                 </li>
                                 <li>Port: <code id="copy-port"><?php echo esc_html($stream_port); ?></code></li>
                                 <li>Password: <code id="copy-password"><?php echo esc_html($stream_password ?: $locutor_token); ?></code>
-                                    <button class="button button-small copy-btn" data-target="copy-password"><?php _e('Copiar', 'flavor-platform'); ?></button>
+                                    <button class="button button-small copy-btn" data-target="copy-password"><?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                 </li>
                                 <li>Mount: <code id="copy-mount"><?php echo esc_html($stream_mount); ?></code></li>
                             </ul>
                         </li>
                         <li>
-                            <strong><?php _e('En Audio Settings:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('En Audio Settings:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <ul style="margin-top: 10px;">
-                                <li><?php _e('Selecciona tu micrófono como dispositivo de entrada', 'flavor-platform'); ?></li>
+                                <li><?php _e('Selecciona tu micrófono como dispositivo de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                                 <li>Codec: <code>MP3</code></li>
-                                <li>Bitrate: <code>128 kbps</code> <?php _e('(recomendado)', 'flavor-platform'); ?></li>
+                                <li>Bitrate: <code>128 kbps</code> <?php _e('(recomendado)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                             </ul>
                         </li>
                         <li>
-                            <strong><?php _e('¡Pulsa el botón Play para empezar a emitir!', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('¡Pulsa el botón Play para empezar a emitir!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         </li>
                     </ol>
 
@@ -142,10 +142,10 @@ if (empty($locutor_token)) {
                     <div style="margin-top: 20px;">
                         <a href="#" class="button button-primary" id="download-butt-config">
                             <span class="dashicons dashicons-download"></span>
-                            <?php _e('Descargar archivo de configuración', 'flavor-platform'); ?>
+                            <?php _e('Descargar archivo de configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <p style="font-size: 12px; color: #666; margin-top: 5px;">
-                            <?php _e('Descarga este archivo e impórtalo en BUTT para configurar automáticamente.', 'flavor-platform'); ?>
+                            <?php _e('Descarga este archivo e impórtalo en BUTT para configurar automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
                     <?php endif; ?>
@@ -154,17 +154,17 @@ if (empty($locutor_token)) {
                 <!-- Instrucciones OBS -->
                 <div id="instructions-obs" class="software-instructions" style="display: none;">
                     <h3>OBS Studio</h3>
-                    <p><?php _e('OBS es ideal si quieres transmitir video junto con audio.', 'flavor-platform'); ?></p>
+                    <p><?php _e('OBS es ideal si quieres transmitir video junto con audio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <ol style="line-height: 2;">
                         <li>
-                            <strong><?php _e('Descargar OBS:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Descargar OBS:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="https://obsproject.com/" target="_blank" class="button button-small">
-                                <?php _e('Descargar OBS', 'flavor-platform'); ?> <span class="dashicons dashicons-external"></span>
+                                <?php _e('Descargar OBS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="dashicons dashicons-external"></span>
                             </a>
                         </li>
                         <li>
-                            <strong><?php _e('Ir a Ajustes > Emisión:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Ir a Ajustes > Emisión:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <ul style="margin-top: 10px;">
                                 <li>Servicio: <code>Personalizado</code></li>
                                 <li>Servidor: <code>icecast://<?php echo esc_html($stream_server ?: 'tu-servidor.com'); ?>:<?php echo esc_html($stream_port); ?><?php echo esc_html($stream_mount); ?></code></li>
@@ -172,7 +172,7 @@ if (empty($locutor_token)) {
                             </ul>
                         </li>
                         <li>
-                            <strong><?php _e('Ajustes > Salida:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Ajustes > Salida:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <ul style="margin-top: 10px;">
                                 <li>Modo de salida: <code>Avanzado</code></li>
                                 <li>Codificador de audio: <code>AAC</code> o <code>MP3</code></li>
@@ -180,7 +180,7 @@ if (empty($locutor_token)) {
                             </ul>
                         </li>
                         <li>
-                            <strong><?php _e('¡Pulsa "Iniciar transmisión"!', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('¡Pulsa "Iniciar transmisión"!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         </li>
                     </ol>
                 </div>
@@ -188,17 +188,17 @@ if (empty($locutor_token)) {
                 <!-- Instrucciones Mixxx -->
                 <div id="instructions-mixxx" class="software-instructions" style="display: none;">
                     <h3>Mixxx</h3>
-                    <p><?php _e('Mixxx es un software DJ gratuito con soporte de streaming integrado.', 'flavor-platform'); ?></p>
+                    <p><?php _e('Mixxx es un software DJ gratuito con soporte de streaming integrado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <ol style="line-height: 2;">
                         <li>
-                            <strong><?php _e('Descargar Mixxx:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Descargar Mixxx:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <a href="https://mixxx.org/" target="_blank" class="button button-small">
-                                <?php _e('Descargar Mixxx', 'flavor-platform'); ?> <span class="dashicons dashicons-external"></span>
+                                <?php _e('Descargar Mixxx', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="dashicons dashicons-external"></span>
                             </a>
                         </li>
                         <li>
-                            <strong><?php _e('Ir a Preferencias > Emisión en directo:', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Ir a Preferencias > Emisión en directo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <ul style="margin-top: 10px;">
                                 <li>Tipo: <code>Icecast 2</code></li>
                                 <li>Servidor: <code><?php echo esc_html($stream_server ?: 'tu-servidor.com'); ?></code></li>
@@ -208,47 +208,47 @@ if (empty($locutor_token)) {
                             </ul>
                         </li>
                         <li>
-                            <strong><?php _e('Activa "Emisión en directo" desde el menú o el panel', 'flavor-platform'); ?></strong>
+                            <strong><?php _e('Activa "Emisión en directo" desde el menú o el panel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         </li>
                     </ol>
                 </div>
 
                 <!-- Instrucciones Otro -->
                 <div id="instructions-otro" class="software-instructions" style="display: none;">
-                    <h3><?php _e('Configuración genérica', 'flavor-platform'); ?></h3>
-                    <p><?php _e('Usa estos datos para configurar cualquier software de streaming:', 'flavor-platform'); ?></p>
+                    <h3><?php _e('Configuración genérica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Usa estos datos para configurar cualquier software de streaming:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <table class="wp-list-table widefat" style="margin-top: 15px;">
                         <tr>
-                            <th style="width: 150px;"><?php _e('Servidor', 'flavor-platform'); ?></th>
+                            <th style="width: 150px;"><?php _e('Servidor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td><code><?php echo esc_html($stream_server ?: 'No configurado'); ?></code></td>
                         </tr>
                         <tr>
-                            <th><?php _e('Puerto', 'flavor-platform'); ?></th>
+                            <th><?php _e('Puerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td><code><?php echo esc_html($stream_port); ?></code></td>
                         </tr>
                         <tr>
-                            <th><?php _e('Mount Point', 'flavor-platform'); ?></th>
+                            <th><?php _e('Mount Point', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td><code><?php echo esc_html($stream_mount); ?></code></td>
                         </tr>
                         <tr>
-                            <th><?php _e('Usuario', 'flavor-platform'); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td><code>source</code></td>
                         </tr>
                         <tr>
-                            <th><?php _e('Contraseña', 'flavor-platform'); ?></th>
+                            <th><?php _e('Contraseña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <code id="generic-password"><?php echo esc_html($stream_password ?: $locutor_token); ?></code>
-                                <button class="button button-small copy-btn" data-target="generic-password"><?php _e('Copiar', 'flavor-platform'); ?></button>
+                                <button class="button button-small copy-btn" data-target="generic-password"><?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                            <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td><code>Icecast 2</code></td>
                         </tr>
                         <tr>
-                            <th><?php _e('Formato', 'flavor-platform'); ?></th>
-                            <td><code>MP3 128kbps</code> <?php _e('(recomendado)', 'flavor-platform'); ?></td>
+                            <th><?php _e('Formato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <td><code>MP3 128kbps</code> <?php _e('(recomendado)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     </table>
                 </div>
@@ -259,20 +259,20 @@ if (empty($locutor_token)) {
             <div class="notice notice-warning" style="margin: 0 0 20px;">
                 <h3 style="margin-top: 0;">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php _e('Servidor de streaming no configurado', 'flavor-platform'); ?>
+                    <?php _e('Servidor de streaming no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
-                <p><?php _e('El administrador aún no ha configurado un servidor de streaming. Mientras tanto, puedes:', 'flavor-platform'); ?></p>
+                <p><?php _e('El administrador aún no ha configurado un servidor de streaming. Mientras tanto, puedes:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <ul style="list-style: disc; margin-left: 20px;">
-                    <li><?php _e('Subir programas grabados a la biblioteca de audio', 'flavor-platform'); ?></li>
-                    <li><?php _e('Preparar tus playlists para cuando el streaming esté disponible', 'flavor-platform'); ?></li>
-                    <li><?php _e('Usar servicios gratuitos como Listen2MyRadio o Azuracast', 'flavor-platform'); ?></li>
+                    <li><?php _e('Subir programas grabados a la biblioteca de audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php _e('Preparar tus playlists para cuando el streaming esté disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php _e('Usar servicios gratuitos como Listen2MyRadio o Azuracast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
 
-                <h4><?php _e('Opciones de servidor de streaming gratuito/económico:', 'flavor-platform'); ?></h4>
+                <h4><?php _e('Opciones de servidor de streaming gratuito/económico:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <ul style="list-style: disc; margin-left: 20px;">
-                    <li><a href="https://www.azuracast.com/" target="_blank">Azuracast</a> - <?php _e('Gratuito, auto-hospedado (necesitas VPS)', 'flavor-platform'); ?></li>
-                    <li><a href="https://www.listen2myradio.com/" target="_blank">Listen2MyRadio</a> - <?php _e('Gratuito con anuncios', 'flavor-platform'); ?></li>
-                    <li><a href="https://www.shoutcast.com/" target="_blank">Shoutcast Hosting</a> - <?php _e('Desde $4.95/mes', 'flavor-platform'); ?></li>
+                    <li><a href="https://www.azuracast.com/" target="_blank">Azuracast</a> - <?php _e('Gratuito, auto-hospedado (necesitas VPS)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><a href="https://www.listen2myradio.com/" target="_blank">Listen2MyRadio</a> - <?php _e('Gratuito con anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><a href="https://www.shoutcast.com/" target="_blank">Shoutcast Hosting</a> - <?php _e('Desde $4.95/mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
             </div>
             <?php endif; ?>
@@ -281,13 +281,13 @@ if (empty($locutor_token)) {
             <div class="card" style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <h2 style="margin-top: 0;">
                     <span class="dashicons dashicons-playlist-audio"></span>
-                    <?php _e('Mis Programas', 'flavor-platform'); ?>
+                    <?php _e('Mis Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <?php if (empty($mis_programas)): ?>
                 <p style="text-align: center; color: #666; padding: 40px;">
                     <span class="dashicons dashicons-microphone" style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.3;"></span>
-                    <?php _e('No tienes programas asignados', 'flavor-platform'); ?>
+                    <?php _e('No tienes programas asignados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <?php else: ?>
                 <div style="display: grid; gap: 15px;">
@@ -321,33 +321,33 @@ if (empty($locutor_token)) {
         <div>
             <!-- Herramientas rápidas -->
             <div class="card" style="background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <h3 style="margin-top: 0;"><?php _e('Herramientas', 'flavor-platform'); ?></h3>
+                <h3 style="margin-top: 0;"><?php _e('Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <a href="<?php echo admin_url('admin.php?page=flavor-radio-media'); ?>" class="button">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php _e('Subir Audio', 'flavor-platform'); ?>
+                        <?php _e('Subir Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo admin_url('admin.php?page=flavor-radio-programacion'); ?>" class="button">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php _e('Ver Programación', 'flavor-platform'); ?>
+                        <?php _e('Ver Programación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo Flavor_Platform_Helpers::get_action_url('radio', ''); ?>" class="button" target="_blank">
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php _e('Ver Portal Público', 'flavor-platform'); ?>
+                        <?php _e('Ver Portal Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
 
             <!-- Test de audio -->
             <div class="card" style="background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <h3 style="margin-top: 0;"><?php _e('Test de Micrófono', 'flavor-platform'); ?></h3>
-                <p style="font-size: 13px; color: #666;"><?php _e('Comprueba que tu micrófono funciona correctamente', 'flavor-platform'); ?></p>
+                <h3 style="margin-top: 0;"><?php _e('Test de Micrófono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p style="font-size: 13px; color: #666;"><?php _e('Comprueba que tu micrófono funciona correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div id="mic-test-container" style="text-align: center; padding: 20px;">
                     <button id="start-mic-test" class="button button-primary">
                         <span class="dashicons dashicons-microphone"></span>
-                        <?php _e('Probar Micrófono', 'flavor-platform'); ?>
+                        <?php _e('Probar Micrófono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <div id="mic-visualizer" style="height: 50px; background: #f0f0f0; border-radius: 4px; margin-top: 15px; display: none;">
                         <canvas id="mic-canvas" style="width: 100%; height: 100%;"></canvas>
@@ -360,11 +360,11 @@ if (empty($locutor_token)) {
             <div class="card" style="background: #f0f7ff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <h3 style="margin-top: 0;">
                     <span class="dashicons dashicons-editor-help"></span>
-                    <?php _e('¿Necesitas ayuda?', 'flavor-platform'); ?>
+                    <?php _e('¿Necesitas ayuda?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
-                <p style="font-size: 13px;"><?php _e('Si tienes problemas para conectarte, contacta con el equipo técnico.', 'flavor-platform'); ?></p>
+                <p style="font-size: 13px;"><?php _e('Si tienes problemas para conectarte, contacta con el equipo técnico.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="mailto:<?php echo get_option('admin_email'); ?>" class="button">
-                    <?php _e('Contactar Soporte', 'flavor-platform'); ?>
+                    <?php _e('Contactar Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -408,9 +408,9 @@ jQuery(document).ready(function($) {
 
         navigator.clipboard.writeText(text).then(() => {
             const btn = $(this);
-            btn.addClass('copied').text('<?php echo esc_js(__('¡Copiado!', 'flavor-platform')); ?>');
+            btn.addClass('copied').text('<?php echo esc_js(__('¡Copiado!', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             setTimeout(() => {
-                btn.removeClass('copied').text('<?php echo esc_js(__('Copiar', 'flavor-platform')); ?>');
+                btn.removeClass('copied').text('<?php echo esc_js(__('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }, 2000);
         });
     });
@@ -431,13 +431,13 @@ jQuery(document).ready(function($) {
             audioContext = null;
             cancelAnimationFrame(animationId);
             visualizer.hide();
-            btn.html('<span class="dashicons dashicons-microphone"></span> <?php echo esc_js(__('Probar Micrófono', 'flavor-platform')); ?>');
+            btn.html('<span class="dashicons dashicons-microphone"></span> <?php echo esc_js(__('Probar Micrófono', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             status.text('');
             return;
         }
 
         try {
-            status.text('<?php echo esc_js(__('Solicitando acceso al micrófono...', 'flavor-platform')); ?>');
+            status.text('<?php echo esc_js(__('Solicitando acceso al micrófono...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -452,8 +452,8 @@ jQuery(document).ready(function($) {
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
 
-            btn.html('<span class="dashicons dashicons-no"></span> <?php echo esc_js(__('Detener Test', 'flavor-platform')); ?>');
-            status.text('<?php echo esc_js(__('¡Micrófono funcionando! Habla para ver la visualización.', 'flavor-platform')); ?>');
+            btn.html('<span class="dashicons dashicons-no"></span> <?php echo esc_js(__('Detener Test', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+            status.text('<?php echo esc_js(__('¡Micrófono funcionando! Habla para ver la visualización.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             status.css('color', '#00a32a');
 
             function draw() {
@@ -482,7 +482,7 @@ jQuery(document).ready(function($) {
             draw();
 
         } catch (err) {
-            status.text('<?php echo esc_js(__('Error: No se pudo acceder al micrófono', 'flavor-platform')); ?>');
+            status.text('<?php echo esc_js(__('Error: No se pudo acceder al micrófono', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             status.css('color', '#d63638');
             console.error(err);
         }

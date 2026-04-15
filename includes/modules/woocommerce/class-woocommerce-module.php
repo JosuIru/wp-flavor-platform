@@ -277,10 +277,7 @@ class Flavor_Platform_WooCommerce_Module extends Flavor_Platform_Module_Base {
      * Usado por: views/pedidos.php (botón de cambio de estado rápido)
      */
     public function ajax_mark_order_status() {
-        // Verificar nonce
-        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'woocommerce-mark-order-status')) {
-            wp_send_json_error(['message' => __('Error de seguridad. Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
-        }
+        check_ajax_referer('flavor_woocommerce_nonce', 'nonce');
 
         // Verificar permisos - solo gestores de WooCommerce
         if (!current_user_can('manage_woocommerce')) {

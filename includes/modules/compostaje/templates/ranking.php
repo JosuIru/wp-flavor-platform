@@ -18,18 +18,18 @@ $periodo_sql = '';
 switch ($periodo) {
     case 'semana':
         $periodo_sql = "AND fecha_aportacion >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-        $periodo_label = __('Esta semana', 'flavor-platform');
+        $periodo_label = __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
     case 'mes':
         $periodo_sql = "AND fecha_aportacion >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-        $periodo_label = __('Este mes', 'flavor-platform');
+        $periodo_label = __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
     case 'anio':
         $periodo_sql = "AND fecha_aportacion >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
-        $periodo_label = __('Este año', 'flavor-platform');
+        $periodo_label = __('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
     default:
-        $periodo_label = __('Todo el tiempo', 'flavor-platform');
+        $periodo_label = __('Todo el tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 
 // Obtener ranking de usuarios
@@ -89,12 +89,12 @@ if ($usuario_actual) {
 
 // Niveles de gamificación
 $niveles = [
-    1 => ['nombre' => __('Semilla', 'flavor-platform'), 'kg_min' => 0, 'icono' => '🌱'],
-    2 => ['nombre' => __('Brote', 'flavor-platform'), 'kg_min' => 10, 'icono' => '🌿'],
-    3 => ['nombre' => __('Planta', 'flavor-platform'), 'kg_min' => 50, 'icono' => '🌳'],
-    4 => ['nombre' => __('Árbol', 'flavor-platform'), 'kg_min' => 150, 'icono' => '🌲'],
-    5 => ['nombre' => __('Bosque', 'flavor-platform'), 'kg_min' => 500, 'icono' => '🏔️'],
-    6 => ['nombre' => __('Ecosistema', 'flavor-platform'), 'kg_min' => 1000, 'icono' => '🌍'],
+    1 => ['nombre' => __('Semilla', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 0, 'icono' => '🌱'],
+    2 => ['nombre' => __('Brote', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 10, 'icono' => '🌿'],
+    3 => ['nombre' => __('Planta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 50, 'icono' => '🌳'],
+    4 => ['nombre' => __('Árbol', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 150, 'icono' => '🌲'],
+    5 => ['nombre' => __('Bosque', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 500, 'icono' => '🏔️'],
+    6 => ['nombre' => __('Ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'kg_min' => 1000, 'icono' => '🌍'],
 ];
 
 function obtener_nivel_usuario($total_kg, $niveles) {
@@ -110,27 +110,27 @@ function obtener_nivel_usuario($total_kg, $niveles) {
 
 <div class="compostaje-ranking-wrapper">
     <div class="ranking-header">
-        <h2><?php esc_html_e('Ranking de Compostaje', 'flavor-platform'); ?></h2>
-        <p><?php esc_html_e('Los mejores contribuidores de la comunidad', 'flavor-platform'); ?></p>
+        <h2><?php esc_html_e('Ranking de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Los mejores contribuidores de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <!-- Filtros de período -->
     <div class="ranking-filtros">
         <a href="<?php echo esc_url(add_query_arg('periodo', 'semana')); ?>"
            class="filtro-btn <?php echo $periodo === 'semana' ? 'active' : ''; ?>">
-            <?php esc_html_e('Semana', 'flavor-platform'); ?>
+            <?php esc_html_e('Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('periodo', 'mes')); ?>"
            class="filtro-btn <?php echo $periodo === 'mes' ? 'active' : ''; ?>">
-            <?php esc_html_e('Mes', 'flavor-platform'); ?>
+            <?php esc_html_e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('periodo', 'anio')); ?>"
            class="filtro-btn <?php echo $periodo === 'anio' ? 'active' : ''; ?>">
-            <?php esc_html_e('Año', 'flavor-platform'); ?>
+            <?php esc_html_e('Año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(remove_query_arg('periodo')); ?>"
            class="filtro-btn <?php echo $periodo === 'todo' ? 'active' : ''; ?>">
-            <?php esc_html_e('Todo', 'flavor-platform'); ?>
+            <?php esc_html_e('Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -138,17 +138,17 @@ function obtener_nivel_usuario($total_kg, $niveles) {
     <?php if ($usuario_actual && $mis_stats && $mis_stats->total_puntos > 0): ?>
         <div class="mi-posicion-card">
             <div class="mi-posicion-rank">
-                <span class="rank-label"><?php esc_html_e('Tu posición', 'flavor-platform'); ?></span>
+                <span class="rank-label"><?php esc_html_e('Tu posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="rank-numero">#<?php echo esc_html($mi_posicion); ?></span>
             </div>
             <div class="mi-posicion-stats">
                 <div class="stat">
                     <span class="stat-value"><?php echo esc_html(number_format($mis_stats->total_puntos)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('puntos', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat">
                     <span class="stat-value"><?php echo esc_html(number_format($mis_stats->total_kg, 1)); ?> kg</span>
-                    <span class="stat-label"><?php esc_html_e('compostado', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('compostado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat">
                     <?php
@@ -167,7 +167,7 @@ function obtener_nivel_usuario($total_kg, $niveles) {
             <?php for ($i = 0; $i < 3; $i++):
                 $usuario = $ranking[$i];
                 $user_data = get_userdata($usuario->usuario_id);
-                $nombre_usuario = $user_data ? $user_data->display_name : __('Usuario', 'flavor-platform');
+                $nombre_usuario = $user_data ? $user_data->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $avatar = get_avatar_url($usuario->usuario_id, ['size' => 80]);
                 $nivel = obtener_nivel_usuario($usuario->total_kg, $niveles);
                 $posicion = $i + 1;
@@ -199,7 +199,7 @@ function obtener_nivel_usuario($total_kg, $niveles) {
             <?php for ($i = 3; $i < count($ranking); $i++):
                 $usuario = $ranking[$i];
                 $user_data = get_userdata($usuario->usuario_id);
-                $nombre_usuario = $user_data ? $user_data->display_name : __('Usuario', 'flavor-platform');
+                $nombre_usuario = $user_data ? $user_data->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $avatar = get_avatar_url($usuario->usuario_id, ['size' => 40]);
                 $nivel = obtener_nivel_usuario($usuario->total_kg, $niveles);
                 $es_yo = (int) $usuario->usuario_id === $usuario_actual;
@@ -213,7 +213,7 @@ function obtener_nivel_usuario($total_kg, $niveles) {
                         <span class="ranking-nombre">
                             <?php echo esc_html($nombre_usuario); ?>
                             <?php if ($es_yo): ?>
-                                <span class="badge-yo"><?php esc_html_e('Tú', 'flavor-platform'); ?></span>
+                                <span class="badge-yo"><?php esc_html_e('Tú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </span>
                         <span class="ranking-nivel">
@@ -232,23 +232,23 @@ function obtener_nivel_usuario($total_kg, $niveles) {
     <?php if (empty($ranking)): ?>
         <div class="ranking-empty">
             <span class="dashicons dashicons-awards"></span>
-            <h3><?php esc_html_e('Aún no hay participantes', 'flavor-platform'); ?></h3>
-            <p><?php esc_html_e('¡Sé el primero en aparecer en el ranking!', 'flavor-platform'); ?></p>
+            <h3><?php esc_html_e('Aún no hay participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('¡Sé el primero en aparecer en el ranking!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(add_query_arg('vista', 'registrar', get_permalink())); ?>" class="btn btn-primary">
-                <?php esc_html_e('Registrar aportación', 'flavor-platform'); ?>
+                <?php esc_html_e('Registrar aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php endif; ?>
 
     <!-- Niveles explicación -->
     <div class="ranking-niveles">
-        <h3><?php esc_html_e('Niveles de Compostador', 'flavor-platform'); ?></h3>
+        <h3><?php esc_html_e('Niveles de Compostador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="niveles-grid">
             <?php foreach ($niveles as $nivel => $datos): ?>
                 <div class="nivel-item">
                     <span class="nivel-icono"><?php echo $datos['icono']; ?></span>
                     <span class="nivel-nombre"><?php echo esc_html($datos['nombre']); ?></span>
-                    <span class="nivel-req"><?php echo $datos['kg_min'] > 0 ? esc_html($datos['kg_min']) . '+ kg' : esc_html__('Inicio', 'flavor-platform'); ?></span>
+                    <span class="nivel-req"><?php echo $datos['kg_min'] > 0 ? esc_html($datos['kg_min']) . '+ kg' : esc_html__('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endforeach; ?>
         </div>

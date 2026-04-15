@@ -66,28 +66,28 @@ foreach ($reservas_mes as $reserva) {
 }
 
 $meses = [
-    1 => __('Enero', 'flavor-platform'),
-    2 => __('Febrero', 'flavor-platform'),
-    3 => __('Marzo', 'flavor-platform'),
-    4 => __('Abril', 'flavor-platform'),
-    5 => __('Mayo', 'flavor-platform'),
-    6 => __('Junio', 'flavor-platform'),
-    7 => __('Julio', 'flavor-platform'),
-    8 => __('Agosto', 'flavor-platform'),
-    9 => __('Septiembre', 'flavor-platform'),
-    10 => __('Octubre', 'flavor-platform'),
-    11 => __('Noviembre', 'flavor-platform'),
-    12 => __('Diciembre', 'flavor-platform'),
+    1 => __('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    11 => __('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    12 => __('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $dias_semana = [
-    __('Lun', 'flavor-platform'),
-    __('Mar', 'flavor-platform'),
-    __('Mié', 'flavor-platform'),
-    __('Jue', 'flavor-platform'),
-    __('Vie', 'flavor-platform'),
-    __('Sáb', 'flavor-platform'),
-    __('Dom', 'flavor-platform'),
+    __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $hoy = date('Y-m-d');
@@ -95,18 +95,18 @@ $hoy = date('Y-m-d');
 
 <div class="espacios-wrapper">
     <div class="espacios-header">
-        <h2 class="espacios-titulo"><?php _e('Calendario de Espacios', 'flavor-platform'); ?></h2>
+        <h2 class="espacios-titulo"><?php _e('Calendario de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <a href="<?php echo remove_query_arg(['vista', 'mes', 'ano', 'espacio']); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php _e('Ver espacios', 'flavor-platform'); ?>
+            <?php _e('Ver espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <div class="espacios-filtros">
         <div class="espacios-filtro-grupo">
-            <label><?php _e('Filtrar por espacio', 'flavor-platform'); ?></label>
+            <label><?php _e('Filtrar por espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="espacio" onchange="location.href='<?php echo add_query_arg(['espacio' => '']); ?>'.replace('espacio=', 'espacio=' + this.value);">
-                <option value="0"><?php _e('Todos los espacios', 'flavor-platform'); ?></option>
+                <option value="0"><?php _e('Todos los espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($espacios as $espacio): ?>
                     <option value="<?php echo $espacio->id; ?>" <?php selected($espacio_filtro, $espacio->id); ?>>
                         <?php echo esc_html($espacio->nombre); ?>
@@ -138,7 +138,7 @@ $hoy = date('Y-m-d');
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
                 </a>
                 <a href="<?php echo add_query_arg(['mes' => date('n'), 'ano' => date('Y')]); ?>" class="btn btn-outline btn-sm">
-                    <?php _e('Hoy', 'flavor-platform'); ?>
+                    <?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo add_query_arg(['mes' => $mes_sig, 'ano' => $ano_sig]); ?>" class="btn btn-outline btn-sm">
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
@@ -212,15 +212,15 @@ $hoy = date('Y-m-d');
         <div style="display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
                 <span style="width: 12px; height: 12px; background: rgba(245, 158, 11, 0.2); border-radius: 2px;"></span>
-                <?php _e('Pendiente', 'flavor-platform'); ?>
+                <?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
                 <span style="width: 12px; height: 12px; background: rgba(16, 185, 129, 0.2); border-radius: 2px;"></span>
-                <?php _e('Confirmada', 'flavor-platform'); ?>
+                <?php _e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
                 <span style="width: 12px; height: 12px; background: rgba(99, 102, 241, 0.2); border-radius: 2px;"></span>
-                <?php _e('En uso', 'flavor-platform'); ?>
+                <?php _e('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -241,7 +241,7 @@ $hoy = date('Y-m-d');
     if ($proximas):
     ?>
         <div style="margin-top: 2rem;">
-            <h3 style="margin-bottom: 1rem;"><?php _e('Próximas reservas confirmadas', 'flavor-platform'); ?></h3>
+            <h3 style="margin-bottom: 1rem;"><?php _e('Próximas reservas confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 <?php foreach ($proximas as $reserva): ?>
                     <?php
@@ -261,7 +261,7 @@ $hoy = date('Y-m-d');
                             </div>
                         </div>
                         <span class="reserva-card-estado <?php echo esc_attr($reserva->estado); ?>">
-                            <?php echo $reserva->estado === 'en_curso' ? __('En uso', 'flavor-platform') : __('Confirmada', 'flavor-platform'); ?>
+                            <?php echo $reserva->estado === 'en_curso' ? __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </div>
                 <?php endforeach; ?>

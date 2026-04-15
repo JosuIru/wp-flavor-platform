@@ -81,14 +81,14 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
 
     update_option('flavor_radio_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-platform');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-radio-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-settings"></span>
-        <?php esc_html_e('Configuración de Radio', 'flavor-platform'); ?>
+        <?php esc_html_e('Configuración de Radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -107,33 +107,33 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-microphone"></span>
-                        <?php esc_html_e('Información de la Emisora', 'flavor-platform'); ?>
+                        <?php esc_html_e('Información de la Emisora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="nombre_emisora"><?php esc_html_e('Nombre de la Emisora', 'flavor-platform'); ?></label>
+                            <label for="nombre_emisora"><?php esc_html_e('Nombre de la Emisora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="nombre_emisora" name="nombre_emisora"
                                    value="<?php echo esc_attr($configuracion['nombre_emisora']); ?>"
-                                   placeholder="<?php esc_attr_e('Ej: Radio Comunitaria Local', 'flavor-platform'); ?>">
+                                   placeholder="<?php esc_attr_e('Ej: Radio Comunitaria Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                         <div class="dm-form-group">
-                            <label for="frecuencia"><?php esc_html_e('Frecuencia FM', 'flavor-platform'); ?></label>
+                            <label for="frecuencia"><?php esc_html_e('Frecuencia FM', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="frecuencia" name="frecuencia"
                                    value="<?php echo esc_attr($configuracion['frecuencia']); ?>"
-                                   placeholder="<?php esc_attr_e('Ej: 98.5 FM', 'flavor-platform'); ?>">
+                                   placeholder="<?php esc_attr_e('Ej: 98.5 FM', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                     </div>
 
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"
-                                  placeholder="<?php esc_attr_e('Breve descripción de la emisora...', 'flavor-platform'); ?>"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
+                                  placeholder="<?php esc_attr_e('Breve descripción de la emisora...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
 
                     <div class="dm-form-group">
-                        <label for="logo_url"><?php esc_html_e('Logo de la Emisora', 'flavor-platform'); ?></label>
+                        <label for="logo_url"><?php esc_html_e('Logo de la Emisora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="dm-media-input">
                             <input type="url" id="logo_url" name="logo_url"
                                    value="<?php echo esc_url($configuracion['logo_url']); ?>"
@@ -151,28 +151,28 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-controls-volumeon"></span>
-                        <?php esc_html_e('Configuración de Streaming', 'flavor-platform'); ?>
+                        <?php esc_html_e('Configuración de Streaming', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="stream_url"><?php esc_html_e('URL del Stream Principal', 'flavor-platform'); ?></label>
+                        <label for="stream_url"><?php esc_html_e('URL del Stream Principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="url" id="stream_url" name="stream_url"
                                value="<?php echo esc_url($configuracion['stream_url']); ?>"
-                               placeholder="<?php esc_attr_e('https://stream.ejemplo.com/radio', 'flavor-platform'); ?>">
-                        <p class="description"><?php esc_html_e('URL del stream de audio en formato MP3, AAC u OGG.', 'flavor-platform'); ?></p>
+                               placeholder="<?php esc_attr_e('https://stream.ejemplo.com/radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                        <p class="description"><?php esc_html_e('URL del stream de audio en formato MP3, AAC u OGG.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <div class="dm-form-group">
-                        <label for="stream_backup_url"><?php esc_html_e('URL de Respaldo', 'flavor-platform'); ?></label>
+                        <label for="stream_backup_url"><?php esc_html_e('URL de Respaldo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="url" id="stream_backup_url" name="stream_backup_url"
                                value="<?php echo esc_url($configuracion['stream_backup_url']); ?>"
-                               placeholder="<?php esc_attr_e('https://backup.ejemplo.com/radio', 'flavor-platform'); ?>">
+                               placeholder="<?php esc_attr_e('https://backup.ejemplo.com/radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="calidad_stream"><?php esc_html_e('Calidad de Audio', 'flavor-platform'); ?></label>
+                            <label for="calidad_stream"><?php esc_html_e('Calidad de Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="calidad_stream" name="calidad_stream">
                                 <option value="64" <?php selected($configuracion['calidad_stream'], '64'); ?>>64 kbps</option>
                                 <option value="96" <?php selected($configuracion['calidad_stream'], '96'); ?>>96 kbps</option>
@@ -183,7 +183,7 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="zona_horaria"><?php esc_html_e('Zona Horaria', 'flavor-platform'); ?></label>
+                            <label for="zona_horaria"><?php esc_html_e('Zona Horaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="zona_horaria" name="zona_horaria">
                                 <?php
                                 $zonas = timezone_identifiers_list();
@@ -202,12 +202,12 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
 
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="horario_inicio"><?php esc_html_e('Hora de Inicio', 'flavor-platform'); ?></label>
+                            <label for="horario_inicio"><?php esc_html_e('Hora de Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="time" id="horario_inicio" name="horario_inicio"
                                    value="<?php echo esc_attr($configuracion['horario_emision']['inicio']); ?>">
                         </div>
                         <div class="dm-form-group">
-                            <label for="horario_fin"><?php esc_html_e('Hora de Fin', 'flavor-platform'); ?></label>
+                            <label for="horario_fin"><?php esc_html_e('Hora de Fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="time" id="horario_fin" name="horario_fin"
                                    value="<?php echo esc_attr($configuracion['horario_emision']['fin']); ?>">
                         </div>
@@ -220,25 +220,25 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-phone"></span>
-                        <?php esc_html_e('Información de Contacto', 'flavor-platform'); ?>
+                        <?php esc_html_e('Información de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="email_contacto"><?php esc_html_e('Email de Contacto', 'flavor-platform'); ?></label>
+                            <label for="email_contacto"><?php esc_html_e('Email de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="email" id="email_contacto" name="email_contacto"
                                    value="<?php echo esc_attr($configuracion['email_contacto']); ?>">
                         </div>
                         <div class="dm-form-group">
-                            <label for="telefono"><?php esc_html_e('Teléfono', 'flavor-platform'); ?></label>
+                            <label for="telefono"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" id="telefono" name="telefono"
                                    value="<?php echo esc_attr($configuracion['telefono']); ?>">
                         </div>
                     </div>
 
                     <div class="dm-form-group">
-                        <label for="direccion"><?php esc_html_e('Dirección', 'flavor-platform'); ?></label>
+                        <label for="direccion"><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="direccion" name="direccion" rows="2"><?php echo esc_textarea($configuracion['direccion']); ?></textarea>
                     </div>
                 </div>
@@ -249,7 +249,7 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-share"></span>
-                        <?php esc_html_e('Redes Sociales', 'flavor-platform'); ?>
+                        <?php esc_html_e('Redes Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
@@ -297,7 +297,7 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-admin-appearance"></span>
-                        <?php esc_html_e('Opciones de Visualización', 'flavor-platform'); ?>
+                        <?php esc_html_e('Opciones de Visualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
@@ -305,27 +305,27 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_programa_actual" value="1"
                                    <?php checked($configuracion['mostrar_programa_actual']); ?>>
-                            <span><?php esc_html_e('Mostrar programa actual en el reproductor', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Mostrar programa actual en el reproductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_proximo_programa" value="1"
                                    <?php checked($configuracion['mostrar_proximo_programa']); ?>>
-                            <span><?php esc_html_e('Mostrar próximo programa', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Mostrar próximo programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_podcast" value="1"
                                    <?php checked($configuracion['permitir_podcast']); ?>>
-                            <span><?php esc_html_e('Permitir acceso a podcasts de programas pasados', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Permitir acceso a podcasts de programas pasados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_comentarios" value="1"
                                    <?php checked($configuracion['permitir_comentarios']); ?>>
-                            <span><?php esc_html_e('Permitir comentarios en programas', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Permitir comentarios en programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="widget_chat_activo" value="1"
                                    <?php checked($configuracion['widget_chat_activo']); ?>>
-                            <span><?php esc_html_e('Activar chat en vivo durante emisiones', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Activar chat en vivo durante emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -336,7 +336,7 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-email"></span>
-                        <?php esc_html_e('Notificaciones', 'flavor-platform'); ?>
+                        <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-card__body">
@@ -344,12 +344,12 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_nuevos_programas" value="1"
                                    <?php checked($configuracion['notificar_nuevos_programas']); ?>>
-                            <span><?php esc_html_e('Notificar cuando se creen nuevos programas', 'flavor-platform'); ?></span>
+                            <span><?php esc_html_e('Notificar cuando se creen nuevos programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
 
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="email_notificaciones"><?php esc_html_e('Email para Notificaciones', 'flavor-platform'); ?></label>
+                        <label for="email_notificaciones"><?php esc_html_e('Email para Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="email" id="email_notificaciones" name="email_notificaciones"
                                value="<?php echo esc_attr($configuracion['email_notificaciones']); ?>">
                     </div>
@@ -360,7 +360,7 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_radio" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-platform'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>
@@ -516,8 +516,8 @@ if (isset($_POST['guardar_config_radio']) && wp_verify_nonce($_POST['_wpnonce'],
 function seleccionarImagen(inputId) {
     if (typeof wp !== 'undefined' && wp.media) {
         var frame = wp.media({
-            title: '<?php echo esc_js(__('Seleccionar imagen', 'flavor-platform')); ?>',
-            button: { text: '<?php echo esc_js(__('Usar imagen', 'flavor-platform')); ?>' },
+            title: '<?php echo esc_js(__('Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            button: { text: '<?php echo esc_js(__('Usar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' },
             multiple: false
         });
 
@@ -528,7 +528,7 @@ function seleccionarImagen(inputId) {
 
         frame.open();
     } else {
-        alert('<?php echo esc_js(__('El selector de medios no está disponible.', 'flavor-platform')); ?>');
+        alert('<?php echo esc_js(__('El selector de medios no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
     }
 }
 </script>

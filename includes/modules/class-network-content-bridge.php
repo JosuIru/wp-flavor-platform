@@ -303,12 +303,12 @@ class Flavor_Network_Content_Bridge {
         <div class="flavor-network-visibility" style="margin-top: 15px; padding: 10px; background: #f0f6fc; border-left: 3px solid #2271b1;">
             <h4 style="margin: 0 0 10px;">
                 <span class="dashicons dashicons-networking" style="color: #2271b1;"></span>
-                <?php _e('Compartir en la Red', 'flavor-platform'); ?>
+                <?php _e('Compartir en la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
 
             <p>
                 <label for="flavor_network_visibility">
-                    <?php _e('Visibilidad:', 'flavor-platform'); ?>
+                    <?php _e('Visibilidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <select id="flavor_network_visibility" name="flavor_network_visibility" style="width: 100%;">
                     <?php foreach (self::VISIBILITY_LEVELS as $level => $label): ?>
@@ -323,12 +323,12 @@ class Flavor_Network_Content_Bridge {
                 <label>
                     <input type="checkbox" name="flavor_share_with_relations" value="1"
                            <?php checked($share_with_relations, '1'); ?> />
-                    <?php _e('Incluir contenido relacionado (integraciones)', 'flavor-platform'); ?>
+                    <?php _e('Incluir contenido relacionado (integraciones)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </p>
 
             <p class="description" style="font-size: 11px; color: #666;">
-                <?php _e('Al compartir en la red, este contenido será visible para otros nodos según el nivel seleccionado.', 'flavor-platform'); ?>
+                <?php _e('Al compartir en la red, este contenido será visible para otros nodos según el nivel seleccionado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <?php
@@ -818,7 +818,7 @@ class Flavor_Network_Content_Bridge {
      */
     public function add_network_column($columns) {
         $columns['network_visibility'] = '<span class="dashicons dashicons-networking" title="' .
-            esc_attr__('Visibilidad en Red', 'flavor-platform') . '"></span>';
+            esc_attr__('Visibilidad en Red', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"></span>';
         return $columns;
     }
 
@@ -857,7 +857,7 @@ class Flavor_Network_Content_Bridge {
 
         wp_add_dashboard_widget(
             'flavor_network_content_widget',
-            __('Contenido de la Red', 'flavor-platform'),
+            __('Contenido de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_network_widget']
         );
     }
@@ -872,7 +872,7 @@ class Flavor_Network_Content_Bridge {
         ]);
 
         if (empty($contenido)) {
-            echo '<p>' . __('No hay contenido nuevo de la red.', 'flavor-platform') . '</p>';
+            echo '<p>' . __('No hay contenido nuevo de la red.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -898,7 +898,7 @@ class Flavor_Network_Content_Bridge {
         echo '</ul>';
 
         echo '<p><a href="' . admin_url('admin.php?page=flavor-platform-network') . '">' .
-             __('Ver todo el contenido de la red', 'flavor-platform') . ' →</a></p>';
+             __('Ver todo el contenido de la red', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' →</a></p>';
     }
 
     /**
@@ -917,7 +917,7 @@ class Flavor_Network_Content_Bridge {
         ]);
 
         if (empty($contenido)) {
-            return '<p class="flavor-network-empty">' . __('No hay contenido disponible.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-network-empty">' . __('No hay contenido disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1019,20 +1019,20 @@ class Flavor_Network_Content_Bridge {
             <div class="flavor-red-busqueda">
                 <input type="text"
                        class="flavor-red-busqueda-input"
-                       placeholder="<?php esc_attr_e('Buscar grupos, bancos de tiempo o comunidades...', 'flavor-platform'); ?>"
+                       placeholder="<?php esc_attr_e('Buscar grupos, bancos de tiempo o comunidades...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        data-search-target=".flavor-red-comunidades-grid">
                 <div class="flavor-red-filtros">
                     <label class="flavor-red-filtro">
                         <input type="checkbox" value="grupos_consumo" checked>
-                        <span><?php esc_html_e('Grupos de Consumo', 'flavor-platform'); ?></span>
+                        <span><?php esc_html_e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <label class="flavor-red-filtro">
                         <input type="checkbox" value="banco_tiempo" checked>
-                        <span><?php esc_html_e('Bancos de Tiempo', 'flavor-platform'); ?></span>
+                        <span><?php esc_html_e('Bancos de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <label class="flavor-red-filtro">
                         <input type="checkbox" value="comunidades" checked>
-                        <span><?php esc_html_e('Comunidades', 'flavor-platform'); ?></span>
+                        <span><?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                 </div>
             </div>
@@ -1041,8 +1041,8 @@ class Flavor_Network_Content_Bridge {
             <?php if (empty($contenido)): ?>
                 <div class="flavor-red-vacio">
                     <span class="dashicons dashicons-networking"></span>
-                    <p><?php esc_html_e('No hay comunidades disponibles en la red en este momento.', 'flavor-platform'); ?></p>
-                    <p class="flavor-red-vacio-sub"><?php esc_html_e('Las comunidades aparecerán aquí cuando otros nodos compartan sus grupos.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay comunidades disponibles en la red en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="flavor-red-vacio-sub"><?php esc_html_e('Las comunidades aparecerán aquí cuando otros nodos compartan sus grupos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-red-comunidades-grid" style="--columnas: <?php echo esc_attr($atts['columnas']); ?>">
@@ -1093,7 +1093,7 @@ class Flavor_Network_Content_Bridge {
                                target="_blank"
                                rel="noopener"
                                class="flavor-red-btn">
-                                <?php esc_html_e('Ver más', 'flavor-platform'); ?>
+                                <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <span class="dashicons dashicons-external"></span>
                             </a>
                         </div>

@@ -37,9 +37,9 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-album"></span>
-        <?php echo esc_html__('Gestión de Emisiones', 'flavor-platform'); ?>
+        <?php echo esc_html__('Gestión de Emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevaEmision(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Emisión', 'flavor-platform'); ?>
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Emisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </h1>
 
@@ -48,20 +48,20 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <div class="notice notice-success" style="display: flex; align-items: center; padding: 20px; margin: 20px 0; border-left: 4px solid #00a32a;">
             <span class="dashicons dashicons-controls-play" style="font-size: 48px; color: #00a32a; margin-right: 20px; animation: pulse 2s infinite;"></span>
             <div style="flex: 1;">
-                <h2 style="margin: 0; color: #00a32a;"><?php echo esc_html__('EN VIVO AHORA', 'flavor-platform'); ?></h2>
+                <h2 style="margin: 0; color: #00a32a;"><?php echo esc_html__('EN VIVO AHORA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <h3 style="margin: 5px 0;"><?php echo esc_html($emision_en_vivo->programa_nombre); ?></h3>
                 <p style="margin: 0;">
                     <strong><?php echo number_format($emision_en_vivo->oyentes_actual ?? 0); ?></strong> <?php echo esc_html__('oyentes conectados
-                    | Pico:', 'flavor-platform'); ?> <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
+                    | Pico:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
                 </p>
             </div>
             <button class="button button-primary button-large" onclick="finalizarEmision(<?php echo $emision_en_vivo->id; ?>)">
-                <span class="dashicons dashicons-controls-pause"></span> <?php echo esc_html__('Finalizar Emisión', 'flavor-platform'); ?>
+                <span class="dashicons dashicons-controls-pause"></span> <?php echo esc_html__('Finalizar Emisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     <?php else: ?>
         <div class="notice notice-info" style="padding: 20px; margin: 20px 0;">
-            <p style="margin: 0;"><strong><?php echo esc_html__('No hay emisiones en vivo', 'flavor-platform'); ?></strong></p>
+            <p style="margin: 0;"><strong><?php echo esc_html__('No hay emisiones en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
         </div>
     <?php endif; ?>
 
@@ -70,13 +70,13 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
-                    <th><?php echo esc_html__('Programa', 'flavor-platform'); ?></th>
-                    <th style="width: 150px;"><?php echo esc_html__('Fecha/Hora', 'flavor-platform'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Duración', 'flavor-platform'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', 'flavor-platform'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
-                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha/Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-album" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', 'flavor-platform'); ?></p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -114,11 +114,11 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                             <td>
                                 <?php if ($emision->estado == 'programada'): ?>
                                     <button class="button button-small button-primary" onclick="iniciarEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-controls-play"></span> <?php echo esc_html__('Iniciar', 'flavor-platform'); ?>
+                                        <span class="dashicons dashicons-controls-play"></span> <?php echo esc_html__('Iniciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php else: ?>
                                     <button class="button button-small" onclick="verEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', 'flavor-platform'); ?>
+                                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </td>
@@ -141,9 +141,9 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 
 <script>
 function abrirModalNuevaEmision() {
-    var html = '<h3><?php echo esc_js(__('Nueva Emisión', 'flavor-platform')); ?></h3>' +
+    var html = '<h3><?php echo esc_js(__('Nueva Emisión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
         '<form id="form-nueva-emision">' +
-        '<div class="form-row"><label><?php echo esc_js(__('Programa', 'flavor-platform')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></label>' +
         '<select name="programa_id" required>' +
         '<?php
         global $wpdb;
@@ -153,20 +153,20 @@ function abrirModalNuevaEmision() {
         }
         ?>' +
         '</select></div>' +
-        '<div class="form-row"><label><?php echo esc_js(__('Fecha y hora', 'flavor-platform')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Fecha y hora', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></label>' +
         '<input type="datetime-local" name="fecha_emision" required></div>' +
-        '<div class="form-row"><label><?php echo esc_js(__('Duración (min)', 'flavor-platform')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Duración (min)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></label>' +
         '<input type="number" name="duracion_minutos" value="60" min="15"></div>' +
         '<div class="flavor-modal-actions">' +
-        '<button type="button" class="button" onclick="cerrarModal()"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button> ' +
-        '<button type="submit" class="button button-primary"><?php echo esc_js(__('Programar', 'flavor-platform')); ?></button>' +
+        '<button type="button" class="button" onclick="cerrarModal()"><?php echo esc_js(__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button> ' +
+        '<button type="submit" class="button button-primary"><?php echo esc_js(__('Programar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button>' +
         '</div></form>';
     document.getElementById('modal-emision-contenido').innerHTML = html;
     document.getElementById('modal-emision').style.display = 'block';
 }
 
 function iniciarEmision(id) {
-    if (confirm('<?php echo esc_js(__('¿Iniciar emisión en vivo?', 'flavor-platform')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Iniciar emisión en vivo?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_iniciar_emision',
             emision_id: id,
@@ -175,14 +175,14 @@ function iniciarEmision(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al iniciar', 'flavor-platform')); ?>');
+                alert(response.data || '<?php echo esc_js(__('Error al iniciar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     }
 }
 
 function finalizarEmision(id) {
-    if (confirm('<?php echo esc_js(__('¿Finalizar la emisión?', 'flavor-platform')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Finalizar la emisión?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_finalizar_emision',
             emision_id: id,
@@ -191,14 +191,14 @@ function finalizarEmision(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al finalizar', 'flavor-platform')); ?>');
+                alert(response.data || '<?php echo esc_js(__('Error al finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     }
 }
 
 function verEmision(id) {
-    document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-platform')); ?></p>';
+    document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';
     document.getElementById('modal-emision').style.display = 'block';
 
     jQuery.get(ajaxurl, {
@@ -209,13 +209,13 @@ function verEmision(id) {
         if (response.success) {
             var e = response.data;
             var html = '<h3>' + e.programa_nombre + '</h3>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-platform')); ?></strong> ' + e.fecha + '</p>' +
-                '<p><strong><?php echo esc_js(__('Duración:', 'flavor-platform')); ?></strong> ' + e.duracion + ' min</p>' +
-                '<p><strong><?php echo esc_js(__('Estado:', 'flavor-platform')); ?></strong> ' + e.estado + '</p>' +
-                '<p><strong><?php echo esc_js(__('Oyentes pico:', 'flavor-platform')); ?></strong> ' + e.oyentes_pico + '</p>';
+                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Duración:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.duracion + ' min</p>' +
+                '<p><strong><?php echo esc_js(__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.estado + '</p>' +
+                '<p><strong><?php echo esc_js(__('Oyentes pico:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.oyentes_pico + '</p>';
             document.getElementById('modal-emision-contenido').innerHTML = html;
         } else {
-            document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-platform')); ?></p>';
+            document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';
         }
     });
 }

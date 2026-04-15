@@ -16,66 +16,66 @@ $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
 // Categorías de materiales predefinidas
 $categorias_materiales = [
     'papel' => [
-        'nombre' => __('Papel y Cartón', 'flavor-platform'),
+        'nombre' => __('Papel y Cartón', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#6c757d',
         'icon' => '📄',
-        'descripcion' => __('Papel, cartón, periódicos, revistas, cajas', 'flavor-platform'),
+        'descripcion' => __('Papel, cartón, periódicos, revistas, cajas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Papel limpio', 'Cartón', 'Periódicos', 'Revistas', 'Cajas'],
         'no_aceptado' => ['Papel sucio', 'Papel encerado', 'Papel térmico'],
     ],
     'plastico' => [
-        'nombre' => __('Plástico y Envases', 'flavor-platform'),
+        'nombre' => __('Plástico y Envases', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#ffc107',
         'icon' => '🥤',
-        'descripcion' => __('Botellas, envases, bolsas de plástico', 'flavor-platform'),
+        'descripcion' => __('Botellas, envases, bolsas de plástico', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Botellas PET', 'Envases de yogur', 'Bolsas de plástico', 'Tapones'],
         'no_aceptado' => ['Plásticos mezclados', 'Film plastificado', 'Juguetes de plástico'],
     ],
     'vidrio' => [
-        'nombre' => __('Vidrio', 'flavor-platform'),
+        'nombre' => __('Vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#17a2b8',
         'icon' => '🍾',
-        'descripcion' => __('Botellas y tarros de vidrio', 'flavor-platform'),
+        'descripcion' => __('Botellas y tarros de vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Botellas', 'Tarros', 'Frascos de vidrio'],
         'no_aceptado' => ['Cristal de ventana', 'Espejos', 'Bombillas', 'Cerámica'],
     ],
     'organico' => [
-        'nombre' => __('Orgánico', 'flavor-platform'),
+        'nombre' => __('Orgánico', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#28a745',
         'icon' => '🌱',
-        'descripcion' => __('Restos de comida, residuos de jardín', 'flavor-platform'),
+        'descripcion' => __('Restos de comida, residuos de jardín', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Restos de frutas', 'Verduras', 'Cáscaras', 'Posos de café', 'Restos de jardín'],
         'no_aceptado' => ['Carne', 'Pescado', 'Lácteos', 'Aceites', 'Excrementos de mascotas'],
     ],
     'electronico' => [
-        'nombre' => __('Electrónico (RAEE)', 'flavor-platform'),
+        'nombre' => __('Electrónico (RAEE)', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#dc3545',
         'icon' => '💻',
-        'descripcion' => __('Aparatos electrónicos, pilas, baterías', 'flavor-platform'),
+        'descripcion' => __('Aparatos electrónicos, pilas, baterías', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Móviles', 'Ordenadores', 'Electrodomésticos', 'Cables', 'Pilas'],
         'no_aceptado' => ['Aparatos con aceite', 'Fluorescentes rotos'],
     ],
     'ropa' => [
-        'nombre' => __('Ropa y Textil', 'flavor-platform'),
+        'nombre' => __('Ropa y Textil', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#6f42c1',
         'icon' => '👕',
-        'descripcion' => __('Ropa, zapatos, textiles del hogar', 'flavor-platform'),
+        'descripcion' => __('Ropa, zapatos, textiles del hogar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Ropa usada', 'Zapatos', 'Sábanas', 'Cortinas', 'Toallas'],
         'no_aceptado' => ['Ropa muy deteriorada', 'Trapos sucios', 'Colchones'],
     ],
     'aceite' => [
-        'nombre' => __('Aceite Usado', 'flavor-platform'),
+        'nombre' => __('Aceite Usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#fd7e14',
         'icon' => '🫗',
-        'descripcion' => __('Aceite de cocina usado', 'flavor-platform'),
+        'descripcion' => __('Aceite de cocina usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Aceite de freír', 'Aceite de conservas'],
         'no_aceptado' => ['Aceite de motor', 'Aceite industrial'],
     ],
     'pilas' => [
-        'nombre' => __('Pilas y Baterías', 'flavor-platform'),
+        'nombre' => __('Pilas y Baterías', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#20c997',
         'icon' => '🔋',
-        'descripcion' => __('Pilas, baterías, acumuladores', 'flavor-platform'),
+        'descripcion' => __('Pilas, baterías, acumuladores', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'aceptado' => ['Pilas alcalinas', 'Pilas recargables', 'Baterías de móvil'],
         'no_aceptado' => ['Baterías de coche', 'Baterías industriales'],
     ],
@@ -101,7 +101,7 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
 <div class="wrap flavor-reciclaje-materiales">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-category"></span>
-        <?php echo esc_html__('Materiales Reciclables', 'flavor-platform'); ?>
+        <?php echo esc_html__('Materiales Reciclables', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -123,15 +123,15 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
                 <div class="flavor-material-stats">
                     <div class="flavor-stat-item">
                         <span class="flavor-stat-value"><?php echo number_format($stats->total_kg ?? 0, 2); ?> kg</span>
-                        <span class="flavor-stat-label"><?php echo esc_html__('Total Reciclado', 'flavor-platform'); ?></span>
+                        <span class="flavor-stat-label"><?php echo esc_html__('Total Reciclado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-stat-item">
                         <span class="flavor-stat-value"><?php echo number_format($stats->total_depositos ?? 0); ?></span>
-                        <span class="flavor-stat-label"><?php echo esc_html__('Depósitos', 'flavor-platform'); ?></span>
+                        <span class="flavor-stat-label"><?php echo esc_html__('Depósitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-stat-item">
                         <span class="flavor-stat-value"><?php echo number_format($stats->usuarios_unicos ?? 0); ?></span>
-                        <span class="flavor-stat-label"><?php echo esc_html__('Usuarios', 'flavor-platform'); ?></span>
+                        <span class="flavor-stat-label"><?php echo esc_html__('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -139,7 +139,7 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
                     <div class="flavor-info-section">
                         <h4>
                             <span class="dashicons dashicons-yes" style="color: #28a745;"></span>
-                            <?php echo esc_html__('Se Acepta', 'flavor-platform'); ?>
+                            <?php echo esc_html__('Se Acepta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
                         <ul>
                             <?php foreach ($material['aceptado'] as $item) : ?>
@@ -151,7 +151,7 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
                     <div class="flavor-info-section">
                         <h4>
                             <span class="dashicons dashicons-no" style="color: #dc3545;"></span>
-                            <?php echo esc_html__('No Se Acepta', 'flavor-platform'); ?>
+                            <?php echo esc_html__('No Se Acepta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
                         <ul>
                             <?php foreach ($material['no_aceptado'] as $item) : ?>
@@ -163,7 +163,7 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
 
                 <div class="flavor-material-actions">
                     <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-estadisticas&material=' . $tipo); ?>" class="button">
-                        <?php echo esc_html__('Ver Estadísticas', 'flavor-platform'); ?>
+                        <?php echo esc_html__('Ver Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -172,43 +172,43 @@ foreach (array_keys($categorias_materiales) as $tipo_material) {
 
     <!-- Consejos de reciclaje -->
     <div class="flavor-consejos-section">
-        <h2><?php echo esc_html__('Consejos para Reciclar Correctamente', 'flavor-platform'); ?></h2>
+        <h2><?php echo esc_html__('Consejos para Reciclar Correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <div class="flavor-consejos-grid">
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-admin-site"></span>
-                <h3><?php echo esc_html__('Limpio y Seco', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Asegúrate de que los materiales estén limpios y secos antes de depositarlos. Los envases sucios pueden contaminar el resto.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('Limpio y Seco', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Asegúrate de que los materiales estén limpios y secos antes de depositarlos. Los envases sucios pueden contaminar el resto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-image-filter"></span>
-                <h3><?php echo esc_html__('Separar Correctamente', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Separa los materiales según su tipo. No mezcles diferentes materiales en el mismo contenedor.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('Separar Correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Separa los materiales según su tipo. No mezcles diferentes materiales en el mismo contenedor.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-archive"></span>
-                <h3><?php echo esc_html__('Aplastar Envases', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Aplasta las botellas y cajas para ahorrar espacio en los contenedores y facilitar el transporte.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('Aplastar Envases', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Aplasta las botellas y cajas para ahorrar espacio en los contenedores y facilitar el transporte.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-marker"></span>
-                <h3><?php echo esc_html__('Sin Etiquetas', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Siempre que sea posible, retira las etiquetas de los envases antes de reciclarlos.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('Sin Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Siempre que sea posible, retira las etiquetas de los envases antes de reciclarlos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-dismiss"></span>
-                <h3><?php echo esc_html__('En Caso de Duda', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Si no estás seguro de dónde va un material, es mejor depositarlo en el contenedor de resto que contaminar el reciclaje.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('En Caso de Duda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Si no estás seguro de dónde va un material, es mejor depositarlo en el contenedor de resto que contaminar el reciclaje.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-consejo-card">
                 <span class="dashicons dashicons-clock"></span>
-                <h3><?php echo esc_html__('Depósito Regular', 'flavor-platform'); ?></h3>
-                <p><?php echo esc_html__('Establece una rutina para depositar tus materiales reciclables regularmente y evita acumulaciones.', 'flavor-platform'); ?></p>
+                <h3><?php echo esc_html__('Depósito Regular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php echo esc_html__('Establece una rutina para depositar tus materiales reciclables regularmente y evita acumulaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>

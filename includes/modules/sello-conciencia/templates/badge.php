@@ -39,13 +39,13 @@ $size_class = $size_classes[$size] ?? $size_classes['medium'];
     </div>
 
     <div class="fsc-badge__content">
-        <span class="fsc-badge__label"><?php esc_html_e('App Consciente', 'flavor-platform'); ?></span>
+        <span class="fsc-badge__label"><?php esc_html_e('App Consciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <span class="fsc-badge__level"><?php echo esc_html($nivel['nombre']); ?></span>
     </div>
 
     <?php if ($show_details && !empty($evaluacion['puntuaciones_premisas'])) : ?>
     <div class="fsc-badge__details">
-        <h4><?php esc_html_e('Contribución por premisa', 'flavor-platform'); ?></h4>
+        <h4><?php esc_html_e('Contribución por premisa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul class="fsc-badge__premisas">
             <?php
             $sello_conciencia_module_class = function_exists('flavor_get_runtime_class_name')

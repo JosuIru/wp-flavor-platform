@@ -49,7 +49,7 @@ class Flavor_Bug_Tracker_Dashboard_Tab {
 
         flavor_register_dashboard_widget([
             'id' => 'bug-tracker-summary',
-            'title' => __('Bugs Recientes', 'flavor-platform'),
+            'title' => __('Bugs Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'callback' => [$this, 'render_widget'],
             'context' => 'side',
             'priority' => 'high',
@@ -84,31 +84,31 @@ class Flavor_Bug_Tracker_Dashboard_Tab {
                     <span style="font-size: 24px; font-weight: bold; color: #dc2626;">
                         <?php echo esc_html($estadisticas['por_estado']['nuevo'] ?? 0); ?>
                     </span>
-                    <br><small><?php esc_html_e('Nuevos', 'flavor-platform'); ?></small>
+                    <br><small><?php esc_html_e('Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
                 <div class="stat-card" style="background: #fef3c7; padding: 10px; border-radius: 6px; text-align: center;">
                     <span style="font-size: 24px; font-weight: bold; color: #d97706;">
                         <?php echo esc_html($estadisticas['por_estado']['abierto'] ?? 0); ?>
                     </span>
-                    <br><small><?php esc_html_e('Abiertos', 'flavor-platform'); ?></small>
+                    <br><small><?php esc_html_e('Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
                 <div class="stat-card" style="background: #f0fdf4; padding: 10px; border-radius: 6px; text-align: center;">
                     <span style="font-size: 24px; font-weight: bold; color: #16a34a;">
                         <?php echo esc_html($estadisticas['por_estado']['resuelto'] ?? 0); ?>
                     </span>
-                    <br><small><?php esc_html_e('Resueltos', 'flavor-platform'); ?></small>
+                    <br><small><?php esc_html_e('Resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
                 <div class="stat-card" style="background: #f3f4f6; padding: 10px; border-radius: 6px; text-align: center;">
                     <span style="font-size: 24px; font-weight: bold; color: #6b7280;">
                         <?php echo esc_html($estadisticas['ultimas_24h']); ?>
                     </span>
-                    <br><small><?php esc_html_e('Últimas 24h', 'flavor-platform'); ?></small>
+                    <br><small><?php esc_html_e('Últimas 24h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
             </div>
 
             <?php if (!empty($bugs_recientes['bugs'])) : ?>
                 <h4 style="margin: 15px 0 10px; font-size: 13px; color: #666;">
-                    <?php esc_html_e('Bugs más recientes', 'flavor-platform'); ?>
+                    <?php esc_html_e('Bugs más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <ul style="margin: 0; padding: 0; list-style: none;">
                     <?php foreach ($bugs_recientes['bugs'] as $bug) : ?>
@@ -127,13 +127,13 @@ class Flavor_Bug_Tracker_Dashboard_Tab {
                 </ul>
             <?php else : ?>
                 <p style="color: #16a34a; text-align: center; padding: 20px 0;">
-                    ✓ <?php esc_html_e('No hay bugs nuevos', 'flavor-platform'); ?>
+                    ✓ <?php esc_html_e('No hay bugs nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             <?php endif; ?>
 
             <p style="margin-top: 15px; text-align: center;">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bug-tracker')); ?>" class="button button-secondary">
-                    <?php esc_html_e('Ver todos los bugs', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver todos los bugs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -188,7 +188,7 @@ class Flavor_Bug_Tracker_Dashboard_Tab {
         }
 
         if (empty($items)) {
-            return __('Sin bugs pendientes', 'flavor-platform');
+            return __('Sin bugs pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return implode(', ', $items);

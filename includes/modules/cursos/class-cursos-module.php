@@ -52,7 +52,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Cursos no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Cursos no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -191,31 +191,31 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'cursos',
-            'label' => __('Cursos', 'flavor-platform'),
+            'label' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-welcome-learn-more',
             'capability' => 'manage_options',
             'categoria' => 'actividades',
             'paginas' => [
                 [
                     'slug' => 'cursos-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'cursos-listado',
-                    'titulo' => __('Cursos', 'flavor-platform'),
+                    'titulo' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_cursos'],
                     'badge' => [$this, 'contar_cursos_activos'],
                 ],
                 [
                     'slug' => 'cursos-inscripciones',
-                    'titulo' => __('Inscripciones', 'flavor-platform'),
+                    'titulo' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_inscripciones'],
                     'badge' => [$this, 'contar_inscripciones_pendientes'],
                 ],
                 [
                     'slug' => 'cursos-config',
-                    'titulo' => __('Configuración', 'flavor-platform'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -328,8 +328,8 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
             return;
         }
 
-        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Cursos', 'flavor-platform') . '</h1>';
-        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-platform') . '</p></div>';
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     /**
@@ -790,14 +790,14 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-platform'),
+                'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $cta = home_url('/mi-portal/multimedia/subir/?curso_id=' . absint($curso['id']));
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del curso', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-platform') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del curso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="curso" entidad_id="' . absint($curso['id']) . '"]')
             . '</div>';
 
@@ -809,14 +809,14 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-platform'),
+                'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $cta = home_url('/mi-portal/biblioteca/');
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Biblioteca recomendada', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir biblioteca', 'flavor-platform') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Biblioteca recomendada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[biblioteca_catalogo limite="12"]')
             . '</div>';
 
@@ -828,14 +828,14 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-platform'),
+                'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $cta = home_url('/mi-portal/podcast/');
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Podcast recomendado', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir podcast', 'flavor-platform') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Podcast recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir podcast', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[podcast_series limit="6"]')
             . '</div>';
 
@@ -895,7 +895,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_detalle_curso($params) {
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('flavor_cursos', 'flavor-platform')];
+            return ['success' => false, 'error' => __('flavor_cursos', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -910,7 +910,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$curso) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener lecciones (solo títulos públicamente)
@@ -994,11 +994,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_inscribirse($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('fecha_inicio', 'flavor-platform')];
+            return ['success' => false, 'error' => __('fecha_inicio', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1016,12 +1016,12 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$curso) {
-            return ['success' => false, 'error' => __('progreso', 'flavor-platform')];
+            return ['success' => false, 'error' => __('progreso', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar plazas
         if ($curso->alumnos_inscritos >= $curso->max_alumnos) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar que no esté ya inscrito
@@ -1032,7 +1032,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => __('leccion_id', 'flavor-platform')];
+            return ['success' => false, 'error' => __('leccion_id', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Si es de pago, verificar pago (simplificado - integrar con pasarela)
@@ -1053,7 +1053,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ]);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar contador
@@ -1080,7 +1080,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_mis_cursos($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('fecha_completado', 'flavor-platform')];
+            return ['success' => false, 'error' => __('fecha_completado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1129,11 +1129,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_ver_leccion($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['leccion_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1152,7 +1152,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$leccion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar inscripción (a menos que sea gratuita)
@@ -1165,7 +1165,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion && !$leccion->es_gratuita) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener o crear progreso
@@ -1216,11 +1216,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_marcar_completada($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['leccion_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1240,7 +1240,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$leccion) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar inscripción
@@ -1253,7 +1253,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar o crear progreso
@@ -1293,7 +1293,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Lección completada!', 'flavor-platform'),
+            'mensaje' => __('¡Lección completada!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'puntos' => $leccion->puntos,
         ];
     }
@@ -1361,11 +1361,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_valorar_curso($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('flavor_cursos_inscripciones', 'flavor-platform')];
+            return ['success' => false, 'error' => __('flavor_cursos_inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['curso_id']) || !isset($params['valoracion'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1386,7 +1386,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Guardar valoración
@@ -1418,7 +1418,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Gracias por tu valoración!', 'flavor-platform'),
+            'mensaje' => __('¡Gracias por tu valoración!', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1427,11 +1427,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_solicitar_certificado($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1450,7 +1450,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya tiene certificado
@@ -1494,7 +1494,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Certificado generado!', 'flavor-platform'),
+            'mensaje' => __('¡Certificado generado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'certificado' => [
                 'codigo' => $codigo,
                 'fecha' => current_time('mysql'),
@@ -1507,7 +1507,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_mis_cursos_instructor($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1542,11 +1542,11 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     private function action_estadisticas_curso($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('curso_id', 'flavor-platform')];
+            return ['success' => false, 'error' => __('curso_id', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1565,7 +1565,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$curso && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de curso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Estadísticas
@@ -1680,7 +1680,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         if (!$inscripcion) {
             return rest_ensure_response([
                 'success' => false,
-                'error' => __('No estás inscrito en este curso.', 'flavor-platform'),
+                'error' => __('No estás inscrito en este curso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -1829,7 +1829,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1839,7 +1839,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => __('modalidad', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('modalidad', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -1891,7 +1891,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1902,7 +1902,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($curso_id) || empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => __('assets/js/cursos-frontend.js', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('assets/js/cursos-frontend.js', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -1934,7 +1934,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Lección guardada', 'flavor-platform'),
+            'mensaje' => __('Lección guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'leccion_id' => $leccion_id,
         ]);
     }
@@ -1946,7 +1946,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1958,14 +1958,14 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         $estados_validos = ['borrador', 'pendiente', 'publicado', 'en_curso', 'finalizado', 'cancelado'];
 
         if (!in_array($estado, $estados_validos)) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->update($tabla_cursos, ['estado' => $estado], ['id' => $curso_id]);
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Estado actualizado', 'flavor-platform'),
+            'mensaje' => __('Estado actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1976,7 +1976,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2022,19 +2022,19 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         // Verificar permisos
         if (!current_user_can('manage_options') && !current_user_can('edit_users')) {
-            wp_send_json_error(['message' => __('No tienes permisos para ver detalles de alumnos.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para ver detalles de alumnos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
 
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('ID de usuario requerido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de usuario requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el usuario existe
         $usuario = get_userdata($usuario_id);
         if (!$usuario) {
-            wp_send_json_error(['message' => __('Usuario no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Usuario no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2103,19 +2103,19 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
 
         // Verificar permisos
         if (!current_user_can('manage_options') && !current_user_can('edit_users') && !current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('No tienes permisos para ver perfiles de instructores.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para ver perfiles de instructores.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $instructor_id = isset($_POST['instructor_id']) ? intval($_POST['instructor_id']) : 0;
 
         if (!$instructor_id) {
-            wp_send_json_error(['message' => __('ID de instructor requerido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de instructor requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el usuario existe
         $instructor = get_userdata($instructor_id);
         if (!$instructor) {
-            wp_send_json_error(['message' => __('Instructor no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Instructor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2365,7 +2365,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         $usuario = get_userdata($usuario_id);
         if (!$usuario) return;
 
-        $asunto = sprintf(__('¡Bienvenido al curso "%s"!', 'flavor-platform'), $curso->titulo);
+        $asunto = sprintf(__('¡Bienvenido al curso "%s"!', FLAVOR_PLATFORM_TEXT_DOMAIN), $curso->titulo);
         $mensaje = sprintf(
             __('Hola %s,
 
@@ -2373,7 +2373,7 @@ Te has inscrito correctamente en el curso "%s".
 
 Puedes acceder al contenido del curso desde tu panel de usuario.
 
-¡Mucho éxito en tu aprendizaje!', 'flavor-platform'),
+¡Mucho éxito en tu aprendizaje!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $usuario->display_name,
             $curso->titulo
         );
@@ -2402,7 +2402,7 @@ Puedes acceder al contenido del curso desde tu panel de usuario.
         );
 
         foreach ($inactivos as $inscripcion) {
-            $asunto = sprintf(__('¿Continúas con "%s"?', 'flavor-platform'), $inscripcion->titulo);
+            $asunto = sprintf(__('¿Continúas con "%s"?', FLAVOR_PLATFORM_TEXT_DOMAIN), $inscripcion->titulo);
             $mensaje = sprintf(
                 __('Hola %s,
 
@@ -2410,7 +2410,7 @@ Hace tiempo que no te vemos por el curso "%s".
 
 Tu progreso actual es del %d%%. ¡Ánimo, puedes completarlo!
 
-Accede ahora y continúa aprendiendo.', 'flavor-platform'),
+Accede ahora y continúa aprendiendo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $inscripcion->display_name,
                 $inscripcion->titulo,
                 $inscripcion->progreso_porcentaje
@@ -2444,69 +2444,69 @@ Accede ahora y continúa aprendiendo.', 'flavor-platform'),
     public function get_web_components() {
         return [
             'hero_cursos' => [
-                'label' => __('Hero Cursos', 'flavor-platform'),
-                'description' => __('Sección hero para plataforma de cursos', 'flavor-platform'),
+                'label' => __('Hero Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero para plataforma de cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-welcome-learn-more',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Aprende con Tu Comunidad', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-platform'), 'default' => __('Cursos impartidos por vecinos expertos', 'flavor-platform')],
-                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-platform'), 'default' => ''],
-                    'mostrar_buscador' => ['type' => 'toggle', 'label' => __('Mostrar buscador', 'flavor-platform'), 'default' => true],
-                    'mostrar_estadisticas' => ['type' => 'toggle', 'label' => __('Mostrar estadísticas', 'flavor-platform'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Aprende con Tu Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Cursos impartidos por vecinos expertos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                    'mostrar_buscador' => ['type' => 'toggle', 'label' => __('Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'mostrar_estadisticas' => ['type' => 'toggle', 'label' => __('Mostrar estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'template' => 'cursos/hero',
             ],
             'cursos_grid' => [
-                'label' => __('Grid de Cursos', 'flavor-platform'),
-                'description' => __('Catálogo de cursos disponibles', 'flavor-platform'),
+                'label' => __('Grid de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Catálogo de cursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Cursos Disponibles', 'flavor-platform')],
-                    'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-platform'), 'options' => [2, 3, 4], 'default' => 3],
-                    'limite' => ['type' => 'number', 'label' => __('Cantidad', 'flavor-platform'), 'default' => 9],
-                    'filtro_categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-platform'), 'default' => ''],
-                    'filtro_nivel' => ['type' => 'select', 'label' => __('Nivel', 'flavor-platform'), 'options' => ['', 'principiante', 'intermedio', 'avanzado'], 'default' => ''],
-                    'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', 'flavor-platform'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Cursos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [2, 3, 4], 'default' => 3],
+                    'limite' => ['type' => 'number', 'label' => __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 9],
+                    'filtro_categoria' => ['type' => 'text', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                    'filtro_nivel' => ['type' => 'select', 'label' => __('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['', 'principiante', 'intermedio', 'avanzado'], 'default' => ''],
+                    'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'template' => 'cursos/grid',
             ],
             'categorias_cursos' => [
-                'label' => __('Categorías de Cursos', 'flavor-platform'),
-                'description' => __('Navegación por categorías', 'flavor-platform'),
+                'label' => __('Categorías de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Navegación por categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-category',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Explora por Categoría', 'flavor-platform')],
-                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-platform'), 'options' => ['tarjetas', 'iconos', 'lista'], 'default' => 'tarjetas'],
-                    'mostrar_contador' => ['type' => 'toggle', 'label' => __('Mostrar contador', 'flavor-platform'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Explora por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['tarjetas', 'iconos', 'lista'], 'default' => 'tarjetas'],
+                    'mostrar_contador' => ['type' => 'toggle', 'label' => __('Mostrar contador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'template' => 'cursos/categorias',
             ],
             'cta_instructor' => [
-                'label' => __('CTA Instructor', 'flavor-platform'),
-                'description' => __('Llamada a la acción para instructores', 'flavor-platform'),
+                'label' => __('CTA Instructor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Llamada a la acción para instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-welcome-learn-more',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Comparte tu Conocimiento', 'flavor-platform')],
-                    'texto' => ['type' => 'textarea', 'label' => __('Texto', 'flavor-platform'), 'default' => __('Conviértete en instructor y enseña a tu comunidad', 'flavor-platform')],
-                    'boton_texto' => ['type' => 'text', 'label' => __('Texto botón', 'flavor-platform'), 'default' => __('Crear Curso', 'flavor-platform')],
-                    'boton_url' => ['type' => 'url', 'label' => __('URL botón', 'flavor-platform'), 'default' => '#'],
-                    'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-platform'), 'default' => '#10b981'],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Comparte tu Conocimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'texto' => ['type' => 'textarea', 'label' => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Conviértete en instructor y enseña a tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'boton_texto' => ['type' => 'text', 'label' => __('Texto botón', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Crear Curso', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'boton_url' => ['type' => 'url', 'label' => __('URL botón', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#'],
+                    'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#10b981'],
                 ],
                 'template' => 'cursos/cta-instructor',
             ],
             'curso_destacado' => [
-                'label' => __('Curso Destacado', 'flavor-platform'),
-                'description' => __('Mostrar un curso destacado', 'flavor-platform'),
+                'label' => __('Curso Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mostrar un curso destacado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
-                    'curso_id' => ['type' => 'number', 'label' => __('ID del curso', 'flavor-platform'), 'default' => 0],
-                    'mostrar_video' => ['type' => 'toggle', 'label' => __('Mostrar video', 'flavor-platform'), 'default' => true],
-                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-platform'), 'options' => ['horizontal', 'vertical'], 'default' => 'horizontal'],
+                    'curso_id' => ['type' => 'number', 'label' => __('ID del curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 0],
+                    'mostrar_video' => ['type' => 'toggle', 'label' => __('Mostrar video', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['horizontal', 'vertical'], 'default' => 'horizontal'],
                 ],
                 'template' => 'cursos/destacado',
             ],
@@ -2678,11 +2678,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Cursos', 'flavor-platform'),
+                'title' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'cursos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Cursos y Formación', 'flavor-platform'),
-                    'subtitle' => __('Programas educativos para todos los niveles', 'flavor-platform'),
+                    'title' => __('Cursos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Programas educativos para todos los niveles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'gradient',
                     'module' => 'cursos',
                     'current' => 'listado',
@@ -2693,11 +2693,11 @@ KNOWLEDGE;
 
             // Categorías
             [
-                'title' => __('Categorías', 'flavor-platform'),
+                'title' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'categorias',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Categorías de Cursos', 'flavor-platform'),
-                    'subtitle' => __('Explora cursos por categoría', 'flavor-platform'),
+                    'title' => __('Categorías de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Explora cursos por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'cursos',
                     'current' => 'categorias',
                     'content_after' => '[flavor_module_listing module="cursos" action="categorias"]',
@@ -2707,11 +2707,11 @@ KNOWLEDGE;
 
             // Mis cursos
             [
-                'title' => __('Mis Cursos', 'flavor-platform'),
+                'title' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-cursos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Cursos', 'flavor-platform'),
-                    'subtitle' => __('Cursos en los que estás matriculado', 'flavor-platform'),
+                    'title' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Cursos en los que estás matriculado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'cursos',
                     'current' => 'mis_cursos',
                     'content_after' => '[flavor_module_listing module="cursos" action="mis_cursos" user_specific="yes"]',
@@ -2721,11 +2721,11 @@ KNOWLEDGE;
 
             // Crear curso
             [
-                'title' => __('Crear Curso', 'flavor-platform'),
+                'title' => __('Crear Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Crear un Curso', 'flavor-platform'),
-                    'subtitle' => __('Comparte tu conocimiento como instructor', 'flavor-platform'),
+                    'title' => __('Crear un Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte tu conocimiento como instructor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'cursos',
                     'current' => 'crear',
                     'content_after' => '[flavor_module_form module="cursos" action="crear_curso"]',
@@ -2735,11 +2735,11 @@ KNOWLEDGE;
 
             // Matricularse
             [
-                'title' => __('Matricularse', 'flavor-platform'),
+                'title' => __('Matricularse', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'matricularse',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Matricularse en Curso', 'flavor-platform'),
-                    'subtitle' => __('Completa tu inscripción', 'flavor-platform'),
+                    'title' => __('Matricularse en Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Completa tu inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'cursos',
                     'current' => 'matricularse',
                     'content_after' => '[flavor_module_form module="cursos" action="matricularse"]',
@@ -2749,11 +2749,11 @@ KNOWLEDGE;
 
             // Instructores
             [
-                'title' => __('Instructores', 'flavor-platform'),
+                'title' => __('Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'instructores',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Nuestros Instructores', 'flavor-platform'),
-                    'subtitle' => __('Conoce a los profesionales que imparten los cursos', 'flavor-platform'),
+                    'title' => __('Nuestros Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Conoce a los profesionales que imparten los cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'cursos',
                     'current' => 'instructores',
                     'content_after' => '[flavor_module_listing module="cursos" action="instructores" columnas="4"]',
@@ -2779,8 +2779,8 @@ KNOWLEDGE;
         // Páginas ocultas del sidebar (primer parámetro null)
         add_submenu_page(
             null,
-            __('Cursos - Dashboard', 'flavor-platform'),
-            __('Dashboard', 'flavor-platform'),
+            __('Cursos - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'cursos',
             [$this, 'render_pagina_dashboard']
@@ -2788,8 +2788,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Cursos', 'flavor-platform'),
-            __('Cursos', 'flavor-platform'),
+            __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'cursos-listado',
             [$this, 'render_pagina_cursos']
@@ -2797,8 +2797,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Alumnos', 'flavor-platform'),
-            __('Alumnos', 'flavor-platform'),
+            __('Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'cursos-alumnos',
             [$this, 'render_pagina_alumnos']
@@ -2806,8 +2806,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Instructores', 'flavor-platform'),
-            __('Instructores', 'flavor-platform'),
+            __('Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'cursos-instructores',
             [$this, 'render_pagina_instructores']
@@ -2815,8 +2815,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Matrículas', 'flavor-platform'),
-            __('Matrículas', 'flavor-platform'),
+            __('Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'cursos-matriculas',
             [$this, 'render_pagina_matriculas']
@@ -2831,7 +2831,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Cursos', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2843,7 +2843,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cursos', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2855,7 +2855,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Alumnos', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2867,7 +2867,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Instructores', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2879,7 +2879,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', 'flavor-platform') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3088,18 +3088,18 @@ KNOWLEDGE;
     public function ajax_flavor_get_curso() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_cursos_nonce', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $curso_id = isset($_POST['curso_id']) ? absint($_POST['curso_id']) : 0;
 
         if (!$curso_id) {
-            wp_send_json_error(['message' => __('ID de curso no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de curso no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -3111,7 +3111,7 @@ KNOWLEDGE;
         ));
 
         if (!$curso) {
-            wp_send_json_error(['message' => __('Curso no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Curso no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Formatear fechas para datetime-local input
@@ -3132,12 +3132,12 @@ KNOWLEDGE;
     public function ajax_flavor_guardar_curso() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_cursos_nonce', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Sanitizar inputs
@@ -3162,19 +3162,19 @@ KNOWLEDGE;
 
         // Validar campos requeridos
         if (empty($titulo)) {
-            wp_send_json_error(['message' => __('El título es obligatorio.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El título es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($descripcion)) {
-            wp_send_json_error(['message' => __('La descripción es obligatoria.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La descripción es obligatoria.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($categoria)) {
-            wp_send_json_error(['message' => __('La categoría es obligatoria.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La categoría es obligatoria.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($duracion_horas < 1) {
-            wp_send_json_error(['message' => __('La duración debe ser al menos 1 hora.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La duración debe ser al menos 1 hora.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Validar valores permitidos
@@ -3262,7 +3262,7 @@ KNOWLEDGE;
             ));
 
             if (!$curso_existente) {
-                wp_send_json_error(['message' => __('El curso no existe.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('El curso no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             // Verificar slug único (excluyendo el curso actual)
@@ -3285,11 +3285,11 @@ KNOWLEDGE;
             );
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al actualizar el curso.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al actualizar el curso.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             wp_send_json_success([
-                'message'  => __('Curso actualizado correctamente.', 'flavor-platform'),
+                'message'  => __('Curso actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'curso_id' => $curso_id,
             ]);
         } else {
@@ -3320,13 +3320,13 @@ KNOWLEDGE;
             $resultado = $wpdb->insert($tabla_cursos, $datos_curso, $formatos_datos);
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al crear el curso.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al crear el curso.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             $nuevo_curso_id = $wpdb->insert_id;
 
             wp_send_json_success([
-                'message'  => __('Curso creado correctamente.', 'flavor-platform'),
+                'message'  => __('Curso creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'curso_id' => $nuevo_curso_id,
             ]);
         }

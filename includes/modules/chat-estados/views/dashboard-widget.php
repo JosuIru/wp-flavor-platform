@@ -21,27 +21,27 @@ $tiene_estados = $mis_estados && !empty($mis_estados['estados']);
     <div class="mis-estados-resumen">
         <div class="estados-count">
             <span class="numero"><?php echo count($mis_estados['estados']); ?></span>
-            <span class="label"><?php esc_html_e('estados activos', 'flavor-platform'); ?></span>
+            <span class="label"><?php esc_html_e('estados activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="estados-vistas">
             <?php
             $total_vistas = array_sum(array_column($mis_estados['estados'], 'visualizaciones_count'));
             ?>
             <span class="dashicons dashicons-visibility"></span>
-            <span><?php echo number_format_i18n($total_vistas); ?> <?php esc_html_e('vistas', 'flavor-platform'); ?></span>
+            <span><?php echo number_format_i18n($total_vistas); ?> <?php esc_html_e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
     <?php else: ?>
     <div class="sin-estados">
         <span class="dashicons dashicons-format-status"></span>
-        <p><?php esc_html_e('No tienes estados activos', 'flavor-platform'); ?></p>
-        <button class="btn-crear-estado btn-small"><?php esc_html_e('Crear estado', 'flavor-platform'); ?></button>
+        <p><?php esc_html_e('No tienes estados activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+        <button class="btn-crear-estado btn-small"><?php esc_html_e('Crear estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </div>
     <?php endif; ?>
 
     <?php if (!empty($contactos)): ?>
     <div class="contactos-estados">
-        <h4><?php esc_html_e('Estados de contactos', 'flavor-platform'); ?></h4>
+        <h4><?php esc_html_e('Estados de contactos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="contactos-lista">
             <?php
             $mostrar = array_slice($contactos, 0, 5);
@@ -59,7 +59,7 @@ $tiene_estados = $mis_estados && !empty($mis_estados['estados']);
         </div>
         <?php if (count($contactos) > 5): ?>
         <a href="<?php echo esc_url(home_url('/estados/')); ?>" class="ver-todos">
-            <?php printf(esc_html__('Ver todos (%d)', 'flavor-platform'), count($contactos)); ?>
+            <?php printf(esc_html__('Ver todos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($contactos)); ?>
         </a>
         <?php endif; ?>
     </div>

@@ -29,8 +29,8 @@ if (!$tabla_recursos_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Economía de Suficiencia aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Economía de Suficiencia aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -113,23 +113,23 @@ $recursos_recientes = $wpdb->get_results(
 <div class="dm-quick-actions">
     <a href="<?php echo esc_url(admin_url('admin.php?page=suficiencia-recursos')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-plus-alt2"></span>
-        <?php esc_html_e('Nuevo Recurso', 'flavor-platform'); ?>
+        <?php esc_html_e('Nuevo Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=suficiencia-intercambios')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-randomize"></span>
-        <?php esc_html_e('Registrar Intercambio', 'flavor-platform'); ?>
+        <?php esc_html_e('Registrar Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=suficiencia-compromisos')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-yes-alt"></span>
-        <?php esc_html_e('Ver Compromisos', 'flavor-platform'); ?>
+        <?php esc_html_e('Ver Compromisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=suficiencia-participantes')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-groups"></span>
-        <?php esc_html_e('Participantes', 'flavor-platform'); ?>
+        <?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=suficiencia-indicadores')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-chart-area"></span>
-        <?php esc_html_e('Indicadores', 'flavor-platform'); ?>
+        <?php esc_html_e('Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 </div>
 
@@ -138,7 +138,7 @@ $recursos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-admin-site-alt3 dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($recursos_disponibles); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Recursos Disponibles', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Recursos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -146,7 +146,7 @@ $recursos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($participantes_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participantes Activos', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participantes Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -154,7 +154,7 @@ $recursos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-update dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_intercambios)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Intercambios', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -162,7 +162,7 @@ $recursos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-smiley dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($promedio_bienestar, 1)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Índice Bienestar', 'flavor-platform'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Índice Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -171,8 +171,8 @@ $recursos_recientes = $wpdb->get_results(
 <div class="dm-alert dm-alert--success">
     <span class="dashicons dashicons-share"></span>
     <div>
-        <strong><?php printf(esc_html__('%s recursos compartidos activamente', 'flavor-platform'), number_format_i18n($recursos_compartidos)); ?></strong>
-        <span><?php esc_html_e('La comunidad practica la economía de suficiencia.', 'flavor-platform'); ?></span>
+        <strong><?php printf(esc_html__('%s recursos compartidos activamente', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($recursos_compartidos)); ?></strong>
+        <span><?php esc_html_e('La comunidad practica la economía de suficiencia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 </div>
 <?php endif; ?>
@@ -182,23 +182,23 @@ $recursos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Intercambios Esta Semana', 'flavor-platform'); ?>
+                <?php esc_html_e('Intercambios Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-platform'), number_format_i18n($intercambios_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($intercambios_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay intercambios esta semana.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay intercambios esta semana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_intercambios = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
-                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
-                    __('Sáb', 'flavor-platform')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -223,14 +223,14 @@ $recursos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Tipos de Recursos', 'flavor-platform'); ?>
+                <?php esc_html_e('Tipos de Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_tipo)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay recursos registrados.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay recursos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -251,15 +251,15 @@ $recursos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Participantes Más Activos', 'flavor-platform'); ?>
+                <?php esc_html_e('Participantes Más Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-platform'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($participantes_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay actividad todavía.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay actividad todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -267,13 +267,13 @@ $recursos_recientes = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: var(--dm-success);">
-                                <?php echo mb_substr($participante->display_name ?: __('P', 'flavor-platform'), 0, 1); ?>
+                                <?php echo mb_substr($participante->display_name ?: __('P', FLAVOR_PLATFORM_TEXT_DOMAIN), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($participante->display_name ?: __('Participante', 'flavor-platform')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($participante->display_name ?: __('Participante', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             </div>
                             <span class="dm-badge dm-badge--eco">
-                                <?php echo esc_html($participante->total_intercambios); ?> <?php esc_html_e('int.', 'flavor-platform'); ?>
+                                <?php echo esc_html($participante->total_intercambios); ?> <?php esc_html_e('int.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -286,14 +286,14 @@ $recursos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Recursos Recientes', 'flavor-platform'); ?>
+                <?php esc_html_e('Recursos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($recursos_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-products"></span>
-                    <p><?php esc_html_e('No hay recursos registrados.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('No hay recursos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
@@ -325,25 +325,25 @@ $recursos_recientes = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-products dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_recursos)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Recursos', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-networking dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_participantes); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Participantes', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-thumbs-up dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($promedio_satisfaccion, 1)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Satisfacción', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Satisfacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($tasa_cumplimiento); ?>%</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Compromisos', 'flavor-platform'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Compromisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>
 
@@ -352,45 +352,45 @@ $recursos_recientes = $wpdb->get_results(
     <div class="dm-card__header">
         <h3 class="dm-card__title">
             <span class="dashicons dashicons-external"></span>
-            <?php esc_html_e('Páginas Públicas del Módulo', 'flavor-platform'); ?>
+            <?php esc_html_e('Páginas Públicas del Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
-        <span class="dm-card__subtitle"><?php esc_html_e('Vistas disponibles para los usuarios', 'flavor-platform'); ?></span>
+        <span class="dm-card__subtitle"><?php esc_html_e('Vistas disponibles para los usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
     <div class="dm-card__body">
         <div class="dm-link-grid">
             <a href="<?php echo esc_url(home_url('/suficiencia/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-welcome-learn-more"></span>
                 <div>
-                    <strong><?php esc_html_e('Introducción', 'flavor-platform'); ?></strong>
-                    <span><?php esc_html_e('Qué es la economía de suficiencia', 'flavor-platform'); ?></span>
+                    <strong><?php esc_html_e('Introducción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span><?php esc_html_e('Qué es la economía de suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
             <a href="<?php echo esc_url(home_url('/suficiencia/mi-camino/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-chart-line"></span>
                 <div>
-                    <strong><?php esc_html_e('Mi Camino', 'flavor-platform'); ?></strong>
-                    <span><?php esc_html_e('Progreso personal del usuario', 'flavor-platform'); ?></span>
+                    <strong><?php esc_html_e('Mi Camino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span><?php esc_html_e('Progreso personal del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
             <a href="<?php echo esc_url(home_url('/suficiencia/compromisos/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-yes-alt"></span>
                 <div>
-                    <strong><?php esc_html_e('Compromisos', 'flavor-platform'); ?></strong>
-                    <span><?php esc_html_e('Compromisos de la comunidad', 'flavor-platform'); ?></span>
+                    <strong><?php esc_html_e('Compromisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span><?php esc_html_e('Compromisos de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
             <a href="<?php echo esc_url(home_url('/suficiencia/evaluacion/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-forms"></span>
                 <div>
-                    <strong><?php esc_html_e('Evaluación', 'flavor-platform'); ?></strong>
-                    <span><?php esc_html_e('Test de nivel de suficiencia', 'flavor-platform'); ?></span>
+                    <strong><?php esc_html_e('Evaluación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span><?php esc_html_e('Test de nivel de suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
             <a href="<?php echo esc_url(home_url('/suficiencia/biblioteca/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-book"></span>
                 <div>
-                    <strong><?php esc_html_e('Biblioteca', 'flavor-platform'); ?></strong>
-                    <span><?php esc_html_e('Recursos y materiales', 'flavor-platform'); ?></span>
+                    <strong><?php esc_html_e('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span><?php esc_html_e('Recursos y materiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
         </div>

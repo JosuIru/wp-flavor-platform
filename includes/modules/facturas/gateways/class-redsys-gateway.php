@@ -56,8 +56,8 @@ class Flavor_Redsys_Gateway extends Flavor_Payment_Gateway {
      */
     protected function init() {
         $this->id = 'redsys';
-        $this->name = __('Redsys / TPV Bancario', 'flavor-platform');
-        $this->description = __('Pago con tarjeta a través de tu banco (Redsys)', 'flavor-platform');
+        $this->name = __('Redsys / TPV Bancario', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Pago con tarjeta a través de tu banco (Redsys)', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $this->load_credentials();
 
@@ -92,7 +92,7 @@ class Flavor_Redsys_Gateway extends Flavor_Payment_Gateway {
      */
     public function process_payment($payment_data) {
         if (!$this->is_available()) {
-            return new WP_Error('gateway_no_disponible', __('Redsys no está disponible', 'flavor-platform'));
+            return new WP_Error('gateway_no_disponible', __('Redsys no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $factura_id = absint($payment_data['factura_id']);
@@ -250,7 +250,7 @@ class Flavor_Redsys_Gateway extends Flavor_Payment_Gateway {
             'fecha_pago' => current_time('Y-m-d'),
             'metodo_pago' => 'redsys',
             'referencia' => $auth_code,
-            'notas' => sprintf(__('Pago procesado via Redsys. Order: %s, Auth: %s', 'flavor-platform'), $order_id, $auth_code),
+            'notas' => sprintf(__('Pago procesado via Redsys. Order: %s, Auth: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $order_id, $auth_code),
         ]);
 
         if (is_wp_error($resultado_pago)) {

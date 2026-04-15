@@ -22,8 +22,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     public function __construct() {
         $this->id = 'espacios_comunes';
-        $this->name = __('Espacios Comunes', 'flavor-platform');
-        $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', 'flavor-platform');
+        $this->name = __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Principios Gailu que implementa este modulo
         $this->gailu_principios = ['economia_local', 'cuidados'];
@@ -88,8 +88,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         $nc->send(
             $user_id,
-            __('Reserva solicitada', 'flavor-platform'),
-            sprintf(__('Tu solicitud de reserva #%d ha sido enviada. Recibirás una notificación cuando sea revisada.', 'flavor-platform'), $reservation_id),
+            __('Reserva solicitada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu solicitud de reserva #%d ha sido enviada. Recibirás una notificación cuando sea revisada.', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -114,8 +114,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         $nc->send(
             $user_id,
-            __('Reserva aprobada', 'flavor-platform'),
-            sprintf(__('¡Tu reserva #%d ha sido aprobada! Ya puedes usar el espacio en la fecha solicitada.', 'flavor-platform'), $reservation_id),
+            __('Reserva aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('¡Tu reserva #%d ha sido aprobada! Ya puedes usar el espacio en la fecha solicitada.', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -138,14 +138,14 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         $nc = Flavor_Notification_Center::get_instance();
 
-        $message = sprintf(__('Tu reserva #%d no ha sido aprobada.', 'flavor-platform'), $reservation_id);
+        $message = sprintf(__('Tu reserva #%d no ha sido aprobada.', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservation_id);
         if (!empty($reason)) {
-            $message .= ' ' . sprintf(__('Motivo: %s', 'flavor-platform'), $reason);
+            $message .= ' ' . sprintf(__('Motivo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reason);
         }
 
         $nc->send(
             $user_id,
-            __('Reserva no aprobada', 'flavor-platform'),
+            __('Reserva no aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $message,
             [
                 'module_id' => $this->id,
@@ -172,8 +172,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         $nc->send(
             $user_id,
-            __('Recordatorio de reserva', 'flavor-platform'),
-            sprintf(__('Tu reserva #%d es mañana. No olvides recoger las llaves en recepción.', 'flavor-platform'), $reservation_id),
+            __('Recordatorio de reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu reserva #%d es mañana. No olvides recoger las llaves en recepción.', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -198,8 +198,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         $nc->send(
             $user_id,
-            __('Reserva cancelada', 'flavor-platform'),
-            sprintf(__('Tu reserva #%d ha sido cancelada.', 'flavor-platform'), $reservation_id),
+            __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu reserva #%d ha sido cancelada.', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'warning',
@@ -227,7 +227,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Espacios Comunes no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Espacios Comunes no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -348,34 +348,34 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     protected function get_admin_config() {
         return [
             'id' => 'espacios_comunes',
-            'label' => __('Espacios Comunes', 'flavor-platform'),
+            'label' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-admin-home',
             'capability' => 'manage_options',
             'categoria' => 'servicios',
             'paginas' => [
                 [
                     'slug' => 'espacios-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'espacios-listado',
-                    'titulo' => __('Espacios', 'flavor-platform'),
+                    'titulo' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_espacios'],
                 ],
                 [
                     'slug' => 'espacios-reservas',
-                    'titulo' => __('Reservas', 'flavor-platform'),
+                    'titulo' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_reservas'],
                 ],
                 [
                     'slug' => 'espacios-calendario',
-                    'titulo' => __('Calendario', 'flavor-platform'),
+                    'titulo' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_calendario'],
                 ],
                 [
                     'slug' => 'espacios-normas',
-                    'titulo' => __('Normas', 'flavor-platform'),
+                    'titulo' => __('Normas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_normas'],
                 ],
             ],
@@ -386,35 +386,35 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * Renderiza la página dashboard.
      */
     public function render_pagina_dashboard() {
-        $this->render_admin_view('dashboard.php', __('Espacios Comunes - Dashboard', 'flavor-platform'));
+        $this->render_admin_view('dashboard.php', __('Espacios Comunes - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
      * Renderiza la página de espacios.
      */
     public function render_pagina_espacios() {
-        $this->render_admin_view('espacios.php', __('Gestión de Espacios', 'flavor-platform'));
+        $this->render_admin_view('espacios.php', __('Gestión de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
      * Renderiza la página de reservas.
      */
     public function render_pagina_reservas() {
-        $this->render_admin_view('reservas.php', __('Gestión de Reservas', 'flavor-platform'));
+        $this->render_admin_view('reservas.php', __('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
      * Renderiza la página de calendario.
      */
     public function render_pagina_calendario() {
-        $this->render_admin_view('calendario.php', __('Calendario de Espacios', 'flavor-platform'));
+        $this->render_admin_view('calendario.php', __('Calendario de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
      * Renderiza la página de normas.
      */
     public function render_pagina_normas() {
-        $this->render_admin_view('normas.php', __('Normas y Políticas', 'flavor-platform'));
+        $this->render_admin_view('normas.php', __('Normas y Políticas', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -783,7 +783,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     private function action_detalle_espacio($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -795,7 +795,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $espacio_formateado = $this->formatear_espacio($espacio, true);
@@ -811,7 +811,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     private function action_disponibilidad($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -829,7 +829,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener reservas en el rango
@@ -871,11 +871,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     private function action_crear_reserva($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para reservar.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para reservar.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($params['espacio_id']) || empty($params['fecha_inicio']) || empty($params['fecha_fin'])) {
-            return ['success' => false, 'error' => __('Espacio, fecha de inicio y fecha de fin son requeridos.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Espacio, fecha de inicio y fecha de fin son requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -894,7 +894,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no disponible.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Espacio no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Validar fechas
@@ -904,23 +904,23 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $fin_timestamp = strtotime($fecha_fin);
 
         if ($inicio_timestamp <= $ahora) {
-            return ['success' => false, 'error' => __('La fecha de inicio debe ser futura.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('La fecha de inicio debe ser futura.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($fin_timestamp <= $inicio_timestamp) {
-            return ['success' => false, 'error' => __('La fecha de fin debe ser posterior al inicio.', 'flavor-platform')];
+            return ['success' => false, 'error' => __('La fecha de fin debe ser posterior al inicio.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Validar anticipación mínima
         $horas_anticipacion = ($inicio_timestamp - $ahora) / 3600;
         if ($horas_anticipacion < $settings['horas_anticipacion_minima']) {
-            return ['success' => false, 'error' => sprintf(__('Debes reservar con al menos %d horas de anticipación', 'flavor-platform'), $settings['horas_anticipacion_minima'])];
+            return ['success' => false, 'error' => sprintf(__('Debes reservar con al menos %d horas de anticipación', FLAVOR_PLATFORM_TEXT_DOMAIN), $settings['horas_anticipacion_minima'])];
         }
 
         // Validar duración máxima
         $duracion_horas = ($fin_timestamp - $inicio_timestamp) / 3600;
         if ($duracion_horas > $settings['duracion_maxima_horas']) {
-            return ['success' => false, 'error' => sprintf(__('La duración máxima es %d horas', 'flavor-platform'), $settings['duracion_maxima_horas'])];
+            return ['success' => false, 'error' => sprintf(__('La duración máxima es %d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), $settings['duracion_maxima_horas'])];
         }
 
         // Verificar disponibilidad (no solapamiento)
@@ -985,8 +985,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         return [
             'success' => true,
             'mensaje' => $estado_inicial === 'confirmada'
-                ? __('Reserva confirmada', 'flavor-platform')
-                : __('Solicitud de reserva enviada. Recibirás confirmación pronto.', 'flavor-platform'),
+                ? __('Reserva confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Solicitud de reserva enviada. Recibirás confirmación pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'reserva_id' => $reserva_id,
             'estado' => $estado_inicial,
             'precio_total' => $precio_total,
@@ -1083,8 +1083,8 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         return [
             'success' => true,
             'mensaje' => $pierde_fianza
-                ? __('Reserva cancelada. La fianza no será devuelta por cancelación tardía.', 'flavor-platform')
-                : __('Reserva cancelada correctamente.', 'flavor-platform'),
+                ? __('Reserva cancelada. La fianza no será devuelta por cancelación tardía.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Reserva cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'fianza_devuelta' => !$pierde_fianza,
         ];
     }
@@ -1145,7 +1145,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         return [
             'success' => true,
-            'mensaje' => __('Gracias por tu valoración', 'flavor-platform'),
+            'mensaje' => __('Gracias por tu valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1209,7 +1209,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             'espacio_id' => intval($params['espacio_id']),
             'usuario_id' => get_current_user_id(),
             'reserva_id' => isset($params['reserva_id']) ? intval($params['reserva_id']) : null,
-            'titulo' => isset($params['titulo']) ? sanitize_text_field($params['titulo']) : __('Incidencia', 'flavor-platform'),
+            'titulo' => isset($params['titulo']) ? sanitize_text_field($params['titulo']) : __('Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'descripcion' => sanitize_textarea_field($params['descripcion']),
             'tipo' => isset($params['tipo']) ? sanitize_text_field($params['tipo']) : 'otro',
             'urgencia' => isset($params['urgencia']) ? sanitize_text_field($params['urgencia']) : 'media',
@@ -1227,7 +1227,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         return [
             'success' => true,
-            'mensaje' => __('Incidencia reportada. La revisaremos pronto.', 'flavor-platform'),
+            'mensaje' => __('Incidencia reportada. La revisaremos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'incidencia_id' => $wpdb->insert_id,
         ];
     }
@@ -1353,17 +1353,17 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
     public function api_tipos_espacios($request) {
         $tipos = [
-            'salon_eventos' => __('Salón de eventos', 'flavor-platform'),
-            'sala_reuniones' => __('Sala de reuniones', 'flavor-platform'),
-            'cocina' => __('Cocina comunitaria', 'flavor-platform'),
-            'taller' => __('Taller', 'flavor-platform'),
-            'terraza' => __('Terraza', 'flavor-platform'),
-            'jardin' => __('Jardín', 'flavor-platform'),
-            'gimnasio' => __('Gimnasio', 'flavor-platform'),
-            'ludoteca' => __('Ludoteca', 'flavor-platform'),
-            'piscina' => __('Piscina', 'flavor-platform'),
-            'parking' => __('Parking', 'flavor-platform'),
-            'otro' => __('Otro', 'flavor-platform'),
+            'salon_eventos' => __('Salón de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sala_reuniones' => __('Sala de reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cocina' => __('Cocina comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'taller' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'terraza' => __('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'jardin' => __('Jardín', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gimnasio' => __('Gimnasio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ludoteca' => __('Ludoteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'piscina' => __('Piscina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'parking' => __('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return new WP_REST_Response(['success' => true, 'tipos' => $tipos], 200);
@@ -1531,7 +1531,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1565,15 +1565,15 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         // Validar campos requeridos
         if (empty($datos_espacio['nombre'])) {
-            wp_send_json_error(['message' => __('El nombre del espacio es requerido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El nombre del espacio es requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($datos_espacio['ubicacion'])) {
-            wp_send_json_error(['message' => __('La ubicación del espacio es requerida.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La ubicación del espacio es requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($datos_espacio['capacidad_personas'] <= 0) {
-            wp_send_json_error(['message' => __('La capacidad debe ser mayor a 0.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La capacidad debe ser mayor a 0.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($espacio_id > 0) {
@@ -1581,11 +1581,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             $resultado = $wpdb->update($tabla_espacios, $datos_espacio, ['id' => $espacio_id]);
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al actualizar el espacio.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al actualizar el espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             wp_send_json_success([
-                'message' => __('Espacio actualizado correctamente.', 'flavor-platform'),
+                'message' => __('Espacio actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'espacio_id' => $espacio_id,
             ]);
         } else {
@@ -1594,11 +1594,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             $resultado = $wpdb->insert($tabla_espacios, $datos_espacio);
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al crear el espacio.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al crear el espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             wp_send_json_success([
-                'message' => __('Espacio creado correctamente.', 'flavor-platform'),
+                'message' => __('Espacio creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'espacio_id' => $wpdb->insert_id,
             ]);
         }
@@ -1611,7 +1611,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1626,15 +1626,15 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         // Validar campos requeridos
         if ($espacio_id <= 0) {
-            wp_send_json_error(['message' => __('Debe seleccionar un espacio.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debe seleccionar un espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($usuario_id <= 0) {
-            wp_send_json_error(['message' => __('Debe seleccionar un usuario.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debe seleccionar un usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($fecha_inicio) || empty($fecha_fin)) {
-            wp_send_json_error(['message' => __('Las fechas de inicio y fin son requeridas.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Las fechas de inicio y fin son requeridas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el espacio existe
@@ -1644,13 +1644,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$espacio) {
-            wp_send_json_error(['message' => __('El espacio seleccionado no existe.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El espacio seleccionado no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el usuario existe
         $usuario = get_userdata($usuario_id);
         if (!$usuario) {
-            wp_send_json_error(['message' => __('El usuario seleccionado no existe.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El usuario seleccionado no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar disponibilidad (excepto para la misma reserva si es actualización)
@@ -1672,7 +1672,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if ($solapamiento) {
-            wp_send_json_error(['message' => __('Ya existe una reserva en ese horario.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Ya existe una reserva en ese horario.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos_reserva = [
@@ -1695,11 +1695,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             $resultado = $wpdb->update($tabla_reservas, $datos_reserva, ['id' => $reserva_id]);
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al actualizar la reserva.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al actualizar la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             wp_send_json_success([
-                'message' => __('Reserva actualizada correctamente.', 'flavor-platform'),
+                'message' => __('Reserva actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_id' => $reserva_id,
             ]);
         } else {
@@ -1712,7 +1712,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             $resultado = $wpdb->insert($tabla_reservas, $datos_reserva);
 
             if ($resultado === false) {
-                wp_send_json_error(['message' => __('Error al crear la reserva.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Error al crear la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             $nueva_reserva_id = $wpdb->insert_id;
@@ -1723,7 +1723,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             }
 
             wp_send_json_success([
-                'message' => __('Reserva creada correctamente.', 'flavor-platform'),
+                'message' => __('Reserva creada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_id' => $nueva_reserva_id,
             ]);
         }
@@ -1736,7 +1736,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1805,7 +1805,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1883,7 +1883,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             // Obtener datos del usuario
             $usuario = get_userdata($reserva->usuario_id);
             $reserva_formateada = $this->formatear_reserva($reserva);
-            $reserva_formateada['usuario_nombre'] = $usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-platform');
+            $reserva_formateada['usuario_nombre'] = $usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $reserva_formateada['usuario_email'] = $usuario ? $usuario->user_email : '';
 
             $reservas_formateadas[] = $reserva_formateada;
@@ -1905,13 +1905,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $espacio_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($espacio_id <= 0) {
-            wp_send_json_error(['message' => __('ID de espacio no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de espacio no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1923,7 +1923,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$espacio) {
-            wp_send_json_error(['message' => __('Espacio no encontrado.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Espacio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success($this->formatear_espacio($espacio, true));
@@ -1936,13 +1936,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $espacio_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($espacio_id <= 0) {
-            wp_send_json_error(['message' => __('ID de espacio no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de espacio no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1960,7 +1960,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         if ($reservas_activas > 0) {
             wp_send_json_error([
                 'message' => sprintf(
-                    __('No se puede eliminar el espacio porque tiene %d reserva(s) activa(s).', 'flavor-platform'),
+                    __('No se puede eliminar el espacio porque tiene %d reserva(s) activa(s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $reservas_activas
                 )
             ]);
@@ -1969,13 +1969,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $resultado = $wpdb->delete($tabla_espacios, ['id' => $espacio_id], ['%d']);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al eliminar el espacio.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al eliminar el espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Eliminar de la red federada si existe
         $this->eliminar_espacio_de_red($espacio_id);
 
-        wp_send_json_success(['message' => __('Espacio eliminado correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Espacio eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1985,13 +1985,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reserva_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($reserva_id <= 0) {
-            wp_send_json_error(['message' => __('ID de reserva no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de reserva no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2007,7 +2007,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reserva_formateada = $this->formatear_reserva($reserva);
@@ -2015,7 +2015,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         // Añadir datos del usuario
         $usuario = get_userdata($reserva->usuario_id);
         $reserva_formateada['usuario_id'] = intval($reserva->usuario_id);
-        $reserva_formateada['usuario_nombre'] = $usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-platform');
+        $reserva_formateada['usuario_nombre'] = $usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $reserva_formateada['usuario_email'] = $usuario ? $usuario->user_email : '';
 
         wp_send_json_success($reserva_formateada);
@@ -2028,13 +2028,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reserva_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($reserva_id <= 0) {
-            wp_send_json_error(['message' => __('ID de reserva no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de reserva no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2047,13 +2047,13 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->delete($tabla_reservas, ['id' => $reserva_id], ['%d']);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al eliminar la reserva.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Error al eliminar la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Notificar al usuario si la reserva estaba activa
@@ -2061,15 +2061,17 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             do_action('ec_reservation_cancelled', $reserva_id, $reserva->usuario_id);
         }
 
-        wp_send_json_success(['message' => __('Reserva eliminada correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Reserva eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Listar normas
      */
     public function ajax_listar_normas() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo = isset($_POST['tipo']) ? sanitize_text_field($_POST['tipo']) : '';
@@ -2106,14 +2108,16 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener norma individual
      */
     public function ajax_obtener_norma() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $norma_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($norma_id <= 0) {
-            wp_send_json_error(['message' => __('ID de norma no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de norma no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $normas = get_option('flavor_espacios_normas', []);
@@ -2127,7 +2131,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         }
 
         if (!$norma_encontrada) {
-            wp_send_json_error(['message' => __('Norma no encontrada.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Norma no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success($norma_encontrada);
@@ -2137,8 +2141,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar norma
      */
     public function ajax_guardar_norma() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $norma_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
@@ -2150,11 +2156,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $activa = isset($_POST['activa']) ? 1 : 0;
 
         if (empty($titulo)) {
-            wp_send_json_error(['message' => __('El título es requerido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('El título es requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($descripcion)) {
-            wp_send_json_error(['message' => __('La descripción es requerida.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('La descripción es requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $normas = get_option('flavor_espacios_normas', []);
@@ -2186,7 +2192,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             }
 
             if (!$encontrada) {
-                wp_send_json_error(['message' => __('Norma no encontrada.', 'flavor-platform')]);
+                wp_send_json_error(['message' => __('Norma no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         } else {
             // Crear nueva norma
@@ -2204,7 +2210,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         update_option('flavor_espacios_normas', $normas);
 
         wp_send_json_success([
-            'message' => __('Norma guardada correctamente.', 'flavor-platform'),
+            'message' => __('Norma guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'norma' => $nueva_norma,
         ]);
     }
@@ -2213,14 +2219,16 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Eliminar norma
      */
     public function ajax_eliminar_norma() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $norma_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if ($norma_id <= 0) {
-            wp_send_json_error(['message' => __('ID de norma no válido.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('ID de norma no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $normas = get_option('flavor_espacios_normas', []);
@@ -2230,20 +2238,22 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         });
 
         if (count($normas_filtradas) === count($normas)) {
-            wp_send_json_error(['message' => __('Norma no encontrada.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Norma no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         update_option('flavor_espacios_normas', array_values($normas_filtradas));
 
-        wp_send_json_success(['message' => __('Norma eliminada correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Norma eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Obtener políticas de cancelación
      */
     public function ajax_obtener_politicas_cancelacion() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $politicas = get_option('flavor_espacios_politicas_cancelacion', [
@@ -2260,8 +2270,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar políticas de cancelación
      */
     public function ajax_guardar_politicas_cancelacion() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $politicas = [
@@ -2278,15 +2290,17 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $settings['horas_anticipacion_cancelacion'] = $politicas['plazo_cancelacion'];
         $this->update_settings($settings);
 
-        wp_send_json_success(['message' => __('Políticas guardadas correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Políticas guardadas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Obtener restricciones de uso
      */
     public function ajax_obtener_restricciones() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $restricciones = get_option('flavor_espacios_restricciones', [
@@ -2302,8 +2316,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar restricciones de uso
      */
     public function ajax_guardar_restricciones() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $restricciones = [
@@ -2314,15 +2330,17 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         update_option('flavor_espacios_restricciones', $restricciones);
 
-        wp_send_json_success(['message' => __('Restricciones guardadas correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Restricciones guardadas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Obtener configuración de notificaciones
      */
     public function ajax_obtener_config_notificaciones() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $configuracion = get_option('flavor_espacios_notificaciones', [
@@ -2339,8 +2357,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Guardar configuración de notificaciones
      */
     public function ajax_guardar_notificaciones() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $configuracion = [
@@ -2352,15 +2372,17 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         update_option('flavor_espacios_notificaciones', $configuracion);
 
-        wp_send_json_success(['message' => __('Configuración guardada correctamente.', 'flavor-platform')]);
+        wp_send_json_success(['message' => __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Obtener calendario de disponibilidad
      */
     public function ajax_obtener_calendario() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $espacio_id = isset($_POST['espacio_id']) ? intval($_POST['espacio_id']) : 0;
@@ -2404,7 +2426,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
                 'estado' => $reserva->estado,
                 'espacio_id' => intval($reserva->espacio_id),
                 'espacio_tipo' => $reserva->espacio_tipo,
-                'usuario' => $usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-platform'),
+                'usuario' => $usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'motivo' => $reserva->motivo,
             ];
         }
@@ -2420,8 +2442,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener eventos del calendario (para vista de calendario)
      */
     public function ajax_obtener_eventos_calendario() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : date('Y-m-d');
@@ -2502,7 +2526,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
                 'espacio_id' => intval($reserva->espacio_id),
                 'espacio_nombre' => $reserva->espacio_nombre,
                 'espacio_tipo' => $reserva->espacio_tipo,
-                'usuario' => $usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-platform'),
+                'usuario' => $usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'usuario_id' => intval($reserva->usuario_id),
                 'motivo' => $reserva->motivo,
                 'color' => $this->get_color_estado($reserva->estado),
@@ -2531,8 +2555,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Obtener estadísticas del calendario
      */
     public function ajax_obtener_estadisticas_calendario() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2602,12 +2628,12 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      */
     public function ajax_exportar_calendario() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-platform'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar nonce
         if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'espacios_calendario_nonce')) {
-            wp_die(__('Verificación de seguridad fallida.', 'flavor-platform'));
+            wp_die(__('Verificación de seguridad fallida.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $mes = isset($_GET['mes']) ? intval($_GET['mes']) : intval(date('m'));
@@ -2655,7 +2681,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
             $ics_content .= "LOCATION:" . $this->ics_escape($reserva->ubicacion) . "\r\n";
             $ics_content .= "DESCRIPTION:" . $this->ics_escape(
                 ($reserva->motivo ? $reserva->motivo . ' - ' : '') .
-                __('Reservado por: ', 'flavor-platform') . ($usuario ? $usuario->display_name : __('Usuario', 'flavor-platform'))
+                __('Reservado por: ', FLAVOR_PLATFORM_TEXT_DOMAIN) . ($usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN))
             ) . "\r\n";
             $ics_content .= "STATUS:CONFIRMED\r\n";
             $ics_content .= "END:VEVENT\r\n";
@@ -2685,8 +2711,10 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
      * AJAX: Listar usuarios (para select en formularios)
      */
     public function ajax_listar_usuarios() {
+        check_ajax_referer('espacios_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $busqueda = isset($_POST['busqueda']) ? sanitize_text_field($_POST['busqueda']) : '';
@@ -2753,7 +2781,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $espacio_id = $atts['id'] ?: (isset($_GET['espacio_id']) ? intval($_GET['espacio_id']) : 0);
 
         if (!$espacio_id) {
-            return '<p>' . __('Espacio no especificado.', 'flavor-platform') . '</p>';
+            return '<p>' . __('Espacio no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
@@ -2776,7 +2804,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         $version = FLAVOR_PLATFORM_VERSION ?? '1.0.0';
 
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus reservas.', 'flavor-platform') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
@@ -2951,29 +2979,29 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
     private function get_tipo_label($tipo) {
         $tipos = [
-            'salon_eventos' => __('Salón de eventos', 'flavor-platform'),
-            'sala_reuniones' => __('Sala de reuniones', 'flavor-platform'),
-            'cocina' => __('Cocina comunitaria', 'flavor-platform'),
-            'taller' => __('Taller', 'flavor-platform'),
-            'terraza' => __('Terraza', 'flavor-platform'),
-            'jardin' => __('Jardín', 'flavor-platform'),
-            'gimnasio' => __('Gimnasio', 'flavor-platform'),
-            'ludoteca' => __('Ludoteca', 'flavor-platform'),
-            'piscina' => __('Piscina', 'flavor-platform'),
-            'parking' => __('Parking', 'flavor-platform'),
-            'otro' => __('Otro', 'flavor-platform'),
+            'salon_eventos' => __('Salón de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sala_reuniones' => __('Sala de reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cocina' => __('Cocina comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'taller' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'terraza' => __('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'jardin' => __('Jardín', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gimnasio' => __('Gimnasio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ludoteca' => __('Ludoteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'piscina' => __('Piscina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'parking' => __('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $tipos[$tipo] ?? $tipo;
     }
 
     private function get_estado_label($estado) {
         $estados = [
-            'solicitada' => __('Pendiente de confirmación', 'flavor-platform'),
-            'confirmada' => __('Confirmada', 'flavor-platform'),
-            'en_curso' => __('En curso', 'flavor-platform'),
-            'finalizada' => __('Finalizada', 'flavor-platform'),
-            'cancelada' => __('Cancelada', 'flavor-platform'),
-            'rechazada' => __('Rechazada', 'flavor-platform'),
+            'solicitada' => __('Pendiente de confirmación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'finalizada' => __('Finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $estados[$estado] ?? $estado;
     }
@@ -2994,9 +3022,9 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
     private function notificar_nueva_reserva($reserva_id, $espacio, $usuario_id) {
         $usuario = get_userdata($usuario_id);
-        $asunto = sprintf(__('Nueva solicitud de reserva: %s', 'flavor-platform'), $espacio->nombre);
+        $asunto = sprintf(__('Nueva solicitud de reserva: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $espacio->nombre);
         $mensaje = sprintf(
-            __('%s ha solicitado reservar el espacio "%s".', 'flavor-platform'),
+            __('%s ha solicitado reservar el espacio "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $usuario->display_name,
             $espacio->nombre
         );
@@ -3023,9 +3051,9 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         if (!$reserva) return;
 
-        $asunto = sprintf(__('Reserva confirmada: %s', 'flavor-platform'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Reserva confirmada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Tu reserva de "%s" para el %s ha sido confirmada.', 'flavor-platform'),
+            __('Tu reserva de "%s" para el %s ha sido confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $reserva->espacio_nombre,
             date_i18n(get_option('date_format') . ' H:i', strtotime($reserva->fecha_inicio))
         );
@@ -3048,20 +3076,20 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
 
         if (!$reserva) return;
 
-        $asunto = sprintf(__('Reserva no disponible: %s', 'flavor-platform'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Reserva no disponible: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Tu solicitud de reserva para "%s" no ha podido ser aprobada. %s', 'flavor-platform'),
+            __('Tu solicitud de reserva para "%s" no ha podido ser aprobada. %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $reserva->espacio_nombre,
-            $motivo ? __('Motivo: ', 'flavor-platform') . $motivo : ''
+            $motivo ? __('Motivo: ', FLAVOR_PLATFORM_TEXT_DOMAIN) . $motivo : ''
         );
 
         do_action('flavor_notificacion_enviar', $reserva->usuario_id, $asunto, $mensaje, 'espacios_rechazada');
     }
 
     private function notificar_recordatorio($reserva) {
-        $asunto = sprintf(__('Recordatorio: Reserva mañana - %s', 'flavor-platform'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Recordatorio: Reserva mañana - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Recuerda que mañana tienes reservado "%s" a las %s.', 'flavor-platform'),
+            __('Recuerda que mañana tienes reservado "%s" a las %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $reserva->espacio_nombre,
             date_i18n('H:i', strtotime($reserva->fecha_inicio))
         );
@@ -3085,9 +3113,9 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
         if (!$incidencia) return;
 
         $usuario = get_userdata($incidencia->usuario_id);
-        $asunto = sprintf(__('Nueva incidencia: %s', 'flavor-platform'), $incidencia->espacio_nombre);
+        $asunto = sprintf(__('Nueva incidencia: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencia->espacio_nombre);
         $mensaje = sprintf(
-            __('%s ha reportado una incidencia en "%s": %s', 'flavor-platform'),
+            __('%s ha reportado una incidencia en "%s": %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $usuario->display_name,
             $incidencia->espacio_nombre,
             wp_trim_words($incidencia->descripcion, 20)
@@ -3106,22 +3134,22 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     public function get_web_components() {
         return [
             'hero_espacios' => [
-                'label' => __('Hero Espacios', 'flavor-platform'),
+                'label' => __('Hero Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-building',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Espacios Comunes', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Reserva espacios para tus eventos y actividades', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Reserva espacios para tus eventos y actividades', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                 ],
                 'template' => 'espacios/hero',
             ],
             'espacios_grid' => [
-                'label' => __('Grid de Espacios', 'flavor-platform'),
+                'label' => __('Grid de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Nuestros Espacios', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Nuestros Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'tipo_filtro' => ['type' => 'text', 'default' => ''],
                     'mostrar_disponibilidad' => ['type' => 'toggle', 'default' => true],
@@ -3129,7 +3157,7 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
                 'template' => 'espacios/grid',
             ],
             'calendario_disponibilidad' => [
-                'label' => __('Calendario Disponibilidad', 'flavor-platform'),
+                'label' => __('Calendario Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
@@ -3139,11 +3167,11 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
                 'template' => 'espacios/calendario',
             ],
             'proceso_reserva' => [
-                'label' => __('Proceso de Reserva', 'flavor-platform'),
+                'label' => __('Proceso de Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-yes',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Cómo Reservar', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Cómo Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'template' => 'espacios/proceso',
             ],
@@ -3302,7 +3330,7 @@ KNOWLEDGE;
         $estadisticas['espacios_disponibles'] = [
             'icon' => 'dashicons-building',
             'valor' => $total_espacios,
-            'label' => __('Espacios', 'flavor-platform'),
+            'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
         ];
 
@@ -3321,7 +3349,7 @@ KNOWLEDGE;
             $estadisticas['mis_reservas'] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $reservas_activas,
-                'label' => __('Reservas activas', 'flavor-platform'),
+                'label' => __('Reservas activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $reservas_activas > 0 ? 'green' : 'gray',
             ];
 
@@ -3361,7 +3389,7 @@ KNOWLEDGE;
                 $estadisticas['pendientes'] = [
                     'icon' => 'dashicons-hourglass',
                     'valor' => $reservas_pendientes,
-                    'label' => __('Pendientes', 'flavor-platform'),
+                    'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'orange',
                 ];
             }
@@ -3383,11 +3411,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Espacios Comunes', 'flavor-platform'),
+                'title' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'espacios-comunes',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Reserva de Espacios', 'flavor-platform'),
-                    'subtitle' => __('Salas de reuniones, zonas deportivas y más', 'flavor-platform'),
+                    'title' => __('Reserva de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Salas de reuniones, zonas deportivas y más', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'white',
                     'module' => 'espacios_comunes',
                     'current' => 'listado',
@@ -3398,11 +3426,11 @@ KNOWLEDGE;
 
             // Hacer reserva
             [
-                'title' => __('Hacer Reserva', 'flavor-platform'),
+                'title' => __('Hacer Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'reservar',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Reservar Espacio', 'flavor-platform'),
-                    'subtitle' => __('Completa el formulario para solicitar tu reserva', 'flavor-platform'),
+                    'title' => __('Reservar Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Completa el formulario para solicitar tu reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'espacios_comunes',
                     'current' => 'reservar',
                     'content_after' => '[flavor_module_form module="espacios_comunes" action="crear_reserva"]',
@@ -3412,11 +3440,11 @@ KNOWLEDGE;
 
             // Mis reservas
             [
-                'title' => __('Mis Reservas', 'flavor-platform'),
+                'title' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-reservas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Reservas', 'flavor-platform'),
-                    'subtitle' => __('Consulta y gestiona tus reservas', 'flavor-platform'),
+                    'title' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Consulta y gestiona tus reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'espacios_comunes',
                     'current' => 'mis_reservas',
                     'content_after' => '[flavor_module_listing module="espacios_comunes" action="mis_reservas" user_specific="yes"]',
@@ -3426,11 +3454,11 @@ KNOWLEDGE;
 
             // Calendario
             [
-                'title' => __('Calendario', 'flavor-platform'),
+                'title' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'calendario',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Calendario de Reservas', 'flavor-platform'),
-                    'subtitle' => __('Consulta la disponibilidad de los espacios', 'flavor-platform'),
+                    'title' => __('Calendario de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Consulta la disponibilidad de los espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'espacios_comunes',
                     'current' => 'calendario',
                     'content_after' => '[flavor_module_calendar module="espacios_comunes"]',
@@ -3440,11 +3468,11 @@ KNOWLEDGE;
 
             // Normas de uso
             [
-                'title' => __('Normas de Uso', 'flavor-platform'),
+                'title' => __('Normas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'normas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Normas de Uso', 'flavor-platform'),
-                    'subtitle' => __('Reglas para el uso responsable de los espacios', 'flavor-platform'),
+                    'title' => __('Normas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Reglas para el uso responsable de los espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'espacios_comunes',
                     'current' => 'normas',
                     'content_after' => '[flavor_module_content module="espacios_comunes" action="mostrar_normas"]',
@@ -3469,8 +3497,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Calendario Espacios', 'flavor-platform'),
-            __('Calendario', 'flavor-platform'),
+            __('Calendario Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'espacios-calendario',
             [$this, 'render_espacios_calendario']
@@ -3478,8 +3506,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Reservas de Espacios Comunes', 'flavor-platform'),
-            __('Reservas', 'flavor-platform'),
+            __('Reservas de Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'espacios-comunes-reservas',
             [$this, 'render_espacios_comunes_reservas']
@@ -3487,8 +3515,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Listado de Espacios', 'flavor-platform'),
-            __('Espacios', 'flavor-platform'),
+            __('Listado de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'espacios-listado',
             [$this, 'render_espacios_listado']
@@ -3496,8 +3524,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Normas de Uso', 'flavor-platform'),
-            __('Normas', 'flavor-platform'),
+            __('Normas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Normas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'espacios-normas',
             [$this, 'render_espacios_normas']
@@ -3505,8 +3533,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Reservas', 'flavor-platform'),
-            __('Reservas', 'flavor-platform'),
+            __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'espacios-reservas',
             [$this, 'render_espacios_reservas']
@@ -3521,8 +3549,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Calendario Espacios', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Calendario Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3534,8 +3562,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Espacios Comunes', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3547,8 +3575,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Listado de Espacios', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Listado de Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3560,8 +3588,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Normas de Uso', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Normas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3573,8 +3601,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Reservas', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 

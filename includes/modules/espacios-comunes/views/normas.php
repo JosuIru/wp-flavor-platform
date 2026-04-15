@@ -12,10 +12,10 @@ if (!defined('ABSPATH')) {
 
 <div class="wrap flavor-normas-management">
     <h1 class="wp-heading-inline">
-        <?php _e('Normas y Políticas', 'flavor-platform'); ?>
+        <?php _e('Normas y Políticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-nueva-norma">
-        <?php _e('Nueva Norma', 'flavor-platform'); ?>
+        <?php _e('Nueva Norma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -23,11 +23,11 @@ if (!defined('ABSPATH')) {
         <!-- Normas generales -->
         <div class="flavor-card">
             <div class="flavor-card-header">
-                <h2><?php _e('Normas Generales', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Normas Generales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-card-body">
                 <div id="normas-generales-list">
-                    <div class="flavor-loading"><?php _e('Cargando...', 'flavor-platform'); ?></div>
+                    <div class="flavor-loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>
@@ -35,33 +35,33 @@ if (!defined('ABSPATH')) {
         <!-- Políticas de cancelación -->
         <div class="flavor-card">
             <div class="flavor-card-header">
-                <h2><?php _e('Políticas de Cancelación', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Políticas de Cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-card-body">
                 <form id="form-politicas-cancelacion">
                     <div class="flavor-form-group">
-                        <label for="plazo-cancelacion"><?php _e('Plazo mínimo para cancelar (horas)', 'flavor-platform'); ?></label>
+                        <label for="plazo-cancelacion"><?php _e('Plazo mínimo para cancelar (horas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="plazo-cancelacion" name="plazo_cancelacion" min="0" class="widefat">
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="cancelaciones-permitidas"><?php _e('Cancelaciones permitidas por mes', 'flavor-platform'); ?></label>
+                        <label for="cancelaciones-permitidas"><?php _e('Cancelaciones permitidas por mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="cancelaciones-permitidas" name="cancelaciones_permitidas" min="0" class="widefat">
                     </div>
 
                     <div class="flavor-form-group">
                         <label>
                             <input type="checkbox" id="penalizacion-activa" name="penalizacion_activa" value="1">
-                            <?php _e('Penalizar cancelaciones tardías', 'flavor-platform'); ?>
+                            <?php _e('Penalizar cancelaciones tardías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div class="flavor-form-group" id="penalizacion-config" style="display: none;">
-                        <label for="penalizacion-duracion"><?php _e('Duración de la penalización (días)', 'flavor-platform'); ?></label>
+                        <label for="penalizacion-duracion"><?php _e('Duración de la penalización (días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="penalizacion-duracion" name="penalizacion_duracion" min="1" class="widefat">
                     </div>
 
-                    <button type="submit" class="button button-primary"><?php _e('Guardar Políticas', 'flavor-platform'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Guardar Políticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </form>
             </div>
         </div>
@@ -69,11 +69,11 @@ if (!defined('ABSPATH')) {
         <!-- Normas por espacio -->
         <div class="flavor-card" style="grid-column: span 2;">
             <div class="flavor-card-header">
-                <h2><?php _e('Normas Específicas por Espacio', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Normas Específicas por Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-card-body">
                 <div id="normas-espacios-list">
-                    <div class="flavor-loading"><?php _e('Cargando...', 'flavor-platform'); ?></div>
+                    <div class="flavor-loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>
@@ -81,29 +81,29 @@ if (!defined('ABSPATH')) {
         <!-- Restricciones de uso -->
         <div class="flavor-card">
             <div class="flavor-card-header">
-                <h2><?php _e('Restricciones de Uso', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Restricciones de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-card-body">
                 <form id="form-restricciones">
                     <div class="flavor-form-group">
-                        <label for="max-horas-mes"><?php _e('Máximo de horas por usuario/mes', 'flavor-platform'); ?></label>
+                        <label for="max-horas-mes"><?php _e('Máximo de horas por usuario/mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="max-horas-mes" name="max_horas_mes" min="0" class="widefat">
-                        <p class="description"><?php _e('0 = sin límite', 'flavor-platform'); ?></p>
+                        <p class="description"><?php _e('0 = sin límite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="max-reservas-simultaneas"><?php _e('Máximo de reservas simultáneas', 'flavor-platform'); ?></label>
+                        <label for="max-reservas-simultaneas"><?php _e('Máximo de reservas simultáneas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="max-reservas-simultaneas" name="max_reservas_simultaneas" min="1" class="widefat">
                     </div>
 
                     <div class="flavor-form-group">
                         <label>
                             <input type="checkbox" id="restriccion-repeticion" name="restriccion_repeticion" value="1">
-                            <?php _e('Limitar reservas repetidas del mismo espacio', 'flavor-platform'); ?>
+                            <?php _e('Limitar reservas repetidas del mismo espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
-                    <button type="submit" class="button button-primary"><?php _e('Guardar Restricciones', 'flavor-platform'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Guardar Restricciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </form>
             </div>
         </div>
@@ -111,37 +111,37 @@ if (!defined('ABSPATH')) {
         <!-- Notificaciones y recordatorios -->
         <div class="flavor-card">
             <div class="flavor-card-header">
-                <h2><?php _e('Notificaciones', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="flavor-card-body">
                 <form id="form-notificaciones">
                     <div class="flavor-form-group">
                         <label>
                             <input type="checkbox" name="notif_confirmacion" value="1" checked>
-                            <?php _e('Enviar confirmación de reserva', 'flavor-platform'); ?>
+                            <?php _e('Enviar confirmación de reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div class="flavor-form-group">
                         <label>
                             <input type="checkbox" name="notif_recordatorio" value="1" checked>
-                            <?php _e('Enviar recordatorio antes de la reserva', 'flavor-platform'); ?>
+                            <?php _e('Enviar recordatorio antes de la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="recordatorio-horas"><?php _e('Horas de antelación para recordatorio', 'flavor-platform'); ?></label>
+                        <label for="recordatorio-horas"><?php _e('Horas de antelación para recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="recordatorio-horas" name="recordatorio_horas" value="24" min="1" class="widefat">
                     </div>
 
                     <div class="flavor-form-group">
                         <label>
                             <input type="checkbox" name="notif_cancelacion" value="1" checked>
-                            <?php _e('Notificar cancelaciones', 'flavor-platform'); ?>
+                            <?php _e('Notificar cancelaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
-                    <button type="submit" class="button button-primary"><?php _e('Guardar Configuración', 'flavor-platform'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </form>
             </div>
         </div>
@@ -153,7 +153,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2 id="modal-norma-title"><?php _e('Nueva Norma', 'flavor-platform'); ?></h2>
+            <h2 id="modal-norma-title"><?php _e('Nueva Norma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button type="button" class="flavor-modal-close">
                 <span class="dashicons dashicons-no"></span>
             </button>
@@ -163,50 +163,50 @@ if (!defined('ABSPATH')) {
                 <input type="hidden" id="norma-id" name="id">
 
                 <div class="flavor-form-group">
-                    <label for="norma-titulo"><?php _e('Título', 'flavor-platform'); ?> *</label>
+                    <label for="norma-titulo"><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="norma-titulo" name="titulo" required class="widefat">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="norma-descripcion"><?php _e('Descripción', 'flavor-platform'); ?> *</label>
+                    <label for="norma-descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea id="norma-descripcion" name="descripcion" rows="5" required class="widefat"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="norma-tipo"><?php _e('Tipo', 'flavor-platform'); ?></label>
+                    <label for="norma-tipo"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="norma-tipo" name="tipo" class="widefat">
-                        <option value="<?php echo esc_attr__('general', 'flavor-platform'); ?>"><?php _e('General', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('especifica', 'flavor-platform'); ?>"><?php _e('Específica de espacio', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('especifica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Específica de espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group" id="select-espacio-norma" style="display: none;">
-                    <label for="norma-espacio"><?php _e('Espacio', 'flavor-platform'); ?></label>
+                    <label for="norma-espacio"><?php _e('Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="norma-espacio" name="espacio_id" class="widefat">
-                        <option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="norma-prioridad"><?php _e('Prioridad', 'flavor-platform'); ?></label>
+                    <label for="norma-prioridad"><?php _e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="norma-prioridad" name="prioridad" class="widefat">
-                        <option value="<?php echo esc_attr__('baja', 'flavor-platform'); ?>"><?php _e('Baja', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('media', 'flavor-platform'); ?>" selected><?php _e('Media', 'flavor-platform'); ?></option>
-                        <option value="<?php echo esc_attr__('alta', 'flavor-platform'); ?>"><?php _e('Alta', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" selected><?php _e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
                     <label>
                         <input type="checkbox" id="norma-activa" name="activa" value="1" checked>
-                        <?php _e('Norma activa', 'flavor-platform'); ?>
+                        <?php _e('Norma activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-norma"><?php _e('Cancelar', 'flavor-platform'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-norma"><?php _e('Guardar', 'flavor-platform'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-norma"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-norma"><?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </div>
 </div>
@@ -328,7 +328,7 @@ jQuery(document).ready(function($) {
     $('#btn-nueva-norma').on('click', function() {
         $('#form-norma')[0].reset();
         $('#norma-id').val('');
-        $('#modal-norma-title').text('<?php _e('Nueva Norma', 'flavor-platform'); ?>');
+        $('#modal-norma-title').text('<?php _e('Nueva Norma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         $('#modal-norma').fadeIn();
     });
 
@@ -367,7 +367,7 @@ jQuery(document).ready(function($) {
                     $('#modal-norma').fadeOut();
                     cargarNormasGenerales();
                     cargarNormasEspacios();
-                    alert('<?php _e('Norma guardada correctamente', 'flavor-platform'); ?>');
+                    alert('<?php _e('Norma guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });
@@ -382,7 +382,7 @@ jQuery(document).ready(function($) {
             data: $(this).serialize() + '&action=espacios_comunes_guardar_politicas_cancelacion',
             success: function(response) {
                 if (response.success) {
-                    alert('<?php _e('Políticas guardadas correctamente', 'flavor-platform'); ?>');
+                    alert('<?php _e('Políticas guardadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });
@@ -397,7 +397,7 @@ jQuery(document).ready(function($) {
             data: $(this).serialize() + '&action=espacios_comunes_guardar_restricciones',
             success: function(response) {
                 if (response.success) {
-                    alert('<?php _e('Restricciones guardadas correctamente', 'flavor-platform'); ?>');
+                    alert('<?php _e('Restricciones guardadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });
@@ -412,7 +412,7 @@ jQuery(document).ready(function($) {
             data: $(this).serialize() + '&action=espacios_comunes_guardar_notificaciones',
             success: function(response) {
                 if (response.success) {
-                    alert('<?php _e('Configuración guardada correctamente', 'flavor-platform'); ?>');
+                    alert('<?php _e('Configuración guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });
@@ -452,7 +452,7 @@ jQuery(document).ready(function($) {
 
     function renderizarNormas(normas, contenedor) {
         if (normas.length === 0) {
-            $(contenedor).html('<p><?php _e('No hay normas definidas', 'flavor-platform'); ?></p>');
+            $(contenedor).html('<p><?php _e('No hay normas definidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
             return;
         }
 
@@ -486,9 +486,9 @@ jQuery(document).ready(function($) {
             data: { action: 'espacios_comunes_listar_espacios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>';
+                    let options = '<option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(espacio => {
-                        options += `<option value="<?php echo esc_attr__('${espacio.id}', 'flavor-platform'); ?>">${espacio.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${espacio.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${espacio.nombre}</option>`;
                     });
                     $('#norma-espacio').html(options);
                 }
@@ -565,7 +565,7 @@ jQuery(document).ready(function($) {
                     $('#norma-espacio').val(response.data.espacio_id);
                     $('#norma-prioridad').val(response.data.prioridad);
                     $('#norma-activa').prop('checked', response.data.activa == 1);
-                    $('#modal-norma-title').text('<?php _e('Editar Norma', 'flavor-platform'); ?>');
+                    $('#modal-norma-title').text('<?php _e('Editar Norma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     $('#modal-norma').fadeIn();
                 }
             }
@@ -574,7 +574,7 @@ jQuery(document).ready(function($) {
 
     // Eliminar norma
     $(document).on('click', '.btn-eliminar-norma', function() {
-        if (!confirm('<?php _e('¿Estás seguro de eliminar esta norma?', 'flavor-platform'); ?>')) return;
+        if (!confirm('<?php _e('¿Estás seguro de eliminar esta norma?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
 
         const normaId = $(this).data('id');
         $.ajax({
@@ -588,7 +588,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     cargarNormasGenerales();
                     cargarNormasEspacios();
-                    alert('<?php _e('Norma eliminada', 'flavor-platform'); ?>');
+                    alert('<?php _e('Norma eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });

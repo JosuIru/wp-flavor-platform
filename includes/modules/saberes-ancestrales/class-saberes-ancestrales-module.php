@@ -107,8 +107,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function __construct() {
         $this->module_id = 'saberes_ancestrales';
-        $this->module_name = __('Saberes Ancestrales', 'flavor-platform');
-        $this->module_description = __('Preserva y transmite el conocimiento tradicional de la comunidad', 'flavor-platform');
+        $this->module_name = __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->module_description = __('Preserva y transmite el conocimiento tradicional de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->module_icon = 'dashicons-book';
         $this->module_color = '#8B4513';
         $this->module_role = 'transversal';
@@ -269,7 +269,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         $saber = get_post($id);
 
         if (!$saber || $saber->post_type !== 'sa_saber') {
-            return new \WP_Error('not_found', __('Saber no encontrado', 'flavor-platform'), ['status' => 404]);
+            return new \WP_Error('not_found', __('Saber no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if ($saber->post_status === 'publish') {
@@ -280,7 +280,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
             return true;
         }
 
-        return new \WP_Error('rest_forbidden', __('No tienes permiso para ver este saber.', 'flavor-platform'), ['status' => 403]);
+        return new \WP_Error('rest_forbidden', __('No tienes permiso para ver este saber.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 403]);
     }
 
     /**
@@ -382,7 +382,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         ], true);
 
         if (is_wp_error($saber_id) || empty($saber_id)) {
-            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', 'flavor-platform');
+            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
         }
 
@@ -397,7 +397,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         return new \WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Saber documentado. Será revisado antes de publicarse.', 'flavor-platform'),
+            'mensaje' => __('Saber documentado. Será revisado antes de publicarse.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'id' => $saber_id,
         ], 201);
     }
@@ -467,7 +467,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         return new \WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Inscripción completada', 'flavor-platform'),
+            'mensaje' => __('Inscripción completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'plazas_restantes' => $plazas - count($inscritos),
         ], 200);
     }
@@ -507,30 +507,30 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     protected function get_admin_config(): array {
         return [
             'id' => 'saberes-ancestrales',
-            'label' => __('Saberes Ancestrales', 'flavor-platform'),
+            'label' => __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-book',
             'capability' => 'manage_options',
             'categoria' => 'cultura',
             'paginas' => [
                 [
                     'slug' => 'saberes-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'saberes-listado',
-                    'titulo' => __('Saberes', 'flavor-platform'),
+                    'titulo' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                     'badge' => [$this, 'contar_saberes_pendientes'],
                 ],
                 [
                     'slug' => 'saberes-talleres',
-                    'titulo' => __('Talleres', 'flavor-platform'),
+                    'titulo' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_talleres'],
                 ],
                 [
                     'slug' => 'saberes-portadores',
-                    'titulo' => __('Portadores', 'flavor-platform'),
+                    'titulo' => __('Portadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_portadores'],
                 ],
             ],
@@ -558,7 +558,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         $resultado[] = [
             'icon' => 'dashicons-book',
             'valor' => $stats['saberes_total'],
-            'label' => __('Saberes documentados', 'flavor-platform'),
+            'label' => __('Saberes documentados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
             'enlace' => admin_url('admin.php?page=saberes-listado'),
         ];
@@ -566,7 +566,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         $resultado[] = [
             'icon' => 'dashicons-groups',
             'valor' => $stats['portadores'],
-            'label' => __('Portadores', 'flavor-platform'),
+            'label' => __('Portadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
             'enlace' => admin_url('admin.php?page=saberes-portadores'),
         ];
@@ -575,7 +575,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
             $resultado[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $stats['talleres_proximos'],
-                'label' => __('Talleres próximos', 'flavor-platform'),
+                'label' => __('Talleres próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
                 'enlace' => admin_url('admin.php?page=saberes-talleres'),
             ];
@@ -589,27 +589,27 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function render_admin_dashboard(): void {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Saberes Ancestrales', 'flavor-platform'));
+        $this->render_page_header(__('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $stats = $this->get_estadisticas();
 
         echo '<div class="flavor-stats-grid">';
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-book"></span>';
         echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['saberes_total']) . '</span>';
-        echo '<span class="stat-label">' . esc_html__('Saberes', 'flavor-platform') . '</span></div></div>';
+        echo '<span class="stat-label">' . esc_html__('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
 
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span>';
         echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['portadores']) . '</span>';
-        echo '<span class="stat-label">' . esc_html__('Portadores', 'flavor-platform') . '</span></div></div>';
+        echo '<span class="stat-label">' . esc_html__('Portadores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
 
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-calendar-alt"></span>';
         echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['talleres_proximos']) . '</span>';
-        echo '<span class="stat-label">' . esc_html__('Talleres próximos', 'flavor-platform') . '</span></div></div>';
+        echo '<span class="stat-label">' . esc_html__('Talleres próximos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
         echo '</div>';
 
         if (!empty($stats['saberes_por_categoria'])) {
-            echo '<h3>' . esc_html__('Por categoría', 'flavor-platform') . '</h3>';
-            echo '<table class="widefat striped"><thead><tr><th>' . esc_html__('Categoría', 'flavor-platform') . '</th><th>' . esc_html__('Total', 'flavor-platform') . '</th></tr></thead><tbody>';
+            echo '<h3>' . esc_html__('Por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+            echo '<table class="widefat striped"><thead><tr><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Total', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
             foreach ($stats['saberes_por_categoria'] as $cat) {
                 $categoria_nombre = self::CATEGORIAS_SABER[$cat['categoria']]['nombre'] ?? $cat['categoria'];
                 echo '<tr><td>' . esc_html($categoria_nombre) . '</td><td>' . esc_html($cat['total']) . '</td></tr>';
@@ -625,24 +625,24 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function render_admin_listado(): void {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Saberes Documentados', 'flavor-platform'));
+        $this->render_page_header(__('Saberes Documentados', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
         $categoria = isset($_GET['categoria']) ? sanitize_key($_GET['categoria']) : '';
 
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="saberes-listado">';
-        echo '<select name="estado"><option value="">' . esc_html__('Todos los estados', 'flavor-platform') . '</option>';
+        echo '<select name="estado"><option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['publish' => 'Publicado', 'pending' => 'Pendiente', 'draft' => 'Borrador'] as $key => $label) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select> ';
-        echo '<select name="categoria"><option value="">' . esc_html__('Todas las categorías', 'flavor-platform') . '</option>';
+        echo '<select name="categoria"><option value="">' . esc_html__('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (self::CATEGORIAS_SABER as $key => $cat) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($categoria, $key, false) . '>' . esc_html($cat['nombre']) . '</option>';
         }
         echo '</select> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-platform') . '</button>';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         $args = ['post_type' => 'sa_saber', 'posts_per_page' => 50];
@@ -658,12 +658,12 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         $saberes = get_posts($args);
 
         if (empty($saberes)) {
-            echo '<p>' . esc_html__('No hay saberes con esos filtros.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay saberes con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="widefat striped"><thead><tr>';
-            echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-platform') . '</th><th>' . esc_html__('Categoría', 'flavor-platform') . '</th>';
-            echo '<th>' . esc_html__('Estado', 'flavor-platform') . '</th><th>' . esc_html__('Autor', 'flavor-platform') . '</th>';
-            echo '<th>' . esc_html__('Acciones', 'flavor-platform') . '</th></tr></thead><tbody>';
+            echo '<th>ID</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
 
             foreach ($saberes as $saber) {
                 $cat_terms = wp_get_post_terms($saber->ID, 'sa_categoria', ['fields' => 'names']);
@@ -673,7 +673,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
                 echo '<td>' . esc_html(implode(', ', $cat_terms)) . '</td>';
                 echo '<td>' . esc_html(ucfirst($saber->post_status)) . '</td>';
                 echo '<td>' . esc_html(get_the_author_meta('display_name', $saber->post_author)) . '</td>';
-                echo '<td><a href="' . esc_url(get_edit_post_link($saber->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-platform') . '</a></td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($saber->ID)) . '" class="button button-small">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -687,19 +687,19 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function render_admin_talleres(): void {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Talleres de Saberes', 'flavor-platform'), [
-            ['label' => __('Nuevo Taller', 'flavor-platform'), 'url' => admin_url('post-new.php?post_type=sa_taller'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Talleres de Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=sa_taller'), 'class' => 'button-primary'],
         ]);
 
         $talleres = get_posts(['post_type' => 'sa_taller', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
 
         if (empty($talleres)) {
-            echo '<p>' . esc_html__('No hay talleres programados.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay talleres programados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="widefat striped"><thead><tr>';
-            echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-platform') . '</th><th>' . esc_html__('Fecha', 'flavor-platform') . '</th>';
-            echo '<th>' . esc_html__('Plazas', 'flavor-platform') . '</th><th>' . esc_html__('Inscritos', 'flavor-platform') . '</th>';
-            echo '<th>' . esc_html__('Acciones', 'flavor-platform') . '</th></tr></thead><tbody>';
+            echo '<th>ID</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . esc_html__('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
 
             foreach ($talleres as $taller) {
                 $inscritos = get_post_meta($taller->ID, '_sa_inscritos', true) ?: [];
@@ -711,7 +711,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
                 echo '<td>' . esc_html($fecha ?: '-') . '</td>';
                 echo '<td>' . esc_html($plazas) . '</td>';
                 echo '<td>' . esc_html(count($inscritos)) . '</td>';
-                echo '<td><a href="' . esc_url(get_edit_post_link($taller->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-platform') . '</a></td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($taller->ID)) . '" class="button button-small">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -725,24 +725,24 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function render_admin_portadores(): void {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Portadores de Saberes', 'flavor-platform'), [
-            ['label' => __('Nuevo Portador', 'flavor-platform'), 'url' => admin_url('post-new.php?post_type=sa_portador'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Portadores de Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Portador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=sa_portador'), 'class' => 'button-primary'],
         ]);
 
         $portadores = get_posts(['post_type' => 'sa_portador', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
 
         if (empty($portadores)) {
-            echo '<p>' . esc_html__('No hay portadores registrados.', 'flavor-platform') . '</p>';
+            echo '<p>' . esc_html__('No hay portadores registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="widefat striped"><thead><tr>';
-            echo '<th>ID</th><th>' . esc_html__('Nombre', 'flavor-platform') . '</th>';
-            echo '<th>' . esc_html__('Acciones', 'flavor-platform') . '</th></tr></thead><tbody>';
+            echo '<th>ID</th><th>' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
 
             foreach ($portadores as $portador) {
                 echo '<tr>';
                 echo '<td>' . esc_html($portador->ID) . '</td>';
                 echo '<td>' . esc_html($portador->post_title) . '</td>';
-                echo '<td><a href="' . esc_url(get_edit_post_link($portador->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-platform') . '</a></td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($portador->ID)) . '" class="button button-small">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -758,8 +758,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         // Saberes documentados
         register_post_type('sa_saber', [
             'labels' => [
-                'name' => __('Saberes', 'flavor-platform'),
-                'singular_name' => __('Saber', 'flavor-platform'),
+                'name' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Saber', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -773,8 +773,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         // Portadores de saberes (personas mayores/sabias)
         register_post_type('sa_portador', [
             'labels' => [
-                'name' => __('Portadores de Saberes', 'flavor-platform'),
-                'singular_name' => __('Portador de Saber', 'flavor-platform'),
+                'name' => __('Portadores de Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Portador de Saber', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -786,8 +786,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         // Talleres de transmisión
         register_post_type('sa_taller', [
             'labels' => [
-                'name' => __('Talleres de Saberes', 'flavor-platform'),
-                'singular_name' => __('Taller', 'flavor-platform'),
+                'name' => __('Talleres de Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -799,8 +799,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         // Solicitudes de aprendizaje
         register_post_type('sa_solicitud', [
             'labels' => [
-                'name' => __('Solicitudes de Aprendizaje', 'flavor-platform'),
-                'singular_name' => __('Solicitud', 'flavor-platform'),
+                'name' => __('Solicitudes de Aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -816,8 +816,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     private function register_taxonomies(): void {
         register_taxonomy('sa_categoria', ['sa_saber', 'sa_taller'], [
             'labels' => [
-                'name' => __('Categorías de Saber', 'flavor-platform'),
-                'singular_name' => __('Categoría', 'flavor-platform'),
+                'name' => __('Categorías de Saber', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'hierarchical' => true,
@@ -825,8 +825,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         register_taxonomy('sa_origen', 'sa_saber', [
             'labels' => [
-                'name' => __('Origen', 'flavor-platform'),
-                'singular_name' => __('Origen', 'flavor-platform'),
+                'name' => __('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'hierarchical' => false,
@@ -889,8 +889,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
             'nonce' => wp_create_nonce('saberes_nonce'),
             'categorias' => self::CATEGORIAS_SABER,
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                'guardado' => __('Guardado correctamente', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado' => __('Guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -943,7 +943,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         check_ajax_referer('saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -954,7 +954,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         $portador = sanitize_text_field($_POST['portador'] ?? '');
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son requeridos', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Título y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $saber_id = wp_insert_post([
@@ -966,7 +966,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         ], true);
 
         if (is_wp_error($saber_id) || empty($saber_id)) {
-            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', 'flavor-platform');
+            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -983,7 +983,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         update_post_meta($saber_id, '_sa_agradecimientos', 0);
 
         wp_send_json_success([
-            'message' => __('Saber documentado. Será revisado antes de publicarse.', 'flavor-platform'),
+            'message' => __('Saber documentado. Será revisado antes de publicarse.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'saber_id' => $saber_id,
         ]);
     }
@@ -995,7 +995,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         check_ajax_referer('saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -1004,7 +1004,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         $saber = get_post($saber_id);
         if (!$saber || $saber->post_type !== 'sa_saber') {
-            wp_send_json_error(['message' => __('Saber no encontrado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Saber no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar si ya solicitó
@@ -1020,18 +1020,18 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         ));
 
         if ($ya_solicito > 0) {
-            wp_send_json_error(['message' => __('Ya has solicitado aprender este saber', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Ya has solicitado aprender este saber', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = wp_insert_post([
             'post_type' => 'sa_solicitud',
             'post_status' => 'publish',
             'post_author' => $user_id,
-            'post_title' => sprintf(__('Solicitud: %s', 'flavor-platform'), $saber->post_title),
+            'post_title' => sprintf(__('Solicitud: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $saber->post_title),
         ], true);
 
         if (is_wp_error($solicitud_id) || empty($solicitud_id)) {
-            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', 'flavor-platform');
+            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -1041,7 +1041,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         update_post_meta($solicitud_id, '_sa_fecha', current_time('mysql'));
 
         wp_send_json_success([
-            'message' => __('Solicitud enviada. Te contactaremos cuando haya oportunidad de aprender.', 'flavor-platform'),
+            'message' => __('Solicitud enviada. Te contactaremos cuando haya oportunidad de aprender.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1052,7 +1052,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         check_ajax_referer('saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -1060,25 +1060,25 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         $taller = get_post($taller_id);
         if (!$taller || $taller->post_type !== 'sa_taller') {
-            wp_send_json_error(['message' => __('Taller no encontrado', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Taller no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $inscritos = get_post_meta($taller_id, '_sa_inscritos', true) ?: [];
         $plazas = intval(get_post_meta($taller_id, '_sa_plazas', true)) ?: 20;
 
         if (in_array($user_id, $inscritos)) {
-            wp_send_json_error(['message' => __('Ya estás inscrito', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Ya estás inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (count($inscritos) >= $plazas) {
-            wp_send_json_error(['message' => __('No quedan plazas disponibles', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('No quedan plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $inscritos[] = $user_id;
         update_post_meta($taller_id, '_sa_inscritos', $inscritos);
 
         wp_send_json_success([
-            'message' => __('Inscripción completada', 'flavor-platform'),
+            'message' => __('Inscripción completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'plazas_restantes' => $plazas - count($inscritos),
         ]);
     }
@@ -1090,7 +1090,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
         check_ajax_referer('saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $saber_id = intval($_POST['saber_id'] ?? 0);
@@ -1217,7 +1217,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function shortcode_compartir($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="sa-login-required">' . __('Inicia sesión para compartir saberes', 'flavor-platform') . '</p>';
+            return '<p class="sa-login-required">' . __('Inicia sesión para compartir saberes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/compartir.php';
@@ -1229,7 +1229,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      */
     public function shortcode_mis_aprendizajes($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="sa-login-required">' . __('Inicia sesión para ver tus aprendizajes', 'flavor-platform') . '</p>';
+            return '<p class="sa-login-required">' . __('Inicia sesión para ver tus aprendizajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/mis-aprendizajes.php';
@@ -1335,7 +1335,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-platform'),
+            'error' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1387,12 +1387,12 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     private function action_foro_saber($params) {
         $saber = $this->resolve_contextual_saber($params);
         if (!$saber) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su foro.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del saber', 'flavor-platform') . '</h2>'
+            . '<h2>' . esc_html__('Foro del saber', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($saber['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
@@ -1402,18 +1402,18 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     private function action_chat_saber($params) {
         $saber = $this->resolve_contextual_saber($params);
         if (!$saber) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su chat.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este saber.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este saber.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del saber', 'flavor-platform') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del saber', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?saber_id=' . absint($saber['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-platform')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
             . '</div>';
@@ -1422,14 +1422,14 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     private function action_multimedia_saber($params) {
         $saber = $this->resolve_contextual_saber($params);
         if (!$saber) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver sus archivos.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del saber', 'flavor-platform') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del saber', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?saber_id=' . absint($saber['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-platform')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
             . '</div>';
@@ -1438,18 +1438,18 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     private function action_red_social_saber($params) {
         $saber = $this->resolve_contextual_saber($params);
         if (!$saber) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su actividad social.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este saber.', 'flavor-platform') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este saber.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del saber', 'flavor-platform') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del saber', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?saber_id=' . absint($saber['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-platform')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
             . '</div>';
@@ -1466,7 +1466,7 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('Saberes Ancestrales preserva y transmite el conocimiento tradicional de la comunidad, conectando generaciones y honrando la sabiduría de los mayores.', 'flavor-platform');
+        return __('Saberes Ancestrales preserva y transmite el conocimiento tradicional de la comunidad, conectando generaciones y honrando la sabiduría de los mayores.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -1477,8 +1477,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
     public static function get_renderer_config(): array {
         return [
             'module'   => 'saberes-ancestrales',
-            'title'    => __('Saberes Ancestrales', 'flavor-platform'),
-            'subtitle' => __('Preservación y transmisión del conocimiento tradicional', 'flavor-platform'),
+            'title'    => __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Preservación y transmisión del conocimiento tradicional', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📜',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1488,26 +1488,26 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform'), 'options' => ['artesania', 'cocina', 'agricultura', 'medicina', 'musica', 'oficios', 'tradiciones']],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
-                'guardian'    => ['type' => 'text', 'label' => __('Guardián del saber', 'flavor-platform')],
-                'origen'      => ['type' => 'text', 'label' => __('Origen/Tradición', 'flavor-platform')],
-                'multimedia'  => ['type' => 'file', 'label' => __('Material multimedia', 'flavor-platform'), 'multiple' => true],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['artesania', 'cocina', 'agricultura', 'medicina', 'musica', 'oficios', 'tradiciones']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'guardian'    => ['type' => 'text', 'label' => __('Guardián del saber', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'origen'      => ['type' => 'text', 'label' => __('Origen/Tradición', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'multimedia'  => ['type' => 'file', 'label' => __('Material multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'multiple' => true],
             ],
 
             'estados' => [
-                'documentado' => ['label' => __('Documentado', 'flavor-platform'), 'color' => 'blue', 'icon' => '📝'],
-                'en_transmision' => ['label' => __('En transmisión', 'flavor-platform'), 'color' => 'green', 'icon' => '🔄'],
-                'preservado'  => ['label' => __('Preservado', 'flavor-platform'), 'color' => 'amber', 'icon' => '🏆'],
-                'en_riesgo'   => ['label' => __('En riesgo', 'flavor-platform'), 'color' => 'red', 'icon' => '⚠️'],
+                'documentado' => ['label' => __('Documentado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📝'],
+                'en_transmision' => ['label' => __('En transmisión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🔄'],
+                'preservado'  => ['label' => __('Preservado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'amber', 'icon' => '🏆'],
+                'en_riesgo'   => ['label' => __('En riesgo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '⚠️'],
             ],
 
             'stats' => [
-                'saberes_catalogados' => ['label' => __('Saberes catalogados', 'flavor-platform'), 'icon' => '📜', 'color' => 'yellow'],
-                'guardianes'          => ['label' => __('Guardianes', 'flavor-platform'), 'icon' => '👴', 'color' => 'amber'],
-                'talleres_activos'    => ['label' => __('Talleres activos', 'flavor-platform'), 'icon' => '🎓', 'color' => 'green'],
-                'aprendices'          => ['label' => __('Aprendices', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
+                'saberes_catalogados' => ['label' => __('Saberes catalogados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📜', 'color' => 'yellow'],
+                'guardianes'          => ['label' => __('Guardianes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👴', 'color' => 'amber'],
+                'talleres_activos'    => ['label' => __('Talleres activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎓', 'color' => 'green'],
+                'aprendices'          => ['label' => __('Aprendices', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
             ],
 
             'card' => [
@@ -1521,31 +1521,31 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
 
             'tabs' => [
                 'catalogo' => [
-                    'label'   => __('Catálogo', 'flavor-platform'),
+                    'label'   => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-portfolio',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'guardianes' => [
-                    'label'   => __('Guardianes', 'flavor-platform'),
+                    'label'   => __('Guardianes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-users',
                     'content' => 'shortcode:saberes_portadores',
                     'public'  => true,
                 ],
                 'talleres' => [
-                    'label'   => __('Talleres', 'flavor-platform'),
+                    'label'   => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-welcome-learn-more',
                     'content' => 'shortcode:saberes_talleres',
                     'public'  => true,
                 ],
                 'documentar' => [
-                    'label'      => __('Documentar', 'flavor-platform'),
+                    'label'      => __('Documentar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:saberes_compartir',
                     'requires_login' => true,
                 ],
                 'aprender' => [
-                    'label'      => __('Aprender', 'flavor-platform'),
+                    'label'      => __('Aprender', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-book',
                     'content'    => 'shortcode:saberes_mis_aprendizajes',
                     'requires_login' => true,
@@ -1563,8 +1563,8 @@ class Flavor_Platform_Saberes_Ancestrales_Module extends Flavor_Platform_Module_
             'dashboard' => [
                 'widgets' => ['stats', 'saberes_destacados', 'proximos_talleres', 'guardianes_activos'],
                 'actions' => [
-                    'documentar' => ['label' => __('Documentar saber', 'flavor-platform'), 'icon' => '📝', 'color' => 'yellow'],
-                    'aprender'   => ['label' => __('Aprender saber', 'flavor-platform'), 'icon' => '📚', 'color' => 'green'],
+                    'documentar' => ['label' => __('Documentar saber', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'yellow'],
+                    'aprender'   => ['label' => __('Aprender saber', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📚', 'color' => 'green'],
                 ],
             ],
 

@@ -24,14 +24,14 @@ $tipos_iconos = [
     <!-- Navegación -->
     <div style="margin-bottom:20px;">
         <a href="<?php echo esc_url(remove_query_arg('vista')); ?>" class="flavor-btn flavor-btn-link">
-            ← <?php esc_html_e('Volver al dashboard', 'flavor-platform'); ?>
+            ← <?php esc_html_e('Volver al dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <!-- Cabecera -->
     <div class="flavor-card" style="margin-bottom:24px;">
-        <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Registro de actividad', 'flavor-platform'); ?></h2>
-        <p style="margin:0;color:#666;"><?php printf(esc_html__('Actividad reciente en %s', 'flavor-platform'), esc_html($empresa->nombre)); ?></p>
+        <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Registro de actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p style="margin:0;color:#666;"><?php printf(esc_html__('Actividad reciente en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($empresa->nombre)); ?></p>
     </div>
 
     <!-- Timeline de actividad -->
@@ -52,9 +52,9 @@ $tipos_iconos = [
                 $hoy = date('Y-m-d');
                 $ayer = date('Y-m-d', strtotime('-1 day'));
                 if ($fecha === $hoy) {
-                    esc_html_e('Hoy', 'flavor-platform');
+                    esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } elseif ($fecha === $ayer) {
-                    esc_html_e('Ayer', 'flavor-platform');
+                    esc_html_e('Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
                     echo esc_html(date_i18n('j F Y', strtotime($fecha)));
                 }
@@ -96,8 +96,8 @@ $tipos_iconos = [
     <?php else: ?>
     <div class="flavor-card" style="text-align:center;padding:60px;">
         <span class="dashicons dashicons-backup" style="font-size:48px;width:48px;height:48px;color:#94a3b8;"></span>
-        <h3><?php esc_html_e('Sin actividad', 'flavor-platform'); ?></h3>
-        <p style="color:#666;"><?php esc_html_e('No hay actividad registrada en esta empresa.', 'flavor-platform'); ?></p>
+        <h3><?php esc_html_e('Sin actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p style="color:#666;"><?php esc_html_e('No hay actividad registrada en esta empresa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

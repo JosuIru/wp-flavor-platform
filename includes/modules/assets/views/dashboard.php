@@ -187,7 +187,7 @@ for ($i = 11; $i >= 0; $i--) {
 }
 
 // Gráfico 2: Distribución por tipo de asset
-$labels_tipos = array(__('CSS', 'flavor-platform'), __('JavaScript', 'flavor-platform'), __('Imágenes', 'flavor-platform'), __('Fuentes', 'flavor-platform'));
+$labels_tipos = array(__('CSS', FLAVOR_PLATFORM_TEXT_DOMAIN), __('JavaScript', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Fuentes', FLAVOR_PLATFORM_TEXT_DOMAIN));
 $data_tipos = array(count($archivos_css), count($archivos_js), 24, 8); // Imágenes y fuentes simuladas
 
 // Gráfico 3: Top 10 assets más pesados
@@ -639,9 +639,9 @@ foreach ($top_assets as $asset) {
     <div class="dm-header">
         <h2>
             <span class="dashicons dashicons-media-code"></span>
-            <?php esc_html_e('Assets y Recursos Compartidos', 'flavor-platform'); ?>
+            <?php esc_html_e('Assets y Recursos Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
-        <p><?php esc_html_e('Gestión centralizada de recursos CSS, JS, shortcodes y plantillas para todos los módulos', 'flavor-platform'); ?></p>
+        <p><?php esc_html_e('Gestión centralizada de recursos CSS, JS, shortcodes y plantillas para todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <!-- KPIs -->
@@ -649,7 +649,7 @@ foreach ($top_assets as $asset) {
         <?php
         // KPI 1: Total archivos CSS
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Archivos CSS', 'flavor-platform'),
+            'label' => __('Archivos CSS', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => count($archivos_css),
             'icon' => 'admin-appearance',
             'icon_bg' => '#8b5cf6',
@@ -659,7 +659,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 2: Total archivos JS
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Archivos JavaScript', 'flavor-platform'),
+            'label' => __('Archivos JavaScript', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => count($archivos_js),
             'icon' => 'media-code',
             'icon_bg' => '#7c3aed',
@@ -669,7 +669,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 3: Shortcodes registrados
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Shortcodes Flavor', 'flavor-platform'),
+            'label' => __('Shortcodes Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => count($flavor_shortcodes),
             'icon' => 'shortcode',
             'icon_bg' => '#6366f1',
@@ -679,7 +679,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 4: Peso total
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Peso Total (MB)', 'flavor-platform'),
+            'label' => __('Peso Total (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => $peso_total_mb,
             'icon' => 'database',
             'icon_bg' => '#3b82f6',
@@ -689,7 +689,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 5: Assets del mes
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Assets Modificados (mes)', 'flavor-platform'),
+            'label' => __('Assets Modificados (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => $assets_mes_actual,
             'icon' => 'update',
             'icon_bg' => '#10b981',
@@ -699,7 +699,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 6: Módulos usando assets
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Módulos con Assets', 'flavor-platform'),
+            'label' => __('Módulos con Assets', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => count($assets_por_modulo),
             'icon' => 'admin-plugins',
             'icon_bg' => '#f59e0b',
@@ -709,7 +709,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 7: Renders shortcodes
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Renders Shortcodes (mes)', 'flavor-platform'),
+            'label' => __('Renders Shortcodes (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => number_format($shortcodes_mes, 0, ',', '.'),
             'icon' => 'visibility',
             'icon_bg' => '#ec4899',
@@ -719,7 +719,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 8: Tiempo promedio carga
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Tiempo Carga Promedio (ms)', 'flavor-platform'),
+            'label' => __('Tiempo Carga Promedio (ms)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => $tiempo_promedio_carga,
             'icon' => 'performance',
             'icon_bg' => '#14b8a6',
@@ -729,7 +729,7 @@ foreach ($top_assets as $asset) {
 
         // KPI 9: Cache ratio
         echo $dashboard_components->render_kpi_card(array(
-            'label' => __('Ratio Cache (%)', 'flavor-platform'),
+            'label' => __('Ratio Cache (%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'value' => round($cache_ratio, 1),
             'icon' => 'backup',
             'icon_bg' => '#06b6d4',
@@ -743,27 +743,27 @@ foreach ($top_assets as $asset) {
     <div class="dm-filtros">
         <h3>
             <span class="dashicons dashicons-filter"></span>
-            <?php esc_html_e('Filtros Avanzados', 'flavor-platform'); ?>
+            <?php esc_html_e('Filtros Avanzados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <form method="GET" action="">
             <input type="hidden" name="page" value="flavor-chat-ia-assets">
 
             <div class="dm-filtros-grid">
                 <div class="dm-filtro-group">
-                    <label><?php esc_html_e('Tipo de Asset', 'flavor-platform'); ?></label>
+                    <label><?php esc_html_e('Tipo de Asset', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo_asset">
-                        <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
-                        <option value="css"><?php esc_html_e('CSS', 'flavor-platform'); ?></option>
-                        <option value="js"><?php esc_html_e('JavaScript', 'flavor-platform'); ?></option>
-                        <option value="shortcode"><?php esc_html_e('Shortcode', 'flavor-platform'); ?></option>
-                        <option value="template"><?php esc_html_e('Plantilla', 'flavor-platform'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="css"><?php esc_html_e('CSS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="js"><?php esc_html_e('JavaScript', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="shortcode"><?php esc_html_e('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="template"><?php esc_html_e('Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="dm-filtro-group">
-                    <label><?php esc_html_e('Módulo', 'flavor-platform'); ?></label>
+                    <label><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="modulo">
-                        <option value=""><?php esc_html_e('Todos los módulos', 'flavor-platform'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach (array_keys($assets_por_modulo) as $modulo): ?>
                             <option value="<?php echo esc_attr($modulo); ?>"><?php echo esc_html(ucfirst($modulo)); ?></option>
                         <?php endforeach; ?>
@@ -771,17 +771,17 @@ foreach ($top_assets as $asset) {
                 </div>
 
                 <div class="dm-filtro-group">
-                    <label><?php esc_html_e('Performance', 'flavor-platform'); ?></label>
+                    <label><?php esc_html_e('Performance', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="performance">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-platform'); ?></option>
-                        <option value="rapido"><?php esc_html_e('Rápido (<50KB)', 'flavor-platform'); ?></option>
-                        <option value="normal"><?php esc_html_e('Normal (50-200KB)', 'flavor-platform'); ?></option>
-                        <option value="pesado"><?php esc_html_e('Pesado (>200KB)', 'flavor-platform'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="rapido"><?php esc_html_e('Rápido (<50KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="normal"><?php esc_html_e('Normal (50-200KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="pesado"><?php esc_html_e('Pesado (>200KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="dm-filtro-group">
-                    <label><?php esc_html_e('Modificado desde', 'flavor-platform'); ?></label>
+                    <label><?php esc_html_e('Modificado desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_desde" value="<?php echo esc_attr(gmdate('Y-m-01')); ?>">
                 </div>
             </div>
@@ -789,19 +789,19 @@ foreach ($top_assets as $asset) {
             <div class="dm-filtros-acciones">
                 <button type="submit" class="dm-btn dm-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Filtrar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="dm-btn dm-btn-secondary" onclick="window.location.href='?page=flavor-chat-ia-assets'">
                     <span class="dashicons dashicons-dismiss"></span>
-                    <?php esc_html_e('Limpiar', 'flavor-platform'); ?>
+                    <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="dm-btn dm-btn-secondary" onclick="alert('Exportar a CSV')">
                     <span class="dashicons dashicons-download"></span>
-                    <?php esc_html_e('Exportar CSV', 'flavor-platform'); ?>
+                    <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="dm-btn dm-btn-secondary" onclick="alert('Exportar a PDF')">
                     <span class="dashicons dashicons-pdf"></span>
-                    <?php esc_html_e('Exportar PDF', 'flavor-platform'); ?>
+                    <?php esc_html_e('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -812,7 +812,7 @@ foreach ($top_assets as $asset) {
 
         <!-- Gráfico 1: Evolución uso assets -->
         <div class="dm-grafico-card">
-            <h3><?php esc_html_e('Evolución de Assets (12 meses)', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Evolución de Assets (12 meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="dm-grafico-container">
                 <canvas id="chartEvolucionAssets"></canvas>
             </div>
@@ -820,7 +820,7 @@ foreach ($top_assets as $asset) {
 
         <!-- Gráfico 2: Distribución por tipo -->
         <div class="dm-grafico-card">
-            <h3><?php esc_html_e('Distribución por Tipo de Asset', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Distribución por Tipo de Asset', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="dm-grafico-container">
                 <canvas id="chartTiposAssets"></canvas>
             </div>
@@ -828,7 +828,7 @@ foreach ($top_assets as $asset) {
 
         <!-- Gráfico 3: Top assets más pesados -->
         <div class="dm-grafico-card" style="grid-column: 1 / -1;">
-            <h3><?php esc_html_e('Top 10 Assets Más Pesados (KB)', 'flavor-platform'); ?></h3>
+            <h3><?php esc_html_e('Top 10 Assets Más Pesados (KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="dm-grafico-container">
                 <canvas id="chartTopAssets"></canvas>
             </div>
@@ -841,17 +841,17 @@ foreach ($top_assets as $asset) {
         <div class="dm-table-header">
             <h3>
                 <span class="dashicons dashicons-admin-appearance"></span>
-                <?php esc_html_e('Top 10 Archivos CSS por Peso', 'flavor-platform'); ?>
+                <?php esc_html_e('Top 10 Archivos CSS por Peso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('#', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Archivo', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Ruta', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Peso (KB)', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Última Modificación', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('#', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ruta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Peso (KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Última Modificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -878,17 +878,17 @@ foreach ($top_assets as $asset) {
         <div class="dm-table-header">
             <h3>
                 <span class="dashicons dashicons-media-code"></span>
-                <?php esc_html_e('Top 10 Archivos JavaScript por Peso', 'flavor-platform'); ?>
+                <?php esc_html_e('Top 10 Archivos JavaScript por Peso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('#', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Archivo', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Ruta', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Peso (KB)', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Última Modificación', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('#', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ruta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Peso (KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Última Modificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -915,16 +915,16 @@ foreach ($top_assets as $asset) {
         <div class="dm-table-header">
             <h3>
                 <span class="dashicons dashicons-shortcode"></span>
-                <?php esc_html_e('Shortcodes Flavor Registrados', 'flavor-platform'); ?>
+                <?php esc_html_e('Shortcodes Flavor Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('#', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Shortcode', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Renders Estimados (mes)', 'flavor-platform'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('#', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Renders Estimados (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -935,7 +935,7 @@ foreach ($top_assets as $asset) {
                     <td><?php echo esc_html($idx + 1); ?></td>
                     <td><code style="color: #ec4899; font-weight: 600;">[<?php echo esc_html($shortcode); ?>]</code></td>
                     <td><?php echo esc_html(number_format($renders_estimados, 0, ',', '.')); ?></td>
-                    <td><span class="dm-badge dm-badge-success"><?php esc_html_e('Activo', 'flavor-platform'); ?></span></td>
+                    <td><span class="dm-badge dm-badge-success"><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -946,38 +946,38 @@ foreach ($top_assets as $asset) {
     <div class="dm-modulos-relacionados">
         <h3>
             <span class="dashicons dashicons-networking"></span>
-            <?php esc_html_e('Assets es transversal - Usado por Todos los Módulos', 'flavor-platform'); ?>
+            <?php esc_html_e('Assets es transversal - Usado por Todos los Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <p style="margin: 0 0 16px; color: #475569; font-size: 14px;">
-            <?php esc_html_e('El módulo Assets proporciona recursos compartidos para todos los módulos activos de la plataforma.', 'flavor-platform'); ?>
+            <?php esc_html_e('El módulo Assets proporciona recursos compartidos para todos los módulos activos de la plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <div class="dm-modulos-grid">
             <?php
             $modulos_destacados = array(
                 'eventos' => array(
-                    'titulo' => __('Eventos', 'flavor-platform'),
-                    'desc' => __('Usa estilos compartidos para calendarios y listados.', 'flavor-platform'),
+                    'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'desc' => __('Usa estilos compartidos para calendarios y listados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'css' => 3,
                     'js' => 2,
                     'shortcodes' => 1
                 ),
                 'marketplace' => array(
-                    'titulo' => __('Marketplace', 'flavor-platform'),
-                    'desc' => __('Grid de productos, filtros y carrito usan assets compartidos.', 'flavor-platform'),
+                    'titulo' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'desc' => __('Grid de productos, filtros y carrito usan assets compartidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'css' => 4,
                     'js' => 3,
                     'shortcodes' => 2
                 ),
                 'socios' => array(
-                    'titulo' => __('Socios', 'flavor-platform'),
-                    'desc' => __('Formularios y tablas con estilos unificados.', 'flavor-platform'),
+                    'titulo' => __('Socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'desc' => __('Formularios y tablas con estilos unificados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'css' => 2,
                     'js' => 1,
                     'shortcodes' => 1
                 ),
                 'comunidades' => array(
-                    'titulo' => __('Comunidades', 'flavor-platform'),
-                    'desc' => __('Feed y actividad social con assets comunes.', 'flavor-platform'),
+                    'titulo' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'desc' => __('Feed y actividad social con assets comunes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'css' => 3,
                     'js' => 2,
                     'shortcodes' => 2
@@ -1003,7 +1003,7 @@ foreach ($top_assets as $asset) {
                     </span>
                 </div>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-ia-' . $slug)); ?>" class="dm-modulo-link">
-                    <?php esc_html_e('Ver módulo', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2" style="font-size: 16px; width: 16px; height: 16px;"></span>
                 </a>
             </div>
@@ -1027,7 +1027,7 @@ foreach ($top_assets as $asset) {
                     labels: <?php echo json_encode($labels_meses); ?>,
                     datasets: [
                         {
-                            label: '<?php esc_html_e('CSS', 'flavor-platform'); ?>',
+                            label: '<?php esc_html_e('CSS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                             data: <?php echo json_encode($data_css_mes); ?>,
                             borderColor: '#8b5cf6',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -1036,7 +1036,7 @@ foreach ($top_assets as $asset) {
                             borderWidth: 2
                         },
                         {
-                            label: '<?php esc_html_e('JavaScript', 'flavor-platform'); ?>',
+                            label: '<?php esc_html_e('JavaScript', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                             data: <?php echo json_encode($data_js_mes); ?>,
                             borderColor: '#7c3aed',
                             backgroundColor: 'rgba(124, 58, 237, 0.1)',
@@ -1109,7 +1109,7 @@ foreach ($top_assets as $asset) {
                 data: {
                     labels: <?php echo json_encode($labels_top_assets); ?>,
                     datasets: [{
-                        label: '<?php esc_html_e('Peso (KB)', 'flavor-platform'); ?>',
+                        label: '<?php esc_html_e('Peso (KB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                         data: <?php echo json_encode($data_top_assets); ?>,
                         backgroundColor: function(context) {
                             const value = context.parsed.y;

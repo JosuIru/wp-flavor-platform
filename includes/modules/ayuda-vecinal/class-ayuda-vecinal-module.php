@@ -2371,6 +2371,8 @@ KNOWLEDGE;
      * AJAX: Obtener datos del dashboard
      */
     public function ajax_get_dashboard_data() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -2521,6 +2523,8 @@ KNOWLEDGE;
      * AJAX: Listar voluntarios (ofertas de ayuda)
      */
     public function ajax_listar_voluntarios() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -2605,6 +2609,8 @@ KNOWLEDGE;
      * AJAX: Listar usuarios disponibles para ser voluntarios
      */
     public function ajax_listar_usuarios() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -2631,6 +2637,8 @@ KNOWLEDGE;
      * AJAX: Guardar voluntario (crear/actualizar oferta)
      */
     public function ajax_guardar_voluntario() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -2690,6 +2698,8 @@ KNOWLEDGE;
      * AJAX: Listar solicitudes de ayuda
      */
     public function ajax_listar_solicitudes() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
@@ -2758,6 +2768,8 @@ KNOWLEDGE;
      * AJAX: Guardar solicitud de ayuda
      */
     public function ajax_guardar_solicitud() {
+        check_ajax_referer('flavor_ayuda_vecinal_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }

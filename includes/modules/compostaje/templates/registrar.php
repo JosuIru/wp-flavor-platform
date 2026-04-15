@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="compostaje-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión para registrar aportaciones', 'flavor-platform') . '</h3>';
-    echo '<p>' . esc_html__('Necesitas estar conectado para registrar tus aportaciones de compostaje.', 'flavor-platform') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-platform') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesión para registrar aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('Necesitas estar conectado para registrar tus aportaciones de compostaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -49,9 +49,9 @@ if (empty($materiales)) {
 $punto_id = isset($_GET['punto_id']) ? absint($_GET['punto_id']) : '';
 
 $categoria_labels = [
-    'verde' => __('Material verde (rico en nitrógeno)', 'flavor-platform'),
-    'marron' => __('Material marrón (rico en carbono)', 'flavor-platform'),
-    'especial' => __('Material especial', 'flavor-platform'),
+    'verde' => __('Material verde (rico en nitrógeno)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'marron' => __('Material marrón (rico en carbono)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'especial' => __('Material especial', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $categoria_colors = [
@@ -63,8 +63,8 @@ $categoria_colors = [
 
 <div class="compostaje-registrar-wrapper">
     <div class="registrar-header">
-        <h2><?php esc_html_e('Registrar Aportación', 'flavor-platform'); ?></h2>
-        <p><?php esc_html_e('Registra tu aportación al compostaje comunitario y gana puntos', 'flavor-platform'); ?></p>
+        <h2><?php esc_html_e('Registrar Aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Registra tu aportación al compostaje comunitario y gana puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <form id="form-registrar-aportacion" class="registrar-form" method="post">
@@ -72,7 +72,7 @@ $categoria_colors = [
 
         <!-- Paso 1: Seleccionar punto -->
         <div class="form-section">
-            <h3><span class="step-number">1</span> <?php esc_html_e('Punto de compostaje', 'flavor-platform'); ?></h3>
+            <h3><span class="step-number">1</span> <?php esc_html_e('Punto de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <?php if ($puntos): ?>
                 <div class="puntos-selector">
@@ -91,14 +91,14 @@ $categoria_colors = [
             <?php else: ?>
                 <div class="form-notice warning">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php esc_html_e('No hay puntos de compostaje disponibles actualmente.', 'flavor-platform'); ?>
+                    <?php esc_html_e('No hay puntos de compostaje disponibles actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
         </div>
 
         <!-- Paso 2: Tipo de material -->
         <div class="form-section">
-            <h3><span class="step-number">2</span> <?php esc_html_e('Tipo de material', 'flavor-platform'); ?></h3>
+            <h3><span class="step-number">2</span> <?php esc_html_e('Tipo de material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="materiales-grid">
                 <?php
@@ -133,7 +133,7 @@ $categoria_colors = [
 
         <!-- Paso 3: Cantidad -->
         <div class="form-section">
-            <h3><span class="step-number">3</span> <?php esc_html_e('Cantidad', 'flavor-platform'); ?></h3>
+            <h3><span class="step-number">3</span> <?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="cantidad-input-wrapper">
                 <button type="button" class="cantidad-btn minus" onclick="ajustarCantidad(-0.5)">−</button>
@@ -152,29 +152,29 @@ $categoria_colors = [
             </div>
 
             <div class="puntos-preview">
-                <span class="preview-label"><?php esc_html_e('Puntos estimados:', 'flavor-platform'); ?></span>
+                <span class="preview-label"><?php esc_html_e('Puntos estimados:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="preview-puntos" id="puntos-estimados">0</span>
             </div>
         </div>
 
         <!-- Paso 4: Notas (opcional) -->
         <div class="form-section">
-            <h3><span class="step-number">4</span> <?php esc_html_e('Notas (opcional)', 'flavor-platform'); ?></h3>
+            <h3><span class="step-number">4</span> <?php esc_html_e('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <textarea id="notas" name="notas" rows="3"
-                      placeholder="<?php esc_attr_e('Añade información adicional sobre tu aportación...', 'flavor-platform'); ?>"></textarea>
+                      placeholder="<?php esc_attr_e('Añade información adicional sobre tu aportación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
         </div>
 
         <!-- Resumen y envío -->
         <div class="form-actions">
             <div class="form-notice info">
                 <span class="dashicons dashicons-info"></span>
-                <?php esc_html_e('Tu aportación se registrará automáticamente. Recuerda depositar el material correctamente.', 'flavor-platform'); ?>
+                <?php esc_html_e('Tu aportación se registrará automáticamente. Recuerda depositar el material correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Registrar aportación', 'flavor-platform'); ?>
+                <?php esc_html_e('Registrar aportación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

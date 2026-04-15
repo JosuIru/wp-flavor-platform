@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 
 <div class="wrap flavor-calendario-maestro">
     <h1 class="wp-heading-inline">
-        <?php _e('Calendario Maestro', 'flavor-platform'); ?>
+        <?php _e('Calendario Maestro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-exportar-calendario">
-        <?php _e('Exportar', 'flavor-platform'); ?>
+        <?php _e('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <button type="button" class="page-title-action" id="btn-imprimir-calendario">
-        <?php _e('Imprimir', 'flavor-platform'); ?>
+        <?php _e('Imprimir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -29,18 +29,18 @@ if (!defined('ABSPATH')) {
             <button id="btn-prev-period" class="button">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
             </button>
-            <h2 id="period-title"><?php echo esc_html__('Enero 2026', 'flavor-platform'); ?></h2>
+            <h2 id="period-title"><?php echo esc_html__('Enero 2026', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button id="btn-next-period" class="button">
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </button>
-            <button id="btn-today" class="button"><?php _e('Hoy', 'flavor-platform'); ?></button>
+            <button id="btn-today" class="button"><?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
 
         <div class="flavor-view-mode-group">
-            <button class="flavor-view-mode active" data-mode="month"><?php _e('Mes', 'flavor-platform'); ?></button>
-            <button class="flavor-view-mode" data-mode="week"><?php _e('Semana', 'flavor-platform'); ?></button>
-            <button class="flavor-view-mode" data-mode="day"><?php _e('Día', 'flavor-platform'); ?></button>
-            <button class="flavor-view-mode" data-mode="agenda"><?php _e('Agenda', 'flavor-platform'); ?></button>
+            <button class="flavor-view-mode active" data-mode="month"><?php _e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button class="flavor-view-mode" data-mode="week"><?php _e('Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button class="flavor-view-mode" data-mode="day"><?php _e('Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button class="flavor-view-mode" data-mode="agenda"><?php _e('Agenda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
 
         <div class="flavor-calendar-filters-group">
@@ -49,7 +49,7 @@ if (!defined('ABSPATH')) {
             </select>
             <button id="btn-toggle-filters" class="button">
                 <span class="dashicons dashicons-filter"></span>
-                <?php _e('Filtros', 'flavor-platform'); ?>
+                <?php _e('Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -58,35 +58,35 @@ if (!defined('ABSPATH')) {
     <div id="advanced-filters-panel" class="flavor-filters-panel" style="display: none;">
         <div class="flavor-filters-content">
             <div class="flavor-filter-section">
-                <h3><?php _e('Espacios', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div id="espacios-checkboxes">
                     <!-- Se llena dinámicamente -->
                 </div>
             </div>
 
             <div class="flavor-filter-section">
-                <h3><?php _e('Estados', 'flavor-platform'); ?></h3>
-                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('pendiente', 'flavor-platform'); ?>" checked> <?php _e('Pendiente', 'flavor-platform'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('confirmada', 'flavor-platform'); ?>" checked> <?php _e('Confirmada', 'flavor-platform'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('completada', 'flavor-platform'); ?>"> <?php _e('Completada', 'flavor-platform'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('cancelada', 'flavor-platform'); ?>"> <?php _e('Cancelada', 'flavor-platform'); ?></label>
+                <h3><?php _e('Estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" checked> <?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" checked> <?php _e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             </div>
 
             <div class="flavor-filter-section">
-                <h3><?php _e('Horario', 'flavor-platform'); ?></h3>
+                <h3><?php _e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <label>
-                    <?php _e('Desde:', 'flavor-platform'); ?>
+                    <?php _e('Desde:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <input type="time" id="filter-hora-desde" value="00:00">
                 </label>
                 <label>
-                    <?php _e('Hasta:', 'flavor-platform'); ?>
+                    <?php _e('Hasta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <input type="time" id="filter-hora-hasta" value="23:59">
                 </label>
             </div>
 
             <div class="flavor-filter-actions">
-                <button id="btn-aplicar-filtros" class="button button-primary"><?php _e('Aplicar', 'flavor-platform'); ?></button>
-                <button id="btn-limpiar-filtros" class="button"><?php _e('Limpiar', 'flavor-platform'); ?></button>
+                <button id="btn-aplicar-filtros" class="button button-primary"><?php _e('Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button id="btn-limpiar-filtros" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </div>
     </div>
@@ -95,19 +95,19 @@ if (!defined('ABSPATH')) {
     <div class="flavor-legend">
         <span class="flavor-legend-item">
             <span class="flavor-legend-color pendiente"></span>
-            <?php _e('Pendiente', 'flavor-platform'); ?>
+            <?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="flavor-legend-item">
             <span class="flavor-legend-color confirmada"></span>
-            <?php _e('Confirmada', 'flavor-platform'); ?>
+            <?php _e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="flavor-legend-item">
             <span class="flavor-legend-color completada"></span>
-            <?php _e('Completada', 'flavor-platform'); ?>
+            <?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="flavor-legend-item">
             <span class="flavor-legend-color cancelada"></span>
-            <?php _e('Cancelada', 'flavor-platform'); ?>
+            <?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 
@@ -117,19 +117,19 @@ if (!defined('ABSPATH')) {
     <!-- Estadísticas rápidas -->
     <div class="flavor-quick-stats">
         <div class="flavor-stat-card">
-            <span class="flavor-stat-label"><?php _e('Reservas hoy', 'flavor-platform'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Reservas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-stat-value" id="stat-hoy">0</span>
         </div>
         <div class="flavor-stat-card">
-            <span class="flavor-stat-label"><?php _e('Esta semana', 'flavor-platform'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-stat-value" id="stat-semana">0</span>
         </div>
         <div class="flavor-stat-card">
-            <span class="flavor-stat-label"><?php _e('Este mes', 'flavor-platform'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-stat-value" id="stat-mes">0</span>
         </div>
         <div class="flavor-stat-card">
-            <span class="flavor-stat-label"><?php _e('Tasa ocupación', 'flavor-platform'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Tasa ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-stat-value" id="stat-ocupacion">0%</span>
         </div>
     </div>
@@ -466,7 +466,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let checkboxes = '';
                     response.data.forEach(espacio => {
-                        checkboxes += `<label><input type="checkbox" name="espacio-filter[]" value="<?php echo esc_attr__('${espacio.id}', 'flavor-platform'); ?>" checked> ${espacio.nombre}</label>`;
+                        checkboxes += `<label><input type="checkbox" name="espacio-filter[]" value="<?php echo esc_attr__('${espacio.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" checked> ${espacio.nombre}</label>`;
                     });
                     $('#espacios-checkboxes').html(checkboxes);
                 }
@@ -542,7 +542,7 @@ jQuery(document).ready(function($) {
 
     function generarVistaAgenda(eventos) {
         if (eventos.length === 0) {
-            return '<p style="text-align: center; padding: 40px;"><?php _e('No hay reservas en este período', 'flavor-platform'); ?></p>';
+            return '<p style="text-align: center; padding: 40px;"><?php _e('No hay reservas en este período', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>';
         }
 
         let html = '<div class="flavor-agenda-view">';
@@ -578,7 +578,7 @@ jQuery(document).ready(function($) {
     }
 
     function generarVistaCalendarioBasico(eventos) {
-        return '<p style="text-align: center; padding: 40px; color: #999;"><?php _e('Vista de calendario - Integrar librería de calendario completa', 'flavor-platform'); ?></p>';
+        return '<p style="text-align: center; padding: 40px; color: #999;"><?php _e('Vista de calendario - Integrar librería de calendario completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>';
     }
 
     function actualizarTitulo() {
@@ -586,11 +586,11 @@ jQuery(document).ready(function($) {
         if (currentView === 'month') {
             titulo = currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
         } else if (currentView === 'week') {
-            titulo = '<?php _e('Semana', 'flavor-platform'); ?> ' + getWeekNumber(currentDate) + ' - ' + currentDate.getFullYear();
+            titulo = '<?php _e('Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> ' + getWeekNumber(currentDate) + ' - ' + currentDate.getFullYear();
         } else if (currentView === 'day') {
             titulo = currentDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         } else if (currentView === 'agenda') {
-            titulo = '<?php _e('Agenda', 'flavor-platform'); ?>';
+            titulo = '<?php _e('Agenda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
         }
         $('#period-title').text(titulo);
     }

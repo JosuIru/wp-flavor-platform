@@ -89,7 +89,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Compostaje no estan creadas. Se crearan automaticamente al activar.', 'flavor-platform');
+            return __('Las tablas de Compostaje no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -211,7 +211,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         if (!$compostera) {
             return '<div class="flavor-widget flavor-widget--empty">
                 <span class="dashicons dashicons-location-alt"></span>
-                <p>' . esc_html__('No hay composteras disponibles', 'flavor-platform') . '</p>
+                <p>' . esc_html__('No hay composteras disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -259,11 +259,11 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <div class="flavor-compostaje-balance__stats">
                 <div class="flavor-stat">
                     <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_kg, 1); ?></span>
-                    <span class="flavor-stat__label"><?php esc_html_e('kg compostados', 'flavor-platform'); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('kg compostados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat">
                     <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_aportaciones); ?></span>
-                    <span class="flavor-stat__label"><?php esc_html_e('aportaciones', 'flavor-platform'); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -300,11 +300,11 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                 'restNonce' => wp_create_nonce('wp_rest'),
                 'usuario_id' => get_current_user_id(),
                 'strings' => [
-                    'cargando' => __('Cargando...', 'flavor-platform'),
-                    'error' => __('Ha ocurrido un error', 'flavor-platform'),
-                    'exito' => __('Operacion realizada con exito', 'flavor-platform'),
-                    'confirmar_turno' => __('¿Confirmas que quieres apuntarte a este turno?', 'flavor-platform'),
-                    'confirmar_cancelar' => __('¿Seguro que quieres cancelar tu turno?', 'flavor-platform'),
+                    'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'exito' => __('Operacion realizada con exito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmar_turno' => __('¿Confirmas que quieres apuntarte a este turno?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmar_cancelar' => __('¿Seguro que quieres cancelar tu turno?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -890,25 +890,25 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion para registrar aportaciones', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion para registrar aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $configuracion = $this->get_settings();
         $cantidad_maxima = $configuracion['max_kg_por_deposito'] ?? 10;
 
         if ($cantidad_kg <= 0 || $cantidad_kg > $cantidad_maxima) {
-            return ['success' => false, 'error' => sprintf(__('La cantidad debe estar entre 0.1 y %d kg', 'flavor-platform'), $cantidad_maxima)];
+            return ['success' => false, 'error' => sprintf(__('La cantidad debe estar entre 0.1 y %d kg', FLAVOR_PLATFORM_TEXT_DOMAIN), $cantidad_maxima)];
         }
 
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
         $punto = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_puntos WHERE id = %d AND estado = 'activo'", $punto_id));
 
         if (!$punto) {
-            return ['success' => false, 'error' => __('Punto de compostaje no encontrado o inactivo', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Punto de compostaje no encontrado o inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!in_array($punto->fase_actual, ['recepcion', 'activo'])) {
-            return ['success' => false, 'error' => __('Este punto no acepta aportaciones en su fase actual', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Este punto no acepta aportaciones en su fase actual', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tabla_materiales = $wpdb->prefix . 'flavor_materiales_compostables';
@@ -918,7 +918,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$material) {
-            return ['success' => false, 'error' => __('Tipo de material no valido', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Tipo de material no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $puntos_base = $material->puntos_por_kg * $cantidad_kg;
@@ -945,7 +945,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al registrar la aportacion', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Error al registrar la aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $aportacion_id = $wpdb->insert_id;
@@ -956,7 +956,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Aportacion registrada correctamente', 'flavor-platform'),
+            'mensaje' => __('Aportacion registrada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'aportacion_id' => $aportacion_id,
             'puntos_obtenidos' => $puntos_totales,
             'bonus_nivel' => $bonus_nivel * $cantidad_kg,
@@ -1074,7 +1074,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tabla_turnos = $wpdb->prefix . 'flavor_turnos_compostaje';
@@ -1083,15 +1083,15 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         $turno = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_turnos WHERE id = %d", $turno_id));
 
         if (!$turno) {
-            return ['success' => false, 'error' => __('Turno no encontrado', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Turno no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($turno->estado !== 'abierto') {
-            return ['success' => false, 'error' => __('Este turno no esta disponible', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Este turno no esta disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($turno->plazas_ocupadas >= $turno->plazas_disponibles) {
-            return ['success' => false, 'error' => __('No hay plazas disponibles', 'flavor-platform')];
+            return ['success' => false, 'error' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $ya_inscrito = $wpdb->get_var($wpdb->prepare(
@@ -1100,7 +1100,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => __('Ya estas inscrito en este turno', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Ya estas inscrito en este turno', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $insertado = $wpdb->insert($tabla_inscripciones, [
@@ -1111,7 +1111,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al realizar la inscripcion', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Error al realizar la inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $wpdb->update($tabla_turnos,
@@ -1125,7 +1125,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Inscripcion realizada correctamente', 'flavor-platform'),
+            'mensaje' => __('Inscripcion realizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'turno' => $turno,
         ];
     }
@@ -1215,7 +1215,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             $ranking_formateado[] = [
                 'posicion' => $posicion,
                 'usuario_id' => $entrada->usuario_id,
-                'nombre' => $usuario ? $usuario->display_name : __('Usuario anonimo', 'flavor-platform'),
+                'nombre' => $usuario ? $usuario->display_name : __('Usuario anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'avatar' => get_avatar_url($entrada->usuario_id, ['size' => 50]),
                 'total_kg' => floatval($entrada->total_kg),
                 'total_puntos' => intval($entrada->total_puntos),
@@ -1438,7 +1438,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         $punto_id = intval($_GET['punto_id'] ?? $_POST['punto_id'] ?? 0);
 
         if (!$punto_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1447,7 +1447,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         $punto = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_puntos WHERE id = %d", $punto_id));
 
         if (!$punto) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json([
@@ -1465,7 +1465,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -1480,7 +1480,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1527,7 +1527,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         $turno_id = intval($_POST['turno_id'] ?? 0);
 
         if (!$usuario_id || !$turno_id) {
-            wp_send_json(['success' => false, 'error' => __('No estas inscrito en este turno', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('No estas inscrito en este turno', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1540,7 +1540,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ));
 
         if (!$inscripcion) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->update($tabla_inscripciones, ['estado' => 'cancelado'], ['id' => $inscripcion->id]);
@@ -1549,7 +1549,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             $turno_id
         ));
 
-        wp_send_json(['success' => true, 'mensaje' => __('turno_id', 'flavor-platform')]);
+        wp_send_json(['success' => true, 'mensaje' => __('turno_id', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1559,7 +1559,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         check_ajax_referer('compostaje_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $turno_id = intval($_POST['turno_id'] ?? 0);
@@ -1572,7 +1572,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         $turno = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_turnos WHERE id = %d", $turno_id));
 
         if (!$turno) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         foreach ($asistentes as $usuario_id) {
@@ -1590,7 +1590,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         $wpdb->update($tabla_turnos, ['estado' => 'completado'], ['id' => $turno_id]);
 
-        wp_send_json(['success' => true, 'mensaje' => __('dias_aviso_turno', 'flavor-platform')]);
+        wp_send_json(['success' => true, 'mensaje' => __('dias_aviso_turno', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1624,9 +1624,9 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             foreach ($inscritos as $inscrito) {
                 $usuario = get_userdata($inscrito->usuario_id);
                 if ($usuario && $usuario->user_email) {
-                    $asunto = sprintf(__('Recordatorio: Turno de compostaje en %s', 'flavor-platform'), $turno->nombre_punto);
+                    $asunto = sprintf(__('Recordatorio: Turno de compostaje en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $turno->nombre_punto);
                     $mensaje = sprintf(
-                        __("Hola %s,\n\nTe recordamos que tienes un turno de %s programado para el %s de %s a %s en %s.\n\nGracias por tu participacion!", 'flavor-platform'),
+                        __("Hola %s,\n\nTe recordamos que tienes un turno de %s programado para el %s de %s a %s en %s.\n\nGracias por tu participacion!", FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $usuario->display_name,
                         $turno->tipo_tarea,
                         date_i18n('l j F', strtotime($turno->fecha_turno)),
@@ -1658,15 +1658,15 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <?php if ($atributos['mostrar_filtros'] === 'true'): ?>
             <div class="flavor-compostaje-filtros">
                 <select id="filtro-tipo-punto" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('comunitario', 'flavor-platform'); ?>"><?php _e('Comunitario', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('vecinal', 'flavor-platform'); ?>"><?php _e('Vecinal', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('escolar', 'flavor-platform'); ?>"><?php _e('Escolar', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('municipal', 'flavor-platform'); ?>"><?php _e('Municipal', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('escolar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Escolar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('municipal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Municipal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <button type="button" id="btn-mi-ubicacion" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
-                    <?php _e('Mi ubicacion', 'flavor-platform'); ?>
+                    <?php _e('Mi ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -1685,8 +1685,8 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
     public function shortcode_registrar_aportacion($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-aviso flavor-aviso-info">' .
-                   __('Debes iniciar sesion para registrar aportaciones.', 'flavor-platform') .
-                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-platform') . '</a></div>';
+                   __('Debes iniciar sesion para registrar aportaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         $atributos = shortcode_atts([
@@ -1700,23 +1700,23 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ob_start();
         ?>
         <div class="flavor-compostaje-form-container">
-            <h3><?php _e('Registrar Aportacion', 'flavor-platform'); ?></h3>
+            <h3><?php _e('Registrar Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <form id="form-aportacion-compost" class="flavor-form">
                 <?php wp_nonce_field('compostaje_nonce', 'compostaje_nonce_field'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="punto-compostaje"><?php _e('Punto de compostaje', 'flavor-platform'); ?></label>
+                    <label for="punto-compostaje"><?php _e('Punto de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="punto-compostaje" name="punto_id" required class="flavor-select">
-                        <option value=""><?php _e('Selecciona un punto...', 'flavor-platform'); ?></option>
+                        <option value=""><?php _e('Selecciona un punto...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="tipo-material"><?php _e('Tipo de material', 'flavor-platform'); ?></label>
+                    <label for="tipo-material"><?php _e('Tipo de material', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="tipo-material" name="tipo_material" required class="flavor-select">
-                        <option value=""><?php _e('Selecciona el tipo...', 'flavor-platform'); ?></option>
-                        <optgroup label="<?php _e('Materiales verdes (ricos en nitrogeno)', 'flavor-platform'); ?>">
+                        <option value=""><?php _e('Selecciona el tipo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <optgroup label="<?php _e('Materiales verdes (ricos en nitrogeno)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'verde'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1725,7 +1725,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </optgroup>
-                        <optgroup label="<?php _e('Materiales marrones (ricos en carbono)', 'flavor-platform'); ?>">
+                        <optgroup label="<?php _e('Materiales marrones (ricos en carbono)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'marron'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1734,7 +1734,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </optgroup>
-                        <optgroup label="<?php _e('Materiales especiales', 'flavor-platform'); ?>">
+                        <optgroup label="<?php _e('Materiales especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'especial'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1747,29 +1747,29 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="cantidad-kg"><?php _e('Cantidad (kg)', 'flavor-platform'); ?></label>
+                    <label for="cantidad-kg"><?php _e('Cantidad (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="cantidad-kg" name="cantidad_kg" min="0.1" max="10" step="0.1" required class="flavor-input">
-                    <small class="flavor-form-help"><?php _e('Maximo 10 kg por aportacion', 'flavor-platform'); ?></small>
+                    <small class="flavor-form-help"><?php _e('Maximo 10 kg por aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="notas-aportacion"><?php _e('Notas (opcional)', 'flavor-platform'); ?></label>
+                    <label for="notas-aportacion"><?php _e('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="notas-aportacion" name="notas" rows="2" class="flavor-textarea"></textarea>
                 </div>
 
                 <div id="preview-puntos" class="flavor-compostaje-preview" style="display:none;">
                     <div class="preview-item">
-                        <span class="preview-label"><?php _e('Puntos estimados:', 'flavor-platform'); ?></span>
+                        <span class="preview-label"><?php _e('Puntos estimados:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span id="puntos-estimados" class="preview-value">0</span>
                     </div>
                     <div class="preview-item">
-                        <span class="preview-label"><?php _e('CO2 evitado:', 'flavor-platform'); ?></span>
-                        <span id="co2-estimado" class="preview-value"><?php echo esc_html__('0 kg', 'flavor-platform'); ?></span>
+                        <span class="preview-label"><?php _e('CO2 evitado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span id="co2-estimado" class="preview-value"><?php echo esc_html__('0 kg', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
                 <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-block">
-                    <?php _e('Registrar Aportacion', 'flavor-platform'); ?>
+                    <?php _e('Registrar Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
 
@@ -1785,7 +1785,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
     public function shortcode_mis_aportaciones($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-aviso flavor-aviso-info">' .
-                   __('Debes iniciar sesion para ver tus aportaciones.', 'flavor-platform') . '</div>';
+                   __('Debes iniciar sesion para ver tus aportaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $usuario_id = get_current_user_id();
@@ -1798,14 +1798,14 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                 <div class="nivel-icono nivel-<?php echo esc_attr($estadisticas['nivel']['icono']); ?>"></div>
                 <div class="nivel-info">
                     <h3><?php echo esc_html($estadisticas['nivel']['nombre']); ?></h3>
-                    <span class="nivel-numero"><?php printf(__('Nivel %d', 'flavor-platform'), $estadisticas['nivel']['numero']); ?></span>
+                    <span class="nivel-numero"><?php printf(__('Nivel %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['nivel']['numero']); ?></span>
                 </div>
                 <?php if ($estadisticas['proximo_nivel']): ?>
                 <div class="nivel-progreso">
                     <div class="progreso-barra">
                         <div class="progreso-llenado" style="width: <?php echo esc_attr($estadisticas['proximo_nivel']['progreso_porcentaje']); ?>%"></div>
                     </div>
-                    <small><?php printf(__('%.1f kg para nivel %s', 'flavor-platform'), $estadisticas['proximo_nivel']['kg_necesarios'], $estadisticas['proximo_nivel']['nombre']); ?></small>
+                    <small><?php printf(__('%.1f kg para nivel %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['proximo_nivel']['kg_necesarios'], $estadisticas['proximo_nivel']['nombre']); ?></small>
                 </div>
                 <?php endif; ?>
             </div>
@@ -1813,26 +1813,26 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <div class="flavor-compostaje-stats-grid">
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_kg'], 1); ?></span>
-                    <span class="stat-label"><?php _e('kg aportados', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('kg aportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_puntos']); ?></span>
-                    <span class="stat-label"><?php _e('puntos ganados', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('puntos ganados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_co2_evitado'], 1); ?></span>
-                    <span class="stat-label"><?php _e('kg CO2 evitado', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('kg CO2 evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo $estadisticas['total_aportaciones']; ?></span>
-                    <span class="stat-label"><?php _e('aportaciones', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <div class="flavor-compostaje-historial">
-                <h4><?php _e('Historial de aportaciones', 'flavor-platform'); ?></h4>
+                <h4><?php _e('Historial de aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div id="lista-aportaciones" class="flavor-lista-aportaciones">
-                    <div class="flavor-cargando"><?php _e('Cargando...', 'flavor-platform'); ?></div>
+                    <div class="flavor-cargando"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div id="paginacion-aportaciones" class="flavor-paginacion"></div>
             </div>
@@ -1855,35 +1855,35 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <div class="guia-seccion guia-si">
                 <h3 class="guia-titulo guia-titulo-si">
                     <span class="guia-icono">&#10004;</span>
-                    <?php _e('Si se puede compostar', 'flavor-platform'); ?>
+                    <?php _e('Si se puede compostar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="guia-items">
                     <div class="guia-categoria">
-                        <h4><?php _e('Materiales verdes (nitrogeno)', 'flavor-platform'); ?></h4>
+                        <h4><?php _e('Materiales verdes (nitrogeno)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul>
-                            <li><?php _e('Restos de frutas y verduras', 'flavor-platform'); ?></li>
-                            <li><?php _e('Posos de cafe y filtros de papel', 'flavor-platform'); ?></li>
-                            <li><?php _e('Bolsas de te (sin grapas)', 'flavor-platform'); ?></li>
-                            <li><?php _e('Cesped recien cortado', 'flavor-platform'); ?></li>
-                            <li><?php _e('Restos de plantas verdes', 'flavor-platform'); ?></li>
+                            <li><?php _e('Restos de frutas y verduras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Posos de cafe y filtros de papel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Bolsas de te (sin grapas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Cesped recien cortado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Restos de plantas verdes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                         </ul>
                     </div>
                     <div class="guia-categoria">
-                        <h4><?php _e('Materiales marrones (carbono)', 'flavor-platform'); ?></h4>
+                        <h4><?php _e('Materiales marrones (carbono)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul>
-                            <li><?php _e('Hojas secas', 'flavor-platform'); ?></li>
-                            <li><?php _e('Papel y carton sin tintas', 'flavor-platform'); ?></li>
-                            <li><?php _e('Ramas pequenas trituradas', 'flavor-platform'); ?></li>
-                            <li><?php _e('Serrin de madera no tratada', 'flavor-platform'); ?></li>
-                            <li><?php _e('Paja', 'flavor-platform'); ?></li>
+                            <li><?php _e('Hojas secas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Papel y carton sin tintas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Ramas pequenas trituradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Serrin de madera no tratada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Paja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                         </ul>
                     </div>
                     <div class="guia-categoria">
-                        <h4><?php _e('Otros', 'flavor-platform'); ?></h4>
+                        <h4><?php _e('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul>
-                            <li><?php _e('Cascaras de huevo trituradas', 'flavor-platform'); ?></li>
-                            <li><?php _e('Pelo y plumas', 'flavor-platform'); ?></li>
-                            <li><?php _e('Ceniza de madera (poca cantidad)', 'flavor-platform'); ?></li>
+                            <li><?php _e('Cascaras de huevo trituradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Pelo y plumas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                            <li><?php _e('Ceniza de madera (poca cantidad)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                         </ul>
                     </div>
                 </div>
@@ -1892,40 +1892,40 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             <div class="guia-seccion guia-no">
                 <h3 class="guia-titulo guia-titulo-no">
                     <span class="guia-icono">&#10008;</span>
-                    <?php _e('No se puede compostar', 'flavor-platform'); ?>
+                    <?php _e('No se puede compostar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="guia-items">
                     <ul>
-                        <li><?php _e('Carne, pescado y huesos', 'flavor-platform'); ?></li>
-                        <li><?php _e('Lacteos y grasas', 'flavor-platform'); ?></li>
-                        <li><?php _e('Plantas enfermas o con plagas', 'flavor-platform'); ?></li>
-                        <li><?php _e('Excrementos de mascotas', 'flavor-platform'); ?></li>
-                        <li><?php _e('Ceniza de carbon o briquetas', 'flavor-platform'); ?></li>
-                        <li><?php _e('Madera tratada o pintada', 'flavor-platform'); ?></li>
-                        <li><?php _e('Plasticos y sinteticos', 'flavor-platform'); ?></li>
-                        <li><?php _e('Citricos en grandes cantidades', 'flavor-platform'); ?></li>
+                        <li><?php _e('Carne, pescado y huesos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Lacteos y grasas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Plantas enfermas o con plagas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Excrementos de mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Ceniza de carbon o briquetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Madera tratada o pintada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Plasticos y sinteticos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Citricos en grandes cantidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
                 </div>
             </div>
 
             <div class="guia-seccion guia-consejos">
-                <h3 class="guia-titulo"><?php _e('Consejos para un buen compost', 'flavor-platform'); ?></h3>
+                <h3 class="guia-titulo"><?php _e('Consejos para un buen compost', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="guia-consejos-grid">
                     <div class="consejo-card">
                         <span class="consejo-numero">1</span>
-                        <p><?php _e('Equilibra verdes y marrones (proporcion 1:2)', 'flavor-platform'); ?></p>
+                        <p><?php _e('Equilibra verdes y marrones (proporcion 1:2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">2</span>
-                        <p><?php _e('Corta los materiales en trozos pequenos', 'flavor-platform'); ?></p>
+                        <p><?php _e('Corta los materiales en trozos pequenos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">3</span>
-                        <p><?php _e('Mantener humedad como esponja escurrida', 'flavor-platform'); ?></p>
+                        <p><?php _e('Mantener humedad como esponja escurrida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">4</span>
-                        <p><?php _e('Voltear regularmente para airear', 'flavor-platform'); ?></p>
+                        <p><?php _e('Voltear regularmente para airear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -1950,13 +1950,13 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         <div class="flavor-compostaje-ranking">
             <div class="ranking-filtros">
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'total' ? 'activo' : ''; ?>" data-periodo="total">
-                    <?php _e('Total', 'flavor-platform'); ?>
+                    <?php _e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'mes' ? 'activo' : ''; ?>" data-periodo="mes">
-                    <?php _e('Este mes', 'flavor-platform'); ?>
+                    <?php _e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'semana' ? 'activo' : ''; ?>" data-periodo="semana">
-                    <?php _e('Esta semana', 'flavor-platform'); ?>
+                    <?php _e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -1976,7 +1976,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                 </div>
                 <?php endforeach; ?>
                 <?php if (empty($ranking)): ?>
-                <div class="ranking-vacio"><?php _e('Aun no hay datos de ranking', 'flavor-platform'); ?></div>
+                <div class="ranking-vacio"><?php _e('Aun no hay datos de ranking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <?php endif; ?>
             </div>
         </div>
@@ -1994,53 +1994,53 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         ?>
         <div class="flavor-compostaje-estadisticas-globales">
             <div class="stats-hero">
-                <h2><?php _e('Impacto de nuestra comunidad', 'flavor-platform'); ?></h2>
+                <h2><?php _e('Impacto de nuestra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card stat-card-destacado">
                     <div class="stat-icono icono-kg"></div>
                     <span class="stat-valor contador" data-valor="<?php echo $estadisticas['total_kg']; ?>">0</span>
-                    <span class="stat-label"><?php _e('kg de organicos compostados', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('kg de organicos compostados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="stat-card stat-card-destacado">
                     <div class="stat-icono icono-co2"></div>
                     <span class="stat-valor contador" data-valor="<?php echo $estadisticas['total_co2_evitado']; ?>">0</span>
-                    <span class="stat-label"><?php _e('kg de CO2 evitados', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('kg de CO2 evitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['usuarios_activos']); ?></span>
-                    <span class="stat-label"><?php _e('composteros activos', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('composteros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['puntos_activos']); ?></span>
-                    <span class="stat-label"><?php _e('puntos de compostaje', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('puntos de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_aportaciones']); ?></span>
-                    <span class="stat-label"><?php _e('aportaciones realizadas', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('aportaciones realizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['turnos_completados']); ?></span>
-                    <span class="stat-label"><?php _e('turnos de mantenimiento', 'flavor-platform'); ?></span>
+                    <span class="stat-label"><?php _e('turnos de mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <div class="stats-mes">
-                <h4><?php _e('Este mes', 'flavor-platform'); ?></h4>
+                <h4><?php _e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="stats-mes-grid">
                     <div class="stat-mes-item">
                         <span class="stat-mes-valor"><?php echo number_format($estadisticas['estadisticas_mes']['kg'], 1); ?></span>
-                        <span class="stat-mes-label"><?php _e('kg aportados', 'flavor-platform'); ?></span>
+                        <span class="stat-mes-label"><?php _e('kg aportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="stat-mes-item">
                         <span class="stat-mes-valor"><?php echo number_format($estadisticas['estadisticas_mes']['aportaciones']); ?></span>
-                        <span class="stat-mes-label"><?php _e('aportaciones', 'flavor-platform'); ?></span>
+                        <span class="stat-mes-label"><?php _e('aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -2063,20 +2063,20 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         <div class="flavor-compostaje-turnos" data-punto="<?php echo intval($atributos['punto_id']); ?>" data-dias="<?php echo intval($atributos['dias']); ?>">
             <div class="turnos-filtros">
                 <select id="filtro-punto-turno" class="flavor-select">
-                    <option value=""><?php _e('Todos los puntos', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select id="filtro-tipo-turno" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('volteo', 'flavor-platform'); ?>"><?php _e('Volteo', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('riego', 'flavor-platform'); ?>"><?php _e('Riego', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('medicion', 'flavor-platform'); ?>"><?php _e('Medicion', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('tamizado', 'flavor-platform'); ?>"><?php _e('Tamizado', 'flavor-platform'); ?></option>
-                    <option value="<?php echo esc_attr__('limpieza', 'flavor-platform'); ?>"><?php _e('Limpieza', 'flavor-platform'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('volteo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Volteo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('medicion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Medicion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('tamizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Tamizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div id="calendario-turnos" class="turnos-calendario">
-                <div class="flavor-cargando"><?php _e('Cargando turnos...', 'flavor-platform'); ?></div>
+                <div class="flavor-cargando"><?php _e('Cargando turnos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <div id="lista-turnos" class="turnos-lista"></div>
@@ -2168,7 +2168,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no esta disponible en Compostaje.', 'flavor-platform'),
+            'error' => __('La vista solicitada no esta disponible en Compostaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2267,7 +2267,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
     private function action_mis_estadisticas_compostaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Usuario no autenticado', 'flavor-platform')];
+            return ['success' => false, 'error' => __('Usuario no autenticado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -2358,40 +2358,40 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
     public function get_web_components() {
         return [
             'hero_compostaje' => [
-                'label' => __('Hero Compostaje', 'flavor-platform'),
+                'label' => __('Hero Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-carrot',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Compostaje Comunitario', 'flavor-platform')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Convierte residuos organicos en abono natural', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Convierte residuos organicos en abono natural', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_impacto' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/hero',
             ],
             'mapa_composteras' => [
-                'label' => __('Mapa de Puntos', 'flavor-platform'),
+                'label' => __('Mapa de Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Compostaje', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'altura_mapa' => ['type' => 'number', 'default' => 500],
                     'mostrar_filtros' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/mapa',
             ],
             'formulario_aportacion' => [
-                'label' => __('Formulario Aportacion', 'flavor-platform'),
+                'label' => __('Formulario Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'forms',
                 'icon' => 'dashicons-plus-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Registra tu Aportacion', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Registra tu Aportacion', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'punto_fijo' => ['type' => 'number', 'default' => 0],
                 ],
                 'template' => 'compostaje/formulario',
             ],
             'estadisticas_usuario' => [
-                'label' => __('Mis Estadisticas', 'flavor-platform'),
+                'label' => __('Mis Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
@@ -2401,42 +2401,42 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
                 'template' => 'compostaje/estadisticas-usuario',
             ],
             'ranking_compostaje' => [
-                'label' => __('Ranking Composteros', 'flavor-platform'),
+                'label' => __('Ranking Composteros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-awards',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Top Composteros', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Top Composteros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'limite' => ['type' => 'number', 'default' => 10],
                     'periodo' => ['type' => 'select', 'options' => ['total', 'mes', 'semana'], 'default' => 'total'],
                 ],
                 'template' => 'compostaje/ranking',
             ],
             'guia_compostaje' => [
-                'label' => __('Guia de Compostaje', 'flavor-platform'),
+                'label' => __('Guia de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-book',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Que Compostar', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Que Compostar', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'estilo' => ['type' => 'select', 'options' => ['lista', 'tarjetas'], 'default' => 'tarjetas'],
                 ],
                 'template' => 'compostaje/guia',
             ],
             'calendario_turnos' => [
-                'label' => __('Calendario de Turnos', 'flavor-platform'),
+                'label' => __('Calendario de Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Turnos de Mantenimiento', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Turnos de Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'dias_adelante' => ['type' => 'number', 'default' => 30],
                 ],
                 'template' => 'compostaje/turnos',
             ],
             'impacto_global' => [
-                'label' => __('Impacto Global', 'flavor-platform'),
+                'label' => __('Impacto Global', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-chart-area',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Nuestro Impacto', 'flavor-platform')],
+                    'titulo' => ['type' => 'text', 'default' => __('Nuestro Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_equivalencias' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/impacto',
@@ -2590,24 +2590,24 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'compostaje',
-            'label' => __('Compostaje', 'flavor-platform'),
+            'label' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-carrot',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'flavor-compostaje-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-platform'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-compostaje-composteras',
-                    'titulo' => __('Composteras', 'flavor-platform'),
+                    'titulo' => __('Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_composteras'],
                 ],
                 [
                     'slug' => 'flavor-compostaje-participantes',
-                    'titulo' => __('Participantes', 'flavor-platform'),
+                    'titulo' => __('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_participantes'],
                 ],
             ],
@@ -2618,7 +2618,7 @@ KNOWLEDGE;
      * Renderiza el dashboard de administracion de compostaje
      */
     public function render_admin_dashboard() {
-        $this->render_page_header(__('Dashboard de Compostaje', 'flavor-platform'));
+        $this->render_page_header(__('Dashboard de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $estadisticas_generales = $this->obtener_estadisticas_generales();
         include dirname(__FILE__) . '/views/dashboard.php';
@@ -2642,13 +2642,13 @@ KNOWLEDGE;
     public function render_admin_composteras() {
         $acciones = [
             [
-                'label' => __('Nueva Compostera', 'flavor-platform'),
+                'label' => __('Nueva Compostera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('admin.php?page=flavor-compostaje-composteras&action=nueva'),
                 'class' => 'button-primary',
             ],
         ];
 
-        $this->render_page_header(__('Gestion de Composteras', 'flavor-platform'), $acciones);
+        $this->render_page_header(__('Gestion de Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
         $composteras = $this->obtener_composteras();
 
@@ -2659,7 +2659,7 @@ KNOWLEDGE;
      * Renderiza la pagina de gestion de participantes
      */
     public function render_admin_participantes() {
-        $this->render_page_header(__('Participantes del Compostaje', 'flavor-platform'));
+        $this->render_page_header(__('Participantes del Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $participantes = $this->obtener_ranking_participantes();
 
@@ -2718,7 +2718,7 @@ KNOWLEDGE;
         $estadisticas['puntos_compostaje'] = [
             'icon' => 'dashicons-carrot',
             'valor' => $total_puntos,
-            'label' => __('Puntos activos', 'flavor-platform'),
+            'label' => __('Puntos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
         ];
 
@@ -2736,7 +2736,7 @@ KNOWLEDGE;
             $estadisticas['mis_aportaciones'] = [
                 'icon' => 'dashicons-update',
                 'valor' => $mis_aportaciones,
-                'label' => __('Aportes este mes', 'flavor-platform'),
+                'label' => __('Aportes este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_aportaciones > 0 ? 'green' : 'gray',
             ];
 
@@ -2751,7 +2751,7 @@ KNOWLEDGE;
                 $estadisticas['kg_aportados'] = [
                     'icon' => 'dashicons-chart-line',
                     'valor' => number_format($kg_totales, 1) . ' kg',
-                    'label' => __('Total aportado', 'flavor-platform'),
+                    'label' => __('Total aportado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'blue',
                 ];
             }
@@ -2768,28 +2768,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Compostaje Comunitario', 'flavor-platform'),
+                'title' => __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'compostaje',
-                'content' => '<h1>' . __('Compostaje Comunitario', 'flavor-platform') . '</h1>
-<p>' . __('Transforma tus residuos orgánicos en abono de calidad. Únete al programa de compostaje comunitario y contribuye a un barrio más sostenible.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Transforma tus residuos orgánicos en abono de calidad. Únete al programa de compostaje comunitario y contribuye a un barrio más sostenible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="compostaje" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Registrar Aporte', 'flavor-platform'),
+                'title' => __('Registrar Aporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'compostaje/registrar',
-                'content' => '<h1>' . __('Registrar Aporte de Compost', 'flavor-platform') . '</h1>
-<p>' . __('Registra tu aporte de residuos orgánicos a la compostera comunitaria. Cada aporte suma puntos para tu ranking.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Registrar Aporte de Compost', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Registra tu aporte de residuos orgánicos a la compostera comunitaria. Cada aporte suma puntos para tu ranking.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="compostaje" action="registrar"]',
                 'parent' => 'compostaje',
             ],
             [
-                'title' => __('Mis Aportes', 'flavor-platform'),
+                'title' => __('Mis Aportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'compostaje/mis-aportes',
-                'content' => '<h1>' . __('Mis Aportes de Compostaje', 'flavor-platform') . '</h1>
-<p>' . __('Consulta tu historial de aportes, tus estadísticas y tu posición en el ranking de compostadores.', 'flavor-platform') . '</p>
+                'content' => '<h1>' . __('Mis Aportes de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta tu historial de aportes, tus estadísticas y tu posición en el ranking de compostadores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="compostaje" action="mis_aportes" columnas="2" limite="20"]',
                 'parent' => 'compostaje',
@@ -2805,8 +2805,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'compostaje',
-            'title'    => __('Compostaje Comunitario', 'flavor-platform'),
-            'subtitle' => __('Convierte residuos orgánicos en abono natural', 'flavor-platform'),
+            'title'    => __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Convierte residuos orgánicos en abono natural', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🥕',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -2816,28 +2816,28 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'        => ['label' => __('Nombre', 'flavor-platform'), 'type' => 'text', 'required' => true],
-                'ubicacion'     => ['label' => __('Ubicación', 'flavor-platform'), 'type' => 'text', 'required' => true],
-                'tipo'          => ['label' => __('Tipo', 'flavor-platform'), 'type' => 'select', 'options' => ['comunitario' => 'Comunitario', 'vecinal' => 'Vecinal', 'escolar' => 'Escolar']],
-                'capacidad'     => ['label' => __('Capacidad (kg)', 'flavor-platform'), 'type' => 'number'],
-                'nivel_llenado' => ['label' => __('Nivel de llenado', 'flavor-platform'), 'type' => 'range'],
-                'fase'          => ['label' => __('Fase', 'flavor-platform'), 'type' => 'select'],
-                'estado'        => ['label' => __('Estado', 'flavor-platform'), 'type' => 'select'],
+                'nombre'        => ['label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'ubicacion'     => ['label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'tipo'          => ['label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select', 'options' => ['comunitario' => 'Comunitario', 'vecinal' => 'Vecinal', 'escolar' => 'Escolar']],
+                'capacidad'     => ['label' => __('Capacidad (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number'],
+                'nivel_llenado' => ['label' => __('Nivel de llenado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'range'],
+                'fase'          => ['label' => __('Fase', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
+                'estado'        => ['label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             ],
 
             'estados' => [
-                'activo'       => ['label' => __('Activo', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
-                'recepcion'    => ['label' => __('Recepción', 'flavor-platform'), 'color' => 'blue', 'icon' => '📥'],
-                'maduracion'   => ['label' => __('Maduración', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏳'],
-                'listo'        => ['label' => __('Listo', 'flavor-platform'), 'color' => 'emerald', 'icon' => '🌱'],
-                'mantenimiento'=> ['label' => __('Mantenimiento', 'flavor-platform'), 'color' => 'orange', 'icon' => '🔧'],
+                'activo'       => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'recepcion'    => ['label' => __('Recepción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📥'],
+                'maduracion'   => ['label' => __('Maduración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'listo'        => ['label' => __('Listo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'emerald', 'icon' => '🌱'],
+                'mantenimiento'=> ['label' => __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '🔧'],
             ],
 
             'stats' => [
-                'total_puntos'   => ['label' => __('Puntos activos', 'flavor-platform'), 'icon' => '📍', 'color' => 'amber'],
-                'kg_compostados' => ['label' => __('Kg compostados', 'flavor-platform'), 'icon' => '🥕', 'color' => 'green'],
-                'co2_evitado'    => ['label' => __('CO₂ evitado', 'flavor-platform'), 'icon' => '🌱', 'color' => 'teal'],
-                'participantes'  => ['label' => __('Participantes', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
+                'total_puntos'   => ['label' => __('Puntos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📍', 'color' => 'amber'],
+                'kg_compostados' => ['label' => __('Kg compostados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🥕', 'color' => 'green'],
+                'co2_evitado'    => ['label' => __('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'teal'],
+                'participantes'  => ['label' => __('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
             ],
 
             'card' => [
@@ -2849,27 +2849,27 @@ KNOWLEDGE;
 
             'tabs' => [
                 'puntos' => [
-                    'label'   => __('Composteras', 'flavor-platform'),
+                    'label'   => __('Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-carrot',
                     'content' => '[flavor_compostaje_puntos]',
                 ],
                 'registrar' => [
-                    'label'   => __('Registrar aporte', 'flavor-platform'),
+                    'label'   => __('Registrar aporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-plus-alt',
                     'content' => '[flavor_compostaje_registrar]',
                 ],
                 'mis-aportes' => [
-                    'label'   => __('Mis aportes', 'flavor-platform'),
+                    'label'   => __('Mis aportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => '[flavor_compostaje_mis_aportaciones]',
                 ],
                 'turnos' => [
-                    'label'   => __('Turnos', 'flavor-platform'),
+                    'label'   => __('Turnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-calendar-alt',
                     'content' => '[flavor_compostaje_turnos]',
                 ],
                 'ranking' => [
-                    'label'   => __('Ranking', 'flavor-platform'),
+                    'label'   => __('Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-awards',
                     'content' => '[flavor_compostaje_ranking]',
                 ],
@@ -2886,8 +2886,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'registrar_aporte' => ['label' => __('Registrar aporte', 'flavor-platform'), 'icon' => '➕', 'color' => 'amber'],
-                    'ver_turnos'       => ['label' => __('Ver turnos', 'flavor-platform'), 'icon' => '📅', 'color' => 'blue'],
+                    'registrar_aporte' => ['label' => __('Registrar aporte', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'amber'],
+                    'ver_turnos'       => ['label' => __('Ver turnos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => 'blue'],
                 ],
             ],
         ];
@@ -2925,8 +2925,8 @@ KNOWLEDGE;
         // Subpágina: Composteras
         add_submenu_page(
             null,
-            __('Composteras', 'flavor-platform'),
-            __('Composteras', 'flavor-platform'),
+            __('Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-compostaje-composteras',
             [$this, 'render_pagina_composteras']
@@ -2935,8 +2935,8 @@ KNOWLEDGE;
         // Subpágina: Mantenimiento
         add_submenu_page(
             null,
-            __('Mantenimiento de Compostaje', 'flavor-platform'),
-            __('Mantenimiento', 'flavor-platform'),
+            __('Mantenimiento de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-compostaje-mantenimiento',
             [$this, 'render_pagina_mantenimiento']
@@ -2945,8 +2945,8 @@ KNOWLEDGE;
         // Subpágina: Participantes
         add_submenu_page(
             null,
-            __('Participantes de Compostaje', 'flavor-platform'),
-            __('Participantes', 'flavor-platform'),
+            __('Participantes de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-compostaje-participantes',
             [$this, 'render_pagina_participantes']
@@ -2961,8 +2961,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Composteras', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2974,8 +2974,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Compostaje', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2987,8 +2987,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Participantes de Compostaje', 'flavor-platform') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Participantes de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

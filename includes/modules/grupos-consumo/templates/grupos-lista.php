@@ -59,22 +59,22 @@ foreach ($grupos as $grupo) {
     <div class="gc-grupos-header">
         <h2>
             <span class="dashicons dashicons-groups"></span>
-            <?php esc_html_e('Grupos de Consumo', 'flavor-platform'); ?>
+            <?php esc_html_e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p class="gc-grupos-descripcion">
-            <?php esc_html_e('Los grupos de consumo son colectivos que organizan pedidos conjuntos a productores locales. Unete a un grupo existente o crea el tuyo.', 'flavor-platform'); ?>
+            <?php esc_html_e('Los grupos de consumo son colectivos que organizan pedidos conjuntos a productores locales. Unete a un grupo existente o crea el tuyo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <?php if (empty($grupos)) : ?>
     <div class="gc-grupos-empty">
         <span class="dashicons dashicons-groups"></span>
-        <h3><?php esc_html_e('No hay grupos disponibles', 'flavor-platform'); ?></h3>
-        <p><?php esc_html_e('Actualmente no hay grupos de consumo activos. Se el primero en crear uno.', 'flavor-platform'); ?></p>
+        <h3><?php esc_html_e('No hay grupos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('Actualmente no hay grupos de consumo activos. Se el primero en crear uno.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if (is_user_logged_in() && current_user_can('gc_crear_grupo')) : ?>
         <a href="<?php echo esc_url(Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'crear-grupo')); ?>" class="gc-btn gc-btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Crear grupo', 'flavor-platform'); ?>
+            <?php esc_html_e('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>
@@ -85,17 +85,17 @@ foreach ($grupos as $grupo) {
     <div class="gc-grupos-filtros">
         <div class="gc-filtro-busqueda">
             <span class="dashicons dashicons-search"></span>
-            <input type="text" id="gc-buscar-grupo" placeholder="<?php esc_attr_e('Buscar grupo...', 'flavor-platform'); ?>">
+            <input type="text" id="gc-buscar-grupo" placeholder="<?php esc_attr_e('Buscar grupo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="gc-filtro-opciones">
             <label class="gc-filtro-checkbox">
                 <input type="checkbox" id="gc-filtro-abiertos" checked>
-                <span><?php esc_html_e('Solo grupos abiertos', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Solo grupos abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </label>
             <?php if ($user_id) : ?>
             <label class="gc-filtro-checkbox">
                 <input type="checkbox" id="gc-filtro-mis-grupos">
-                <span><?php esc_html_e('Mis grupos', 'flavor-platform'); ?></span>
+                <span><?php esc_html_e('Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </label>
             <?php endif; ?>
         </div>
@@ -131,11 +131,11 @@ foreach ($grupos as $grupo) {
                 <?php if ($es_miembro) : ?>
                 <span class="gc-grupo-badge gc-badge-miembro">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Miembro', 'flavor-platform'); ?>
+                    <?php esc_html_e('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php elseif (!$admite_nuevos) : ?>
                 <span class="gc-grupo-badge gc-badge-cerrado">
-                    <?php esc_html_e('Cerrado', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -145,11 +145,11 @@ foreach ($grupos as $grupo) {
                 <?php if ($es_miembro) : ?>
                 <span class="gc-grupo-badge gc-badge-miembro">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Miembro', 'flavor-platform'); ?>
+                    <?php esc_html_e('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php elseif (!$admite_nuevos) : ?>
                 <span class="gc-grupo-badge gc-badge-cerrado">
-                    <?php esc_html_e('Cerrado', 'flavor-platform'); ?>
+                    <?php esc_html_e('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -185,7 +185,7 @@ foreach ($grupos as $grupo) {
                         <span>
                             <?php
                             printf(
-                                _n('%d miembro', '%d miembros', $estadisticas['miembros'], 'flavor-platform'),
+                                _n('%d miembro', '%d miembros', $estadisticas['miembros'], FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $estadisticas['miembros']
                             );
                             ?>
@@ -213,12 +213,12 @@ foreach ($grupos as $grupo) {
                     <?php if ($estado_usuario === 'pendiente') : ?>
                     <span class="gc-btn gc-btn-warning gc-btn-disabled">
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Solicitud pendiente', 'flavor-platform'); ?>
+                        <?php esc_html_e('Solicitud pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php else : ?>
                     <a href="<?php echo esc_url($url_portal_grupo); ?>" class="gc-btn gc-btn-primary">
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
-                        <?php esc_html_e('Acceder', 'flavor-platform'); ?>
+                        <?php esc_html_e('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 <?php elseif ($admite_nuevos) : ?>
@@ -226,21 +226,21 @@ foreach ($grupos as $grupo) {
                     <button type="button" class="gc-btn gc-btn-success gc-btn-unirse"
                             data-grupo-id="<?php echo esc_attr($grupo->ID); ?>">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php esc_html_e('Unirse', 'flavor-platform'); ?>
+                        <?php esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php else : ?>
                     <a href="<?php echo esc_url(wp_login_url($url_portal_grupo)); ?>" class="gc-btn gc-btn-secondary">
-                        <?php esc_html_e('Inicia sesion para unirte', 'flavor-platform'); ?>
+                        <?php esc_html_e('Inicia sesion para unirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 <?php else : ?>
                 <span class="gc-btn gc-btn-disabled">
-                    <?php esc_html_e('No admite nuevos miembros', 'flavor-platform'); ?>
+                    <?php esc_html_e('No admite nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
 
                 <a href="<?php echo esc_url($url_portal_grupo); ?>" class="gc-btn gc-btn-text">
-                    <?php esc_html_e('Ver detalles', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -293,7 +293,7 @@ foreach ($grupos as $grupo) {
 
         if ($btn.prop('disabled')) return;
 
-        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Enviando...', 'flavor-platform')); ?>');
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
         $.ajax({
             url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
@@ -306,16 +306,16 @@ foreach ($grupos as $grupo) {
             success: function(response) {
                 if (response.success) {
                     $btn.removeClass('gc-btn-success').addClass('gc-btn-warning gc-btn-disabled')
-                        .html('<span class="dashicons dashicons-clock"></span> <?php echo esc_js(__('Solicitud pendiente', 'flavor-platform')); ?>');
+                        .html('<span class="dashicons dashicons-clock"></span> <?php echo esc_js(__('Solicitud pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     $btn.closest('.gc-grupo-card').addClass('gc-grupo-miembro');
                 } else {
-                    gcAviso(response.data.message || '<?php echo esc_js(__('Error al procesar la solicitud.', 'flavor-platform')); ?>');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', 'flavor-platform')); ?>');
+                    gcAviso(response.data.message || '<?php echo esc_js(__('Error al procesar la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             },
             error: function() {
-                gcAviso('<?php echo esc_js(__('Error de conexion.', 'flavor-platform')); ?>');
-                $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', 'flavor-platform')); ?>');
+                gcAviso('<?php echo esc_js(__('Error de conexion.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
+                $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     });

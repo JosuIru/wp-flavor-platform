@@ -55,7 +55,7 @@ class Flavor_Dex_Solana_Cerebro {
 
         if (empty($respuesta_ia['success'])) {
             $recomendacion_neutral = $this->crear_recomendacion_neutral(
-                isset($respuesta_ia['error']) ? $respuesta_ia['error'] : __('Error al comunicar con la IA', 'flavor-platform')
+                isset($respuesta_ia['error']) ? $respuesta_ia['error'] : __('Error al comunicar con la IA', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
 
             $this->registrar_decision(
@@ -121,7 +121,7 @@ class Flavor_Dex_Solana_Cerebro {
                 'confianza'          => 0,
                 'razonamiento'       => isset($respuesta_ia['error'])
                     ? $respuesta_ia['error']
-                    : __('IA no disponible. Se recomienda no actuar hasta tener analisis.', 'flavor-platform'),
+                    : __('IA no disponible. Se recomienda no actuar hasta tener analisis.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             );
 
             $this->registrar_decision(
@@ -275,7 +275,7 @@ REGLAS ESTRICTAS:
                 : 0,
             'razonamiento' => isset($datos_decodificados['razonamiento'])
                 ? sanitize_textarea_field($datos_decodificados['razonamiento'])
-                : __('Sin razonamiento proporcionado', 'flavor-platform'),
+                : __('Sin razonamiento proporcionado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'sugerencias' => isset($datos_decodificados['sugerencias']) && is_array($datos_decodificados['sugerencias'])
                 ? array_map('sanitize_text_field', $datos_decodificados['sugerencias'])
                 : array(),
@@ -398,8 +398,8 @@ Responde SOLO con el JSON de recomendacion, incluyendo el campo \"porcentaje_sug
             'confianza'     => 0,
             'razonamiento'  => $razon_error,
             'sugerencias'   => array(
-                __('Revisa la conexion con el proveedor de IA antes de operar.', 'flavor-platform'),
-                __('Verifica manualmente los parametros de la operacion.', 'flavor-platform'),
+                __('Revisa la conexion con el proveedor de IA antes de operar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Verifica manualmente los parametros de la operacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ),
         );
     }

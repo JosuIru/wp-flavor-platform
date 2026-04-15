@@ -53,31 +53,31 @@ function obtener_nivel_locutor($total_programas, $fecha_inicio = null) {
     $niveles = [
         'estrella' => [
             'clase' => 'estrella',
-            'texto' => __('Estrella', 'flavor-platform'),
+            'texto' => __('Estrella', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'star-filled',
             'color' => '#f59e0b'
         ],
         'senior' => [
             'clase' => 'senior',
-            'texto' => __('Senior', 'flavor-platform'),
+            'texto' => __('Senior', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'awards',
             'color' => '#8b5cf6'
         ],
         'profesional' => [
             'clase' => 'profesional',
-            'texto' => __('Profesional', 'flavor-platform'),
+            'texto' => __('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'microphone',
             'color' => '#3b82f6'
         ],
         'junior' => [
             'clase' => 'junior',
-            'texto' => __('Junior', 'flavor-platform'),
+            'texto' => __('Junior', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'admin-users',
             'color' => '#10b981'
         ],
         'nuevo' => [
             'clase' => 'nuevo',
-            'texto' => __('Nuevo', 'flavor-platform'),
+            'texto' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'welcome-learn-more',
             'color' => '#6b7280'
         ]
@@ -109,22 +109,22 @@ function obtener_badge_estado_locutor($estado) {
     $estados = [
         'activo' => [
             'clase' => 'success',
-            'texto' => __('Activo', 'flavor-platform'),
+            'texto' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'yes-alt'
         ],
         'inactivo' => [
             'clase' => 'secondary',
-            'texto' => __('Inactivo', 'flavor-platform'),
+            'texto' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'marker'
         ],
         'vacaciones' => [
             'clase' => 'info',
-            'texto' => __('Vacaciones', 'flavor-platform'),
+            'texto' => __('Vacaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'palmtree'
         ],
         'suspendido' => [
             'clase' => 'danger',
-            'texto' => __('Suspendido', 'flavor-platform'),
+            'texto' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dismiss'
         ]
     ];
@@ -319,18 +319,18 @@ foreach ($datos_distribucion as $item) {
 <div class="wrap flavor-radio-locutores">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-microphone"></span>
-        <?php echo esc_html__('Gestión de Locutores', 'flavor-platform'); ?>
+        <?php echo esc_html__('Gestión de Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <a href="#" class="page-title-action" onclick="abrirModalNuevoLocutor(); return false;">
         <span class="dashicons dashicons-plus-alt2"></span>
-        <?php echo esc_html__('Nuevo Locutor', 'flavor-platform'); ?>
+        <?php echo esc_html__('Nuevo Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <?php if (!$tablas_radio_disponibles): ?>
     <div class="notice notice-info inline" style="margin: 15px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Radio.', 'flavor-platform'); ?>
+            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Radio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
     <?php endif; ?>
@@ -343,7 +343,7 @@ foreach ($datos_distribucion as $item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['total_locutores']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Locutores', 'flavor-platform'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -353,7 +353,7 @@ foreach ($datos_distribucion as $item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['locutores_activos']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Activos', 'flavor-platform'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -363,7 +363,7 @@ foreach ($datos_distribucion as $item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['total_programas']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Programas', 'flavor-platform'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -373,7 +373,7 @@ foreach ($datos_distribucion as $item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['audiencia_total']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Audiencia Total', 'flavor-platform'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Audiencia Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -388,25 +388,25 @@ foreach ($datos_distribucion as $item) {
                     <input type="hidden" name="tab" value="locutores">
 
                     <div class="flavor-filtro-grupo">
-                        <label for="buscar"><?php echo esc_html__('Buscar', 'flavor-platform'); ?></label>
-                        <input type="text" id="buscar" name="buscar" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, email...', 'flavor-platform'); ?>">
+                        <label for="buscar"><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" id="buscar" name="buscar" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, email...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="estado"><?php echo esc_html__('Estado', 'flavor-platform'); ?></label>
+                        <label for="estado"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="estado" name="estado">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
-                            <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-platform'); ?></option>
-                            <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-platform'); ?></option>
-                            <option value="vacaciones" <?php selected($filtro_estado, 'vacaciones'); ?>><?php echo esc_html__('Vacaciones', 'flavor-platform'); ?></option>
-                            <option value="suspendido" <?php selected($filtro_estado, 'suspendido'); ?>><?php echo esc_html__('Suspendido', 'flavor-platform'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="vacaciones" <?php selected($filtro_estado, 'vacaciones'); ?>><?php echo esc_html__('Vacaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="suspendido" <?php selected($filtro_estado, 'suspendido'); ?>><?php echo esc_html__('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="especialidad"><?php echo esc_html__('Especialidad', 'flavor-platform'); ?></label>
+                        <label for="especialidad"><?php echo esc_html__('Especialidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="especialidad" name="especialidad">
-                            <option value=""><?php echo esc_html__('Todas', 'flavor-platform'); ?></option>
+                            <option value=""><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($especialidades as $especialidad): ?>
                                 <option value="<?php echo esc_attr($especialidad); ?>" <?php selected($filtro_especialidad, $especialidad); ?>>
                                     <?php echo esc_html($especialidad); ?>
@@ -416,36 +416,36 @@ foreach ($datos_distribucion as $item) {
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="nivel"><?php echo esc_html__('Nivel', 'flavor-platform'); ?></label>
+                        <label for="nivel"><?php echo esc_html__('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="nivel" name="nivel">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
-                            <option value="estrella" <?php selected($filtro_nivel, 'estrella'); ?>><?php echo esc_html__('Estrella', 'flavor-platform'); ?></option>
-                            <option value="senior" <?php selected($filtro_nivel, 'senior'); ?>><?php echo esc_html__('Senior', 'flavor-platform'); ?></option>
-                            <option value="profesional" <?php selected($filtro_nivel, 'profesional'); ?>><?php echo esc_html__('Profesional', 'flavor-platform'); ?></option>
-                            <option value="junior" <?php selected($filtro_nivel, 'junior'); ?>><?php echo esc_html__('Junior', 'flavor-platform'); ?></option>
-                            <option value="nuevo" <?php selected($filtro_nivel, 'nuevo'); ?>><?php echo esc_html__('Nuevo', 'flavor-platform'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="estrella" <?php selected($filtro_nivel, 'estrella'); ?>><?php echo esc_html__('Estrella', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="senior" <?php selected($filtro_nivel, 'senior'); ?>><?php echo esc_html__('Senior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="profesional" <?php selected($filtro_nivel, 'profesional'); ?>><?php echo esc_html__('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="junior" <?php selected($filtro_nivel, 'junior'); ?>><?php echo esc_html__('Junior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nuevo" <?php selected($filtro_nivel, 'nuevo'); ?>><?php echo esc_html__('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="orden"><?php echo esc_html__('Ordenar por', 'flavor-platform'); ?></label>
+                        <label for="orden"><?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="orden" name="orden">
-                            <option value="nombre_asc" <?php selected($filtro_orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', 'flavor-platform'); ?></option>
-                            <option value="nombre_desc" <?php selected($filtro_orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre Z-A', 'flavor-platform'); ?></option>
-                            <option value="audiencia_desc" <?php selected($filtro_orden, 'audiencia_desc'); ?>><?php echo esc_html__('Mayor audiencia', 'flavor-platform'); ?></option>
-                            <option value="programas_desc" <?php selected($filtro_orden, 'programas_desc'); ?>><?php echo esc_html__('Más programas', 'flavor-platform'); ?></option>
-                            <option value="fecha_desc" <?php selected($filtro_orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', 'flavor-platform'); ?></option>
-                            <option value="fecha_asc" <?php selected($filtro_orden, 'fecha_asc'); ?>><?php echo esc_html__('Más antiguos', 'flavor-platform'); ?></option>
+                            <option value="nombre_asc" <?php selected($filtro_orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre_desc" <?php selected($filtro_orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre Z-A', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="audiencia_desc" <?php selected($filtro_orden, 'audiencia_desc'); ?>><?php echo esc_html__('Mayor audiencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="programas_desc" <?php selected($filtro_orden, 'programas_desc'); ?>><?php echo esc_html__('Más programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fecha_desc" <?php selected($filtro_orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fecha_asc" <?php selected($filtro_orden, 'fecha_asc'); ?>><?php echo esc_html__('Más antiguos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-acciones">
                         <button type="submit" class="button button-primary">
                             <span class="dashicons dashicons-search"></span>
-                            <?php echo esc_html__('Filtrar', 'flavor-platform'); ?>
+                            <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'flavor-radio') . '&tab=locutores')); ?>" class="button">
-                            <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
+                            <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </form>
@@ -456,7 +456,7 @@ foreach ($datos_distribucion as $item) {
                 <span>
                     <?php
                     printf(
-                        esc_html__('Mostrando %d-%d de %d locutores', 'flavor-platform'),
+                        esc_html__('Mostrando %d-%d de %d locutores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         min($offset + 1, $total_items),
                         min($offset + $items_por_pagina, $total_items),
                         $total_items
@@ -469,8 +469,8 @@ foreach ($datos_distribucion as $item) {
             <?php if (empty($locutores)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <h3><?php echo esc_html__('No se encontraron locutores', 'flavor-platform'); ?></h3>
-                    <p><?php echo esc_html__('Intenta ajustar los filtros o añade un nuevo locutor.', 'flavor-platform'); ?></p>
+                    <h3><?php echo esc_html__('No se encontraron locutores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Intenta ajustar los filtros o añade un nuevo locutor.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-locutores-grid">
@@ -529,12 +529,12 @@ foreach ($datos_distribucion as $item) {
                                     <div class="flavor-locutor-stat">
                                         <span class="dashicons dashicons-playlist-audio"></span>
                                         <strong><?php echo intval($locutor->total_programas); ?></strong>
-                                        <span><?php echo esc_html__('Programas', 'flavor-platform'); ?></span>
+                                        <span><?php echo esc_html__('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                     <div class="flavor-locutor-stat">
                                         <span class="dashicons dashicons-clock"></span>
                                         <strong><?php echo number_format($locutor->horas_emision ?? 0); ?>h</strong>
-                                        <span><?php echo esc_html__('Al aire', 'flavor-platform'); ?></span>
+                                        <span><?php echo esc_html__('Al aire', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                 </div>
 
@@ -563,11 +563,11 @@ foreach ($datos_distribucion as $item) {
                             <div class="flavor-locutor-footer">
                                 <button type="button" onclick="editarLocutor(<?php echo $locutor->id; ?>)" class="button button-small">
                                     <span class="dashicons dashicons-edit"></span>
-                                    <?php echo esc_html__('Editar', 'flavor-platform'); ?>
+                                    <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <button type="button" onclick="verProgramasLocutor(<?php echo $locutor->id; ?>)" class="button button-small button-link">
                                     <span class="dashicons dashicons-visibility"></span>
-                                    <?php echo esc_html__('Ver programas', 'flavor-platform'); ?>
+                                    <?php echo esc_html__('Ver programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -583,8 +583,8 @@ foreach ($datos_distribucion as $item) {
                             'format' => '',
                             'current' => $pagina_actual,
                             'total' => $total_paginas,
-                            'prev_text' => '&laquo; ' . __('Anterior', 'flavor-platform'),
-                            'next_text' => __('Siguiente', 'flavor-platform') . ' &raquo;',
+                            'prev_text' => '&laquo; ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' &raquo;',
                             'type' => 'list'
                         ];
                         echo paginate_links($pagination_args);
@@ -600,7 +600,7 @@ foreach ($datos_distribucion as $item) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-awards"></span>
-                    <?php echo esc_html__('Top Locutores', 'flavor-platform'); ?>
+                    <?php echo esc_html__('Top Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <?php if (!empty($top_locutores)): ?>
                     <ul class="flavor-top-list">
@@ -621,7 +621,7 @@ foreach ($datos_distribucion as $item) {
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('Sin datos disponibles', 'flavor-platform'); ?></p>
+                    <p class="flavor-no-data"><?php echo esc_html__('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -629,7 +629,7 @@ foreach ($datos_distribucion as $item) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php echo esc_html__('Por Especialidad', 'flavor-platform'); ?>
+                    <?php echo esc_html__('Por Especialidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <canvas id="graficoEspecialidades" height="200"></canvas>
             </div>
@@ -638,7 +638,7 @@ foreach ($datos_distribucion as $item) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-info-outline"></span>
-                    <?php echo esc_html__('Niveles de Locutor', 'flavor-platform'); ?>
+                    <?php echo esc_html__('Niveles de Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <ul class="flavor-leyenda-niveles">
                     <li>
@@ -672,7 +672,7 @@ foreach ($datos_distribucion as $item) {
     <div class="flavor-modal-overlay" onclick="cerrarModalLocutor()"></div>
     <div class="flavor-modal-content">
         <button type="button" class="flavor-modal-close" onclick="cerrarModalLocutor()">&times;</button>
-        <h3 id="modal-locutor-titulo"><?php echo esc_html__('Nuevo Locutor', 'flavor-platform'); ?></h3>
+        <h3 id="modal-locutor-titulo"><?php echo esc_html__('Nuevo Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <form id="form-locutor" method="post">
             <?php wp_nonce_field('nuevo_locutor', 'locutor_nonce'); ?>
@@ -681,56 +681,56 @@ foreach ($datos_distribucion as $item) {
 
             <div class="flavor-form-grid">
                 <div class="flavor-form-group">
-                    <label for="nombre"><?php echo esc_html__('Nombre completo', 'flavor-platform'); ?> *</label>
+                    <label for="nombre"><?php echo esc_html__('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="nombre" name="nombre" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="email"><?php echo esc_html__('Email', 'flavor-platform'); ?></label>
+                    <label for="email"><?php echo esc_html__('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="email" id="email" name="email">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="telefono"><?php echo esc_html__('Teléfono', 'flavor-platform'); ?></label>
+                    <label for="telefono"><?php echo esc_html__('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="tel" id="telefono" name="telefono">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="especialidad"><?php echo esc_html__('Especialidad', 'flavor-platform'); ?></label>
+                    <label for="especialidad"><?php echo esc_html__('Especialidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="especialidad_form" name="especialidad">
-                        <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-platform'); ?></option>
-                        <option value="Musical"><?php echo esc_html__('Musical', 'flavor-platform'); ?></option>
-                        <option value="Noticias"><?php echo esc_html__('Noticias', 'flavor-platform'); ?></option>
-                        <option value="Deportes"><?php echo esc_html__('Deportes', 'flavor-platform'); ?></option>
-                        <option value="Entretenimiento"><?php echo esc_html__('Entretenimiento', 'flavor-platform'); ?></option>
-                        <option value="Cultural"><?php echo esc_html__('Cultural', 'flavor-platform'); ?></option>
-                        <option value="Técnico"><?php echo esc_html__('Técnico', 'flavor-platform'); ?></option>
+                        <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Musical"><?php echo esc_html__('Musical', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Noticias"><?php echo esc_html__('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Deportes"><?php echo esc_html__('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Entretenimiento"><?php echo esc_html__('Entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Cultural"><?php echo esc_html__('Cultural', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="Técnico"><?php echo esc_html__('Técnico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group flavor-form-full">
-                    <label for="bio"><?php echo esc_html__('Biografía', 'flavor-platform'); ?></label>
+                    <label for="bio"><?php echo esc_html__('Biografía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="bio" name="bio" rows="3"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="foto_url"><?php echo esc_html__('URL de foto', 'flavor-platform'); ?></label>
+                    <label for="foto_url"><?php echo esc_html__('URL de foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="url" id="foto_url" name="foto_url" placeholder="https://...">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="estado_form"><?php echo esc_html__('Estado', 'flavor-platform'); ?></label>
+                    <label for="estado_form"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="estado_form" name="estado">
-                        <option value="activo"><?php echo esc_html__('Activo', 'flavor-platform'); ?></option>
-                        <option value="inactivo"><?php echo esc_html__('Inactivo', 'flavor-platform'); ?></option>
-                        <option value="vacaciones"><?php echo esc_html__('Vacaciones', 'flavor-platform'); ?></option>
+                        <option value="activo"><?php echo esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="inactivo"><?php echo esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="vacaciones"><?php echo esc_html__('Vacaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </div>
 
             <div class="flavor-modal-actions">
-                <button type="button" class="button" onclick="cerrarModalLocutor()"><?php echo esc_html__('Cancelar', 'flavor-platform'); ?></button>
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-platform'); ?></button>
+                <button type="button" class="button" onclick="cerrarModalLocutor()"><?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </form>
     </div>
@@ -1431,7 +1431,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function abrirModalNuevoLocutor() {
-    document.getElementById('modal-locutor-titulo').textContent = '<?php echo esc_js(__('Nuevo Locutor', 'flavor-platform')); ?>';
+    document.getElementById('modal-locutor-titulo').textContent = '<?php echo esc_js(__('Nuevo Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
     document.getElementById('form-locutor').reset();
     document.getElementById('locutor_id').value = '';
     document.getElementById('modal-locutor').style.display = 'flex';

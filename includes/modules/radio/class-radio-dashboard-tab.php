@@ -77,7 +77,7 @@ class Flavor_Radio_Dashboard_Tab {
     public function register_dashboard_tabs($tabs) {
         // Tab: Mis Programas Favoritos
         $tabs['radio-mis-programas'] = [
-            'label'    => __('Mis Programas', 'flavor-platform'),
+            'label'    => __('Mis Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'heart',
             'callback' => [$this, 'render_tab_mis_programas'],
             'orden'    => 41,
@@ -87,7 +87,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         // Tab: Mis Dedicatorias
         $tabs['radio-mis-dedicatorias'] = [
-            'label'    => __('Mis Dedicatorias', 'flavor-platform'),
+            'label'    => __('Mis Dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'music',
             'callback' => [$this, 'render_tab_mis_dedicatorias'],
             'orden'    => 42,
@@ -97,7 +97,7 @@ class Flavor_Radio_Dashboard_Tab {
 
         // Tab: Mis Propuestas
         $tabs['radio-mis-propuestas'] = [
-            'label'    => __('Mis Propuestas', 'flavor-platform'),
+            'label'    => __('Mis Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'send',
             'callback' => [$this, 'render_tab_mis_propuestas'],
             'orden'    => 43,
@@ -129,21 +129,21 @@ class Flavor_Radio_Dashboard_Tab {
             <div class="tab-header">
                 <h3 class="tab-title">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Mis Programas Favoritos', 'flavor-platform'); ?>
+                    <?php esc_html_e('Mis Programas Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <p class="tab-description">
-                    <?php esc_html_e('Programas que sigues para recibir notificaciones cuando estén en vivo.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Programas que sigues para recibir notificaciones cuando estén en vivo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($programas_favoritos)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-format-audio"></span>
-                    <h4><?php esc_html_e('No tienes programas favoritos', 'flavor-platform'); ?></h4>
-                    <p><?php esc_html_e('Explora nuestra programación y marca tus programas favoritos para seguirlos.', 'flavor-platform'); ?></p>
+                    <h4><?php esc_html_e('No tienes programas favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Explora nuestra programación y marca tus programas favoritos para seguirlos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/radio/')); ?>" class="btn btn-primary">
                         <span class="dashicons dashicons-microphone"></span>
-                        <?php esc_html_e('Explorar Programas', 'flavor-platform'); ?>
+                        <?php esc_html_e('Explorar Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -159,7 +159,7 @@ class Flavor_Radio_Dashboard_Tab {
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($this->is_programa_en_vivo($programa->id)): ?>
-                                    <span class="en-vivo-badge"><?php esc_html_e('EN VIVO', 'flavor-platform'); ?></span>
+                                    <span class="en-vivo-badge"><?php esc_html_e('EN VIVO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="programa-info">
@@ -177,13 +177,13 @@ class Flavor_Radio_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="programa-acciones">
-                                <button type="button" class="btn-favorito active" data-programa-id="<?php echo esc_attr($programa->id); ?>" title="<?php esc_attr_e('Quitar de favoritos', 'flavor-platform'); ?>">
+                                <button type="button" class="btn-favorito active" data-programa-id="<?php echo esc_attr($programa->id); ?>" title="<?php esc_attr_e('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-heart"></span>
                                 </button>
                                 <?php if ($this->is_programa_en_vivo($programa->id)): ?>
                                     <button type="button" class="btn-escuchar" data-programa-id="<?php echo esc_attr($programa->id); ?>">
                                         <span class="dashicons dashicons-controls-play"></span>
-                                        <?php esc_html_e('Escuchar', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -194,7 +194,7 @@ class Flavor_Radio_Dashboard_Tab {
                 <div class="programas-stats">
                     <div class="stat-item">
                         <span class="stat-numero"><?php echo count($programas_favoritos); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Programas siguiendo', 'flavor-platform'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Programas siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             <?php endif; ?>
@@ -225,10 +225,10 @@ class Flavor_Radio_Dashboard_Tab {
             <div class="tab-header">
                 <h3 class="tab-title">
                     <span class="dashicons dashicons-format-audio"></span>
-                    <?php esc_html_e('Mis Dedicatorias', 'flavor-platform'); ?>
+                    <?php esc_html_e('Mis Dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <p class="tab-description">
-                    <?php esc_html_e('Historial de dedicatorias musicales que has enviado a la radio.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Historial de dedicatorias musicales que has enviado a la radio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -236,15 +236,15 @@ class Flavor_Radio_Dashboard_Tab {
             <div class="dedicatorias-resumen">
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo esc_html($dedicatorias_hoy); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Enviadas hoy', 'flavor-platform'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Enviadas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo esc_html($limite_diario - $dedicatorias_hoy); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Disponibles hoy', 'flavor-platform'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Disponibles hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo count($dedicatorias); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Total enviadas', 'flavor-platform'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Total enviadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -252,7 +252,7 @@ class Flavor_Radio_Dashboard_Tab {
                 <div class="nueva-dedicatoria-cta">
                     <a href="<?php echo esc_url(home_url('/radio/dedicatorias/')); ?>" class="btn btn-primary">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php esc_html_e('Enviar Nueva Dedicatoria', 'flavor-platform'); ?>
+                        <?php esc_html_e('Enviar Nueva Dedicatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -260,8 +260,8 @@ class Flavor_Radio_Dashboard_Tab {
             <?php if (empty($dedicatorias)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-format-audio"></span>
-                    <h4><?php esc_html_e('No has enviado dedicatorias', 'flavor-platform'); ?></h4>
-                    <p><?php esc_html_e('Envía una dedicatoria musical a alguien especial y la emitiremos en la radio.', 'flavor-platform'); ?></p>
+                    <h4><?php esc_html_e('No has enviado dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Envía una dedicatoria musical a alguien especial y la emitiremos en la radio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dedicatorias-lista">
@@ -269,8 +269,8 @@ class Flavor_Radio_Dashboard_Tab {
                         <div class="dedicatoria-item estado-<?php echo esc_attr($dedicatoria->estado); ?>">
                             <div class="dedicatoria-header">
                                 <div class="dedicatoria-destinatarios">
-                                    <span class="de"><?php esc_html_e('De:', 'flavor-platform'); ?> <strong><?php echo esc_html($dedicatoria->de_nombre); ?></strong></span>
-                                    <span class="para"><?php esc_html_e('Para:', 'flavor-platform'); ?> <strong><?php echo esc_html($dedicatoria->para_nombre); ?></strong></span>
+                                    <span class="de"><?php esc_html_e('De:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <strong><?php echo esc_html($dedicatoria->de_nombre); ?></strong></span>
+                                    <span class="para"><?php esc_html_e('Para:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <strong><?php echo esc_html($dedicatoria->para_nombre); ?></strong></span>
                                 </div>
                                 <span class="dedicatoria-estado estado-<?php echo esc_attr($dedicatoria->estado); ?>">
                                     <?php echo esc_html($this->get_estado_label($dedicatoria->estado)); ?>
@@ -294,14 +294,14 @@ class Flavor_Radio_Dashboard_Tab {
                                 <span class="dedicatoria-fecha">
                                     <span class="dashicons dashicons-calendar-alt"></span>
                                     <?php echo esc_html(human_time_diff(strtotime($dedicatoria->fecha_solicitud), current_time('timestamp'))); ?>
-                                    <?php esc_html_e('atrás', 'flavor-platform'); ?>
+                                    <?php esc_html_e('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <?php if ($dedicatoria->estado === 'emitida' && !empty($dedicatoria->fecha_emision)): ?>
                                     <span class="dedicatoria-emision">
                                         <span class="dashicons dashicons-controls-play"></span>
                                         <?php
                                         printf(
-                                            esc_html__('Emitida el %s', 'flavor-platform'),
+                                            esc_html__('Emitida el %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($dedicatoria->fecha_emision))
                                         );
                                         ?>
@@ -345,10 +345,10 @@ class Flavor_Radio_Dashboard_Tab {
             <div class="tab-header">
                 <h3 class="tab-title">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Mis Propuestas de Programa', 'flavor-platform'); ?>
+                    <?php esc_html_e('Mis Propuestas de Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <p class="tab-description">
-                    <?php esc_html_e('Propuestas de programas que has enviado para ser locutor/a en la radio.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Propuestas de programas que has enviado para ser locutor/a en la radio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -356,26 +356,26 @@ class Flavor_Radio_Dashboard_Tab {
                 <div class="nueva-propuesta-cta">
                     <a href="<?php echo esc_url(home_url('/radio/proponer-programa/')); ?>" class="btn btn-primary">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php esc_html_e('Enviar Nueva Propuesta', 'flavor-platform'); ?>
+                        <?php esc_html_e('Enviar Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php elseif ($tiene_pendiente): ?>
                 <div class="aviso-pendiente">
                     <span class="dashicons dashicons-info"></span>
-                    <?php esc_html_e('Ya tienes una propuesta pendiente de revisión. Espera la respuesta antes de enviar otra.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Ya tienes una propuesta pendiente de revisión. Espera la respuesta antes de enviar otra.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php elseif (!$permite_propuestas): ?>
                 <div class="aviso-cerrado">
                     <span class="dashicons dashicons-lock"></span>
-                    <?php esc_html_e('Las propuestas de nuevos programas están temporalmente cerradas.', 'flavor-platform'); ?>
+                    <?php esc_html_e('Las propuestas de nuevos programas están temporalmente cerradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
             <?php if (empty($propuestas)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-microphone"></span>
-                    <h4><?php esc_html_e('No has enviado propuestas', 'flavor-platform'); ?></h4>
-                    <p><?php esc_html_e('¿Tienes una idea para un programa de radio? Cuéntanos y podrías tener tu propio espacio en nuestra emisora.', 'flavor-platform'); ?></p>
+                    <h4><?php esc_html_e('No has enviado propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('¿Tienes una idea para un programa de radio? Cuéntanos y podrías tener tu propio espacio en nuestra emisora.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="propuestas-lista">
@@ -415,15 +415,15 @@ class Flavor_Radio_Dashboard_Tab {
                                     <span class="dashicons dashicons-calendar-alt"></span>
                                     <?php
                                     printf(
-                                        esc_html__('Enviada %s', 'flavor-platform'),
-                                        human_time_diff(strtotime($propuesta->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-platform')
+                                        esc_html__('Enviada %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                        human_time_diff(strtotime($propuesta->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN)
                                     );
                                     ?>
                                 </span>
                                 <?php if ($propuesta->estado === 'aprobada' && !empty($propuesta->programa_id)): ?>
                                     <a href="<?php echo esc_url(home_url('/radio/programa/' . $propuesta->programa_id . '/')); ?>" class="btn btn-small btn-success">
                                         <span class="dashicons dashicons-yes"></span>
-                                        <?php esc_html_e('Ver Mi Programa', 'flavor-platform'); ?>
+                                        <?php esc_html_e('Ver Mi Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                                 <?php if ($propuesta->estado === 'rechazada' && !empty($propuesta->notas_admin)): ?>
@@ -444,15 +444,15 @@ class Flavor_Radio_Dashboard_Tab {
                     ?>
                     <div class="stat-item">
                         <span class="stat-numero"><?php echo esc_html($conteos['pendiente'] ?? 0); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-numero"><?php echo esc_html($conteos['aprobada'] ?? 0); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Aprobadas', 'flavor-platform'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-numero"><?php echo esc_html($conteos['rechazada'] ?? 0); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Rechazadas', 'flavor-platform'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Rechazadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             <?php endif; ?>
@@ -477,13 +477,13 @@ class Flavor_Radio_Dashboard_Tab {
                     <?php endif; ?>
                 </div>
                 <div class="mini-player-texto">
-                    <span class="mini-player-nombre"><?php echo esc_html($settings['nombre_radio'] ?? __('Radio Comunitaria', 'flavor-platform')); ?></span>
+                    <span class="mini-player-nombre"><?php echo esc_html($settings['nombre_radio'] ?? __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     <span class="mini-player-programa">
                         <?php if ($programa_actual): ?>
                             <span class="en-vivo-dot"></span>
-                            <?php echo esc_html($programa_actual->titulo ?? $programa_actual->programa_nombre ?? __('En vivo', 'flavor-platform')); ?>
+                            <?php echo esc_html($programa_actual->titulo ?? $programa_actual->programa_nombre ?? __('En vivo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         <?php else: ?>
-                            <?php esc_html_e('Sin emisión actual', 'flavor-platform'); ?>
+                            <?php esc_html_e('Sin emisión actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                     </span>
                 </div>
@@ -495,7 +495,7 @@ class Flavor_Radio_Dashboard_Tab {
                     </button>
                     <input type="range" class="mini-player-volume" id="mini-player-volume" min="0" max="100" value="80">
                 <?php else: ?>
-                    <span class="mini-player-offline"><?php esc_html_e('Stream no disponible', 'flavor-platform'); ?></span>
+                    <span class="mini-player-offline"><?php esc_html_e('Stream no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
             <div class="mini-player-oyentes" id="mini-player-oyentes">
@@ -513,10 +513,10 @@ class Flavor_Radio_Dashboard_Tab {
         ?>
         <div class="login-required">
             <span class="dashicons dashicons-lock"></span>
-            <h4><?php esc_html_e('Inicia sesión para continuar', 'flavor-platform'); ?></h4>
-            <p><?php esc_html_e('Necesitas iniciar sesión para acceder a esta sección.', 'flavor-platform'); ?></p>
+            <h4><?php esc_html_e('Inicia sesión para continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+            <p><?php esc_html_e('Necesitas iniciar sesión para acceder a esta sección.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="btn btn-primary">
-                <?php esc_html_e('Iniciar Sesión', 'flavor-platform'); ?>
+                <?php esc_html_e('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -820,13 +820,13 @@ class Flavor_Radio_Dashboard_Tab {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $programa_id = absint($_POST['programa_id'] ?? 0);
 
         if (!$programa_id) {
-            wp_send_json_error(['mensaje' => __('Programa no válido', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Programa no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario_id = get_current_user_id();
@@ -843,12 +843,12 @@ class Flavor_Radio_Dashboard_Tab {
             // Quitar de favoritos
             unset($favoritos[$indice]);
             $favoritos = array_values($favoritos);
-            $mensaje = __('Programa eliminado de favoritos', 'flavor-platform');
+            $mensaje = __('Programa eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             // Agregar a favoritos
             $favoritos[] = $programa_id;
             $es_favorito = true;
-            $mensaje = __('Programa agregado a favoritos', 'flavor-platform');
+            $mensaje = __('Programa agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         update_user_meta($usuario_id, $this->user_meta_prefix . 'favoritos', $favoritos);
@@ -865,7 +865,7 @@ class Flavor_Radio_Dashboard_Tab {
      */
     public function ajax_get_mis_favoritos() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-platform')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $programas = $this->get_programas_favoritos(get_current_user_id());
@@ -903,8 +903,8 @@ class Flavor_Radio_Dashboard_Tab {
 
         // Valores por defecto
         return [
-            'nombre_radio' => __('Radio Comunitaria', 'flavor-platform'),
-            'slogan' => __('La voz de tu barrio', 'flavor-platform'),
+            'nombre_radio' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'slogan' => __('La voz de tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'url_stream' => '',
             'logo_url' => '',
             'max_dedicatorias_dia' => 3,
@@ -933,7 +933,7 @@ class Flavor_Radio_Dashboard_Tab {
             $resultado .= ' - ' . $hora;
         }
 
-        return $resultado ?: __('Horario por definir', 'flavor-platform');
+        return $resultado ?: __('Horario por definir', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -944,10 +944,10 @@ class Flavor_Radio_Dashboard_Tab {
      */
     private function get_estado_label($estado) {
         $estados = [
-            'pendiente' => __('Pendiente', 'flavor-platform'),
-            'aprobada'  => __('Aprobada', 'flavor-platform'),
-            'rechazada' => __('Rechazada', 'flavor-platform'),
-            'emitida'   => __('Emitida', 'flavor-platform'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprobada'  => __('Aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'emitida'   => __('Emitida', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $estados[$estado] ?? $estado;
@@ -961,9 +961,9 @@ class Flavor_Radio_Dashboard_Tab {
      */
     private function get_estado_propuesta_label($estado) {
         $estados = [
-            'pendiente' => __('En revisión', 'flavor-platform'),
-            'aprobada'  => __('Aprobada', 'flavor-platform'),
-            'rechazada' => __('No aprobada', 'flavor-platform'),
+            'pendiente' => __('En revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprobada'  => __('Aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazada' => __('No aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $estados[$estado] ?? $estado;
@@ -1009,12 +1009,12 @@ class Flavor_Radio_Dashboard_Tab {
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_radio_nonce'),
             'strings' => [
-                'play' => __('Reproducir', 'flavor-platform'),
-                'pause' => __('Pausar', 'flavor-platform'),
-                'loading' => __('Cargando...', 'flavor-platform'),
-                'error' => __('Error de conexión', 'flavor-platform'),
-                'added_favorite' => __('Agregado a favoritos', 'flavor-platform'),
-                'removed_favorite' => __('Eliminado de favoritos', 'flavor-platform'),
+                'play' => __('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pause' => __('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'added_favorite' => __('Agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'removed_favorite' => __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

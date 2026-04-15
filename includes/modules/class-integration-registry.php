@@ -316,7 +316,7 @@ class Flavor_Integration_Registry {
 
         $registry->register(new Flavor_Module_Widget([
             'id' => 'integrations-summary',
-            'title' => __('Integraciones Activas', 'flavor-platform'),
+            'title' => __('Integraciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-networking',
             'size' => 'medium',
             'category' => 'sistema',
@@ -343,8 +343,8 @@ class Flavor_Integration_Registry {
             $items[] = [
                 'icon' => 'dashicons-randomize',
                 'title' => ($provider['name'] ?? $integration['provider']) . ' -> ' . ($consumer['name'] ?? $integration['consumer']),
-                'meta' => !empty($integration['targets']) ? implode(', ', (array) $integration['targets']) : __('Sin targets', 'flavor-platform'),
-                'badge' => __('Activa', 'flavor-platform'),
+                'meta' => !empty($integration['targets']) ? implode(', ', (array) $integration['targets']) : __('Sin targets', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'badge' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'badge_color' => 'success',
             ];
         }
@@ -354,27 +354,27 @@ class Flavor_Integration_Registry {
                 [
                     'icon' => 'dashicons-admin-plugins',
                     'valor' => count($this->providers),
-                    'label' => __('Providers', 'flavor-platform'),
+                    'label' => __('Providers', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'info',
                 ],
                 [
                     'icon' => 'dashicons-screenoptions',
                     'valor' => count($this->consumers),
-                    'label' => __('Consumers', 'flavor-platform'),
+                    'label' => __('Consumers', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'primary',
                 ],
                 [
                     'icon' => 'dashicons-networking',
                     'valor' => count($this->active_integrations),
-                    'label' => __('Integraciones', 'flavor-platform'),
+                    'label' => __('Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'success',
                 ],
             ],
             'items' => $items,
-            'empty_state' => __('No hay integraciones activas.', 'flavor-platform'),
+            'empty_state' => __('No hay integraciones activas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver integraciones', 'flavor-platform'),
+                    'label' => __('Ver integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=flavor-chat-ia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -389,7 +389,7 @@ class Flavor_Integration_Registry {
         ?>
         <div class="flavor-integrations-widget">
             <p><?php printf(
-                __('%d modulos de contenido disponibles para vincular', 'flavor-platform'),
+                __('%d modulos de contenido disponibles para vincular', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($this->providers)
             ); ?></p>
 
@@ -414,7 +414,7 @@ class Flavor_Integration_Registry {
      */
     public function render_related_content($object_id, $object_type = 'post', $options = []) {
         $options = wp_parse_args($options, [
-            'title' => __('Contenido Relacionado', 'flavor-platform'),
+            'title' => __('Contenido Relacionado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'providers' => null, // null = todos
             'layout' => 'grid', // grid, list, tabs
             'columns' => 3,

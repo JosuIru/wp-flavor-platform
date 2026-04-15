@@ -22,7 +22,7 @@ $tabla_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_fact
 
 if (!$tabla_existe) {
     echo '<div class="wrap"><div class="dm-alert dm-alert--warning"><span class="dashicons dashicons-warning"></span>'
-        . esc_html__('La tabla de facturas no está disponible. Activa el módulo para crear las tablas.', 'flavor-platform')
+        . esc_html__('La tabla de facturas no está disponible. Activa el módulo para crear las tablas.', FLAVOR_PLATFORM_TEXT_DOMAIN)
         . '</div></div>';
     return;
 }
@@ -86,11 +86,11 @@ $por_estado = $wpdb->get_results(
 );
 
 $estado_labels = [
-    'borrador' => __('Borrador', 'flavor-platform'),
-    'pendiente' => __('Pendiente', 'flavor-platform'),
-    'pagada' => __('Pagada', 'flavor-platform'),
-    'vencida' => __('Vencida', 'flavor-platform'),
-    'anulada' => __('Anulada', 'flavor-platform'),
+    'borrador' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pagada' => __('Pagada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'vencida' => __('Vencida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'anulada' => __('Anulada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $estado_badges = [
     'borrador' => 'dm-badge--secondary',
@@ -108,38 +108,38 @@ $estado_badges = [
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-media-spreadsheet"></span>
-                <?php esc_html_e('Dashboard de Facturación', 'flavor-platform'); ?>
+                <?php esc_html_e('Dashboard de Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
-            <p class="dm-header__description"><?php esc_html_e('Control de facturación, cobros pendientes y métricas financieras.', 'flavor-platform'); ?></p>
+            <p class="dm-header__description"><?php esc_html_e('Control de facturación, cobros pendientes y métricas financieras.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=facturas-nueva')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva factura', 'flavor-platform'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva factura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
 
     <div class="dm-card">
-        <h2 class="dm-card__title"><span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-platform'); ?></h2>
+        <h2 class="dm-card__title"><span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="dm-action-grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=facturas-listado')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-list-view dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Todas', 'flavor-platform'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="dm-badge"><?php echo number_format_i18n($total_facturas); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=facturas-listado&estado=pendiente')); ?>" class="dm-action-card dm-action-card--warning">
                 <span class="dashicons dashicons-clock dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if ($facturas_pendientes > 0): ?><span class="dm-badge dm-badge--warning"><?php echo number_format_i18n($facturas_pendientes); ?></span><?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=facturas-listado&estado=vencida')); ?>" class="dm-action-card dm-action-card--error">
                 <span class="dashicons dashicons-warning dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Vencidas', 'flavor-platform'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Vencidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if ($facturas_vencidas > 0): ?><span class="dm-badge dm-badge--error"><?php echo number_format_i18n($facturas_vencidas); ?></span><?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=facturas-config')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-admin-settings dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Configuración', 'flavor-platform'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -149,32 +149,32 @@ $estado_badges = [
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-chart-line"></span></div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($facturado_mes, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Facturado este mes', 'flavor-platform'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', 'flavor-platform'), number_format_i18n($facturas_mes)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Facturado este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($facturas_mes)); ?></small>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-clock"></span></div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_pendiente, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendiente de cobro', 'flavor-platform'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', 'flavor-platform'), number_format_i18n($facturas_pendientes)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendiente de cobro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($facturas_pendientes)); ?></small>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-warning"></span></div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($importe_vencido, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Importe vencido', 'flavor-platform'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', 'flavor-platform'), number_format_i18n($facturas_vencidas)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Importe vencido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($facturas_vencidas)); ?></small>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-chart-bar"></span></div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($facturado_anio, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Facturado este año', 'flavor-platform'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('IVA: %s €', 'flavor-platform'), number_format_i18n($iva_repercutido, 2)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Facturado este año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('IVA: %s €', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($iva_repercutido, 2)); ?></small>
             </div>
         </div>
     </div>
@@ -183,13 +183,13 @@ $estado_badges = [
     <div class="dm-alert dm-alert--warning">
         <span class="dashicons dashicons-warning"></span>
         <div>
-            <strong><?php esc_html_e('Alertas de facturación', 'flavor-platform'); ?></strong>
+            <strong><?php esc_html_e('Alertas de facturación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <ul style="margin: 8px 0 0; padding-left: 20px;">
                 <?php if ($facturas_vencidas > 0): ?>
-                    <li><?php printf(esc_html__('%s facturas vencidas por importe de %s €', 'flavor-platform'), number_format_i18n($facturas_vencidas), number_format_i18n($importe_vencido, 2)); ?></li>
+                    <li><?php printf(esc_html__('%s facturas vencidas por importe de %s €', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($facturas_vencidas), number_format_i18n($importe_vencido, 2)); ?></li>
                 <?php endif; ?>
                 <?php if (count($proximas_vencer) > 0): ?>
-                    <li><?php printf(esc_html__('%s facturas vencen en los próximos 7 días', 'flavor-platform'), count($proximas_vencer)); ?></li>
+                    <li><?php printf(esc_html__('%s facturas vencen en los próximos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN), count($proximas_vencer)); ?></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -198,12 +198,12 @@ $estado_badges = [
 
     <div class="dm-grid dm-grid--2">
         <div class="dm-card">
-            <h3 class="dm-card__title"><span class="dashicons dashicons-media-spreadsheet"></span> <?php esc_html_e('Últimas facturas', 'flavor-platform'); ?></h3>
+            <h3 class="dm-card__title"><span class="dashicons dashicons-media-spreadsheet"></span> <?php esc_html_e('Últimas facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (empty($ultimas_facturas)): ?>
-                <p class="dm-text-muted"><?php esc_html_e('No hay facturas registradas.', 'flavor-platform'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('No hay facturas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <table class="dm-table dm-table--compact">
-                    <thead><tr><th><?php esc_html_e('Número', 'flavor-platform'); ?></th><th><?php esc_html_e('Cliente', 'flavor-platform'); ?></th><th><?php esc_html_e('Total', 'flavor-platform'); ?></th><th><?php esc_html_e('Estado', 'flavor-platform'); ?></th></tr></thead>
+                    <thead><tr><th><?php esc_html_e('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                     <tbody>
                         <?php foreach ($ultimas_facturas as $factura): ?>
                             <tr>
@@ -215,17 +215,17 @@ $estado_badges = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p style="margin-top: 12px;"><a href="<?php echo esc_url(admin_url('admin.php?page=facturas-listado')); ?>" class="dm-link"><?php esc_html_e('Ver todas las facturas', 'flavor-platform'); ?> →</a></p>
+                <p style="margin-top: 12px;"><a href="<?php echo esc_url(admin_url('admin.php?page=facturas-listado')); ?>" class="dm-link"><?php esc_html_e('Ver todas las facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →</a></p>
             <?php endif; ?>
         </div>
 
         <div class="dm-card">
-            <h3 class="dm-card__title"><span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Mejores clientes', 'flavor-platform'); ?></h3>
+            <h3 class="dm-card__title"><span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Mejores clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (empty($top_clientes)): ?>
-                <p class="dm-text-muted"><?php esc_html_e('No hay datos de clientes.', 'flavor-platform'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('No hay datos de clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <table class="dm-table dm-table--compact">
-                    <thead><tr><th><?php esc_html_e('Cliente', 'flavor-platform'); ?></th><th><?php esc_html_e('Facturas', 'flavor-platform'); ?></th><th><?php esc_html_e('Total', 'flavor-platform'); ?></th></tr></thead>
+                    <thead><tr><th><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                     <tbody>
                         <?php foreach ($top_clientes as $cliente): ?>
                             <tr>
@@ -242,7 +242,7 @@ $estado_badges = [
 
     <?php if (!empty($evolucion_mensual)): ?>
     <div class="dm-card">
-        <h3 class="dm-card__title"><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Evolución mensual', 'flavor-platform'); ?></h3>
+        <h3 class="dm-card__title"><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Evolución mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="dm-chart-container" style="height: 300px;"><canvas id="chart-evolucion-facturas"></canvas></div>
     </div>
     <script>
@@ -258,8 +258,8 @@ $estado_badges = [
             data: {
                 labels: data.map(d => d.periodo),
                 datasets: [
-                    { label: '<?php esc_html_e('Facturado', 'flavor-platform'); ?>', data: data.map(d => d.facturado), backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 },
-                    { label: '<?php esc_html_e('Cobrado', 'flavor-platform'); ?>', data: data.map(d => d.cobrado), backgroundColor: 'rgba(34, 197, 94, 0.8)', borderRadius: 4 }
+                    { label: '<?php esc_html_e('Facturado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', data: data.map(d => d.facturado), backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 },
+                    { label: '<?php esc_html_e('Cobrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', data: data.map(d => d.cobrado), backgroundColor: 'rgba(34, 197, 94, 0.8)', borderRadius: 4 }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return value.toLocaleString('es-ES') + ' €'; } } } } }
@@ -270,7 +270,7 @@ $estado_badges = [
 
     <div class="dm-grid dm-grid--2">
         <div class="dm-card">
-            <h3 class="dm-card__title"><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Distribución por estado', 'flavor-platform'); ?></h3>
+            <h3 class="dm-card__title"><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Distribución por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (!empty($por_estado)): $total_importe = array_sum(array_column($por_estado, 'importe')); ?>
                 <div class="dm-progress-list">
                     <?php foreach ($por_estado as $estado): $porcentaje = $total_importe > 0 ? ($estado->importe / $total_importe) * 100 : 0; ?>
@@ -288,9 +288,9 @@ $estado_badges = [
         </div>
 
         <div class="dm-card">
-            <h3 class="dm-card__title"><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximas a vencer', 'flavor-platform'); ?></h3>
+            <h3 class="dm-card__title"><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximas a vencer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (empty($proximas_vencer)): ?>
-                <div class="dm-alert dm-alert--success" style="margin: 0;"><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('No hay facturas próximas a vencer.', 'flavor-platform'); ?></div>
+                <div class="dm-alert dm-alert--success" style="margin: 0;"><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('No hay facturas próximas a vencer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <?php else: ?>
                 <ul class="dm-list">
                     <?php foreach ($proximas_vencer as $factura): ?>
@@ -305,12 +305,12 @@ $estado_badges = [
     </div>
 
     <div class="dm-card">
-        <h3 class="dm-card__title"><span class="dashicons dashicons-analytics"></span> <?php esc_html_e('Resumen del ejercicio', 'flavor-platform'); ?></h3>
+        <h3 class="dm-card__title"><span class="dashicons dashicons-analytics"></span> <?php esc_html_e('Resumen del ejercicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="dm-stats-inline">
-            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Total facturado', 'flavor-platform'); ?></span><span class="dm-stats-inline__value"><?php echo number_format_i18n($facturado_anio, 2); ?> €</span></div>
-            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Total cobrado', 'flavor-platform'); ?></span><span class="dm-stats-inline__value dm-text-success"><?php echo number_format_i18n($total_cobrado, 2); ?> €</span></div>
-            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Pendiente', 'flavor-platform'); ?></span><span class="dm-stats-inline__value dm-text-warning"><?php echo number_format_i18n($total_pendiente, 2); ?> €</span></div>
-            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('IVA repercutido', 'flavor-platform'); ?></span><span class="dm-stats-inline__value"><?php echo number_format_i18n($iva_repercutido, 2); ?> €</span></div>
+            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Total facturado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="dm-stats-inline__value"><?php echo number_format_i18n($facturado_anio, 2); ?> €</span></div>
+            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Total cobrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="dm-stats-inline__value dm-text-success"><?php echo number_format_i18n($total_cobrado, 2); ?> €</span></div>
+            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="dm-stats-inline__value dm-text-warning"><?php echo number_format_i18n($total_pendiente, 2); ?> €</span></div>
+            <div class="dm-stats-inline__item"><span class="dm-stats-inline__label"><?php esc_html_e('IVA repercutido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="dm-stats-inline__value"><?php echo number_format_i18n($iva_repercutido, 2); ?> €</span></div>
         </div>
     </div>
 </div>
