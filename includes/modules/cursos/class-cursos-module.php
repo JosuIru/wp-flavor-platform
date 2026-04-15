@@ -155,6 +155,10 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_flavor_guardar_curso', [$this, 'ajax_flavor_guardar_curso']);
         add_action('wp_ajax_flavor_get_curso', [$this, 'ajax_flavor_get_curso']);
 
+        // AJAX handlers para vistas de alumnos e instructores
+        add_action('wp_ajax_flavor_get_alumno_detail', [$this, 'ajax_get_alumno_detail']);
+        add_action('wp_ajax_flavor_get_instructor_profile', [$this, 'ajax_get_instructor_profile']);
+
         // WP Cron para recordatorios
         if (!wp_next_scheduled('cursos_enviar_recordatorios')) {
             wp_schedule_event(time(), 'daily', 'cursos_enviar_recordatorios');
@@ -2004,6 +2008,163 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
             'success' => true,
             'csv' => $csv_data,
             'filename' => 'alumnos-curso-' . $curso_id . '.csv',
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener detalle de un alumno
+     *
+     * Devuelve información completa de un alumno incluyendo inscripciones y certificados.
+     * Usado por: views/alumnos.php (botón "Ver Detalle")
+     */
+    public function ajax_get_alumno_detail() {
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
+
+        // Verificar permisos
+        if (!current_user_can('manage_options') && !current_user_can('edit_users')) {
+            wp_send_json_error(['message' => __('No tienes permisos para ver detalles de alumnos.', 'flavor-platform')]);
+        }
+
+        $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
+
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('ID de usuario requerido.', 'flavor-platform')]);
+        }
+
+        // Verificar que el usuario existe
+        $usuario = get_userdata($usuario_id);
+        if (!$usuario) {
+            wp_send_json_error(['message' => __('Usuario no encontrado.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+        $tabla_certificados = $wpdb->prefix . 'flavor_cursos_certificados';
+
+        // Obtener inscripciones del alumno
+        $inscripciones_raw = $wpdb->get_results($wpdb->prepare(
+            "SELECT i.id, i.curso_id, i.estado, i.progreso_porcentaje, i.created_at, c.titulo as curso_titulo
+             FROM $tabla_inscripciones i
+             INNER JOIN $tabla_cursos c ON i.curso_id = c.id
+             WHERE i.usuario_id = %d
+             ORDER BY i.created_at DESC
+             LIMIT 50",
+            $usuario_id
+        ), ARRAY_A);
+
+        $inscripciones = array_map(function ($inscripcion) {
+            return [
+                'id' => intval($inscripcion['id']),
+                'curso' => esc_html($inscripcion['curso_titulo']),
+                'estado' => $inscripcion['estado'],
+                'progreso' => round(floatval($inscripcion['progreso_porcentaje'])),
+                'fecha' => date_i18n(get_option('date_format'), strtotime($inscripcion['created_at'])),
+            ];
+        }, $inscripciones_raw);
+
+        // Obtener certificados del alumno
+        $certificados_raw = $wpdb->get_results($wpdb->prepare(
+            "SELECT cert.id, cert.fecha_emision, c.titulo as curso_titulo
+             FROM $tabla_certificados cert
+             INNER JOIN $tabla_cursos c ON cert.curso_id = c.id
+             WHERE cert.usuario_id = %d AND cert.estado = 'emitido'
+             ORDER BY cert.fecha_emision DESC
+             LIMIT 20",
+            $usuario_id
+        ), ARRAY_A);
+
+        $certificados = array_map(function ($certificado) {
+            return [
+                'id' => intval($certificado['id']),
+                'curso' => esc_html($certificado['curso_titulo']),
+                'fecha' => date_i18n(get_option('date_format'), strtotime($certificado['fecha_emision'])),
+            ];
+        }, $certificados_raw);
+
+        wp_send_json_success([
+            'id' => $usuario_id,
+            'nombre' => esc_html($usuario->display_name),
+            'email' => esc_html($usuario->user_email),
+            'fecha_registro' => date_i18n(get_option('date_format'), strtotime($usuario->user_registered)),
+            'inscripciones' => $inscripciones,
+            'certificados' => $certificados,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener perfil de un instructor
+     *
+     * Devuelve información completa de un instructor incluyendo cursos, alumnos y valoraciones.
+     * Usado por: views/instructores.php (botón "Ver Perfil")
+     */
+    public function ajax_get_instructor_profile() {
+        check_ajax_referer('flavor_cursos_nonce', 'nonce');
+
+        // Verificar permisos
+        if (!current_user_can('manage_options') && !current_user_can('edit_users') && !current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para ver perfiles de instructores.', 'flavor-platform')]);
+        }
+
+        $instructor_id = isset($_POST['instructor_id']) ? intval($_POST['instructor_id']) : 0;
+
+        if (!$instructor_id) {
+            wp_send_json_error(['message' => __('ID de instructor requerido.', 'flavor-platform')]);
+        }
+
+        // Verificar que el usuario existe
+        $instructor = get_userdata($instructor_id);
+        if (!$instructor) {
+            wp_send_json_error(['message' => __('Instructor no encontrado.', 'flavor-platform')]);
+        }
+
+        global $wpdb;
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
+
+        // Obtener cursos del instructor
+        $cursos_raw = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.id, c.titulo, c.estado, c.alumnos_inscritos, c.valoracion_media
+             FROM $tabla_cursos c
+             WHERE c.instructor_id = %d
+             ORDER BY c.fecha_creacion DESC
+             LIMIT 50",
+            $instructor_id
+        ), ARRAY_A);
+
+        $cursos = array_map(function ($curso) {
+            return [
+                'id' => intval($curso['id']),
+                'titulo' => esc_html($curso['titulo']),
+                'estado' => $curso['estado'],
+                'alumnos' => intval($curso['alumnos_inscritos']),
+                'valoracion' => number_format(floatval($curso['valoracion_media']), 1),
+            ];
+        }, $cursos_raw);
+
+        // Calcular estadísticas totales
+        $estadisticas = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COUNT(DISTINCT c.id) as total_cursos,
+                SUM(c.alumnos_inscritos) as total_alumnos,
+                AVG(c.valoracion_media) as valoracion_promedio,
+                SUM(i.precio_pagado) as ingresos_totales
+             FROM $tabla_cursos c
+             LEFT JOIN $tabla_inscripciones i ON c.id = i.curso_id
+             WHERE c.instructor_id = %d",
+            $instructor_id
+        ), ARRAY_A);
+
+        wp_send_json_success([
+            'id' => $instructor_id,
+            'nombre' => esc_html($instructor->display_name),
+            'email' => esc_html($instructor->user_email),
+            'fecha_registro' => date_i18n(get_option('date_format'), strtotime($instructor->user_registered)),
+            'total_cursos' => intval($estadisticas['total_cursos'] ?? 0),
+            'total_alumnos' => intval($estadisticas['total_alumnos'] ?? 0),
+            'valoracion' => number_format(floatval($estadisticas['valoracion_promedio'] ?? 0), 1),
+            'ingresos' => number_format(floatval($estadisticas['ingresos_totales'] ?? 0), 2),
+            'cursos' => $cursos,
         ]);
     }
 

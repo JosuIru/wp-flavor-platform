@@ -122,6 +122,9 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_biblioteca_confirmar_reserva', [$this, 'ajax_confirmar_reserva']);
         add_action('wp_ajax_biblioteca_enviar_recordatorio', [$this, 'ajax_enviar_recordatorio']);
 
+        // Handler AJAX para historial de préstamos de un libro (usado por views/libros.php)
+        add_action('wp_ajax_flavor_biblioteca_historial', [$this, 'ajax_historial_libro']);
+
         // WP Cron para recordatorios de devolución
         add_action('flavor_biblioteca_recordatorios', [$this, 'enviar_recordatorios_devolucion']);
         if (!wp_next_scheduled('flavor_biblioteca_recordatorios')) {
@@ -2280,6 +2283,65 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
             'success' => true,
             'mensaje' => __('Recordatorio enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
+    }
+
+    /**
+     * AJAX: Historial de préstamos de un libro
+     *
+     * Devuelve el historial completo de préstamos de un libro específico.
+     * Usado por: views/libros.php (botón "Historial")
+     */
+    public function ajax_historial_libro() {
+        check_ajax_referer('biblioteca_nonce', 'nonce');
+
+        // Solo usuarios con permisos de gestión pueden ver historial
+        if (!current_user_can('manage_options') && !current_user_can('biblioteca_gestionar') && !current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para ver el historial.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $libro_id = isset($_GET['libro_id']) ? intval($_GET['libro_id']) : 0;
+
+        if (!$libro_id) {
+            wp_send_json_error(['message' => __('ID de libro requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        // Verificar que el libro existe
+        $libro_existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_libros WHERE id = %d",
+            $libro_id
+        ));
+
+        if (!$libro_existe) {
+            wp_send_json_error(['message' => __('Libro no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener historial de préstamos
+        $prestamos = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.id, p.prestatario_id, p.fecha_prestamo, p.fecha_devolucion_real, p.estado, u.display_name as usuario_nombre
+             FROM $tabla_prestamos p
+             LEFT JOIN {$wpdb->users} u ON p.prestatario_id = u.ID
+             WHERE p.libro_id = %d
+             ORDER BY p.fecha_prestamo DESC
+             LIMIT 50",
+            $libro_id
+        ), ARRAY_A);
+
+        // Formatear resultados
+        $historial = array_map(function ($prestamo) {
+            return [
+                'id' => intval($prestamo['id']),
+                'usuario' => esc_html($prestamo['usuario_nombre'] ?: __('Usuario desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+                'fecha_prestamo' => $prestamo['fecha_prestamo'] ? date_i18n(get_option('date_format'), strtotime($prestamo['fecha_prestamo'])) : '-',
+                'fecha_devolucion' => $prestamo['fecha_devolucion_real'] ? date_i18n(get_option('date_format'), strtotime($prestamo['fecha_devolucion_real'])) : null,
+                'estado' => $prestamo['estado'],
+            ];
+        }, $prestamos);
+
+        wp_send_json_success($historial);
     }
 
     // =========================================================================

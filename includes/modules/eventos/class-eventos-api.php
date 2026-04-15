@@ -154,6 +154,10 @@ class Flavor_Eventos_API {
         add_action('wp_ajax_eventos_hacer_checkin', [$this, 'ajax_hacer_checkin']);
         add_action('wp_ajax_eventos_exportar_asistentes', [$this, 'ajax_exportar_asistentes']);
         add_action('wp_ajax_eventos_estadisticas_entradas', [$this, 'ajax_estadisticas_entradas']);
+
+        // Handler AJAX para vista de calendario
+        add_action('wp_ajax_eventos_obtener_calendario', [$this, 'ajax_obtener_calendario']);
+        add_action('wp_ajax_nopriv_eventos_obtener_calendario', [$this, 'ajax_obtener_calendario']);
     }
 
     /**
@@ -1148,6 +1152,82 @@ class Flavor_Eventos_API {
             'plazas_disponibles' => $aforo_maximo > 0 ? max(0, $aforo_maximo - $confirmados) : null,
             'inscripciones_por_dia' => $inscripciones_por_dia,
         ]);
+    }
+
+    /**
+     * AJAX: Obtener eventos para el calendario
+     *
+     * Devuelve eventos agrupados por fecha para mostrar en la vista de calendario.
+     * Usado por: views/calendario.php
+     */
+    public function ajax_obtener_calendario() {
+        // Verificar permisos - los usuarios autenticados pueden ver el calendario admin
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para ver el calendario.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $anio = isset($_POST['year']) ? intval($_POST['year']) : intval(date('Y'));
+        $mes = isset($_POST['month']) ? intval($_POST['month']) : intval(date('n'));
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+
+        // Validar rango de fechas
+        if ($anio < 2000 || $anio > 2100 || $mes < 1 || $mes > 12) {
+            wp_send_json_error(['message' => __('Parámetros de fecha inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        // Calcular primer y último día del mes
+        $primer_dia_mes = sprintf('%04d-%02d-01', $anio, $mes);
+        $ultimo_dia_mes = date('Y-m-t', strtotime($primer_dia_mes));
+
+        // Construir query
+        $condiciones_where = [
+            "estado = 'publicado'",
+            "DATE(fecha_inicio) >= %s",
+            "DATE(fecha_inicio) <= %s",
+        ];
+        $valores_where = [$primer_dia_mes, $ultimo_dia_mes];
+
+        if (!empty($categoria)) {
+            $condiciones_where[] = "tipo = %s";
+            $valores_where[] = $categoria;
+        }
+
+        $where_sql = implode(' AND ', $condiciones_where);
+
+        $query = "SELECT id, titulo, tipo, fecha_inicio, fecha_fin, ubicacion, es_online
+                  FROM {$tabla_eventos}
+                  WHERE {$where_sql}
+                  ORDER BY fecha_inicio ASC";
+
+        $eventos = $wpdb->get_results(
+            $wpdb->prepare($query, $valores_where),
+            ARRAY_A
+        );
+
+        // Agrupar eventos por fecha
+        $eventos_por_fecha = [];
+        foreach ($eventos as $evento) {
+            $fecha_evento = date('Y-m-d', strtotime($evento['fecha_inicio']));
+            $hora_evento = date('H:i', strtotime($evento['fecha_inicio']));
+
+            if (!isset($eventos_por_fecha[$fecha_evento])) {
+                $eventos_por_fecha[$fecha_evento] = [];
+            }
+
+            $eventos_por_fecha[$fecha_evento][] = [
+                'id' => intval($evento['id']),
+                'titulo' => esc_html($evento['titulo']),
+                'hora' => $hora_evento,
+                'tipo' => $evento['tipo'],
+                'ubicacion' => $evento['ubicacion'],
+                'es_online' => (bool) $evento['es_online'],
+            ];
+        }
+
+        wp_send_json_success($eventos_por_fecha);
     }
 }
 

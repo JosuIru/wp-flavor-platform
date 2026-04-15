@@ -63,8 +63,11 @@ class Flavor_Platform_WooCommerce_Module extends Flavor_Platform_Module_Base {
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // AJAX handlers para gestión de pedidos (usado por views/pedidos.php)
+        add_action('wp_ajax_woocommerce_mark_order_status', [$this, 'ajax_mark_order_status']);
+
         // Registrar en Panel Unificado de Gestión
-        
+
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
@@ -265,6 +268,82 @@ class Flavor_Platform_WooCommerce_Module extends Flavor_Platform_Module_Base {
      */
     public function on_cart_updated() {
         // Podemos usar esto para notificaciones en tiempo real
+    }
+
+    /**
+     * AJAX: Cambiar estado de un pedido
+     *
+     * Permite a administradores cambiar el estado de un pedido de WooCommerce.
+     * Usado por: views/pedidos.php (botón de cambio de estado rápido)
+     */
+    public function ajax_mark_order_status() {
+        // Verificar nonce
+        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'woocommerce-mark-order-status')) {
+            wp_send_json_error(['message' => __('Error de seguridad. Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificar permisos - solo gestores de WooCommerce
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error(['message' => __('No tienes permisos para cambiar el estado de pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+        $nuevo_estado = isset($_GET['status']) ? sanitize_text_field($_GET['status']) : '';
+
+        if (!$order_id) {
+            wp_send_json_error(['message' => __('ID de pedido requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (empty($nuevo_estado)) {
+            wp_send_json_error(['message' => __('Estado requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificar que el pedido existe
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            wp_send_json_error(['message' => __('Pedido no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificar que el estado es válido
+        $estados_validos = array_keys(wc_get_order_statuses());
+        $estado_con_prefijo = 'wc-' . $nuevo_estado;
+
+        if (!in_array($estado_con_prefijo, $estados_validos, true) && !in_array($nuevo_estado, $estados_validos, true)) {
+            wp_send_json_error(['message' => __('Estado de pedido inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Cambiar el estado del pedido
+        $estado_anterior = $order->get_status();
+        $order->update_status(
+            $nuevo_estado,
+            sprintf(
+                __('Estado cambiado de %1$s a %2$s via panel de gestión Flavor.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                wc_get_order_status_name($estado_anterior),
+                wc_get_order_status_name($nuevo_estado)
+            )
+        );
+
+        // Si es una petición AJAX estándar, redirigir de vuelta
+        if (!wp_doing_ajax() || empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+            $redirect_url = wp_get_referer();
+            if (!$redirect_url) {
+                $redirect_url = admin_url('admin.php?page=flavor-woocommerce-pedidos');
+            }
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        wp_send_json_success([
+            'message' => sprintf(
+                __('Pedido #%1$d marcado como %2$s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $order_id,
+                wc_get_order_status_name($nuevo_estado)
+            ),
+            'order_id' => $order_id,
+            'estado_anterior' => $estado_anterior,
+            'nuevo_estado' => $nuevo_estado,
+            'nombre_estado' => wc_get_order_status_name($nuevo_estado),
+        ]);
     }
 
     /**
