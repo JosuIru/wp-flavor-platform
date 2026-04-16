@@ -84,7 +84,7 @@ if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $
 	$tabla_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_proyectos ) ) === $tabla_proyectos ) {
 		$proyectos_disponibles = $wpdb->get_results(
-			"SELECT id, nombre FROM {$tabla_proyectos} WHERE estado = 'activo' ORDER BY nombre ASC",
+			"SELECT id, titulo AS nombre FROM {$tabla_proyectos} WHERE estado IN ('planificado', 'en_curso') ORDER BY titulo ASC",
 			ARRAY_A
 		);
 	}
@@ -97,7 +97,7 @@ if ( $talleres_module && method_exists( $talleres_module, 'is_active' ) && $tall
 	$tabla_talleres = $wpdb->prefix . 'flavor_talleres';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_talleres ) ) === $tabla_talleres ) {
 		$talleres_disponibles = $wpdb->get_results(
-			"SELECT id, nombre FROM {$tabla_talleres} WHERE estado IN ('activo', 'publicado') ORDER BY nombre ASC",
+			"SELECT id, titulo AS nombre FROM {$tabla_talleres} WHERE estado = 'publicado' ORDER BY titulo ASC",
 			ARRAY_A
 		);
 	}
