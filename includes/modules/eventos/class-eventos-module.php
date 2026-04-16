@@ -37,7 +37,9 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
 
         parent::__construct();
         add_action('init', [$this, 'ensure_relations_schema'], 1);
-        add_action('wp_ajax_eventos_guardar_evento', [Flavor_Eventos_API::get_instance(), 'ajax_guardar_evento']);
+        add_action('wp_ajax_eventos_guardar_evento', function() {
+            Flavor_Eventos_API::get_instance()->ajax_guardar_evento();
+        });
     }
 
     public function get_dependencies() {
