@@ -10,8 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Helper para obtener instancias de módulos.
+$module_loader = Flavor_Platform_Module_Loader::get_instance();
+
 // Obtener instancia del módulo
-$eventos_module = Flavor_Platform_Helpers::get_module_instance( 'eventos' );
+$eventos_module = $module_loader->get_module_instance( 'eventos' );
 $settings       = $eventos_module ? $eventos_module->get_settings() : [];
 
 // Obtener categorías disponibles
@@ -38,7 +41,7 @@ global $wpdb;
 
 // Comunidades.
 $comunidades_disponibles = [];
-$comunidades_module      = Flavor_Platform_Helpers::get_module_instance( 'comunidades' );
+$comunidades_module      = $module_loader->get_module_instance( 'comunidades' );
 if ( $comunidades_module && method_exists( $comunidades_module, 'is_active' ) && $comunidades_module->is_active() ) {
 	$tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_comunidades ) ) === $tabla_comunidades ) {
@@ -51,7 +54,7 @@ if ( $comunidades_module && method_exists( $comunidades_module, 'is_active' ) &&
 
 // Colectivos.
 $colectivos_disponibles = [];
-$colectivos_module      = Flavor_Platform_Helpers::get_module_instance( 'colectivos' );
+$colectivos_module      = $module_loader->get_module_instance( 'colectivos' );
 if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $colectivos_module->is_active() ) {
 	$tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_colectivos ) ) === $tabla_colectivos ) {
@@ -64,7 +67,7 @@ if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $
 
 // Grupos de consumo.
 $grupos_consumo_disponibles = [];
-$grupos_consumo_module      = Flavor_Platform_Helpers::get_module_instance( 'grupos-consumo' );
+$grupos_consumo_module      = $module_loader->get_module_instance( 'grupos-consumo' );
 if ( $grupos_consumo_module && method_exists( $grupos_consumo_module, 'is_active' ) && $grupos_consumo_module->is_active() ) {
 	$tabla_grupos = $wpdb->prefix . 'flavor_gc_grupos';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_grupos ) ) === $tabla_grupos ) {
@@ -89,7 +92,7 @@ if ( $colectivos_module && method_exists( $colectivos_module, 'is_active' ) && $
 
 // Talleres.
 $talleres_disponibles = [];
-$talleres_module      = Flavor_Platform_Helpers::get_module_instance( 'talleres' );
+$talleres_module      = $module_loader->get_module_instance( 'talleres' );
 if ( $talleres_module && method_exists( $talleres_module, 'is_active' ) && $talleres_module->is_active() ) {
 	$tabla_talleres = $wpdb->prefix . 'flavor_talleres';
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_talleres ) ) === $tabla_talleres ) {
@@ -102,7 +105,7 @@ if ( $talleres_module && method_exists( $talleres_module, 'is_active' ) && $tall
 
 // Cursos (CPT).
 $cursos_disponibles = [];
-$cursos_module      = Flavor_Platform_Helpers::get_module_instance( 'cursos' );
+$cursos_module      = $module_loader->get_module_instance( 'cursos' );
 if ( $cursos_module && method_exists( $cursos_module, 'is_active' ) && $cursos_module->is_active() ) {
 	$cursos_query = new WP_Query(
 		[
