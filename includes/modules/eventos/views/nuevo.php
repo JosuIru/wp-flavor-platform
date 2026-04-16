@@ -144,17 +144,6 @@ $taller_contexto         = absint( $_GET['taller_id'] ?? $_GET['taller'] ?? 0 );
 $curso_contexto          = absint( $_GET['curso_id'] ?? $_GET['curso'] ?? 0 );
 ?>
 
-<?php
-// Breadcrumbs horizontales
-if ( class_exists( 'Flavor_Breadcrumbs' ) ) {
-	Flavor_Breadcrumbs::render_module(
-		__( 'Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-		admin_url( 'admin.php?page=eventos-dashboard' ),
-		__( 'Nuevo evento', FLAVOR_PLATFORM_TEXT_DOMAIN )
-	);
-}
-?>
-
 <div class="flavor-nuevo-evento">
 	<form id="form-nuevo-evento" class="flavor-form">
 		<?php wp_nonce_field( 'flavor_eventos_nonce', 'nonce' ); ?>
