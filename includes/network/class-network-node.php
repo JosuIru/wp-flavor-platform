@@ -492,7 +492,7 @@ class Flavor_Network_Node {
     /**
      * Obtiene nodos para el mapa
      */
-    public static function get_map_data($filtros = []) {
+    public static function get_map_data($filtros = [], $limite = 200, $offset = 0) {
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('nodes');
 
@@ -519,16 +519,17 @@ class Flavor_Network_Node {
         }
 
         $where_sql = implode(' AND ', $where_clauses);
+        $limite = max(1, min(500, (int) $limite));
+        $offset = max(0, (int) $offset);
 
         $sql = "SELECT id, nombre, slug, descripcion_corta, logo_url, tipo_entidad,
                        sector, nivel_consciencia, latitud, longitud, ciudad, pais, verificado, site_url
-                FROM {$tabla} WHERE {$where_sql} ORDER BY nombre ASC";
+                FROM {$tabla} WHERE {$where_sql} ORDER BY nombre ASC LIMIT %d OFFSET %d";
 
-        if (!empty($where_values)) {
-            $resultados = $wpdb->get_results($wpdb->prepare($sql, $where_values));
-        } else {
-            $resultados = $wpdb->get_results($sql);
-        }
+        $where_values[] = $limite;
+        $where_values[] = $offset;
+
+        $resultados = $wpdb->get_results($wpdb->prepare($sql, $where_values));
 
         return array_map(function($fila) {
             return [

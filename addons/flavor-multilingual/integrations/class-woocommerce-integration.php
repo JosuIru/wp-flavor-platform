@@ -1016,7 +1016,7 @@ class Flavor_ML_WooCommerce_Integration {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'api_get_product_translations'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_product_translations'),
             ),
             array(
                 'methods'             => WP_REST_Server::CREATABLE,
@@ -1029,17 +1029,50 @@ class Flavor_ML_WooCommerce_Integration {
     }
 
     /**
+     * Verifica si puede leer traducciones de un producto.
+     *
+     * Los usuarios con edición pueden ver todos los metadatos de traducción.
+     * Los visitantes solo pueden consultar productos publicados.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_product_translations($request) {
+        $product_id = (int) $request->get_param('id');
+        $product = get_post($product_id);
+
+        if (!$product || $product->post_type !== 'product') {
+            return false;
+        }
+
+        if (current_user_can('read_post', $product_id) || current_user_can('edit_post', $product_id) || current_user_can('edit_products')) {
+            return true;
+        }
+
+        $post_type_object = get_post_type_object($product->post_type);
+
+        return $product->post_status === 'publish'
+            && $post_type_object
+            && !empty($post_type_object->public);
+    }
+
+    /**
      * API: Obtener traducciones de producto
      *
      * @param WP_REST_Request $request Request
      * @return WP_REST_Response
      */
     public function api_get_product_translations($request) {
-        $product_id = $request->get_param('id');
+        $product_id = (int) $request->get_param('id');
         $storage = Flavor_Translation_Storage::get_instance();
+        $translations = $storage->get_all_translations('product', $product_id);
+
+        if (!$this->can_view_product_translation_metadata($product_id)) {
+            $translations = self::filter_public_product_translations($translations);
+        }
 
         return rest_ensure_response(
-            $storage->get_all_translations('product', $product_id)
+            $translations
         );
     }
 
@@ -1065,6 +1098,44 @@ class Flavor_ML_WooCommerce_Integration {
         }
 
         return rest_ensure_response(array('success' => true));
+    }
+
+    /**
+     * Determina si el usuario actual puede ver metadatos internos de traducción.
+     *
+     * @param int $product_id ID de producto.
+     * @return bool
+     */
+    private function can_view_product_translation_metadata($product_id) {
+        return current_user_can('edit_post', $product_id) || current_user_can('edit_products');
+    }
+
+    /**
+     * Filtra la respuesta pública para no exponer borradores ni metadatos internos.
+     *
+     * @param array $translations Traducciones originales.
+     * @return array
+     */
+    public static function filter_public_product_translations($translations) {
+        $public_translations = array();
+
+        foreach ($translations as $lang => $fields) {
+            foreach ($fields as $field => $translation) {
+                $status = $translation['status'] ?? 'draft';
+
+                if ($status !== 'published') {
+                    continue;
+                }
+
+                if (!isset($public_translations[$lang])) {
+                    $public_translations[$lang] = array();
+                }
+
+                $public_translations[$lang][$field] = $translation['value'] ?? '';
+            }
+        }
+
+        return $public_translations;
     }
 
     // ================================================================

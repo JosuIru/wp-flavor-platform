@@ -1465,8 +1465,8 @@ class Flavor_Moderation_Manager {
             true
         );
 
-        wp_localize_script('flavor-moderation-admin', 'flavorModeration', [
-            'ajaxurl' => admin_url('admin-ajax.php'),
+        wp_localize_script('flavor-moderation-admin', 'flavorModerationAdmin', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_moderation_nonce'),
             'reportReasons' => self::REPORT_REASONS,
             'contentTypes' => self::CONTENT_TYPES,

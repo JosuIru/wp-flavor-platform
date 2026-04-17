@@ -257,7 +257,7 @@ class Flavor_App_Config_Admin {
         $logo_id = isset($config['app_logo']) ? $config['app_logo'] : get_theme_mod('custom_logo');
         $logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
 
-        wp_localize_script('flavor-apps-config', 'flavorAppsConfig', [
+        wp_localize_script('flavor-platform-apps', 'flavorAppsConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url(),
             'nonce' => wp_create_nonce('flavor_apps_config'),

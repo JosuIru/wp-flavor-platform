@@ -425,12 +425,19 @@ class Flavor_Network_API {
             'sector'            => $request->get_param('sector'),
         ];
         $filtros = array_filter($filtros, function($v) { return $v !== null && $v !== ''; });
+        $pagina = max(1, (int) ($request->get_param('pagina') ?: 1));
+        $por_pagina = self::normalize_map_limit($request->get_param('por_pagina'));
+        $offset = ($pagina - 1) * $por_pagina;
 
-        $datos_mapa = Flavor_Network_Node::get_map_data($filtros);
+        $datos_mapa = Flavor_Network_Node::get_map_data($filtros, $por_pagina, $offset);
+        $total = Flavor_Network_Node::count($filtros);
 
         return new WP_REST_Response([
-            'nodos' => $datos_mapa,
-            'total' => count($datos_mapa),
+            'nodos'      => $datos_mapa,
+            'total'      => $total,
+            'pagina'     => $pagina,
+            'por_pagina' => $por_pagina,
+            'paginas'    => (int) ceil($total / $por_pagina),
         ], 200);
     }
 
@@ -440,7 +447,7 @@ class Flavor_Network_API {
         $latitud = (float) $request->get_param('lat');
         $longitud = (float) $request->get_param('lng');
         $radio_km = (float) ($request->get_param('radio') ?: 50);
-        $limite = (int) ($request->get_param('limit') ?: 20);
+        $limite = max(1, min(100, (int) ($request->get_param('limit') ?: 20)));
 
         $nodos_cercanos = Flavor_Network_Node::find_nearby($latitud, $longitud, $radio_km, $limite);
 
@@ -848,22 +855,34 @@ class Flavor_Network_API {
         }
 
         $colaboracion_id = (int) $request['id'];
+        $aportacion = sanitize_text_field($request->get_param('aportacion') ?: '');
 
-        // Verificar si ya participa
+        // Usar transacción para evitar race condition entre verificación e inserción.
+        $wpdb->query('START TRANSACTION');
+
+        // Verificar si ya participa con bloqueo de fila
         $existe = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$tabla_participantes} WHERE colaboracion_id = %d AND nodo_id = %d",
+            "SELECT id FROM {$tabla_participantes} WHERE colaboracion_id = %d AND nodo_id = %d FOR UPDATE",
             $colaboracion_id, $nodo_local->id
         ));
 
         if ($existe) {
+            $wpdb->query('ROLLBACK');
             return new WP_Error('ya_participa', __('Ya participas en esta colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
-        $wpdb->insert($tabla_participantes, [
+        $insertado = $wpdb->insert($tabla_participantes, [
             'colaboracion_id' => $colaboracion_id,
             'nodo_id'         => $nodo_local->id,
-            'aportacion'      => sanitize_text_field($request->get_param('aportacion') ?: ''),
+            'aportacion'      => $aportacion,
         ]);
+
+        if (!$insertado) {
+            $wpdb->query('ROLLBACK');
+            return new WP_Error('error_insercion', __('Error al unirse a la colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
+        }
+
+        $wpdb->query('COMMIT');
 
         return new WP_REST_Response([
             'success' => true,
@@ -888,25 +907,39 @@ class Flavor_Network_API {
             return new WP_Error('auto_conexion', __('No puedes conectarte contigo mismo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
-        // Verificar que no exista conexión
+        $mensaje_solicitud = sanitize_text_field($request->get_param('mensaje') ?: '');
+
+        // Usar transacción para evitar race condition entre verificación e inserción.
+        $wpdb->query('START TRANSACTION');
+
+        // Verificar que no exista conexión con bloqueo
         $existe = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$tabla}
              WHERE (nodo_origen_id = %d AND nodo_destino_id = %d)
-                OR (nodo_origen_id = %d AND nodo_destino_id = %d)",
+                OR (nodo_origen_id = %d AND nodo_destino_id = %d)
+             FOR UPDATE",
             $nodo_local->id, $nodo_destino_id,
             $nodo_destino_id, $nodo_local->id
         ));
 
         if ($existe) {
+            $wpdb->query('ROLLBACK');
             return new WP_Error('conexion_existente', __('Ya existe una conexión con este nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
-        $wpdb->insert($tabla, [
+        $insertado = $wpdb->insert($tabla, [
             'nodo_origen_id'     => $nodo_local->id,
             'nodo_destino_id'    => $nodo_destino_id,
-            'mensaje_solicitud'  => sanitize_text_field($request->get_param('mensaje') ?: ''),
+            'mensaje_solicitud'  => $mensaje_solicitud,
             'solicitado_por'     => get_current_user_id(),
         ]);
+
+        if (!$insertado) {
+            $wpdb->query('ROLLBACK');
+            return new WP_Error('error_insercion', __('Error al solicitar conexión', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
+        }
+
+        $wpdb->query('COMMIT');
 
         return new WP_REST_Response([
             'success' => true,
@@ -2476,7 +2509,23 @@ class Flavor_Network_API {
             'tipo'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             'nivel'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             'sector' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            'pagina' => ['type' => 'integer', 'default' => 1],
+            'por_pagina' => ['type' => 'integer', 'default' => 50],
         ];
+    }
+
+    /**
+     * Normaliza el tamaño del payload del mapa para evitar respuestas masivas.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @return int
+     */
+    public static function normalize_map_limit($limit) {
+        if ($limit === null || $limit === '') {
+            return 50;
+        }
+
+        return max(1, min(100, (int) $limit));
     }
 
     // ─── PREGUNTAS A LA RED ───

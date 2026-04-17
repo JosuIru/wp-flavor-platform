@@ -68,7 +68,7 @@ class Flavor_Mesh_API {
         register_rest_route(self::NAMESPACE, '/peers/list', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'list_peers'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_mesh_read'],
         ]);
 
         // Intercambiar listas de peers (PEX)
@@ -82,7 +82,7 @@ class Flavor_Mesh_API {
         register_rest_route(self::NAMESPACE, '/peers/(?P<peer_id>[a-f0-9]{64})', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'get_peer'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_mesh_read'],
         ]);
 
         // ═══════════════════════════════════════════════════════════════
@@ -129,7 +129,7 @@ class Flavor_Mesh_API {
         register_rest_route(self::NAMESPACE, '/mesh/connect', [
             'methods'             => WP_REST_Server::CREATABLE,
             'callback'            => [$this, 'mesh_connect'],
-            'permission_callback' => '__return_true', // Cualquiera puede solicitar
+            'permission_callback' => [$this, 'can_access_public_mesh_connect'],
         ]);
 
         // Completar handshake
@@ -147,7 +147,7 @@ class Flavor_Mesh_API {
         register_rest_route(self::NAMESPACE, '/health', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'health_check'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_mesh_read'],
         ]);
 
         // Heartbeat
@@ -256,6 +256,50 @@ class Flavor_Mesh_API {
      */
     public function check_admin_permission() {
         return current_user_can('manage_options');
+    }
+
+    /**
+     * Callback explícito para endpoints públicos de bootstrap/health.
+     *
+     * @return bool
+     */
+    public function can_access_public_mesh_read() {
+        return $this->check_public_rate_limit('get');
+    }
+
+    /**
+     * Callback explícito para handshake inicial sin firma previa.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_access_public_mesh_connect(WP_REST_Request $request) {
+        $peer_id = (string) $request->get_param('peer_id');
+        $public_key = (string) $request->get_param('public_key');
+
+        if (!preg_match('/^[a-f0-9]{64}$/', $peer_id)) {
+            return false;
+        }
+
+        if (strlen($public_key) < 32) {
+            return false;
+        }
+
+        return $this->check_public_rate_limit('post');
+    }
+
+    /**
+     * Aplica rate limiting si el limitador global está disponible.
+     *
+     * @param string $type Tipo de acceso.
+     * @return bool
+     */
+    private function check_public_rate_limit($type) {
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit($type);
+        }
+
+        return true;
     }
 
     // ═══════════════════════════════════════════════════════════════════

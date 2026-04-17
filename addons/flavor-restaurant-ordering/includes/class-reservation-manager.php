@@ -12,6 +12,20 @@ if (!defined('ABSPATH')) {
 class Flavor_Reservation_Manager {
 
     /**
+     * Columnas permitidas para ordenar listados de reservas.
+     *
+     * @var string[]
+     */
+    private const ALLOWED_ORDERBY_FIELDS = [
+        'created_at',
+        'reservation_date',
+        'reservation_time',
+        'status',
+        'guests_count',
+        'customer_name',
+    ];
+
+    /**
      * Instancia única
      */
     private static $instance = null;
@@ -289,10 +303,11 @@ class Flavor_Reservation_Manager {
 
         $where_clause = implode(' AND ', $where);
 
+        $orderby = self::sanitize_orderby($args['orderby']);
         $order = strtoupper($args['order']) === 'DESC' ? 'DESC' : 'ASC';
         $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
 
-        $query = "SELECT * FROM {$this->table_name} WHERE {$where_clause} ORDER BY {$args['orderby']} {$order}{$limit_clause}";
+        $query = "SELECT * FROM {$this->table_name} WHERE {$where_clause} ORDER BY {$orderby} {$order}{$limit_clause}";
 
         if (!empty($where_values)) {
             $query = $wpdb->prepare($query, $where_values);
@@ -301,6 +316,18 @@ class Flavor_Reservation_Manager {
         $results = $wpdb->get_results($query);
 
         return array_map([$this, 'format_reservation'], $results);
+    }
+
+    /**
+     * Normaliza la columna de ordenación para evitar SQL injection.
+     *
+     * @param string $orderby Columna solicitada.
+     * @return string
+     */
+    public static function sanitize_orderby($orderby) {
+        return in_array($orderby, self::ALLOWED_ORDERBY_FIELDS, true)
+            ? $orderby
+            : 'created_at';
     }
 
     /**

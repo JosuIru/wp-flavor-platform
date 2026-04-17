@@ -142,7 +142,7 @@ class Flavor_VBP_REST_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'obtener_schema_bloques' ),
-                'permission_callback' => '__return_true', // Público para facilitar integración
+                'permission_callback' => array( $this, 'verificar_permiso_catalogo_publico' ),
             )
         );
 
@@ -153,7 +153,7 @@ class Flavor_VBP_REST_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'obtener_shortcodes' ),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array( $this, 'verificar_permiso_catalogo_publico' ),
             )
         );
 
@@ -217,7 +217,7 @@ class Flavor_VBP_REST_API {
                 'callback'            => function () {
                     return new WP_REST_Response( array( 'status' => 'ok' ), 200 );
                 },
-                'permission_callback' => '__return_true',
+                'permission_callback' => array( $this, 'verificar_ping_publico' ),
             )
         );
 
@@ -260,7 +260,7 @@ class Flavor_VBP_REST_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'obtener_blog_posts' ),
-                'permission_callback' => '__return_true', // Público para frontend
+                'permission_callback' => array( $this, 'verificar_catalogo_blog_publico' ),
                 'args'                => array(
                     'category'    => array(
                         'default'           => '',
@@ -301,7 +301,7 @@ class Flavor_VBP_REST_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'obtener_categorias' ),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array( $this, 'verificar_catalogo_blog_publico' ),
             )
         );
 
@@ -491,6 +491,56 @@ class Flavor_VBP_REST_API {
         }
 
         return current_user_can( 'edit_posts' );
+    }
+
+    /**
+     * Permite exponer catálogos públicos del builder con rate limiting.
+     *
+     * @return bool
+     */
+    public function verificar_permiso_catalogo_publico() {
+        if ( current_user_can( 'edit_posts' ) ) {
+            return true;
+        }
+
+        return $this->check_public_rate_limit( 'get' );
+    }
+
+    /**
+     * Permiso explícito para ping público.
+     *
+     * @return bool
+     */
+    public function verificar_ping_publico() {
+        return $this->check_public_rate_limit( 'get' );
+    }
+
+    /**
+     * Permiso explícito para widgets/blog público.
+     *
+     * @return bool
+     */
+    public function verificar_catalogo_blog_publico() {
+        return $this->check_public_rate_limit( 'get' );
+    }
+
+    /**
+     * Aplica rate limiting cuando exista el limitador global.
+     *
+     * @param string $type Tipo de operación.
+     * @return bool
+     */
+    private function check_public_rate_limit( $type ) {
+        if ( class_exists( 'Flavor_API_Rate_Limiter' ) ) {
+            return Flavor_API_Rate_Limiter::check_rate_limit( $type );
+        }
+
+        // Fallback seguro: denegar si el rate limiter no está disponible.
+        return new WP_Error(
+            'rate_limiter_unavailable',
+            __( 'Rate limiter no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            [ 'status' => 503 ]
+        );
     }
 
     /**

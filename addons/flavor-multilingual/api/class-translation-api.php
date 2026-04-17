@@ -55,7 +55,7 @@ class Flavor_Translation_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_languages'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_public_language_data'),
             ),
         ));
 
@@ -63,7 +63,7 @@ class Flavor_Translation_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_language'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_public_language_data'),
                 'args'                => array(
                     'code' => array(
                         'required'          => true,
@@ -171,7 +171,7 @@ class Flavor_Translation_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_current_language'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_public_language_data'),
             ),
         ));
     }
@@ -258,6 +258,10 @@ class Flavor_Translation_API {
         $storage = Flavor_Translation_Storage::get_instance();
         $translations = $storage->get_all_translations('post', $post_id);
 
+        if (!$this->can_view_translation_metadata($post_id)) {
+            $translations = self::filter_public_translations($translations);
+        }
+
         return rest_ensure_response($translations);
     }
 
@@ -281,6 +285,10 @@ class Flavor_Translation_API {
 
         $storage = Flavor_Translation_Storage::get_instance();
         $translations = $storage->get_all_translations('post', $post_id);
+
+        if (!$this->can_view_translation_metadata($post_id)) {
+            $translations = self::filter_public_translations($translations);
+        }
 
         $lang_translations = $translations[$lang] ?? array();
 
@@ -601,6 +609,15 @@ class Flavor_Translation_API {
     }
 
     /**
+     * Permite exponer datos públicos de idioma sin usar __return_true directo.
+     *
+     * @return bool
+     */
+    public function can_read_public_language_data() {
+        return true;
+    }
+
+    /**
      * Verifica si puede leer traducciones de un post.
      *
      * Permite contenido publico publicado y, en cualquier otro caso,
@@ -626,6 +643,44 @@ class Flavor_Translation_API {
         return $post->post_status === 'publish'
             && $post_type_object
             && !empty($post_type_object->public);
+    }
+
+    /**
+     * Determina si el usuario actual puede ver estados/metadatos internos.
+     *
+     * @param int $post_id ID del post.
+     * @return bool
+     */
+    private function can_view_translation_metadata($post_id) {
+        return current_user_can('edit_post', $post_id) || current_user_can('edit_posts');
+    }
+
+    /**
+     * Filtra traducciones para respuestas públicas.
+     *
+     * @param array $translations Traducciones crudas.
+     * @return array
+     */
+    public static function filter_public_translations($translations) {
+        $public_translations = array();
+
+        foreach ($translations as $lang => $fields) {
+            foreach ($fields as $field => $translation) {
+                $status = $translation['status'] ?? 'draft';
+
+                if ($status !== 'published') {
+                    continue;
+                }
+
+                if (!isset($public_translations[$lang])) {
+                    $public_translations[$lang] = array();
+                }
+
+                $public_translations[$lang][$field] = $translation['value'] ?? '';
+            }
+        }
+
+        return $public_translations;
     }
 
     /**
