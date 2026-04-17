@@ -142,6 +142,41 @@ class Flavor_VBP_Loader {
         if ( file_exists( $figma_path ) ) {
             require_once $figma_path;
         }
+
+        // Sistema de colecciones dinámicas (bloques ligados a datos).
+        $collection_files = array(
+            'collections/interface-collection-source.php',
+            'collections/class-collection-registry.php',
+            'collections/class-eventos-collection-source.php',
+        );
+        foreach ( $collection_files as $collection_file ) {
+            $collection_path = $this->ruta_base . $collection_file;
+            if ( file_exists( $collection_path ) ) {
+                require_once $collection_path;
+            }
+        }
+
+        // Registrar las colecciones core cuando el plugin esté listo.
+        add_action( 'init', array( $this, 'registrar_colecciones_core' ), 20 );
+    }
+
+    /**
+     * Registra las colecciones incluidas en el plugin. Los addons pueden
+     * registrar las suyas enganchando el hook flavor_vbp_register_collections.
+     *
+     * @return void
+     */
+    public function registrar_colecciones_core() {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return;
+        }
+        $registry = Flavor_VBP_Collection_Registry::get_instance();
+
+        if ( class_exists( 'Flavor_VBP_Eventos_Collection_Source' ) ) {
+            $registry->register( new Flavor_VBP_Eventos_Collection_Source() );
+        }
+
+        do_action( 'flavor_vbp_register_collections', $registry );
     }
 
     /**

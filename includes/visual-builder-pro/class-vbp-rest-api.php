@@ -475,6 +475,77 @@ class Flavor_VBP_REST_API {
                 ),
             )
         );
+
+        // Collections: fuentes de datos dinámicos para bloques VBP.
+        register_rest_route(
+            self::NAMESPACE,
+            '/collections',
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'listar_collections' ),
+                'permission_callback' => array( $this, 'verificar_permiso_lectura' ),
+            )
+        );
+
+        register_rest_route(
+            self::NAMESPACE,
+            '/collections/(?P<identifier>[a-z0-9_-]+)/query',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'consultar_collection' ),
+                'permission_callback' => array( $this, 'verificar_permiso_lectura' ),
+                'args'                => array(
+                    'identifier' => array(
+                        'required' => true,
+                        'type'     => 'string',
+                    ),
+                ),
+            )
+        );
+    }
+
+    /**
+     * Handler: lista las colecciones registradas.
+     *
+     * @return WP_REST_Response
+     */
+    public function listar_collections() {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return new WP_REST_Response( array( 'collections' => array() ), 200 );
+        }
+        $registry = Flavor_VBP_Collection_Registry::get_instance();
+        return new WP_REST_Response( array( 'collections' => $registry->to_public_array() ), 200 );
+    }
+
+    /**
+     * Handler: ejecuta una consulta sobre una colección.
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function consultar_collection( $request ) {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return new WP_Error( 'collections_unavailable', __( 'Sistema de colecciones no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 500 ) );
+        }
+
+        $identificador = $request->get_param( 'identifier' );
+        $registry      = Flavor_VBP_Collection_Registry::get_instance();
+        $fuente        = $registry->get( $identificador );
+
+        if ( ! $fuente ) {
+            return new WP_Error( 'collection_not_found', __( 'Colección no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
+        }
+
+        $raw_args       = (array) $request->get_json_params();
+        $cleaned_args   = $registry->sanitize_query_args( $fuente, $raw_args );
+        $items          = $fuente->query( $cleaned_args );
+
+        return new WP_REST_Response( array(
+            'identifier' => $identificador,
+            'args'       => $cleaned_args,
+            'items'      => $items,
+            'count'      => count( $items ),
+        ), 200 );
     }
 
     /**
