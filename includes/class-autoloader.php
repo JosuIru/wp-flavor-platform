@@ -80,6 +80,18 @@ class Flavor_Autoloader {
         // Sistema de simbolos VBP
         'Flavor_VBP_Symbols' => 'visual-builder-pro/class-vbp-symbols.php',
         'Flavor_VBP_Symbols_API' => 'visual-builder-pro/class-vbp-symbols-api.php',
+        // Observabilidad
+        'Flavor_Performance_Metrics' => 'observability/class-performance-metrics.php',
+        'Flavor_Health_Check_API' => 'observability/class-health-check-api.php',
+        // Repositorios
+        'Flavor_Module_Integration_Repository' => 'repositories/class-module-integration-repository.php',
+        // Renderers frontend
+        'Flavor_Module_Widgets_Renderer' => 'frontend/class-module-widgets-renderer.php',
+        // Traits de mantenibilidad
+        'Flavor_REST_Response_Trait' => 'traits/trait-rest-response.php',
+        'Flavor_Request_Validation_Trait' => 'traits/trait-request-validation.php',
+        'Flavor_Permission_Checks_Trait' => 'traits/trait-permission-checks.php',
+        'Flavor_Safe_SQL_Trait' => 'traits/trait-safe-sql.php',
     ];
 
     /**

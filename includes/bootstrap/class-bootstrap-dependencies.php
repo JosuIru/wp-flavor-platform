@@ -70,6 +70,17 @@ final class Flavor_Bootstrap_Dependencies {
         $this->load_navigation_forms();
         $this->load_admin_classes();
         $this->load_cli_commands();
+        $this->load_observability_system();
+    }
+
+    /**
+     * Carga sistema de observabilidad (metrics y health checks)
+     *
+     * @return void
+     */
+    private function load_observability_system() {
+        require_once FLAVOR_PLATFORM_PATH . 'includes/observability/class-performance-metrics.php';
+        require_once FLAVOR_PLATFORM_PATH . 'includes/observability/class-health-check-api.php';
     }
 
     /**
