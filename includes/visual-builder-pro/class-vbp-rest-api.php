@@ -502,6 +502,92 @@ class Flavor_VBP_REST_API {
                 ),
             )
         );
+
+        // Endpoint público para "Cargar más" desde bloques dynamic-list
+        // renderizados en páginas. Acepta {source, args, page, signature}.
+        // La firma HMAC ata source+args a la página original y evita que
+        // un visitante anónimo arme queries arbitrarias.
+        register_rest_route(
+            self::NAMESPACE,
+            '/collections/load-more',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'consultar_collection_firmada' ),
+                'permission_callback' => '__return_true',
+            )
+        );
+    }
+
+    /**
+     * Handler público que carga una página adicional de una Collection
+     * verificando la firma HMAC del bloque original.
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function consultar_collection_firmada( $request ) {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) || ! class_exists( 'Flavor_VBP_Query_Signature' ) ) {
+            return new WP_Error( 'collections_unavailable', __( 'Sistema de colecciones no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 500 ) );
+        }
+
+        $body = (array) $request->get_json_params();
+
+        $identificador = isset( $body['source'] ) ? sanitize_key( $body['source'] ) : '';
+        $firma_recibida = isset( $body['signature'] ) ? (string) $body['signature'] : '';
+        $args_recibidos = isset( $body['args'] ) && is_array( $body['args'] ) ? $body['args'] : array();
+        $pagina_solicitada = isset( $body['page'] ) ? (int) $body['page'] : 1;
+
+        if ( $identificador === '' || $firma_recibida === '' ) {
+            return new WP_Error( 'invalid_request', __( 'Faltan parámetros requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 400 ) );
+        }
+
+        $registry = Flavor_VBP_Collection_Registry::get_instance();
+        $fuente   = $registry->get( $identificador );
+
+        if ( ! $fuente ) {
+            return new WP_Error( 'collection_not_found', __( 'Colección no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
+        }
+
+        // La firma se calcula sobre args sin page; quitamos page antes de
+        // verificar para que la misma firma sirva para cualquier página.
+        $args_para_firma = $args_recibidos;
+        unset( $args_para_firma['page'] );
+
+        if ( ! Flavor_VBP_Query_Signature::verify( $identificador, $args_para_firma, $firma_recibida ) ) {
+            return new WP_Error( 'invalid_signature', __( 'Firma inválida', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 403 ) );
+        }
+
+        // Args ya fueron saneados cuando se generó la firma en el render
+        // inicial. Aun así, pasamos por sanitize_query_args para defensa en
+        // profundidad (rechaza campos fuera del schema, clampea ints).
+        $args_finales         = $args_para_firma;
+        $args_finales['page'] = max( 1, $pagina_solicitada );
+        $cleaned_args         = $registry->sanitize_query_args( $fuente, $args_finales );
+
+        $items       = $fuente->query( $cleaned_args );
+        $total_items = $fuente->get_total_count( $cleaned_args );
+
+        $items_pagina  = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
+        $items_pagina  = max( 1, $items_pagina );
+        $total_paginas = (int) ceil( $total_items / $items_pagina );
+
+        $canvas = class_exists( 'Flavor_VBP_Canvas' ) ? Flavor_VBP_Canvas::get_instance() : null;
+        $variant_seleccionada = isset( $body['variant'] ) ? sanitize_key( $body['variant'] ) : 'card';
+        $html_items = '';
+
+        if ( $canvas && method_exists( $canvas, 'render_dynamic_list_item_public' ) ) {
+            foreach ( $items as $item ) {
+                $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada );
+            }
+        }
+
+        return new WP_REST_Response( array(
+            'items'       => $items,
+            'html'        => $html_items,
+            'page'        => $cleaned_args['page'],
+            'total_pages' => $total_paginas,
+            'has_more'    => $cleaned_args['page'] < $total_paginas,
+        ), 200 );
     }
 
     /**

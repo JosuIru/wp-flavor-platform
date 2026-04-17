@@ -31,6 +31,96 @@
         initProgressBars();
         initAlerts();
         initGalleryLightbox();
+        initDynamicLists();
+    }
+
+    /**
+     * "Cargar más" para bloques Lista Dinámica. El wrapper incluye
+     * data-source, data-args (JSON), data-signature, data-page,
+     * data-total-pages y data-template. El click envía esos datos al
+     * endpoint público firmado y appendea los items devueltos al grid
+     * interno.
+     */
+    function initDynamicLists() {
+        var wrappers = document.querySelectorAll('.vbp-dynamic-list-wrapper');
+        wrappers.forEach(function (wrapper) {
+            var boton = wrapper.querySelector('.vbp-dynamic-list__load-more');
+            if (!boton || boton.dataset.vbpBound === '1') {
+                return;
+            }
+            boton.dataset.vbpBound = '1';
+
+            boton.addEventListener('click', function () {
+                fetchNextDynamicListPage(wrapper, boton);
+            });
+        });
+    }
+
+    function fetchNextDynamicListPage(wrapper, boton) {
+        var paginaActual = parseInt(wrapper.dataset.page || '1', 10);
+        var totalPaginas = parseInt(wrapper.dataset.totalPages || '1', 10);
+
+        if (paginaActual >= totalPaginas) {
+            boton.style.display = 'none';
+            return;
+        }
+
+        var args = {};
+        try {
+            args = JSON.parse(wrapper.dataset.args || '{}');
+        } catch (e) {
+            vbpLog.warn('dynamic-list: args inválidos', e);
+            return;
+        }
+
+        var urlBase = (window.VBP_Config && window.VBP_Config.restUrl) || '/wp-json/flavor-vbp/v1/';
+        var siguientePagina = paginaActual + 1;
+
+        var textoOriginalBoton = boton.textContent;
+        boton.disabled = true;
+        boton.textContent = '…';
+
+        fetch(urlBase + 'collections/load-more', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                source:    wrapper.dataset.source,
+                args:      args,
+                signature: wrapper.dataset.signature,
+                page:      siguientePagina,
+                variant:   wrapper.dataset.template || 'card'
+            })
+        })
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            return response.json();
+        })
+        .then(function (payload) {
+            var grid = wrapper.querySelector('.vbp-dynamic-list');
+            if (grid && payload.html) {
+                grid.insertAdjacentHTML('beforeend', payload.html);
+            }
+
+            wrapper.dataset.page = String(payload.page || siguientePagina);
+            wrapper.dataset.totalPages = String(payload.total_pages || totalPaginas);
+
+            if (!payload.has_more) {
+                boton.style.display = 'none';
+            }
+        })
+        .catch(function (error) {
+            vbpLog.error('dynamic-list load-more failed', error);
+            boton.textContent = textoOriginalBoton;
+        })
+        .finally(function () {
+            boton.disabled = false;
+            if (boton.textContent === '…') {
+                boton.textContent = textoOriginalBoton;
+            }
+        });
     }
 
     /**

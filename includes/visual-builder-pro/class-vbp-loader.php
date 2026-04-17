@@ -148,6 +148,7 @@ class Flavor_VBP_Loader {
             'collections/interface-collection-source.php',
             'collections/trait-paginated-collection.php',
             'collections/class-date-token-resolver.php',
+            'collections/class-query-signature.php',
             'collections/class-collection-registry.php',
             'collections/class-eventos-collection-source.php',
             'collections/class-socios-collection-source.php',

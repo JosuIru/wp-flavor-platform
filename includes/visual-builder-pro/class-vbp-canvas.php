@@ -115,12 +115,15 @@ class Flavor_VBP_Canvas {
                 true
             );
 
-            // Pasar URL de AJAX para formularios
-            wp_add_inline_script(
-                'vbp-frontend',
-                'window.vbp_ajax_url = "' . esc_js( admin_url( 'admin-ajax.php' ) ) . '";',
-                'before'
+            // Pasar URL de AJAX para formularios + base REST para bloques
+            // dinámicos del frontend (Lista Dinámica usa collections/load-more).
+            $inline_config = sprintf(
+                'window.vbp_ajax_url = "%s"; window.VBP_Config = window.VBP_Config || {}; window.VBP_Config.restUrl = "%s";',
+                esc_js( admin_url( 'admin-ajax.php' ) ),
+                esc_js( rest_url( 'flavor-vbp/v1/' ) )
             );
+
+            wp_add_inline_script( 'vbp-frontend', $inline_config, 'before' );
         }
 
         // Cargar JavaScript de animaciones
@@ -3816,6 +3819,13 @@ class Flavor_VBP_Canvas {
 
         $cleaned_args = $registry->sanitize_query_args( $fuente, $raw_query_args );
         $items        = $fuente->query( $cleaned_args );
+        $total_items  = $fuente->get_total_count( $cleaned_args );
+
+        $pagina_actual  = isset( $cleaned_args['page'] ) ? (int) $cleaned_args['page'] : 1;
+        $items_pagina   = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
+        $items_pagina   = max( 1, $items_pagina );
+        $total_paginas  = (int) ceil( $total_items / $items_pagina );
+        $tiene_mas      = $pagina_actual < $total_paginas;
 
         if ( empty( $items ) ) {
             $empty_message = isset( $data['empty_message'] ) && $data['empty_message'] !== ''
@@ -3839,7 +3849,24 @@ class Flavor_VBP_Canvas {
             $template_variant = 'card';
         }
 
-        return $this->render_dynamic_list_items( $items, $template_variant, $identificador_fuente );
+        $firma_load_more = '';
+        if ( $tiene_mas && class_exists( 'Flavor_VBP_Query_Signature' ) ) {
+            $firma_load_more = Flavor_VBP_Query_Signature::sign( $identificador_fuente, $cleaned_args );
+        }
+
+        return $this->render_dynamic_list_items(
+            $items,
+            $template_variant,
+            $identificador_fuente,
+            array(
+                'page'         => $pagina_actual,
+                'per_page'     => $items_pagina,
+                'total_pages'  => $total_paginas,
+                'has_more'     => $tiene_mas,
+                'args'         => $cleaned_args,
+                'signature'    => $firma_load_more,
+            )
+        );
     }
 
     /**
@@ -3850,7 +3877,8 @@ class Flavor_VBP_Canvas {
      * @param string $source_identifier Identificador de la fuente (para data-attributes).
      * @return string
      */
-    private function render_dynamic_list_items( array $items, $template_variant, $source_identifier ) {
+    private function render_dynamic_list_items( array $items, $template_variant, $source_identifier, array $pagination_meta = array() ) {
+        $clases_envoltorio = 'vbp-dynamic-list-wrapper';
         $clases_contenedor = 'vbp-element vbp-dynamic-list vbp-dynamic-list--' . sanitize_html_class( $template_variant );
 
         // Layout distinto según variante: grid responsivo para cards,
@@ -3860,7 +3888,30 @@ class Flavor_VBP_Canvas {
             $estilos_contenedor = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;';
         }
 
-        $html = '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '"';
+        // Data-attributes para el botón "Cargar más" del frontend. Se
+        // incluyen siempre que haya pagination_meta; si has_more es false
+        // el botón no se renderiza, pero los atributos de contexto quedan
+        // para debugging y para usos futuros (contador).
+        $wrapper_data_attrs = '';
+        $signature_load_more = isset( $pagination_meta['signature'] ) ? (string) $pagination_meta['signature'] : '';
+        if ( ! empty( $pagination_meta ) ) {
+            $args_json     = isset( $pagination_meta['args'] ) ? wp_json_encode( $pagination_meta['args'] ) : '{}';
+            $current_page  = isset( $pagination_meta['page'] ) ? (int) $pagination_meta['page'] : 1;
+            $total_pages   = isset( $pagination_meta['total_pages'] ) ? (int) $pagination_meta['total_pages'] : 1;
+            $wrapper_data_attrs = sprintf(
+                ' data-source="%s" data-args="%s" data-signature="%s" data-page="%d" data-total-pages="%d" data-template="%s"',
+                esc_attr( $source_identifier ),
+                esc_attr( $args_json ),
+                esc_attr( $signature_load_more ),
+                $current_page,
+                $total_pages,
+                esc_attr( $template_variant )
+            );
+        }
+
+        $html = '<div class="' . esc_attr( $clases_envoltorio ) . '"' . $wrapper_data_attrs . '>';
+
+        $html .= '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '"';
         if ( $estilos_contenedor !== '' ) {
             $html .= ' style="' . esc_attr( $estilos_contenedor ) . '"';
         }
@@ -3871,7 +3922,32 @@ class Flavor_VBP_Canvas {
         }
 
         $html .= '</div>';
+
+        if ( ! empty( $pagination_meta['has_more'] ) ) {
+            $html .= '<button type="button" class="vbp-dynamic-list__load-more" style="display:block;margin:24px auto 0;padding:10px 24px;background:#3b82f6;color:#fff;border:0;border-radius:6px;cursor:pointer;font-size:0.95em;">'
+                . esc_html__( 'Cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                . '</button>';
+        }
+
+        $html .= '</div>';
         return $html;
+    }
+
+    /**
+     * Versión pública de render_dynamic_list_item para que el endpoint
+     * REST "load more" pueda generar HTML del mismo formato sin tener
+     * que duplicar la plantilla.
+     *
+     * @param array  $item
+     * @param string $template_variant
+     * @return string
+     */
+    public function render_dynamic_list_item_public( array $item, $template_variant ) {
+        $templates_validos = array( 'card', 'list', 'minimal' );
+        if ( ! in_array( $template_variant, $templates_validos, true ) ) {
+            $template_variant = 'card';
+        }
+        return $this->render_dynamic_list_item( $item, $template_variant );
     }
 
     /**
