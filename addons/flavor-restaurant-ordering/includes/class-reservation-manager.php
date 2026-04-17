@@ -347,8 +347,6 @@ class Flavor_Reservation_Manager {
      * Actualizar reserva
      */
     public function update_reservation($reservation_id, $data) {
-        global $wpdb;
-
         $reservation = $this->get_reservation($reservation_id);
         if (!$reservation) {
             return new WP_Error('reservation_not_found', __('Reserva no encontrada', 'flavor-restaurant-ordering'));
@@ -399,6 +397,54 @@ class Flavor_Reservation_Manager {
             return $reservation;
         }
 
+        $availability_fields = ['table_id', 'reservation_date', 'reservation_time', 'duration'];
+        $needs_availability_check = !empty(array_intersect(array_keys($update_data), $availability_fields));
+
+        if (!$needs_availability_check) {
+            return $this->apply_reservation_update($reservation_id, $update_data, $update_format, $data);
+        }
+
+        // Si cambian campos que afectan la disponibilidad, verificar dentro
+        // de una transacción con bloqueo para evitar que otro cliente
+        // reserve el hueco nuevo entre la comprobación y el update.
+        return $this->run_transaction(function () use ($reservation_id, $reservation, $update_data, $update_format, $data) {
+            $target_table_id = $update_data['table_id'] ?? $reservation['table_id'];
+            $target_date     = $update_data['reservation_date'] ?? $reservation['reservation_date'];
+            $target_time     = $update_data['reservation_time'] ?? $reservation['reservation_time'];
+            $target_duration = $update_data['duration'] ?? ($reservation['duration'] ?? 120);
+
+            $is_available = $this->is_table_available(
+                $target_table_id,
+                $target_date,
+                $target_time,
+                $target_duration,
+                $reservation_id,
+                true
+            );
+
+            if (!$is_available) {
+                return new WP_Error(
+                    'table_not_available',
+                    __('La mesa seleccionada no está disponible en ese horario', 'flavor-restaurant-ordering')
+                );
+            }
+
+            return $this->apply_reservation_update($reservation_id, $update_data, $update_format, $data);
+        });
+    }
+
+    /**
+     * Aplica el update de una reserva al wpdb.
+     *
+     * @param int   $reservation_id   ID de la reserva.
+     * @param array $update_data      Campos saneados a actualizar.
+     * @param array $update_format    Formatos wpdb de cada campo.
+     * @param array $original_payload Payload original pasado por el caller.
+     * @return array|WP_Error
+     */
+    private function apply_reservation_update($reservation_id, $update_data, $update_format, $original_payload) {
+        global $wpdb;
+
         $updated = $wpdb->update(
             $this->table_name,
             $update_data,
@@ -411,7 +457,7 @@ class Flavor_Reservation_Manager {
             return new WP_Error('db_error', __('Error al actualizar la reserva', 'flavor-restaurant-ordering'));
         }
 
-        do_action('flavor_restaurant_reservation_updated', $reservation_id, $data);
+        do_action('flavor_restaurant_reservation_updated', $reservation_id, $original_payload);
 
         return $this->get_reservation($reservation_id);
     }
