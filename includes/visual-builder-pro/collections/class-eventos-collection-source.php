@@ -2,11 +2,6 @@
 /**
  * Fuente de colección para el módulo de eventos.
  *
- * Expone los eventos publicados al editor VBP con filtros por estado,
- * rango de fechas, tipo y búsqueda textual. La consulta se ejecuta
- * directamente sobre la tabla flavor_eventos usando los índices
- * compuestos añadidos en la migración 2024_04_17_000001.
- *
  * @package FlavorPlatform
  * @subpackage VisualBuilderPro\Collections
  * @since 3.6.0
@@ -18,12 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Flavor_VBP_Eventos_Collection_Source implements Flavor_VBP_Collection_Source {
 
-    /**
-     * Estados válidos en la tabla flavor_eventos. Se usan como whitelist para
-     * evitar SQL injection vía parámetro `estado`.
-     *
-     * @var string[]
-     */
+    use Flavor_VBP_Paginated_Collection_Trait;
+
     private const ESTADOS_VALIDOS = array( 'publicado', 'borrador', 'cancelado', 'archivado' );
 
     public function get_identifier() {
@@ -39,53 +30,78 @@ class Flavor_VBP_Eventos_Collection_Source implements Flavor_VBP_Collection_Sour
     }
 
     public function get_query_fields() {
-        return array(
-            'estado' => array(
-                'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'enum',
-                'options' => self::ESTADOS_VALIDOS,
-                'default' => 'publicado',
+        return array_merge(
+            array(
+                'estado' => array(
+                    'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'enum',
+                    'options' => self::ESTADOS_VALIDOS,
+                    'default' => 'publicado',
+                ),
+                'fecha_desde' => array(
+                    'label'   => __( 'Desde (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'date',
+                    'default' => null,
+                ),
+                'fecha_hasta' => array(
+                    'label'   => __( 'Hasta (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'date',
+                    'default' => null,
+                ),
+                'busqueda' => array(
+                    'label'   => __( 'Búsqueda en título y descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'string',
+                    'default' => '',
+                ),
+                'orden' => array(
+                    'label'   => __( 'Orden', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'enum',
+                    'options' => array( 'proximos', 'recientes', 'antiguos' ),
+                    'default' => 'proximos',
+                ),
             ),
-            'fecha_desde' => array(
-                'label'   => __( 'Desde (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'date',
-                'default' => null,
-            ),
-            'fecha_hasta' => array(
-                'label'   => __( 'Hasta (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'date',
-                'default' => null,
-            ),
-            'busqueda' => array(
-                'label'   => __( 'Búsqueda en título y descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'string',
-                'default' => '',
-            ),
-            'orden' => array(
-                'label'   => __( 'Orden', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'enum',
-                'options' => array( 'proximos', 'recientes', 'antiguos' ),
-                'default' => 'proximos',
-            ),
-            'limit' => array(
-                'label'   => __( 'Máximo de items', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'int',
-                'min'     => 1,
-                'max'     => 50,
-                'default' => 10,
-            ),
+            $this->get_pagination_fields()
         );
     }
 
     public function query( array $query_args ) {
         global $wpdb;
 
-        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_eventos = $this->get_table_name();
+
+        list( $clausula_where, $args_where ) = $this->build_where_and_args( $query_args );
+        $clausula_order = $this->build_order_clause( isset( $query_args['orden'] ) ? (string) $query_args['orden'] : 'proximos' );
+        $paginacion     = $this->extract_pagination( $query_args );
+
+        $sql = "SELECT id, titulo, descripcion, fecha_inicio, fecha_fin, imagen, tipo
+                FROM {$tabla_eventos}
+                WHERE {$clausula_where}
+                {$clausula_order}
+                LIMIT %d OFFSET %d";
+
+        $args_where[] = $paginacion['limit'];
+        $args_where[] = $paginacion['offset'];
+
+        $filas = $wpdb->get_results( $wpdb->prepare( $sql, $args_where ), ARRAY_A );
+
+        if ( ! is_array( $filas ) ) {
+            return array();
+        }
+
+        return array_map( array( $this, 'normalize_event_row' ), $filas );
+    }
+
+    protected function get_table_name() {
+        global $wpdb;
+        return $wpdb->prefix . 'flavor_eventos';
+    }
+
+    protected function build_where_and_args( array $query_args ) {
+        global $wpdb;
 
         $where_parts = array();
         $where_args  = array();
 
-        // Estado: ya validado por el registry contra la whitelist de enum.
         $estado_filtro = isset( $query_args['estado'] ) ? (string) $query_args['estado'] : 'publicado';
         $where_parts[] = 'estado = %s';
         $where_args[]  = $estado_filtro;
@@ -107,52 +123,18 @@ class Flavor_VBP_Eventos_Collection_Source implements Flavor_VBP_Collection_Sour
             $where_args[]  = $termino_like;
         }
 
-        $clausula_where = implode( ' AND ', $where_parts );
-        $clausula_order = $this->build_order_clause( isset( $query_args['orden'] ) ? (string) $query_args['orden'] : 'proximos' );
-        $limite         = isset( $query_args['limit'] ) ? (int) $query_args['limit'] : 10;
-        $limite         = max( 1, min( 50, $limite ) );
-
-        $sql = "SELECT id, titulo, descripcion, fecha_inicio, fecha_fin, imagen, tipo
-                FROM {$tabla_eventos}
-                WHERE {$clausula_where}
-                {$clausula_order}
-                LIMIT %d";
-
-        $where_args[] = $limite;
-
-        $filas = $wpdb->get_results( $wpdb->prepare( $sql, $where_args ), ARRAY_A );
-
-        if ( ! is_array( $filas ) ) {
-            return array();
-        }
-
-        return array_map( array( $this, 'normalize_event_row' ), $filas );
+        return array( implode( ' AND ', $where_parts ), $where_args );
     }
 
-    /**
-     * Construye la cláusula ORDER BY a partir de la opción de orden, que ya
-     * viene validada por el registry contra el whitelist de enum. No hay
-     * input libre aquí.
-     *
-     * @param string $opcion_orden Valor del enum `orden`.
-     * @return string
-     */
     private function build_order_clause( $opcion_orden ) {
         $mapa_orden = array(
-            'proximos' => 'ORDER BY fecha_inicio ASC',
+            'proximos'  => 'ORDER BY fecha_inicio ASC',
             'recientes' => 'ORDER BY fecha_inicio DESC',
-            'antiguos' => 'ORDER BY fecha_inicio ASC',
+            'antiguos'  => 'ORDER BY fecha_inicio ASC',
         );
         return isset( $mapa_orden[ $opcion_orden ] ) ? $mapa_orden[ $opcion_orden ] : $mapa_orden['proximos'];
     }
 
-    /**
-     * Convierte una fila cruda de la tabla en el shape normalizado que los
-     * bloques del canvas consumen.
-     *
-     * @param array<string, mixed> $fila_cruda Fila de la tabla flavor_eventos.
-     * @return array<string, mixed>
-     */
     private function normalize_event_row( array $fila_cruda ) {
         return array(
             'id'      => (int) $fila_cruda['id'],
@@ -168,12 +150,6 @@ class Flavor_VBP_Eventos_Collection_Source implements Flavor_VBP_Collection_Sour
         );
     }
 
-    /**
-     * Construye la URL canónica del evento.
-     *
-     * @param array<string, mixed> $fila Fila del evento.
-     * @return string
-     */
     private function build_event_url( array $fila ) {
         if ( class_exists( 'Flavor_Platform_Helpers' ) && method_exists( 'Flavor_Platform_Helpers', 'get_action_url' ) ) {
             return (string) Flavor_Platform_Helpers::get_action_url( 'eventos', 'detalle' ) . '?evento_id=' . (int) $fila['id'];

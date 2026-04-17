@@ -78,4 +78,15 @@ interface Flavor_VBP_Collection_Source {
      * @return array<int, array<string, mixed>>
      */
     public function query( array $query_args );
+
+    /**
+     * Devuelve el número total de items que hacen match con $query_args,
+     * ignorando limit/page. Se usa para construir metadata de paginación
+     * en la respuesta REST (total, total_pages, has_more). Las fuentes
+     * suelen obtener esto vía trait Flavor_VBP_Paginated_Collection_Trait.
+     *
+     * @param array<string, mixed> $query_args Mismos args que query().
+     * @return int
+     */
+    public function get_total_count( array $query_args );
 }

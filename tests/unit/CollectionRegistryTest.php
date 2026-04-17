@@ -45,6 +45,10 @@ class Flavor_Fake_Collection_Source implements Flavor_VBP_Collection_Source {
     public function query( array $query_args ) {
         return array( array( 'args_recibidos' => $query_args ) );
     }
+
+    public function get_total_count( array $query_args ) {
+        return 1;
+    }
 }
 
 class CollectionRegistryTest extends Flavor_TestCase {

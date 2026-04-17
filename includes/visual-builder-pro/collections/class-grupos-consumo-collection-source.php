@@ -2,10 +2,6 @@
 /**
  * Fuente de colección para grupos de consumo.
  *
- * Expone los grupos de consumo activos con filtros por estado y búsqueda
- * textual sobre nombre/descripción/ubicación. Los items devuelven imagen,
- * nombre y ubicación para rellenar las tarjetas del canvas.
- *
  * @package FlavorPlatform
  * @subpackage VisualBuilderPro\Collections
  * @since 3.6.0
@@ -16,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Flavor_VBP_Grupos_Consumo_Collection_Source implements Flavor_VBP_Collection_Source {
+
+    use Flavor_VBP_Paginated_Collection_Trait;
 
     private const ESTADOS_VALIDOS = array( 'activo', 'inactivo', 'pausado', 'archivado' );
 
@@ -31,43 +29,73 @@ class Flavor_VBP_Grupos_Consumo_Collection_Source implements Flavor_VBP_Collecti
         return __( 'Grupos de consumo locales para compra colectiva', FLAVOR_PLATFORM_TEXT_DOMAIN );
     }
 
+    protected function get_default_limit() {
+        return 12;
+    }
+
     public function get_query_fields() {
-        return array(
-            'estado' => array(
-                'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'enum',
-                'options' => self::ESTADOS_VALIDOS,
-                'default' => 'activo',
+        return array_merge(
+            array(
+                'estado' => array(
+                    'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'enum',
+                    'options' => self::ESTADOS_VALIDOS,
+                    'default' => 'activo',
+                ),
+                'busqueda' => array(
+                    'label'   => __( 'Búsqueda (nombre, descripción, ubicación)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'string',
+                    'default' => '',
+                ),
+                'orden' => array(
+                    'label'   => __( 'Orden', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'    => 'enum',
+                    'options' => array( 'recientes', 'alfabetico', 'antiguos' ),
+                    'default' => 'recientes',
+                ),
             ),
-            'busqueda' => array(
-                'label'   => __( 'Búsqueda (nombre, descripción, ubicación)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'string',
-                'default' => '',
-            ),
-            'orden' => array(
-                'label'   => __( 'Orden', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'enum',
-                'options' => array( 'recientes', 'alfabetico', 'antiguos' ),
-                'default' => 'recientes',
-            ),
-            'limit' => array(
-                'label'   => __( 'Máximo de items', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                'type'    => 'int',
-                'min'     => 1,
-                'max'     => 50,
-                'default' => 12,
-            ),
+            $this->get_pagination_fields()
         );
     }
 
     public function query( array $query_args ) {
         global $wpdb;
 
-        $tabla_grupos = $wpdb->prefix . 'flavor_gc_grupos';
+        $tabla_grupos = $this->get_table_name();
 
         if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabla_grupos ) ) !== $tabla_grupos ) {
             return array();
         }
+
+        list( $clausula_where, $args_where ) = $this->build_where_and_args( $query_args );
+        $clausula_order = $this->build_order_clause( isset( $query_args['orden'] ) ? (string) $query_args['orden'] : 'recientes' );
+        $paginacion     = $this->extract_pagination( $query_args );
+
+        $sql = "SELECT id, nombre, slug, descripcion, imagen_url, ubicacion, fecha_creacion
+                FROM {$tabla_grupos}
+                WHERE {$clausula_where}
+                {$clausula_order}
+                LIMIT %d OFFSET %d";
+
+        $args_where[] = $paginacion['limit'];
+        $args_where[] = $paginacion['offset'];
+
+        $filas = $wpdb->get_results( $wpdb->prepare( $sql, $args_where ), ARRAY_A );
+
+        if ( ! is_array( $filas ) ) {
+            return array();
+        }
+
+        return array_map( array( $this, 'normalize_grupo_row' ), $filas );
+    }
+
+    protected function get_table_name() {
+        global $wpdb;
+        return $wpdb->prefix . 'flavor_gc_grupos';
+    }
+
+    protected function build_where_and_args( array $query_args ) {
+        global $wpdb;
 
         $where_parts = array( 'estado = %s' );
         $where_args  = array( isset( $query_args['estado'] ) ? (string) $query_args['estado'] : 'activo' );
@@ -80,33 +108,14 @@ class Flavor_VBP_Grupos_Consumo_Collection_Source implements Flavor_VBP_Collecti
             $where_args[]  = $termino_like;
         }
 
-        $clausula_where = implode( ' AND ', $where_parts );
-        $clausula_order = $this->build_order_clause( isset( $query_args['orden'] ) ? (string) $query_args['orden'] : 'recientes' );
-        $limite         = isset( $query_args['limit'] ) ? (int) $query_args['limit'] : 12;
-        $limite         = max( 1, min( 50, $limite ) );
-
-        $sql = "SELECT id, nombre, slug, descripcion, imagen_url, ubicacion, fecha_creacion
-                FROM {$tabla_grupos}
-                WHERE {$clausula_where}
-                {$clausula_order}
-                LIMIT %d";
-
-        $where_args[] = $limite;
-
-        $filas = $wpdb->get_results( $wpdb->prepare( $sql, $where_args ), ARRAY_A );
-
-        if ( ! is_array( $filas ) ) {
-            return array();
-        }
-
-        return array_map( array( $this, 'normalize_grupo_row' ), $filas );
+        return array( implode( ' AND ', $where_parts ), $where_args );
     }
 
     private function build_order_clause( $opcion_orden ) {
         $mapa = array(
-            'recientes'   => 'ORDER BY fecha_creacion DESC',
-            'alfabetico'  => 'ORDER BY nombre ASC',
-            'antiguos'    => 'ORDER BY fecha_creacion ASC',
+            'recientes'  => 'ORDER BY fecha_creacion DESC',
+            'alfabetico' => 'ORDER BY nombre ASC',
+            'antiguos'   => 'ORDER BY fecha_creacion ASC',
         );
         return isset( $mapa[ $opcion_orden ] ) ? $mapa[ $opcion_orden ] : $mapa['recientes'];
     }
@@ -127,8 +136,8 @@ class Flavor_VBP_Grupos_Consumo_Collection_Source implements Flavor_VBP_Collecti
             'url'     => $this->build_grupo_url( $fila ),
             'date'    => isset( $fila['fecha_creacion'] ) ? (string) $fila['fecha_creacion'] : '',
             'meta'    => array(
-                'slug'       => isset( $fila['slug'] ) ? (string) $fila['slug'] : '',
-                'ubicacion'  => $ubicacion_grupo,
+                'slug'      => isset( $fila['slug'] ) ? (string) $fila['slug'] : '',
+                'ubicacion' => $ubicacion_grupo,
             ),
         );
     }

@@ -536,15 +536,29 @@ class Flavor_VBP_REST_API {
             return new WP_Error( 'collection_not_found', __( 'Colección no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
-        $raw_args       = (array) $request->get_json_params();
-        $cleaned_args   = $registry->sanitize_query_args( $fuente, $raw_args );
-        $items          = $fuente->query( $cleaned_args );
+        $raw_args     = (array) $request->get_json_params();
+        $cleaned_args = $registry->sanitize_query_args( $fuente, $raw_args );
+        $items        = $fuente->query( $cleaned_args );
+        $total_items  = $fuente->get_total_count( $cleaned_args );
+
+        $pagina_actual = isset( $cleaned_args['page'] ) ? (int) $cleaned_args['page'] : 1;
+        $items_pagina  = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
+        $items_pagina  = max( 1, $items_pagina );
+        $total_paginas = (int) ceil( $total_items / $items_pagina );
+        $tiene_mas     = $pagina_actual < $total_paginas;
 
         return new WP_REST_Response( array(
             'identifier' => $identificador,
             'args'       => $cleaned_args,
             'items'      => $items,
             'count'      => count( $items ),
+            'meta'       => array(
+                'total'       => $total_items,
+                'page'        => $pagina_actual,
+                'per_page'    => $items_pagina,
+                'total_pages' => $total_paginas,
+                'has_more'    => $tiene_mas,
+            ),
         ), 200 );
     }
 
