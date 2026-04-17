@@ -150,6 +150,8 @@ class Flavor_VBP_Loader {
             'collections/class-eventos-collection-source.php',
             'collections/class-socios-collection-source.php',
             'collections/class-biblioteca-collection-source.php',
+            'collections/class-foros-collection-source.php',
+            'collections/class-grupos-consumo-collection-source.php',
         );
         foreach ( $collection_files as $collection_file ) {
             $collection_path = $this->ruta_base . $collection_file;
@@ -184,6 +186,14 @@ class Flavor_VBP_Loader {
 
         if ( class_exists( 'Flavor_VBP_Biblioteca_Collection_Source' ) ) {
             $registry->register( new Flavor_VBP_Biblioteca_Collection_Source() );
+        }
+
+        if ( class_exists( 'Flavor_VBP_Foros_Collection_Source' ) ) {
+            $registry->register( new Flavor_VBP_Foros_Collection_Source() );
+        }
+
+        if ( class_exists( 'Flavor_VBP_Grupos_Consumo_Collection_Source' ) ) {
+            $registry->register( new Flavor_VBP_Grupos_Consumo_Collection_Source() );
         }
 
         do_action( 'flavor_vbp_register_collections', $registry );
