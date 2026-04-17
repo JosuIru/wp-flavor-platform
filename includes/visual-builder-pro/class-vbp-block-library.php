@@ -66,9 +66,76 @@ class Flavor_VBP_Block_Library {
         $this->registrar_bloques_media();
         $this->registrar_bloques_modulos();
         $this->registrar_bloques_dashboard_widgets();
+        $this->registrar_bloques_dinamicos();
 
         // Hook para que otros plugins puedan añadir bloques
         do_action( 'vbp_register_blocks', $this );
+    }
+
+    /**
+     * Registra bloques dinámicos que se alimentan del sistema de
+     * collections (ver includes/visual-builder-pro/collections/).
+     */
+    private function registrar_bloques_dinamicos() {
+        // Construye el listado de sources disponibles consultando el registry
+        // si ya está cargado. Si no hay ninguna, el bloque se registra igual
+        // pero el select quedará vacío hasta que haya fuentes.
+        $source_options = array();
+        if ( class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            $registry = Flavor_VBP_Collection_Registry::get_instance();
+            foreach ( $registry->all() as $fuente ) {
+                $source_options[ $fuente->get_identifier() ] = $fuente->get_label();
+            }
+        }
+
+        $this->registrar_bloque( array(
+            'id'       => 'dynamic-list',
+            'name'     => __( 'Lista Dinámica', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'dynamic',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4"/><rect x="3" y="10" width="18" height="4"/><rect x="3" y="17" width="18" height="4"/></svg>',
+            'variants' => array(
+                'card'    => __( 'Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'list'    => __( 'Listado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal' => __( 'Minimal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            ),
+            'fields'   => array(
+                '_separator_fuente' => array(
+                    'type'  => 'separator',
+                    'label' => __( '🔗 Fuente de datos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+                'source' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Colección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'options' => $source_options,
+                    'default' => ! empty( $source_options ) ? array_keys( $source_options )[0] : '',
+                ),
+                'query_args_json' => array(
+                    'type'        => 'textarea',
+                    'label'       => __( 'Filtros (JSON)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'placeholder' => '{"estado":"publicado","limit":10}',
+                    'default'     => '{"limit":10}',
+                ),
+                '_separator_template' => array(
+                    'type'  => 'separator',
+                    'label' => __( '🎨 Plantilla del item', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+                'template' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'options' => array(
+                        'card'    => __( 'Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'list'    => __( 'Listado compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'minimal' => __( 'Solo título + enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    ),
+                    'default' => 'card',
+                ),
+                'empty_message' => array(
+                    'type'    => 'text',
+                    'label'   => __( 'Mensaje cuando no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => __( 'No hay items disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+            ),
+        ) );
     }
 
     /**

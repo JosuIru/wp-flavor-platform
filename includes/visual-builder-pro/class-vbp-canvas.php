@@ -3775,6 +3775,131 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Renderiza el bloque Lista Dinámica consultando una Collection.
+     *
+     * Espera en $elemento['data'] los campos source, query_args_json, template,
+     * empty_message. La consulta pasa por el registry para sanear argumentos
+     * contra el schema de cada campo antes de llegar a query().
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML renderizado.
+     */
+    private function render_dynamic_list( $elemento ) {
+        $data = isset( $elemento['data'] ) ? (array) $elemento['data'] : array();
+
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return '<div class="vbp-element vbp-dynamic-list vbp-dynamic-list--error">'
+                . esc_html__( 'Sistema de colecciones no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                . '</div>';
+        }
+
+        $identificador_fuente = isset( $data['source'] ) ? (string) $data['source'] : '';
+        $registry             = Flavor_VBP_Collection_Registry::get_instance();
+        $fuente               = $registry->get( $identificador_fuente );
+
+        if ( ! $fuente ) {
+            if ( $this->is_editor_context() ) {
+                return '<div class="vbp-element vbp-dynamic-list vbp-dynamic-list--placeholder" style="padding:16px;border:1px dashed #cbd5e1;border-radius:8px;color:#64748b;text-align:center;">'
+                    . esc_html__( 'Selecciona una colección en el inspector', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                    . '</div>';
+            }
+            return '';
+        }
+
+        $raw_query_args = array();
+        if ( ! empty( $data['query_args_json'] ) ) {
+            $decodificado = json_decode( (string) $data['query_args_json'], true );
+            if ( is_array( $decodificado ) ) {
+                $raw_query_args = $decodificado;
+            }
+        }
+
+        $cleaned_args = $registry->sanitize_query_args( $fuente, $raw_query_args );
+        $items        = $fuente->query( $cleaned_args );
+
+        if ( empty( $items ) ) {
+            $empty_message = isset( $data['empty_message'] ) && $data['empty_message'] !== ''
+                ? $data['empty_message']
+                : __( 'No hay items disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN );
+            return '<div class="vbp-element vbp-dynamic-list vbp-dynamic-list--empty">'
+                . esc_html( $empty_message )
+                . '</div>';
+        }
+
+        $template_variant = isset( $data['template'] ) ? (string) $data['template'] : 'card';
+        $templates_validos = array( 'card', 'list', 'minimal' );
+        if ( ! in_array( $template_variant, $templates_validos, true ) ) {
+            $template_variant = 'card';
+        }
+
+        return $this->render_dynamic_list_items( $items, $template_variant, $identificador_fuente );
+    }
+
+    /**
+     * Renderiza los items de una lista dinámica según la plantilla.
+     *
+     * @param array  $items             Items normalizados devueltos por la Collection.
+     * @param string $template_variant  Variante: card|list|minimal.
+     * @param string $source_identifier Identificador de la fuente (para data-attributes).
+     * @return string
+     */
+    private function render_dynamic_list_items( array $items, $template_variant, $source_identifier ) {
+        $clases_contenedor = 'vbp-element vbp-dynamic-list vbp-dynamic-list--' . sanitize_html_class( $template_variant );
+        $html = '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '">';
+
+        foreach ( $items as $item ) {
+            $html .= $this->render_dynamic_list_item( $item, $template_variant );
+        }
+
+        $html .= '</div>';
+        return $html;
+    }
+
+    /**
+     * Renderiza un único item según la plantilla elegida.
+     *
+     * @param array  $item              Item normalizado con keys id, title, excerpt, image, url, date.
+     * @param string $template_variant  Variante: card|list|minimal.
+     * @return string
+     */
+    private function render_dynamic_list_item( array $item, $template_variant ) {
+        $titulo_item   = isset( $item['title'] ) ? (string) $item['title'] : '';
+        $extracto_item = isset( $item['excerpt'] ) ? (string) $item['excerpt'] : '';
+        $imagen_url    = isset( $item['image'] ) ? (string) $item['image'] : '';
+        $enlace_item   = isset( $item['url'] ) ? (string) $item['url'] : '#';
+        $fecha_item    = isset( $item['date'] ) ? (string) $item['date'] : '';
+
+        $enlace_titulo = '<a href="' . esc_url( $enlace_item ) . '" class="vbp-dynamic-list__title-link">' . esc_html( $titulo_item ) . '</a>';
+
+        if ( $template_variant === 'minimal' ) {
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--minimal"><h4 class="vbp-dynamic-list__title">' . $enlace_titulo . '</h4></div>';
+        }
+
+        if ( $template_variant === 'list' ) {
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--list" style="padding:12px 0;border-bottom:1px solid #e5e7eb;">'
+                . '<h4 class="vbp-dynamic-list__title" style="margin:0 0 4px;">' . $enlace_titulo . '</h4>'
+                . ( $fecha_item ? '<time class="vbp-dynamic-list__date" style="color:#6b7280;font-size:0.875em;">' . esc_html( $fecha_item ) . '</time>' : '' )
+                . ( $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:4px 0 0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
+                . '</div>';
+        }
+
+        // Card (por defecto)
+        $imagen_html = '';
+        if ( $imagen_url ) {
+            $imagen_html = '<div class="vbp-dynamic-list__image" style="aspect-ratio:16/9;background:#f3f4f6 url(' . esc_url( $imagen_url ) . ') center/cover no-repeat;border-radius:8px 8px 0 0;"></div>';
+        }
+
+        return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--card" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#fff;">'
+            . $imagen_html
+            . '<div class="vbp-dynamic-list__body" style="padding:16px;">'
+            . '<h3 class="vbp-dynamic-list__title" style="margin:0 0 8px;font-size:1.125em;">' . $enlace_titulo . '</h3>'
+            . ( $fecha_item ? '<time class="vbp-dynamic-list__date" style="display:block;color:#6b7280;font-size:0.875em;margin-bottom:8px;">' . esc_html( $fecha_item ) . '</time>' : '' )
+            . ( $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
+            . '</div>'
+            . '</div>';
+    }
+
+    /**
      * Renderizado genérico
      */
     private function render_generico( $elemento ) {
