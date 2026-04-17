@@ -67,10 +67,10 @@ if [ -n "${ARCHIVOS_CSS_STAGED}" ]; then
     echo -e "${COLOR_CYAN}[LINT]${COLOR_RESET} Verificando archivos CSS..."
 
     # Ejecutar Stylelint si esta disponible
-    if command -v npx &> /dev/null && [ -f "node_modules/.bin/stylelint" ]; then
+    if command -v npx &> /dev/null && [ -f "node_modules/.bin/stylelint" ] && [ -f "config/.stylelintrc.json" ]; then
         for ARCHIVO in ${ARCHIVOS_CSS_STAGED}; do
             if [ -f "${ARCHIVO}" ]; then
-                if ! npx stylelint "${ARCHIVO}" --quiet 2>/dev/null; then
+                if ! npx stylelint -c config/.stylelintrc.json "${ARCHIVO}" --quiet 2>/dev/null; then
                     echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} Stylelint fallo en: ${ARCHIVO}"
                     ERRORES=$((ERRORES + 1))
                 fi

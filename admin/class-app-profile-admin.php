@@ -272,10 +272,45 @@ class Flavor_App_Profile_Admin {
 
         // Mostrar mensajes de resultado
         $mensaje = isset($_GET['mensaje']) ? sanitize_text_field($_GET['mensaje']) : '';
+
+        // Crear fallback para Alpine si los scripts principales no cargan
+        $perfiles_activos_json = wp_json_encode(array_values($perfiles_activos));
         ?>
+        <script>
+        // Fallback si flavorComposerState no está disponible
+        if (!window.flavorComposerState) {
+            window.flavorComposerFallback = function() {
+                return {
+                    pasoActual: 'plantillas',
+                    modoMultiSeleccion: false,
+                    perfilesSeleccionados: [],
+                    perfilSeleccionado: '<?php echo esc_js($id_perfil_actual); ?>',
+                    perfilesActivosActuales: <?php echo $perfiles_activos_json; ?>,
+                    perfilCoincideFiltro: function() { return true; },
+                    esPerfilActivo: function(id) { return id === '<?php echo esc_js($id_perfil_actual); ?>'; },
+                    perfilEstaActivoEnSistema: function(id) { return <?php echo $perfiles_activos_json; ?>.includes(id); },
+                    landingCoincideFiltro: function() { return true; },
+                    moduloCoincideFiltro: function() { return true; },
+                    togglePerfilSeleccion: function() {},
+                    irAPaso: function(paso) { this.pasoActual = paso; },
+                    cambiarPerfil: function() {},
+                    abrirPreviewPlantilla: function() {},
+                    mostrarPreviewModal: false,
+                    plantillaSeleccionadaData: null,
+                    mostrarProgreso: false,
+                    instalacionCompletada: false,
+                    hayError: false,
+                    tituloProgreso: '',
+                    porcentajeProgreso: 0,
+                    pasosInstalacion: [],
+                    init: function() { console.warn('[App Composer] Usando fallback - scripts no cargados correctamente'); }
+                };
+            };
+        }
+        </script>
         <div class="wrap flavor-composer-wrapper"
-             x-data="window.flavorComposerState ? flavorComposerState() : { pasoActual: 'plantillas', modoMultiSeleccion: false, perfilesSeleccionados: [] }"
-             x-init="pasoActual = pasoActual || 'plantillas'">
+             x-data="window.flavorComposerState ? flavorComposerState() : flavorComposerFallback()"
+             x-init="init && init()">
             <h1><?php _e('Compositor de Aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los módulos activos en tu plataforma (web y móvil).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 

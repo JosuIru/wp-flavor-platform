@@ -156,6 +156,15 @@ class Flavor_Admin_Shell {
     const USER_META_KEY = 'flavor_admin_shell_disabled';
 
     /**
+     * Obtener sufijo para assets según modo debug
+     *
+     * @return string '.min' en producción, '' en desarrollo
+     */
+    private function get_asset_suffix() {
+        return (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) ? '' : '.min';
+    }
+
+    /**
      * Mapeo de slugs de dashboard a módulos requeridos
      * Si el módulo no está activo, el item no se muestra
      */
@@ -251,9 +260,20 @@ class Flavor_Admin_Shell {
         }
 
         add_action('admin_init', [$this, 'init']);
+        add_action('admin_head', [$this, 'inject_critical_css'], 1);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets'], 5);
         add_action('admin_footer', [$this, 'render_shell'], 5);
         add_action('wp_ajax_flavor_toggle_admin_shell', [$this, 'ajax_toggle_shell']);
+
+        // Detectar navegación AJAX y modificar output
+        add_action('admin_init', [$this, 'handle_ajax_navigation'], 1);
+
+        // Endpoints AJAX para lazy loading
+        add_action('wp_ajax_flavor_shell_get_subpages', [$this, 'ajax_get_subpages']);
+        add_action('wp_ajax_flavor_shell_get_badges_lazy', [$this, 'ajax_get_badges_lazy']);
+
+        // Optimización: Deshabilitar scripts de Gutenberg innecesarios en páginas Flavor
+        add_action('admin_enqueue_scripts', [$this, 'dequeue_unnecessary_scripts'], 999);
     }
 
     /**
@@ -261,6 +281,153 @@ class Flavor_Admin_Shell {
      */
     public function init() {
         // Nada adicional por ahora
+    }
+
+    /**
+     * Inyectar CSS crítico inline para prevenir FOUC
+     *
+     * Este CSS se carga inmediatamente en el head antes que los CSS externos,
+     * asegurando que la página tenga estilos básicos mientras carga el resto.
+     */
+    public function inject_critical_css() {
+        if (!$this->should_show_shell()) {
+            return;
+        }
+        ?>
+        <style id="flavor-critical-css">
+            /* CSS Crítico para prevenir FOUC en Flavor Admin Shell */
+
+            /* Ocultar menú original de WordPress */
+            #adminmenuwrap, #adminmenuback, #adminmenumain {
+                display: none !important;
+            }
+
+            /* Ajustar contenido principal */
+            #wpcontent, #wpbody {
+                margin-left: 60px !important;
+            }
+
+            #wpbody-content {
+                padding: 20px;
+                background: #f8fafc;
+                min-height: 100vh;
+                box-sizing: border-box;
+            }
+
+            /* Estilos base para contenido mientras carga */
+            .wrap {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            /* Loading state - ocultar contenido brevemente */
+            .flavor-settings-hub,
+            [class*="flavor-"][class*="dashboard"],
+            .flavor-unified-dashboard {
+                opacity: 0;
+                animation: flavorFadeIn 0.3s ease-out 0.1s forwards;
+            }
+
+            @keyframes flavorFadeIn {
+                to { opacity: 1; }
+            }
+
+            /* Sidebar placeholder */
+            body.fls-shell-active::before {
+                content: '';
+                position: fixed;
+                left: 0;
+                top: 32px;
+                width: 60px;
+                height: calc(100vh - 32px);
+                background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+                z-index: 9999;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Manejar peticiones de navegación AJAX
+     *
+     * Si detectamos el header X-Flavor-Ajax-Navigation, capturamos
+     * solo el contenido de #wpbody-content y lo devolvemos.
+     */
+    public function handle_ajax_navigation() {
+        // Verificar header de navegación AJAX
+        $is_ajax_nav = isset($_SERVER['HTTP_X_FLAVOR_AJAX_NAVIGATION'])
+            && $_SERVER['HTTP_X_FLAVOR_AJAX_NAVIGATION'] === '1';
+
+        if (!$is_ajax_nav) {
+            return;
+        }
+
+        // Verificar que estamos en una página Flavor
+        if (!$this->is_flavor_page()) {
+            return;
+        }
+
+        // Iniciar buffer para capturar output
+        ob_start();
+
+        // Hook para capturar después de que se renderice el contenido
+        add_action('admin_footer', [$this, 'capture_ajax_content'], 999);
+    }
+
+    /**
+     * Capturar y devolver solo el contenido para navegación AJAX
+     */
+    public function capture_ajax_content() {
+        $full_output = ob_get_clean();
+
+        // Extraer contenido de #wpbody-content
+        $content = $this->extract_wpbody_content($full_output);
+
+        // Enviar headers
+        header('X-Flavor-Ajax-Response: 1');
+        header('Content-Type: text/html; charset=utf-8');
+
+        // Devolver solo el contenido
+        echo $content;
+        exit;
+    }
+
+    /**
+     * Extraer contenido de #wpbody-content del HTML completo
+     *
+     * @param string $html HTML completo de la página
+     * @return string Contenido extraído
+     */
+    private function extract_wpbody_content($html) {
+        // Usar DOMDocument para extraer el contenido
+        $dom = new DOMDocument();
+
+        // Suprimir warnings de HTML5
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $xpath = new DOMXPath($dom);
+
+        // Buscar #wpbody-content
+        $content_node = $xpath->query("//*[@id='wpbody-content']")->item(0);
+
+        if (!$content_node) {
+            // Fallback: devolver todo el body
+            $body = $xpath->query("//body")->item(0);
+            if ($body) {
+                return $dom->saveHTML($body);
+            }
+            return $html;
+        }
+
+        // Extraer innerHTML de wpbody-content
+        $inner_html = '';
+        foreach ($content_node->childNodes as $child) {
+            $inner_html .= $dom->saveHTML($child);
+        }
+
+        return $inner_html;
     }
 
     /**
@@ -450,42 +617,58 @@ class Flavor_Admin_Shell {
             return;
         }
 
-        // CSS del shell
-        $shell_css_path = FLAVOR_PLATFORM_PATH . 'admin/css/admin-shell.css';
+        $suffix = $this->get_asset_suffix();
+
+        // CSS del shell (minificado en producción)
+        $shell_css_file = "admin-shell{$suffix}.css";
+        $shell_css_path = FLAVOR_PLATFORM_PATH . 'admin/css/' . $shell_css_file;
         $shell_css_ver = file_exists($shell_css_path) ? (string) filemtime($shell_css_path) : FLAVOR_PLATFORM_VERSION;
         wp_enqueue_style(
             'flavor-admin-shell',
-            FLAVOR_PLATFORM_URL . 'admin/css/admin-shell.css',
+            FLAVOR_PLATFORM_URL . 'admin/css/' . $shell_css_file,
             [],
             $shell_css_ver
         );
 
-        // Alpine.js (si no está ya cargado)
+        // JS del shell (minificado en producción)
+        // IMPORTANTE: Debe cargarse ANTES de Alpine para que el listener
+        // de 'alpine:init' esté registrado cuando Alpine auto-inicialice.
+        $shell_js_file = "admin-shell{$suffix}.js";
+        $shell_js_path = FLAVOR_PLATFORM_PATH . 'admin/js/' . $shell_js_file;
+        $shell_js_ver = file_exists($shell_js_path) ? (string) filemtime($shell_js_path) : FLAVOR_PLATFORM_VERSION;
+        wp_enqueue_script(
+            'flavor-admin-shell',
+            FLAVOR_PLATFORM_URL . 'admin/js/' . $shell_js_file,
+            [],
+            $shell_js_ver,
+            true
+        );
+
+        // Alpine.js - Carga DESPUÉS de admin-shell.js
+        // Al depender de 'flavor-admin-shell', Alpine se ejecutará después,
+        // encontrando los componentes ya registrados vía 'alpine:init'.
         if (!wp_script_is('alpine', 'enqueued')) {
             wp_enqueue_script(
                 'alpine',
                 FLAVOR_PLATFORM_URL . 'assets/vbp/vendor/alpine.min.js',
-                [],
+                ['flavor-admin-shell'],
                 '3.14.3',
                 true
             );
-            // Añadir defer
-            add_filter('script_loader_tag', function($tag, $handle) {
-                if ($handle === 'alpine') {
-                    return str_replace(' src', ' defer src', $tag);
-                }
-                return $tag;
-            }, 10, 2);
         }
 
-        // JS del shell
-        $shell_js_path = FLAVOR_PLATFORM_PATH . 'admin/js/admin-shell.js';
-        $shell_js_ver = file_exists($shell_js_path) ? (string) filemtime($shell_js_path) : FLAVOR_PLATFORM_VERSION;
+        // Añadir defer solo a ajax-navigation (Alpine y admin-shell NO pueden tener defer)
+        add_filter('script_loader_tag', [$this, 'add_defer_attribute'], 10, 2);
+
+        // JS de navegación AJAX (carga después de Alpine)
+        // Orden de carga: admin-shell → alpine → ajax-navigation
+        $ajax_nav_path = FLAVOR_PLATFORM_PATH . 'admin/js/ajax-navigation.js';
+        $ajax_nav_ver = file_exists($ajax_nav_path) ? (string) filemtime($ajax_nav_path) : FLAVOR_PLATFORM_VERSION;
         wp_enqueue_script(
-            'flavor-admin-shell',
-            FLAVOR_PLATFORM_URL . 'admin/js/admin-shell.js',
+            'flavor-ajax-navigation',
+            FLAVOR_PLATFORM_URL . 'admin/js/ajax-navigation.js',
             ['alpine'],
-            $shell_js_ver,
+            $ajax_nav_ver,
             true
         );
 
@@ -512,6 +695,78 @@ class Flavor_Admin_Shell {
         add_filter('admin_body_class', function($classes) {
             return $classes . ' fls-shell-active';
         });
+    }
+
+    /**
+     * Deshabilitar scripts de Gutenberg/Block Editor innecesarios en páginas Flavor
+     *
+     * Estos scripts (React, Block Editor, etc.) no se usan en el admin shell
+     * y añaden ~46 requests extra con un peso significativo.
+     */
+    public function dequeue_unnecessary_scripts() {
+        if (!$this->should_show_shell()) {
+            return;
+        }
+
+        // Scripts de Gutenberg/Block Editor que no necesitamos
+        $unnecessary_scripts = [
+            // React y amigos
+            'react',
+            'react-dom',
+            'react-jsx-runtime',
+
+            // Block Editor
+            'wp-block-editor',
+            'wp-blocks',
+            'wp-block-library',
+            'wp-block-serialization-default-parser',
+
+            // Gutenberg core
+            'wp-editor',
+            'wp-edit-post',
+            'wp-element',
+            'wp-components',
+            'wp-compose',
+            'wp-data',
+            'wp-rich-text',
+            'wp-primitives',
+
+            // Data stores
+            'wp-core-data',
+            'wp-core-commands',
+            'wp-commands',
+
+            // Otros no necesarios
+            'wp-preferences',
+            'wp-preferences-persistence',
+            'wp-keyboard-shortcuts',
+            'wp-router',
+            'wp-notices',
+            'wp-style-engine',
+            'wp-autop',
+            'wp-blob',
+            'wp-shortcode',
+            'wp-token-list',
+        ];
+
+        foreach ($unnecessary_scripts as $handle) {
+            wp_dequeue_script($handle);
+            wp_deregister_script($handle);
+        }
+
+        // También deshabilitar estilos de Gutenberg
+        $unnecessary_styles = [
+            'wp-block-editor',
+            'wp-block-library',
+            'wp-components',
+            'wp-edit-post',
+            'wp-editor',
+        ];
+
+        foreach ($unnecessary_styles as $handle) {
+            wp_dequeue_style($handle);
+            wp_deregister_style($handle);
+        }
     }
 
     /**
@@ -1020,6 +1275,104 @@ class Flavor_Admin_Shell {
         }
 
         wp_send_json_error(['message' => __('Acción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+    }
+
+    /**
+     * AJAX handler para obtener subpáginas de un módulo (lazy loading)
+     */
+    public function ajax_get_subpages() {
+        check_ajax_referer('flavor_admin_shell', 'nonce');
+
+        $parent_slug = isset($_POST['parent_slug']) ? sanitize_text_field($_POST['parent_slug']) : '';
+
+        if (empty($parent_slug)) {
+            wp_send_json_error(['message' => __('Slug del módulo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Obtener subpáginas del registro de navegación
+        $subpages = [];
+
+        if (class_exists('Flavor_Shell_Navigation_Registry')) {
+            $registry = Flavor_Shell_Navigation_Registry::get_instance();
+            $registered_subpages = $registry->get_subpages($parent_slug);
+
+            foreach ($registered_subpages as $subpage) {
+                $subpages[] = [
+                    'slug' => $subpage['slug'] ?? '',
+                    'label' => $subpage['label'] ?? '',
+                    'icon' => $subpage['icon'] ?? 'dashicons-arrow-right-alt2',
+                    'url' => admin_url('admin.php?page=' . ($subpage['slug'] ?? '')),
+                    'badge' => $subpage['badge'] ?? null,
+                ];
+            }
+        }
+
+        wp_send_json_success([
+            'parent_slug' => $parent_slug,
+            'subpages' => $subpages,
+        ]);
+    }
+
+    /**
+     * AJAX handler para obtener badges (lazy loading)
+     */
+    public function ajax_get_badges_lazy() {
+        check_ajax_referer('flavor_admin_shell', 'nonce');
+
+        $slugs = isset($_POST['slugs']) ? array_map('sanitize_text_field', (array) $_POST['slugs']) : [];
+
+        if (empty($slugs)) {
+            wp_send_json_success(['badges' => []]);
+        }
+
+        // Usar caché para badges
+        $cache_key = 'shell_badges_' . md5(implode(',', $slugs));
+        $badges = Flavor_Cache_Manager::remember($cache_key, function() use ($slugs) {
+            $result = [];
+
+            if (class_exists('Flavor_Shell_Navigation_Registry')) {
+                $registry = Flavor_Shell_Navigation_Registry::get_instance();
+
+                foreach ($slugs as $slug) {
+                    $badge_data = $registry->get_badge($slug);
+                    if ($badge_data && isset($badge_data['count']) && $badge_data['count'] > 0) {
+                        $result[$slug] = [
+                            'count' => (int) $badge_data['count'],
+                            'severity' => $badge_data['severity'] ?? 'info',
+                            'tooltip' => $badge_data['tooltip'] ?? '',
+                        ];
+                    }
+                }
+            }
+
+            return $result;
+        }, Flavor_Cache_Manager::BADGES_TTL);
+
+        wp_send_json_success(['badges' => $badges]);
+    }
+
+    /**
+     * Añadir atributo defer a scripts del shell
+     *
+     * @param string $tag    Tag HTML del script
+     * @param string $handle Handle del script
+     * @return string Tag modificado
+     */
+    public function add_defer_attribute($tag, $handle) {
+        // NOTA: NO añadir defer a 'alpine' ni 'flavor-admin-shell' porque
+        // los componentes Alpine deben registrarse ANTES de que Alpine
+        // procese el DOM. Solo ajax-navigation puede tener defer porque
+        // no contiene componentes Alpine.
+        $defer_handles = ['flavor-ajax-navigation'];
+
+        if (in_array($handle, $defer_handles, true)) {
+            // Evitar duplicar defer si ya existe
+            if (strpos($tag, ' defer') === false) {
+                $tag = str_replace(' src', ' defer src', $tag);
+            }
+        }
+
+        return $tag;
     }
 
     /**

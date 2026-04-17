@@ -883,3 +883,167 @@ function applyBadgeUpdates(badges, aggregated) {
 		}
 	});
 }
+
+/**
+ * Sistema de Lazy Loading para Subpáginas
+ */
+const loadedSubpages = new Set();
+
+/**
+ * Cargar subpáginas de un módulo bajo demanda
+ *
+ * @param {string} parentSlug Slug del módulo padre
+ * @param {HTMLElement} container Contenedor donde insertar las subpáginas
+ */
+async function loadSubpages(parentSlug, container) {
+	if (!parentSlug || loadedSubpages.has(parentSlug)) {
+		return;
+	}
+
+	if (typeof flavorAdminShell === 'undefined') {
+		return;
+	}
+
+	try {
+		// Mostrar placeholder de carga
+		const placeholder = document.createElement('div');
+		placeholder.className = 'fls-shell__submenu-loading';
+		placeholder.innerHTML = '<span class="fls-skeleton__bar" style="width: 80%; height: 12px; margin: 8px 0;"></span>';
+		container.appendChild(placeholder);
+
+		const formData = new FormData();
+		formData.append('action', 'flavor_shell_get_subpages');
+		formData.append('parent_slug', parentSlug);
+		formData.append('nonce', flavorAdminShell.nonce);
+
+		const response = await fetch(flavorAdminShell.ajaxUrl, {
+			method: 'POST',
+			body: formData
+		});
+
+		const data = await response.json();
+
+		// Remover placeholder
+		placeholder.remove();
+
+		if (data.success && data.data.subpages && data.data.subpages.length > 0) {
+			const subpagesList = document.createElement('ul');
+			subpagesList.className = 'fls-shell__submenu';
+
+			data.data.subpages.forEach(subpage => {
+				const li = document.createElement('li');
+				li.className = 'fls-shell__submenu-item';
+
+				const isActive = flavorAdminShell.currentPage === subpage.slug;
+				const activeClass = isActive ? ' fls-shell__submenu-link--active' : '';
+
+				li.innerHTML = `
+					<a href="${subpage.url}" class="fls-shell__submenu-link${activeClass}">
+						<span class="fls-shell__submenu-icon">
+							<span class="dashicons ${subpage.icon}"></span>
+						</span>
+						<span class="fls-shell__submenu-text">${subpage.label}</span>
+						${subpage.badge ? `<span class="fls-shell__submenu-badge fls-shell__submenu-badge--${subpage.badge.severity}" data-slug="${subpage.slug}">${subpage.badge.count > 99 ? '99+' : subpage.badge.count}</span>` : ''}
+					</a>
+				`;
+
+				subpagesList.appendChild(li);
+			});
+
+			container.appendChild(subpagesList);
+			loadedSubpages.add(parentSlug);
+
+			// Actualizar índice de búsqueda
+			buildSearchIndex();
+		}
+	} catch (error) {
+		console.warn('Error cargando subpáginas:', error);
+	}
+}
+
+/**
+ * Cargar badges de forma diferida
+ *
+ * @param {Array<string>} slugs Lista de slugs para obtener badges
+ */
+async function loadBadgesLazy(slugs) {
+	if (!slugs || slugs.length === 0) {
+		return;
+	}
+
+	if (typeof flavorAdminShell === 'undefined') {
+		return;
+	}
+
+	try {
+		const formData = new FormData();
+		formData.append('action', 'flavor_shell_get_badges_lazy');
+		formData.append('nonce', flavorAdminShell.nonce);
+		slugs.forEach(slug => formData.append('slugs[]', slug));
+
+		const response = await fetch(flavorAdminShell.ajaxUrl, {
+			method: 'POST',
+			body: formData
+		});
+
+		const data = await response.json();
+
+		if (data.success && data.data.badges) {
+			// Actualizar badges en el DOM
+			Object.entries(data.data.badges).forEach(([slug, badgeData]) => {
+				const placeholder = document.querySelector(`.fls-shell__menu-badge[data-badge-slug="${slug}"], .fls-shell__submenu-badge[data-badge-slug="${slug}"]`);
+
+				if (placeholder) {
+					placeholder.textContent = badgeData.count > 99 ? '99+' : badgeData.count;
+					placeholder.dataset.slug = slug;
+					placeholder.removeAttribute('data-badge-slug');
+
+					const baseClass = placeholder.classList.contains('fls-shell__submenu-badge')
+						? 'fls-shell__submenu-badge'
+						: 'fls-shell__menu-badge';
+					placeholder.classList.add(`${baseClass}--${badgeData.severity}`);
+
+					// Animación de aparición
+					placeholder.classList.add(`${baseClass}--updated`);
+					setTimeout(() => {
+						placeholder.classList.remove(`${baseClass}--updated`);
+					}, 300);
+				}
+			});
+		}
+	} catch (error) {
+		console.warn('Error cargando badges:', error);
+	}
+}
+
+/**
+ * Inicializar lazy loading de badges después del render inicial
+ */
+function initLazyBadges() {
+	// Buscar todos los placeholders de badges
+	const placeholders = document.querySelectorAll('[data-badge-slug]');
+	if (placeholders.length === 0) {
+		return;
+	}
+
+	const slugs = Array.from(placeholders).map(el => el.dataset.badgeSlug);
+
+	// Pequeño delay para priorizar render inicial
+	setTimeout(() => {
+		loadBadgesLazy(slugs);
+	}, 100);
+}
+
+// Exponer funciones globalmente para uso en templates
+window.flavorShellLazyLoad = {
+	loadSubpages,
+	loadBadgesLazy,
+	initLazyBadges
+};
+
+// Inicializar lazy badges después de cargar
+window.addEventListener('load', () => {
+	if (document.body.classList.contains('fls-shell-active')) {
+		initLazyBadges();
+	}
+});

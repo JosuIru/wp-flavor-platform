@@ -270,52 +270,57 @@ class Flavor_Analytics_Dashboard {
     }
 
     /**
-     * Obtener KPIs principales
+     * Obtener KPIs principales (con caché)
      */
     public function get_kpis($dias = 30) {
-        global $wpdb;
+        // Usar caché para evitar queries repetidas
+        $cache_key = Flavor_Cache_Manager::period_key('analytics_kpis', $dias);
 
-        $fecha_inicio = date('Y-m-d', strtotime("-{$dias} days"));
-        $fecha_anterior = date('Y-m-d', strtotime("-" . ($dias * 2) . " days"));
+        return Flavor_Cache_Manager::remember($cache_key, function() use ($dias) {
+            global $wpdb;
 
-        // Usuarios activos (con actividad en el período)
-        $usuarios_activos = $this->count_active_users($fecha_inicio);
-        $usuarios_anterior = $this->count_active_users($fecha_anterior, $fecha_inicio);
-        $usuarios_cambio = $usuarios_anterior > 0
-            ? round((($usuarios_activos - $usuarios_anterior) / $usuarios_anterior) * 100)
-            : 0;
+            $fecha_inicio = date('Y-m-d', strtotime("-{$dias} days"));
+            $fecha_anterior = date('Y-m-d', strtotime("-" . ($dias * 2) . " days"));
 
-        // Contenido creado
-        $contenido_actual = $this->count_content_created($fecha_inicio);
-        $contenido_anterior = $this->count_content_created($fecha_anterior, $fecha_inicio);
-        $contenido_cambio = $contenido_anterior > 0
-            ? round((($contenido_actual - $contenido_anterior) / $contenido_anterior) * 100)
-            : 0;
+            // Usuarios activos (con actividad en el período)
+            $usuarios_activos = $this->count_active_users($fecha_inicio);
+            $usuarios_anterior = $this->count_active_users($fecha_anterior, $fecha_inicio);
+            $usuarios_cambio = $usuarios_anterior > 0
+                ? round((($usuarios_activos - $usuarios_anterior) / $usuarios_anterior) * 100)
+                : 0;
 
-        // Interacciones
-        $interacciones_actual = $this->count_interactions($fecha_inicio);
-        $interacciones_anterior = $this->count_interactions($fecha_anterior, $fecha_inicio);
-        $engagement_cambio = $interacciones_anterior > 0
-            ? round((($interacciones_actual - $interacciones_anterior) / $interacciones_anterior) * 100)
-            : 0;
+            // Contenido creado
+            $contenido_actual = $this->count_content_created($fecha_inicio);
+            $contenido_anterior = $this->count_content_created($fecha_anterior, $fecha_inicio);
+            $contenido_cambio = $contenido_anterior > 0
+                ? round((($contenido_actual - $contenido_anterior) / $contenido_anterior) * 100)
+                : 0;
 
-        // Eventos activos
-        $eventos_actual = $this->count_active_events();
-        $eventos_anterior = $this->count_events_in_period($fecha_anterior, $fecha_inicio);
-        $eventos_cambio = $eventos_anterior > 0
-            ? round((($eventos_actual - $eventos_anterior) / $eventos_anterior) * 100)
-            : 0;
+            // Interacciones
+            $interacciones_actual = $this->count_interactions($fecha_inicio);
+            $interacciones_anterior = $this->count_interactions($fecha_anterior, $fecha_inicio);
+            $engagement_cambio = $interacciones_anterior > 0
+                ? round((($interacciones_actual - $interacciones_anterior) / $interacciones_anterior) * 100)
+                : 0;
 
-        return [
-            'usuarios_activos' => $usuarios_activos,
-            'usuarios_cambio' => $usuarios_cambio,
-            'contenido_creado' => $contenido_actual,
-            'contenido_cambio' => $contenido_cambio,
-            'interacciones' => $interacciones_actual,
-            'engagement_cambio' => $engagement_cambio,
-            'eventos_activos' => $eventos_actual,
-            'eventos_cambio' => $eventos_cambio
-        ];
+            // Eventos activos
+            $eventos_actual = $this->count_active_events();
+            $eventos_anterior = $this->count_events_in_period($fecha_anterior, $fecha_inicio);
+            $eventos_cambio = $eventos_anterior > 0
+                ? round((($eventos_actual - $eventos_anterior) / $eventos_anterior) * 100)
+                : 0;
+
+            return [
+                'usuarios_activos' => $usuarios_activos,
+                'usuarios_cambio' => $usuarios_cambio,
+                'contenido_creado' => $contenido_actual,
+                'contenido_cambio' => $contenido_cambio,
+                'interacciones' => $interacciones_actual,
+                'engagement_cambio' => $engagement_cambio,
+                'eventos_activos' => $eventos_actual,
+                'eventos_cambio' => $eventos_cambio
+            ];
+        }, Flavor_Cache_Manager::KPIS_TTL);
     }
 
     /**
@@ -446,83 +451,113 @@ class Flavor_Analytics_Dashboard {
     }
 
     /**
-     * Obtener datos de actividad por día
+     * Obtener datos de actividad por día (optimizado con caché y single query)
      */
     public function get_activity_by_day($dias = 30) {
-        global $wpdb;
+        $cache_key = Flavor_Cache_Manager::period_key('analytics_activity_by_day', $dias);
 
-        $datos = [];
-        $tabla_actividad = $this->prefix . 'activity_log';
+        return Flavor_Cache_Manager::remember($cache_key, function() use ($dias) {
+            global $wpdb;
 
-        for ($i = $dias - 1; $i >= 0; $i--) {
-            $fecha = date('Y-m-d', strtotime("-{$i} days"));
-            $datos[$fecha] = [
-                'fecha' => $fecha,
-                'usuarios' => 0,
-                'contenido' => 0,
-                'interacciones' => 0
-            ];
-        }
+            $fecha_inicio = date('Y-m-d', strtotime("-{$dias} days"));
+            $tabla_actividad = $this->prefix . 'activity_log';
 
-        // Si existe la tabla de actividad
-        if ($this->table_exists($tabla_actividad)) {
-            $actividad = $wpdb->get_results($wpdb->prepare(
-                "SELECT DATE(fecha) as dia, COUNT(DISTINCT usuario_id) as usuarios,
+            // Inicializar estructura de datos para todos los días
+            $datos = [];
+            for ($i = $dias - 1; $i >= 0; $i--) {
+                $fecha = date('Y-m-d', strtotime("-{$i} days"));
+                $datos[$fecha] = [
+                    'fecha' => $fecha,
+                    'usuarios' => 0,
+                    'contenido' => 0,
+                    'interacciones' => 0
+                ];
+            }
+
+            // Query única con GROUP BY para obtener todos los datos de actividad
+            if ($this->table_exists($tabla_actividad)) {
+                $actividad = $wpdb->get_results($wpdb->prepare(
+                    "SELECT
+                        DATE(fecha) as dia,
+                        COUNT(DISTINCT usuario_id) as usuarios,
                         COUNT(*) as acciones
-                 FROM {$tabla_actividad}
-                 WHERE fecha >= %s
-                 GROUP BY DATE(fecha)",
-                date('Y-m-d', strtotime("-{$dias} days"))
-            ));
+                     FROM {$tabla_actividad}
+                     WHERE fecha >= %s
+                     GROUP BY DATE(fecha)
+                     ORDER BY dia ASC",
+                    $fecha_inicio
+                ));
 
-            foreach ($actividad as $row) {
-                if (isset($datos[$row->dia])) {
-                    $datos[$row->dia]['usuarios'] = (int) $row->usuarios;
-                    $datos[$row->dia]['interacciones'] = (int) $row->acciones;
+                foreach ($actividad as $row) {
+                    if (isset($datos[$row->dia])) {
+                        $datos[$row->dia]['usuarios'] = (int) $row->usuarios;
+                        $datos[$row->dia]['interacciones'] = (int) $row->acciones;
+                    }
                 }
             }
-        }
 
-        return array_values($datos);
+            // Query única para contenido creado por día
+            $contenido = $wpdb->get_results($wpdb->prepare(
+                "SELECT
+                    DATE(post_date) as dia,
+                    COUNT(*) as total
+                 FROM {$wpdb->posts}
+                 WHERE post_status = 'publish'
+                 AND post_date >= %s
+                 GROUP BY DATE(post_date)
+                 ORDER BY dia ASC",
+                $fecha_inicio
+            ));
+
+            foreach ($contenido as $row) {
+                if (isset($datos[$row->dia])) {
+                    $datos[$row->dia]['contenido'] = (int) $row->total;
+                }
+            }
+
+            return array_values($datos);
+        }, Flavor_Cache_Manager::ANALYTICS_TTL);
     }
 
     /**
-     * Obtener distribución por módulo
+     * Obtener distribución por módulo (con caché)
      */
     public function get_module_distribution() {
-        global $wpdb;
+        return Flavor_Cache_Manager::remember('analytics_module_distribution', function() {
+            global $wpdb;
 
-        $modulos = [];
-        $tabla_actividad = $this->prefix . 'activity_log';
+            $modulos = [];
+            $tabla_actividad = $this->prefix . 'activity_log';
 
-        if (!$this->table_exists($tabla_actividad)) {
-            // Datos de ejemplo si no hay tabla
-            return [
-                ['nombre' => 'Eventos', 'valor' => 25],
-                ['nombre' => 'Marketplace', 'valor' => 20],
-                ['nombre' => 'Comunidades', 'valor' => 18],
-                ['nombre' => 'Cursos', 'valor' => 15],
-                ['nombre' => 'Otros', 'valor' => 22]
-            ];
-        }
+            if (!$this->table_exists($tabla_actividad)) {
+                // Datos de ejemplo si no hay tabla
+                return [
+                    ['nombre' => 'Eventos', 'valor' => 25],
+                    ['nombre' => 'Marketplace', 'valor' => 20],
+                    ['nombre' => 'Comunidades', 'valor' => 18],
+                    ['nombre' => 'Cursos', 'valor' => 15],
+                    ['nombre' => 'Otros', 'valor' => 22]
+                ];
+            }
 
-        $distribucion = $wpdb->get_results(
-            "SELECT modulo, COUNT(*) as total
-             FROM {$tabla_actividad}
-             WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-             GROUP BY modulo
-             ORDER BY total DESC
-             LIMIT 5"
-        );
+            $distribucion = $wpdb->get_results(
+                "SELECT modulo, COUNT(*) as total
+                 FROM {$tabla_actividad}
+                 WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                 GROUP BY modulo
+                 ORDER BY total DESC
+                 LIMIT 5"
+            );
 
-        foreach ($distribucion as $row) {
-            $modulos[] = [
-                'nombre' => ucfirst(str_replace('_', ' ', $row->modulo)),
-                'valor' => (int) $row->total
-            ];
-        }
+            foreach ($distribucion as $row) {
+                $modulos[] = [
+                    'nombre' => ucfirst(str_replace('_', ' ', $row->modulo)),
+                    'valor' => (int) $row->total
+                ];
+            }
 
-        return $modulos;
+            return $modulos;
+        }, Flavor_Cache_Manager::ANALYTICS_TTL);
     }
 
     /**
