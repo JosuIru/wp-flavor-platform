@@ -232,6 +232,90 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <input type="text" x-model="selectedElement.name" @input="updateElement('name', $event.target.value)" class="vbp-field-input">
                 </div>
 
+                <!-- ========== DYNAMIC LIST (collections) ========== -->
+                <template x-if="selectedElement.type === 'dynamic-list'">
+                    <div class="vbp-inspector-section" x-data="vbpDynamicListInspector()" x-init="initFromElement(selectedElement)" @vbp:selection:changed.window="initFromElement(selectedElement)">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Colección', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                            <select class="vbp-field-select" :value="selectedElement.data.source || ''" @change="handleSourceChange($event.target.value)">
+                                <option value="" x-show="collections.length === 0"><?php esc_html_e( 'Cargando colecciones…', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                <template x-for="collection in collections" :key="collection.id">
+                                    <option :value="collection.id" x-text="collection.label"></option>
+                                </template>
+                            </select>
+                            <p class="vbp-field-help" x-show="currentSchema.description" x-text="currentSchema.description" style="color:#6b7280;font-size:0.8125em;margin-top:4px;"></p>
+                        </div>
+
+                        <template x-if="hasSchemaFields()">
+                            <div class="vbp-dynamic-query-fields" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                                <h4 style="margin:0 0 8px;font-size:0.875em;color:#374151;text-transform:uppercase;letter-spacing:0.05em;"><?php esc_html_e( 'Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>
+                                <template x-for="(field, fieldName) in currentSchema.fields" :key="fieldName">
+                                    <div class="vbp-field-group" x-show="!fieldName.startsWith('_')">
+                                        <label class="vbp-field-label" x-text="field.label || fieldName"></label>
+
+                                        <template x-if="field.type === 'enum'">
+                                            <select class="vbp-field-select" :value="queryArgs[fieldName] !== undefined ? queryArgs[fieldName] : (field.default || '')" @change="updateQueryArg(fieldName, $event.target.value)">
+                                                <template x-for="option in field.options" :key="option">
+                                                    <option :value="option" x-text="option"></option>
+                                                </template>
+                                            </select>
+                                        </template>
+
+                                        <template x-if="field.type === 'int'">
+                                            <input type="number" class="vbp-field-input"
+                                                   :value="queryArgs[fieldName] !== undefined ? queryArgs[fieldName] : (field.default !== undefined ? field.default : '')"
+                                                   :min="field.min"
+                                                   :max="field.max"
+                                                   @input="updateQueryArg(fieldName, clampInt($event.target.value, field.min, field.max, field.default))">
+                                        </template>
+
+                                        <template x-if="field.type === 'date'">
+                                            <input type="date" class="vbp-field-input"
+                                                   :value="queryArgs[fieldName] || ''"
+                                                   @input="updateQueryArg(fieldName, $event.target.value)">
+                                        </template>
+
+                                        <template x-if="field.type === 'string'">
+                                            <input type="text" class="vbp-field-input"
+                                                   :value="queryArgs[fieldName] !== undefined ? queryArgs[fieldName] : (field.default || '')"
+                                                   :placeholder="field.default || ''"
+                                                   @input="updateQueryArg(fieldName, $event.target.value)">
+                                        </template>
+
+                                        <template x-if="field.type === 'bool'">
+                                            <label class="vbp-toggle">
+                                                <input type="checkbox"
+                                                       :checked="queryArgs[fieldName] !== undefined ? queryArgs[fieldName] : !!field.default"
+                                                       @change="updateQueryArg(fieldName, $event.target.checked)">
+                                                <span class="vbp-toggle-slider"></span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <div class="vbp-field-group" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Plantilla del item', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                            <select class="vbp-field-select" :value="selectedElement.data.template || 'card'" @change="updateElementData('template', $event.target.value)">
+                                <option value="card"><?php esc_html_e( 'Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                <option value="list"><?php esc_html_e( 'Listado compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                <option value="minimal"><?php esc_html_e( 'Solo título + enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Mensaje si no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                            <input type="text" class="vbp-field-input"
+                                   :value="selectedElement.data.empty_message || ''"
+                                   @input="updateElementData('empty_message', $event.target.value)"
+                                   placeholder="<?php esc_attr_e( 'No hay items disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+                        </div>
+
+                        <p class="vbp-field-help" x-show="loadError" x-text="loadError" style="color:#dc2626;font-size:0.8125em;margin-top:8px;"></p>
+                    </div>
+                </template>
+
                 <!-- ========== HEADING ========== -->
                 <template x-if="selectedElement.type === 'heading'">
                     <div class="vbp-inspector-section">
