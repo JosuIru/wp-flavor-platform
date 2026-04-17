@@ -634,10 +634,6 @@ class Flavor_VBP_Editor {
             'symbols-panel'     => array( 'vbp-symbols-panel.js', array( 'vbp-symbols' ) ), // Panel UI de símbolos
             'symbols-commands'  => array( 'vbp-symbols-commands.js', array( 'vbp-symbols', 'vbp-command-palette' ) ), // Comandos y atajos de símbolos
             'swap-modal'        => array( 'vbp-swap-modal.js', array( 'vbp-symbols' ) ), // Modal de swap de instancias
-            '3d-blocks'         => array( 'vbp-3d-blocks.js', array( 'vbp-store-catalog' ) ), // Definiciones de bloques 3D
-            '3d-scene'          => array( 'vbp-3d-scene.js', array() ), // Runtime de escenas 3D
-            '3d-store'          => array( 'vbp-3d-store.js', array( 'vbp-store', 'vbp-3d-scene', 'vbp-3d-blocks' ) ), // Integración store/canvas 3D
-            '3d-inspector'      => array( 'vbp-3d-inspector.js', array( 'vbp-3d-store' ) ), // Inspector especializado 3D
             'zoom-utils'        => array( 'vbp-zoom-utils.js', array( 'vbp-store' ) ), // Utilidades de zoom: zoom to selection, fit all
             'bulk-edit'         => array( 'vbp-bulk-edit.js', array( 'vbp-store', 'vbp-inspector' ) ), // Edicion masiva de propiedades
             'spacing-indicators' => array( 'vbp-spacing-indicators.js', array( 'vbp-canvas-utils' ) ), // Indicadores de distancia entre elementos
@@ -648,16 +644,44 @@ class Flavor_VBP_Editor {
             'asset-manager'     => array( 'vbp-asset-manager.js', array( 'vbp-store', 'vbp-inspector-media' ) ), // Panel centralizado de gestión de medios
             'responsive-variants' => array( 'vbp-responsive-variants.js', array( 'vbp-store', 'vbp-canvas', 'vbp-constraints' ) ), // Sistema de variantes responsive por breakpoint
             'responsive-panel'    => array( 'vbp-responsive-panel.js', array( 'vbp-responsive-variants', 'vbp-inspector' ) ), // Panel UI de variantes responsive
-            'prototype-mode'      => array( 'vbp-prototype-mode.js', array( 'vbp-store', 'vbp-command-palette', 'vbp-animation-builder' ) ), // Sistema de prototipado interactivo
-            'prototype-panel'     => array( 'vbp-prototype-panel.js', array( 'vbp-prototype-mode', 'vbp-inspector' ) ), // Panel UI de interacciones de prototipo
             'indexed-db'          => array( 'vbp-indexed-db.js', array() ), // Almacenamiento offline con IndexedDB
             'offline-sync'        => array( 'vbp-offline-sync.js', array( 'vbp-indexed-db', 'vbp-toast' ) ), // Sincronizacion offline con Service Worker
-            'editor-themes'       => array( 'vbp-editor-themes.js', array( 'vbp-theme', 'vbp-toast' ) ), // Sistema de temas del editor
-            'plugin-api'          => array( 'vbp-plugin-api.js', array( 'vbp-store', 'vbp-command-palette' ) ), // API de plugins para extensiones
-            'plugins-panel'       => array( 'vbp-plugins-panel.js', array( 'vbp-plugin-api', 'vbp-editor-themes' ) ), // Panel de gestion de plugins y temas
-            'performance-monitor' => array( 'vbp-performance-monitor.js', array( 'vbp-store', 'vbp-toast' ) ), // Store de monitoreo de rendimiento
-            'performance-panel'   => array( 'vbp-performance-panel.js', array( 'vbp-performance-monitor' ) ), // Panel UI de rendimiento
         );
+
+        // Bloques 3D (opt-in: ~156 KB minificados).
+        if ( ! empty( $editor_features['3d'] ) ) {
+            $archivos_js['3d-blocks']    = array( 'vbp-3d-blocks.js', array( 'vbp-store-catalog' ) );
+            $archivos_js['3d-scene']     = array( 'vbp-3d-scene.js', array() );
+            $archivos_js['3d-store']     = array( 'vbp-3d-store.js', array( 'vbp-store', 'vbp-3d-scene', 'vbp-3d-blocks' ) );
+            $archivos_js['3d-inspector'] = array( 'vbp-3d-inspector.js', array( 'vbp-3d-store' ) );
+        }
+
+        // Modo prototipo interactivo (opt-in: ~45 KB).
+        if ( ! empty( $editor_features['prototype'] ) ) {
+            $archivos_js['prototype-mode']  = array( 'vbp-prototype-mode.js', array( 'vbp-store', 'vbp-command-palette', 'vbp-animation-builder' ) );
+            $archivos_js['prototype-panel'] = array( 'vbp-prototype-panel.js', array( 'vbp-prototype-mode', 'vbp-inspector' ) );
+        }
+
+        // Sistema de temas del editor (opt-in: ~12 KB).
+        if ( ! empty( $editor_features['editor_themes'] ) ) {
+            $archivos_js['editor-themes'] = array( 'vbp-editor-themes.js', array( 'vbp-theme', 'vbp-toast' ) );
+        }
+
+        // API de plugins y panel de gestión (opt-in: ~13 KB).
+        // plugins-panel depende de editor-themes, así que forzamos carga aquí.
+        if ( ! empty( $editor_features['plugins_system'] ) ) {
+            $archivos_js['plugin-api']    = array( 'vbp-plugin-api.js', array( 'vbp-store', 'vbp-command-palette' ) );
+            if ( empty( $archivos_js['editor-themes'] ) ) {
+                $archivos_js['editor-themes'] = array( 'vbp-editor-themes.js', array( 'vbp-theme', 'vbp-toast' ) );
+            }
+            $archivos_js['plugins-panel'] = array( 'vbp-plugins-panel.js', array( 'vbp-plugin-api', 'vbp-editor-themes' ) );
+        }
+
+        // Monitor de rendimiento (opt-in: ~32 KB, solo útil para desarrollo).
+        if ( ! empty( $editor_features['performance_monitor'] ) ) {
+            $archivos_js['performance-monitor'] = array( 'vbp-performance-monitor.js', array( 'vbp-store', 'vbp-toast' ) );
+            $archivos_js['performance-panel']   = array( 'vbp-performance-panel.js', array( 'vbp-performance-monitor' ) );
+        }
 
         if ( ! empty( $editor_features['collaboration'] ) ) {
             $archivos_js['app-collaboration'] = array( 'modules/vbp-app-collaboration.js', array( 'vbp-app-modular' ) );
@@ -975,17 +999,30 @@ class Flavor_VBP_Editor {
      * @return array
      */
     private function obtener_feature_flags_editor( $post_id ) {
-        return array(
-            'ai'                => $this->ai_esta_habilitado(),
-            'minimap'           => true,
-            'help_system'       => true,
-            'component_library' => class_exists( 'Flavor_VBP_Component_Library' ),
-            'collaboration'     => class_exists( 'Flavor_VBP_Comments' ) && class_exists( 'Flavor_VBP_Collaboration_API' ) && current_user_can( 'edit_post', $post_id ),
-            'audit_log'         => class_exists( 'Flavor_VBP_Audit_Log' ) && current_user_can( 'manage_options' ),
-            'workflows'         => class_exists( 'Flavor_VBP_Workflows' ) && current_user_can( 'edit_others_posts' ),
-            'multisite'         => is_multisite() && class_exists( 'Flavor_VBP_Multisite' ),
-            'branching'         => class_exists( 'Flavor_VBP_Branching' ) && current_user_can( 'edit_post', $post_id ),
+        // Flags opt-in leídos de la opción flavor_vbp_editor_features.
+        // Estos cargan scripts pesados poco usados; los sites que los
+        // necesitan los activan con:
+        //   update_option('flavor_vbp_editor_features', ['3d' => true, ...]);
+        $opt_in = (array) get_option( 'flavor_vbp_editor_features', array() );
+
+        $flags = array(
+            'ai'                  => $this->ai_esta_habilitado(),
+            'minimap'             => true,
+            'help_system'         => true,
+            'component_library'   => class_exists( 'Flavor_VBP_Component_Library' ),
+            'collaboration'       => class_exists( 'Flavor_VBP_Comments' ) && class_exists( 'Flavor_VBP_Collaboration_API' ) && current_user_can( 'edit_post', $post_id ),
+            'audit_log'           => class_exists( 'Flavor_VBP_Audit_Log' ) && current_user_can( 'manage_options' ),
+            'workflows'           => class_exists( 'Flavor_VBP_Workflows' ) && current_user_can( 'edit_others_posts' ),
+            'multisite'           => is_multisite() && class_exists( 'Flavor_VBP_Multisite' ),
+            'branching'           => class_exists( 'Flavor_VBP_Branching' ) && current_user_can( 'edit_post', $post_id ),
+            '3d'                  => ! empty( $opt_in['3d'] ),
+            'prototype'           => ! empty( $opt_in['prototype'] ),
+            'performance_monitor' => ! empty( $opt_in['performance_monitor'] ),
+            'plugins_system'      => ! empty( $opt_in['plugins_system'] ),
+            'editor_themes'       => ! empty( $opt_in['editor_themes'] ),
         );
+
+        return apply_filters( 'flavor_vbp_editor_features', $flags, $post_id );
     }
 
     /**
