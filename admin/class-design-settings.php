@@ -212,9 +212,13 @@ class Flavor_Design_Settings {
             'font_family_headings' => ['label' => __('Fuente Títulos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             'font_family_body' => ['label' => __('Fuente Cuerpo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             'font_size_base' => ['label' => __('Tamaño Base', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '16'],
+            'type_scale_ratio' => ['label' => __('Escala tipográfica (0 = manual)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'step' => '0.001', 'default' => '0', 'description' => __('Si > 0, calcula H1-H6 a partir del tamaño base. Ejemplos: 1.2 (menor tercera), 1.25 (tercera mayor), 1.333 (cuarta perfecta), 1.5 (quinta perfecta), 1.618 (proporción áurea).', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             'font_size_h1' => ['label' => __('Tamaño H1', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '48'],
             'font_size_h2' => ['label' => __('Tamaño H2', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '36'],
             'font_size_h3' => ['label' => __('Tamaño H3', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '28'],
+            'font_size_h4' => ['label' => __('Tamaño H4', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '24'],
+            'font_size_h5' => ['label' => __('Tamaño H5', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '20'],
+            'font_size_h6' => ['label' => __('Tamaño H6', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'suffix' => 'px', 'default' => '18'],
             'line_height_base' => ['label' => __('Interlineado Base', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'step' => '0.1', 'default' => '1.5'],
             'line_height_headings' => ['label' => __('Interlineado Títulos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'number', 'step' => '0.1', 'default' => '1.2'],
         ];
@@ -2092,7 +2096,7 @@ class Flavor_Design_Settings {
         }
 
         // Campos numéricos
-        $number_fields = ['font_size_base', 'font_size_h1', 'font_size_h2', 'font_size_h3', 'line_height_base', 'line_height_headings', 'container_max_width', 'section_padding_y', 'section_padding_x', 'grid_gap', 'card_padding', 'button_border_radius', 'button_padding_y', 'button_padding_x', 'button_font_size', 'button_font_weight', 'card_border_radius', 'hero_overlay_opacity', 'image_border_radius'];
+        $number_fields = ['font_size_base', 'type_scale_ratio', 'font_size_h1', 'font_size_h2', 'font_size_h3', 'font_size_h4', 'font_size_h5', 'font_size_h6', 'line_height_base', 'line_height_headings', 'container_max_width', 'section_padding_y', 'section_padding_x', 'grid_gap', 'card_padding', 'button_border_radius', 'button_padding_y', 'button_padding_x', 'button_font_size', 'button_font_weight', 'card_border_radius', 'hero_overlay_opacity', 'image_border_radius'];
         foreach ($number_fields as $field) {
             if (isset($input[$field])) {
                 $sanitized[$field] = floatval($input[$field]);
@@ -2241,9 +2245,13 @@ class Flavor_Design_Settings {
             'font_family_headings' => 'Inter',
             'font_family_body' => 'Inter',
             'font_size_base' => 16,
+            'type_scale_ratio' => 0,
             'font_size_h1' => 48,
             'font_size_h2' => 36,
             'font_size_h3' => 28,
+            'font_size_h4' => 24,
+            'font_size_h5' => 20,
+            'font_size_h6' => 18,
             'line_height_base' => 1.5,
             'line_height_headings' => 1.2,
             // Espaciados
@@ -2323,9 +2331,12 @@ class Flavor_Design_Settings {
     --flavor-font-headings: <?php echo !empty($settings['font_family_headings']) ? '"' . esc_attr($settings['font_family_headings']) . '", ' : ''; ?>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --flavor-font-body: <?php echo !empty($settings['font_family_body']) ? '"' . esc_attr($settings['font_family_body']) . '", ' : ''; ?>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --flavor-font-size-base: <?php echo esc_attr($settings['font_size_base']); ?>px;
-    --flavor-font-size-h1: <?php echo esc_attr($settings['font_size_h1']); ?>px;
-    --flavor-font-size-h2: <?php echo esc_attr($settings['font_size_h2']); ?>px;
-    --flavor-font-size-h3: <?php echo esc_attr($settings['font_size_h3']); ?>px;
+<?php
+    $heading_sizes = $this->compute_heading_sizes($settings);
+    foreach ($heading_sizes as $heading_level => $heading_size_px) {
+        echo "    --flavor-font-size-{$heading_level}: " . esc_attr($heading_size_px) . "px;\n";
+    }
+?>
     --flavor-line-height-base: <?php echo esc_attr($settings['line_height_base']); ?>;
     --flavor-line-height-headings: <?php echo esc_attr($settings['line_height_headings']); ?>;
 
@@ -2809,6 +2820,40 @@ a.fup-btn--outline:hover {
 
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Calcula los tamaños de encabezado aplicables.
+     *
+     * Si type_scale_ratio > 0, H1-H6 se derivan del tamaño base multiplicando
+     * por el ratio de forma escalonada (H6 más pequeño, H1 más grande). Si es 0
+     * se usan los valores individuales guardados por el admin.
+     *
+     * @param array $settings Settings completos.
+     * @return array ['h1' => px, ..., 'h6' => px]
+     */
+    private function compute_heading_sizes($settings) {
+        $ratio    = isset($settings['type_scale_ratio']) ? (float) $settings['type_scale_ratio'] : 0.0;
+        $base_px  = isset($settings['font_size_base']) ? (float) $settings['font_size_base'] : 16.0;
+        $headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
+        if ($ratio <= 1.0) {
+            $sizes = [];
+            foreach ($headings as $heading_level) {
+                $individual_key = 'font_size_' . $heading_level;
+                $sizes[$heading_level] = isset($settings[$individual_key]) ? (float) $settings[$individual_key] : $base_px;
+            }
+            return $sizes;
+        }
+
+        // Escalón 0 = H6 = base; cada salto multiplica por ratio.
+        $escalones_desde_base = ['h6' => 0, 'h5' => 1, 'h4' => 2, 'h3' => 3, 'h2' => 4, 'h1' => 5];
+        $sizes = [];
+        foreach ($headings as $heading_level) {
+            $potencia_de_ratio = $escalones_desde_base[$heading_level];
+            $sizes[$heading_level] = round($base_px * pow($ratio, $potencia_de_ratio), 2);
+        }
+        return $sizes;
     }
 
     /**
