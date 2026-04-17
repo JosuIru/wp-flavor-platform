@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Migration_Add_Performance_Indexes extends Flavor_Migration_Base {
+class Migration_2024_04_17_000001_Add_Performance_Indexes extends Flavor_Migration_Base {
 
     protected $migration_name = 'add_performance_indexes';
     protected $description = 'Añade índices compuestos para queries frecuentes';
