@@ -3826,7 +3826,14 @@ class Flavor_VBP_Canvas {
                 . '</div>';
         }
 
-        $template_variant = isset( $data['template'] ) ? (string) $data['template'] : 'card';
+        // El variant picker del bloque es la fuente autoritativa; si no se
+        // ha elegido variante, cae al campo data.template (compat retro).
+        $variante_desde_picker = isset( $elemento['variant'] ) ? (string) $elemento['variant'] : '';
+        $template_legacy       = isset( $data['template'] ) ? (string) $data['template'] : 'card';
+        $template_variant      = $variante_desde_picker !== '' && $variante_desde_picker !== 'default'
+            ? $variante_desde_picker
+            : $template_legacy;
+
         $templates_validos = array( 'card', 'list', 'minimal' );
         if ( ! in_array( $template_variant, $templates_validos, true ) ) {
             $template_variant = 'card';

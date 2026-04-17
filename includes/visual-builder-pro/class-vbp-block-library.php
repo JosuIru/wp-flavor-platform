@@ -115,20 +115,9 @@ class Flavor_VBP_Block_Library {
                     'placeholder' => '{"estado":"publicado","limit":10}',
                     'default'     => '{"limit":10}',
                 ),
-                '_separator_template' => array(
-                    'type'  => 'separator',
-                    'label' => __( '🎨 Plantilla del item', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                ),
-                'template' => array(
-                    'type'    => 'select',
-                    'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                    'options' => array(
-                        'card'    => __( 'Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                        'list'    => __( 'Listado compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                        'minimal' => __( 'Solo título + enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                    ),
-                    'default' => 'card',
-                ),
+                // El estilo del item (card/list/minimal) se elige desde el
+                // selector de variantes del bloque, no aquí. Evitamos un
+                // duplicado en el inspector.
                 'empty_message' => array(
                     'type'    => 'text',
                     'label'   => __( 'Mensaje cuando no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),

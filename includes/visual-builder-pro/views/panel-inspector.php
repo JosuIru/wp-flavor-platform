@@ -296,15 +296,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </template>
 
                         <div class="vbp-field-group" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Plantilla del item', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                            <select class="vbp-field-select" :value="selectedElement.data.template || 'card'" @change="updateElementData('template', $event.target.value)">
-                                <option value="card"><?php esc_html_e( 'Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
-                                <option value="list"><?php esc_html_e( 'Listado compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
-                                <option value="minimal"><?php esc_html_e( 'Solo título + enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
-                            </select>
-                        </div>
-
-                        <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Mensaje si no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" class="vbp-field-input"
                                    :value="selectedElement.data.empty_message || ''"
