@@ -2011,7 +2011,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
                         <div class="vbp-field-group" x-show="selectedElement.data.autoplay">
                             <label class="vbp-field-label"><?php esc_html_e( 'Intervalo (segundos)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                            <input type="number" x-model="selectedElement.data.intervalo" @input="updateElementData('intervalo', parseInt($event.target.value) || 5)" class="vbp-field-input" min="1" max="30">
+                            <input type="number" x-model="selectedElement.data.intervalo" @input="updateElementData('intervalo', Math.min(30, Math.max(1, parseInt($event.target.value) || 5)))" class="vbp-field-input" min="1" max="30">
                         </div>
                         <div class="vbp-field-row">
                             <div class="vbp-field-group vbp-field-half">
@@ -2036,7 +2036,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                             <div class="vbp-field-group vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Slides visibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                                <input type="number" x-model="selectedElement.data.slides_visibles" @input="updateElementData('slides_visibles', parseInt($event.target.value) || 1)" class="vbp-field-input" min="1" max="6">
+                                <input type="number" x-model="selectedElement.data.slides_visibles" @input="updateElementData('slides_visibles', Math.min(6, Math.max(1, parseInt($event.target.value) || 1)))" class="vbp-field-input" min="1" max="6">
                             </div>
                         </div>
 
@@ -2461,11 +2461,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div class="vbp-field-row">
                             <div class="vbp-field-group vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                                <input type="number" min="1" max="12" x-model="selectedElement.data.columnas" @input="updateElementData('columnas', parseInt($event.target.value))" class="vbp-field-input" placeholder="3">
+                                <input type="number" min="1" max="12" x-model="selectedElement.data.columnas" @input="updateElementData('columnas', Math.min(12, Math.max(1, parseInt($event.target.value) || 3)))" class="vbp-field-input" placeholder="3">
                             </div>
                             <div class="vbp-field-group vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Filas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                                <input type="number" min="1" max="12" x-model="selectedElement.data.filas" @input="updateElementData('filas', parseInt($event.target.value))" class="vbp-field-input" placeholder="auto">
+                                <input type="number" min="1" max="12" x-model="selectedElement.data.filas" @input="updateElementData('filas', Math.min(12, Math.max(1, parseInt($event.target.value) || 1)))" class="vbp-field-input" placeholder="auto">
                             </div>
                         </div>
                         <div class="vbp-field-group">
@@ -3132,7 +3132,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Gap entre columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
-                            <input type="number" x-model="selectedElement.data.gap" @input="updateElementData('gap', parseInt($event.target.value) || 24)" class="vbp-field-input" min="0" max="100" placeholder="24">
+                            <input type="number" x-model="selectedElement.data.gap" @input="updateElementData('gap', Math.min(100, Math.max(0, parseInt($event.target.value) || 24)))" class="vbp-field-input" min="0" max="100" placeholder="24">
                         </div>
 
                         <!-- COLUMNA IZQUIERDA -->
