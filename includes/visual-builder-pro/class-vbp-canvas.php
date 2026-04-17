@@ -3852,7 +3852,19 @@ class Flavor_VBP_Canvas {
      */
     private function render_dynamic_list_items( array $items, $template_variant, $source_identifier ) {
         $clases_contenedor = 'vbp-element vbp-dynamic-list vbp-dynamic-list--' . sanitize_html_class( $template_variant );
-        $html = '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '">';
+
+        // Layout distinto según variante: grid responsivo para cards,
+        // stack vertical para list, minimal sin estilo.
+        $estilos_contenedor = '';
+        if ( $template_variant === 'card' ) {
+            $estilos_contenedor = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;';
+        }
+
+        $html = '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '"';
+        if ( $estilos_contenedor !== '' ) {
+            $html .= ' style="' . esc_attr( $estilos_contenedor ) . '"';
+        }
+        $html .= '>';
 
         foreach ( $items as $item ) {
             $html .= $this->render_dynamic_list_item( $item, $template_variant );
@@ -3896,7 +3908,7 @@ class Flavor_VBP_Canvas {
             $imagen_html = '<div class="vbp-dynamic-list__image" style="aspect-ratio:16/9;background:#f3f4f6 url(' . esc_url( $imagen_url ) . ') center/cover no-repeat;border-radius:8px 8px 0 0;"></div>';
         }
 
-        return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--card" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#fff;">'
+        return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--card" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#fff;display:flex;flex-direction:column;">'
             . $imagen_html
             . '<div class="vbp-dynamic-list__body" style="padding:16px;">'
             . '<h3 class="vbp-dynamic-list__title" style="margin:0 0 8px;font-size:1.125em;">' . $enlace_titulo . '</h3>'
