@@ -11,6 +11,9 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Reservation_Manager {
 
+    use Flavor_Safe_SQL_Trait;
+    use Flavor_Request_Validation_Trait;
+
     /**
      * Columnas permitidas para ordenar listados de reservas.
      *
@@ -113,14 +116,24 @@ class Flavor_Reservation_Manager {
      * Crear nueva reserva
      */
     public function create_reservation($data) {
-        global $wpdb;
+        $required_errors = $this->validate_required(
+            $data,
+            [
+                'customer_name'    => __('Nombre', 'flavor-restaurant-ordering'),
+                'customer_phone'   => __('Teléfono', 'flavor-restaurant-ordering'),
+                'reservation_date' => __('Fecha', 'flavor-restaurant-ordering'),
+                'reservation_time' => __('Hora', 'flavor-restaurant-ordering'),
+                'guests_count'     => __('Número de comensales', 'flavor-restaurant-ordering'),
+            ]
+        );
 
-        // Validar datos requeridos
-        $required_fields = ['customer_name', 'customer_phone', 'reservation_date', 'reservation_time', 'guests_count'];
-        foreach ($required_fields as $field) {
-            if (empty($data[$field])) {
-                return new WP_Error('missing_field', sprintf(__('Campo requerido: %s', 'flavor-restaurant-ordering'), $field));
-            }
+        if (!empty($required_errors)) {
+            $first_field = array_key_first($required_errors);
+            return new WP_Error(
+                'missing_field',
+                $required_errors[$first_field],
+                ['status' => 400, 'errors' => $required_errors]
+            );
         }
 
         // Validar formato de fecha y hora
@@ -129,68 +142,68 @@ class Flavor_Reservation_Manager {
             return new WP_Error('invalid_datetime', __('No se puede reservar en el pasado', 'flavor-restaurant-ordering'));
         }
 
-        // Buscar mesa disponible si no se especifica
-        $table_id = isset($data['table_id']) ? absint($data['table_id']) : null;
+        $requested_table_id = isset($data['table_id']) ? absint($data['table_id']) : null;
+        $duration = isset($data['duration']) ? absint($data['duration']) : 120;
 
-        if (!$table_id) {
-            $table_id = $this->find_available_table(
-                $data['reservation_date'],
-                $data['reservation_time'],
-                $data['guests_count'],
-                isset($data['duration']) ? $data['duration'] : 120
-            );
+        // La asignación de mesa + inserción se ejecuta dentro de una
+        // transacción con bloqueo FOR UPDATE para evitar que dos clientes
+        // reserven simultáneamente el mismo hueco.
+        return $this->run_transaction(function () use ($data, $requested_table_id, $duration) {
+            $table_id = $requested_table_id;
 
             if (!$table_id) {
-                return new WP_Error('no_tables_available', __('No hay mesas disponibles para esa fecha y hora', 'flavor-restaurant-ordering'));
-            }
-        } else {
-            // Verificar que la mesa esté disponible
-            if (!$this->is_table_available($table_id, $data['reservation_date'], $data['reservation_time'])) {
+                $table_id = $this->find_available_table(
+                    $data['reservation_date'],
+                    $data['reservation_time'],
+                    $data['guests_count'],
+                    $duration,
+                    true
+                );
+
+                if (!$table_id) {
+                    return new WP_Error('no_tables_available', __('No hay mesas disponibles para esa fecha y hora', 'flavor-restaurant-ordering'));
+                }
+            } elseif (!$this->is_table_available($table_id, $data['reservation_date'], $data['reservation_time'], $duration, null, true)) {
                 return new WP_Error('table_not_available', __('La mesa seleccionada no está disponible en ese horario', 'flavor-restaurant-ordering'));
             }
-        }
 
-        // Generar código de reserva único
-        $reservation_code = $this->generate_reservation_code();
+            $reservation_data = [
+                'reservation_code' => $this->generate_reservation_code(),
+                'table_id'         => $table_id,
+                'customer_name'    => sanitize_text_field($data['customer_name']),
+                'customer_phone'   => sanitize_text_field($data['customer_phone']),
+                'customer_email'   => sanitize_email($data['customer_email'] ?? ''),
+                'user_id'          => isset($data['user_id']) ? absint($data['user_id']) : get_current_user_id(),
+                'guests_count'     => absint($data['guests_count']),
+                'reservation_date' => sanitize_text_field($data['reservation_date']),
+                'reservation_time' => sanitize_text_field($data['reservation_time']),
+                'duration'         => $duration,
+                'status'           => 'pending',
+                'special_requests' => wp_kses_post($data['special_requests'] ?? ''),
+                'notes'            => wp_kses_post($data['notes'] ?? ''),
+            ];
 
-        // Preparar datos
-        $reservation_data = [
-            'reservation_code' => $reservation_code,
-            'table_id' => $table_id,
-            'customer_name' => sanitize_text_field($data['customer_name']),
-            'customer_phone' => sanitize_text_field($data['customer_phone']),
-            'customer_email' => sanitize_email($data['customer_email'] ?? ''),
-            'user_id' => isset($data['user_id']) ? absint($data['user_id']) : get_current_user_id(),
-            'guests_count' => absint($data['guests_count']),
-            'reservation_date' => sanitize_text_field($data['reservation_date']),
-            'reservation_time' => sanitize_text_field($data['reservation_time']),
-            'duration' => isset($data['duration']) ? absint($data['duration']) : 120,
-            'status' => 'pending',
-            'special_requests' => wp_kses_post($data['special_requests'] ?? ''),
-            'notes' => wp_kses_post($data['notes'] ?? ''),
-        ];
+            global $wpdb;
+            $inserted = $wpdb->insert(
+                $this->table_name,
+                $reservation_data,
+                ['%s', '%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s']
+            );
 
-        // Insertar en BD
-        $inserted = $wpdb->insert(
-            $this->table_name,
-            $reservation_data,
-            ['%s', '%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s']
-        );
+            if ($inserted === false) {
+                return new WP_Error('db_error', __('Error al crear la reserva', 'flavor-restaurant-ordering'));
+            }
 
-        if ($inserted === false) {
-            return new WP_Error('db_error', __('Error al crear la reserva', 'flavor-restaurant-ordering'));
-        }
+            $reservation_id = $wpdb->insert_id;
 
-        $reservation_id = $wpdb->insert_id;
+            do_action('flavor_restaurant_reservation_created', $reservation_id, $reservation_data);
 
-        do_action('flavor_restaurant_reservation_created', $reservation_id, $reservation_data);
+            if (!empty($reservation_data['customer_email'])) {
+                $this->send_reservation_email($reservation_id, 'created');
+            }
 
-        // Enviar confirmación por email
-        if (!empty($reservation_data['customer_email'])) {
-            $this->send_reservation_email($reservation_id, 'created');
-        }
-
-        return $this->get_reservation($reservation_id);
+            return $this->get_reservation($reservation_id);
+        });
     }
 
     /**
@@ -486,7 +499,7 @@ class Flavor_Reservation_Manager {
     /**
      * Verificar si una mesa está disponible
      */
-    private function is_table_available($table_id, $date, $time, $duration = 120, $exclude_reservation_id = null) {
+    private function is_table_available($table_id, $date, $time, $duration = 120, $exclude_reservation_id = null, $lock_for_update = false) {
         global $wpdb;
 
         // Calcular rango de tiempo
@@ -512,6 +525,10 @@ class Flavor_Reservation_Manager {
             $values[] = $exclude_reservation_id;
         }
 
+        if ($lock_for_update) {
+            $query .= ' FOR UPDATE';
+        }
+
         $count = $wpdb->get_var($wpdb->prepare($query, $values));
 
         return $count == 0;
@@ -520,7 +537,7 @@ class Flavor_Reservation_Manager {
     /**
      * Buscar mesa disponible
      */
-    private function find_available_table($date, $time, $guests_count, $duration = 120) {
+    private function find_available_table($date, $time, $guests_count, $duration = 120, $lock_for_update = false) {
         $table_manager = Flavor_Table_Manager::get_instance();
 
         // Obtener todas las mesas con capacidad suficiente
@@ -530,7 +547,7 @@ class Flavor_Reservation_Manager {
 
         foreach ($tables as $table) {
             if ($table['capacity'] >= $guests_count) {
-                if ($this->is_table_available($table['id'], $date, $time, $duration)) {
+                if ($this->is_table_available($table['id'], $date, $time, $duration, null, $lock_for_update)) {
                     return $table['id'];
                 }
             }
