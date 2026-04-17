@@ -209,14 +209,14 @@ class Flavor_VBP_Realtime_Server {
             )
         );
 
-        // Salir de sesion
+        // Salir de sesion (sendBeacon envía cookies, se exige sesión activa).
         register_rest_route(
             $this->namespace,
             '/realtime/leave',
             array(
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => array( $this, 'leave_session' ),
-                'permission_callback' => '__return_true', // Permitir sin auth para sendBeacon
+                'permission_callback' => 'is_user_logged_in',
             )
         );
 
@@ -470,14 +470,22 @@ class Flavor_VBP_Realtime_Server {
      * @return WP_REST_Response
      */
     public function leave_session( $request ) {
-        $post_id = absint( $request->get_param( 'post_id' ) );
-        $user_id = absint( $request->get_param( 'user_id' ) );
-
-        // Validar que es el usuario correcto o admin
         $current_user = get_current_user_id();
-        if ( $current_user && $current_user !== $user_id && ! current_user_can( 'manage_options' ) ) {
-            $user_id = $current_user;
+
+        // permission_callback ya exige is_user_logged_in, pero defendemos
+        // también aquí para cerrar cualquier bypass futuro de la ruta.
+        if ( ! $current_user ) {
+            return new WP_Error( 'rest_forbidden', 'Sesión requerida', array( 'status' => 401 ) );
         }
+
+        $post_id          = absint( $request->get_param( 'post_id' ) );
+        $requested_user_id = absint( $request->get_param( 'user_id' ) );
+
+        // Solo los administradores pueden expulsar a otros; el resto solo
+        // puede cerrar su propia sesión.
+        $user_id = ( current_user_can( 'manage_options' ) && $requested_user_id )
+            ? $requested_user_id
+            : $current_user;
 
         if ( $post_id && $user_id ) {
             // Eliminar sesion del usuario
