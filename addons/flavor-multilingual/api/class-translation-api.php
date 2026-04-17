@@ -13,6 +13,11 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Translation_API {
 
+    use Flavor_REST_Response_Trait;
+    use Flavor_Request_Validation_Trait;
+    use Flavor_Permission_Checks_Trait;
+    use Flavor_Safe_SQL_Trait;
+
     /**
      * Namespace de la API
      *
@@ -314,23 +319,19 @@ class Flavor_Translation_API {
      * @return WP_REST_Response|WP_Error
      */
     public function save_post_translation($request) {
-        $post_id = (int) $request->get_param('id');
+        $post_id = $this->sanitize_id($request->get_param('id'));
         $lang = sanitize_key($request->get_param('lang'));
         $fields = $request->get_param('fields');
 
-        if (!get_post($post_id)) {
-            return new WP_Error(
-                'post_not_found',
-                __('Post no encontrado', 'flavor-multilingual'),
-                array('status' => 404)
-            );
+        if ($post_id === null || !get_post($post_id)) {
+            return $this->not_found_response(__('post', 'flavor-multilingual'));
         }
 
         if (!$this->validate_language_code($lang)) {
-            return new WP_Error(
+            return $this->error_response(
                 'invalid_language',
                 __('Código de idioma no válido', 'flavor-multilingual'),
-                array('status' => 400)
+                400
             );
         }
 
@@ -338,7 +339,7 @@ class Flavor_Translation_API {
         $status = sanitize_key($request->get_param('status')) ?: 'draft';
 
         $saved = array();
-        foreach ($fields as $field => $value) {
+        foreach ((array) $fields as $field => $value) {
             $field = sanitize_key($field);
             $value = wp_kses_post($value);
 
@@ -350,10 +351,7 @@ class Flavor_Translation_API {
             $saved[$field] = $result !== false;
         }
 
-        return rest_ensure_response(array(
-            'success' => true,
-            'saved'   => $saved,
-        ));
+        return $this->success_response(array('saved' => $saved));
     }
 
     /**
@@ -505,34 +503,43 @@ class Flavor_Translation_API {
         $lang = sanitize_key($request->get_param('lang'));
         $default_domain = defined('FLAVOR_PLATFORM_TEXT_DOMAIN') ? FLAVOR_PLATFORM_TEXT_DOMAIN : 'flavor-platform';
         $domain = sanitize_key($request->get_param('domain')) ?: $default_domain;
-        $page = (int) ($request->get_param('page') ?: 1);
-        $per_page = (int) ($request->get_param('per_page') ?: 50);
+
+        $pagination = $this->normalize_pagination(
+            $request->get_param('page'),
+            $request->get_param('per_page'),
+            ['default_per_page' => 50]
+        );
 
         $table = $wpdb->prefix . 'flavor_string_translations';
-        $offset = ($page - 1) * $per_page;
 
-        $where = array('domain = %s');
-        $params = array($domain);
+        $where_parts = array('domain = %s');
+        $where_args = array($domain);
 
         if ($lang) {
-            $where[] = 'language_code = %s';
-            $params[] = $lang;
+            $where_parts[] = 'language_code = %s';
+            $where_args[] = $lang;
         }
 
-        $where_clause = implode(' AND ', $where);
-        $params[] = $per_page;
-        $params[] = $offset;
+        $where_clause = implode(' AND ', $where_parts);
+
+        $total = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$table} WHERE {$where_clause}",
+            ...$where_args
+        ));
+
+        $query_args = array_merge($where_args, array($pagination['per_page'], $pagination['offset']));
 
         $results = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$table} WHERE {$where_clause} ORDER BY original_string ASC LIMIT %d OFFSET %d",
-            ...$params
+            ...$query_args
         ), ARRAY_A);
 
-        return rest_ensure_response(array(
-            'strings' => $results,
-            'page'    => $page,
-            'per_page' => $per_page,
-        ));
+        return $this->paginated_response(
+            $results ?: array(),
+            $total,
+            $pagination['page'],
+            $pagination['per_page']
+        );
     }
 
     /**
@@ -548,19 +555,28 @@ class Flavor_Translation_API {
         $default_domain = defined('FLAVOR_PLATFORM_TEXT_DOMAIN') ? FLAVOR_PLATFORM_TEXT_DOMAIN : 'flavor-platform';
         $domain = sanitize_key($request->get_param('domain')) ?: $default_domain;
 
-        if (empty($original) || empty($lang) || empty($translation)) {
-            return new WP_Error(
-                'missing_params',
-                __('Faltan parámetros requeridos', 'flavor-multilingual'),
-                array('status' => 400)
-            );
+        $validation_errors = $this->validate_required(
+            array(
+                'original'    => $original,
+                'lang'        => $lang,
+                'translation' => $translation,
+            ),
+            array(
+                'original'    => __('Texto original', 'flavor-multilingual'),
+                'lang'        => __('Idioma', 'flavor-multilingual'),
+                'translation' => __('Traducción', 'flavor-multilingual'),
+            )
+        );
+
+        if (!empty($validation_errors)) {
+            return $this->validation_error_response($validation_errors);
         }
 
         $storage = Flavor_Translation_Storage::get_instance();
         $result = $storage->save_string_translation($original, $lang, $translation, $domain);
 
-        return rest_ensure_response(array(
-            'success' => $result !== false,
+        return $this->success_response(array(
+            'saved' => $result !== false,
         ));
     }
 

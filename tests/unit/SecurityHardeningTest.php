@@ -7,6 +7,12 @@
 
 require_once dirname(__DIR__) . '/bootstrap.php';
 
+// Traits requeridos por las clases bajo test
+require_once FLAVOR_PLUGIN_DIR . '/includes/traits/trait-rest-response.php';
+require_once FLAVOR_PLUGIN_DIR . '/includes/traits/trait-request-validation.php';
+require_once FLAVOR_PLUGIN_DIR . '/includes/traits/trait-permission-checks.php';
+require_once FLAVOR_PLUGIN_DIR . '/includes/traits/trait-safe-sql.php';
+
 require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-restaurant-ordering/includes/class-reservation-manager.php';
 require_once FLAVOR_PLUGIN_DIR . '/includes/class-wp-module-integrations.php';
 require_once FLAVOR_PLUGIN_DIR . '/includes/network/class-network-node.php';
