@@ -67,6 +67,23 @@ class Flavor_Trait_Test_Class {
     public function test_sanitize_date($date, $format = 'Y-m-d') {
         return $this->sanitize_date($date, $format);
     }
+
+    public function test_run_transaction(callable $callback) {
+        return $this->run_transaction($callback);
+    }
+}
+
+/**
+ * Mock mínimo de wpdb que registra las queries ejecutadas.
+ */
+class Flavor_Fake_Wpdb_For_Transactions {
+    public $queries_ejecutadas = [];
+    public $prefix = 'wp_';
+
+    public function query($sql) {
+        $this->queries_ejecutadas[] = $sql;
+        return 1;
+    }
 }
 
 class TraitsTest extends Flavor_TestCase {
@@ -212,5 +229,72 @@ class TraitsTest extends Flavor_TestCase {
         $this->assertSame('LIMIT 10 OFFSET 0', $this->test_class->test_build_limit_offset(10));
         $this->assertSame('LIMIT 20 OFFSET 40', $this->test_class->test_build_limit_offset(20, 40));
         $this->assertSame('LIMIT 1 OFFSET 0', $this->test_class->test_build_limit_offset(-5, -10));
+    }
+
+    // ===== run_transaction =====
+
+    private function con_mock_wpdb(callable $ejecutar) {
+        global $wpdb;
+        $wpdb_original = $wpdb;
+        $wpdb_mock = new Flavor_Fake_Wpdb_For_Transactions();
+        $wpdb = $wpdb_mock;
+
+        try {
+            $resultado_callback = $ejecutar($wpdb_mock);
+        } finally {
+            $wpdb = $wpdb_original;
+        }
+
+        return $resultado_callback;
+    }
+
+    public function test_run_transaction_commits_on_success() {
+        $resultado = $this->con_mock_wpdb(function ($wpdb_mock) {
+            $valor_retornado = $this->test_class->test_run_transaction(function () {
+                return ['id' => 42];
+            });
+
+            $this->assertSame(['id' => 42], $valor_retornado);
+            $this->assertSame(
+                ['START TRANSACTION', 'COMMIT'],
+                $wpdb_mock->queries_ejecutadas
+            );
+            return true;
+        });
+
+        $this->assertTrue($resultado);
+    }
+
+    public function test_run_transaction_rolls_back_when_callback_returns_wp_error() {
+        $this->con_mock_wpdb(function ($wpdb_mock) {
+            $error_simulado = new WP_Error('fallo', 'Algo falló');
+
+            $valor_retornado = $this->test_class->test_run_transaction(function () use ($error_simulado) {
+                return $error_simulado;
+            });
+
+            $this->assertSame($error_simulado, $valor_retornado);
+            $this->assertSame(
+                ['START TRANSACTION', 'ROLLBACK'],
+                $wpdb_mock->queries_ejecutadas
+            );
+            return true;
+        });
+    }
+
+    public function test_run_transaction_rolls_back_on_exception() {
+        $this->con_mock_wpdb(function ($wpdb_mock) {
+            $valor_retornado = $this->test_class->test_run_transaction(function () {
+                throw new Exception('Explosión dentro de la transacción');
+            });
+
+            $this->assertInstanceOf(WP_Error::class, $valor_retornado);
+            $this->assertSame('transaction_failed', $valor_retornado->get_error_code());
+            $this->assertSame(
+                ['START TRANSACTION', 'ROLLBACK'],
+                $wpdb_mock->queries_ejecutadas
+            );
+            return true;
+        });
     }
 }
