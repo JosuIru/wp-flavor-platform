@@ -203,6 +203,17 @@ class Flavor_VBP_Collection_Registry {
 
             case 'date':
                 $valor_string = (string) $valor_raw;
+
+                // Resolver tokens relativos (@today, @today+7d, @start_of_week…)
+                // antes de validar el formato Y-m-d.
+                if ( $valor_string !== '' && $valor_string[0] === '@' && class_exists( 'Flavor_VBP_Date_Token_Resolver' ) ) {
+                    $valor_string = (string) Flavor_VBP_Date_Token_Resolver::resolve( $valor_string );
+                }
+
+                if ( $valor_string === '' ) {
+                    return $valor_default;
+                }
+
                 $fecha_parseada = DateTime::createFromFormat( 'Y-m-d', $valor_string );
                 if ( $fecha_parseada && $fecha_parseada->format( 'Y-m-d' ) === $valor_string ) {
                     return $valor_string;

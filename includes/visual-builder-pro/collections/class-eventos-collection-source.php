@@ -39,14 +39,16 @@ class Flavor_VBP_Eventos_Collection_Source implements Flavor_VBP_Collection_Sour
                     'default' => 'publicado',
                 ),
                 'fecha_desde' => array(
-                    'label'   => __( 'Desde (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                    'type'    => 'date',
-                    'default' => null,
+                    'label'       => __( 'Desde (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'        => 'date',
+                    'default'     => null,
+                    'description' => __( 'Acepta @today, @today+7d, @start_of_week, @start_of_month, …', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'fecha_hasta' => array(
-                    'label'   => __( 'Hasta (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
-                    'type'    => 'date',
-                    'default' => null,
+                    'label'       => __( 'Hasta (incluido)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'type'        => 'date',
+                    'default'     => null,
+                    'description' => __( 'Acepta tokens relativos como @today+30d o @end_of_month', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'busqueda' => array(
                     'label'   => __( 'Búsqueda en título y descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
