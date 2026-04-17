@@ -779,6 +779,8 @@ class Flavor_Design_Settings {
                 <?php endforeach; ?>
             </select>
             <?php
+        } elseif ($args['field'] === 'type_scale_ratio') {
+            $this->render_type_scale_field($args, $value);
         } else {
             ?>
             <input
@@ -791,8 +793,88 @@ class Flavor_Design_Settings {
             <?php if (isset($args['suffix'])): ?>
                 <span class="description"><?php echo esc_html($args['suffix']); ?></span>
             <?php endif; ?>
+            <?php if (isset($args['description'])): ?>
+                <p class="description"><?php echo esc_html($args['description']); ?></p>
+            <?php endif; ?>
             <?php
         }
+    }
+
+    /**
+     * Renderiza el campo de escala tipográfica con un selector de presets
+     * junto al input numérico. El selector sincroniza su valor con el input
+     * vía un script inline ligero sin dependencias.
+     */
+    private function render_type_scale_field($args, $value) {
+        $preset_ratios = [
+            '0'     => __('Manual (sin escala)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.125' => __('Menor segunda (1.125)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.2'   => __('Menor tercera (1.2)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.25'  => __('Tercera mayor (1.25)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.333' => __('Cuarta perfecta (1.333)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.414' => __('Cuarta aumentada (1.414)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.5'   => __('Quinta perfecta (1.5)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            '1.618' => __('Proporción áurea (1.618)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ];
+
+        $input_name    = self::OPTION_NAME . '[' . $args['field'] . ']';
+        $valor_actual  = (string) $value;
+        $valor_en_preset = isset($preset_ratios[$valor_actual]);
+        $select_id     = 'flavor_' . $args['field'] . '_preset';
+        $input_id      = 'flavor_' . $args['field'] . '_value';
+        ?>
+        <select id="<?php echo esc_attr($select_id); ?>" class="regular-text" style="margin-right: 8px;">
+            <?php foreach ($preset_ratios as $ratio_value => $ratio_label): ?>
+                <option value="<?php echo esc_attr($ratio_value); ?>" <?php selected($valor_en_preset && $valor_actual === $ratio_value); ?>>
+                    <?php echo esc_html($ratio_label); ?>
+                </option>
+            <?php endforeach; ?>
+            <option value="__custom__" <?php selected(!$valor_en_preset); ?>>
+                <?php _e('Personalizado…', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+            </option>
+        </select>
+        <input
+            type="number"
+            id="<?php echo esc_attr($input_id); ?>"
+            name="<?php echo esc_attr($input_name); ?>"
+            value="<?php echo esc_attr($value); ?>"
+            class="small-text"
+            step="0.001"
+            min="0"
+        />
+        <?php if (isset($args['description'])): ?>
+            <p class="description"><?php echo esc_html($args['description']); ?></p>
+        <?php endif; ?>
+        <script>
+            (function () {
+                var selectPreset = document.getElementById(<?php echo wp_json_encode($select_id); ?>);
+                var inputValue = document.getElementById(<?php echo wp_json_encode($input_id); ?>);
+                if (!selectPreset || !inputValue) return;
+
+                selectPreset.addEventListener('change', function () {
+                    if (selectPreset.value === '__custom__') {
+                        inputValue.focus();
+                        return;
+                    }
+                    inputValue.value = selectPreset.value;
+                });
+
+                inputValue.addEventListener('input', function () {
+                    var matches = false;
+                    for (var i = 0; i < selectPreset.options.length; i++) {
+                        if (selectPreset.options[i].value === inputValue.value) {
+                            selectPreset.value = inputValue.value;
+                            matches = true;
+                            break;
+                        }
+                    }
+                    if (!matches) {
+                        selectPreset.value = '__custom__';
+                    }
+                });
+            })();
+        </script>
+        <?php
     }
 
     /**
