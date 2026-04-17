@@ -44,29 +44,59 @@ class Flavor_Shell_Module_Registrations {
     }
 
     /**
-     * Comprueba si una tabla existe.
+     * Cache estático de tablas verificadas
+     *
+     * @var array
+     */
+    private static $tables_cache = [];
+
+    /**
+     * Comprueba si una tabla existe (con cache estático).
+     *
+     * OPTIMIZADO: Evita queries repetidas usando cache en memoria.
      *
      * @param string $table Nombre completo de tabla.
      * @return bool
      */
     private function table_exists($table) {
+        if (isset(self::$tables_cache[$table])) {
+            return self::$tables_cache[$table];
+        }
+
         global $wpdb;
-        return $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) === $table;
+        $exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) === $table;
+        self::$tables_cache[$table] = $exists;
+
+        return $exists;
     }
 
     /**
-     * Devuelve la primera columna existente de una lista.
+     * Cache estático de columnas por tabla
+     *
+     * @var array
+     */
+    private static $columns_cache = [];
+
+    /**
+     * Devuelve la primera columna existente de una lista (con cache).
+     *
+     * OPTIMIZADO: Carga todas las columnas de la tabla una vez y las cachea.
      *
      * @param string $table Nombre completo de tabla.
      * @param array  $candidates Columnas candidatas.
      * @return string|null
      */
     private function first_existing_column($table, array $candidates) {
-        global $wpdb;
+        // Cargar columnas de la tabla si no están en cache
+        if (!isset(self::$columns_cache[$table])) {
+            global $wpdb;
+            $columns = $wpdb->get_col("SHOW COLUMNS FROM {$table}");
+            self::$columns_cache[$table] = array_flip($columns ?: []);
+        }
 
+        // Buscar primera columna que exista
         foreach ($candidates as $column) {
-            $exists = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM {$table} LIKE %s", $column));
-            if ($exists) {
+            if (isset(self::$columns_cache[$table][$column])) {
                 return $column;
             }
         }

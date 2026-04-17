@@ -19,6 +19,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Cargar repositorio de integraciones
+require_once __DIR__ . '/repositories/class-module-integration-repository.php';
+
 class Flavor_WP_Module_Integrations {
 
     /**
@@ -1525,60 +1528,9 @@ class Flavor_WP_Module_Integrations {
      * @return array Posts integrados
      */
     public static function obtener_posts_integrados($modulo, $elemento_id, $limite = 10) {
-        global $wpdb;
-        $prefix = $wpdb->prefix . 'flavor_';
-
-        $tabla_map = [
-            'eventos'         => 'eventos_posts',
-            'cursos'          => 'cursos_posts',
-            'talleres'        => 'talleres_posts',
-            'campanias'       => 'campanias_posts',
-            'comunidades'     => 'comunidades_posts',
-            'colectivos'      => 'colectivos_posts',
-            'email_marketing' => 'email_newsletter_posts',
-            'biblioteca'      => 'biblioteca_posts',
-        ];
-
-        $campo_map = [
-            'eventos'         => 'evento_id',
-            'cursos'          => 'curso_id',
-            'talleres'        => 'taller_id',
-            'campanias'       => 'campania_id',
-            'comunidades'     => 'comunidad_id',
-            'colectivos'      => 'colectivo_id',
-            'email_marketing' => 'newsletter_id',
-            'biblioteca'      => 'categoria_id',
-        ];
-
-        if (!isset($tabla_map[$modulo])) {
-            return [];
-        }
-
-        $tabla = $prefix . $tabla_map[$modulo];
-        $campo = $campo_map[$modulo];
-
-        // Verificar que la tabla existe
-        if (!$this->tabla_existe_cached($tabla)) {
-            return [];
-        }
-
-        $post_ids = $wpdb->get_col($wpdb->prepare(
-            "SELECT post_id FROM {$tabla} WHERE {$campo} = %d ORDER BY fecha DESC LIMIT %d",
-            $elemento_id,
-            $limite
-        ));
-
-        if (empty($post_ids)) {
-            return [];
-        }
-
-        return get_posts([
-            'post__in'       => $post_ids,
-            'post_type'      => 'any',
-            'post_status'    => 'publish',
-            'posts_per_page' => $limite,
-            'orderby'        => 'post__in',
-        ]);
+        // Delegar al repositorio centralizado para evitar duplicación y bugs de $this en static
+        $repository = Flavor_Module_Integration_Repository::get_instance();
+        return $repository->get_posts_by_module_element($modulo, $elemento_id, $limite);
     }
 
     /**
@@ -1589,85 +1541,19 @@ class Flavor_WP_Module_Integrations {
      * @return array Integraciones del post
      */
     public static function obtener_integraciones_post($post_id, $usar_cache = true) {
-        // Verificar caché en memoria
+        // Caché en memoria estática para compatibilidad
         $cache_key = 'integraciones_post_' . $post_id;
         if ($usar_cache && isset(self::$cache[$cache_key])) {
             return self::$cache[$cache_key];
         }
 
-        // Verificar transient
-        if ($usar_cache) {
-            $cached = get_transient('flavor_int_' . md5($cache_key));
-            if ($cached !== false) {
-                self::$cache[$cache_key] = $cached;
-                return $cached;
-            }
-        }
+        // Delegar al repositorio centralizado
+        $repository = Flavor_Module_Integration_Repository::get_instance();
+        $integraciones = $repository->get_post_integrations($post_id, $usar_cache);
 
-        global $wpdb;
-        $prefix = $wpdb->prefix . 'flavor_';
-
-        $integraciones = [];
-
-        // Verificar en cada tabla de relaciones
-        $tablas = [
-            'eventos'         => ['tabla' => 'eventos_posts', 'campo' => 'evento_id', 'nombre_tabla' => 'eventos'],
-            'cursos'          => ['tabla' => 'cursos_posts', 'campo' => 'curso_id', 'nombre_tabla' => 'cursos'],
-            'talleres'        => ['tabla' => 'talleres_posts', 'campo' => 'taller_id', 'nombre_tabla' => 'talleres'],
-            'campanias'       => ['tabla' => 'campanias_posts', 'campo' => 'campania_id', 'nombre_tabla' => 'campanias'],
-            'comunidades'     => ['tabla' => 'comunidades_posts', 'campo' => 'comunidad_id', 'nombre_tabla' => 'comunidades'],
-            'colectivos'      => ['tabla' => 'colectivos_posts', 'campo' => 'colectivo_id', 'nombre_tabla' => 'colectivos'],
-            'email_marketing' => ['tabla' => 'email_newsletter_posts', 'campo' => 'newsletter_id', 'nombre_tabla' => 'email_campaigns'],
-            'biblioteca'      => ['tabla' => 'biblioteca_posts', 'campo' => 'categoria_id', 'nombre_tabla' => 'biblioteca_categorias'],
-        ];
-
-        foreach ($tablas as $modulo => $config) {
-            $tabla_relacion = $prefix . $config['tabla'];
-
-            // OPTIMIZACIÓN: Cache de verificación de tabla
-            if ( ! $this->tabla_existe_cached( $tabla_relacion ) ) {
-                continue;
-            }
-
-            // OPTIMIZACIÓN: Solo seleccionar el campo necesario
-            $campo_seleccion = preg_replace( '/[^a-z0-9_]/i', '', $config['campo'] );
-            $relaciones = $wpdb->get_results($wpdb->prepare(
-                "SELECT {$campo_seleccion} FROM {$tabla_relacion} WHERE post_id = %d",
-                $post_id
-            ));
-
-            if (!empty($relaciones)) {
-                foreach ($relaciones as $rel) {
-                    $elemento_id = $rel->{$config['campo']} ?? null;
-                    $nombre_elemento = '';
-
-                    // Obtener nombre del elemento
-                    if ($elemento_id) {
-                        $tabla_elemento = $prefix . $config['nombre_tabla'];
-                        // OPTIMIZACIÓN: Cache de verificación de tabla
-                        if ( $this->tabla_existe_cached( $tabla_elemento ) ) {
-                            $campo_nombre = in_array($modulo, ['comunidades', 'colectivos', 'biblioteca']) ? 'nombre' : 'titulo';
-                            $nombre_elemento = $wpdb->get_var($wpdb->prepare(
-                                "SELECT {$campo_nombre} FROM {$tabla_elemento} WHERE id = %d",
-                                $elemento_id
-                            ));
-                        }
-                    }
-
-                    $integraciones[] = [
-                        'modulo'          => $modulo,
-                        'elemento_id'     => $elemento_id,
-                        'nombre_elemento' => $nombre_elemento,
-                        'fecha'           => $rel->fecha ?? '',
-                    ];
-                }
-            }
-        }
-
-        // Guardar en caché
+        // Mantener caché en memoria para llamadas repetidas en el mismo request
         if ($usar_cache && !empty($integraciones)) {
             self::$cache[$cache_key] = $integraciones;
-            set_transient('flavor_int_' . md5($cache_key), $integraciones, 300);
         }
 
         return $integraciones;
@@ -2393,7 +2279,7 @@ class Flavor_WP_Module_Integrations {
         register_rest_route('flavor/v1', '/posts/(?P<id>\d+)/integraciones', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_integraciones'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_post_integrations'],
             'args'                => [
                 'id' => [
                     'validate_callback' => function($param) {
@@ -2406,7 +2292,7 @@ class Flavor_WP_Module_Integrations {
         register_rest_route('flavor/v1', '/modulos/(?P<modulo>[a-z_]+)/(?P<id>\d+)/posts', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_posts_modulo'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_module_posts'],
             'args'                => [
                 'modulo' => [
                     'validate_callback' => function($param) {
@@ -2418,6 +2304,9 @@ class Flavor_WP_Module_Integrations {
                         return is_numeric($param);
                     }
                 ],
+                'limite' => [
+                    'sanitize_callback' => 'absint',
+                ]
             ],
         ]);
 
@@ -2458,7 +2347,7 @@ class Flavor_WP_Module_Integrations {
     public function api_obtener_posts_modulo($request) {
         $modulo = $request->get_param('modulo');
         $elemento_id = $request->get_param('id');
-        $limite = $request->get_param('limite') ?: 20;
+        $limite = self::normalize_public_limit($request->get_param('limite'));
 
         $posts = self::obtener_posts_integrados($modulo, $elemento_id, $limite);
 
@@ -2481,6 +2370,76 @@ class Flavor_WP_Module_Integrations {
             'posts'       => $resultado,
             'total'       => count($resultado),
         ]);
+    }
+
+    /**
+     * Verifica si se pueden leer integraciones públicas de un post.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_public_post_integrations($request) {
+        $post_id = (int) $request->get_param('id');
+        $post = get_post($post_id);
+
+        if (!$post) {
+            return false;
+        }
+
+        if (current_user_can('read_post', $post_id) || current_user_can('edit_post', $post_id)) {
+            return true;
+        }
+
+        if (!$this->check_public_read_rate_limit()) {
+            return false;
+        }
+
+        $post_type_object = get_post_type_object($post->post_type);
+
+        return $post->post_status === 'publish'
+            && $post_type_object
+            && !empty($post_type_object->public);
+    }
+
+    /**
+     * Verifica si puede consultar posts de un módulo expuestos públicamente.
+     *
+     * @return bool
+     */
+    public function can_read_public_module_posts() {
+        if (current_user_can('edit_posts')) {
+            return true;
+        }
+
+        return $this->check_public_read_rate_limit();
+    }
+
+    /**
+     * Normaliza el tamaño máximo de listados públicos.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @return int
+     */
+    public static function normalize_public_limit($limit) {
+        if ($limit === null || $limit === '') {
+            return 20;
+        }
+
+        return max(1, min(50, (int) $limit));
+    }
+
+    /**
+     * Aplica rate limiting cuando exista el componente central.
+     *
+     * @return bool
+     */
+    private function check_public_read_rate_limit() {
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+
+        // Fallback seguro: denegar si el rate limiter no está disponible.
+        return false;
     }
 
     /**

@@ -751,21 +751,211 @@ class Flavor_Platform_Module_Loader {
     }
 
     /**
-     * Carga los módulos activos
+     * Mapeo de páginas admin a módulos requeridos
+     * Usado para lazy loading en admin
+     */
+    private const PAGE_TO_MODULE = [
+        // Comunidad
+        'socios-dashboard' => 'socios', 'socios-listado' => 'socios', 'socios-solicitudes' => 'socios', 'socios-config' => 'socios',
+        'flavor-colectivos-dashboard' => 'colectivos', 'colectivos-solicitudes' => 'colectivos',
+        'comunidades-dashboard' => 'comunidades', 'comunidades-listado' => 'comunidades',
+        'foros-dashboard' => 'foros', 'foros-temas' => 'foros',
+        // Economía
+        'gc-dashboard' => 'grupos-consumo', 'gc-pedidos' => 'grupos-consumo', 'gc-productos' => 'grupos-consumo',
+        'marketplace-dashboard' => 'marketplace', 'marketplace-anuncios' => 'marketplace',
+        'banco-tiempo-dashboard' => 'banco-tiempo', 'banco-tiempo-intercambios' => 'banco-tiempo',
+        // Actividades
+        'eventos-dashboard' => 'eventos', 'eventos-calendario' => 'eventos', 'eventos-asistentes' => 'eventos',
+        'cursos-dashboard' => 'cursos', 'cursos-listado' => 'cursos',
+        'talleres-dashboard' => 'talleres', 'talleres-listado' => 'talleres',
+        'reservas-dashboard' => 'reservas', 'reservas-pendientes' => 'reservas',
+        // Servicios
+        'tramites-dashboard' => 'tramites', 'tramites-pendientes' => 'tramites',
+        'incidencias-dashboard' => 'incidencias', 'incidencias-abiertas' => 'incidencias',
+        'participacion-dashboard' => 'participacion', 'participacion-votaciones' => 'participacion',
+        // Recursos
+        'huertos-dashboard' => 'huertos-urbanos', 'huertos-parcelas' => 'huertos-urbanos',
+        'espacios-dashboard' => 'espacios-comunes',
+        'biblioteca-dashboard' => 'biblioteca', 'biblioteca-prestamos' => 'biblioteca',
+    ];
+
+    /**
+     * Módulos que siempre se cargan (core functionality)
+     */
+    private const CORE_MODULES = ['woocommerce'];
+
+    /**
+     * Carga los módulos activos con lazy loading en admin
+     *
+     * OPTIMIZADO: En admin, solo carga el módulo necesario para la página actual.
+     * En frontend, carga todos los módulos activos (necesario para shortcodes).
      *
      * @return array Módulos cargados
      */
     public function load_active_modules() {
-        // Usar caché estática para evitar múltiples get_option
         $active_modules = self::get_active_modules_cached();
 
-        foreach ($active_modules as $module_id) {
+        // Determinar si usar lazy loading
+        $use_lazy_loading = $this->should_use_lazy_loading();
+
+        if ($use_lazy_loading) {
+            // Cargar solo módulos necesarios
+            $modules_to_load = $this->get_modules_to_load($active_modules);
+        } else {
+            // Cargar todos los módulos activos
+            $modules_to_load = $active_modules;
+        }
+
+        foreach ($modules_to_load as $module_id) {
             if (isset($this->registered_modules[$module_id])) {
                 $this->load_module($module_id);
             }
         }
 
         return $this->loaded_modules;
+    }
+
+    /**
+     * Determina si se debe usar lazy loading
+     *
+     * @return bool
+     */
+    private function should_use_lazy_loading() {
+        // No usar lazy loading en AJAX (puede necesitar cualquier módulo)
+        if (wp_doing_ajax()) {
+            return false;
+        }
+
+        // No usar lazy loading en REST API
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return false;
+        }
+
+        // No usar lazy loading en cron
+        if (wp_doing_cron()) {
+            return false;
+        }
+
+        // Usar lazy loading solo en admin
+        if (!is_admin()) {
+            return false;
+        }
+
+        // Verificar si es una página de módulo Flavor
+        $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        if (empty($page)) {
+            return false;
+        }
+
+        // Si la página está en el mapeo, usar lazy loading
+        return isset(self::PAGE_TO_MODULE[$page]) || $this->is_flavor_admin_page($page);
+    }
+
+    /**
+     * Verifica si es una página admin de Flavor
+     *
+     * @param string $page Slug de la página
+     * @return bool
+     */
+    private function is_flavor_admin_page($page) {
+        $flavor_prefixes = ['flavor-', 'gc-', 'socios', 'eventos', 'tramites', 'incidencias', 'marketplace', 'comunidades'];
+        foreach ($flavor_prefixes as $prefix) {
+            if (strpos($page, $prefix) === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Obtiene los módulos que deben cargarse para la página actual
+     *
+     * @param array $active_modules Módulos activos
+     * @return array Módulos a cargar
+     */
+    private function get_modules_to_load($active_modules) {
+        $modules_to_load = [];
+
+        // 1. Siempre cargar módulos core
+        foreach (self::CORE_MODULES as $core_module) {
+            if (in_array($core_module, $active_modules, true)) {
+                $modules_to_load[] = $core_module;
+            }
+        }
+
+        // 2. Cargar módulo específico de la página
+        $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        if (!empty($page)) {
+            $required_module = $this->get_module_for_page($page);
+
+            if ($required_module && in_array($required_module, $active_modules, true)) {
+                $modules_to_load[] = $required_module;
+
+                // Cargar dependencias del módulo si las tiene
+                $dependencies = $this->get_module_dependencies($required_module);
+                foreach ($dependencies as $dep) {
+                    if (in_array($dep, $active_modules, true) && !in_array($dep, $modules_to_load, true)) {
+                        $modules_to_load[] = $dep;
+                    }
+                }
+            }
+        }
+
+        // 3. Si es página principal de Flavor, cargar todos para mostrar widgets
+        if ($page === 'flavor-dashboard' || $page === 'flavor-unified-dashboard') {
+            return $active_modules;
+        }
+
+        return array_unique($modules_to_load);
+    }
+
+    /**
+     * Obtiene el módulo requerido para una página
+     *
+     * @param string $page Slug de la página
+     * @return string|null ID del módulo o null
+     */
+    private function get_module_for_page($page) {
+        // Buscar en mapeo directo
+        if (isset(self::PAGE_TO_MODULE[$page])) {
+            return self::PAGE_TO_MODULE[$page];
+        }
+
+        // Intentar extraer módulo del slug (ej: eventos-calendario -> eventos)
+        $parts = explode('-', $page);
+        if (count($parts) >= 2) {
+            $potential_module = $parts[0];
+            // Verificar si es un módulo registrado
+            if (isset($this->registered_modules[$potential_module])) {
+                return $potential_module;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtiene las dependencias de un módulo
+     *
+     * @param string $module_id ID del módulo
+     * @return array IDs de módulos dependientes
+     */
+    private function get_module_dependencies($module_id) {
+        // Por ahora, dependencias hardcodeadas
+        // TODO: Leer de metadata del módulo
+        $dependencies = [
+            'grupos-consumo' => ['socios'],
+            'marketplace' => ['socios'],
+            'eventos' => ['socios'],
+            'cursos' => ['socios'],
+            'talleres' => ['socios'],
+            'reservas' => ['socios', 'espacios-comunes'],
+            'participacion' => ['socios'],
+            'huertos-urbanos' => ['socios'],
+        ];
+
+        return $dependencies[$module_id] ?? [];
     }
 
     /**
@@ -1379,6 +1569,36 @@ class Flavor_Platform_Module_Loader {
     public function is_module_loaded($module_id) {
         $loaded = $this->get_loaded_modules();
         return isset($loaded[$module_id]);
+    }
+
+    /**
+     * Carga un módulo bajo demanda (lazy loading)
+     *
+     * Útil cuando se necesita un módulo que no se cargó inicialmente
+     * (ej. en peticiones AJAX que requieren un módulo específico).
+     *
+     * @param string $module_id ID del módulo a cargar
+     * @return bool True si se cargó correctamente
+     */
+    public function load_module_on_demand($module_id) {
+        // Si ya está cargado, retornar true
+        if (isset($this->loaded_modules[$module_id])) {
+            return true;
+        }
+
+        // Verificar que el módulo está activo
+        $active_modules = self::get_active_modules_cached();
+        if (!in_array($module_id, $active_modules, true)) {
+            return false;
+        }
+
+        // Verificar que está registrado
+        if (!isset($this->registered_modules[$module_id])) {
+            return false;
+        }
+
+        // Cargar el módulo
+        return $this->load_module($module_id);
     }
 
     /**

@@ -930,19 +930,19 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         register_rest_route('flavor/v1', '/energia-comunitaria/dashboard', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_dashboard'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_energia_catalog'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_comunidades'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_energia_catalog'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/instalaciones', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_instalaciones'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_energia_catalog'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/incidencias', [
@@ -956,31 +956,31 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         register_rest_route('flavor/v1', '/energia-comunitaria/comunidades', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_comunidades'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_public_energia_catalog'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/balance/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_balance_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_sensitive_energia_comunidad'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/participantes/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_participantes_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_sensitive_energia_comunidad'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/cierres/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_cierres_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_sensitive_energia_comunidad'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/liquidaciones/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_liquidaciones_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_sensitive_energia_comunidad'],
         ]);
 
         register_rest_route('flavor/v1', '/energia-comunitaria/liquidacion/(?P<id>\d+)/estado', [
@@ -1003,6 +1003,41 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
     public function rest_get_dashboard()
     {
         return rest_ensure_response($this->get_dashboard_data());
+    }
+
+    /**
+     * Permite endpoints públicos de catálogo con rate limiting.
+     *
+     * @return bool
+     */
+    public function can_read_public_energia_catalog()
+    {
+        if ($this->can_manage_module()) {
+            return true;
+        }
+
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+
+        return true;
+    }
+
+    /**
+     * Protege datos sensibles por comunidad energética.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_sensitive_energia_comunidad($request)
+    {
+        $comunidad_id = absint($request['id'] ?? $request->get_param('id'));
+
+        if ($comunidad_id <= 0) {
+            return false;
+        }
+
+        return $this->user_can_manage_energia_comunidad($comunidad_id);
     }
 
     public function rest_get_instalaciones()

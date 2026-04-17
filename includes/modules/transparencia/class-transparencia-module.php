@@ -749,7 +749,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
             'categoria' => $request->get_param('categoria'),
             'desde' => $request->get_param('desde'),
             'hasta' => $request->get_param('hasta'),
-            'limite' => $request->get_param('limite') ?: 50,
+            'limite' => self::normalize_public_limit($request->get_param('limite'), 50, 100),
         ];
 
         $gastos = $this->obtener_gastos($parametros);
@@ -777,7 +777,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
             'desde' => $request->get_param('desde'),
             'hasta' => $request->get_param('hasta'),
             'estado' => $request->get_param('estado') ?: 'publicada',
-            'limite' => $request->get_param('limite') ?: 20,
+            'limite' => self::normalize_public_limit($request->get_param('limite'), 20, 50),
         ];
 
         $actas = $this->obtener_actas($parametros);
@@ -790,12 +790,12 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
      */
     public function rest_crear_solicitud($request) {
         $datos = [
-            'titulo' => $request->get_param('titulo'),
-            'descripcion' => $request->get_param('descripcion'),
-            'categoria' => $request->get_param('categoria'),
-            'nombre' => $request->get_param('nombre'),
-            'email' => $request->get_param('email'),
-            'telefono' => $request->get_param('telefono'),
+            'titulo' => sanitize_text_field($request->get_param('titulo')),
+            'descripcion' => sanitize_textarea_field($request->get_param('descripcion')),
+            'categoria' => sanitize_text_field($request->get_param('categoria')),
+            'nombre' => sanitize_text_field($request->get_param('nombre')),
+            'email' => sanitize_email($request->get_param('email')),
+            'telefono' => sanitize_text_field($request->get_param('telefono')),
         ];
 
         $resultado = $this->crear_solicitud_informacion($datos);
@@ -1625,6 +1625,11 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
             wp_die(__(__('Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
+        $archivo_url = esc_url_raw($documento->archivo_url);
+        if (!wp_http_validate_url($archivo_url)) {
+            wp_die(__('URL de documento no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
         // Incrementar descargas
         $wpdb->query($wpdb->prepare(
             "UPDATE $tabla_documentos SET descargas = descargas + 1 WHERE id = %d",
@@ -1632,7 +1637,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         ));
 
         // Redirigir al archivo
-        wp_redirect($documento->archivo_url);
+        wp_safe_redirect($archivo_url);
         exit;
     }
 
@@ -1693,7 +1698,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         $parametros = [
             'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
             'ejercicio' => absint($_POST['ejercicio'] ?? date('Y')),
-            'limite' => 20,
+            'limite' => self::normalize_public_limit($_POST['limite'] ?? null, 20, 100),
         ];
 
         $gastos = $this->obtener_gastos($parametros);
@@ -1710,7 +1715,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         $parametros = [
             'tipo_organo' => sanitize_text_field($_POST['tipo_organo'] ?? ''),
             'estado' => 'publicada',
-            'limite' => 20,
+            'limite' => self::normalize_public_limit($_POST['limite'] ?? null, 20, 50),
         ];
 
         $actas = $this->obtener_actas($parametros);
@@ -3079,6 +3084,22 @@ KNOWLEDGE;
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Limita parámetros de listado públicos para evitar cargas excesivas.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @param int   $default Valor por defecto.
+     * @param int   $max Máximo permitido.
+     * @return int
+     */
+    public static function normalize_public_limit($limit, $default, $max) {
+        if ($limit === null || $limit === '') {
+            return (int) $default;
+        }
+
+        return max(1, min((int) $max, (int) $limit));
     }
 
     /**

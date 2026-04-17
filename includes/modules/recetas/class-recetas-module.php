@@ -158,42 +158,42 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
             register_rest_route('flavor/v1', '/recetas', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar_recetas'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
 
             // Obtener receta con todos los detalles
             register_rest_route('flavor/v1', '/recetas/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener_receta'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
 
             // Obtener categorías de recetas
             register_rest_route('flavor/v1', '/recetas/categorias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_categorias'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
 
             // Buscar recetas
             register_rest_route('flavor/v1', '/recetas/buscar', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_buscar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
 
             // Recetas destacadas/populares
             register_rest_route('flavor/v1', '/recetas/destacadas', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_destacadas'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
 
             // Recetas por producto
             register_rest_route('flavor/v1', '/recetas/producto/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_recetas_producto'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_recipe_data'],
             ]);
         });
     }
@@ -205,8 +205,8 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         $categoria = $request->get_param('categoria');
         $tipo_cocina = $request->get_param('tipo_cocina');
         $dificultad = $request->get_param('dificultad');
-        $limite = intval($request->get_param('limite')) ?: 20;
-        $pagina = intval($request->get_param('pagina')) ?: 1;
+        $limite = self::normalize_public_limit($request->get_param('limite'), 20, 50);
+        $pagina = max(1, intval($request->get_param('pagina')) ?: 1);
 
         $args = [
             'post_type' => 'flavor_receta',
@@ -324,7 +324,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      */
     public function api_buscar($request) {
         $busqueda = sanitize_text_field($request->get_param('q'));
-        $limite = intval($request->get_param('limite')) ?: 20;
+        $limite = self::normalize_public_limit($request->get_param('limite'), 20, 50);
 
         if (empty($busqueda)) {
             return rest_ensure_response(['recetas' => []]);
@@ -354,7 +354,7 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
      * API: Recetas destacadas
      */
     public function api_destacadas($request) {
-        $limite = intval($request->get_param('limite')) ?: 10;
+        $limite = self::normalize_public_limit($request->get_param('limite'), 10, 20);
 
         $args = [
             'post_type' => 'flavor_receta',
@@ -386,6 +386,39 @@ class Flavor_Platform_Recetas_Module extends Flavor_Platform_Module_Base {
         }
 
         return rest_ensure_response(['recetas' => $recetas]);
+    }
+
+    /**
+     * Permite lectura pública del catálogo de recetas con rate limiting.
+     *
+     * @return bool
+     */
+    public function can_read_public_recipe_data() {
+        if (current_user_can('edit_posts')) {
+            return true;
+        }
+
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+
+        return true;
+    }
+
+    /**
+     * Normaliza límites de listados públicos.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @param int   $default Valor por defecto.
+     * @param int   $max Máximo permitido.
+     * @return int
+     */
+    public static function normalize_public_limit($limit, $default, $max) {
+        if ($limit === null || $limit === '') {
+            return (int) $default;
+        }
+
+        return max(1, min((int) $max, (int) $limit));
     }
 
     /**

@@ -624,42 +624,42 @@ class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
             register_rest_route('flavor/v1', '/actores', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Obtener actor con detalles
             register_rest_route('flavor/v1', '/actores/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Grafo de relaciones
             register_rest_route('flavor/v1', '/actores/grafo', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_grafo'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Buscar actores
             register_rest_route('flavor/v1', '/actores/buscar', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_buscar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Estadísticas
             register_rest_route('flavor/v1', '/actores/estadisticas', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_estadisticas'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Tipos de actor
             register_rest_route('flavor/v1', '/actores/tipos', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_tipos'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Crear actor (requiere login)
@@ -673,14 +673,14 @@ class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
             register_rest_route('flavor/v1', '/actores/(?P<id>\d+)/relaciones', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_relaciones'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
 
             // Interacciones de un actor
             register_rest_route('flavor/v1', '/actores/(?P<id>\d+)/interacciones', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_interacciones'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_public_actor_data'],
             ]);
         });
     }
@@ -693,7 +693,7 @@ class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_mapa_actores';
 
         $busqueda = sanitize_text_field($request->get_param('q'));
-        $limite = intval($request->get_param('limite')) ?: 20;
+        $limite = self::normalize_public_limit($request->get_param('limite'), 20, 50);
 
         if (empty($busqueda)) {
             return rest_ensure_response(['actores' => []]);
@@ -713,6 +713,39 @@ class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
             'actores' => $actores,
             'total' => count($actores),
         ]);
+    }
+
+    /**
+     * Permite lectura pública de catálogo con rate limiting cuando exista.
+     *
+     * @return bool
+     */
+    public function can_read_public_actor_data() {
+        if (current_user_can('edit_posts')) {
+            return true;
+        }
+
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+
+        return true;
+    }
+
+    /**
+     * Normaliza límites de listados públicos.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @param int   $default Valor por defecto.
+     * @param int   $max Máximo permitido.
+     * @return int
+     */
+    public static function normalize_public_limit($limit, $default, $max) {
+        if ($limit === null || $limit === '') {
+            return (int) $default;
+        }
+
+        return max(1, min((int) $max, (int) $limit));
     }
 
     /**

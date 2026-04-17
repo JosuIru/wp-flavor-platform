@@ -178,6 +178,9 @@ class Flavor_Shell_Navigation_Registry {
     /**
      * Obtener badge para una página específica
      *
+     * OPTIMIZADO: Usa el cache de get_all_badges() para evitar
+     * ejecutar callbacks múltiples veces por carga de página.
+     *
      * @param string $page_slug Slug de la página
      * @return array|null ['count' => int, 'severity' => string] o null
      */
@@ -186,17 +189,10 @@ class Flavor_Shell_Navigation_Registry {
             return null;
         }
 
-        $config = $this->badge_callbacks[$page_slug];
-        $count = call_user_func($config['callback']);
+        // Usar cache centralizado en lugar de ejecutar callback directamente
+        $all_badges = $this->get_all_badges();
 
-        if ($count <= 0) {
-            return null;
-        }
-
-        return [
-            'count' => (int) $count,
-            'severity' => $config['severity'],
-        ];
+        return $all_badges[$page_slug] ?? null;
     }
 
     /**
