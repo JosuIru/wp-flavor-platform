@@ -42,10 +42,10 @@ if [ -n "${ARCHIVOS_JS_STAGED}" ]; then
     echo -e "${COLOR_CYAN}[LINT]${COLOR_RESET} Verificando archivos JavaScript..."
 
     # Ejecutar ESLint si esta disponible
-    if command -v npx &> /dev/null && [ -f "node_modules/.bin/eslint" ]; then
+    if command -v npx &> /dev/null && [ -f "node_modules/.bin/eslint" ] && [ -f "config/.eslintrc.json" ]; then
         for ARCHIVO in ${ARCHIVOS_JS_STAGED}; do
             if [ -f "${ARCHIVO}" ]; then
-                if ! npx eslint "${ARCHIVO}" --quiet 2>/dev/null; then
+                if ! npx eslint -c config/.eslintrc.json "${ARCHIVO}" --quiet 2>/dev/null; then
                     echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} ESLint fallo en: ${ARCHIVO}"
                     ERRORES=$((ERRORES + 1))
                 fi
