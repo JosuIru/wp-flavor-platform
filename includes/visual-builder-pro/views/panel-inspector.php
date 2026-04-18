@@ -295,6 +295,37 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </template>
 
+                        <!-- Preview del primer item -->
+                        <div class="vbp-dynamic-preview" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+                                <h4 style="margin:0;font-size:0.875em;color:#374151;text-transform:uppercase;letter-spacing:0.05em;"><?php esc_html_e( 'Vista previa', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>
+                                <span x-show="previewTotal > 0" x-text="previewTotal + ' <?php echo esc_js( __( 'resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>'" style="font-size:0.75em;color:#6b7280;"></span>
+                            </div>
+
+                            <div x-show="previewLoading" style="padding:16px;text-align:center;color:#6b7280;font-size:0.8125em;">
+                                <?php esc_html_e( 'Cargando…', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </div>
+
+                            <div x-show="!previewLoading && previewError" x-text="previewError" style="padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;color:#991b1b;font-size:0.8125em;"></div>
+
+                            <div x-show="!previewLoading && !previewError && !previewItem" style="padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;color:#6b7280;font-size:0.8125em;text-align:center;">
+                                <?php esc_html_e( 'Sin resultados con los filtros actuales', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </div>
+
+                            <template x-if="!previewLoading && !previewError && previewItem">
+                                <div style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#fff;">
+                                    <template x-if="previewItem.image">
+                                        <div :style="'aspect-ratio:16/9;background:#f3f4f6 url(' + previewItem.image + ') center/cover no-repeat;'"></div>
+                                    </template>
+                                    <div style="padding:12px;">
+                                        <div x-text="previewItem.title" style="font-weight:600;color:#111827;margin-bottom:4px;font-size:0.9em;"></div>
+                                        <div x-show="previewItem.date" x-text="previewItem.date" style="color:#6b7280;font-size:0.75em;margin-bottom:4px;"></div>
+                                        <div x-show="previewItem.excerpt" x-text="previewItem.excerpt" style="color:#4b5563;font-size:0.8125em;line-height:1.4;"></div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
                         <div class="vbp-field-group" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
                             <label class="vbp-field-label"><?php esc_html_e( 'Mensaje si no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" class="vbp-field-input"

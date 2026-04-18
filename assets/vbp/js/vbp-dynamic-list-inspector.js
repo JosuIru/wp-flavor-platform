@@ -106,6 +106,12 @@
             queryArgs: {},
             loadError: '',
             elementId: null,
+            // Preview state
+            previewItem: null,
+            previewLoading: false,
+            previewError: '',
+            previewTotal: 0,
+            previewDebounceTimer: null,
 
             /**
              * Rehidrata el estado cuando el inspector abre un elemento
@@ -148,6 +154,8 @@
                 } else {
                     this.currentSchema = { id: '', label: '', description: '', fields: {} };
                 }
+
+                this.schedulePreviewFetch();
             },
 
             handleSourceChange: function (nuevoSource) {
@@ -163,6 +171,8 @@
                     source: nuevoSource,
                     query_args_json: JSON.stringify(this.queryArgs)
                 });
+
+                this.schedulePreviewFetch();
             },
 
             updateQueryArg: function (fieldName, valor) {
@@ -179,6 +189,8 @@
                 this.persistFieldsToElement({
                     query_args_json: JSON.stringify(clonQueryArgs)
                 });
+
+                this.schedulePreviewFetch();
             },
 
             /**
@@ -219,6 +231,69 @@
                 var campos = {};
                 campos[campo] = valor;
                 this.persistFieldsToElement(campos);
+            },
+
+            /**
+             * Debounce del fetch de preview. Evita spam al endpoint cuando
+             * el usuario escribe rápidamente en campos de texto.
+             */
+            schedulePreviewFetch: function () {
+                var self = this;
+                if (this.previewDebounceTimer) {
+                    clearTimeout(this.previewDebounceTimer);
+                }
+                this.previewDebounceTimer = setTimeout(function () {
+                    self.previewDebounceTimer = null;
+                    self.fetchPreviewItem();
+                }, 350);
+            },
+
+            /**
+             * Pide limit=1 al endpoint autenticado para mostrar el primer
+             * item como muestra. Reutiliza la URL REST y el nonce que el
+             * editor ya expone en VBP_Config.
+             */
+            fetchPreviewItem: function () {
+                var self = this;
+
+                if (!this.currentSchema || !this.currentSchema.id) {
+                    this.previewItem = null;
+                    this.previewTotal = 0;
+                    return;
+                }
+
+                var restUrl = (window.VBP_Config && window.VBP_Config.restUrl) ? window.VBP_Config.restUrl : '/wp-json/flavor-vbp/v1/';
+                var nonce   = (window.VBP_Config && window.VBP_Config.restNonce) ? window.VBP_Config.restNonce : '';
+                var sourceId = this.currentSchema.id;
+
+                var argsPreview = Object.assign({}, this.queryArgs, { limit: 1, page: 1 });
+
+                this.previewLoading = true;
+                this.previewError = '';
+
+                fetch(restUrl + 'collections/' + encodeURIComponent(sourceId) + '/query', {
+                    method: 'POST',
+                    headers: Object.assign(
+                        { 'Content-Type': 'application/json' },
+                        nonce ? { 'X-WP-Nonce': nonce } : {}
+                    ),
+                    credentials: 'same-origin',
+                    body: JSON.stringify(argsPreview)
+                }).then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.json();
+                }).then(function (payload) {
+                    var items = (payload && Array.isArray(payload.items)) ? payload.items : [];
+                    self.previewItem = items.length > 0 ? items[0] : null;
+                    self.previewTotal = (payload && payload.meta && typeof payload.meta.total === 'number') ? payload.meta.total : 0;
+                    self.previewLoading = false;
+                }).catch(function (error) {
+                    self.previewError = 'Preview no disponible: ' + error.message;
+                    self.previewLoading = false;
+                    self.previewItem = null;
+                });
             },
 
             clampInt: clampIntWithinRange
