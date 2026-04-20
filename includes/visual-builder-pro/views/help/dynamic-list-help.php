@@ -166,8 +166,20 @@ $url_video_ayuda = (string) apply_filters( 'flavor_vbp_dynamic_list_help_video_u
                 <code>{{meta.CAMPO}}</code> (<?php esc_html_e( 'ej: meta.autor, meta.genero, meta.ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>).
             </p>
             <p style="margin-top:8px;color:#991b1b;font-size:0.875em;background:#fef2f2;padding:8px 10px;border-radius:6px;border:1px solid #fecaca;">
-                ⚠ <?php esc_html_e( 'Por seguridad se eliminan etiquetas <script>, <iframe> y atributos on* (onclick, onload). URLs javascript: se descartan.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                ⚠ <?php esc_html_e( 'Por seguridad se eliminan <script>, <iframe> y atributos on* (onclick, onload). URLs javascript: se descartan. Para permitir iframes de hosts concretos (YouTube, Vimeo) el administrador del site debe añadir el filtro en código:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </p>
+            <div class="vbp-help-snippet" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:12px;margin:8px 0;position:relative;font-family:monospace;font-size:0.85em;">
+                <button type="button"
+                        class="vbp-help-copy-btn"
+                        data-copy-target="snippet-iframe-allowlist"
+                        @click="copyToClipboard($event.currentTarget)"
+                        style="position:absolute;top:6px;right:6px;padding:3px 8px;background:#3b82f6;color:#fff;border:0;border-radius:4px;font-size:0.75em;cursor:pointer;">
+                    📋 <?php esc_html_e( 'Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                </button>
+                <pre id="snippet-iframe-allowlist" style="margin:0;white-space:pre-wrap;">add_filter('flavor_vbp_custom_template_iframe_hosts', function () {
+    return ['youtube.com', 'vimeo.com', 'openstreetmap.org'];
+});</pre>
+            </div>
         </section>
 
         <!-- Filtros visitante -->

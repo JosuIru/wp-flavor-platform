@@ -4087,10 +4087,94 @@ class Flavor_VBP_Canvas {
             $plantilla_html
         );
 
-        // Defensa adicional: wp_kses_post limpia cualquier etiqueta
-        // peligrosa (script, iframe fuera de allowlist) que hubiera
-        // dejado el autor en la plantilla.
-        return wp_kses_post( $plantilla_sustituida );
+        // Defensa: por defecto wp_kses_post elimina <iframe>, <script> y
+        // otros peligrosos. El admin puede permitir iframes específicos
+        // vía el filtro flavor_vbp_custom_template_iframe_hosts.
+        return $this->sanitize_template_html( $plantilla_sustituida );
+    }
+
+    /**
+     * Sanea HTML de plantilla custom aplicando allowlist de iframes.
+     *
+     * Si ningún host está permitido (default), strip-total con wp_kses_post.
+     * Si el admin permite hosts, se extiende allowed_html con iframe y
+     * luego se filtran post-proceso los iframes cuyo src no coincide.
+     *
+     * @param string $html HTML con placeholders ya sustituidos.
+     * @return string
+     */
+    private function sanitize_template_html( $html ) {
+        $hosts_permitidos = (array) apply_filters( 'flavor_vbp_custom_template_iframe_hosts', array() );
+        $hosts_permitidos = array_filter( array_map( 'strval', $hosts_permitidos ) );
+
+        if ( empty( $hosts_permitidos ) ) {
+            return wp_kses_post( $html );
+        }
+
+        $allowed_tags               = wp_kses_allowed_html( 'post' );
+        $allowed_tags['iframe']     = array(
+            'src'             => true,
+            'width'           => true,
+            'height'          => true,
+            'frameborder'     => true,
+            'allowfullscreen' => true,
+            'allow'           => true,
+            'title'           => true,
+            'loading'         => true,
+            'referrerpolicy'  => true,
+            'sandbox'         => true,
+            'class'           => true,
+            'style'           => true,
+        );
+
+        $html_sanitizado = wp_kses( $html, $allowed_tags );
+
+        return $this->filter_iframes_by_host_allowlist( $html_sanitizado, $hosts_permitidos );
+    }
+
+    /**
+     * Elimina <iframe> cuyo host de src NO esté en la allowlist.
+     * Los iframes sin src, con src vacío, o con host no coincidente se
+     * reemplazan por cadena vacía. Los iframes válidos se preservan.
+     *
+     * @param string            $html_sanitizado
+     * @param array<int,string> $hosts_permitidos Lista de substrings de host.
+     * @return string
+     */
+    private function filter_iframes_by_host_allowlist( $html_sanitizado, array $hosts_permitidos ) {
+        return preg_replace_callback(
+            '/<iframe\b([^>]*)(\/?>)(?:[^<]*<\/iframe>)?/i',
+            function ( $coincidencia ) use ( $hosts_permitidos ) {
+                $atributos_iframe = $coincidencia[1];
+
+                if ( ! preg_match( '/\bsrc\s*=\s*["\']([^"\']+)["\']/i', $atributos_iframe, $captura_src ) ) {
+                    return '';
+                }
+
+                $url_src = $captura_src[1];
+                $partes  = wp_parse_url( $url_src );
+                $host    = isset( $partes['host'] ) ? strtolower( $partes['host'] ) : '';
+
+                if ( $host === '' ) {
+                    return '';
+                }
+
+                foreach ( $hosts_permitidos as $host_permitido ) {
+                    $host_permitido = strtolower( trim( $host_permitido ) );
+                    if ( $host_permitido === '' ) {
+                        continue;
+                    }
+                    // Match exacto o subdominio (p.ej. 'youtube.com' matchea
+                    // 'www.youtube.com' y 'www-dev.youtube.com').
+                    if ( $host === $host_permitido || substr( $host, -1 * ( strlen( $host_permitido ) + 1 ) ) === '.' . $host_permitido ) {
+                        return $coincidencia[0];
+                    }
+                }
+
+                return '';
+            },
+            $html_sanitizado
+        );
     }
 
     private function render_dynamic_list_items( array $items, $template_variant, $source_identifier, array $pagination_meta = array() ) {
