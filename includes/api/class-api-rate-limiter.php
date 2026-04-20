@@ -202,7 +202,20 @@ class Flavor_API_Rate_Limiter {
             'post' => self::LIMITE_POST_POR_MINUTO,
         ];
 
-        return $limites_por_tipo[$tipo_peticion] ?? self::LIMITE_GET_POR_MINUTO;
+        $limite_base = $limites_por_tipo[$tipo_peticion] ?? self::LIMITE_GET_POR_MINUTO;
+
+        /**
+         * Permite al admin del site ajustar los límites por tipo de request.
+         *
+         * Los defaults (120 GET/min, 30 POST/min) son conservadores: evitan
+         * abuso con margen holgado para uso legítimo. Si la telemetría en
+         * Flavor_Performance_Metrics muestra 429 falsos positivos (operación
+         * normal tocando el límite), subir el valor aquí.
+         *
+         * @param int    $limite_base   Máximo de requests por minuto.
+         * @param string $tipo_peticion 'get' o 'post'.
+         */
+        return (int) apply_filters( 'flavor_api_rate_limit_max_requests', $limite_base, $tipo_peticion );
     }
 
     /**
