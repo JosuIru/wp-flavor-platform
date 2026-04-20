@@ -584,9 +584,15 @@ class Flavor_VBP_REST_API {
             'show_excerpt' => ! isset( $display_raw['show_excerpt'] ) || ! empty( $display_raw['show_excerpt'] ),
         );
 
+        // Plantilla custom opcional. Si viene, el renderer sustituye los
+        // placeholders {{...}} por campos del item.
+        $plantilla_custom = isset( $body['custom_template'] ) && is_string( $body['custom_template'] )
+            ? $body['custom_template']
+            : '';
+
         if ( $canvas && method_exists( $canvas, 'render_dynamic_list_item_public' ) ) {
             foreach ( $items as $item ) {
-                $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada, $display_config );
+                $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada, $display_config, $plantilla_custom );
             }
         }
 

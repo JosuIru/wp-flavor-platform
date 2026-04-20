@@ -92,12 +92,13 @@
             headers: { 'Content-Type': 'application/json' },
             credentials: 'same-origin',
             body: JSON.stringify({
-                source:    wrapper.dataset.source,
-                args:      args,
-                signature: wrapper.dataset.signature,
-                page:      siguientePagina,
-                variant:   wrapper.dataset.template || 'card',
-                display:   displayConfig
+                source:          wrapper.dataset.source,
+                args:            args,
+                signature:       wrapper.dataset.signature,
+                page:            siguientePagina,
+                variant:         wrapper.dataset.template || 'card',
+                display:         displayConfig,
+                custom_template: wrapper.dataset.customTemplate || ''
             })
         })
         .then(function (response) {

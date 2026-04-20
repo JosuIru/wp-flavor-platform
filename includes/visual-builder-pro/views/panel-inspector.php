@@ -326,8 +326,23 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </template>
                         </div>
 
+                        <!-- Plantilla personalizada (visible solo si variant=custom) -->
+                        <div class="vbp-dynamic-custom-template" x-show="selectedElement.variant === 'custom'" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                            <label class="vbp-field-label"><?php esc_html_e( 'HTML personalizado del item', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
+                            <textarea
+                                class="vbp-field-textarea"
+                                rows="6"
+                                :value="selectedElement.data.custom_template || ''"
+                                @input="updateElementData('custom_template', $event.target.value)"
+                                placeholder='&lt;div class="mi-item"&gt;&lt;h3&gt;{{title}}&lt;/h3&gt;&lt;p&gt;{{excerpt}}&lt;/p&gt;&lt;/div&gt;'
+                                style="font-family:monospace;font-size:0.8125em;width:100%;resize:vertical;"></textarea>
+                            <p class="vbp-field-help" style="color:#6b7280;font-size:0.75em;margin-top:4px;">
+                                <?php esc_html_e( 'Placeholders: {{title}} {{excerpt}} {{image}} {{url}} {{date}} {{meta.CAMPO}}.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </p>
+                        </div>
+
                         <!-- Toggles de visibilidad de campos en la tarjeta -->
-                        <div class="vbp-dynamic-display" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                        <div class="vbp-dynamic-display" x-show="selectedElement.variant !== 'custom'" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
                             <h4 style="margin:0 0 8px;font-size:0.875em;color:#374151;text-transform:uppercase;letter-spacing:0.05em;"><?php esc_html_e( 'Campos visibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>
                             <label class="vbp-checkbox-label" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.875em;">
                                 <input type="checkbox"

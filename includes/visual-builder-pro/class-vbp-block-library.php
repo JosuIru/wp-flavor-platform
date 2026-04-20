@@ -97,6 +97,7 @@ class Flavor_VBP_Block_Library {
                 'card'    => __( 'Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'list'    => __( 'Listado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'minimal' => __( 'Minimal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'custom'  => __( 'Plantilla personalizada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 '_separator_fuente' => array(
@@ -132,6 +133,13 @@ class Flavor_VBP_Block_Library {
                     'type'    => 'toggle',
                     'label'   => __( 'Mostrar resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
+                ),
+                'custom_template' => array(
+                    'type'        => 'textarea',
+                    'label'       => __( 'HTML personalizado del item', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'placeholder' => '<div class="mi-item"><h3>{{title}}</h3><p>{{excerpt}}</p></div>',
+                    'default'     => '',
+                    'description' => __( 'Solo se usa con la variante "Plantilla personalizada". Placeholders: {{title}}, {{excerpt}}, {{image}}, {{url}}, {{date}}, {{meta.CAMPO}}.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'empty_message' => array(
                     'type'    => 'text',

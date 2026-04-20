@@ -3844,9 +3844,19 @@ class Flavor_VBP_Canvas {
             ? $variante_desde_picker
             : $template_legacy;
 
-        $templates_validos = array( 'card', 'list', 'minimal' );
+        $templates_validos = array( 'card', 'list', 'minimal', 'custom' );
         if ( ! in_array( $template_variant, $templates_validos, true ) ) {
             $template_variant = 'card';
+        }
+
+        $plantilla_custom_html = '';
+        if ( $template_variant === 'custom' ) {
+            $plantilla_custom_html = isset( $data['custom_template'] ) ? (string) $data['custom_template'] : '';
+            // Si el autor eligió "custom" pero no escribió plantilla,
+            // caemos a card para no renderizar vacío.
+            if ( trim( $plantilla_custom_html ) === '' ) {
+                $template_variant = 'card';
+            }
         }
 
         $firma_load_more = '';
@@ -3861,13 +3871,14 @@ class Flavor_VBP_Canvas {
             $template_variant,
             $identificador_fuente,
             array(
-                'page'         => $pagina_actual,
-                'per_page'     => $items_pagina,
-                'total_pages'  => $total_paginas,
-                'has_more'     => $tiene_mas,
-                'args'         => $cleaned_args,
-                'signature'    => $firma_load_more,
-                'display'      => $display_config,
+                'page'            => $pagina_actual,
+                'per_page'        => $items_pagina,
+                'total_pages'     => $total_paginas,
+                'has_more'        => $tiene_mas,
+                'args'            => $cleaned_args,
+                'signature'       => $firma_load_more,
+                'display'         => $display_config,
+                'custom_template' => $plantilla_custom_html,
             )
         );
     }
@@ -3897,6 +3908,51 @@ class Flavor_VBP_Canvas {
      * @param string $source_identifier Identificador de la fuente (para data-attributes).
      * @return string
      */
+    /**
+     * Sustituye placeholders {{campo}} y {{meta.subcampo}} en una plantilla
+     * custom contra el item normalizado. URLs pasan por esc_url; el resto
+     * por esc_html. Tras la sustitución, wp_kses_post limpia etiquetas
+     * peligrosas que hubiera en el template del autor.
+     *
+     * @param string $plantilla_html HTML con placeholders.
+     * @param array  $item           Item con shape estándar + meta.
+     * @return string
+     */
+    private function apply_dynamic_list_custom_template( $plantilla_html, array $item ) {
+        $valor_en_ruta = function ( $ruta ) use ( $item ) {
+            $segmentos = explode( '.', $ruta );
+            $cursor    = $item;
+            foreach ( $segmentos as $segmento ) {
+                if ( is_array( $cursor ) && array_key_exists( $segmento, $cursor ) ) {
+                    $cursor = $cursor[ $segmento ];
+                } else {
+                    return '';
+                }
+            }
+            return is_scalar( $cursor ) ? (string) $cursor : '';
+        };
+
+        $plantilla_sustituida = preg_replace_callback(
+            '/\{\{\s*([a-z0-9_.]+)\s*\}\}/i',
+            function ( $coincidencia ) use ( $valor_en_ruta ) {
+                $ruta_campo = $coincidencia[1];
+                $valor_raw  = $valor_en_ruta( $ruta_campo );
+
+                // URLs e imágenes se escapan como URL; el resto como HTML.
+                if ( in_array( $ruta_campo, array( 'url', 'image' ), true ) ) {
+                    return esc_url( $valor_raw );
+                }
+                return esc_html( $valor_raw );
+            },
+            $plantilla_html
+        );
+
+        // Defensa adicional: wp_kses_post limpia cualquier etiqueta
+        // peligrosa (script, iframe fuera de allowlist) que hubiera
+        // dejado el autor en la plantilla.
+        return wp_kses_post( $plantilla_sustituida );
+    }
+
     private function render_dynamic_list_items( array $items, $template_variant, $source_identifier, array $pagination_meta = array() ) {
         $clases_envoltorio = 'vbp-dynamic-list-wrapper';
         $clases_contenedor = 'vbp-element vbp-dynamic-list vbp-dynamic-list--' . sanitize_html_class( $template_variant );
@@ -3913,6 +3969,8 @@ class Flavor_VBP_Canvas {
         $display_config = isset( $pagination_meta['display'] ) && is_array( $pagination_meta['display'] )
             ? $pagination_meta['display']
             : array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true );
+
+        $plantilla_custom_html = isset( $pagination_meta['custom_template'] ) ? (string) $pagination_meta['custom_template'] : '';
 
         // Data-attributes para el botón "Cargar más" del frontend. Se
         // incluyen siempre que haya pagination_meta; si has_more es false
@@ -3935,6 +3993,9 @@ class Flavor_VBP_Canvas {
                 esc_attr( $template_variant ),
                 esc_attr( $display_json )
             );
+            if ( $plantilla_custom_html !== '' ) {
+                $wrapper_data_attrs .= ' data-custom-template="' . esc_attr( $plantilla_custom_html ) . '"';
+            }
         }
 
         $html = '<div class="' . esc_attr( $clases_envoltorio ) . '"' . $wrapper_data_attrs . '>';
@@ -3946,7 +4007,13 @@ class Flavor_VBP_Canvas {
         $html .= '>';
 
         foreach ( $items as $item ) {
-            $html .= $this->render_dynamic_list_item( $item, $template_variant, $display_config );
+            if ( $template_variant === 'custom' && $plantilla_custom_html !== '' ) {
+                $html .= '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom">'
+                    . $this->apply_dynamic_list_custom_template( $plantilla_custom_html, $item )
+                    . '</div>';
+            } else {
+                $html .= $this->render_dynamic_list_item( $item, $template_variant, $display_config );
+            }
         }
 
         $html .= '</div>';
@@ -3970,15 +4037,22 @@ class Flavor_VBP_Canvas {
      * @param string $template_variant
      * @return string
      */
-    public function render_dynamic_list_item_public( array $item, $template_variant, array $display_config = array() ) {
-        $templates_validos = array( 'card', 'list', 'minimal' );
+    public function render_dynamic_list_item_public( array $item, $template_variant, array $display_config = array(), $custom_template_html = '' ) {
+        $templates_validos = array( 'card', 'list', 'minimal', 'custom' );
         if ( ! in_array( $template_variant, $templates_validos, true ) ) {
             $template_variant = 'card';
         }
         if ( empty( $display_config ) ) {
             $display_config = array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true );
         }
-        return $this->render_dynamic_list_item( $item, $template_variant, $display_config );
+
+        if ( $template_variant === 'custom' && is_string( $custom_template_html ) && $custom_template_html !== '' ) {
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom">'
+                . $this->apply_dynamic_list_custom_template( $custom_template_html, $item )
+                . '</div>';
+        }
+
+        return $this->render_dynamic_list_item( $item, $template_variant === 'custom' ? 'card' : $template_variant, $display_config );
     }
 
     /**
