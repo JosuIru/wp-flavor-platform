@@ -326,6 +326,29 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </template>
                         </div>
 
+                        <!-- Toggles de visibilidad de campos en la tarjeta -->
+                        <div class="vbp-dynamic-display" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                            <h4 style="margin:0 0 8px;font-size:0.875em;color:#374151;text-transform:uppercase;letter-spacing:0.05em;"><?php esc_html_e( 'Campos visibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>
+                            <label class="vbp-checkbox-label" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.875em;">
+                                <input type="checkbox"
+                                       :checked="selectedElement.data.show_image === undefined ? true : !!selectedElement.data.show_image"
+                                       @change="updateElementData('show_image', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </label>
+                            <label class="vbp-checkbox-label" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.875em;">
+                                <input type="checkbox"
+                                       :checked="selectedElement.data.show_date === undefined ? true : !!selectedElement.data.show_date"
+                                       @change="updateElementData('show_date', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </label>
+                            <label class="vbp-checkbox-label" style="display:flex;align-items:center;gap:8px;font-size:0.875em;">
+                                <input type="checkbox"
+                                       :checked="selectedElement.data.show_excerpt === undefined ? true : !!selectedElement.data.show_excerpt"
+                                       @change="updateElementData('show_excerpt', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </label>
+                        </div>
+
                         <div class="vbp-field-group" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
                             <label class="vbp-field-label"><?php esc_html_e( 'Mensaje si no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" class="vbp-field-input"

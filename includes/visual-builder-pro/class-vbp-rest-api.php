@@ -575,9 +575,18 @@ class Flavor_VBP_REST_API {
         $variant_seleccionada = isset( $body['variant'] ) ? sanitize_key( $body['variant'] ) : 'card';
         $html_items = '';
 
+        // Config de visibilidad de campos. Aceptamos lo que venga del
+        // wrapper de la página original; castea cada toggle a bool.
+        $display_raw    = isset( $body['display'] ) && is_array( $body['display'] ) ? $body['display'] : array();
+        $display_config = array(
+            'show_image'   => ! isset( $display_raw['show_image'] ) || ! empty( $display_raw['show_image'] ),
+            'show_date'    => ! isset( $display_raw['show_date'] ) || ! empty( $display_raw['show_date'] ),
+            'show_excerpt' => ! isset( $display_raw['show_excerpt'] ) || ! empty( $display_raw['show_excerpt'] ),
+        );
+
         if ( $canvas && method_exists( $canvas, 'render_dynamic_list_item_public' ) ) {
             foreach ( $items as $item ) {
-                $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada );
+                $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada, $display_config );
             }
         }
 

@@ -118,6 +118,21 @@ class Flavor_VBP_Block_Library {
                 // El estilo del item (card/list/minimal) se elige desde el
                 // selector de variantes del bloque, no aquí. Evitamos un
                 // duplicado en el inspector.
+                'show_image' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => true,
+                ),
+                'show_date' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => true,
+                ),
+                'show_excerpt' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => true,
+                ),
                 'empty_message' => array(
                     'type'    => 'text',
                     'label'   => __( 'Mensaje cuando no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),

@@ -73,6 +73,13 @@
             return;
         }
 
+        var displayConfig = {};
+        try {
+            displayConfig = JSON.parse(wrapper.dataset.display || '{}');
+        } catch (e) {
+            displayConfig = {};
+        }
+
         var urlBase = (window.VBP_Config && window.VBP_Config.restUrl) || '/wp-json/flavor-vbp/v1/';
         var siguientePagina = paginaActual + 1;
 
@@ -89,7 +96,8 @@
                 args:      args,
                 signature: wrapper.dataset.signature,
                 page:      siguientePagina,
-                variant:   wrapper.dataset.template || 'card'
+                variant:   wrapper.dataset.template || 'card',
+                display:   displayConfig
             })
         })
         .then(function (response) {

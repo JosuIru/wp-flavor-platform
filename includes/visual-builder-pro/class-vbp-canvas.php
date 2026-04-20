@@ -3854,6 +3854,8 @@ class Flavor_VBP_Canvas {
             $firma_load_more = Flavor_VBP_Query_Signature::sign( $identificador_fuente, $cleaned_args );
         }
 
+        $display_config = $this->extract_dynamic_list_display_config( $data );
+
         return $this->render_dynamic_list_items(
             $items,
             $template_variant,
@@ -3865,7 +3867,25 @@ class Flavor_VBP_Canvas {
                 'has_more'     => $tiene_mas,
                 'args'         => $cleaned_args,
                 'signature'    => $firma_load_more,
+                'display'      => $display_config,
             )
+        );
+    }
+
+    /**
+     * Extrae la configuración de visibilidad de campos del bloque
+     * dynamic-list. Mantiene compatibilidad: si el bloque fue guardado
+     * antes de existir estos toggles, no tiene las claves y el default
+     * es "todo visible".
+     *
+     * @param array $data Datos del elemento.
+     * @return array{show_image: bool, show_date: bool, show_excerpt: bool}
+     */
+    private function extract_dynamic_list_display_config( $data ) {
+        return array(
+            'show_image'   => ! isset( $data['show_image'] ) || ! empty( $data['show_image'] ),
+            'show_date'    => ! isset( $data['show_date'] ) || ! empty( $data['show_date'] ),
+            'show_excerpt' => ! isset( $data['show_excerpt'] ) || ! empty( $data['show_excerpt'] ),
         );
     }
 
@@ -3888,6 +3908,12 @@ class Flavor_VBP_Canvas {
             $estilos_contenedor = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;';
         }
 
+        // Config de visibilidad de campos del item. Defaults todos true
+        // para mantener compatibilidad con bloques antiguos.
+        $display_config = isset( $pagination_meta['display'] ) && is_array( $pagination_meta['display'] )
+            ? $pagination_meta['display']
+            : array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true );
+
         // Data-attributes para el botón "Cargar más" del frontend. Se
         // incluyen siempre que haya pagination_meta; si has_more es false
         // el botón no se renderiza, pero los atributos de contexto quedan
@@ -3898,14 +3924,16 @@ class Flavor_VBP_Canvas {
             $args_json     = isset( $pagination_meta['args'] ) ? wp_json_encode( $pagination_meta['args'] ) : '{}';
             $current_page  = isset( $pagination_meta['page'] ) ? (int) $pagination_meta['page'] : 1;
             $total_pages   = isset( $pagination_meta['total_pages'] ) ? (int) $pagination_meta['total_pages'] : 1;
+            $display_json  = wp_json_encode( $display_config );
             $wrapper_data_attrs = sprintf(
-                ' data-source="%s" data-args="%s" data-signature="%s" data-page="%d" data-total-pages="%d" data-template="%s"',
+                ' data-source="%s" data-args="%s" data-signature="%s" data-page="%d" data-total-pages="%d" data-template="%s" data-display="%s"',
                 esc_attr( $source_identifier ),
                 esc_attr( $args_json ),
                 esc_attr( $signature_load_more ),
                 $current_page,
                 $total_pages,
-                esc_attr( $template_variant )
+                esc_attr( $template_variant ),
+                esc_attr( $display_json )
             );
         }
 
@@ -3918,7 +3946,7 @@ class Flavor_VBP_Canvas {
         $html .= '>';
 
         foreach ( $items as $item ) {
-            $html .= $this->render_dynamic_list_item( $item, $template_variant );
+            $html .= $this->render_dynamic_list_item( $item, $template_variant, $display_config );
         }
 
         $html .= '</div>';
@@ -3942,27 +3970,35 @@ class Flavor_VBP_Canvas {
      * @param string $template_variant
      * @return string
      */
-    public function render_dynamic_list_item_public( array $item, $template_variant ) {
+    public function render_dynamic_list_item_public( array $item, $template_variant, array $display_config = array() ) {
         $templates_validos = array( 'card', 'list', 'minimal' );
         if ( ! in_array( $template_variant, $templates_validos, true ) ) {
             $template_variant = 'card';
         }
-        return $this->render_dynamic_list_item( $item, $template_variant );
+        if ( empty( $display_config ) ) {
+            $display_config = array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true );
+        }
+        return $this->render_dynamic_list_item( $item, $template_variant, $display_config );
     }
 
     /**
-     * Renderiza un único item según la plantilla elegida.
+     * Renderiza un único item según la plantilla y la config de visibilidad.
      *
      * @param array  $item              Item normalizado con keys id, title, excerpt, image, url, date.
      * @param string $template_variant  Variante: card|list|minimal.
+     * @param array  $display_config    Toggles show_image, show_date, show_excerpt.
      * @return string
      */
-    private function render_dynamic_list_item( array $item, $template_variant ) {
+    private function render_dynamic_list_item( array $item, $template_variant, array $display_config = array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true ) ) {
         $titulo_item   = isset( $item['title'] ) ? (string) $item['title'] : '';
         $extracto_item = isset( $item['excerpt'] ) ? (string) $item['excerpt'] : '';
         $imagen_url    = isset( $item['image'] ) ? (string) $item['image'] : '';
         $enlace_item   = isset( $item['url'] ) ? (string) $item['url'] : '#';
         $fecha_item    = isset( $item['date'] ) ? (string) $item['date'] : '';
+
+        $mostrar_imagen   = ! empty( $display_config['show_image'] );
+        $mostrar_fecha    = ! empty( $display_config['show_date'] );
+        $mostrar_extracto = ! empty( $display_config['show_excerpt'] );
 
         $enlace_titulo = '<a href="' . esc_url( $enlace_item ) . '" class="vbp-dynamic-list__title-link">' . esc_html( $titulo_item ) . '</a>';
 
@@ -3973,14 +4009,14 @@ class Flavor_VBP_Canvas {
         if ( $template_variant === 'list' ) {
             return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--list" style="padding:12px 0;border-bottom:1px solid #e5e7eb;">'
                 . '<h4 class="vbp-dynamic-list__title" style="margin:0 0 4px;">' . $enlace_titulo . '</h4>'
-                . ( $fecha_item ? '<time class="vbp-dynamic-list__date" style="color:#6b7280;font-size:0.875em;">' . esc_html( $fecha_item ) . '</time>' : '' )
-                . ( $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:4px 0 0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
+                . ( $mostrar_fecha && $fecha_item ? '<time class="vbp-dynamic-list__date" style="color:#6b7280;font-size:0.875em;">' . esc_html( $fecha_item ) . '</time>' : '' )
+                . ( $mostrar_extracto && $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:4px 0 0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
                 . '</div>';
         }
 
         // Card (por defecto)
         $imagen_html = '';
-        if ( $imagen_url ) {
+        if ( $mostrar_imagen && $imagen_url ) {
             $imagen_html = '<div class="vbp-dynamic-list__image" style="aspect-ratio:16/9;background:#f3f4f6 url(' . esc_url( $imagen_url ) . ') center/cover no-repeat;border-radius:8px 8px 0 0;"></div>';
         }
 
@@ -3988,8 +4024,8 @@ class Flavor_VBP_Canvas {
             . $imagen_html
             . '<div class="vbp-dynamic-list__body" style="padding:16px;">'
             . '<h3 class="vbp-dynamic-list__title" style="margin:0 0 8px;font-size:1.125em;">' . $enlace_titulo . '</h3>'
-            . ( $fecha_item ? '<time class="vbp-dynamic-list__date" style="display:block;color:#6b7280;font-size:0.875em;margin-bottom:8px;">' . esc_html( $fecha_item ) . '</time>' : '' )
-            . ( $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
+            . ( $mostrar_fecha && $fecha_item ? '<time class="vbp-dynamic-list__date" style="display:block;color:#6b7280;font-size:0.875em;margin-bottom:8px;">' . esc_html( $fecha_item ) . '</time>' : '' )
+            . ( $mostrar_extracto && $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
             . '</div>'
             . '</div>';
     }
