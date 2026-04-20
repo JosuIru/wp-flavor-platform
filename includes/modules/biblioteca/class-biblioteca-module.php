@@ -936,6 +936,9 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
             return ['success' => false, 'error' => 'Error al agregar el libro'];
         }
 
+        // Invalidar cache de bloques Lista Dinámica que muestran libros.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'biblioteca' );
+
         // Dar puntos al usuario por agregar libro
         $settings = $this->get_settings();
         if (!empty($settings['sistema_puntos'])) {
@@ -1617,6 +1620,8 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
 
         $wpdb->delete($tabla_libros, ['id' => $libro_id]);
 
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'biblioteca' );
+
         return new WP_REST_Response(['success' => true, 'mensaje' => 'Libro eliminado'], 200);
     }
 
@@ -1981,6 +1986,8 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
         }
 
         $wpdb->delete($tabla_libros, ['id' => $libro_id]);
+
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'biblioteca' );
 
         wp_send_json(['success' => true, 'mensaje' => 'Libro eliminado']);
     }

@@ -1932,6 +1932,9 @@ KNOWLEDGE;
             'notas' => $notas,
         ]);
 
+        // Invalidar cache de bloques Lista Dinámica que muestran socios.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'socios' );
+
         echo '<div class="notice notice-success"><p>' . esc_html__('Socio creado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
@@ -1956,6 +1959,10 @@ KNOWLEDGE;
             'fecha_baja' => date('Y-m-d'),
             'notas' => sanitize_textarea_field($_POST['motivo'] ?? ''),
         ], ['id' => $socio_id]);
+
+        // Cambio de estado activo → baja afecta a la query por defecto del
+        // source (que filtra estado='activo'), por lo que invalidamos.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'socios' );
 
         echo '<div class="notice notice-success"><p>' . esc_html__('Socio dado de baja.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }

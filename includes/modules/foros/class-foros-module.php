@@ -1678,6 +1678,9 @@ class Flavor_Platform_Foros_Module extends Flavor_Platform_Module_Base {
 
         $hilo_id_nuevo = $wpdb->insert_id;
 
+        // Invalidar cache de bloques Lista Dinámica que muestran hilos.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'foros_hilos' );
+
         return [
             'success' => true,
             'hilo_id' => $hilo_id_nuevo,

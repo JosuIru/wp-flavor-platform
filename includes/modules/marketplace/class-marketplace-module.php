@@ -2323,6 +2323,9 @@ KNOWLEDGE;
             wp_send_json_error(['message' => __('Error al guardar el anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
+        // Invalidar cache de bloques Lista Dinámica que muestran anuncios.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'marketplace' );
+
         // Procesar imagen si se subió
         if (!empty($_FILES['imagen']['tmp_name'])) {
             require_once ABSPATH . 'wp-admin/includes/image.php';
