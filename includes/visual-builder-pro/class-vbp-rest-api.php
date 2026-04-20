@@ -640,11 +640,24 @@ class Flavor_VBP_REST_API {
             $respuesta_cacheada = Flavor_Cache_Manager::get( $cache_key );
         }
 
+        $metricas = class_exists( 'Flavor_Performance_Metrics' ) ? Flavor_Performance_Metrics::get_instance() : null;
+
         if ( is_array( $respuesta_cacheada ) && isset( $respuesta_cacheada['items'], $respuesta_cacheada['html'] ) ) {
             $respuesta_cacheada['cached'] = true;
             $respuesta_obj = new WP_REST_Response( $respuesta_cacheada, 200 );
             $this->add_public_cache_headers( $respuesta_obj, $cache_ttl );
+
+            if ( $metricas ) {
+                $metricas->increment_counter( 'vbp.load_more.cache_hit', 1, array(
+                    'source' => $identificador,
+                ) );
+            }
+
             return $respuesta_obj;
+        }
+
+        if ( $metricas ) {
+            $metricas->start_timer( 'vbp.load_more' );
         }
 
         $items       = $fuente->query( $cleaned_args );
@@ -674,6 +687,18 @@ class Flavor_VBP_REST_API {
 
         if ( $cache_ttl > 0 && class_exists( 'Flavor_Cache_Manager' ) ) {
             Flavor_Cache_Manager::set( $cache_key, $respuesta, $cache_ttl );
+        }
+
+        if ( $metricas ) {
+            $metricas->stop_timer( 'vbp.load_more', array(
+                'source'         => $identificador,
+                'items'          => count( $items ),
+                'total'          => $total_items,
+                'page'           => (int) $cleaned_args['page'],
+                'variant'        => $variant_seleccionada,
+                'has_public_filters' => ! empty( $public_filter_names ),
+                'cached'         => false,
+            ) );
         }
 
         $respuesta_obj = new WP_REST_Response( $respuesta, 200 );
@@ -755,8 +780,24 @@ class Flavor_VBP_REST_API {
 
         $raw_args     = (array) $request->get_json_params();
         $cleaned_args = $registry->sanitize_query_args( $fuente, $raw_args );
+
+        $metricas = class_exists( 'Flavor_Performance_Metrics' ) ? Flavor_Performance_Metrics::get_instance() : null;
+        if ( $metricas ) {
+            $metricas->start_timer( 'vbp.collections.query' );
+        }
+
         $items        = $fuente->query( $cleaned_args );
         $total_items  = $fuente->get_total_count( $cleaned_args );
+
+        if ( $metricas ) {
+            $metricas->stop_timer( 'vbp.collections.query', array(
+                'source'     => $identificador,
+                'items'      => count( $items ),
+                'total'      => $total_items,
+                'page'       => isset( $cleaned_args['page'] ) ? (int) $cleaned_args['page'] : 1,
+                'authenticated' => true,
+            ) );
+        }
 
         $pagina_actual = isset( $cleaned_args['page'] ) ? (int) $cleaned_args['page'] : 1;
         $items_pagina  = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
