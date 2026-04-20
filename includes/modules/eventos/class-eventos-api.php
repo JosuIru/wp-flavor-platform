@@ -212,6 +212,9 @@ class Flavor_Eventos_API {
 
         $evento_id = $wpdb->insert_id;
 
+        // Invalidar cache de bloques Lista Dinámica que muestran eventos.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'eventos' );
+
         return rest_ensure_response([
             'success' => true,
             'data' => [
@@ -782,6 +785,9 @@ class Flavor_Eventos_API {
         if ($resultado === false) {
             wp_send_json_error(['message' => __('Error al eliminar el evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
+
+        // Invalidar cache de bloques Lista Dinámica que muestran eventos.
+        do_action( 'flavor_vbp_invalidate_collection_cache', 'eventos' );
 
         wp_send_json_success(['message' => __('Evento eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }

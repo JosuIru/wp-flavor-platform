@@ -530,6 +530,17 @@ class Flavor_VBP_REST_API {
             return new WP_Error( 'collections_unavailable', __( 'Sistema de colecciones no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 500 ) );
         }
 
+        // Rate limiting: este endpoint es público (anónimo) y aceptamos POST
+        // arbitrarios mientras la firma sea válida, lo que permitiría burst
+        // de carga si alguien spamea con una signature válida ya capturada.
+        // Limitamos por IP para que un solo cliente no pueda saturar la BD.
+        if ( class_exists( 'Flavor_API_Rate_Limiter' ) ) {
+            $verificacion_rate_limit = Flavor_API_Rate_Limiter::check_rate_limit( 'post' );
+            if ( is_wp_error( $verificacion_rate_limit ) ) {
+                return $verificacion_rate_limit;
+            }
+        }
+
         $body = (array) $request->get_json_params();
 
         $identificador = isset( $body['source'] ) ? sanitize_key( $body['source'] ) : '';
