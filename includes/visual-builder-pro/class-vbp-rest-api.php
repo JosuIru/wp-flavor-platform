@@ -614,7 +614,9 @@ class Flavor_VBP_REST_API {
 
         if ( is_array( $respuesta_cacheada ) && isset( $respuesta_cacheada['items'], $respuesta_cacheada['html'] ) ) {
             $respuesta_cacheada['cached'] = true;
-            return new WP_REST_Response( $respuesta_cacheada, 200 );
+            $respuesta_obj = new WP_REST_Response( $respuesta_cacheada, 200 );
+            $this->add_public_cache_headers( $respuesta_obj, $cache_ttl );
+            return $respuesta_obj;
         }
 
         $items       = $fuente->query( $cleaned_args );
@@ -646,7 +648,38 @@ class Flavor_VBP_REST_API {
             Flavor_Cache_Manager::set( $cache_key, $respuesta, $cache_ttl );
         }
 
-        return new WP_REST_Response( $respuesta, 200 );
+        $respuesta_obj = new WP_REST_Response( $respuesta, 200 );
+        $this->add_public_cache_headers( $respuesta_obj, $cache_ttl );
+        return $respuesta_obj;
+    }
+
+    /**
+     * Añade Cache-Control headers al response del endpoint público de
+     * collections para que CDN/proxy delante de WordPress (Cloudflare,
+     * Varnish, fastcgi cache) puedan cachear aguas arriba sin pegarse
+     * contra PHP en cada petición.
+     *
+     * TTL del proxy = TTL del cache interno. Si $cache_ttl es 0 (cache
+     * desactivado) se envía no-store para forzar fresh siempre.
+     *
+     * @param WP_REST_Response $respuesta_obj
+     * @param int              $cache_ttl_seconds
+     * @return void
+     */
+    private function add_public_cache_headers( $respuesta_obj, $cache_ttl_seconds ) {
+        if ( $cache_ttl_seconds <= 0 ) {
+            $respuesta_obj->header( 'Cache-Control', 'no-store' );
+            return;
+        }
+        // public: cualquier cache intermedia (CDN) puede almacenar.
+        // max-age: navegador lo guarda localmente.
+        // s-maxage: proxies y CDN lo guardan durante ese tiempo.
+        // stale-while-revalidate: tolera 30s adicionales sirviendo stale
+        // mientras revalida en background (mejor p95 en picos).
+        $respuesta_obj->header(
+            'Cache-Control',
+            sprintf( 'public, max-age=%d, s-maxage=%d, stale-while-revalidate=30', $cache_ttl_seconds, $cache_ttl_seconds )
+        );
     }
 
     /**
@@ -671,6 +704,17 @@ class Flavor_VBP_REST_API {
     public function consultar_collection( $request ) {
         if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
             return new WP_Error( 'collections_unavailable', __( 'Sistema de colecciones no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 500 ) );
+        }
+
+        // Rate limiting también en el endpoint autenticado: aunque requiere
+        // edit_posts, un script malicioso corriendo en el admin puede
+        // burst-consultar la BD. 30 POST/min por IP es muy holgado para el
+        // uso real del inspector (preview debounced 350 ms ≈ 3 req/s puntual).
+        if ( class_exists( 'Flavor_API_Rate_Limiter' ) ) {
+            $verificacion_rate_limit = Flavor_API_Rate_Limiter::check_rate_limit( 'post' );
+            if ( is_wp_error( $verificacion_rate_limit ) ) {
+                return $verificacion_rate_limit;
+            }
         }
 
         $identificador = $request->get_param( 'identifier' );

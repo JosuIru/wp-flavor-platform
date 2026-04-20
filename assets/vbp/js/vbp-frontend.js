@@ -82,10 +82,20 @@
 
         var urlBase = (window.VBP_Config && window.VBP_Config.restUrl) || '/wp-json/flavor-vbp/v1/';
         var siguientePagina = paginaActual + 1;
+        var grid = wrapper.querySelector('.vbp-dynamic-list');
 
         var textoOriginalBoton = boton.textContent;
+        var itemsAntesDeLaFetch = grid ? grid.children.length : 0;
+
+        // Señalar al screen reader y a usuarios que hay operación en curso.
+        if (grid) {
+            grid.setAttribute('aria-busy', 'true');
+        }
         boton.disabled = true;
         boton.textContent = '…';
+
+        // Limpiar posible banner de error de un intento previo.
+        ocultarErrorLoadMore(wrapper);
 
         fetch(urlBase + 'collections/load-more', {
             method: 'POST',
@@ -102,13 +112,15 @@
             })
         })
         .then(function (response) {
+            if (response.status === 429) {
+                throw new RateLimitError('Demasiadas peticiones. Espera un momento.');
+            }
             if (!response.ok) {
                 throw new Error('HTTP ' + response.status);
             }
             return response.json();
         })
         .then(function (payload) {
-            var grid = wrapper.querySelector('.vbp-dynamic-list');
             if (grid && payload.html) {
                 grid.insertAdjacentHTML('beforeend', payload.html);
             }
@@ -119,9 +131,20 @@
             if (!payload.has_more) {
                 boton.style.display = 'none';
             }
+
+            // Anuncio accesible del delta. Screen readers leen el status.
+            if (grid) {
+                var itemsTrasLaFetch = grid.children.length;
+                var delta = itemsTrasLaFetch - itemsAntesDeLaFetch;
+                anunciarAccesible(wrapper, delta + ' items más cargados');
+            }
         })
         .catch(function (error) {
             vbpLog.error('dynamic-list load-more failed', error);
+            var mensaje = (error && error.name === 'RateLimitError')
+                ? error.message
+                : 'Error al cargar más items. Inténtalo de nuevo.';
+            mostrarErrorLoadMore(wrapper, mensaje);
             boton.textContent = textoOriginalBoton;
         })
         .finally(function () {
@@ -129,7 +152,60 @@
             if (boton.textContent === '…') {
                 boton.textContent = textoOriginalBoton;
             }
+            if (grid) {
+                grid.setAttribute('aria-busy', 'false');
+            }
         });
+    }
+
+    function RateLimitError(mensaje) {
+        var error = new Error(mensaje);
+        error.name = 'RateLimitError';
+        return error;
+    }
+
+    /**
+     * Anuncio SR-only que screen readers leen sin afectar layout visual.
+     * Reutiliza el mismo nodo para evitar acumular elementos en el DOM.
+     */
+    function anunciarAccesible(wrapper, mensaje) {
+        var live = wrapper.querySelector('.vbp-dynamic-list__sr-live');
+        if (!live) {
+            live = document.createElement('span');
+            live.className = 'vbp-dynamic-list__sr-live';
+            live.setAttribute('role', 'status');
+            live.setAttribute('aria-live', 'polite');
+            live.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
+            wrapper.appendChild(live);
+        }
+        // Limpiar y reescribir para que el anuncio dispare.
+        live.textContent = '';
+        setTimeout(function () { live.textContent = mensaje; }, 30);
+    }
+
+    function mostrarErrorLoadMore(wrapper, mensaje) {
+        var errorBox = wrapper.querySelector('.vbp-dynamic-list__error');
+        if (!errorBox) {
+            errorBox = document.createElement('div');
+            errorBox.className = 'vbp-dynamic-list__error';
+            errorBox.setAttribute('role', 'alert');
+            errorBox.style.cssText = 'margin:16px auto 0;padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;color:#991b1b;font-size:0.9em;text-align:center;max-width:520px;';
+            var boton = wrapper.querySelector('.vbp-dynamic-list__load-more');
+            if (boton) {
+                boton.parentNode.insertBefore(errorBox, boton);
+            } else {
+                wrapper.appendChild(errorBox);
+            }
+        }
+        errorBox.textContent = mensaje;
+        errorBox.style.display = '';
+    }
+
+    function ocultarErrorLoadMore(wrapper) {
+        var errorBox = wrapper.querySelector('.vbp-dynamic-list__error');
+        if (errorBox) {
+            errorBox.style.display = 'none';
+        }
     }
 
     /**

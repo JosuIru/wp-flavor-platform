@@ -4000,7 +4000,10 @@ class Flavor_VBP_Canvas {
 
         $html = '<div class="' . esc_attr( $clases_envoltorio ) . '"' . $wrapper_data_attrs . '>';
 
-        $html .= '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '"';
+        // aria-live="polite" para que los items appendados vía "Cargar más"
+        // sean anunciados por screen readers. role=list refuerza la semántica
+        // para tecnologías asistivas cuando el grid usa display:grid.
+        $html .= '<div class="' . esc_attr( $clases_contenedor ) . '" data-source="' . esc_attr( $source_identifier ) . '" role="list" aria-live="polite" aria-busy="false"';
         if ( $estilos_contenedor !== '' ) {
             $html .= ' style="' . esc_attr( $estilos_contenedor ) . '"';
         }
@@ -4008,7 +4011,7 @@ class Flavor_VBP_Canvas {
 
         foreach ( $items as $item ) {
             if ( $template_variant === 'custom' && $plantilla_custom_html !== '' ) {
-                $html .= '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom">'
+                $html .= '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom" role="listitem">'
                     . $this->apply_dynamic_list_custom_template( $plantilla_custom_html, $item )
                     . '</div>';
             } else {
@@ -4047,7 +4050,7 @@ class Flavor_VBP_Canvas {
         }
 
         if ( $template_variant === 'custom' && is_string( $custom_template_html ) && $custom_template_html !== '' ) {
-            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom">'
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--custom" role="listitem">'
                 . $this->apply_dynamic_list_custom_template( $custom_template_html, $item )
                 . '</div>';
         }
@@ -4077,11 +4080,11 @@ class Flavor_VBP_Canvas {
         $enlace_titulo = '<a href="' . esc_url( $enlace_item ) . '" class="vbp-dynamic-list__title-link">' . esc_html( $titulo_item ) . '</a>';
 
         if ( $template_variant === 'minimal' ) {
-            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--minimal"><h4 class="vbp-dynamic-list__title">' . $enlace_titulo . '</h4></div>';
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--minimal" role="listitem"><h4 class="vbp-dynamic-list__title">' . $enlace_titulo . '</h4></div>';
         }
 
         if ( $template_variant === 'list' ) {
-            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--list" style="padding:12px 0;border-bottom:1px solid #e5e7eb;">'
+            return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--list" role="listitem" style="padding:12px 0;border-bottom:1px solid #e5e7eb;">'
                 . '<h4 class="vbp-dynamic-list__title" style="margin:0 0 4px;">' . $enlace_titulo . '</h4>'
                 . ( $mostrar_fecha && $fecha_item ? '<time class="vbp-dynamic-list__date" style="color:#6b7280;font-size:0.875em;">' . esc_html( $fecha_item ) . '</time>' : '' )
                 . ( $mostrar_extracto && $extracto_item ? '<p class="vbp-dynamic-list__excerpt" style="margin:4px 0 0;color:#4b5563;">' . esc_html( $extracto_item ) . '</p>' : '' )
@@ -4094,7 +4097,7 @@ class Flavor_VBP_Canvas {
             $imagen_html = '<div class="vbp-dynamic-list__image" style="aspect-ratio:16/9;background:#f3f4f6 url(' . esc_url( $imagen_url ) . ') center/cover no-repeat;border-radius:8px 8px 0 0;"></div>';
         }
 
-        return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--card" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#fff;display:flex;flex-direction:column;">'
+        return '<div class="vbp-dynamic-list__item vbp-dynamic-list__item--card" role="listitem" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#fff;display:flex;flex-direction:column;">'
             . $imagen_html
             . '<div class="vbp-dynamic-list__body" style="padding:16px;">'
             . '<h3 class="vbp-dynamic-list__title" style="margin:0 0 8px;font-size:1.125em;">' . $enlace_titulo . '</h3>'
