@@ -235,6 +235,15 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== DYNAMIC LIST (collections) ========== -->
                 <template x-if="selectedElement.type === 'dynamic-list'">
                     <div class="vbp-inspector-section" x-data="vbpDynamicListInspector()" x-init="initFromElement(selectedElement)" @vbp:selection:changed.window="initFromElement(selectedElement)">
+                        <!-- Botón de ayuda que abre el panel lateral con docs, video y snippets -->
+                        <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+                            <button type="button"
+                                    @click="$store.vbpHelp && $store.vbpHelp.open('dynamic-list')"
+                                    aria-label="<?php esc_attr_e( 'Abrir ayuda de Lista Dinámica', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                                    style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;padding:4px 10px;font-size:0.8125em;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+                                ❓ <?php esc_html_e( 'Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </button>
+                        </div>
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Colección', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <select class="vbp-field-select" :value="selectedElement.data.source || ''" @change="handleSourceChange($event.target.value)">

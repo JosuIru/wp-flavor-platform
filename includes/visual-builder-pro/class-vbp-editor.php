@@ -613,6 +613,7 @@ class Flavor_VBP_Editor {
             'inspector-utils' => array( 'vbp-inspector-utils.js', array() ), // Utilidades: copiar/pegar estilos
             'inspector-modals' => array( 'vbp-inspector-modals.js', array( 'vbp-inspector-utils' ) ),
             'dynamic-list-inspector' => array( 'vbp-dynamic-list-inspector.js', array( 'vbp-inspector' ) ), // Editor dinámico de queries para bloques dynamic-list
+            'help-panel'             => array( 'vbp-help-panel.js', array() ), // Store Alpine + lógica copy-to-clipboard del panel de ayuda
             'link-search'  => array( 'vbp-link-search.js', array() ), // Autocompletado de enlaces
             'richtext'     => array( 'vbp-richtext.js', array() ), // Editor de texto enriquecido
             'command-palette' => array( 'vbp-command-palette.js', array() ), // Paleta de comandos Ctrl+/

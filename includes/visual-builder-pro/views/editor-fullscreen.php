@@ -1896,6 +1896,9 @@ $datos_json = wp_json_encode( $datos );
     <?php include __DIR__ . '/modals/modal-ai-assistant.php'; ?>
     <?php include __DIR__ . '/modals/modal-comments.php'; ?>
 
+    <!-- Panel de ayuda in-app para bloques dinámicos -->
+    <?php include __DIR__ . '/help/dynamic-list-help.php'; ?>
+
     <!-- Panel de Audit Log -->
     <?php if ( current_user_can( 'manage_options' ) ) : ?>
     <div class="vbp-audit-panel" x-show="showAuditPanel" x-cloak x-transition:enter="vbp-slide-enter" x-transition:leave="vbp-slide-leave" @keydown.escape.window="showAuditPanel && closeAuditPanel()">
