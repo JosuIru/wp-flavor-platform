@@ -3859,9 +3859,21 @@ class Flavor_VBP_Canvas {
             }
         }
 
+        // Lista de filtros editables por el visitante (frontend). El autor
+        // la declara como JSON en data.public_filters; si es un tipo inválido
+        // o vacío, no hay filtros visibles al visitante.
+        $lista_public_filters = $this->extract_public_filter_names( $data, $fuente );
+
         $firma_load_more = '';
-        if ( $tiene_mas && class_exists( 'Flavor_VBP_Query_Signature' ) ) {
-            $firma_load_more = Flavor_VBP_Query_Signature::sign( $identificador_fuente, $cleaned_args );
+        if ( ( $tiene_mas || ! empty( $lista_public_filters ) ) && class_exists( 'Flavor_VBP_Query_Signature' ) ) {
+            // Se firma siempre que haya paginación o filtros visibles:
+            // si hay filtros, el visitante puede disparar una nueva query
+            // aunque no haya más páginas por cargar.
+            $firma_load_more = Flavor_VBP_Query_Signature::sign(
+                $identificador_fuente,
+                $cleaned_args,
+                $lista_public_filters
+            );
         }
 
         $display_config = $this->extract_dynamic_list_display_config( $data );
@@ -3871,16 +3883,56 @@ class Flavor_VBP_Canvas {
             $template_variant,
             $identificador_fuente,
             array(
-                'page'            => $pagina_actual,
-                'per_page'        => $items_pagina,
-                'total_pages'     => $total_paginas,
-                'has_more'        => $tiene_mas,
-                'args'            => $cleaned_args,
-                'signature'       => $firma_load_more,
-                'display'         => $display_config,
-                'custom_template' => $plantilla_custom_html,
+                'page'                => $pagina_actual,
+                'per_page'            => $items_pagina,
+                'total_pages'         => $total_paginas,
+                'has_more'            => $tiene_mas,
+                'args'                => $cleaned_args,
+                'signature'           => $firma_load_more,
+                'display'             => $display_config,
+                'custom_template'     => $plantilla_custom_html,
+                'public_filter_names' => $lista_public_filters,
+                'schema_fields'       => $fuente->get_query_fields(),
             )
         );
+    }
+
+    /**
+     * Parsea data.public_filters y valida contra el schema del source
+     * para descartar filtros que no existan (el autor puede haber
+     * marcado filtros que el source ya no declara).
+     *
+     * @param array                          $data    Datos del elemento.
+     * @param Flavor_VBP_Collection_Source   $source  Source activa.
+     * @return array<int, string> Lista de filter identifiers válidos.
+     */
+    private function extract_public_filter_names( $data, $source ) {
+        $raw = isset( $data['public_filters'] ) ? $data['public_filters'] : '';
+        if ( is_array( $raw ) ) {
+            $candidatos = $raw;
+        } else {
+            $decoded = json_decode( (string) $raw, true );
+            $candidatos = is_array( $decoded ) ? $decoded : array();
+        }
+
+        $schema_fields = $source->get_query_fields();
+        $validos = array();
+        foreach ( $candidatos as $nombre_filtro ) {
+            if ( ! is_string( $nombre_filtro ) ) {
+                continue;
+            }
+            // Excluir page/limit/separators y campos fuera del schema.
+            if ( $nombre_filtro === 'page' || $nombre_filtro === 'limit' ) {
+                continue;
+            }
+            if ( substr( $nombre_filtro, 0, 1 ) === '_' ) {
+                continue;
+            }
+            if ( isset( $schema_fields[ $nombre_filtro ] ) ) {
+                $validos[] = $nombre_filtro;
+            }
+        }
+        return $validos;
     }
 
     /**
@@ -3908,6 +3960,94 @@ class Flavor_VBP_Canvas {
      * @param string $source_identifier Identificador de la fuente (para data-attributes).
      * @return string
      */
+    /**
+     * Renderiza un <form> con inputs para los filtros que el visitante
+     * puede editar. Cada input corresponde a un schema field y lleva
+     * name="f_{nombre}" para poder recuperarlo del querystring.
+     *
+     * @param array<int, string>              $lista_public_filters
+     * @param array<string, array>            $schema_fields
+     * @param array<string, mixed>            $valores_actuales  Args saneados (incluye defaults).
+     * @return string
+     */
+    private function render_dynamic_list_public_filters_form( array $lista_public_filters, array $schema_fields, array $valores_actuales ) {
+        $html = '<form class="vbp-dynamic-list__filters" role="search" aria-label="' . esc_attr__( 'Filtrar resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;" onsubmit="return false;">';
+
+        foreach ( $lista_public_filters as $nombre_filtro ) {
+            if ( ! isset( $schema_fields[ $nombre_filtro ] ) ) {
+                continue;
+            }
+            $config_campo = $schema_fields[ $nombre_filtro ];
+            $tipo_campo   = isset( $config_campo['type'] ) ? (string) $config_campo['type'] : 'string';
+            $etiqueta     = isset( $config_campo['label'] ) ? (string) $config_campo['label'] : $nombre_filtro;
+            $valor_actual = isset( $valores_actuales[ $nombre_filtro ] ) ? $valores_actuales[ $nombre_filtro ] : '';
+
+            $id_input    = 'vbp-filter-' . sanitize_html_class( $nombre_filtro ) . '-' . wp_generate_uuid4();
+            $name_input  = 'f_' . $nombre_filtro;
+
+            $html .= '<div class="vbp-dynamic-list__filter-field" style="display:flex;flex-direction:column;gap:4px;min-width:160px;">';
+            $html .= '<label for="' . esc_attr( $id_input ) . '" style="font-size:0.8125em;font-weight:600;color:#374151;">' . esc_html( $etiqueta ) . '</label>';
+
+            $html .= $this->render_filter_input_for_type(
+                $tipo_campo,
+                $id_input,
+                $name_input,
+                $nombre_filtro,
+                $valor_actual,
+                $config_campo
+            );
+
+            $html .= '</div>';
+        }
+
+        $html .= '</form>';
+        return $html;
+    }
+
+    /**
+     * Pinta un input según el tipo de schema field.
+     *
+     * @param string $tipo_campo
+     * @param string $id_input
+     * @param string $name_input
+     * @param string $filter_name
+     * @param mixed  $valor_actual
+     * @param array  $config
+     * @return string
+     */
+    private function render_filter_input_for_type( $tipo_campo, $id_input, $name_input, $filter_name, $valor_actual, array $config ) {
+        $estilo_base = 'padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:0.9em;background:#fff;';
+
+        switch ( $tipo_campo ) {
+            case 'enum':
+                $html = '<select id="' . esc_attr( $id_input ) . '" name="' . esc_attr( $name_input ) . '" data-filter-name="' . esc_attr( $filter_name ) . '" style="' . $estilo_base . '">';
+                $opciones = isset( $config['options'] ) ? (array) $config['options'] : array();
+                foreach ( $opciones as $opcion ) {
+                    $selected = ( (string) $valor_actual === (string) $opcion ) ? ' selected' : '';
+                    $html .= '<option value="' . esc_attr( $opcion ) . '"' . $selected . '>' . esc_html( $opcion === '' ? '—' : $opcion ) . '</option>';
+                }
+                $html .= '</select>';
+                return $html;
+
+            case 'int':
+                return '<input type="number" id="' . esc_attr( $id_input ) . '" name="' . esc_attr( $name_input ) . '" data-filter-name="' . esc_attr( $filter_name ) . '" value="' . esc_attr( (string) $valor_actual ) . '"'
+                    . ( isset( $config['min'] ) ? ' min="' . esc_attr( (string) $config['min'] ) . '"' : '' )
+                    . ( isset( $config['max'] ) ? ' max="' . esc_attr( (string) $config['max'] ) . '"' : '' )
+                    . ' style="' . $estilo_base . '">';
+
+            case 'date':
+                return '<input type="date" id="' . esc_attr( $id_input ) . '" name="' . esc_attr( $name_input ) . '" data-filter-name="' . esc_attr( $filter_name ) . '" value="' . esc_attr( (string) $valor_actual ) . '" style="' . $estilo_base . '">';
+
+            case 'bool':
+                $checked = ! empty( $valor_actual ) ? ' checked' : '';
+                return '<label style="display:flex;align-items:center;gap:6px;font-size:0.9em;"><input type="checkbox" id="' . esc_attr( $id_input ) . '" name="' . esc_attr( $name_input ) . '" data-filter-name="' . esc_attr( $filter_name ) . '" value="1"' . $checked . '><span>' . esc_html__( 'Sí', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</span></label>';
+
+            case 'string':
+            default:
+                return '<input type="search" id="' . esc_attr( $id_input ) . '" name="' . esc_attr( $name_input ) . '" data-filter-name="' . esc_attr( $filter_name ) . '" value="' . esc_attr( (string) $valor_actual ) . '" style="' . $estilo_base . '">';
+        }
+    }
+
     /**
      * Sustituye placeholders {{campo}} y {{meta.subcampo}} en una plantilla
      * custom contra el item normalizado. URLs pasan por esc_url; el resto
@@ -3971,6 +4111,12 @@ class Flavor_VBP_Canvas {
             : array( 'show_image' => true, 'show_date' => true, 'show_excerpt' => true );
 
         $plantilla_custom_html = isset( $pagination_meta['custom_template'] ) ? (string) $pagination_meta['custom_template'] : '';
+        $lista_public_filters  = isset( $pagination_meta['public_filter_names'] ) && is_array( $pagination_meta['public_filter_names'] )
+            ? $pagination_meta['public_filter_names']
+            : array();
+        $schema_fields         = isset( $pagination_meta['schema_fields'] ) && is_array( $pagination_meta['schema_fields'] )
+            ? $pagination_meta['schema_fields']
+            : array();
 
         // Data-attributes para el botón "Cargar más" del frontend. Se
         // incluyen siempre que haya pagination_meta; si has_more es false
@@ -3996,9 +4142,21 @@ class Flavor_VBP_Canvas {
             if ( $plantilla_custom_html !== '' ) {
                 $wrapper_data_attrs .= ' data-custom-template="' . esc_attr( $plantilla_custom_html ) . '"';
             }
+            if ( ! empty( $lista_public_filters ) ) {
+                $wrapper_data_attrs .= ' data-public-filters="' . esc_attr( wp_json_encode( $lista_public_filters ) ) . '"';
+            }
         }
 
         $html = '<div class="' . esc_attr( $clases_envoltorio ) . '"' . $wrapper_data_attrs . '>';
+
+        // Form de filtros públicos arriba del grid (si el autor marcó alguno).
+        if ( ! empty( $lista_public_filters ) ) {
+            $html .= $this->render_dynamic_list_public_filters_form(
+                $lista_public_filters,
+                $schema_fields,
+                isset( $pagination_meta['args'] ) ? (array) $pagination_meta['args'] : array()
+            );
+        }
 
         // aria-live="polite" para que los items appendados vía "Cargar más"
         // sean anunciados por screen readers. role=list refuerza la semántica

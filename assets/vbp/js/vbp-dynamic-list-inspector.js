@@ -222,6 +222,38 @@
             },
 
             /**
+             * Lee la lista de public_filters del bloque actual. Es un JSON
+             * string en data.public_filters; si está mal formado, array vacío.
+             */
+            getPublicFilterList: function () {
+                var store = (typeof Alpine !== 'undefined') ? Alpine.store('vbp') : null;
+                var element = store && store.selectedElement;
+                if (!element || !element.data) return [];
+                try {
+                    var parsed = JSON.parse(element.data.public_filters || '[]');
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return [];
+                }
+            },
+
+            isPublicFilterEnabled: function (fieldName) {
+                return this.getPublicFilterList().indexOf(fieldName) !== -1;
+            },
+
+            togglePublicFilter: function (fieldName, enabled) {
+                var lista = this.getPublicFilterList();
+                if (enabled) {
+                    if (lista.indexOf(fieldName) === -1) lista.push(fieldName);
+                } else {
+                    lista = lista.filter(function (n) { return n !== fieldName; });
+                }
+                this.persistFieldsToElement({
+                    public_filters: JSON.stringify(lista)
+                });
+            },
+
+            /**
              * Proxy con el mismo nombre que el método del inspector padre,
              * para que las expresiones inline `updateElementData(...)` dentro
              * de la sección dynamic-list funcionen igual que en el resto del

@@ -79,6 +79,41 @@ test_case "tampered_args"  "$TMP_DIR/tampered.json"     403 "invalid_signature"
 test_case "body_empty"     "$TMP_DIR/empty.json"        400 "invalid_request"
 test_case "body_garbage"   "$TMP_DIR/garbage.txt"       400 "rest_invalid_json"
 
+# Esquema v2 (filtros públicos) ----------------------------------------
+(cd "$WP_PATH" && wp eval "
+\$registry = Flavor_VBP_Collection_Registry::get_instance();
+\$fixed = ['estado' => 'disponible', 'limit' => 5, 'orden' => 'recientes'];
+\$publicos = ['busqueda'];
+\$firma   = Flavor_VBP_Query_Signature::sign('biblioteca', \$fixed, \$publicos);
+
+\$valido_v2 = [
+    'source' => 'biblioteca',
+    'args' => array_merge(\$fixed, ['busqueda' => 'foo']),
+    'signature' => \$firma,
+    'page' => 1,
+    'public_filter_names' => \$publicos,
+    'public_args' => ['busqueda' => 'foo'],
+];
+file_put_contents('$TMP_DIR/v2_valid.json', json_encode(\$valido_v2));
+
+// Atacante añade campo no whitelisted → el servidor debería ignorarlo
+// (el sanitize_query_args lo descarta) pero la firma no incluye la
+// manipulación, así que no da 403. Es 200 OK con el campo ignorado.
+
+// Atacante quita un nombre del whitelist → firma no coincide → 403
+\$manipulado = array_merge(\$valido_v2, ['public_filter_names' => []]);
+file_put_contents('$TMP_DIR/v2_shrunk_list.json', json_encode(\$manipulado));
+
+// Atacante modifica un fixed arg (no en whitelist) → 403
+\$atacado_fixed = \$valido_v2;
+\$atacado_fixed['args'] = array_merge(\$atacado_fixed['args'], ['estado' => 'prestado']);
+file_put_contents('$TMP_DIR/v2_tampered_fixed.json', json_encode(\$atacado_fixed));
+" 2>/dev/null)
+
+test_case "v2_valid_filter"    "$TMP_DIR/v2_valid.json"         200 "OK"
+test_case "v2_shrunk_whitelist" "$TMP_DIR/v2_shrunk_list.json"  403 "invalid_signature"
+test_case "v2_tampered_fixed"  "$TMP_DIR/v2_tampered_fixed.json" 403 "invalid_signature"
+
 echo ""
 if [ "$fallos" -eq 0 ]; then
     echo "[smoke] ✓ OK — $total / $total casos pasan"

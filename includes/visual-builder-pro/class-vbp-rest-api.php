@@ -559,19 +559,47 @@ class Flavor_VBP_REST_API {
             return new WP_Error( 'collection_not_found', __( 'Colección no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
-        // La firma se calcula sobre args sin page; quitamos page antes de
-        // verificar para que la misma firma sirva para cualquier página.
+        // Lista de filtros que el bloque declaró como editables por el
+        // visitante. Viene del data-public-filters del wrapper. Si no hay,
+        // usa esquema v1 (sin filtros públicos).
+        $public_filter_names = isset( $body['public_filter_names'] ) && is_array( $body['public_filter_names'] )
+            ? array_values( array_filter( $body['public_filter_names'], 'is_string' ) )
+            : array();
+
+        // Valores que el visitante envía para los filtros públicos.
+        $public_args_values = isset( $body['public_args'] ) && is_array( $body['public_args'] ) ? $body['public_args'] : array();
+
+        // La firma se calcula sobre:
+        //   v1: source + args_sin_page (sin noción de públicos).
+        //   v2: source + args_sin_page_ni_publicos + sorted(public_filter_names).
+        // Separamos los fixed_args (no editables) de los args del body para
+        // reconstruir el payload que originalmente se firmó.
         $args_para_firma = $args_recibidos;
         unset( $args_para_firma['page'] );
+        foreach ( $public_filter_names as $nombre_publico ) {
+            unset( $args_para_firma[ $nombre_publico ] );
+        }
 
-        if ( ! Flavor_VBP_Query_Signature::verify( $identificador, $args_para_firma, $firma_recibida ) ) {
+        $public_filter_names_para_firma = ! empty( $public_filter_names ) ? $public_filter_names : null;
+
+        if ( ! Flavor_VBP_Query_Signature::verify(
+            $identificador,
+            $args_para_firma,
+            $firma_recibida,
+            $public_filter_names_para_firma
+        ) ) {
             return new WP_Error( 'invalid_signature', __( 'Firma inválida', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 403 ) );
         }
 
-        // Args ya fueron saneados cuando se generó la firma en el render
-        // inicial. Aun así, pasamos por sanitize_query_args para defensa en
-        // profundidad (rechaza campos fuera del schema, clampea ints).
-        $args_finales         = $args_para_firma;
+        // Mezclar: valores públicos (del visitante) sobrescriben a los
+        // fixed_args (del bloque original). El registry sanea ambos contra
+        // el schema, rechazando nombres desconocidos y clampeando ints.
+        $args_finales = $args_para_firma;
+        foreach ( $public_filter_names as $nombre_publico ) {
+            if ( array_key_exists( $nombre_publico, $public_args_values ) ) {
+                $args_finales[ $nombre_publico ] = $public_args_values[ $nombre_publico ];
+            }
+        }
         $args_finales['page'] = max( 1, $pagina_solicitada );
         $cleaned_args         = $registry->sanitize_query_args( $fuente, $args_finales );
 

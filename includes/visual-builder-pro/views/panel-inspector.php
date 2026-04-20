@@ -326,6 +326,24 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </template>
                         </div>
 
+                        <!-- Filtros editables por el visitante (frontend) -->
+                        <div class="vbp-dynamic-public-filters" x-show="hasSchemaFields()" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
+                            <h4 style="margin:0 0 8px;font-size:0.875em;color:#374151;text-transform:uppercase;letter-spacing:0.05em;"><?php esc_html_e( 'Filtros editables por el visitante', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h4>
+                            <p class="vbp-field-help" style="color:#6b7280;font-size:0.75em;margin:0 0 8px;">
+                                <?php esc_html_e( 'Marca los filtros que el visitante podrá cambiar en el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+                            </p>
+                            <template x-for="(field, fieldName) in currentSchema.fields" :key="'public-' + fieldName">
+                                <label class="vbp-checkbox-label"
+                                       x-show="!fieldName.startsWith('_') && fieldName !== 'page' && fieldName !== 'limit'"
+                                       style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.875em;">
+                                    <input type="checkbox"
+                                           :checked="isPublicFilterEnabled(fieldName)"
+                                           @change="togglePublicFilter(fieldName, $event.target.checked)">
+                                    <span x-text="field.label || fieldName"></span>
+                                </label>
+                            </template>
+                        </div>
+
                         <!-- Plantilla personalizada (visible solo si variant=custom) -->
                         <div class="vbp-dynamic-custom-template" x-show="selectedElement.variant === 'custom'" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px;">
                             <label class="vbp-field-label"><?php esc_html_e( 'HTML personalizado del item', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>

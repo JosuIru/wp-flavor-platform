@@ -141,6 +141,12 @@ class Flavor_VBP_Block_Library {
                     'default'     => '',
                     'description' => __( 'Solo se usa con la variante "Plantilla personalizada". Placeholders: {{title}}, {{excerpt}}, {{image}}, {{url}}, {{date}}, {{meta.CAMPO}}.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
+                'public_filters' => array(
+                    'type'        => 'textarea',
+                    'label'       => __( 'Filtros editables por el visitante (JSON)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default'     => '[]',
+                    'description' => __( 'Array JSON con los identifiers de los filtros que el visitante podrá editar en el frontend. Ejemplo: ["estado","busqueda"]. Si está vacío el bloque es solo-lectura.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
                 'empty_message' => array(
                     'type'    => 'text',
                     'label'   => __( 'Mensaje cuando no hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),

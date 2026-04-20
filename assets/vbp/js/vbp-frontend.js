@@ -44,16 +44,197 @@
     function initDynamicLists() {
         var wrappers = document.querySelectorAll('.vbp-dynamic-list-wrapper');
         wrappers.forEach(function (wrapper) {
-            var boton = wrapper.querySelector('.vbp-dynamic-list__load-more');
-            if (!boton || boton.dataset.vbpBound === '1') {
-                return;
-            }
-            boton.dataset.vbpBound = '1';
+            if (wrapper.dataset.vbpBound === '1') return;
+            wrapper.dataset.vbpBound = '1';
 
-            boton.addEventListener('click', function () {
-                fetchNextDynamicListPage(wrapper, boton);
+            var boton = wrapper.querySelector('.vbp-dynamic-list__load-more');
+            if (boton) {
+                boton.addEventListener('click', function () {
+                    fetchNextDynamicListPage(wrapper, boton);
+                });
+            }
+
+            var formulario = wrapper.querySelector('.vbp-dynamic-list__filters');
+            if (formulario) {
+                bindPublicFilters(wrapper, formulario);
+                // Al cargar la página, si hay querystring ?f_* lo aplicamos al form
+                // y disparamos una refetch para que el render refleje la URL.
+                aplicarFiltrosDesdeUrl(wrapper, formulario);
+            }
+        });
+    }
+
+    /**
+     * Bindea listeners a los inputs del form de filtros públicos. Inputs
+     * tipo search llevan debounce 400ms para no spamear al cambiar cada
+     * letra. Select/checkbox/date disparan inmediato.
+     */
+    function bindPublicFilters(wrapper, formulario) {
+        var timerBusqueda = null;
+        var inputs = formulario.querySelectorAll('[data-filter-name]');
+
+        inputs.forEach(function (input) {
+            var nombreEvento = (input.type === 'search' || input.type === 'text' || input.type === 'number')
+                ? 'input'
+                : 'change';
+
+            input.addEventListener(nombreEvento, function () {
+                if (nombreEvento === 'input') {
+                    if (timerBusqueda) clearTimeout(timerBusqueda);
+                    timerBusqueda = setTimeout(function () {
+                        applyDynamicListFilters(wrapper, formulario);
+                    }, 400);
+                } else {
+                    applyDynamicListFilters(wrapper, formulario);
+                }
             });
         });
+    }
+
+    /**
+     * Lee el form, hace POST al endpoint public con los valores nuevos,
+     * reemplaza (no appendea) el contenido del grid con el HTML devuelto,
+     * resetea page=1, actualiza la URL y hace scroll al inicio del grid.
+     */
+    function applyDynamicListFilters(wrapper, formulario) {
+        var grid = wrapper.querySelector('.vbp-dynamic-list');
+        var boton = wrapper.querySelector('.vbp-dynamic-list__load-more');
+
+        var argsSeed = {};
+        try { argsSeed = JSON.parse(wrapper.dataset.args || '{}'); } catch (e) {}
+
+        var displayConfig = {};
+        try { displayConfig = JSON.parse(wrapper.dataset.display || '{}'); } catch (e) {}
+
+        var publicFilterNames = [];
+        try { publicFilterNames = JSON.parse(wrapper.dataset.publicFilters || '[]'); } catch (e) {}
+
+        // Leer valores actuales del form → public_args
+        var publicArgs = leerValoresFormulario(formulario);
+
+        // Construir args completos (args seed + public overrides) para la
+        // UI. El servidor los re-separa usando public_filter_names.
+        var argsCompletos = Object.assign({}, argsSeed, publicArgs);
+        argsCompletos.page = 1;
+
+        var urlBase = (window.VBP_Config && window.VBP_Config.restUrl) || '/wp-json/flavor-vbp/v1/';
+        if (grid) grid.setAttribute('aria-busy', 'true');
+        ocultarErrorLoadMore(wrapper);
+
+        fetch(urlBase + 'collections/load-more', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                source:              wrapper.dataset.source,
+                args:                argsCompletos,
+                signature:           wrapper.dataset.signature,
+                page:                1,
+                variant:             wrapper.dataset.template || 'card',
+                display:             displayConfig,
+                custom_template:     wrapper.dataset.customTemplate || '',
+                public_filter_names: publicFilterNames,
+                public_args:         publicArgs
+            })
+        })
+        .then(function (r) {
+            if (r.status === 429) throw new RateLimitError('Demasiadas peticiones. Espera un momento.');
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function (payload) {
+            if (grid) grid.innerHTML = payload.html || '';
+            wrapper.dataset.page = String(payload.page || 1);
+            wrapper.dataset.totalPages = String(payload.total_pages || 1);
+            if (boton) {
+                boton.style.display = payload.has_more ? '' : 'none';
+                boton.textContent = 'Cargar más';
+                boton.disabled = false;
+            }
+            actualizarUrlConFiltros(publicArgs);
+            if (grid) {
+                grid.setAttribute('aria-busy', 'false');
+                anunciarAccesible(wrapper, (payload.items || []).length + ' resultados encontrados');
+                hacerScrollAlGrid(grid);
+            }
+        })
+        .catch(function (error) {
+            vbpLog.error('dynamic-list filter apply failed', error);
+            var msg = (error && error.name === 'RateLimitError') ? error.message : 'Error al aplicar el filtro. Inténtalo de nuevo.';
+            mostrarErrorLoadMore(wrapper, msg);
+            if (grid) grid.setAttribute('aria-busy', 'false');
+        });
+    }
+
+    function leerValoresFormulario(formulario) {
+        var resultado = {};
+        var inputs = formulario.querySelectorAll('[data-filter-name]');
+        inputs.forEach(function (input) {
+            var nombre = input.dataset.filterName;
+            if (input.type === 'checkbox') {
+                resultado[nombre] = input.checked;
+            } else if (input.value !== '') {
+                resultado[nombre] = input.value;
+            }
+        });
+        return resultado;
+    }
+
+    /**
+     * Escribe los filtros actuales en la URL como f_<nombre>=<valor>.
+     * Usa history.replaceState para no ensuciar el historial del browser
+     * con cada letra tecleada.
+     */
+    function actualizarUrlConFiltros(publicArgs) {
+        try {
+            var url = new URL(window.location.href);
+            // Limpiar params f_* previos
+            Array.from(url.searchParams.keys())
+                .filter(function (k) { return k.indexOf('f_') === 0; })
+                .forEach(function (k) { url.searchParams.delete(k); });
+            // Añadir los actuales
+            Object.keys(publicArgs).forEach(function (nombre) {
+                var v = publicArgs[nombre];
+                if (v === false || v === '' || v === null || typeof v === 'undefined') return;
+                url.searchParams.set('f_' + nombre, String(v));
+            });
+            window.history.replaceState({}, '', url.toString());
+        } catch (e) {
+            // URL API no disponible: ignorar silenciosamente.
+        }
+    }
+
+    /**
+     * Al cargar la página, si la URL lleva f_* params los inyecta en los
+     * inputs del form y dispara un apply. Permite compartir enlaces con
+     * estado de filtro.
+     */
+    function aplicarFiltrosDesdeUrl(wrapper, formulario) {
+        try {
+            var url = new URL(window.location.href);
+            var tieneFiltrosEnUrl = false;
+            var inputs = formulario.querySelectorAll('[data-filter-name]');
+            inputs.forEach(function (input) {
+                var clave = 'f_' + input.dataset.filterName;
+                if (!url.searchParams.has(clave)) return;
+                tieneFiltrosEnUrl = true;
+                var valor = url.searchParams.get(clave);
+                if (input.type === 'checkbox') {
+                    input.checked = valor === '1' || valor === 'true';
+                } else {
+                    input.value = valor;
+                }
+            });
+            if (tieneFiltrosEnUrl) {
+                applyDynamicListFilters(wrapper, formulario);
+            }
+        } catch (e) {}
+    }
+
+    function hacerScrollAlGrid(grid) {
+        if (grid && typeof grid.scrollIntoView === 'function') {
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     function fetchNextDynamicListPage(wrapper, boton) {

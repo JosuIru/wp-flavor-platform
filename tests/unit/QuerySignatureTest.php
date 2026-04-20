@@ -91,4 +91,88 @@ class QuerySignatureTest extends Flavor_TestCase {
 
         $this->assertTrue( Flavor_VBP_Query_Signature::verify( 'eventos', $args_al_verificar, $firma ) );
     }
+
+    // ===== v2: firmas con public_filter_names =====
+
+    public function test_v2_signature_differs_from_v1() {
+        // Mismo source y args. Sin public_filter_names usa v1; con array
+        // no vacío usa v2 → el hash debe ser distinto porque el action y
+        // el payload cambian.
+        $args = array( 'estado' => 'publicado' );
+
+        $firma_v1 = Flavor_VBP_Query_Signature::sign( 'eventos', $args );
+        $firma_v2 = Flavor_VBP_Query_Signature::sign( 'eventos', $args, array( 'busqueda' ) );
+
+        $this->assertNotSame( $firma_v1, $firma_v2 );
+    }
+
+    public function test_v2_signature_stable_against_filter_names_order() {
+        $args = array( 'estado' => 'publicado' );
+
+        $firma_a = Flavor_VBP_Query_Signature::sign( 'eventos', $args, array( 'busqueda', 'genero' ) );
+        $firma_b = Flavor_VBP_Query_Signature::sign( 'eventos', $args, array( 'genero', 'busqueda' ) );
+
+        $this->assertSame( $firma_a, $firma_b );
+    }
+
+    public function test_v2_verify_accepts_matching_payload() {
+        $args = array( 'estado' => 'publicado', 'limit' => 10 );
+        $publicos = array( 'busqueda' );
+
+        $firma = Flavor_VBP_Query_Signature::sign( 'eventos', $args, $publicos );
+
+        $this->assertTrue( Flavor_VBP_Query_Signature::verify( 'eventos', $args, $firma, $publicos ) );
+    }
+
+    public function test_v2_verify_rejects_mismatching_public_filter_names() {
+        // El visitante no puede añadir o quitar entries del whitelist:
+        // ambas partes deben coincidir en la lista.
+        $args = array( 'estado' => 'publicado' );
+
+        $firma = Flavor_VBP_Query_Signature::sign( 'eventos', $args, array( 'busqueda' ) );
+
+        $this->assertFalse( Flavor_VBP_Query_Signature::verify( 'eventos', $args, $firma, array( 'busqueda', 'genero' ) ) );
+        $this->assertFalse( Flavor_VBP_Query_Signature::verify( 'eventos', $args, $firma, array() ) );
+        $this->assertFalse( Flavor_VBP_Query_Signature::verify( 'eventos', $args, $firma, null ) );
+    }
+
+    public function test_v2_verify_rejects_mismatching_fixed_args() {
+        // Si el bloque firmó con estado=publicado (fixed), un atacante no
+        // puede cambiarlo a borrador aunque deje intacta la lista public.
+        $firma = Flavor_VBP_Query_Signature::sign(
+            'eventos',
+            array( 'estado' => 'publicado', 'limit' => 10 ),
+            array( 'busqueda' )
+        );
+
+        $this->assertFalse( Flavor_VBP_Query_Signature::verify(
+            'eventos',
+            array( 'estado' => 'borrador', 'limit' => 10 ),
+            $firma,
+            array( 'busqueda' )
+        ) );
+    }
+
+    public function test_v2_verify_tolerates_page_change() {
+        // Misma regla que v1: page no entra en la firma.
+        $args = array( 'estado' => 'publicado', 'page' => 1 );
+        $publicos = array( 'busqueda' );
+
+        $firma = Flavor_VBP_Query_Signature::sign( 'eventos', $args, $publicos );
+
+        $args_con_page_distinta = array( 'estado' => 'publicado', 'page' => 5 );
+        $this->assertTrue( Flavor_VBP_Query_Signature::verify( 'eventos', $args_con_page_distinta, $firma, $publicos ) );
+    }
+
+    public function test_empty_public_filter_array_equivalent_to_v1() {
+        // Como decisión de compat: si public_filter_names llega como []
+        // (no null), debe usar v1 para que el mismo comportamiento que
+        // bloques antiguos sin el campo.
+        $args = array( 'estado' => 'publicado' );
+
+        $firma_v1 = Flavor_VBP_Query_Signature::sign( 'eventos', $args );
+        $firma_empty = Flavor_VBP_Query_Signature::sign( 'eventos', $args, array() );
+
+        $this->assertSame( $firma_v1, $firma_empty );
+    }
 }
