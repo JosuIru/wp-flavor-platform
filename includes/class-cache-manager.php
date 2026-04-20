@@ -348,9 +348,22 @@ class Flavor_Cache_Manager {
  * @param int           $ttl      TTL opcional
  * @return mixed
  */
-function flavor_cache($key, $callback = null, $ttl = 300) {
-    if ($callback !== null) {
-        return Flavor_Cache_Manager::remember($key, $callback, $ttl);
+if (!function_exists('flavor_cache_manager_get_or_remember')) {
+    function flavor_cache_manager_get_or_remember($key, $callback = null, $ttl = 300) {
+        if ($callback !== null) {
+            return Flavor_Cache_Manager::remember($key, $callback, $ttl);
+        }
+        return Flavor_Cache_Manager::get($key);
     }
-    return Flavor_Cache_Manager::get($key);
+}
+
+// Alias histórico. Guardado detrás de function_exists porque
+// includes/class-performance-cache.php declara otra flavor_cache() con
+// distinta firma (devuelve singleton del legacy Performance_Cache). El
+// guard evita el fatal "Cannot redeclare" cuando ambos archivos se cargan
+// en la misma request.
+if (!function_exists('flavor_cache')) {
+    function flavor_cache($key, $callback = null, $ttl = 300) {
+        return flavor_cache_manager_get_or_remember($key, $callback, $ttl);
+    }
 }

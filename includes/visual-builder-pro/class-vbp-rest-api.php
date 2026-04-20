@@ -564,16 +564,7 @@ class Flavor_VBP_REST_API {
         $args_finales['page'] = max( 1, $pagina_solicitada );
         $cleaned_args         = $registry->sanitize_query_args( $fuente, $args_finales );
 
-        $items       = $fuente->query( $cleaned_args );
-        $total_items = $fuente->get_total_count( $cleaned_args );
-
-        $items_pagina  = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
-        $items_pagina  = max( 1, $items_pagina );
-        $total_paginas = (int) ceil( $total_items / $items_pagina );
-
-        $canvas = class_exists( 'Flavor_VBP_Canvas' ) ? Flavor_VBP_Canvas::get_instance() : null;
         $variant_seleccionada = isset( $body['variant'] ) ? sanitize_key( $body['variant'] ) : 'card';
-        $html_items = '';
 
         // Config de visibilidad de campos. Aceptamos lo que venga del
         // wrapper de la página original; castea cada toggle a bool.
@@ -590,19 +581,61 @@ class Flavor_VBP_REST_API {
             ? $body['custom_template']
             : '';
 
+        // Cache de la respuesta completa con TTL corto. La clave incluye
+        // todos los inputs que afectan al HTML generado, para evitar que
+        // una config sirva resultados de otra. Filtro flavor_vbp_load_more_cache_ttl
+        // permite ajustar el TTL por proyecto (default 120s).
+        $cache_key_parts = array(
+            'vbp_loadmore',
+            $identificador,
+            wp_json_encode( $cleaned_args ),
+            $variant_seleccionada,
+            wp_json_encode( $display_config ),
+            md5( (string) $plantilla_custom ),
+        );
+        $cache_key = 'load_more_' . md5( implode( '|', $cache_key_parts ) );
+        $cache_ttl = (int) apply_filters( 'flavor_vbp_load_more_cache_ttl', 120 );
+
+        $respuesta_cacheada = null;
+        if ( $cache_ttl > 0 && class_exists( 'Flavor_Cache_Manager' ) ) {
+            $respuesta_cacheada = Flavor_Cache_Manager::get( $cache_key );
+        }
+
+        if ( is_array( $respuesta_cacheada ) && isset( $respuesta_cacheada['items'], $respuesta_cacheada['html'] ) ) {
+            $respuesta_cacheada['cached'] = true;
+            return new WP_REST_Response( $respuesta_cacheada, 200 );
+        }
+
+        $items       = $fuente->query( $cleaned_args );
+        $total_items = $fuente->get_total_count( $cleaned_args );
+
+        $items_pagina  = isset( $cleaned_args['limit'] ) ? (int) $cleaned_args['limit'] : count( $items );
+        $items_pagina  = max( 1, $items_pagina );
+        $total_paginas = (int) ceil( $total_items / $items_pagina );
+
+        $canvas = class_exists( 'Flavor_VBP_Canvas' ) ? Flavor_VBP_Canvas::get_instance() : null;
+        $html_items = '';
+
         if ( $canvas && method_exists( $canvas, 'render_dynamic_list_item_public' ) ) {
             foreach ( $items as $item ) {
                 $html_items .= $canvas->render_dynamic_list_item_public( $item, $variant_seleccionada, $display_config, $plantilla_custom );
             }
         }
 
-        return new WP_REST_Response( array(
+        $respuesta = array(
             'items'       => $items,
             'html'        => $html_items,
             'page'        => $cleaned_args['page'],
             'total_pages' => $total_paginas,
             'has_more'    => $cleaned_args['page'] < $total_paginas,
-        ), 200 );
+            'cached'      => false,
+        );
+
+        if ( $cache_ttl > 0 && class_exists( 'Flavor_Cache_Manager' ) ) {
+            Flavor_Cache_Manager::set( $cache_key, $respuesta, $cache_ttl );
+        }
+
+        return new WP_REST_Response( $respuesta, 200 );
     }
 
     /**
