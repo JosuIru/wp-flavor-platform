@@ -166,6 +166,50 @@ class Flavor_VBP_Loader {
 
         // Registrar las colecciones core cuando el plugin esté listo.
         add_action( 'init', array( $this, 'registrar_colecciones_core' ), 20 );
+
+        // Invalidación de cache del endpoint public load-more.
+        // Los módulos pueden disparar este action con un identifier
+        // concreto ('eventos', 'biblioteca'...) para invalidación
+        // targeted; pasar '' o null invalida todas las fuentes.
+        add_action( 'flavor_vbp_invalidate_collection_cache', array( $this, 'invalidar_cache_collection' ), 10, 1 );
+
+        // Fallback global: cualquier save_post o deleted_post vacía todo
+        // el cache de load-more. Conservador pero seguro (no conocemos
+        // qué CPT o custom table toca cada save_post hasta que los
+        // módulos usen hooks específicos).
+        add_action( 'save_post', array( $this, 'invalidar_cache_collection_global' ) );
+        add_action( 'deleted_post', array( $this, 'invalidar_cache_collection_global' ) );
+    }
+
+    /**
+     * Invalida el cache load-more de una fuente concreta o de todas si
+     * el identifier viene vacío.
+     *
+     * @param string $source_identifier
+     * @return void
+     */
+    public function invalidar_cache_collection( $source_identifier = '' ) {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return;
+        }
+        if ( empty( $source_identifier ) ) {
+            Flavor_VBP_Collection_Registry::invalidate_all_cache();
+            return;
+        }
+        Flavor_VBP_Collection_Registry::invalidate_source_cache( $source_identifier );
+    }
+
+    /**
+     * Wrapper para hooks globales (save_post, deleted_post) que no pasan
+     * identifier de fuente. Invalida todo.
+     *
+     * @return void
+     */
+    public function invalidar_cache_collection_global() {
+        if ( ! class_exists( 'Flavor_VBP_Collection_Registry' ) ) {
+            return;
+        }
+        Flavor_VBP_Collection_Registry::invalidate_all_cache();
     }
 
     /**

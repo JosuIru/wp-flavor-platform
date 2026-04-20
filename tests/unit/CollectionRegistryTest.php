@@ -198,4 +198,14 @@ class CollectionRegistryTest extends Flavor_TestCase {
         $this->assertSame( 'Override', $registry->get( 'items' )->get_label() );
         $this->assertCount( 1, $registry->all() );
     }
+
+    // ===== invalidate_source_cache =====
+
+    public function test_invalidate_source_cache_rejects_empty_identifier() {
+        // Identifier vacío o que sanitize_key reduce a '' debe retornar 0
+        // sin tocar la base de datos.
+        $this->assertSame( 0, Flavor_VBP_Collection_Registry::invalidate_source_cache( '' ) );
+        $this->assertSame( 0, Flavor_VBP_Collection_Registry::invalidate_source_cache( null ) );
+        $this->assertSame( 0, Flavor_VBP_Collection_Registry::invalidate_source_cache( '!!!' ) );
+    }
 }

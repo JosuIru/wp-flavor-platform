@@ -585,15 +585,15 @@ class Flavor_VBP_REST_API {
         // todos los inputs que afectan al HTML generado, para evitar que
         // una config sirva resultados de otra. Filtro flavor_vbp_load_more_cache_ttl
         // permite ajustar el TTL por proyecto (default 120s).
-        $cache_key_parts = array(
-            'vbp_loadmore',
-            $identificador,
+        // Clave con prefijo load_more_{source}_ para poder invalidar todas
+        // las entradas de una fuente concreta con LIKE sin afectar al resto.
+        $cache_hash_parts = array(
             wp_json_encode( $cleaned_args ),
             $variant_seleccionada,
             wp_json_encode( $display_config ),
             md5( (string) $plantilla_custom ),
         );
-        $cache_key = 'load_more_' . md5( implode( '|', $cache_key_parts ) );
+        $cache_key = 'load_more_' . sanitize_key( $identificador ) . '_' . md5( implode( '|', $cache_hash_parts ) );
         $cache_ttl = (int) apply_filters( 'flavor_vbp_load_more_cache_ttl', 120 );
 
         $respuesta_cacheada = null;

@@ -56,6 +56,61 @@ class Flavor_VBP_Collection_Registry {
     }
 
     /**
+     * Invalida todas las entradas cacheadas del endpoint load-more
+     * correspondientes a un source concreto.
+     *
+     * Los módulos que modifican datos (evento creado/editado/borrado,
+     * libro devuelto, anuncio publicado…) deben llamar a este método o
+     * disparar el action 'flavor_vbp_invalidate_collection_cache' con
+     * el identifier de la fuente que han afectado, para que los
+     * bloques dynamic-list no devuelvan datos obsoletos durante el TTL.
+     *
+     * @param string $source_identifier Identifier devuelto por el source.
+     * @return int Número de transients eliminados.
+     */
+    public static function invalidate_source_cache( $source_identifier ) {
+        global $wpdb;
+
+        $id_sanitizado = sanitize_key( $source_identifier );
+        if ( $id_sanitizado === '' ) {
+            return 0;
+        }
+
+        $prefijo_transient = 'flavor_cache_load_more_' . $id_sanitizado . '_';
+
+        $eliminados = $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$wpdb->options}
+             WHERE option_name LIKE %s
+             OR    option_name LIKE %s",
+            '_transient_' . $prefijo_transient . '%',
+            '_transient_timeout_' . $prefijo_transient . '%'
+        ) );
+
+        return is_numeric( $eliminados ) ? (int) $eliminados : 0;
+    }
+
+    /**
+     * Invalida todo el cache de load-more (todas las fuentes). Útil como
+     * fallback en eventos globales (save_post, etc.).
+     *
+     * @return int Número de transients eliminados.
+     */
+    public static function invalidate_all_cache() {
+        global $wpdb;
+
+        $prefijo_transient = 'flavor_cache_load_more_';
+        $eliminados = $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$wpdb->options}
+             WHERE option_name LIKE %s
+             OR    option_name LIKE %s",
+            '_transient_' . $prefijo_transient . '%',
+            '_transient_timeout_' . $prefijo_transient . '%'
+        ) );
+
+        return is_numeric( $eliminados ) ? (int) $eliminados : 0;
+    }
+
+    /**
      * Registra una fuente. Si ya existe una con el mismo identificador, la
      * sustituye (útil para overrides desde addons).
      *
