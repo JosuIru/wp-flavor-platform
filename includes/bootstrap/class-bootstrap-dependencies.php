@@ -525,8 +525,11 @@ final class Flavor_Bootstrap_Dependencies {
         // Sin esto, las URLs de landing no funcionan en frontend ni en REST API
         require_once FLAVOR_PLATFORM_PATH . 'includes/visual-builder/class-visual-builder.php';
 
-        // VBP Loader también siempre necesario para que las landings se rendericen
-        require_once FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+        // VBP Loader también siempre necesario para que las landings se
+        // rendericen. Desde el Camino A paso 2, VBP vive como addon en
+        // addons/flavor-visual-builder-pro/ (ver FLAVOR_VBP_ADDON_PATH en
+        // el archivo principal del addon).
+        require_once FLAVOR_PLATFORM_PATH . 'addons/flavor-visual-builder-pro/class-vbp-loader.php';
         Flavor_VBP_Loader::get_instance();
 
         // En frontend solo cargar lo mínimo adicional

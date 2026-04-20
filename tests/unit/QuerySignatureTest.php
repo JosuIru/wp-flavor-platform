@@ -6,7 +6,7 @@
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/class-query-signature.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/class-query-signature.php';
 
 class QuerySignatureTest extends Flavor_TestCase {
 

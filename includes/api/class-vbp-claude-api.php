@@ -276,7 +276,7 @@ class Flavor_VBP_Claude_API {
         }
 
         // Intentar cargar VBP manualmente
-        $loader_path = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+        $loader_path = FLAVOR_PLATFORM_PATH . 'addons/flavor-visual-builder-pro/class-vbp-loader.php';
         if ( file_exists( $loader_path ) ) {
             require_once $loader_path;
             if ( class_exists( 'Flavor_VBP_Loader' ) ) {

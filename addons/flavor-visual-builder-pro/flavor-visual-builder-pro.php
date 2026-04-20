@@ -18,48 +18,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * ESTADO DEL ADDON — Camino A paso 1 (wrapper):
+ * ESTADO DEL ADDON — Camino A paso 2 (archivos movidos):
  *
- * Actualmente este addon es un wrapper metadata. El código real de VBP
- * sigue viviendo en includes/visual-builder-pro/ y se carga desde
- * class-bootstrap-dependencies.php::load_editor_visual_builder() como
- * antes. Este archivo añade:
+ * El código real de VBP ya vive aquí (addons/flavor-visual-builder-pro/).
+ * El bootstrap (class-bootstrap-dependencies.php) hace require_once del
+ * loader desde esta ruta; las constantes FLAVOR_VBP_ADDON_PATH/URL
+ * apuntan a plugin_dir_path(__FILE__) como cualquier addon normal.
  *
- *   - Presencia en Flavor_Addon_Manager (visible en el admin de addons).
- *   - Metadata estable (versión, autor, descripción, URL docs).
- *   - Punto único para en el futuro mover físicamente los archivos
- *     sin tocar el resto del plugin.
+ * Este archivo registra el addon con Flavor_Addon_Manager para que
+ * aparezca listado junto a Multilingual, Network Communities, etc.
  *
- * No hay riesgo de regresión porque el addon no carga VBP: VBP ya está
- * cargado cuando esto se ejecuta (plugins_loaded prio 5 vs. bootstrap
- * que corre antes). Aquí solo se registra para que aparezca listado.
+ * Assets (CSS/JS) siguen en FLAVOR_PLATFORM_PATH . 'assets/vbp/'
+ * porque son assets compartidos cargados por class-vbp-editor.php;
+ * no se mueven para evitar duplicar paths en 90+ enqueues.
  *
- * Cuando se quiera hacer el Camino A paso 2 (mover archivos):
- *   1. Copiar includes/visual-builder-pro/ aquí.
- *   2. Cambiar class-bootstrap-dependencies.php para require desde
- *      FLAVOR_VBP_ADDON_PATH en vez de FLAVOR_PLATFORM_PATH.
- *   3. Actualizar autoloader mapeos si es necesario.
- *   4. Actualizar asset paths en class-vbp-canvas.php (URL/PATH).
- *
- * Paso 3 (plugin independiente): no se hace todavía. Ver debate en la
- * decisión #12 del TODO — requiere signal de usuario y ~1.5 meses
- * de refactor, no es trivial.
+ * Camino A paso 3 (plugin standalone): fuera de alcance. Requiere
+ * resolver el acoplamiento real con tablas de módulos y extracción
+ * de utilidades compartidas.
  */
 
-// Constantes del addon. Apuntan a la ubicación actual del código
-// VBP (includes/...) para que el paso 2 sea cambiar una sola línea.
+// Constantes del addon.
 if ( ! defined( 'FLAVOR_VBP_ADDON_VERSION' ) ) {
     define( 'FLAVOR_VBP_ADDON_VERSION', '2.2.4' );
 }
 
 if ( ! defined( 'FLAVOR_VBP_ADDON_PATH' ) ) {
-    // Por ahora el código físicamente vive en includes/visual-builder-pro/.
-    // Cuando se migre aquí, cambiar a plugin_dir_path( __FILE__ ).
-    define( 'FLAVOR_VBP_ADDON_PATH', FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/' );
+    define( 'FLAVOR_VBP_ADDON_PATH', plugin_dir_path( __FILE__ ) );
 }
 
 if ( ! defined( 'FLAVOR_VBP_ADDON_URL' ) ) {
-    define( 'FLAVOR_VBP_ADDON_URL', FLAVOR_PLATFORM_URL . 'includes/visual-builder-pro/' );
+    define( 'FLAVOR_VBP_ADDON_URL', plugin_dir_url( __FILE__ ) );
 }
 
 if ( ! defined( 'FLAVOR_VBP_ADDON_FILE' ) ) {

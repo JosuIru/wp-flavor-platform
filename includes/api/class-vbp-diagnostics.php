@@ -219,7 +219,7 @@ class Flavor_VBP_Diagnostics {
                 'plugin_path' => $plugin_path . 'includes/visual-builder/views/landing-template.php',
             ),
             'vbp-canvas' => array(
-                'plugin_path' => $plugin_path . 'includes/visual-builder-pro/views/canvas.php',
+                'plugin_path' => $plugin_path . 'addons/flavor-visual-builder-pro/views/canvas.php',
             ),
         );
 
@@ -256,9 +256,9 @@ class Flavor_VBP_Diagnostics {
         $plugin_path = FLAVOR_PLATFORM_PATH;
 
         $assets = array(
-            'animations_css' => 'includes/visual-builder-pro/assets/css/animations.css',
-            'vbp_frontend_css' => 'includes/visual-builder-pro/assets/css/frontend.css',
-            'vbp_canvas_js' => 'includes/visual-builder-pro/assets/js/canvas.js',
+            'animations_css' => 'addons/flavor-visual-builder-pro/assets/css/animations.css',
+            'vbp_frontend_css' => 'addons/flavor-visual-builder-pro/assets/css/frontend.css',
+            'vbp_canvas_js' => 'addons/flavor-visual-builder-pro/assets/js/canvas.js',
             'visual_builder_css' => 'includes/visual-builder/assets/css/visual-builder.css',
             'visual_builder_frontend_css' => 'includes/visual-builder/assets/css/visual-builder-frontend.css',
         );

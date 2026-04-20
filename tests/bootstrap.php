@@ -900,14 +900,14 @@ if (!function_exists('flavor_check_vbp_automation_access')) {
 require_once FLAVOR_PLUGIN_DIR . '/includes/api/class-module-compatibility-api.php';
 
 // Cargar clases VBP para tests
-if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-symbols.php' ) ) {
-    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-symbols.php';
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-symbols.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-symbols.php';
 }
-if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-branching.php' ) ) {
-    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-branching.php';
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-branching.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-branching.php';
 }
-if ( file_exists( FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-global-styles.php' ) ) {
-    require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/class-vbp-global-styles.php';
+if ( file_exists( FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-global-styles.php' ) ) {
+    require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/class-vbp-global-styles.php';
 }
 
 // Cargar clase base para tests VBP

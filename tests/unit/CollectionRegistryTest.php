@@ -7,8 +7,8 @@
 
 require_once dirname(__DIR__) . '/bootstrap.php';
 
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/interface-collection-source.php';
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/class-collection-registry.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/interface-collection-source.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/class-collection-registry.php';
 
 /**
  * Fuente simulada que devuelve los query_args recibidos, para verificar que

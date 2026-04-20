@@ -45,7 +45,7 @@ if ( php_sapi_name() !== 'cli' ) {
 // Verificar que VBP esté disponible
 if ( ! class_exists( 'Flavor_VBP_Block_Library' ) ) {
     // Intentar cargar manualmente
-    $loader_path = dirname( __FILE__ ) . '/../includes/visual-builder-pro/class-vbp-loader.php';
+    $loader_path = dirname( __FILE__ ) . '/../addons/flavor-visual-builder-pro/class-vbp-loader.php';
     if ( file_exists( $loader_path ) ) {
         require_once $loader_path;
         Flavor_VBP_Loader::get_instance();

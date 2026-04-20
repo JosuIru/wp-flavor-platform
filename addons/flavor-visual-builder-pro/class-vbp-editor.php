@@ -1308,7 +1308,7 @@ class Flavor_VBP_Editor {
         }
 
         // Cargar el template del editor fullscreen
-        $ruta_template = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/views/editor-fullscreen.php';
+        $ruta_template = FLAVOR_PLATFORM_PATH . 'addons/flavor-visual-builder-pro/views/editor-fullscreen.php';
         if ( file_exists( $ruta_template ) ) {
             include $ruta_template;
         } else {

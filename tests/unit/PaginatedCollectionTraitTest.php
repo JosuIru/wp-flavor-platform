@@ -11,8 +11,8 @@
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/interface-collection-source.php';
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/trait-paginated-collection.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/interface-collection-source.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/trait-paginated-collection.php';
 
 /**
  * Mock de wpdb suficiente para el trait: prefix, prepare (no-op),

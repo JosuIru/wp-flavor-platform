@@ -74,7 +74,7 @@ class Flavor_VBP_Block_Library {
 
     /**
      * Registra bloques dinámicos que se alimentan del sistema de
-     * collections (ver includes/visual-builder-pro/collections/).
+     * collections (ver addons/flavor-visual-builder-pro/collections/).
      */
     private function registrar_bloques_dinamicos() {
         // Construye el listado de sources disponibles consultando el registry

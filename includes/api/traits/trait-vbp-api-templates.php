@@ -360,7 +360,7 @@ trait VBP_API_Templates {
 
         // Cargar VBP Canvas si está disponible
         if ( ! class_exists( 'Flavor_VBP_Canvas' ) ) {
-            $canvas_path = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/class-vbp-canvas.php';
+            $canvas_path = FLAVOR_PLATFORM_PATH . 'addons/flavor-visual-builder-pro/class-vbp-canvas.php';
             if ( file_exists( $canvas_path ) ) {
                 require_once $canvas_path;
             }

@@ -77,9 +77,13 @@ class Flavor_Autoloader {
         'Flavor_License_Plans' => 'licensing/class-license-plans.php',
         'Flavor_License_Manager' => 'licensing/class-license-manager.php',
         'Flavor_Plugin_Updater' => 'licensing/class-plugin-updater.php',
-        // Sistema de simbolos VBP
-        'Flavor_VBP_Symbols' => 'visual-builder-pro/class-vbp-symbols.php',
-        'Flavor_VBP_Symbols_API' => 'visual-builder-pro/class-vbp-symbols-api.php',
+        // NOTA: Flavor_VBP_Symbols y Flavor_VBP_Symbols_API ya no llevan
+        // mapeo especial aquí porque VBP está ahora en addons/ y
+        // Flavor_VBP_Loader los require_once explícitamente en
+        // cargar_archivos(). Si alguien instancia estas clases antes de
+        // que el loader las cargue, el autoloader no las encontrará —
+        // caso improbable porque el loader se instancia en bootstrap
+        // antes que cualquier otro código VBP.
         // Observabilidad
         'Flavor_Performance_Metrics' => 'observability/class-performance-metrics.php',
         'Flavor_Health_Check_API' => 'observability/class-health-check-api.php',

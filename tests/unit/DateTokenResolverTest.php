@@ -6,7 +6,7 @@
  */
 
 require_once dirname(__DIR__) . '/bootstrap.php';
-require_once FLAVOR_PLUGIN_DIR . '/includes/visual-builder-pro/collections/class-date-token-resolver.php';
+require_once FLAVOR_PLUGIN_DIR . '/addons/flavor-visual-builder-pro/collections/class-date-token-resolver.php';
 
 /**
  * Mock de wp_timezone si no está definida en el bootstrap.

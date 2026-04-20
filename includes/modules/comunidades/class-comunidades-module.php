@@ -2666,6 +2666,11 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
                     'default'           => 20,
                     'sanitize_callback' => 'absint',
                 ],
+                'pagina' => [
+                    'type'              => 'integer',
+                    'default'           => 1,
+                    'sanitize_callback' => 'absint',
+                ],
             ],
         ]);
 
@@ -2763,6 +2768,10 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
      * @return bool
      */
     public function api_verificar_lectura_publica_comunidades() {
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+
         return true;
     }
 
@@ -2842,6 +2851,7 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
             'categoria' => $request->get_param('categoria'),
             'busqueda' => $request->get_param('busqueda'),
             'limite'   => $request->get_param('limite'),
+            'pagina'   => $request->get_param('pagina'),
         ];
 
         $resultado = $this->action_listar_comunidades($parametros);
@@ -4414,7 +4424,9 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
         $tipo_filtro      = sanitize_text_field($parametros['tipo'] ?? '');
         $categoria_filtro = sanitize_text_field($parametros['categoria'] ?? '');
         $busqueda_filtro  = sanitize_text_field($parametros['busqueda'] ?? '');
-        $limite           = absint($parametros['limite'] ?? 20);
+        $limite           = self::normalize_public_limit($parametros['limite'] ?? null, 20, 50);
+        $pagina           = max(1, absint($parametros['pagina'] ?? 1));
+        $offset           = ($pagina - 1) * $limite;
 
         $condiciones_where   = ["estado = 'activa'", "tipo != 'secreta'"];
         $valores_preparacion = [];
@@ -4436,9 +4448,16 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
             $valores_preparacion[] = $termino_busqueda;
         }
 
-        $sql_condiciones     = implode(' AND ', $condiciones_where);
-        $sql_consulta        = "SELECT * FROM $tabla_comunidades WHERE $sql_condiciones ORDER BY miembros_count DESC, created_at DESC LIMIT %d";
+        $sql_condiciones = implode(' AND ', $condiciones_where);
+        $sql_total       = "SELECT COUNT(*) FROM $tabla_comunidades WHERE $sql_condiciones";
+        if (!empty($valores_preparacion)) {
+            $total_encontradas = (int) $wpdb->get_var($wpdb->prepare($sql_total, ...$valores_preparacion));
+        } else {
+            $total_encontradas = (int) $wpdb->get_var($sql_total);
+        }
+        $sql_consulta          = "SELECT * FROM $tabla_comunidades WHERE $sql_condiciones ORDER BY miembros_count DESC, created_at DESC LIMIT %d OFFSET %d";
         $valores_preparacion[] = $limite;
+        $valores_preparacion[] = $offset;
 
         $comunidades_encontradas = $wpdb->get_results($wpdb->prepare($sql_consulta, ...$valores_preparacion));
 
@@ -4466,14 +4485,33 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
 
         return [
             'success'      => true,
-            'total'        => count($comunidades_formateadas),
+            'total'        => $total_encontradas,
+            'pagina'       => $pagina,
+            'limite'       => $limite,
+            'paginas'      => (int) ceil($total_encontradas / $limite),
             'comunidades'  => $comunidades_formateadas,
             'mensaje'      => sprintf(
                 __('Se encontraron %d comunidades%s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                count($comunidades_formateadas),
+                $total_encontradas,
                 !empty($busqueda_filtro) ? " para '$busqueda_filtro'" : ''
             ),
         ];
+    }
+
+    /**
+     * Normaliza límites de listados públicos.
+     *
+     * @param mixed $limit Límite solicitado.
+     * @param int   $default Valor por defecto.
+     * @param int   $max Máximo permitido.
+     * @return int
+     */
+    public static function normalize_public_limit($limit, $default, $max) {
+        if ($limit === null || $limit === '') {
+            return (int) $default;
+        }
+
+        return max(1, min((int) $max, (int) $limit));
     }
 
     /**

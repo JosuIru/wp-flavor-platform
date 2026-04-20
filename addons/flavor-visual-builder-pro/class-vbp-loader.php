@@ -71,8 +71,8 @@ class Flavor_VBP_Loader {
      * Constructor privado
      */
     private function __construct() {
-        $this->ruta_base = FLAVOR_PLATFORM_PATH . 'includes/visual-builder-pro/';
-        $this->url_base  = FLAVOR_PLATFORM_URL . 'includes/visual-builder-pro/';
+        $this->ruta_base = FLAVOR_PLATFORM_PATH . 'addons/flavor-visual-builder-pro/';
+        $this->url_base  = FLAVOR_PLATFORM_URL . 'addons/flavor-visual-builder-pro/';
 
         $this->cargar_archivos();
         $this->inicializar_componentes();
