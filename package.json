@@ -1,6 +1,6 @@
 {
   "name": "flavor-platform",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "Flavor Platform para WordPress: comunidades, IA, page builder y automatización",
   "private": true,
   "scripts": {

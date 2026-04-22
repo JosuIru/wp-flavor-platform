@@ -16,6 +16,20 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.3] - 2026-04-22
+
+### Eliminado
+- **Pantalla `flavor-create-pages`** (Mi App > Paginas): era una herramienta puntual de migracion V1 -> V2 que ya cumplio su funcion. Eliminados los dos archivos de clase (`class-pages-admin.php`, `class-pages-admin-v2.php`) y todas las referencias en shell, menu-manager, bootstrap, settings-hub, dashboard, page-chrome, menu-organizer, navigation-registry y views. Para crear landings ahora se usa la Vista Unificada de Modulos con el boton "Crear landing" en cada tarjeta.
+
+### Corregido
+- **Workflow de Release: `composer install --no-dev` reventaba** por el hook `post-install-cmd` que intentaba ejecutar `vendor/bin/phpcs` (dev dep no instalado en produccion). Ahora el script es tolerante: si no existe `vendor/bin/phpcs` imprime "skipped" y sale con exit 0.
+- **`package-lock.json` resincronizado** con `package.json` (faltaban 10 transitivas). `npm ci` en el workflow dejo de fallar con "Missing: ... from lock file".
+
+### Nota
+Funcionalmente equivalente a 3.5.2 mas los cambios listados arriba. El bump a 3.5.3 es para que instalaciones con 3.5.2 temprana (subida manual antes de consolidar el empaquetado) detecten la actualizacion y reciban estos extras.
+
+---
+
 ## [3.5.2] - 2026-04-22
 
 ### Anadido
