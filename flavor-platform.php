@@ -7,7 +7,7 @@
  * Plugin Name: Flavor Platform
  * Plugin URI: https://gailu.net
  * Description: Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder, Deep Links, Matching, Newsletter, Sellos de Calidad y más.
- * Version: 3.5.4
+ * Version: 3.5.5
  * Author: Gailu Labs
  * Author URI: https://gailu.net
  * License: GPL v2 or later
@@ -72,7 +72,7 @@ if (!defined('FLAVOR_RUNTIME_PLUGIN_BASENAME')) {
 
 // Constantes principales - Flavor Platform (nuevo naming)
 if (!defined('FLAVOR_PLATFORM_VERSION')) {
-    define('FLAVOR_PLATFORM_VERSION', '3.5.4');
+    define('FLAVOR_PLATFORM_VERSION', '3.5.5');
 }
 if (!defined('FLAVOR_PLATFORM_PATH')) {
     define('FLAVOR_PLATFORM_PATH', plugin_dir_path(__FILE__));
@@ -890,6 +890,19 @@ function flavor_platform_require_bootstrap_file( $relative_path, $expected_class
             'bootstrap'
         );
         return false;
+    }
+
+    // El archivo existe y la clase carga: si estaba registrado como "missing",
+    // retirarlo. Si la lista queda vacia, borrar la opcion.
+    $stored_missing = get_option( 'flavor_platform_missing_bootstrap_files', [] );
+    if ( is_array( $stored_missing ) && in_array( $relative_path, $stored_missing, true ) ) {
+        $stored_missing = array_values( array_diff( $stored_missing, [ $relative_path ] ) );
+        if ( empty( $stored_missing ) ) {
+            delete_option( 'flavor_platform_missing_bootstrap_files' );
+            delete_option( 'flavor_chat_ia_missing_bootstrap_files' );
+        } else {
+            update_option( 'flavor_platform_missing_bootstrap_files', $stored_missing, false );
+        }
     }
 
     return true;

@@ -16,6 +16,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.5] - 2026-04-22
+
+### Corregido
+- **Aviso "modo degradado" persistia tras reparar el despliegue**. Cuando `flavor_platform_require_bootstrap_file()` no encontraba un archivo, lo registraba en la opcion `flavor_platform_missing_bootstrap_files` y mostraba el aviso. Al subir los archivos despues por FTP, el aviso seguia apareciendo porque la opcion nunca se limpiaba. Ahora, cuando un archivo se carga correctamente, se retira de la lista de faltantes; si la lista queda vacia, se borra la opcion.
+
+---
+
 ## [3.5.4] - 2026-04-22
 
 ### Corregido

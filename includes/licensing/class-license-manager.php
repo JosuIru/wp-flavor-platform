@@ -352,8 +352,18 @@ class Flavor_License_Manager {
             );
         }
 
-        // El servidor puede devolver datos en 'data' o directamente
-        return $result['data'] ?? $result;
+        // Compatibilidad con distintas formas de respuesta:
+        // - ['data' => [...]]         formato legacy/local
+        // - ['license' => [...]]      formato de Flavor License Server
+        // - [...]                     payload plano
+        $payload = $result['data'] ?? $result['license'] ?? $result;
+
+        // Normalizar el plan a slug si el servidor devuelve un objeto.
+        if (is_array($payload) && isset($payload['plan']) && is_array($payload['plan'])) {
+            $payload['plan'] = $payload['plan']['slug'] ?? 'free';
+        }
+
+        return $payload;
     }
 
     // =========================================================================
