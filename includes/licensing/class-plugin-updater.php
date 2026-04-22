@@ -42,11 +42,11 @@ class Flavor_Plugin_Updater {
     private $plugin_file;
 
     /**
-     * URL del servidor de licencias
+     * Repositorio GitHub "owner/repo" desde el que se leen las releases.
      *
      * @var string
      */
-    private $api_url;
+    private $github_repo;
 
     /**
      * Caché de actualización
@@ -81,27 +81,29 @@ class Flavor_Plugin_Updater {
         $this->plugin_file = function_exists('flavor_get_runtime_plugin_basename')
             ? flavor_get_runtime_plugin_basename()
             : FLAVOR_PLATFORM_BASENAME;
-        $this->api_url = $this->get_api_url();
+        $this->github_repo = $this->get_repo();
 
         $this->init_hooks();
     }
 
     /**
-     * Obtiene URL del API
+     * Devuelve el repositorio GitHub desde el que se leen las releases.
      *
-     * @return string
+     * Prioridad: constante FLAVOR_PLATFORM_GH_REPO > opcion > filtro > default.
+     *
+     * @return string Formato "owner/repo".
      */
-    private function get_api_url() {
-        if (defined('FLAVOR_LICENSE_SERVER_URL')) {
-            return FLAVOR_LICENSE_SERVER_URL;
+    private function get_repo() {
+        if (defined('FLAVOR_PLATFORM_GH_REPO') && is_string(FLAVOR_PLATFORM_GH_REPO) && FLAVOR_PLATFORM_GH_REPO !== '') {
+            return FLAVOR_PLATFORM_GH_REPO;
         }
 
-        $custom_url = get_option('flavor_license_server_url');
-        if (!empty($custom_url)) {
-            return trailingslashit($custom_url);
+        $repo_opcion = get_option('flavor_platform_github_repo');
+        if (is_string($repo_opcion) && $repo_opcion !== '') {
+            return $repo_opcion;
         }
 
-        return apply_filters('flavor_license_server_url', 'https://licencias.gailu.net/wp-json/fls/v1/');
+        return apply_filters('flavor_platform_github_repo', 'JosuIru/wp-flavor-platform');
     }
 
     /**
@@ -158,7 +160,7 @@ class Flavor_Plugin_Updater {
                 'slug'          => $this->plugin_slug,
                 'plugin'        => $this->plugin_file,
                 'new_version'   => $update_info['latest_version'],
-                'url'           => 'https://gailu.net/flavor-platform/',
+                'url'           => 'https://github.com/' . $this->github_repo,
                 'package'       => $update_info['download_url'] ?? '',
                 'icons'         => [
                     '1x' => FLAVOR_PLATFORM_URL . 'assets/images/icon-128.png',
@@ -230,7 +232,7 @@ class Flavor_Plugin_Updater {
             'version'           => $update_info['latest_version'] ?? FLAVOR_PLATFORM_VERSION,
             'author'            => '<a href="https://gailu.net">Gailu Labs</a>',
             'author_profile'    => 'https://gailu.net',
-            'homepage'          => 'https://gailu.net/flavor-platform/',
+            'homepage'          => 'https://github.com/' . $this->github_repo,
             'short_description' => __('Plataforma modular para comunidades y organizaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'sections'          => [
                 'description'   => $this->get_plugin_description(),
@@ -251,68 +253,50 @@ class Flavor_Plugin_Updater {
     }
 
     /**
-     * Consulta al servidor información de actualización
+     * Consulta GitHub Releases y devuelve info de actualizacion.
      *
-     * @param string $current_version Versión actual
-     * @return array|null
+     * Al ser open source no se envia license_key, site_url ni telemetria: solo
+     * un GET anonimo a la API publica de GitHub (con token opcional via
+     * FLAVOR_GH_TOKEN para evitar rate limit en despliegues grandes).
+     *
+     * @param string $current_version Version actualmente instalada.
+     * @return array|null Array con claves has_update, latest_version, download_url, changelog... o null.
      */
     private function fetch_update_info($current_version) {
-        $license_manager = Flavor_License_Manager::get_instance();
-        $license_data = $license_manager->get_license_data();
-        $license_key = $license_data['key'] ?? '';
-
-        $body = [
-            'plugin_slug'     => $this->plugin_slug,
-            'current_version' => $current_version,
-            'license_key'     => $license_key,
-            'site_url'        => $this->get_site_url(),
-            'wp_version'      => get_bloginfo('version'),
-            'php_version'     => PHP_VERSION,
-        ];
-
-        $response = wp_remote_post(
-            trailingslashit($this->api_url) . 'updates/check',
-            [
-                'body'    => wp_json_encode($body),
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'User-Agent'   => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
-                ],
-                'timeout' => 15,
-            ]
-        );
-
-        if (is_wp_error($response)) {
-            if (function_exists('flavor_platform_log')) {
-                flavor_platform_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'warning');
+        if (!class_exists('Flavor_GitHub_Release_API')) {
+            $ruta_helper = FLAVOR_PLATFORM_PATH . 'includes/licensing/class-github-release-api.php';
+            if (is_readable($ruta_helper)) {
+                require_once $ruta_helper;
             }
+        }
+
+        /**
+         * Permite aceptar prereleases (canales beta) si el admin lo activa.
+         */
+        $aceptar_prereleases = (bool) apply_filters('flavor_platform_accept_prereleases', false);
+
+        $release_info = Flavor_GitHub_Release_API::fetch_latest_release($this->github_repo, $aceptar_prereleases);
+        if ($release_info === null || empty($release_info['version'])) {
             return null;
         }
 
-        $code = wp_remote_retrieve_response_code($response);
-        if ($code !== 200) {
-            return null;
-        }
+        $latest_version = $release_info['version'];
+        $hay_nueva_version = version_compare($current_version, $latest_version, '<')
+            && !empty($release_info['zip_url']);
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (empty($body['success'])) {
-            return null;
-        }
-
-        return $body;
-    }
-
-    /**
-     * Obtiene URL del sitio normalizada
-     *
-     * @return string
-     */
-    private function get_site_url() {
-        $url = get_site_url();
-        $url = preg_replace('#^https?://#', '', $url);
-        $url = untrailingslashit($url);
-        return strtolower($url);
+        return [
+            'success'        => true,
+            'has_update'     => $hay_nueva_version,
+            'latest_version' => $latest_version,
+            'download_url'   => $release_info['zip_url'],
+            'changelog'      => $release_info['changelog'],
+            'release_date'   => $release_info['published_at'],
+            // Campos opcionales: si algun dia se suben como metadata, se leerian
+            // del body; por ahora los dejamos vacios y la UI aplica fallbacks.
+            'tested_wp'      => '',
+            'requires_wp'    => '',
+            'requires_php'   => '',
+        ];
     }
 
     /**

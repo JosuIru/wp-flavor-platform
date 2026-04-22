@@ -30,14 +30,9 @@ class Flavor_Addon_Updater {
     private static $instancia = null;
 
     /**
-     * URL del servidor de actualizaciones
+     * Addons registrados para actualización.
      *
-     * @var string
-     */
-    private $servidor_actualizaciones = 'https://api.gailu.net/v1/updates';
-
-    /**
-     * Addons registrados para actualización
+     * Cada entrada incluye, como minimo: slug, file, version, github_repo.
      *
      * @var array
      */
@@ -86,28 +81,42 @@ class Flavor_Addon_Updater {
     }
 
     /**
-     * Registra un addon para actualizaciones automáticas
+     * Registra un addon para actualizaciones automaticas via GitHub Releases.
      *
-     * @param string $slug Slug del addon
-     * @param string $archivo_principal Ruta al archivo principal del addon
-     * @param string $version_actual Versión actual instalada
-     * @param array $config Configuración adicional
+     * @param string $slug Slug del addon.
+     * @param string $archivo_principal Ruta al archivo principal del addon.
+     * @param string $version_actual Version actual instalada.
+     * @param array  $config Configuracion adicional. Clave requerida:
+     *                       - github_repo (string) "owner/repo" del repositorio GitHub del addon.
+     *                       Claves opcionales: name, icons, banners, tested, requires_php, beta.
      * @return void
      */
     public function register_addon($slug, $archivo_principal, $version_actual, $config = []) {
         $archivo_principal = is_string($archivo_principal) ? trim($archivo_principal) : '';
 
         $defaults = [
-            'slug' => $slug,
-            'file' => $archivo_principal,
-            'version' => $version_actual,
-            'update_url' => $this->servidor_actualizaciones,
-            'license_key' => '', // Para addons premium
-            'beta' => false, // Si acepta versiones beta
+            'slug'         => $slug,
+            'file'         => $archivo_principal,
+            'version'      => $version_actual,
+            'github_repo'  => '',
+            'name'         => $slug,
+            'icons'        => [],
+            'banners'      => [],
+            'tested'       => '',
+            'requires_php' => '',
+            'beta'         => false,
         ];
 
         $addon_config = wp_parse_args($config, $defaults);
         $addon_config['file'] = is_string($addon_config['file']) ? trim($addon_config['file']) : '';
+        $addon_config['github_repo'] = is_string($addon_config['github_repo']) ? trim($addon_config['github_repo']) : '';
+
+        if ($addon_config['github_repo'] === '' && function_exists('flavor_platform_log')) {
+            flavor_platform_log(
+                sprintf('Addon "%s" registrado sin github_repo: no recibira actualizaciones automaticas.', $slug),
+                'warning'
+            );
+        }
 
         $this->addons_actualizables[$slug] = $addon_config;
     }
@@ -167,63 +176,70 @@ class Flavor_Addon_Updater {
     }
 
     /**
-     * Obtiene actualizaciones desde el servidor remoto
+     * Consulta GitHub Releases de cada addon registrado y devuelve el mapa de actualizaciones.
      *
-     * @return array
+     * Open source: GET anonimo a api.github.com, sin license_key ni telemetria.
+     *
+     * @return array Mapa slug => info de release (version, url, package, changelog, ...).
      */
     private function obtener_actualizaciones_remotas() {
-        // Verificar cache primero
         $cache_key = 'flavor_updates_check';
         $cached = get_transient($cache_key);
-
         if ($cached !== false) {
-            return $cached;
+            return is_array($cached) ? $cached : [];
         }
 
-        // Preparar datos para enviar al servidor
-        $addons = [];
+        $this->cargar_helper_github();
+
+        $actualizaciones = [];
         foreach ($this->addons_actualizables as $slug => $addon) {
-            $addons[$slug] = [
-                'version' => $addon['version'],
-                'license' => $addon['license_key'],
-                'beta' => $addon['beta'],
+            if (empty($addon['github_repo'])) {
+                continue;
+            }
+
+            $release_info = Flavor_GitHub_Release_API::fetch_latest_release(
+                $addon['github_repo'],
+                !empty($addon['beta'])
+            );
+
+            if ($release_info === null || empty($release_info['version']) || empty($release_info['zip_url'])) {
+                continue;
+            }
+
+            $actualizaciones[$slug] = [
+                'name'         => $addon['name'] ?? $slug,
+                'version'      => $release_info['version'],
+                'url'          => $release_info['html_url'] ?: ('https://github.com/' . $addon['github_repo']),
+                'package'      => $release_info['zip_url'],
+                'changelog'    => $release_info['changelog'],
+                'release_date' => $release_info['published_at'],
+                'icons'        => $addon['icons'] ?? [],
+                'banners'      => $addon['banners'] ?? [],
+                'tested'       => $addon['tested'] ?? '',
+                'requires_php' => $addon['requires_php'] ?? '',
             ];
         }
 
-        $request_data = [
-            'addons' => $addons,
-            'site_url' => get_site_url(),
-            'wp_version' => get_bloginfo('version'),
-            'php_version' => PHP_VERSION,
-            'core_version' => FLAVOR_PLATFORM_VERSION,
-        ];
+        // Cachear 12h tanto si hay updates como si no (evita golpear api.github.com).
+        set_transient($cache_key, $actualizaciones, 12 * HOUR_IN_SECONDS);
 
-        // Hacer request al servidor
-        $response = wp_remote_post($this->servidor_actualizaciones, [
-            'body' => json_encode($request_data),
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'User-Agent' => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION . '; ' . get_bloginfo('url'),
-            ],
-            'timeout' => 15,
-        ]);
+        return $actualizaciones;
+    }
 
-        if (is_wp_error($response)) {
-            flavor_platform_log('Error verificando actualizaciones: ' . $response->get_error_message(), 'error');
-            return [];
+    /**
+     * Carga el helper de GitHub si aun no esta en memoria.
+     *
+     * @return void
+     */
+    private function cargar_helper_github() {
+        if (class_exists('Flavor_GitHub_Release_API')) {
+            return;
         }
 
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-
-        if (!is_array($data)) {
-            return [];
+        $ruta_helper = FLAVOR_PLATFORM_PATH . 'includes/licensing/class-github-release-api.php';
+        if (is_readable($ruta_helper)) {
+            require_once $ruta_helper;
         }
-
-        // Cachear por 12 horas
-        set_transient($cache_key, $data, 12 * HOUR_IN_SECONDS);
-
-        return $data;
     }
 
     /**
@@ -282,43 +298,59 @@ class Flavor_Addon_Updater {
     }
 
     /**
-     * Obtiene información detallada de un addon desde el servidor
+     * Obtiene informacion detallada de un addon desde GitHub Releases.
      *
-     * @param string $slug Slug del addon
+     * @param string $slug Slug del addon.
      * @return array|false
      */
     private function obtener_info_remota($slug) {
+        if (!isset($this->addons_actualizables[$slug])) {
+            return false;
+        }
+
+        $addon = $this->addons_actualizables[$slug];
+        if (empty($addon['github_repo'])) {
+            return false;
+        }
+
         $cache_key = 'flavor_addon_info_' . $slug;
         $cached = get_transient($cache_key);
-
         if ($cached !== false) {
-            return $cached;
+            return is_array($cached) ? $cached : false;
         }
 
-        $url = add_query_arg([
-            'action' => 'addon_info',
-            'slug' => $slug,
-        ], $this->servidor_actualizaciones);
+        $this->cargar_helper_github();
 
-        $response = wp_remote_get($url, [
-            'timeout' => 15,
-        ]);
+        $release_info = Flavor_GitHub_Release_API::fetch_latest_release(
+            $addon['github_repo'],
+            !empty($addon['beta'])
+        );
 
-        if (is_wp_error($response)) {
+        if ($release_info === null || empty($release_info['version'])) {
             return false;
         }
 
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
+        $info = [
+            'name'           => $addon['name'] ?? $slug,
+            'version'        => $release_info['version'],
+            'author'         => $addon['author'] ?? '',
+            'author_profile' => $addon['author_profile'] ?? '',
+            'requires'       => $addon['requires'] ?? '5.8',
+            'tested'         => $addon['tested'] ?? '',
+            'requires_php'   => $addon['requires_php'] ?? '7.4',
+            'description'    => $addon['description'] ?? '',
+            'changelog'      => $release_info['changelog'],
+            'installation'   => $addon['installation'] ?? '',
+            'faq'            => $addon['faq'] ?? '',
+            'banners'        => $addon['banners'] ?? [],
+            'icons'          => $addon['icons'] ?? [],
+            'package'        => $release_info['zip_url'],
+            'last_updated'   => $release_info['published_at'],
+        ];
 
-        if (!is_array($data)) {
-            return false;
-        }
+        set_transient($cache_key, $info, 6 * HOUR_IN_SECONDS);
 
-        // Cachear por 6 horas
-        set_transient($cache_key, $data, 6 * HOUR_IN_SECONDS);
-
-        return $data;
+        return $info;
     }
 
     /**
@@ -430,24 +462,15 @@ class Flavor_Addon_Updater {
         return count($this->get_available_updates());
     }
 
-    /**
-     * Configurar servidor de actualizaciones personalizado
-     *
-     * @param string $url URL del servidor
-     * @return void
-     */
-    public function set_update_server($url) {
-        $this->servidor_actualizaciones = trailingslashit($url);
-    }
 }
 
 /**
- * Función helper para registrar addon actualizable
+ * Helper para registrar un addon actualizable via GitHub Releases.
  *
- * @param string $slug Slug del addon
- * @param string $archivo Archivo principal
- * @param string $version Versión actual
- * @param array $config Configuración
+ * @param string $slug Slug del addon.
+ * @param string $archivo Archivo principal del addon.
+ * @param string $version Version actual instalada.
+ * @param array  $config Configuracion. Debe incluir github_repo ("owner/repo").
  * @return void
  */
 function flavor_register_addon_updates($slug, $archivo, $version, $config = []) {

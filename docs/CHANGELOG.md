@@ -16,6 +16,25 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.1] - 2026-04-22
+
+### Cambiado
+- **Actualizaciones automaticas via GitHub Releases** (coherencia open source)
+  - El updater del core (`Flavor_Plugin_Updater`) ya no consulta `licencias.gailu.net`: lee directamente las releases publicas de `JosuIru/wp-flavor-platform`.
+  - Eliminado el envio de `license_key`, `site_url` y telemetria al verificar updates.
+  - Nuevo helper `Flavor_GitHub_Release_API` (GET anonimo a `api.github.com`, con token opcional via `FLAVOR_GH_TOKEN` para rate limit).
+  - Repo configurable via constante `FLAVOR_PLATFORM_GH_REPO`, opcion o filtro `flavor_platform_github_repo`.
+  - Filtro `flavor_platform_accept_prereleases` para opt-in a canales beta.
+- **Addon updater unificado al mismo patron**
+  - `Flavor_Addon_Updater::register_addon()` ahora requiere `github_repo` en el config; eliminados `update_url` y `license_key`.
+  - Cada addon consulta su propio repositorio GitHub; el sistema de licencias premium (`Flavor_Addon_License`) se mantiene intacto para addons que lo necesiten.
+
+### Corregido
+- **Workflow de release** (`.github/workflows/release.yml`)
+  - Corregida la ruta de `CHANGELOG.md`: ahora se copia desde `docs/CHANGELOG.md`.
+
+---
+
 ## [3.5.0] - 2026-04-01
 
 ### Anadido

@@ -106,7 +106,7 @@ jobs:
           cp flavor-platform.php release/flavor-platform/
           cp uninstall.php release/flavor-platform/
           cp README.md release/flavor-platform/
-          cp CHANGELOG.md release/flavor-platform/
+          cp docs/CHANGELOG.md release/flavor-platform/
 
           # Remove development files from assets
           find release/flavor-platform/assets -name "*.map" -delete
