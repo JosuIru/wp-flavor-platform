@@ -481,9 +481,112 @@ class Flavor_Admin_Breadcrumbs {
             }
 
             /* ============================================
-               Breadcrumbs del Shell (páginas admin)
+               Page Header del Shell (páginas admin)
+               Envuelve breadcrumbs + título del apartado + chips
                ============================================ */
-            .fls-breadcrumbs {
+            .fls-page-header {
+                --fls-accent: #3b82f6;
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+                border-bottom: 1px solid #e2e8f0;
+                margin-left: 260px;
+                position: relative;
+                z-index: 99;
+                box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+            }
+
+            body.fls-shell-active .fls-page-header {
+                margin-left: 260px;
+            }
+
+            body.fls-shell-active.fls-shell--collapsed .fls-page-header {
+                margin-left: 60px;
+            }
+
+            .fls-page-header__title-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 6px 20px 14px;
+            }
+
+            .fls-page-header__icon.dashicons {
+                font-size: 28px;
+                width: 28px;
+                height: 28px;
+                color: var(--fls-accent);
+                flex-shrink: 0;
+            }
+
+            .fls-page-header__title {
+                margin: 0;
+                padding: 0;
+                font-size: 22px;
+                line-height: 1.2;
+                font-weight: 600;
+                color: #0f172a;
+                letter-spacing: -0.01em;
+            }
+
+            /* Chips / tabs de subpáginas hermanas */
+            .fls-page-header__tabs {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 0 20px 12px;
+            }
+
+            .fls-page-header__tab {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: #f1f5f9;
+                color: #475569;
+                font-size: 13px;
+                font-weight: 500;
+                text-decoration: none;
+                border: 1px solid transparent;
+                transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+            }
+
+            .fls-page-header__tab:hover,
+            .fls-page-header__tab:focus-visible {
+                background: #e2e8f0;
+                color: #0f172a;
+                outline: none;
+            }
+
+            .fls-page-header__tab--active,
+            .fls-page-header__tab--active:hover {
+                background: var(--fls-accent);
+                color: #ffffff;
+                border-color: var(--fls-accent);
+                box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+            }
+
+            .fls-page-header__tab-icon.dashicons {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                opacity: 0.9;
+            }
+
+            /* Breadcrumbs dentro del page header (reset de borde/background) */
+            .fls-page-header .fls-breadcrumbs {
+                background: transparent;
+                border-bottom: none;
+                margin-left: 0;
+                padding: 10px 20px 4px;
+                font-size: 13px;
+                position: static;
+                z-index: auto;
+                box-shadow: none;
+            }
+
+            /* Compatibilidad: si .fls-breadcrumbs se usara fuera del page header
+               (edición CPTs, etc.) conserva su layout previo. */
+            .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs) {
                 background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
                 border-bottom: 1px solid #e2e8f0;
                 padding: 10px 20px;
@@ -493,16 +596,16 @@ class Flavor_Admin_Breadcrumbs {
                 z-index: 99;
             }
 
-            .fls-shell--collapsed ~ .fls-breadcrumbs,
-            .fls-shell--collapsed + #wpcontent .fls-breadcrumbs {
+            .fls-shell--collapsed ~ .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs),
+            .fls-shell--collapsed + #wpcontent .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs) {
                 margin-left: 60px;
             }
 
-            body.fls-shell-active .fls-breadcrumbs {
+            body.fls-shell-active .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs) {
                 margin-left: 260px;
             }
 
-            body.fls-shell-active.fls-shell--collapsed .fls-breadcrumbs {
+            body.fls-shell-active.fls-shell--collapsed .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs) {
                 margin-left: 60px;
             }
 
@@ -598,9 +701,65 @@ class Flavor_Admin_Breadcrumbs {
                 color: #f1f5f9;
             }
 
+            /* Dark mode para el page header */
+            .fls-shell-dark .fls-page-header,
+            body.flavor-dark-mode .fls-page-header {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                border-color: #334155;
+                box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            .fls-shell-dark .fls-page-header__title,
+            body.flavor-dark-mode .fls-page-header__title {
+                color: #f1f5f9;
+            }
+
+            .fls-shell-dark .fls-page-header__tab,
+            body.flavor-dark-mode .fls-page-header__tab {
+                background: #1e293b;
+                color: #cbd5e1;
+            }
+
+            .fls-shell-dark .fls-page-header__tab:hover,
+            .fls-shell-dark .fls-page-header__tab:focus-visible,
+            body.flavor-dark-mode .fls-page-header__tab:hover,
+            body.flavor-dark-mode .fls-page-header__tab:focus-visible {
+                background: #334155;
+                color: #f1f5f9;
+            }
+
             /* Responsive */
             @media (max-width: 782px) {
-                .fls-breadcrumbs {
+                .fls-page-header,
+                body.fls-shell-active .fls-page-header {
+                    margin-left: 0;
+                }
+
+                .fls-page-header__title-row {
+                    padding: 4px 12px 10px;
+                }
+
+                .fls-page-header__title {
+                    font-size: 18px;
+                }
+
+                .fls-page-header__tabs {
+                    padding: 0 12px 10px;
+                    overflow-x: auto;
+                    flex-wrap: nowrap;
+                    scrollbar-width: thin;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                .fls-page-header__tab {
+                    flex-shrink: 0;
+                }
+
+                .fls-page-header .fls-breadcrumbs {
+                    padding: 8px 12px 2px;
+                }
+
+                .fls-breadcrumbs:not(.fls-page-header .fls-breadcrumbs) {
                     margin-left: 0;
                     padding: 8px 12px;
                 }
@@ -618,7 +777,10 @@ class Flavor_Admin_Breadcrumbs {
     }
 
     /**
-     * Renderizar breadcrumbs para páginas del shell
+     * Renderizar page header para páginas del shell
+     *
+     * Envuelve breadcrumb + título del apartado actual + chips con las
+     * subpáginas hermanas (si el apartado tiene subpáginas registradas).
      */
     public function render_shell_breadcrumbs() {
         if (!$this->is_shell_page() || !$this->is_shell_active()) {
@@ -631,51 +793,142 @@ class Flavor_Admin_Breadcrumbs {
             return;
         }
 
+        $current_page_slug = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $page_info = $this->get_shell_page_info($current_page_slug);
+
+        // Datos del apartado (dashboard padre): si estamos en subpágina, el
+        // apartado es el padre; si estamos en el dashboard mismo, el apartado
+        // es la propia página.
+        $apartado_slug = $page_info['parent_slug'] ?? $current_page_slug;
+        $apartado_label = $page_info['parent_label'] ?? $page_info['label'];
+        $apartado_icon = $page_info['parent_icon'] ?? $page_info['icon'] ?? 'dashicons-admin-page';
+        $apartado_color = $page_info['color'] ?? null;
+
+        $siblings = $this->get_apartado_siblings($apartado_slug, $current_page_slug);
         ?>
-        <nav class="fls-breadcrumbs" aria-label="<?php esc_attr_e('Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
-            <ol class="fls-breadcrumbs__list">
-                <?php
-                $count = count($breadcrumbs);
-                $index = 0;
+        <header class="fls-page-header" role="banner">
+            <nav class="fls-breadcrumbs" aria-label="<?php esc_attr_e('Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <ol class="fls-breadcrumbs__list">
+                    <?php
+                    $count = count($breadcrumbs);
+                    $index = 0;
 
-                foreach ($breadcrumbs as $crumb) :
-                    $index++;
-                    $is_last = $index === $count;
-                    $is_current = !empty($crumb['current']);
-                    ?>
-                    <li class="fls-breadcrumbs__item<?php echo $is_current ? ' fls-breadcrumbs__item--current' : ''; ?>">
-                        <?php if (!empty($crumb['url']) && !$is_current) : ?>
-                            <a href="<?php echo esc_url($crumb['url']); ?>" class="fls-breadcrumbs__link">
-                                <?php if (!empty($crumb['icon'])) : ?>
-                                    <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
-                                <?php endif; ?>
-                                <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
-                            </a>
-                        <?php else : ?>
-                            <span class="fls-breadcrumbs__current"
-                                <?php if (!empty($crumb['color'])) : ?>
-                                    style="--crumb-color: <?php echo esc_attr($crumb['color']); ?>"
-                                <?php endif; ?>
-                            >
-                                <?php if (!empty($crumb['icon'])) : ?>
-                                    <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
-                                <?php endif; ?>
-                                <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
-                            </span>
-                        <?php endif; ?>
+                    foreach ($breadcrumbs as $crumb) :
+                        $index++;
+                        $is_last = $index === $count;
+                        $is_current = !empty($crumb['current']);
+                        ?>
+                        <li class="fls-breadcrumbs__item<?php echo $is_current ? ' fls-breadcrumbs__item--current' : ''; ?>">
+                            <?php if (!empty($crumb['url']) && !$is_current) : ?>
+                                <a href="<?php echo esc_url($crumb['url']); ?>" class="fls-breadcrumbs__link">
+                                    <?php if (!empty($crumb['icon'])) : ?>
+                                        <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
+                                    <?php endif; ?>
+                                    <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
+                                </a>
+                            <?php else : ?>
+                                <span class="fls-breadcrumbs__current"
+                                    <?php if (!empty($crumb['color'])) : ?>
+                                        style="--crumb-color: <?php echo esc_attr($crumb['color']); ?>"
+                                    <?php endif; ?>
+                                >
+                                    <?php if (!empty($crumb['icon'])) : ?>
+                                        <span class="dashicons <?php echo esc_attr($crumb['icon']); ?> fls-breadcrumbs__icon"></span>
+                                    <?php endif; ?>
+                                    <span class="fls-breadcrumbs__text"><?php echo esc_html($crumb['label']); ?></span>
+                                </span>
+                            <?php endif; ?>
 
-                        <?php if (!$is_last) : ?>
-                            <span class="fls-breadcrumbs__separator" aria-hidden="true">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </span>
-                        <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ol>
-        </nav>
+                            <?php if (!$is_last) : ?>
+                                <span class="fls-breadcrumbs__separator" aria-hidden="true">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </span>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
+            </nav>
+
+            <div class="fls-page-header__title-row"
+                <?php if ($apartado_color) : ?>style="--fls-accent: <?php echo esc_attr($apartado_color); ?>"<?php endif; ?>
+            >
+                <?php if (!empty($apartado_icon)) : ?>
+                    <span class="dashicons <?php echo esc_attr($apartado_icon); ?> fls-page-header__icon" aria-hidden="true"></span>
+                <?php endif; ?>
+                <h1 class="fls-page-header__title"><?php echo esc_html($apartado_label); ?></h1>
+            </div>
+
+            <?php if (!empty($siblings)) : ?>
+                <nav class="fls-page-header__tabs" aria-label="<?php esc_attr_e('Subpáginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <?php foreach ($siblings as $sibling) :
+                        $tab_classes = 'fls-page-header__tab';
+                        if (!empty($sibling['active'])) {
+                            $tab_classes .= ' fls-page-header__tab--active';
+                        }
+                        ?>
+                        <a href="<?php echo esc_url($sibling['url']); ?>"
+                            class="<?php echo esc_attr($tab_classes); ?>"
+                            <?php if (!empty($sibling['active'])) : ?>aria-current="page"<?php endif; ?>
+                        >
+                            <?php if (!empty($sibling['icon'])) : ?>
+                                <span class="dashicons <?php echo esc_attr($sibling['icon']); ?> fls-page-header__tab-icon" aria-hidden="true"></span>
+                            <?php endif; ?>
+                            <span class="fls-page-header__tab-label"><?php echo esc_html($sibling['label']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            <?php endif; ?>
+        </header>
         <?php
+    }
+
+    /**
+     * Obtener las subpáginas hermanas del apartado activo, marcando la actual.
+     *
+     * Consulta directamente el registry del shell: si un apartado no tiene
+     * subpáginas registradas, devuelve array vacío y los chips no se pintan.
+     *
+     * @param string $apartado_slug      Slug del dashboard padre del apartado actual
+     * @param string $current_page_slug  Slug de la página que se está viendo
+     * @return array Lista de siblings con formato [slug,label,icon,url,active]
+     */
+    private function get_apartado_siblings($apartado_slug, $current_page_slug) {
+        if (empty($apartado_slug) || !class_exists('Flavor_Shell_Navigation_Registry')) {
+            return [];
+        }
+
+        $registry = Flavor_Shell_Navigation_Registry::get_instance();
+        $subpages = $registry->get_module_subpages($apartado_slug);
+
+        if (empty($subpages)) {
+            return [];
+        }
+
+        // Primer chip: el propio dashboard del apartado (vista "raíz" / general)
+        $siblings = [[
+            'slug'   => $apartado_slug,
+            'label'  => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'icon'   => 'dashicons-admin-home',
+            'url'    => admin_url('admin.php?page=' . rawurlencode($apartado_slug)),
+            'active' => $current_page_slug === $apartado_slug,
+        ]];
+
+        foreach ($subpages as $subpage) {
+            if (empty($subpage['slug'])) {
+                continue;
+            }
+            $siblings[] = [
+                'slug'   => $subpage['slug'],
+                'label'  => $subpage['label'] ?? $subpage['slug'],
+                'icon'   => $subpage['icon'] ?? 'dashicons-arrow-right-alt2',
+                'url'    => admin_url('admin.php?page=' . rawurlencode($subpage['slug'])),
+                'active' => $current_page_slug === $subpage['slug'],
+            ];
+        }
+
+        return $siblings;
     }
 
     /**
@@ -854,6 +1107,7 @@ class Flavor_Admin_Breadcrumbs {
                                 $info['icon'] = $subpage['icon'] ?? $item['icon'] ?? $info['icon'];
                                 $info['parent_slug'] = $item['slug'];
                                 $info['parent_label'] = $item['label'];
+                                $info['parent_icon'] = $item['icon'] ?? null;
                                 if (empty($info['category'])) {
                                     $info['category'] = $section_id;
                                 }

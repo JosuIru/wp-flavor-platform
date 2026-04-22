@@ -11,7 +11,7 @@
  * @since 2.3.0
  */
 
-const CACHE_VERSION = 'vbp-v1';
+const CACHE_VERSION = 'vbp-v2';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_DYNAMIC = `${CACHE_VERSION}-dynamic`;
 const CACHE_API = `${CACHE_VERSION}-api`;
@@ -122,6 +122,10 @@ const CACHE_DURATIONS = {
 self.addEventListener('install', (event) => {
     console.log('[VBP SW] Installing service worker...');
 
+    // El SW vive en {plugin}/assets/vbp/js/, así que subimos 3 niveles para
+    // llegar a la raíz del plugin y resolver los STATIC_ASSETS desde ahí.
+    const pluginRoot = new URL('../../../', self.registration.scope).href;
+
     event.waitUntil(
         caches.open(CACHE_STATIC)
             .then((cache) => {
@@ -129,7 +133,7 @@ self.addEventListener('install', (event) => {
 
                 // Intentar cachear cada asset individualmente para manejar errores
                 const cachePromises = STATIC_ASSETS.map((assetPath) => {
-                    const fullUrl = self.registration.scope + assetPath;
+                    const fullUrl = new URL(assetPath, pluginRoot).href;
 
                     return fetch(fullUrl, { mode: 'no-cors' })
                         .then((response) => {

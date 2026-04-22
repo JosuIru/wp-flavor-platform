@@ -201,25 +201,80 @@ const flavorComposerFactory = () => ({
 
 	/**
          * Toggle de módulo vía AJAX (sin recargar página)
+         *
+         * Al ACTIVAR: primero consulta el preview de dependencias y, si hay
+         * módulos que se activarían en cascada, muestra un modal de
+         * confirmación antes de hacer cambios.
+         * Al DESACTIVAR: ejecuta directamente (el backend bloquea con WP_Error
+         * si hay dependientes activos).
          */
 	toggleModulo(idModulo) {
 		if (this.cargando) {return;}
 		if (this.esModuloRequerido(idModulo)) {return;}
 
-		this.cargando = true;
 		const activar = !this.esModuloActivo(idModulo);
+
+		if (!activar) {
+			this.ejecutarToggle(idModulo, false);
+			return;
+		}
+
+		// Activación: pedir preview de dependencias al servidor.
+		this.cargando = true;
+		this.previewActivacion(idModulo)
+			.then(preview => {
+				this.cargando = false;
+				const chain = preview && Array.isArray(preview.chain) ? preview.chain : [];
+				if (chain.length === 0) {
+					this.ejecutarToggle(idModulo, true);
+					return;
+				}
+				this.mostrarConfirmacionActivacion(preview, () => {
+					this.ejecutarToggle(idModulo, true);
+				});
+			})
+			.catch(error => {
+				console.warn('[Preview] Falló consulta, fallback a activación directa:', error);
+				this.cargando = false;
+				this.ejecutarToggle(idModulo, true);
+			});
+	},
+
+	/**
+         * Consulta qué dependencias faltan por activar. No muta estado.
+         * Devuelve Promise<{module_id, module_name, chain:[{id,name}...]}> o null.
+         */
+	previewActivacion(idModulo) {
+		const formData = new FormData();
+		formData.append('action', 'flavor_preview_toggle_modulo');
+		formData.append('modulo_id', idModulo);
+		formData.append('_ajax_nonce', this.nonces.toggleModulo);
+
+		return fetch(ajaxurl, {
+			method: 'POST',
+			credentials: 'same-origin',
+			body: formData
+		})
+			.then(response => response.json())
+			.then(data => (data && data.success) ? data.data : null);
+	},
+
+	/**
+         * Ejecuta la activación/desactivación contra el backend.
+         * Extraído de toggleModulo para reutilizar tras confirmación.
+         */
+	ejecutarToggle(idModulo, activar) {
+		this.cargando = true;
 
 		console.log('[Toggle] Módulo:', idModulo, 'Activar:', activar);
 		console.log('[Toggle] Módulos activos antes:', this.modulosActivos);
 
-		// Crear FormData para AJAX
 		const formData = new FormData();
 		formData.append('action', 'flavor_toggle_modulo');
 		formData.append('modulo_id', idModulo);
 		formData.append('activar', activar ? '1' : '0');
 		formData.append('_ajax_nonce', this.nonces.toggleModulo);
 
-		// Petición AJAX
 		fetch(ajaxurl, {
 			method: 'POST',
 			credentials: 'same-origin',
@@ -233,29 +288,24 @@ const flavorComposerFactory = () => ({
 					console.log('[Toggle] ✅ Operación exitosa');
 					console.log('[Toggle] Módulos activos desde servidor:', data.data.modulos_activos);
 
-					// Actualizar estado local con los datos del servidor (fuente única de verdad)
 					this.modulosActivos = data.data.modulos_activos || [];
 
-					// Actualizar también en flavorComposerData para que persista
 					if (window.flavorComposerData) {
 						window.flavorComposerData.modulosActivos = this.modulosActivos;
 					}
 
 					console.log('[Toggle] Módulos activos después:', this.modulosActivos);
 
-					// Mostrar notificación de éxito
 					this.mostrarNotificacion(data.data.message, 'success');
 				} else {
 					console.error('[Toggle] ❌ Error del servidor:', data.data);
 
-					// Si es un módulo requerido, mostrar advertencia especial
 					if (data.data && data.data.modulo_requerido) {
 						this.mostrarNotificacion(data.data.message, 'warning');
 					} else {
 						this.mostrarNotificacion(data.data.message || 'Error al actualizar el módulo', 'error');
 					}
 
-					// NO actualizar el estado local - mantener el estado anterior
 					console.warn('[Toggle] Estado local NO modificado por error');
 				}
 			})
@@ -266,6 +316,83 @@ const flavorComposerFactory = () => ({
 			.finally(() => {
 				this.cargando = false;
 			});
+	},
+
+	/**
+         * Muestra un modal con la cadena de dependencias que se activarían.
+         * Ejecuta onConfirm si el usuario confirma; no hace nada si cancela.
+         */
+	mostrarConfirmacionActivacion(preview, onConfirm) {
+		const moduleName = preview.module_name || preview.module_id;
+		const chain = preview.chain || [];
+
+		const overlay = document.createElement('div');
+		overlay.className = 'flavor-deps-overlay';
+		overlay.setAttribute('role', 'dialog');
+		overlay.setAttribute('aria-modal', 'true');
+		overlay.setAttribute('aria-labelledby', 'flavor-deps-title');
+
+		const itemsHtml = chain.map(item => `
+			<li class="flavor-deps-item">
+				<span class="dashicons dashicons-admin-plugins" aria-hidden="true"></span>
+				<span class="flavor-deps-item__name">${this.escapeHtml(item.name)}</span>
+				<span class="flavor-deps-item__slug">${this.escapeHtml(item.id)}</span>
+			</li>
+		`).join('');
+
+		overlay.innerHTML = `
+			<div class="flavor-deps-modal">
+				<header class="flavor-deps-modal__head">
+					<h2 id="flavor-deps-title" class="flavor-deps-modal__title">
+						Activar "${this.escapeHtml(moduleName)}" requiere:
+					</h2>
+					<p class="flavor-deps-modal__lead">
+						Este módulo depende de ${chain.length} módulo(s) que no están activos. Se activarán también:
+					</p>
+				</header>
+				<ul class="flavor-deps-list">${itemsHtml}</ul>
+				<footer class="flavor-deps-modal__foot">
+					<button type="button" class="button button-secondary" data-action="cancel">Cancelar</button>
+					<button type="button" class="button button-primary" data-action="confirm">
+						Activar todo (${chain.length + 1})
+					</button>
+				</footer>
+			</div>
+		`;
+
+		const cleanup = () => {
+			document.removeEventListener('keydown', onKeydown);
+			overlay.remove();
+		};
+		const onKeydown = (e) => {
+			if (e.key === 'Escape') { cleanup(); }
+		};
+
+		overlay.addEventListener('click', (e) => {
+			if (e.target === overlay) { cleanup(); }
+			const action = e.target.closest('[data-action]')?.dataset.action;
+			if (action === 'cancel') { cleanup(); }
+			if (action === 'confirm') {
+				cleanup();
+				onConfirm();
+			}
+		});
+
+		document.addEventListener('keydown', onKeydown);
+		document.body.appendChild(overlay);
+
+		// Focus inicial en el botón primario.
+		const primary = overlay.querySelector('[data-action="confirm"]');
+		if (primary) { primary.focus(); }
+	},
+
+	/**
+         * Escape HTML básico para inyección en template strings.
+         */
+	escapeHtml(str) {
+		const div = document.createElement('div');
+		div.textContent = str == null ? '' : String(str);
+		return div.innerHTML;
 	},
 
 	/**

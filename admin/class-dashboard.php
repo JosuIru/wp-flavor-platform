@@ -532,14 +532,6 @@ class Flavor_Dashboard {
             }
         ));
 
-        array_unshift($acciones['generales'], [
-            'id'       => 'crear_paginas',
-            'etiqueta' => __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            'icono'    => 'dashicons-admin-page',
-            'url'      => admin_url('admin.php?page=flavor-create-pages'),
-            'color'    => '#2271b1',
-        ]);
-
         return $acciones;
     }
 
@@ -2934,18 +2926,6 @@ class Flavor_Dashboard {
                 'mensaje' => __('No hay módulos activados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('admin.php?page=flavor-app-composer'),
                 'accion' => __('Activar módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
-            ];
-        }
-
-        // Verificar páginas creadas
-        $paginas_creadas = get_option('flavor_pages_created', []);
-        if (empty($paginas_creadas)) {
-            $alertas[] = [
-                'tipo' => 'info',
-                'icono' => 'dashicons-admin-page',
-                'mensaje' => __('Páginas del portal no creadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                'url' => admin_url('admin.php?page=flavor-create-pages'),
-                'accion' => __('Crear páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 

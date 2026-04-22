@@ -753,8 +753,6 @@ final class Flavor_Bootstrap_Dependencies {
         // Documentación
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-documentation-admin.php';
         require_once FLAVOR_PLATFORM_PATH . 'admin/class-api-docs.php';
-        require_once FLAVOR_PLATFORM_PATH . 'admin/class-pages-admin.php';
-        require_once FLAVOR_PLATFORM_PATH . 'admin/class-pages-admin-v2.php';
         require_once FLAVOR_PLATFORM_PATH . 'includes/admin/class-documentation-page.php';
         Flavor_Documentation_Page::get_instance();
 

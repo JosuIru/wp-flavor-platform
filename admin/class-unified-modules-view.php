@@ -60,12 +60,12 @@ class Flavor_Unified_Modules_View {
             FLAVOR_PLATFORM_VERSION
         );
 
-        // Alpine ya se carga en class-app-profile-admin.php con handle 'alpinejs'
-        // Solo necesitamos cargar nuestro script después de Alpine
+        // Alpine se carga con handle 'alpine' (unificado con el del shell);
+        // antes era 'alpinejs' y provocaba doble carga de Alpine.
         wp_enqueue_script(
             'flavor-unified-modules',
             FLAVOR_PLATFORM_URL . 'admin/js/unified-modules.js',
-            ['jquery', 'alpinejs'],
+            ['jquery', 'alpine'],
             FLAVOR_PLATFORM_VERSION,
             true
         );
@@ -838,21 +838,24 @@ class Flavor_Unified_Modules_View {
                             <?php if ($has_landing) : ?>
                                 <a href="<?php echo esc_url($landing_url); ?>"
                                    target="_blank"
-                                   class="fum-btn fum-btn--secondary fum-btn--small"
-                                   title="<?php esc_attr_e('Ver Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
-                                    <span class="dashicons dashicons-external"></span>
+                                   class="fum-btn fum-btn--secondary fum-btn--small fum-btn--icon"
+                                   title="<?php esc_attr_e('Ver landing en el frontend', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                                   aria-label="<?php esc_attr_e('Ver landing en el frontend', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                                    <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                 </a>
                                 <a href="<?php echo esc_url(get_edit_post_link($pagina_landing->ID)); ?>"
-                                   class="fum-btn fum-btn--secondary fum-btn--small"
-                                   title="<?php esc_attr_e('Editar Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
-                                    <span class="dashicons dashicons-edit"></span>
+                                   class="fum-btn fum-btn--secondary"
+                                   title="<?php esc_attr_e('Editar el contenido de la landing page', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                                    <span class="dashicons dashicons-edit" aria-hidden="true"></span>
+                                    <span class="fum-btn__label"><?php esc_html_e('Editar landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </a>
                             <?php else : ?>
                                 <button type="button"
-                                        class="fum-btn fum-btn--secondary fum-btn--small"
-                                        title="<?php esc_attr_e('Crear Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                                        class="fum-btn fum-btn--secondary"
+                                        title="<?php esc_attr_e('Crear una página de destino pública para presentar este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                         @click="createLanding('<?php echo esc_js($modulo_id); ?>')">
-                                    <span class="dashicons dashicons-plus-alt"></span>
+                                    <span class="dashicons dashicons-plus-alt" aria-hidden="true"></span>
+                                    <span class="fum-btn__label"><?php esc_html_e('Crear landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </button>
                             <?php endif; ?>
 

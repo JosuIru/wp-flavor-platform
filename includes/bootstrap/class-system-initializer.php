@@ -198,9 +198,6 @@ final class Flavor_System_Initializer {
         // Health Check
         $this->init_singleton_admin('Flavor_Health_Check');
 
-        // Pages Admin
-        $this->init_singleton_admin('Flavor_Pages_Admin');
-
         // Module Gap Admin
         $this->init_singleton_admin('Flavor_Module_Gap_Admin');
 

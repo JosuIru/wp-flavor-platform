@@ -39,7 +39,6 @@ class Flavor_Menu_Organizer {
         'flavor-dashboard',
         'flavor-module-dashboards',
         'flavor-design-settings',
-        'flavor-create-pages',
         'flavor-landings',
         'flavor-permissions',
         'flavor-platform-settings',

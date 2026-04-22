@@ -16,6 +16,20 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.2] - 2026-04-22
+
+### Anadido
+- **Page header de seccion en el Admin Shell**. Breadcrumb + titulo del apartado actual + chips con las subpaginas hermanas, renderizado encima del contenido en todas las paginas del shell (salvo dashboard principal). Hace visible donde esta el usuario y que mas cuelga del apartado sin depender del sidebar.
+- **Modal de confirmacion al activar modulos con dependencias**. Antes de activar un modulo que requiere otros no activos, se muestra la cadena completa de modulos que se activaran en cascada. Nuevo endpoint AJAX `flavor_preview_toggle_modulo` y metodo `Flavor_Module_Dependency_Resolver::get_activation_chain()`.
+- **Label visible en botones de landing** en la vista de Modulos Unificados. El `+` de "Crear landing" y el `edit` de "Editar landing" ahora llevan texto visible junto al icono.
+
+### Corregido
+- **Service Worker de VBP no pre-cacheaba assets**. Los paths se resolvian contra el scope del SW (`assets/vbp/js/`) en lugar de la raiz del plugin, devolviendo 404. Ahora `pluginRoot` se calcula correctamente. Bump de cache a `vbp-v2`.
+- **Crash en dashboard al recibir respuesta AJAX sin estadisticas**. `updateMetrics()` hacia `stats.usuarios_activos_30d` con `stats` undefined. Ahora valida la forma del payload antes de leer propiedades.
+- **Doble carga de Alpine.js en `flavor-app-composer`** (handles `alpine` del shell + `alpinejs` del CDN). Provocaba bucle infinito en `_x_toggleAndCascadeWithTransitions`. Unificado en el handle `alpine` desde vendor local. Dependencia de `unified-modules` actualizada a `alpine`.
+
+---
+
 ## [3.5.1] - 2026-04-22
 
 ### Cambiado

@@ -335,7 +335,6 @@ class Flavor_Admin_Navigation_Registry {
 
             'flavor-design-settings' => $this->page('configuration', 'experience', __('Diseño y Apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Experiencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 10, [], ['compact_nav' => true, 'icon' => 'dashicons-art', 'navigation_role' => 'primary']),
             'flavor-layouts' => $this->page('configuration', 'experience', __('Layouts', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Experiencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 20, [], ['compact_nav' => true, 'icon' => 'dashicons-layout', 'navigation_role' => 'primary']),
-            'flavor-create-pages' => $this->page('configuration', 'pages', __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Páginas y Landings', FLAVOR_PLATFORM_TEXT_DOMAIN), 30, [], ['compact_nav' => true, 'icon' => 'dashicons-admin-page', 'navigation_role' => 'primary']),
             // @deprecated 3.4.0 - Redirige a VBP Editor
             'flavor-landing-editor' => $this->page('configuration', 'pages', __('Editor Visual', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Páginas y Landings', FLAVOR_PLATFORM_TEXT_DOMAIN), 40, [], ['menu_visibility' => 'hidden', 'navigation_role' => 'deprecated', 'redirect_to' => 'vbp-editor']),
             'flavor-permissions' => $this->page('configuration', 'permissions', __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 50, [], ['compact_nav' => true, 'icon' => 'dashicons-lock', 'navigation_role' => 'primary']),

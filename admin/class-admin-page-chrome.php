@@ -46,7 +46,6 @@ class Flavor_Admin_Page_Chrome {
             'configuration' => [
                 ['slug' => 'flavor-design-settings', 'label' => __('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-art'],
                 ['slug' => 'flavor-layouts', 'label' => __('Layouts', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-layout'],
-                ['slug' => 'flavor-create-pages', 'label' => __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-page'],
                 ['slug' => 'flavor-permissions', 'label' => __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lock'],
                 ['slug' => 'flavor-platform-settings', 'label' => __('Ajustes IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-generic'],
                 ['slug' => 'flavor-platform-apps', 'label' => __('Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-smartphone'],

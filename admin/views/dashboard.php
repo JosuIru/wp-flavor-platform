@@ -344,10 +344,6 @@ $estadisticas = wp_parse_args($estadisticas, [
                                 <span class="dashicons dashicons-screenoptions"></span>
                                 <span><?php esc_html_e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-create-pages')); ?>" class="flavor-acceso-btn">
-                                <span class="dashicons dashicons-admin-page"></span>
-                                <span><?php esc_html_e('Crear páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
-                            </a>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-design-settings')); ?>" class="flavor-acceso-btn">
                                 <span class="dashicons dashicons-art"></span>
                                 <span><?php esc_html_e('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>

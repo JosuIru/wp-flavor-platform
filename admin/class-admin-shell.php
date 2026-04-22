@@ -876,7 +876,6 @@ class Flavor_Admin_Shell {
                     ['slug' => 'flavor-unified-dashboard', 'label' => __('Widgets', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-grid-view'],
                     ['slug' => 'flavor-app-composer', 'label' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-generic'],
                     ['slug' => 'flavor-design-settings', 'label' => __('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-art'],
-                    ['slug' => 'flavor-create-pages', 'label' => __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-page'],
                     ['slug' => 'flavor-landings', 'url' => 'edit.php?post_type=flavor_landing', 'label' => __('Editor Visual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-edit'],
                 ],
             ],

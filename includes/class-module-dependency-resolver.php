@@ -173,6 +173,55 @@ class Flavor_Module_Dependency_Resolver {
     }
 
     /**
+     * Devuelve la cadena completa de dependencias faltantes que se activarían
+     * al activar $module_id, en orden topológico (primero las hojas).
+     *
+     * Útil para el preview del modal de confirmación: el frontend lo muestra
+     * al usuario antes de disparar la activación real.
+     *
+     * @param string $module_id
+     * @return array Lista de ['id' => string, 'name' => string] sin duplicados.
+     */
+    public function get_activation_chain($module_id) {
+        $chain = [];
+        $visited = [];
+        $this->collect_missing_chain($module_id, $chain, $visited);
+        return $chain;
+    }
+
+    /**
+     * Helper recursivo para get_activation_chain. DFS post-order.
+     *
+     * @param string $module_id
+     * @param array  &$chain  Se va llenando en orden topológico.
+     * @param array  &$visited Ids ya procesados (evita bucles y duplicados).
+     * @return void
+     */
+    private function collect_missing_chain($module_id, array &$chain, array &$visited) {
+        if (isset($visited[$module_id])) {
+            return;
+        }
+        $visited[$module_id] = true;
+
+        foreach ($this->get_missing_dependencies($module_id) as $dep_id) {
+            $this->collect_missing_chain($dep_id, $chain, $visited);
+            $ya_incluido = false;
+            foreach ($chain as $entrada) {
+                if ($entrada['id'] === $dep_id) {
+                    $ya_incluido = true;
+                    break;
+                }
+            }
+            if (!$ya_incluido) {
+                $chain[] = [
+                    'id'   => $dep_id,
+                    'name' => $this->get_module_name($dep_id),
+                ];
+            }
+        }
+    }
+
+    /**
      * Obtiene las dependencias faltantes (no activas) de un módulo
      *
      * @param string $module_id

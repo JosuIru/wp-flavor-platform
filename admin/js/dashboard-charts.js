@@ -564,12 +564,15 @@
          * Actualiza las metricas en la UI
          */
 		updateMetrics: function (stats) {
-			this.animateValue('#metric-usuarios', stats.usuarios_activos_30d);
-			this.animateValue('#metric-modulos', stats.modulos_activos + '/' + stats.modulos_totales);
-			this.animateValue('#metric-eventos', stats.eventos_proximos);
-			this.animateValue('#metric-pedidos', stats.pedidos_pendientes);
-			this.animateValue('#metric-socios', stats.socios_activos);
-			this.animateValue('#metric-conversaciones', stats.conversaciones);
+			if (!stats || typeof stats !== 'object') {
+				return;
+			}
+			this.animateValue('#metric-usuarios', stats.usuarios_activos_30d ?? 0);
+			this.animateValue('#metric-modulos', (stats.modulos_activos ?? 0) + '/' + (stats.modulos_totales ?? 0));
+			this.animateValue('#metric-eventos', stats.eventos_proximos ?? 0);
+			this.animateValue('#metric-pedidos', stats.pedidos_pendientes ?? 0);
+			this.animateValue('#metric-socios', stats.socios_activos ?? 0);
+			this.animateValue('#metric-conversaciones', stats.conversaciones ?? 0);
 		},
 
 		/**

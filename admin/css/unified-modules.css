@@ -1010,6 +1010,18 @@
     font-size: 12px;
 }
 
+/* Botón solo-icono (sin texto): cuadrado. Se usa cuando la acción es
+   totalmente autoexplicativa con el icono + title. */
+.fum-btn--icon {
+    padding: 6px 8px;
+    aspect-ratio: 1 / 1;
+}
+
+/* Texto del label de un botón con icono + texto. */
+.fum-btn__label {
+    white-space: nowrap;
+}
+
 .fum-btn .dashicons {
     font-size: 16px;
     width: 16px;

@@ -68,6 +68,9 @@ class Flavor_App_Profile_Admin {
 
         // AJAX para toggle de módulos sin recargar página
         add_action('wp_ajax_flavor_toggle_modulo', [$this, 'ajax_toggle_modulo']);
+
+        // AJAX de preview: devuelve qué dependencias se activarían sin ejecutar
+        add_action('wp_ajax_flavor_preview_toggle_modulo', [$this, 'ajax_preview_toggle_modulo']);
     }
 
 
@@ -157,20 +160,31 @@ class Flavor_App_Profile_Admin {
         ];
         wp_localize_script('flavor-template-orchestrator', 'flavorOrchestratorData', $datos_orquestador);
 
-        // Alpine.js - depende de template-orchestrator para asegurar el orden correcto
-        wp_enqueue_script(
-            'alpinejs',
-            'https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js',
-            ['flavor-template-orchestrator'],
-            '3.14.3',
-            true
-        );
+        // Alpine.js — se reutiliza el handle 'alpine' que registra el shell
+        // desde assets/vbp/vendor/. Antes de este fix cargábamos con handle
+        // 'alpinejs' desde cdn.jsdelivr.net, lo que provocaba DOS copias de
+        // Alpine en páginas del shell y un bucle infinito en
+        // _x_toggleAndCascadeWithTransitions.
+        if (!wp_script_is('alpine', 'enqueued') && !wp_script_is('alpine', 'registered')) {
+            wp_enqueue_script(
+                'alpine',
+                FLAVOR_PLATFORM_URL . 'assets/vbp/vendor/alpine.min.js',
+                ['flavor-template-orchestrator'],
+                '3.14.3',
+                true
+            );
+        } else {
+            // Asegurar que se encola aunque ya esté registrado.
+            wp_enqueue_script('alpine');
+        }
 
-        // Agregar plugin focus de Alpine para accesibilidad del modal
+        // Plugin focus de Alpine para accesibilidad del modal (x-trap.noscroll).
+        // Se sigue cargando desde CDN porque no hay vendor local. Depende de
+        // 'alpine' para cargar antes de que Alpine arranque.
         wp_enqueue_script(
             'alpinejs-focus',
             'https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.14.3/dist/cdn.min.js',
-            [],
+            ['alpine'],
             '3.14.3',
             true
         );
@@ -1220,6 +1234,65 @@ class Flavor_App_Profile_Admin {
     }
 
     /**
+     * AJAX handler de preview: qué se activaría al activar este módulo.
+     *
+     * No toca estado: solo consulta el resolver y devuelve la cadena de
+     * dependencias faltantes en orden topológico. El frontend lo usa para
+     * pedir confirmación al usuario antes de activar.
+     */
+    public function ajax_preview_toggle_modulo() {
+        if (!check_ajax_referer('toggle_modulo', '_ajax_nonce', false)) {
+            wp_send_json_error([
+                'message' => __('Nonce de seguridad inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ]);
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ]);
+            return;
+        }
+
+        $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? '');
+
+        if (empty($modulo_id)) {
+            wp_send_json_error([
+                'message' => __('ID de módulo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ]);
+            return;
+        }
+
+        if (!class_exists('Flavor_Module_Dependency_Resolver')) {
+            wp_send_json_success([
+                'module_id'   => $modulo_id,
+                'module_name' => $modulo_id,
+                'chain'       => [],
+            ]);
+            return;
+        }
+
+        $resolver = Flavor_Module_Dependency_Resolver::get_instance();
+        $chain = $resolver->get_activation_chain($modulo_id);
+
+        $module_name = $modulo_id;
+        if (class_exists('Flavor_Platform_Module_Loader')) {
+            $loader = Flavor_Platform_Module_Loader::get_instance();
+            $instance = $loader->get_module_instance($modulo_id);
+            if ($instance && method_exists($instance, 'get_name')) {
+                $module_name = $instance->get_name();
+            }
+        }
+
+        wp_send_json_success([
+            'module_id'   => $modulo_id,
+            'module_name' => $module_name,
+            'chain'       => $chain,
+        ]);
+    }
+
+    /**
      * AJAX handler para toggle de módulos (sin recargar página)
      */
     public function ajax_toggle_modulo() {
@@ -1272,6 +1345,12 @@ class Flavor_App_Profile_Admin {
             }
 
             $resultado = false;
+
+            // Snapshot previo para detectar activaciones en cadena.
+            $configuracion_previa = flavor_get_main_settings();
+            $modulos_antes = isset($configuracion_previa['active_modules']) && is_array($configuracion_previa['active_modules'])
+                ? $configuracion_previa['active_modules']
+                : [];
 
             if ($activar) {
                 $resultado = $this->gestor_perfiles->activar_modulo_opcional($modulo_id);
@@ -1326,13 +1405,35 @@ class Flavor_App_Profile_Admin {
             // Sincronizar con configuración de apps móviles
             $this->sincronizar_modulo_movil($modulo_id, $activar);
 
-            wp_send_json_success([
-                'message' => $activar
+            // Calcular cadena de módulos que se activaron/desactivaron en cascada
+            // (además del propio $modulo_id).
+            $extras = [];
+            if ($activar) {
+                $nuevos = array_diff($modulos_activos, $modulos_antes);
+                $extras = array_values(array_diff($nuevos, [$modulo_id]));
+            } else {
+                $desactivados = array_diff($modulos_antes, $modulos_activos);
+                $extras = array_values(array_diff($desactivados, [$modulo_id]));
+            }
+
+            // Construir mensaje informando de la cadena si aplica.
+            if ($activar) {
+                $mensaje = empty($extras)
                     ? __('Módulo activado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)
-                    : __('Módulo desactivado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    : sprintf(
+                        __('Módulo activado junto con %d dependencia(s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        count($extras)
+                    );
+            } else {
+                $mensaje = __('Módulo desactivado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+            }
+
+            wp_send_json_success([
+                'message' => $mensaje,
                 'modulo_id' => $modulo_id,
                 'activado' => $activar,
-                'modulos_activos' => array_values($modulos_activos)
+                'modulos_activos' => array_values($modulos_activos),
+                'extras' => $extras,
             ]);
         } catch (Exception $e) {
             flavor_log_error( 'Error en toggle: ' . $e->getMessage(), 'AppProfile' );

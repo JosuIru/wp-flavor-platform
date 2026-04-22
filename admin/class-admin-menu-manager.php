@@ -365,7 +365,6 @@ class Flavor_Admin_Menu_Manager {
                 // Gestión básica de la app
                 'flavor-app-composer',      // Compositor de módulos - importante para gestión
                 'flavor-layouts',           // Para gestionar menús y footers
-                'flavor-create-pages',      // Para crear páginas de grupos
 
                 // Herramientas útiles
                 self::PAGE_ACTIVITY_LOG,      // Ver actividad
@@ -391,7 +390,6 @@ class Flavor_Admin_Menu_Manager {
             'flavor-app-composer',
             'flavor-design-settings',
             'flavor-layouts',
-            'flavor-create-pages',
             self::PAGE_CHAT_SETTINGS,
             'flavor-permissions',
             self::PAGE_APPS_CONFIG,
@@ -415,7 +413,6 @@ class Flavor_Admin_Menu_Manager {
             'flavor-app-composer',  // Compositor de módulos - importante para gestión
             'flavor-design-settings', // Diseño y apariencia
             'flavor-layouts',
-            'flavor-create-pages',
             self::PAGE_EXPORT_IMPORT,   // Exportar/Importar configuración
             self::PAGE_HEALTH_CHECK,    // Diagnóstico del sistema
             self::PAGE_ACTIVITY_LOG,
@@ -449,7 +446,6 @@ class Flavor_Admin_Menu_Manager {
                     'flavor-app-composer'    => __('Compositor de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'flavor-design-settings' => __('Diseño y Apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'flavor-layouts'         => __('Layouts (Menús y Footers)', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    'flavor-create-pages'    => __('Crear Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'flavor-landing-editor'  => __('Editor Visual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'flavor-permissions'     => __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
@@ -1136,7 +1132,7 @@ class Flavor_Admin_Menu_Manager {
         // ══════════════════════════════════════════════════════════════
         // SECCIÓN: MI APP (10-19)
         // ══════════════════════════════════════════════════════════════
-        if ($this->seccion_tiene_items_visibles(['flavor-module-dashboards', 'flavor-app-composer', 'flavor-design-settings', 'flavor-layouts', 'flavor-create-pages', 'flavor-landing-editor', 'flavor-permissions'])) {
+        if ($this->seccion_tiene_items_visibles(['flavor-module-dashboards', 'flavor-app-composer', 'flavor-design-settings', 'flavor-layouts', 'flavor-landing-editor', 'flavor-permissions'])) {
             $this->agregar_separador(__('Mi App', FLAVOR_PLATFORM_TEXT_DOMAIN), 10);
         }
 
@@ -1185,18 +1181,6 @@ class Flavor_Admin_Menu_Manager {
                 'flavor-layouts',
                 [$this, 'callback_layouts'],
                 13
-            );
-        }
-
-        if ($this->menu_visible_en_menu_wp('flavor-create-pages')) {
-            add_submenu_page(
-                $parent_menu,
-                __('Crear Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                $cap_menu_principal,
-                'flavor-create-pages',
-                [$this, 'callback_pages'],
-                14
             );
         }
 
@@ -1694,7 +1678,6 @@ class Flavor_Admin_Menu_Manager {
             'flavor-unified-dashboard',
             'flavor-module-dashboards',
             'flavor-design-settings',
-            'flavor-create-pages',
             'flavor-landing-editor',
             'flavor-layouts',
             'flavor-permissions',
@@ -1755,7 +1738,6 @@ class Flavor_Admin_Menu_Manager {
             'flavor-separator-10' => 10,
             'flavor-design-settings' => 11,
             'flavor-layouts' => 13,
-            'flavor-create-pages' => 14,
             'flavor-landing-editor' => 15,
             'flavor-permissions' => 16,
             'flavor-separator-20' => 20,
@@ -2202,12 +2184,6 @@ class Flavor_Admin_Menu_Manager {
     public function callback_design_settings() {
         if (class_exists('Flavor_Design_Settings')) {
             Flavor_Design_Settings::get_instance()->render_settings_page();
-        }
-    }
-
-    public function callback_pages() {
-        if (class_exists('Flavor_Pages_Admin')) {
-            Flavor_Pages_Admin::get_instance()->render_admin_page();
         }
     }
 
@@ -2889,7 +2865,6 @@ class Flavor_Admin_Menu_Manager {
                 var defaults = [
                     'flavor-dashboard',
                     'flavor-unified-dashboard',
-                    'flavor-create-pages',
                     self::PAGE_ACTIVITY_LOG,
                     self::PAGE_DOCUMENTATION,
                     'flavor-tours'

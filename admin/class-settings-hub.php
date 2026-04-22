@@ -94,13 +94,6 @@ class Flavor_Settings_Hub {
 						'keywords'    => [ 'widgets', 'dashboard', 'kpis', 'metricas' ],
 					],
 					[
-						'title'       => __( 'Crear Páginas', 'flavor-platform' ),
-						'description' => __( 'Generador de páginas del sitio', 'flavor-platform' ),
-						'url'         => admin_url( 'admin.php?page=flavor-create-pages' ),
-						'icon'        => 'dashicons-admin-page',
-						'keywords'    => [ 'paginas', 'crear', 'generar', 'sitio' ],
-					],
-					[
 						'title'       => __( 'Licencia', 'flavor-platform' ),
 						'description' => __( 'Estado de la licencia y actualizaciones', 'flavor-platform' ),
 						'url'         => admin_url( 'admin.php?page=flavor-platform-license' ),
