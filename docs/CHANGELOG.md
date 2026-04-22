@@ -16,6 +16,16 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.4] - 2026-04-22
+
+### Corregido
+- **`Flavor_Plugin_Updater` ignoraba `?force-check=1`**. El updater mantiene un cache propio (`flavor_plugin_update_check`) para evitar martillar la API de GitHub. `?force-check=1` de WordPress solo invalida el transient de WP, no ese cache propio: cuando se publicaba una release nueva mientras el cache decia "no hay update", el usuario tenia que esperar hasta 12h para detectarla. Ahora el cache se salta cuando:
+  - La URL contiene `?force-check=1` (boton "Buscar actualizaciones").
+  - Se ejecuta el AJAX `flavor_check_updates` del enlace "Verificar actualizaciones" del propio plugin.
+- **TTL del cache reducido** de 12h a 1h: menor impacto si alguien no fuerza.
+
+---
+
 ## [3.5.3] - 2026-04-22
 
 ### Eliminado

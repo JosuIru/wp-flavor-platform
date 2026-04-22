@@ -56,11 +56,14 @@ class Flavor_Plugin_Updater {
     private const CACHE_KEY = 'flavor_plugin_update_check';
 
     /**
-     * TTL del caché (12 horas)
+     * TTL del caché (1 hora).
+     *
+     * Antes era 12h. Si se publica una release nueva mientras el cache dice
+     * "no hay update", el usuario tenia que esperar hasta 12h para verla.
      *
      * @var int
      */
-    private const CACHE_TTL = 43200;
+    private const CACHE_TTL = 3600;
 
     /**
      * Obtiene la instancia singleton
@@ -142,9 +145,17 @@ class Flavor_Plugin_Updater {
         // Obtener versión actual
         $current_version = $transient->checked[$this->plugin_file] ?? FLAVOR_PLATFORM_VERSION;
 
-        // Verificar caché
+        // Si el usuario ha forzado el check (plugins.php?force-check=1 o el boton
+        // "Verificar actualizaciones"), saltar nuestro cache propio. WP invalida
+        // su propio transient update_plugins, pero no conoce el nuestro.
+        $force_check = (
+            (isset($_GET['force-check']) && $_GET['force-check'] === '1') ||
+            (defined('DOING_AJAX') && DOING_AJAX && isset($_POST['action']) && $_POST['action'] === 'flavor_check_updates')
+        );
+
+        // Verificar caché (solo si no se fuerza)
         $cached = get_transient(self::CACHE_KEY);
-        if ($cached !== false && isset($cached['checked_version']) && $cached['checked_version'] === $current_version) {
+        if (!$force_check && $cached !== false && isset($cached['checked_version']) && $cached['checked_version'] === $current_version) {
             if (!empty($cached['update'])) {
                 $transient->response[$this->plugin_file] = $cached['update'];
             }
