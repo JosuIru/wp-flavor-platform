@@ -16,6 +16,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.7] - 2026-04-23
+
+### Corregido
+- **Redirect loop infinito en modo URL directory**. Con `url_mode=directory` el filtro `redirect_canonical` de WordPress intentaba redirigir `/es/`, `/en/`, etc. a URLs sin prefijo porque no conoce ese esquema, lo que creaba un bucle infinito en el navegador. Nuevo metodo `prevent_language_canonical_redirect()` en `Flavor_Multilingual_Core` que intercepta el filtro y devuelve `false` cuando la URL solicitada empieza por un prefijo de idioma activo, cancelando la redireccion espuria. Solo se activa cuando `url_mode=directory`.
+
+---
+
 ## [3.5.6] - 2026-04-23
 
 ### Anadido
