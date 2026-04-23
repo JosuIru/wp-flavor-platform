@@ -43,7 +43,7 @@ trait VBP_API_Blocks {
 
         $category = $request->get_param( 'category' );
         $library = Flavor_VBP_Block_Library::get_instance();
-        $all_blocks = $library->get_all_blocks();
+        $all_blocks = $library->get_bloques();
 
         // Filtrar por categoría si se especifica
         if ( $category ) {

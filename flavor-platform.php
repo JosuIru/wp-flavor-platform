@@ -720,6 +720,7 @@ function flavor_safe_posts_limit( $requested = -1, $max = null ) {
  * Scopes actuales:
  * - site_builder: creación/configuración remota de sitios
  * - claude_batch: operaciones batch del editor VBP
+ * - vbp_claude: endpoints /flavor-vbp/v1/claude/* (inventario, bloques, páginas, presets…)
  *
  * @param string $scope Scope a consultar.
  * @return bool
@@ -749,10 +750,10 @@ function flavor_vbp_automation_enabled( $scope = 'default' ) {
  */
 function flavor_get_vbp_automation_scopes() {
     $settings = flavor_get_cached_settings( 'vbp' );
-    $scopes   = $settings['automation_scopes'] ?? array( 'site_builder', 'claude_batch' );
+    $scopes   = $settings['automation_scopes'] ?? array( 'site_builder', 'claude_batch', 'vbp_claude' );
 
     if ( ! is_array( $scopes ) ) {
-        $scopes = array( 'site_builder', 'claude_batch' );
+        $scopes = array( 'site_builder', 'claude_batch', 'vbp_claude' );
     }
 
     $scopes = array_filter( array_map( 'sanitize_key', $scopes ) );
@@ -766,7 +767,7 @@ function flavor_get_vbp_automation_scopes() {
     $scopes = apply_filters( 'flavor_vbp_automation_scopes', $scopes, $settings );
 
     if ( ! is_array( $scopes ) ) {
-        return array( 'site_builder', 'claude_batch' );
+        return array( 'site_builder', 'claude_batch', 'vbp_claude' );
     }
 
     return array_values( array_unique( array_filter( array_map( 'sanitize_key', $scopes ) ) ) );
