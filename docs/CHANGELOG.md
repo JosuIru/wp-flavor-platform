@@ -16,6 +16,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.8] - 2026-04-23
+
+### Corregido
+- **Updater del plugin principal nunca se registraba**. `Flavor_Plugin_Updater` se autoinstanciaba con un `add_action('plugins_loaded', ...)` al final de `class-plugin-updater.php`, pero el autoloader solo carga ese archivo cuando alguien referencia la clase — y nadie lo hacia. Resultado: el hook `pre_set_site_transient_update_plugins` nunca se enganchaba y el plugin nunca consultaba GitHub para detectar actualizaciones. Se anade un `add_action('plugins_loaded', ..., 15)` en `Flavor_Platform::init_hooks()` que fuerza la carga e instanciacion del updater. Los sitios afectados deben actualizar manualmente a 3.5.8 una vez (subiendo el ZIP desde GitHub); a partir de ahi el updater detecta las nuevas versiones automaticamente.
+
+---
+
 ## [3.5.7] - 2026-04-23
 
 ### Corregido
