@@ -1769,6 +1769,88 @@ class Flavor_VBP_Block_Library {
                 ),
             ),
         ) );
+
+        // --- Bloques editoriales (preset "editorial") ---
+        // Son bloques de uso libre pero pensados para funcionar juntos
+        // cuando el preset editorial esta activo: tipografia serif, paleta
+        // ink/paper/red y textura grain.
+
+        // Ticker: banda horizontal con scroll infinito.
+        $this->registrar_bloque( array(
+            'id'       => 'ticker',
+            'name'     => __( 'Ticker editorial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M8 8l-5 4 5 4M16 8l5 4-5 4"/></svg>',
+            'fields'   => array(
+                'items_json' => array(
+                    'type'        => 'textarea',
+                    'label'       => __( 'Items (JSON)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'placeholder' => '["Sin cuentas", "Sin algoritmo", "Sin publicidad"]',
+                    'default'     => '[]',
+                ),
+                'duracion' => array(
+                    'type'    => 'text',
+                    'label'   => __( 'Duración loop (seg)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => '28',
+                ),
+                'color_fondo' => array(
+                    'type'    => 'color',
+                    'label'   => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => '#111008',
+                ),
+                'color_texto' => array(
+                    'type'    => 'color',
+                    'label'   => __( 'Color de texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default' => '#F2EDE3',
+                ),
+            ),
+        ) );
+
+        // Hero editorial: kicker + titulo grande con em coloreado + 2 columnas
+        // (lead + pull quote y lista de meta).
+        $this->registrar_bloque( array(
+            'id'       => 'hero_editorial',
+            'name'     => __( 'Hero editorial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 14h10M3 18h7"/></svg>',
+            'fields'   => array(
+                'kicker'       => array( 'type' => 'text',     'label' => __( 'Kicker (arriba, color rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_pre'   => array( 'type' => 'text',     'label' => __( 'Título (parte previa)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_em'    => array( 'type' => 'text',     'label' => __( 'Título (parte destacada, italic+rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_post'  => array( 'type' => 'text',     'label' => __( 'Título (parte posterior)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'lead_html'    => array( 'type' => 'textarea', 'label' => __( 'Lead (HTML con párrafos)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'pull_quote'   => array( 'type' => 'textarea', 'label' => __( 'Pull quote (italic, borde rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'meta_json'    => array( 'type' => 'textarea', 'label' => __( 'Meta list (JSON array)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+            ),
+        ) );
+
+        // Feature numbered: grid numerado 01/02... sin iconos, con separadores
+        // verticales tipo periodico.
+        $this->registrar_bloque( array(
+            'id'       => 'feature_numbered',
+            'name'     => __( 'Features numeradas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="2" y="10" font-size="8">01</text><text x="14" y="10" font-size="8">02</text><text x="2" y="20" font-size="8">03</text><text x="14" y="20" font-size="8">04</text></svg>',
+            'fields'   => array(
+                'label'      => array( 'type' => 'text',     'label' => __( 'Etiqueta superior (small caps)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'items_json' => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: numero/titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'columnas'   => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '3'=>'3','4'=>'4','5'=>'5' ), 'default' => '5' ),
+            ),
+        ) );
+
+        // Principles list: manifiesto con 6 principios en 2 columnas, cada
+        // uno con titulo en bold + descripcion.
+        $this->registrar_bloque( array(
+            'id'       => 'principles_list',
+            'name'     => __( 'Principios / Manifiesto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h10"/></svg>',
+            'fields'   => array(
+                'titulo'     => array( 'type' => 'text',     'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'Principios irrenunciables' ),
+                'items_json' => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'columnas'   => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '1'=>'1','2'=>'2','3'=>'3' ), 'default' => '2' ),
+            ),
+        ) );
     }
 
     /**

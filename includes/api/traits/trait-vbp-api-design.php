@@ -340,6 +340,50 @@ trait VBP_API_Design {
                     'container_max'   => '1200px',
                 ),
             ),
+            'editorial' => array(
+                'name'        => 'Editorial',
+                'description' => 'Tipografia de periodico, paleta ink/paper/red, textura grain y reveal on scroll. Para landings manifiesto o de medios.',
+                'style'       => 'editorial',
+                'colors'      => array(
+                    'primary'        => '#C8261A',
+                    'primary_light'  => '#E04A3E',
+                    'primary_dark'   => '#9A1E14',
+                    'secondary'      => '#111008',
+                    'accent'         => '#C4BAA4',
+                    'background'     => '#F2EDE3',
+                    'background_alt' => '#111008',
+                    'surface'        => '#F2EDE3',
+                    'text'           => '#111008',
+                    'text_muted'     => '#7A7260',
+                    'border'         => '#C4BAA4',
+                ),
+                'typography'  => array(
+                    'font_family'    => "'Libre Baskerville', Georgia, serif",
+                    'heading_font'   => "'Playfair Display', Georgia, serif",
+                    'mono_font'      => "'IBM Plex Mono', monospace",
+                    'heading_weight' => '900',
+                    'body_weight'    => '400',
+                ),
+                'borders'     => array(
+                    'radius_sm' => '0',
+                    'radius_md' => '0',
+                    'radius_lg' => '0',
+                ),
+                'shadows'     => array(
+                    'sm' => 'none',
+                    'md' => 'none',
+                    'lg' => 'none',
+                ),
+                'spacing'     => array(
+                    'section_padding' => '4rem',
+                    'container_max'   => '1400px',
+                ),
+                'effects'     => array(
+                    'grain_overlay'    => true,
+                    'reveal_on_scroll' => true,
+                    'google_fonts_url' => 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap',
+                ),
+            ),
         );
     }
 

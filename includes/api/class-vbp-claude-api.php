@@ -579,7 +579,7 @@ class Flavor_VBP_Claude_API {
                 'preset' => array(
                     'type'    => 'string',
                     'default' => 'modern',
-                    'enum'    => array( 'modern', 'corporate', 'minimal', 'dark', 'vibrant', 'elegant', 'tech', 'nature', 'community', 'cooperative', 'eco', 'fundraising' ),
+                    'enum'    => array( 'modern', 'corporate', 'minimal', 'dark', 'vibrant', 'elegant', 'tech', 'nature', 'community', 'cooperative', 'eco', 'fundraising', 'editorial' ),
                 ),
                 'sections' => array(
                     'type'    => 'array',

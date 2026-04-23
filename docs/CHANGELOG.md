@@ -16,6 +16,23 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.12] - 2026-04-24
+
+### Anadido
+- **Preset de diseno `editorial`** para VBP (`/claude/pages/styled?preset=editorial`). Paleta ink/paper/red, fuentes Playfair Display + Libre Baskerville + IBM Plex Mono cargadas desde Google Fonts, textura grain fija y reveal-on-scroll con IntersectionObserver. Pensado para landings manifiesto, medios alternativos o proyectos con tono de periodico.
+- **4 bloques VBP nuevos** pensados para trabajar juntos con el preset editorial, pero usables sueltos en cualquier contexto:
+  - `ticker` — banda horizontal con loop infinito de items, duracion y colores configurables. Duplicado interno para evitar hueco en el -50% del keyframe.
+  - `hero_editorial` — hero tipografico con kicker, titulo en tres tramos (pre + `<em>` en rojo italic + post) y dos columnas (lead HTML + pull quote con borde rojo + meta list).
+  - `feature_numbered` — grid 3/4/5 columnas con numeros 01/02... en mono, titulo serif y descripcion. Separadores verticales estilo periodico.
+  - `principles_list` — lista de principios/manifiesto a N columnas con titulo bold + descripcion, cada item con border-top grueso.
+- **Landing del ecosistema Flavor News Hub** (`/landing/flavor-news-hub-puerta-entre-informarse-y-actuar/`) usando los bloques nuevos + los existentes (cta, features, como_funciona).
+
+### Cambios internos
+- Los bloques editoriales aceptan los items tanto como array nativo (desde PHP) como string JSON (desde inspector con textarea), evitando perdidas de unicode en el round-trip de `serialize()`/`stripslashes_deep` de `update_post_meta`.
+- Los assets del preset (Google Fonts + CSS base + observer script) se inyectan una sola vez por request via `editorial_assets_once()` aunque haya multiples bloques editoriales en la pagina.
+
+---
+
 ## [3.5.11] - 2026-04-23
 
 ### Anadido

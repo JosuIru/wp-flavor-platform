@@ -2139,6 +2139,297 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Resuelve el array de items de un bloque editorial aceptando tanto
+     * $data[$clave] (array nativo; usado cuando el post se crea desde PHP)
+     * como $data[$clave.'_json'] (string JSON; usado cuando los datos
+     * vienen del inspector del editor con un textarea). Asi los bloques
+     * funcionan con ambos caminos sin perder caracteres unicode en el
+     * round-trip serialize/unslash de post_meta.
+     *
+     * @param array  $data  Data del elemento.
+     * @param string $clave Nombre base (p.ej. "items" o "meta").
+     * @return array
+     */
+    private function editorial_parse_items( $data, $clave ) {
+        $valor_array = $data[ $clave ] ?? null;
+        if ( is_array( $valor_array ) ) {
+            return $valor_array;
+        }
+        $cadena_json = $data[ $clave . '_json' ] ?? '[]';
+        if ( is_array( $cadena_json ) ) {
+            return $cadena_json;
+        }
+        $decodificado = json_decode( (string) $cadena_json, true );
+        return is_array( $decodificado ) ? $decodificado : array();
+    }
+
+    /**
+     * Inyecta una sola vez por request los assets comunes del preset editorial:
+     * Google Fonts (Playfair Display + Libre Baskerville + IBM Plex Mono) y
+     * CSS base con variables, grain overlay y reveal-on-scroll. Los renders
+     * editoriales llaman a este metodo antes de emitir su HTML.
+     *
+     * @return string HTML de <link>/<style>/<script> o cadena vacia si ya
+     *                se emitio en esta request.
+     */
+    private function editorial_assets_once() {
+        static $ya_emitido = false;
+        if ( $ya_emitido ) {
+            return '';
+        }
+        $ya_emitido = true;
+
+        $fuentes_url = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap';
+
+        $html_salida  = '<link rel="preconnect" href="https://fonts.googleapis.com">';
+        $html_salida .= '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
+        $html_salida .= '<link href="' . esc_url( $fuentes_url ) . '" rel="stylesheet">';
+        $html_salida .= "\n<style id='vbp-editorial-base'>\n";
+        $html_salida .= ":root{--ink:#111008;--paper:#F2EDE3;--red:#C8261A;--muted:#7A7260;--rule:#C4BAA4;--serif:'Playfair Display',Georgia,serif;--body:'Libre Baskerville',Georgia,serif;--mono:'IBM Plex Mono',monospace;}";
+        $html_salida .= ".vbp-editorial{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.6;}";
+        $html_salida .= ".vbp-editorial *,.vbp-editorial *::before,.vbp-editorial *::after{box-sizing:border-box;}";
+        $html_salida .= ".vbp-editorial h1,.vbp-editorial h2,.vbp-editorial h3{font-family:var(--serif);color:var(--ink);}";
+        // Grain overlay global
+        $html_salida .= "body.vbp-editorial-page::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");background-size:200px 200px;}";
+        // Ticker
+        $html_salida .= ".vbp-ticker-wrap{overflow:hidden;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.45rem 0;}";
+        $html_salida .= ".vbp-ticker{display:flex;gap:3rem;width:max-content;animation:vbpTicker var(--ticker-dur,28s) linear infinite;}";
+        $html_salida .= ".vbp-ticker-item{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;opacity:.7;}";
+        $html_salida .= ".vbp-ticker-item span{color:var(--red);margin-right:.5rem;}";
+        $html_salida .= "@keyframes vbpTicker{from{transform:translateX(0);}to{transform:translateX(-50%);}}";
+        // Hero editorial
+        $html_salida .= ".vbp-hero-edit{padding:3rem 2rem 0;border-bottom:1px solid var(--rule);}";
+        $html_salida .= ".vbp-hero-edit__kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--red);margin-bottom:.75rem;}";
+        $html_salida .= ".vbp-hero-edit__title{font-family:var(--serif);font-size:clamp(2.8rem,8vw,7rem);font-weight:900;line-height:.96;letter-spacing:-.02em;max-width:18ch;margin:0;}";
+        $html_salida .= ".vbp-hero-edit__title em{font-style:italic;color:var(--red);}";
+        $html_salida .= ".vbp-hero-edit__rule{width:100%;height:1px;background:var(--rule);margin:2.5rem 0 0;}";
+        $html_salida .= ".vbp-hero-edit__cols{display:grid;grid-template-columns:1fr 1fr;gap:0;}";
+        $html_salida .= "@media(max-width:640px){.vbp-hero-edit__cols{grid-template-columns:1fr;}}";
+        $html_salida .= ".vbp-hero-edit__lead{padding:2rem 2rem 2.5rem 0;border-right:1px solid var(--rule);}";
+        $html_salida .= ".vbp-hero-edit__lead p{font-size:1.05rem;line-height:1.75;color:#2A2720;max-width:44ch;}";
+        $html_salida .= ".vbp-hero-edit__lead p+p{margin-top:1rem;}";
+        $html_salida .= ".vbp-hero-edit__stat{padding:2rem 0 2.5rem 2rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;}";
+        $html_salida .= ".vbp-hero-edit__pull{font-family:var(--serif);font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;font-style:italic;line-height:1.3;color:var(--ink);border-left:3px solid var(--red);padding-left:1rem;margin:0;}";
+        $html_salida .= ".vbp-hero-edit__meta{display:flex;flex-direction:column;gap:.4rem;list-style:none;padding:0;margin:0;}";
+        $html_salida .= ".vbp-hero-edit__meta li{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}";
+        $html_salida .= ".vbp-hero-edit__meta li::before{content:'— ';color:var(--rule);}";
+        // Feature numbered
+        $html_salida .= ".vbp-feat-num{padding:4rem 2rem;border-bottom:1px solid var(--rule);}";
+        $html_salida .= ".vbp-feat-num__label{font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}";
+        $html_salida .= ".vbp-feat-num__grid{display:grid;gap:0;}";
+        $html_salida .= ".vbp-feat-num__item{padding:1.5rem 1.5rem 1.5rem 0;border-right:1px solid var(--rule);}";
+        $html_salida .= ".vbp-feat-num__item:last-child{border-right:none;}";
+        $html_salida .= "@media(max-width:900px){.vbp-feat-num__grid{grid-template-columns:1fr 1fr !important;}.vbp-feat-num__item{border-right:none;border-bottom:1px solid var(--rule);}}";
+        $html_salida .= ".vbp-feat-num__num{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--red);margin-bottom:.75rem;}";
+        $html_salida .= ".vbp-feat-num__title{font-family:var(--serif);font-size:1.15rem;font-weight:700;line-height:1.25;margin:0 0 .75rem;}";
+        $html_salida .= ".vbp-feat-num__desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;margin:0;}";
+        // Principles list
+        $html_salida .= ".vbp-princ{padding:4rem 2rem;border-bottom:1px solid var(--rule);}";
+        $html_salida .= ".vbp-princ__title{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1.1;margin:0 0 2.5rem;}";
+        $html_salida .= ".vbp-princ__list{display:grid;gap:2rem;list-style:none;padding:0;margin:0;}";
+        $html_salida .= ".vbp-princ__item{border-top:2px solid var(--ink);padding-top:1rem;}";
+        $html_salida .= ".vbp-princ__item strong{display:block;font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}";
+        $html_salida .= ".vbp-princ__item-desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;}";
+        // Reveal on scroll
+        $html_salida .= ".vbp-reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}";
+        $html_salida .= ".vbp-reveal.is-visible{opacity:1;transform:translateY(0);}";
+        $html_salida .= "\n</style>\n";
+        // Observer script inline (una unica vez por request)
+        $html_salida .= "<script>(function(){if(window.__vbpEditorialObs)return;window.__vbpEditorialObs=true;var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');obs.unobserve(e.target);}});},{threshold:.12});function boot(){document.querySelectorAll('.vbp-reveal').forEach(function(el){obs.observe(el);});document.body.classList.add('vbp-editorial-page');}if(document.readyState!=='loading')boot();else document.addEventListener('DOMContentLoaded',boot);})();</script>";
+        return $html_salida;
+    }
+
+    /**
+     * Renderiza un ticker horizontal animado (preset editorial).
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_ticker( $elemento ) {
+        $data            = $elemento['data'] ?? array();
+        $items_decoded   = $this->editorial_parse_items( $data, 'items' );
+        $duracion_ticker = (int) ( $data['duracion'] ?? 28 );
+        if ( $duracion_ticker < 5 ) {
+            $duracion_ticker = 28;
+        }
+        $color_fondo = $data['color_fondo'] ?? '#111008';
+        $color_texto = $data['color_texto'] ?? '#F2EDE3';
+
+        $html_ticker  = $this->editorial_assets_once();
+        $html_ticker .= sprintf(
+            '<div class="vbp-editorial vbp-ticker-wrap" style="background:%s;color:%s;--ticker-dur:%ds;">',
+            esc_attr( $color_fondo ),
+            esc_attr( $color_texto ),
+            $duracion_ticker
+        );
+        $html_ticker .= '<div class="vbp-ticker" aria-hidden="true">';
+        // Duplicamos la lista para que el loop -50% no muestre hueco.
+        $lista_duplicada = array_merge( $items_decoded, $items_decoded );
+        foreach ( $lista_duplicada as $texto_item ) {
+            $html_ticker .= '<span class="vbp-ticker-item"><span>◆</span> ' . esc_html( (string) $texto_item ) . '</span>';
+        }
+        $html_ticker .= '</div></div>';
+        return $html_ticker;
+    }
+
+    /**
+     * Renderiza el hero editorial con kicker + titulo con fragmento "em" en
+     * rojo italic + doble columna (lead / pull quote + meta list).
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_hero_editorial( $elemento ) {
+        $data = $elemento['data'] ?? array();
+
+        $kicker_hero      = (string) ( $data['kicker']      ?? '' );
+        $titulo_pre_hero  = (string) ( $data['titulo_pre']  ?? '' );
+        $titulo_em_hero   = (string) ( $data['titulo_em']   ?? '' );
+        $titulo_post_hero = (string) ( $data['titulo_post'] ?? '' );
+        $lead_html_hero   = (string) ( $data['lead_html']   ?? '' );
+        $pull_quote_hero  = (string) ( $data['pull_quote']  ?? '' );
+
+        $meta_decoded = $this->editorial_parse_items( $data, 'meta' );
+
+        $html_hero  = $this->editorial_assets_once();
+        $html_hero .= '<section class="vbp-editorial vbp-hero-edit">';
+
+        if ( $kicker_hero !== '' ) {
+            $html_hero .= '<p class="vbp-hero-edit__kicker">' . esc_html( $kicker_hero ) . '</p>';
+        }
+
+        if ( $titulo_pre_hero !== '' || $titulo_em_hero !== '' || $titulo_post_hero !== '' ) {
+            $html_hero .= '<h1 class="vbp-hero-edit__title">';
+            if ( $titulo_pre_hero !== '' ) {
+                $html_hero .= esc_html( $titulo_pre_hero ) . '<br>';
+            }
+            if ( $titulo_em_hero !== '' ) {
+                $html_hero .= '<em>' . esc_html( $titulo_em_hero ) . '</em>';
+                if ( $titulo_post_hero !== '' ) {
+                    $html_hero .= '<br>';
+                }
+            }
+            if ( $titulo_post_hero !== '' ) {
+                $html_hero .= esc_html( $titulo_post_hero );
+            }
+            $html_hero .= '</h1>';
+        }
+
+        $html_hero .= '<div class="vbp-hero-edit__rule"></div>';
+        $html_hero .= '<div class="vbp-hero-edit__cols">';
+        $html_hero .= '<div class="vbp-hero-edit__lead vbp-reveal">' . wp_kses_post( $lead_html_hero ) . '</div>';
+
+        $html_hero .= '<div class="vbp-hero-edit__stat vbp-reveal">';
+        if ( $pull_quote_hero !== '' ) {
+            $html_hero .= '<blockquote class="vbp-hero-edit__pull">' . wp_kses_post( $pull_quote_hero ) . '</blockquote>';
+        }
+        if ( ! empty( $meta_decoded ) ) {
+            $html_hero .= '<ul class="vbp-hero-edit__meta">';
+            foreach ( $meta_decoded as $texto_meta ) {
+                $html_hero .= '<li>' . esc_html( (string) $texto_meta ) . '</li>';
+            }
+            $html_hero .= '</ul>';
+        }
+        $html_hero .= '</div>';
+
+        $html_hero .= '</div></section>';
+        return $html_hero;
+    }
+
+    /**
+     * Renderiza un grid numerado estilo periodico (01/02/03...), sin iconos,
+     * con separadores verticales entre items.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_feature_numbered( $elemento ) {
+        $data          = $elemento['data'] ?? array();
+        $label_superior = (string) ( $data['label'] ?? '' );
+        $columnas_num  = max( 1, min( 6, (int) ( $data['columnas'] ?? 5 ) ) );
+
+        $items_decoded = $this->editorial_parse_items( $data, 'items' );
+
+        $html_numbered  = $this->editorial_assets_once();
+        $html_numbered .= '<section class="vbp-editorial vbp-feat-num">';
+
+        if ( $label_superior !== '' ) {
+            $html_numbered .= '<div class="vbp-feat-num__label">' . esc_html( $label_superior ) . '</div>';
+        }
+
+        if ( ! empty( $items_decoded ) ) {
+            $html_numbered .= sprintf(
+                '<div class="vbp-feat-num__grid" style="grid-template-columns:repeat(%d,minmax(0,1fr));">',
+                $columnas_num
+            );
+
+            foreach ( $items_decoded as $indice => $item_num ) {
+                $numero_item      = $item_num['numero']      ?? sprintf( '%02d', $indice + 1 );
+                $titulo_item      = $item_num['titulo']      ?? '';
+                $descripcion_item = $item_num['descripcion'] ?? '';
+
+                $html_numbered .= '<div class="vbp-feat-num__item vbp-reveal">';
+                $html_numbered .= '<div class="vbp-feat-num__num">' . esc_html( (string) $numero_item ) . '</div>';
+                if ( $titulo_item !== '' ) {
+                    $html_numbered .= '<h3 class="vbp-feat-num__title">' . esc_html( (string) $titulo_item ) . '</h3>';
+                }
+                if ( $descripcion_item !== '' ) {
+                    $html_numbered .= '<p class="vbp-feat-num__desc">' . wp_kses_post( (string) $descripcion_item ) . '</p>';
+                }
+                $html_numbered .= '</div>';
+            }
+            $html_numbered .= '</div>';
+        }
+
+        $html_numbered .= '</section>';
+        return $html_numbered;
+    }
+
+    /**
+     * Renderiza una lista de principios / manifiesto con titulo y items
+     * en N columnas. Cada item: titulo bold + descripcion.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_principles_list( $elemento ) {
+        $data            = $elemento['data'] ?? array();
+        $titulo_princ    = (string) ( $data['titulo'] ?? '' );
+        $columnas_princ  = max( 1, min( 4, (int) ( $data['columnas'] ?? 2 ) ) );
+
+        $items_decoded = $this->editorial_parse_items( $data, 'items' );
+
+        $html_princ  = $this->editorial_assets_once();
+        $html_princ .= '<section class="vbp-editorial vbp-princ vbp-reveal">';
+        if ( $titulo_princ !== '' ) {
+            $html_princ .= '<h2 class="vbp-princ__title">' . wp_kses_post( $titulo_princ ) . '</h2>';
+        }
+
+        if ( ! empty( $items_decoded ) ) {
+            $html_princ .= sprintf(
+                '<ul class="vbp-princ__list" style="grid-template-columns:repeat(%d,minmax(0,1fr));">',
+                $columnas_princ
+            );
+            foreach ( $items_decoded as $item_princ ) {
+                $titulo_item      = $item_princ['titulo']      ?? '';
+                $descripcion_item = $item_princ['descripcion'] ?? '';
+                $html_princ      .= '<li class="vbp-princ__item">';
+                if ( $titulo_item !== '' ) {
+                    $html_princ .= '<strong>' . esc_html( (string) $titulo_item ) . '</strong>';
+                }
+                if ( $descripcion_item !== '' ) {
+                    $html_princ .= '<span class="vbp-princ__item-desc">' . wp_kses_post( (string) $descripcion_item ) . '</span>';
+                }
+                $html_princ .= '</li>';
+            }
+            $html_princ .= '</ul>';
+        }
+
+        $html_princ .= '</section>';
+        return $html_princ;
+    }
+
+    /**
      * Renderiza Team
      */
     private function render_team( $elemento ) {
