@@ -200,6 +200,10 @@ class Flavor_License_Manager {
             'customer_name'  => $response['customer_name'] ?? '',
             'last_verified'  => current_time('mysql'),
             'modules'        => $response['modules'] ?? [],
+            'plan_modules'   => $response['plan_modules'] ?? [],
+            'addon_modules'  => $response['addon_modules'] ?? [],
+            'addons'         => $response['addons'] ?? [],
+            'features'       => $response['features'] ?? [],
         ];
 
         $this->save_license();
@@ -294,6 +298,22 @@ class Flavor_License_Manager {
         // Actualizar módulos permitidos
         if (!empty($response['modules'])) {
             $this->license_data['modules'] = $response['modules'];
+        }
+
+        if (isset($response['plan_modules'])) {
+            $this->license_data['plan_modules'] = $response['plan_modules'];
+        }
+
+        if (isset($response['addon_modules'])) {
+            $this->license_data['addon_modules'] = $response['addon_modules'];
+        }
+
+        if (isset($response['addons'])) {
+            $this->license_data['addons'] = $response['addons'];
+        }
+
+        if (isset($response['features'])) {
+            $this->license_data['features'] = $response['features'];
         }
 
         $this->save_license();

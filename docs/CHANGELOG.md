@@ -16,6 +16,19 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.6] - 2026-04-23
+
+### Anadido
+- **Configuracion del selector de idiomas desde el panel multilingue**. Nueva seccion "Selector de Idiomas" en `admin.php?page=flavor-multilingual` (pestana Configuracion) con seis campos: ubicaciones de menu (checkboxes por cada nav_menu registrado), estilo del selector (dropdown/horizontal/vertical/flags-only/minimal/globe/select), mostrar banderas, mostrar nombres, usar nombres nativos y ocultar idioma actual. Los valores se persisten en `flavor_multilingual_settings` y el frontend controller ya los leia — no habia codigo de logica que anadir, solo los campos de UI que faltaban.
+- **Marketplace: URL dinamica segun servidor de licencias**. `Flavor_Addon_Marketplace::configure_marketplace_url()` ajusta `$this->marketplace_url` usando `flavor_license_server_url` (opcion BD) o la constante `FLAVOR_LICENSE_SERVER_URL`. Si el endpoint del servidor de licencias ya incluye `/fls/v1/`, se reutiliza esa base en lugar de la URL hardcoded.
+- **Marketplace: soporte de flujo de checkout**. Si la respuesta de instalacion de addon devuelve `checkout_url`, el navegador redirige al TPV en lugar de mostrar "Instalado". El boton restaura su etiqueta original (`cta_label` o "Instalar") en caso de error.
+- **License Manager: campos adicionales en la respuesta de licencia**. `store_license_data()` y `refresh_license()` persisten ahora `plan_modules`, `addon_modules`, `addons` y `features` que el servidor puede devolver junto a `modules`.
+
+### Corregido
+- **Marketplace: etiqueta del boton de instalacion no se restauraba en error**. Antes del fix, un error de red dejaba el boton con texto "Instalando..." indefinidamente. Ahora se captura `data-label` al inicio de la llamada AJAX y se restaura en los callbacks `error` y `success` (cuando no hay redireccion).
+
+---
+
 ## [3.5.5] - 2026-04-22
 
 ### Corregido

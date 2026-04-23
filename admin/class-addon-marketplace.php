@@ -52,7 +52,31 @@ class Flavor_Addon_Marketplace {
      * Constructor privado
      */
     private function __construct() {
+        $this->configure_marketplace_url();
         $this->init_hooks();
+    }
+
+    /**
+     * Ajusta la URL del marketplace según la configuración de licencias.
+     *
+     * @return void
+     */
+    private function configure_marketplace_url() {
+        $license_server = get_option('flavor_license_server_url');
+
+        if (defined('FLAVOR_LICENSE_SERVER_URL') && FLAVOR_LICENSE_SERVER_URL) {
+            $license_server = FLAVOR_LICENSE_SERVER_URL;
+        }
+
+        if (empty($license_server)) {
+            return;
+        }
+
+        $license_server = trailingslashit($license_server);
+
+        if (strpos($license_server, '/fls/v1/') !== false) {
+            $this->marketplace_url = untrailingslashit($license_server);
+        }
     }
 
     /**
@@ -433,8 +457,8 @@ class Flavor_Addon_Marketplace {
                             '<span class=\"flavor-marketplace-stars\">' + stars + '</span>' +
                             '<span>(' + addon.reviews + ')</span>' +
                             '</div>' +
-                            '<button class=\"flavor-marketplace-install-btn\" data-slug=\"' + addon.slug + '\">' +
-                            (addon.installed ? 'Instalado' : 'Instalar') +
+                            '<button class=\"flavor-marketplace-install-btn\" data-slug=\"' + addon.slug + '\" data-label=\"' + (addon.cta_label || (addon.installed ? 'Instalado' : 'Instalar')) + '\">' +
+                            (addon.cta_label || (addon.installed ? 'Instalado' : 'Instalar')) +
                             '</button>' +
                             '</div>' +
                             '</div>' +
@@ -480,6 +504,7 @@ class Flavor_Addon_Marketplace {
                         if (!confirm('¿Instalar este addon?')) return;
 
                         var btn = $('.flavor-marketplace-install-btn[data-slug=\"' + slug + '\"]');
+                        var defaultLabel = btn.data('label') || 'Instalar';
                         btn.prop('disabled', true).text('Instalando...');
 
                         $.ajax({
@@ -492,15 +517,20 @@ class Flavor_Addon_Marketplace {
                             },
                             success: function(response) {
                                 if (response.success) {
+                                    if (response.data.checkout_url) {
+                                        window.location.href = response.data.checkout_url;
+                                        return;
+                                    }
+
                                     btn.text('Instalado');
-                                    alert('Addon instalado correctamente');
+                                    alert(response.data.message || 'Addon instalado correctamente');
                                 } else {
-                                    btn.prop('disabled', false).text('Instalar');
+                                    btn.prop('disabled', false).text(defaultLabel);
                                     alert('Error: ' + response.data);
                                 }
                             },
                             error: function() {
-                                btn.prop('disabled', false).text('Instalar');
+                                btn.prop('disabled', false).text(defaultLabel);
                                 alert('Error de conexión');
                             }
                         });
@@ -608,10 +638,14 @@ class Flavor_Addon_Marketplace {
         }
 
         // Hacer request al servidor
-        $url = add_query_arg([
-            'filter' => $filter,
-            'search' => $search,
-        ], $this->marketplace_url . '/browse');
+        if ($this->is_license_server_marketplace()) {
+            $url = $this->marketplace_url . '/addons';
+        } else {
+            $url = add_query_arg([
+                'filter' => $filter,
+                'search' => $search,
+            ], $this->marketplace_url . '/browse');
+        }
 
         $response = wp_remote_get($url, ['timeout' => 15]);
 
@@ -626,10 +660,14 @@ class Flavor_Addon_Marketplace {
             return [];
         }
 
-        // Cachear por 1 hora
-        set_transient($cache_key, $data['addons'], HOUR_IN_SECONDS);
+        $addons = $this->is_license_server_marketplace()
+            ? $this->normalize_license_server_addons($data['addons'], $filter, $search)
+            : $data['addons'];
 
-        return $data['addons'];
+        // Cachear por 1 hora
+        set_transient($cache_key, $addons, HOUR_IN_SECONDS);
+
+        return $addons;
     }
 
     /**
@@ -666,6 +704,23 @@ class Flavor_Addon_Marketplace {
      * @return array|false
      */
     private function fetch_addon_details($slug) {
+        if ($this->is_license_server_marketplace()) {
+            $response = wp_remote_get($this->marketplace_url . '/addons/' . rawurlencode($slug), ['timeout' => 15]);
+
+            if (is_wp_error($response)) {
+                return false;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (empty($data['addon']) || !is_array($data['addon'])) {
+                return false;
+            }
+
+            return $this->normalize_license_server_addon($data['addon']);
+        }
+
         $url = $this->marketplace_url . '/addon/' . $slug;
 
         $response = wp_remote_get($url, ['timeout' => 15]);
@@ -701,7 +756,38 @@ class Flavor_Addon_Marketplace {
         // Obtener URL de descarga
         $addon = $this->fetch_addon_details($slug);
 
-        if (!$addon || empty($addon['download_url'])) {
+        if (!$addon) {
+            wp_send_json_error(__('Addon no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        if ($this->is_license_server_marketplace() && empty($addon['download_url']) && !empty($addon['owned'])) {
+            $download_url = $this->create_license_server_download($addon);
+
+            if (is_wp_error($download_url)) {
+                wp_send_json_error($download_url->get_error_message());
+            }
+
+            $addon['download_url'] = $download_url;
+        }
+
+        if (empty($addon['download_url'])) {
+            if ($this->is_license_server_marketplace()) {
+                if (!empty($addon['price']) && floatval($addon['price']) > 0) {
+                    $checkout = $this->create_license_server_checkout($addon);
+
+                    if (is_wp_error($checkout)) {
+                        wp_send_json_error($checkout->get_error_message());
+                    }
+
+                    wp_send_json_success([
+                        'message' => __('Redirigiendo al checkout del addon', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'checkout_url' => $checkout,
+                    ]);
+                }
+
+                wp_send_json_error(__('Este addon no ofrece descarga directa desde el servidor de licencias.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            }
+
             wp_send_json_error(__('No se pudo obtener URL de descarga', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
@@ -724,6 +810,230 @@ class Flavor_Addon_Marketplace {
         wp_send_json_success([
             'message' => __('Addon instalado y activado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
+    }
+
+    /**
+     * Indica si el marketplace usa Flavor License Server.
+     *
+     * @return bool
+     */
+    private function is_license_server_marketplace() {
+        return strpos($this->marketplace_url, '/fls/v1') !== false;
+    }
+
+    /**
+     * Normaliza addons del servidor de licencias al formato esperado por la UI.
+     *
+     * @param array $addons Datos remotos.
+     * @param string $filter Filtro solicitado.
+     * @param string $search Texto de búsqueda.
+     * @return array
+     */
+    private function normalize_license_server_addons($addons, $filter = 'all', $search = '') {
+        $normalized = [];
+        $search = function_exists('mb_strtolower') ? mb_strtolower($search) : strtolower($search);
+
+        foreach ($addons as $addon) {
+            $normalized_addon = $this->normalize_license_server_addon($addon);
+            $name = $normalized_addon['name'];
+            $description = $normalized_addon['description'];
+            $haystack = function_exists('mb_strtolower')
+                ? mb_strtolower($name . ' ' . $description)
+                : strtolower($name . ' ' . $description);
+            $price = (float) $normalized_addon['price'];
+            $is_premium = !empty($normalized_addon['is_premium']);
+
+            if ($filter === 'free' && $is_premium) {
+                continue;
+            }
+
+            if ($filter === 'premium' && !$is_premium) {
+                continue;
+            }
+
+            if ($search !== '' && strpos($haystack, $search) === false) {
+                continue;
+            }
+
+            $normalized[] = $normalized_addon;
+        }
+
+        return array_values($normalized);
+    }
+
+    /**
+     * Normaliza un addon del servidor de licencias al formato esperado por la UI.
+     *
+     * @param array $addon Datos remotos.
+     * @return array
+     */
+    private function normalize_license_server_addon($addon) {
+        $price = isset($addon['price']) ? (float) $addon['price'] : 0.0;
+        $modules = isset($addon['modules']) && is_array($addon['modules']) ? array_values($addon['modules']) : [];
+        $owned = $this->license_owns_addon($addon['slug'] ?? '', $modules);
+        $is_premium = $price > 0;
+        $cta_label = $owned
+            ? __('Instalar', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            : ($is_premium ? __('Comprar', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN));
+
+        return [
+            'id' => intval($addon['id'] ?? 0),
+            'slug' => $addon['slug'] ?? '',
+            'name' => $addon['name'] ?? '',
+            'description' => $addon['description'] ?? '',
+            'long_description' => $addon['long_description'] ?? ($addon['description'] ?? ''),
+            'price' => $price,
+            'billing_period' => $addon['billing_period'] ?? 'one_time',
+            'icon' => !empty($addon['icon']) ? $addon['icon'] : 'admin-plugins',
+            'features' => isset($addon['features']) && is_array($addon['features']) ? array_values($addon['features']) : $modules,
+            'modules' => $modules,
+            'changelog' => $addon['changelog'] ?? __('La instalación y las actualizaciones se gestionan desde el servidor de licencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rating' => isset($addon['rating']) ? intval($addon['rating']) : 5,
+            'reviews' => isset($addon['reviews']) ? intval($addon['reviews']) : 0,
+            'installed' => false,
+            'owned' => $owned,
+            'can_download' => $owned,
+            'is_premium' => $is_premium,
+            'is_popular' => !empty($addon['is_popular']),
+            'is_new' => !empty($addon['is_new']),
+            'download_url' => !empty($addon['download_url']) ? $addon['download_url'] : '',
+            'version' => $addon['version'] ?? '',
+            'cta_label' => $cta_label,
+        ];
+    }
+
+    /**
+     * Indica si la licencia activa ya incluye un addon concreto.
+     *
+     * @param string $slug Slug del addon.
+     * @param array $modules Módulos del addon.
+     * @return bool
+     */
+    private function license_owns_addon($slug, $modules = []) {
+        $license_manager = flavor_get_license_manager();
+        $license_data = $license_manager ? $license_manager->get_license_data() : null;
+
+        if (empty($license_data['key'])) {
+            return false;
+        }
+
+        if (!empty($license_data['addons']) && is_array($license_data['addons'])) {
+            foreach ($license_data['addons'] as $addon) {
+                if (($addon['slug'] ?? '') === $slug) {
+                    return true;
+                }
+            }
+        }
+
+        if (!empty($license_data['addon_modules']) && is_array($license_data['addon_modules']) && !empty($modules)) {
+            return count(array_intersect($license_data['addon_modules'], $modules)) > 0;
+        }
+
+        return false;
+    }
+
+    /**
+     * Crea un checkout para un addon premium en Flavor License Server.
+     *
+     * @param array $addon Addon normalizado.
+     * @return string|WP_Error
+     */
+    private function create_license_server_checkout($addon) {
+        if (empty($addon['id'])) {
+            return new WP_Error('missing_addon_id', __('El addon no tiene identificador de compra.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $license_manager = flavor_get_license_manager();
+        $license_data = $license_manager ? $license_manager->get_license_data() : null;
+        $license_key = $license_data['key'] ?? '';
+
+        if (empty($license_key)) {
+            return new WP_Error('missing_license', __('Activa primero una licencia del sitio para comprar addons.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $response = wp_remote_post($this->marketplace_url . '/addons/purchase', [
+            'timeout' => 20,
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'User-Agent'   => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
+            ],
+            'body' => wp_json_encode([
+                'addon_id' => intval($addon['id']),
+                'license_key' => $license_key,
+                'gateway' => 'stripe',
+                'success_url' => admin_url('admin.php?page=flavor-marketplace'),
+                'cancel_url' => admin_url('admin.php?page=flavor-marketplace'),
+            ]),
+        ]);
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $result = json_decode($body, true);
+
+        if (wp_remote_retrieve_response_code($response) !== 200 || empty($result['success'])) {
+            return new WP_Error(
+                'checkout_error',
+                $result['message'] ?? __('No se pudo crear el checkout del addon.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            );
+        }
+
+        if (empty($result['checkout_url'])) {
+            return new WP_Error('missing_checkout_url', __('El servidor no devolvió URL de checkout.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        return esc_url_raw($result['checkout_url']);
+    }
+
+    /**
+     * Solicita una descarga autorizada de addon al servidor de licencias.
+     *
+     * @param array $addon Addon normalizado.
+     * @return string|WP_Error
+     */
+    private function create_license_server_download($addon) {
+        $license_manager = flavor_get_license_manager();
+        $license_data = $license_manager ? $license_manager->get_license_data() : null;
+        $license_key = $license_data['key'] ?? '';
+
+        if (empty($license_key)) {
+            return new WP_Error('missing_license', __('Activa primero una licencia del sitio para descargar addons.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $response = wp_remote_post($this->marketplace_url . '/addons/download', [
+            'timeout' => 20,
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'User-Agent'   => 'FlavorPlatform/' . FLAVOR_PLATFORM_VERSION,
+            ],
+            'body' => wp_json_encode([
+                'addon_slug' => $addon['slug'] ?? '',
+                'license_key' => $license_key,
+                'site_url' => get_site_url(),
+            ]),
+        ]);
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $result = json_decode($body, true);
+
+        if (wp_remote_retrieve_response_code($response) !== 200 || empty($result['success'])) {
+            return new WP_Error(
+                'download_error',
+                $result['message'] ?? __('No se pudo preparar la descarga del addon.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            );
+        }
+
+        if (empty($result['download_url'])) {
+            return new WP_Error('missing_download_url', __('El servidor no devolvió URL de descarga.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        return esc_url_raw($result['download_url']);
     }
 
     /**

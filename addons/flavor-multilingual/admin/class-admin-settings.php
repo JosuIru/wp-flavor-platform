@@ -172,6 +172,62 @@ class Flavor_Multilingual_Admin_Settings {
             $this->menu_slug,
             'flavor_ml_ai'
         );
+
+        // Sección Selector de Idiomas
+        add_settings_section(
+            'flavor_ml_switcher',
+            __('Selector de Idiomas', 'flavor-multilingual'),
+            array($this, 'render_section_switcher'),
+            $this->menu_slug
+        );
+
+        add_settings_field(
+            'switcher_menu_locations',
+            __('Mostrar en menús', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_menu_locations'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
+
+        add_settings_field(
+            'switcher_style',
+            __('Estilo del selector', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_style'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
+
+        add_settings_field(
+            'switcher_show_flags',
+            __('Mostrar banderas', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_show_flags'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
+
+        add_settings_field(
+            'switcher_show_names',
+            __('Mostrar nombres', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_show_names'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
+
+        add_settings_field(
+            'switcher_show_native',
+            __('Usar nombres nativos', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_show_native'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
+
+        add_settings_field(
+            'switcher_hide_current',
+            __('Ocultar idioma actual', 'flavor-multilingual'),
+            array($this, 'render_field_switcher_hide_current'),
+            $this->menu_slug,
+            'flavor_ml_switcher'
+        );
     }
 
     /**
@@ -1090,6 +1146,83 @@ class Flavor_Multilingual_Admin_Settings {
         echo '<p class="description">' . esc_html__('Motor de IA a usar para traducciones automáticas. Usa la configuración de API del plugin principal.', 'flavor-multilingual') . '</p>';
     }
 
+    public function render_section_switcher() {
+        echo '<p>' . esc_html__('Configura dónde y cómo aparece el selector de idiomas en el sitio.', 'flavor-multilingual') . '</p>';
+    }
+
+    public function render_field_switcher_menu_locations() {
+        $selected  = (array) Flavor_Multilingual::get_option('switcher_menu_locations', array());
+        $locations = get_registered_nav_menus();
+        foreach ($locations as $slug => $name) {
+            printf(
+                '<label style="display:block;margin-bottom:5px"><input type="checkbox" name="flavor_multilingual_settings[switcher_menu_locations][]" value="%s" %s> %s</label>',
+                esc_attr($slug),
+                in_array($slug, $selected, true) ? 'checked' : '',
+                esc_html($name)
+            );
+        }
+        echo '<p class="description">' . esc_html__('El selector se añadirá al final de los menús marcados.', 'flavor-multilingual') . '</p>';
+    }
+
+    public function render_field_switcher_style() {
+        $current = Flavor_Multilingual::get_option('switcher_style', 'dropdown');
+        $styles  = array(
+            'dropdown'   => __('Desplegable', 'flavor-multilingual'),
+            'horizontal' => __('Horizontal', 'flavor-multilingual'),
+            'vertical'   => __('Vertical', 'flavor-multilingual'),
+            'flags-only' => __('Solo banderas', 'flavor-multilingual'),
+            'minimal'    => __('Minimal (códigos)', 'flavor-multilingual'),
+            'globe'      => __('Globo con desplegable', 'flavor-multilingual'),
+            'select'     => __('Select HTML nativo', 'flavor-multilingual'),
+        );
+        echo '<select name="flavor_multilingual_settings[switcher_style]">';
+        foreach ($styles as $value => $label) {
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr($value),
+                selected($current, $value, false),
+                esc_html($label)
+            );
+        }
+        echo '</select>';
+    }
+
+    public function render_field_switcher_show_flags() {
+        $checked = Flavor_Multilingual::get_option('switcher_show_flags', true);
+        printf(
+            '<label><input type="checkbox" name="flavor_multilingual_settings[switcher_show_flags]" value="1" %s> %s</label>',
+            checked($checked, true, false),
+            esc_html__('Mostrar la bandera del idioma', 'flavor-multilingual')
+        );
+    }
+
+    public function render_field_switcher_show_names() {
+        $checked = Flavor_Multilingual::get_option('switcher_show_names', true);
+        printf(
+            '<label><input type="checkbox" name="flavor_multilingual_settings[switcher_show_names]" value="1" %s> %s</label>',
+            checked($checked, true, false),
+            esc_html__('Mostrar el nombre del idioma junto a la bandera', 'flavor-multilingual')
+        );
+    }
+
+    public function render_field_switcher_show_native() {
+        $checked = Flavor_Multilingual::get_option('switcher_show_native', false);
+        printf(
+            '<label><input type="checkbox" name="flavor_multilingual_settings[switcher_show_native]" value="1" %s> %s</label>',
+            checked($checked, true, false),
+            esc_html__('Usar el nombre nativo del idioma (ej. "Español" en lugar de "Spanish")', 'flavor-multilingual')
+        );
+    }
+
+    public function render_field_switcher_hide_current() {
+        $checked = Flavor_Multilingual::get_option('switcher_hide_current', false);
+        printf(
+            '<label><input type="checkbox" name="flavor_multilingual_settings[switcher_hide_current]" value="1" %s> %s</label>',
+            checked($checked, true, false),
+            esc_html__('No mostrar el idioma actualmente seleccionado en la lista', 'flavor-multilingual')
+        );
+    }
+
     /**
      * Sanitiza la configuración
      *
@@ -1108,6 +1241,20 @@ class Flavor_Multilingual_Admin_Settings {
         $sanitized['remember_user_lang'] = !empty($input['remember_user_lang']);
         $sanitized['add_hreflang'] = !empty($input['add_hreflang']);
         $sanitized['ai_engine'] = sanitize_key($input['ai_engine'] ?? 'claude');
+
+        $valid_locations = array_keys(get_registered_nav_menus());
+        $selected_locations = (array) ($input['switcher_menu_locations'] ?? array());
+        $sanitized['switcher_menu_locations'] = array_values(array_intersect($selected_locations, $valid_locations));
+
+        $valid_styles = array('dropdown', 'horizontal', 'vertical', 'flags-only', 'minimal', 'globe', 'select');
+        $sanitized['switcher_style'] = in_array($input['switcher_style'] ?? '', $valid_styles)
+            ? $input['switcher_style']
+            : 'dropdown';
+
+        $sanitized['switcher_show_flags']   = !empty($input['switcher_show_flags']);
+        $sanitized['switcher_show_names']   = !empty($input['switcher_show_names']);
+        $sanitized['switcher_show_native']  = !empty($input['switcher_show_native']);
+        $sanitized['switcher_hide_current'] = !empty($input['switcher_hide_current']);
 
         // Actualizar idioma por defecto en la tabla
         if (!empty($sanitized['default_language'])) {
