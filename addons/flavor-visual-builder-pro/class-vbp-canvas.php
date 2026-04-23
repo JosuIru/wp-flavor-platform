@@ -2141,7 +2141,18 @@ class Flavor_VBP_Canvas {
             foreach ( $items as $index => $item ) {
                 $html .= '<div class="vbp-stat-item">';
                 if ( ! empty( $item['icono'] ) ) {
-                    $html .= '<div class="vbp-stat-item__icon"><i class="fas fa-' . esc_attr( $item['icono'] ) . '"></i></div>';
+                    $icono_bruto = (string) $item['icono'];
+                    // Detecta si el icono es una clase FontAwesome (slug ASCII
+                    // tipo "users" o "fa-users") o un emoji/caracter unicode.
+                    // Sin este check, un emoji se inyecta como clase CSS y
+                    // FontAwesome intenta resolverlo como glifo inexistente.
+                    $es_clase_font_awesome = (bool) preg_match( '/^[a-z0-9-]+$/', $icono_bruto );
+                    if ( $es_clase_font_awesome ) {
+                        $slug_fa = 0 === strpos( $icono_bruto, 'fa-' ) ? $icono_bruto : 'fa-' . $icono_bruto;
+                        $html   .= '<div class="vbp-stat-item__icon"><i class="fas ' . esc_attr( $slug_fa ) . '" aria-hidden="true"></i></div>';
+                    } else {
+                        $html .= '<div class="vbp-stat-item__icon vbp-stat-item__icon--emoji" aria-hidden="true" style="font-size:40px;line-height:1;">' . esc_html( $icono_bruto ) . '</div>';
+                    }
                 }
                 $html .= '<span class="vbp-stat-item__number"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.numero' ) . '>' . esc_html( $item['numero'] ?? $item['number'] ?? '0' ) . '</span>';
                 $html .= '<span class="vbp-stat-item__label"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.label' ) . '>' . esc_html( $item['label'] ?? $item['texto'] ?? '' ) . '</span>';

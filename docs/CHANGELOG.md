@@ -16,6 +16,14 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.10] - 2026-04-23
+
+### Corregido
+- **Render de stats inyectaba emojis como clases FontAwesome** (`<i class="fas fa-👥">`). `class-vbp-canvas.php::render_stats()` ahora detecta si `icono` es un slug ASCII (`users`, `fa-users` → FontAwesome) o un caracter unicode (`👥`, `🧩` → span directo). Elimina los glifos rotos en los stats generados por presets.
+- **Endpoint `/claude/pages/styled` ignoraba el `context` del hero** y secciones. `create_section()` ahora acepta ademas de las claves internas (`topic`, `subtitulo`, `boton_texto`, `boton_2_texto`) los alias modernos: `tagline`, `description`, `cta_primary`, `cta_secondary`, `cta_primary_url`, `cta_secondary_url`. Sin esto, llamadas con JSON natural seguian usando los placeholders ("Tu producto", "La mejor solución…") y obligaban a editar cada pagina manualmente tras crearla.
+
+---
+
 ## [3.5.9] - 2026-04-23
 
 ### Anadido

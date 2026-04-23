@@ -6920,10 +6920,14 @@ class Flavor_VBP_Claude_API {
      * @return array|null
      */
     private function create_section( $type, $context = array() ) {
-        $topic = $context['topic'] ?? $context['titulo'] ?? 'Tu producto';
-        $industry = $context['industry'] ?? 'general';
-        $subtitulo = $context['subtitulo'] ?? '';
-        $boton_texto = $context['boton_texto'] ?? '';
+        // Aceptar alias "humanos" en el contexto (tagline/description/cta_*)
+        // ademas de las claves internas (topic/subtitulo/boton_texto). Permite
+        // llamar al endpoint con JSON natural desde Claude o integraciones.
+        $topic          = $context['topic']          ?? $context['tagline']       ?? $context['titulo']      ?? 'Tu producto';
+        $subtitulo      = $context['subtitulo']      ?? $context['description']   ?? '';
+        $boton_texto    = $context['boton_texto']    ?? $context['cta_primary']   ?? '';
+        $boton_2_texto  = $context['boton_2_texto']  ?? $context['cta_secondary'] ?? 'Saber más';
+        $industry       = $context['industry']       ?? 'general';
 
         // Mapeo de industrias a contenido
         $industry_data = $this->get_industry_defaults( $industry );
@@ -6933,9 +6937,9 @@ class Flavor_VBP_Claude_API {
                 'titulo'        => $topic,
                 'subtitulo'     => $subtitulo ?: $industry_data['hero_subtitulo'],
                 'boton_texto'   => $boton_texto ?: $industry_data['cta_texto'],
-                'boton_url'     => $context['boton_url'] ?? '#contacto',
-                'boton_2_texto' => $context['boton_2_texto'] ?? 'Saber más',
-                'boton_2_url'   => $context['boton_2_url'] ?? '#caracteristicas',
+                'boton_url'     => $context['boton_url'] ?? $context['cta_primary_url'] ?? '#contacto',
+                'boton_2_texto' => $boton_2_texto,
+                'boton_2_url'   => $context['boton_2_url'] ?? $context['cta_secondary_url'] ?? '#caracteristicas',
                 'imagen_fondo'  => $context['imagen_fondo'] ?? '',
                 'color_fondo'   => $context['color_fondo'] ?? '#1a1a2e',
             ),
