@@ -62,6 +62,12 @@ class Flavor_Multilingual_Core {
         add_action('init', array($this, 'register_rewrite_rules'), 1);
         add_filter('query_vars', array($this, 'add_query_vars'));
         add_action('parse_request', array($this, 'parse_language_request'));
+
+        // Evitar que WordPress rediriga canónicamente las URLs con prefijo de idioma
+        // (el canonical de WP no conoce el esquema /es/, /en/, etc. y causa redirect loops)
+        if (Flavor_Multilingual::get_option('url_mode', 'parameter') === 'directory') {
+            add_filter('redirect_canonical', array($this, 'prevent_language_canonical_redirect'), 10, 2);
+        }
     }
 
     /**
@@ -253,6 +259,24 @@ class Flavor_Multilingual_Core {
      */
     public function get_language($code) {
         return $this->active_languages[$code] ?? null;
+    }
+
+    /**
+     * Evita que redirect_canonical rompa URLs con prefijo de idioma (/es/, /en/, …).
+     *
+     * @param string $redirect_url URL a la que WP quiere redirigir.
+     * @param string $requested_url URL solicitada originalmente.
+     * @return string|false Devuelve false para cancelar la redirección.
+     */
+    public function prevent_language_canonical_redirect($redirect_url, $requested_url) {
+        $lang_codes = array_keys($this->active_languages);
+        $pattern    = '#^https?://[^/]+/(' . implode('|', array_map('preg_quote', $lang_codes)) . ')(/|$)#';
+
+        if (preg_match($pattern, $requested_url)) {
+            return false;
+        }
+
+        return $redirect_url;
     }
 
     /**
