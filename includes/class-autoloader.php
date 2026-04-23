@@ -78,6 +78,8 @@ class Flavor_Autoloader {
         'Flavor_License_Manager' => 'licensing/class-license-manager.php',
         'Flavor_Plugin_Updater' => 'licensing/class-plugin-updater.php',
         'Flavor_GitHub_Release_API' => 'licensing/class-github-release-api.php',
+        // Ecosistema (vitrina de plugins/apps Flavor)
+        'Flavor_Product_CPT' => 'ecosystem/class-product-cpt.php',
         // NOTA: Flavor_VBP_Symbols y Flavor_VBP_Symbols_API ya no llevan
         // mapeo especial aquí porque VBP está ahora en addons/ y
         // Flavor_VBP_Loader los require_once explícitamente en

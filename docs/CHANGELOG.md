@@ -16,6 +16,18 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.9] - 2026-04-23
+
+### Anadido
+- **CPT `flavor_product` + shortcode `[flavor_ecosystem]`** para vitrina extensible del ecosistema. Registra un post type con campos meta (url, repo, docs, version, status, icon, badge_color, order) expuestos en REST. El shortcode renderiza una rejilla de cards con los productos publicados, filtrable por `status` y configurable en `columns` y `limit`. Cada nuevo plugin/app del ecosistema se incorpora publicando un post del CPT, sin tocar la pagina de destino.
+- **Landing del ecosistema** (`/landing/ecosistema-flavor/`) generada con VBP preset `modern` con secciones hero + shortcode (grid dinamico del CPT) + stats + features + como_funciona + testimonials + faq + cta.
+
+### Corregido
+- **API VBP `/claude/*` devolvia 401 sistematico** por scope `vbp_claude` ausente de `flavor_get_vbp_automation_scopes()`. Se anade a la lista por defecto.
+- **API VBP `/claude/blocks` devolvia 500** por llamada a metodo inexistente `Flavor_VBP_Block_Library::get_all_blocks()`; el metodo real es `get_bloques()`.
+
+---
+
 ## [3.5.8] - 2026-04-23
 
 ### Corregido

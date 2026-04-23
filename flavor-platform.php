@@ -7,7 +7,7 @@
  * Plugin Name: Flavor Platform
  * Plugin URI: https://gailu.net
  * Description: Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder, Deep Links, Matching, Newsletter, Sellos de Calidad y más.
- * Version: 3.5.8
+ * Version: 3.5.9
  * Author: Gailu Labs
  * Author URI: https://gailu.net
  * License: GPL v2 or later
@@ -72,7 +72,7 @@ if (!defined('FLAVOR_RUNTIME_PLUGIN_BASENAME')) {
 
 // Constantes principales - Flavor Platform (nuevo naming)
 if (!defined('FLAVOR_PLATFORM_VERSION')) {
-    define('FLAVOR_PLATFORM_VERSION', '3.5.8');
+    define('FLAVOR_PLATFORM_VERSION', '3.5.9');
 }
 if (!defined('FLAVOR_PLATFORM_PATH')) {
     define('FLAVOR_PLATFORM_PATH', plugin_dir_path(__FILE__));
@@ -1137,6 +1137,13 @@ final class Flavor_Platform {
         add_action('plugins_loaded', static function () {
             if (class_exists('Flavor_Plugin_Updater')) {
                 Flavor_Plugin_Updater::get_instance();
+            }
+        }, 15);
+
+        // CPT Flavor Product (vitrina extensible del ecosistema)
+        add_action('plugins_loaded', static function () {
+            if (class_exists('Flavor_Product_CPT')) {
+                Flavor_Product_CPT::get_instance();
             }
         }, 15);
     }
