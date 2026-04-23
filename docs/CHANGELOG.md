@@ -16,6 +16,18 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.11] - 2026-04-23
+
+### Anadido
+- **Render `como_funciona`** con pasos numerados, icono/numero, titulo y descripcion. Antes solo existia el preset pero no su renderer, asi que caia a `render_generico` y mostraba solo el titulo "Cómo Funciona".
+
+### Corregido
+- **`render_features` rompia emojis envolviendolos en `<span class="material-icons">`** que no los reconocia como glifo. Ahora distingue FontAwesome (`fa-*`), Material Icons (slug ASCII puro) y emoji/unicode (span directo).
+- **`render_testimonials` ignoraba el array `testimonios`** que genera el preset, solo leia `items`. Ahora acepta ambos. Idem con `autor`/`nombre` como alias dentro de cada testimonio. Tambien pinta el subtitulo si esta presente.
+- **`render_faq` ignoraba el array `faqs`** que genera el preset, solo leia `items`. Ahora acepta ambos y pinta tambien el subtitulo.
+
+---
+
 ## [3.5.10] - 2026-04-23
 
 ### Corregido

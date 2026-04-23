@@ -1685,12 +1685,16 @@ class Flavor_VBP_Canvas {
                 if ( ! empty( $item['icono'] ) ) {
                     $estilo_icono = $icono_color ? ' style="color: ' . esc_attr( $icono_color ) . ';"' : '';
                     $html .= '<div class="vbp-feature-card__icon"' . $estilo_icono . '>';
-                    // Soportar Material Icons y Font Awesome
-                    $icono = $item['icono'];
-                    if ( strpos( $icono, 'fa-' ) === 0 ) {
-                        $html .= '<i class="fas ' . esc_attr( $icono ) . '"></i>';
+                    $icono_bruto = (string) $item['icono'];
+                    // Soporta 3 formatos: FontAwesome (fa-*), Material Icons
+                    // (slug ASCII como "home_work") y emoji/unicode. Sin el
+                    // tercer caso los emojis acaban como clases CSS rotas.
+                    if ( 0 === strpos( $icono_bruto, 'fa-' ) ) {
+                        $html .= '<i class="fas ' . esc_attr( $icono_bruto ) . '" aria-hidden="true"></i>';
+                    } elseif ( preg_match( '/^[a-z0-9_-]+$/', $icono_bruto ) ) {
+                        $html .= '<span class="material-icons" aria-hidden="true">' . esc_html( $icono_bruto ) . '</span>';
                     } else {
-                        $html .= '<span class="material-icons">' . esc_html( $icono ) . '</span>';
+                        $html .= '<span class="vbp-feature-card__icon-emoji" aria-hidden="true" style="font-size:40px;line-height:1;">' . esc_html( $icono_bruto ) . '</span>';
                     }
                     $html .= '</div>';
                 }
@@ -1931,23 +1935,30 @@ class Flavor_VBP_Canvas {
         $variante    = $elemento['variant'] ?? 'cards';
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $titulo = $data['titulo'] ?? '';
-        $items  = $data['items'] ?? array();
+        $titulo    = $data['titulo'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? '';
+        // Acepta alias "testimonios" (lo que generan los presets) ademas de "items".
+        $items     = ! empty( $data['items'] ) ? $data['items'] : ( $data['testimonios'] ?? array() );
 
         $html = '<section class="vbp-testimonials vbp-testimonials--' . esc_attr( $variante ) . '" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
             $html .= '<h2 class="vbp-testimonials__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
+        if ( $subtitulo ) {
+            $html .= '<p class="vbp-testimonials__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
+        }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-testimonials__grid">';
 
             foreach ( $items as $index => $item ) {
+                // Alias "autor" o "nombre" (los presets usan "nombre").
+                $autor_item = $item['autor'] ?? $item['nombre'] ?? '';
                 $html .= '<div class="vbp-testimonial-card">';
                 $html .= '<blockquote class="vbp-testimonial-card__quote"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.texto' ) . '>' . wp_kses_post( $item['texto'] ?? '' ) . '</blockquote>';
                 $html .= '<div class="vbp-testimonial-card__author">';
-                $html .= '<span class="vbp-testimonial-card__name"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.autor' ) . '>' . esc_html( $item['autor'] ?? '' ) . '</span>';
+                $html .= '<span class="vbp-testimonial-card__name"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.autor' ) . '>' . esc_html( $autor_item ) . '</span>';
 
                 if ( ! empty( $item['cargo'] ) ) {
                     $html .= '<span class="vbp-testimonial-card__role"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.cargo' ) . '>' . esc_html( $item['cargo'] ) . '</span>';
@@ -2039,13 +2050,18 @@ class Flavor_VBP_Canvas {
         $estilos     = $elemento['styles'] ?? array();
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $titulo = $data['titulo'] ?? '';
-        $items  = $data['items'] ?? array();
+        $titulo    = $data['titulo'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? '';
+        // Acepta alias "faqs" (generado por los presets) ademas de "items".
+        $items     = ! empty( $data['items'] ) ? $data['items'] : ( $data['faqs'] ?? array() );
 
         $html = '<section class="vbp-faq" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
             $html .= '<h2 class="vbp-faq__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
+        }
+        if ( $subtitulo ) {
+            $html .= '<p class="vbp-faq__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         if ( ! empty( $items ) ) {
@@ -2063,6 +2079,62 @@ class Flavor_VBP_Canvas {
 
         $html .= '</section>';
 
+        return $html;
+    }
+
+    /**
+     * Renderiza una seccion "Como funciona" con pasos numerados.
+     * Acepta data.pasos con items {numero, titulo, descripcion, icono}.
+     */
+    private function render_como_funciona( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $estilos     = $elemento['styles'] ?? array();
+        $variante    = $elemento['variant'] ?? 'timeline';
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $titulo    = $data['titulo'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? '';
+        $pasos     = ! empty( $data['pasos'] ) ? $data['pasos'] : ( $data['items'] ?? array() );
+
+        $html = '<section class="vbp-como-funciona vbp-como-funciona--' . esc_attr( $variante ) . '" style="' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container" style="max-width:1200px;margin:0 auto;padding:80px 24px;">';
+
+        if ( $titulo ) {
+            $html .= '<h2 class="vbp-como-funciona__title" style="text-align:center;font-size:36px;font-weight:700;margin:0 0 12px;color:#111827;"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
+        }
+        if ( $subtitulo ) {
+            $html .= '<p class="vbp-como-funciona__subtitle" style="text-align:center;font-size:18px;color:#6b7280;margin:0 0 56px;"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
+        }
+
+        if ( ! empty( $pasos ) ) {
+            $columnas_pasos = max( 1, min( 4, count( $pasos ) ) );
+            $html .= '<div class="vbp-como-funciona__grid" style="display:grid;grid-template-columns:repeat(' . esc_attr( (string) $columnas_pasos ) . ',minmax(0,1fr));gap:32px;">';
+
+            foreach ( $pasos as $index => $paso_actual ) {
+                $numero_paso      = $paso_actual['numero']      ?? (string) ( $index + 1 );
+                $titulo_paso      = $paso_actual['titulo']      ?? '';
+                $descripcion_paso = $paso_actual['descripcion'] ?? '';
+                $icono_paso       = $paso_actual['icono']       ?? '';
+
+                $html .= '<div class="vbp-como-funciona__step" style="text-align:center;">';
+                $html .= '<div class="vbp-como-funciona__number" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:var(--flavor-primary,#6366f1);color:#fff;font-size:22px;font-weight:700;margin:0 auto 16px;">';
+                $html .= $icono_paso !== '' && ! preg_match( '/^[0-9]+$/', (string) $icono_paso )
+                    ? esc_html( (string) $icono_paso )
+                    : esc_html( (string) $numero_paso );
+                $html .= '</div>';
+                if ( $titulo_paso !== '' ) {
+                    $html .= '<h3 style="font-size:18px;font-weight:600;margin:0 0 8px;color:#111827;"' . $this->get_editor_contenteditable_path_attr( 'pasos.' . $index . '.titulo' ) . '>' . esc_html( $titulo_paso ) . '</h3>';
+                }
+                if ( $descripcion_paso !== '' ) {
+                    $html .= '<p style="font-size:14px;color:#4b5563;line-height:1.6;margin:0;"' . $this->get_editor_contenteditable_path_attr( 'pasos.' . $index . '.descripcion' ) . '>' . wp_kses_post( $descripcion_paso ) . '</p>';
+                }
+                $html .= '</div>';
+            }
+
+            $html .= '</div>';
+        }
+
+        $html .= '</div></section>';
         return $html;
     }
 
