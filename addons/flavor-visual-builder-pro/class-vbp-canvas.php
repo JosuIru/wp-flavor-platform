@@ -1692,7 +1692,7 @@ class Flavor_VBP_Canvas {
                     if ( 0 === strpos( $icono_bruto, 'fa-' ) ) {
                         $html .= '<i class="fas ' . esc_attr( $icono_bruto ) . '" aria-hidden="true"></i>';
                     } elseif ( preg_match( '/^[a-z0-9_-]+$/', $icono_bruto ) ) {
-                        $html .= '<span class="material-icons" aria-hidden="true">' . esc_html( $icono_bruto ) . '</span>';
+                        $html .= '<span class="material-icons material-icons-outlined" aria-hidden="true">' . esc_html( $icono_bruto ) . '</span>';
                     } else {
                         $html .= '<span class="vbp-feature-card__icon-emoji" aria-hidden="true" style="font-size:40px;line-height:1;">' . esc_html( $icono_bruto ) . '</span>';
                     }
@@ -2184,6 +2184,8 @@ class Flavor_VBP_Canvas {
         $html_salida  = '<link rel="preconnect" href="https://fonts.googleapis.com">';
         $html_salida .= '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
         $html_salida .= '<link href="' . esc_url( $fuentes_url ) . '" rel="stylesheet">';
+        // Material Icons para iconos en chips/cards (alternativa a emojis).
+        $html_salida .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">';
         $html_salida .= "\n<style id='vbp-editorial-base'>\n";
         $html_salida .= ":root{--ink:#111008;--paper:#F2EDE3;--red:#C8261A;--muted:#7A7260;--rule:#C4BAA4;--serif:'Playfair Display',Georgia,serif;--body:'Libre Baskerville',Georgia,serif;--mono:'IBM Plex Mono',monospace;}";
         $html_salida .= ".vbp-editorial{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.6;}";
@@ -2223,6 +2225,13 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-feat-num__num{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--red);margin-bottom:.75rem;}";
         $html_salida .= ".vbp-feat-num__title{font-family:var(--serif);font-size:1.15rem;font-weight:700;line-height:1.25;margin:0 0 .75rem;}";
         $html_salida .= ".vbp-feat-num__desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;margin:0;}";
+        $html_salida .= ".vbp-feat-num__icon{font-size:1.6rem;line-height:1;margin-bottom:.75rem;}";
+        $html_salida .= ".vbp-feat-num__tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem;}";
+        $html_salida .= ".vbp-feat-num__tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;border:1px solid var(--rule);padding:.15rem .5rem;color:var(--muted);}";
+        // Chip list
+        $html_salida .= ".vbp-chips{display:flex;flex-wrap:wrap;gap:.5rem;padding:1rem 2rem;}";
+        $html_salida .= ".vbp-chips__item{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--rule);padding:.3rem .75rem;color:var(--ink);background:transparent;border-radius:999px;}";
+        $html_salida .= ".vbp-chips__item--mono{font-family:var(--mono);}";
         // Principles list
         $html_salida .= ".vbp-princ{padding:4rem 2rem;border-bottom:1px solid var(--rule);}";
         $html_salida .= ".vbp-princ__title{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1.1;margin:0 0 2.5rem;}";
@@ -2367,14 +2376,26 @@ class Flavor_VBP_Canvas {
                 $numero_item      = $item_num['numero']      ?? sprintf( '%02d', $indice + 1 );
                 $titulo_item      = $item_num['titulo']      ?? '';
                 $descripcion_item = $item_num['descripcion'] ?? '';
+                $icono_item       = $item_num['icono']       ?? '';
+                $tags_item        = isset( $item_num['tags'] ) && is_array( $item_num['tags'] ) ? $item_num['tags'] : array();
 
                 $html_numbered .= '<div class="vbp-feat-num__item vbp-reveal">';
+                if ( $icono_item !== '' ) {
+                    $html_numbered .= '<div class="vbp-feat-num__icon" aria-hidden="true">' . esc_html( (string) $icono_item ) . '</div>';
+                }
                 $html_numbered .= '<div class="vbp-feat-num__num">' . esc_html( (string) $numero_item ) . '</div>';
                 if ( $titulo_item !== '' ) {
                     $html_numbered .= '<h3 class="vbp-feat-num__title">' . esc_html( (string) $titulo_item ) . '</h3>';
                 }
                 if ( $descripcion_item !== '' ) {
                     $html_numbered .= '<p class="vbp-feat-num__desc">' . wp_kses_post( (string) $descripcion_item ) . '</p>';
+                }
+                if ( ! empty( $tags_item ) ) {
+                    $html_numbered .= '<div class="vbp-feat-num__tags">';
+                    foreach ( $tags_item as $tag_texto ) {
+                        $html_numbered .= '<span class="vbp-feat-num__tag">' . esc_html( (string) $tag_texto ) . '</span>';
+                    }
+                    $html_numbered .= '</div>';
                 }
                 $html_numbered .= '</div>';
             }
@@ -2383,6 +2404,32 @@ class Flavor_VBP_Canvas {
 
         $html_numbered .= '</section>';
         return $html_numbered;
+    }
+
+    /**
+     * Renderiza una lista inline de chips (p.ej. rutas de paginas, etiquetas
+     * tecnologicas). Disenado para el preset editorial pero funcional sin el.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_chip_list( $elemento ) {
+        $data_chip     = $elemento['data'] ?? array();
+        $items_chips   = $this->editorial_parse_items( $data_chip, 'items' );
+        $mono_activado = ! empty( $data_chip['mono'] );
+
+        if ( empty( $items_chips ) ) {
+            return '';
+        }
+
+        $html_chips  = $this->editorial_assets_once();
+        $clase_mono  = $mono_activado ? ' vbp-chips__item--mono' : '';
+        $html_chips .= '<div class="vbp-editorial vbp-chips">';
+        foreach ( $items_chips as $texto_chip ) {
+            $html_chips .= '<span class="vbp-chips__item' . $clase_mono . '">' . esc_html( (string) $texto_chip ) . '</span>';
+        }
+        $html_chips .= '</div>';
+        return $html_chips;
     }
 
     /**

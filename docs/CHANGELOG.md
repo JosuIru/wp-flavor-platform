@@ -16,6 +16,18 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.13] - 2026-04-24
+
+### Anadido
+- **`feature_numbered` extendido con icono + tags** por item. Los items ahora aceptan `icono` (emoji/unicode, slug Material Icons o `fa-*` de FontAwesome) y `tags` (array de strings) que se pintan como pills pequenas bajo la descripcion. Mantiene retrocompatibilidad con items que solo llevaban `numero/titulo/descripcion`.
+- **Bloque `chip_list`** (categoria `basic`): lista inline de chips/pills con borde redondeado y fuente mono opcional. Util para rutas de paginas (`/inicio`, `/noticias`...) o listas de etiquetas tecnologicas dentro del preset editorial.
+- **Carga automatica de Material Icons Outlined** junto a las fuentes serif del preset editorial. Los slugs ASCII ya eran interpretados como Material Icons, pero antes habia que cargar la fuente manualmente; ahora el preset lo hace.
+
+### Cambios internos
+- `render_features` emite `<span class="material-icons material-icons-outlined">` (antes solo `material-icons`) cuando el icono es slug ASCII. La variante Outlined alinea con el estilo editorial sin romper el stroke por defecto.
+
+---
+
 ## [3.5.12] - 2026-04-24
 
 ### Anadido

@@ -1833,8 +1833,20 @@ class Flavor_VBP_Block_Library {
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="2" y="10" font-size="8">01</text><text x="14" y="10" font-size="8">02</text><text x="2" y="20" font-size="8">03</text><text x="14" y="20" font-size="8">04</text></svg>',
             'fields'   => array(
                 'label'      => array( 'type' => 'text',     'label' => __( 'Etiqueta superior (small caps)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
-                'items_json' => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: numero/titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
-                'columnas'   => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '3'=>'3','4'=>'4','5'=>'5' ), 'default' => '5' ),
+                'items_json' => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: numero/titulo/descripcion/icono/tags[])', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'columnas'   => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6' ), 'default' => '3' ),
+            ),
+        ) );
+
+        // Chip list: lista de chips/pills en linea (p.ej. rutas de paginas).
+        $this->registrar_bloque( array(
+            'id'       => 'chip_list',
+            'name'     => __( 'Lista de chips', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'basic',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="8" width="6" height="8" rx="4"/><rect x="10" y="8" width="6" height="8" rx="4"/><rect x="18" y="8" width="4" height="8" rx="4"/></svg>',
+            'fields'   => array(
+                'items_json'  => array( 'type' => 'textarea', 'label' => __( 'Chips (JSON array de strings)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'mono'        => array( 'type' => 'checkbox', 'label' => __( 'Usar fuente mono', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => true ),
             ),
         ) );
 
