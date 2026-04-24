@@ -1793,6 +1793,12 @@ class Flavor_VBP_Block_Library {
                     'label'   => __( 'Duración loop (seg)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '28',
                 ),
+                'separador' => array(
+                    'type'        => 'text',
+                    'label'       => __( 'Separador (emoji, char o slug fa-*/Material Icons)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'default'     => '◆',
+                    'placeholder' => '◆ · fiber_manual_record · fa-star',
+                ),
                 'color_fondo' => array(
                     'type'    => 'color',
                     'label'   => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
@@ -1858,9 +1864,115 @@ class Flavor_VBP_Block_Library {
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h10"/></svg>',
             'fields'   => array(
-                'titulo'     => array( 'type' => 'text',     'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'Principios irrenunciables' ),
-                'items_json' => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
-                'columnas'   => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '1'=>'1','2'=>'2','3'=>'3' ), 'default' => '2' ),
+                'titulo'      => array( 'type' => 'text',     'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'Principios irrenunciables' ),
+                'items_json'  => array( 'type' => 'textarea', 'label' => __( 'Items (JSON: titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'columnas'    => array( 'type' => 'select',   'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '1'=>'1','2'=>'2','3'=>'3' ), 'default' => '2' ),
+                'color_fondo' => array( 'type' => 'color',    'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '' ),
+                'color_texto' => array( 'type' => 'color',    'label' => __( 'Color de texto (sobre fondo)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '' ),
+            ),
+        ) );
+
+        // Masthead editorial: tagline + badge con doble rule inferior.
+        $this->registrar_bloque( array(
+            'id'       => 'masthead_editorial',
+            'name'     => __( 'Masthead editorial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 10h18M3 18h18"/></svg>',
+            'fields'   => array(
+                'tagline' => array( 'type' => 'text', 'label' => __( 'Tagline izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'badge'   => array( 'type' => 'text', 'label' => __( 'Badge derecha (con borde)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+            ),
+        ) );
+
+        // CTA strip: tira horizontal con texto + 2 botones sobre fondo oscuro.
+        $this->registrar_bloque( array(
+            'id'       => 'cta_strip',
+            'name'     => __( 'Tira CTA editorial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="18" height="6"/><path d="M7 12h2M13 12h4"/></svg>',
+            'fields'   => array(
+                'texto'            => array( 'type' => 'text', 'label' => __( 'Texto (mono, mayúsculas)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_1_texto'    => array( 'type' => 'text', 'label' => __( 'Botón 1: texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_1_url'      => array( 'type' => 'url',  'label' => __( 'Botón 1: URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_1_estilo'   => array( 'type' => 'select', 'label' => __( 'Botón 1: estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'light'=>'Light (borde claro)', 'red'=>'Red (relleno rojo)' ), 'default' => 'light' ),
+                'boton_1_nueva'    => array( 'type' => 'checkbox', 'label' => __( 'Botón 1: abrir en nueva pestaña', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => false ),
+                'boton_2_texto'    => array( 'type' => 'text', 'label' => __( 'Botón 2: texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_url'      => array( 'type' => 'url',  'label' => __( 'Botón 2: URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_estilo'   => array( 'type' => 'select', 'label' => __( 'Botón 2: estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'light'=>'Light', 'red'=>'Red' ), 'default' => 'red' ),
+                'boton_2_nueva'    => array( 'type' => 'checkbox', 'label' => __( 'Botón 2: abrir en nueva pestaña', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => false ),
+                'color_fondo'      => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#111008' ),
+                'color_texto'      => array( 'type' => 'color', 'label' => __( 'Color de texto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#F2EDE3' ),
+            ),
+        ) );
+
+        // Editorial split quote: aside sticky con título + tags + body HTML
+        // con quote destacada. Replica la why-section del layout de periódico.
+        $this->registrar_bloque( array(
+            'id'       => 'editorial_split_quote',
+            'name'     => __( 'Split editorial con quote', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4v16M3 8h4M10 4v16M10 8h11M10 14h11"/></svg>',
+            'fields'   => array(
+                'aside_titulo_pre' => array( 'type' => 'text',     'label' => __( 'Aside: título (parte previa)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'aside_titulo_em'  => array( 'type' => 'text',     'label' => __( 'Aside: título (parte destacada, italic+rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'aside_tags_json'  => array( 'type' => 'textarea', 'label' => __( 'Aside: tags (JSON array de strings)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'body_html'        => array( 'type' => 'textarea', 'label' => __( 'Body (HTML con párrafos)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'quote_html'       => array( 'type' => 'textarea', 'label' => __( 'Quote destacada (HTML)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+            ),
+        ) );
+
+        // Relation split: 3 columnas (izq / conector / der) para mostrar dos
+        // proyectos complementarios con flecha mono en el centro.
+        $this->registrar_bloque( array(
+            'id'       => 'relation_split',
+            'name'     => __( 'Relación 2 columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="7" height="12"/><path d="M10 12h4"/><rect x="15" y="6" width="7" height="12"/></svg>',
+            'fields'   => array(
+                'izq_titulo'   => array( 'type' => 'text',     'label' => __( 'Columna izquierda: título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'izq_html'     => array( 'type' => 'textarea', 'label' => __( 'Columna izquierda: body (HTML)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'conector'     => array( 'type' => 'textarea', 'label' => __( 'Conector central (HTML o texto multilínea)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => "Complementarios\n→\nIndependientes" ),
+                'der_titulo'   => array( 'type' => 'text',     'label' => __( 'Columna derecha: título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'der_html'     => array( 'type' => 'textarea', 'label' => __( 'Columna derecha: body (HTML)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+            ),
+        ) );
+
+        // Hosting dark: sección oscura con intro + lista numerada de pasos y
+        // botones CTA. Diseñada para seguir a un cta_strip o cerrar landing.
+        $this->registrar_bloque( array(
+            'id'       => 'hosting_dark',
+            'name'     => __( 'Sección oscura con pasos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h18v16H3z"/><path d="M7 9h4M7 13h8M7 17h6" stroke-opacity=".5"/></svg>',
+            'fields'   => array(
+                'label'            => array( 'type' => 'text',     'label' => __( 'Etiqueta superior (small caps)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_pre'       => array( 'type' => 'text',     'label' => __( 'Título (parte previa)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_em'        => array( 'type' => 'text',     'label' => __( 'Título (parte destacada, italic+rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'descripcion'      => array( 'type' => 'textarea', 'label' => __( 'Descripción (HTML)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'pasos_json'       => array( 'type' => 'textarea', 'label' => __( 'Pasos (JSON: titulo/descripcion)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'boton_1_texto'    => array( 'type' => 'text', 'label' => __( 'Botón 1: texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_1_url'      => array( 'type' => 'url',  'label' => __( 'Botón 1: URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_1_estilo'   => array( 'type' => 'select', 'label' => __( 'Botón 1: estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'light'=>'Light', 'red'=>'Red' ), 'default' => 'light' ),
+                'boton_1_nueva'    => array( 'type' => 'checkbox', 'label' => __( 'Botón 1: nueva pestaña', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => false ),
+                'boton_2_texto'    => array( 'type' => 'text', 'label' => __( 'Botón 2: texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_url'      => array( 'type' => 'url',  'label' => __( 'Botón 2: URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_estilo'   => array( 'type' => 'select', 'label' => __( 'Botón 2: estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'light'=>'Light', 'red'=>'Red' ), 'default' => 'red' ),
+                'boton_2_nueva'    => array( 'type' => 'checkbox', 'label' => __( 'Botón 2: nueva pestaña', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => false ),
+            ),
+        ) );
+
+        // Footer editorial: logo con palabra central coloreada + links + license.
+        $this->registrar_bloque( array(
+            'id'       => 'footer_editorial',
+            'name'     => __( 'Footer editorial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18h18M3 14h18M6 6v4M12 6v4M18 6v4"/></svg>',
+            'fields'   => array(
+                'logo_pre'   => array( 'type' => 'text',     'label' => __( 'Logo: parte previa', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'logo_em'    => array( 'type' => 'text',     'label' => __( 'Logo: parte destacada (rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'logo_post'  => array( 'type' => 'text',     'label' => __( 'Logo: parte posterior', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'links_json' => array( 'type' => 'textarea', 'label' => __( 'Enlaces (JSON: texto/url/nueva)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'license'    => array( 'type' => 'text',     'label' => __( 'Texto licencia (mono)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
     }

@@ -286,6 +286,36 @@ class Flavor_VBP_Design_Presets {
                 ),
                 'es_sistema'  => true,
             ),
+            'editorial' => array(
+                'id'          => 'editorial',
+                'nombre'      => __( 'Editorial periódico', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Paleta ink/paper/red, serif Playfair + Baskerville, mono IBM Plex. Ideal para landings manifiesto o medios.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'colores'     => array(
+                    'primary'    => '#C8261A',
+                    'secondary'  => '#111008',
+                    'accent'     => '#C4BAA4',
+                    'background' => '#F2EDE3',
+                    'surface'    => '#F2EDE3',
+                    'text'       => '#111008',
+                    'text-muted' => '#7A7260',
+                    'border'     => '#C4BAA4',
+                    'success'    => '#22c55e',
+                    'warning'    => '#f59e0b',
+                    'error'      => '#C8261A',
+                ),
+                'tipografia'  => array(
+                    'font-family-heading' => "'Playfair Display', Georgia, serif",
+                    'font-family-body'    => "'Libre Baskerville', Georgia, serif",
+                    'font-family-mono'    => "'IBM Plex Mono', monospace",
+                    'font-size-base'      => '16px',
+                    'line-height-base'    => '1.6',
+                ),
+                'espaciado'   => array(
+                    'spacing-unit'  => '8px',
+                    'border-radius' => '0px',
+                ),
+                'es_sistema'  => true,
+            ),
         );
 
         /**

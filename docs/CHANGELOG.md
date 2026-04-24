@@ -9,6 +9,22 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Anadido
+- **Preset `editorial` como preset global del editor** (`class-vbp-design-presets`), antes solo existia en la API de Claude. Ahora sus tokens de color, fuentes (Playfair + Baskerville + IBM Plex Mono) y radius 0 aplican tambien a bloques genericos cuando se selecciona desde el picker del editor.
+- **6 bloques editoriales nuevos** para replicar landings tipo periodico 1:1 sin HTML raw:
+  - `masthead_editorial`: cabecera con tagline + badge y doble rule inferior.
+  - `cta_strip`: tira horizontal con texto mono + hasta 2 botones (estilos light/red). Color de fondo configurable.
+  - `editorial_split_quote`: aside sticky con titulo (pre + em rojo) + tags + body HTML + quote destacada con borde rojo.
+  - `relation_split`: 3 columnas (col / conector central / col) para mostrar dos proyectos complementarios.
+  - `hosting_dark`: seccion oscura con etiqueta + titulo bipartito + descripcion + lista numerada de pasos + 2 botones.
+  - `footer_editorial`: footer con logo tripartido (pre + em coloreado + post) + links mono + licencia.
+- **Ticker con separador configurable** (`separador`): acepta emoji/char, slug Material Icons (`fiber_manual_record`) o clase FontAwesome (`fa-star`). Default sigue siendo `◆`.
+- **`principles_list` con fondo de color** (`color_fondo`/`color_texto`): permite usar el bloque como manifesto-strip sobre fondo rojo (o cualquier otro). Aplica variante `--filled` que cambia bordes a `currentColor` y la tipografia de items a mono.
+
+### Cambios internos
+- `render_feature_numbered` delega los iconos a `render_editorial_icon()` (antes los escapaba con `esc_html` plano). Ahora detecta FA (`fa-*`), SVG inline, slug Material Icons o emoji/unicode y pinta el tag correcto, igual que `render_features`.
+- Nuevo helper `render_editorial_button()` compartido entre `cta_strip` y `hosting_dark` para evitar duplicar el HTML de botones editoriales.
+
 ### Pendiente
 - Sistema de plugins de terceros para VBP
 - Exportacion a Figma nativa

@@ -2164,6 +2164,41 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Renderiza un icono aceptando 4 formatos: clase FontAwesome (fa-*), slug
+     * Material Icons (a-z0-9_-), SVG inline (empieza por <svg) o emoji/unicode.
+     * Las dependencias (FontAwesome y Material Icons Outlined) las cargan el
+     * canvas y editorial_assets_once(); este helper solo pinta el tag correcto.
+     *
+     * @param string $icono_bruto Texto del icono tal como viene del campo.
+     * @return string HTML del icono (ya escapado), o cadena vacia si esta vacio.
+     */
+    private function render_editorial_icon( $icono_bruto ) {
+        $icono_bruto = trim( (string) $icono_bruto );
+        if ( '' === $icono_bruto ) {
+            return '';
+        }
+        if ( 0 === strpos( $icono_bruto, 'fa-' ) ) {
+            return '<i class="fas ' . esc_attr( $icono_bruto ) . '" aria-hidden="true"></i>';
+        }
+        if ( 0 === strpos( $icono_bruto, '<svg' ) ) {
+            return wp_kses( $icono_bruto, array(
+                'svg'     => array( 'xmlns' => true, 'viewbox' => true, 'width' => true, 'height' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'class' => true, 'aria-hidden' => true ),
+                'path'    => array( 'd' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true ),
+                'circle'  => array( 'cx' => true, 'cy' => true, 'r' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true ),
+                'rect'    => array( 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true, 'ry' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true ),
+                'line'    => array( 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true, 'stroke' => true, 'stroke-width' => true ),
+                'polyline'=> array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true ),
+                'polygon' => array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true ),
+                'g'       => array( 'fill' => true, 'stroke' => true, 'stroke-width' => true ),
+            ) );
+        }
+        if ( preg_match( '/^[a-z0-9_-]+$/', $icono_bruto ) ) {
+            return '<span class="material-icons material-icons-outlined" aria-hidden="true">' . esc_html( $icono_bruto ) . '</span>';
+        }
+        return '<span aria-hidden="true">' . esc_html( $icono_bruto ) . '</span>';
+    }
+
+    /**
      * Inyecta una sola vez por request los assets comunes del preset editorial:
      * Google Fonts (Playfair Display + Libre Baskerville + IBM Plex Mono) y
      * CSS base con variables, grain overlay y reveal-on-scroll. Los renders
@@ -2239,6 +2274,69 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-princ__item{border-top:2px solid var(--ink);padding-top:1rem;}";
         $html_salida .= ".vbp-princ__item strong{display:block;font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}";
         $html_salida .= ".vbp-princ__item-desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;}";
+        // Masthead
+        $html_salida .= ".vbp-masthead{border-bottom:3px double var(--ink);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}";
+        $html_salida .= ".vbp-masthead__tagline{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}";
+        $html_salida .= ".vbp-masthead__badge{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--rule);padding:.2rem .6rem;color:var(--muted);}";
+        // CTA strip
+        $html_salida .= ".vbp-cta-strip{padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-bottom:1px solid var(--rule);}";
+        $html_salida .= ".vbp-cta-strip__text{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin:0;}";
+        $html_salida .= ".vbp-cta-strip__buttons{display:flex;gap:.75rem;flex-wrap:wrap;}";
+        // Editorial buttons (compartidos cta_strip + hosting_dark)
+        $html_salida .= ".vbp-ed-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.5rem 1.2rem;border:1px solid currentColor;display:inline-block;transition:background .15s,color .15s;}";
+        $html_salida .= ".vbp-ed-btn--light{color:inherit;}";
+        $html_salida .= ".vbp-ed-btn--light:hover{background:var(--paper);color:var(--ink);}";
+        $html_salida .= ".vbp-ed-btn--red{background:var(--red);color:var(--paper);border-color:var(--red);}";
+        $html_salida .= ".vbp-ed-btn--red:hover{background:#a51f14;border-color:#a51f14;}";
+        // Why / editorial_split_quote
+        $html_salida .= ".vbp-why{padding:4rem 2rem;border-bottom:1px solid var(--rule);}";
+        $html_salida .= ".vbp-why__grid{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;}";
+        $html_salida .= "@media(max-width:700px){.vbp-why__grid{grid-template-columns:1fr;gap:2rem;}}";
+        $html_salida .= ".vbp-why__aside{position:sticky;top:2rem;}";
+        $html_salida .= ".vbp-why__title{font-family:var(--serif);font-size:2.5rem;font-weight:900;line-height:1.1;margin:0 0 1.5rem;}";
+        $html_salida .= ".vbp-why__title em{font-style:italic;color:var(--red);}";
+        $html_salida .= ".vbp-why__tags{display:flex;flex-wrap:wrap;gap:.4rem;}";
+        $html_salida .= ".vbp-why__tag{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);padding:.2rem .55rem;color:var(--muted);}";
+        $html_salida .= ".vbp-why__body p{font-size:.98rem;line-height:1.85;color:#2A2720;margin:0 0 1.25rem;max-width:60ch;}";
+        $html_salida .= ".vbp-why__body strong{font-weight:700;color:var(--ink);}";
+        $html_salida .= ".vbp-why__quote{border-left:3px solid var(--red);padding:1rem 1.5rem;margin:2rem 0;background:rgba(200,38,26,.04);font-family:var(--serif);font-size:1.1rem;font-style:italic;line-height:1.6;color:var(--ink);}";
+        // Principles filled variant (manifiesto rojo)
+        $html_salida .= ".vbp-princ--filled{padding:3rem 2rem;}";
+        $html_salida .= ".vbp-princ--filled .vbp-princ__item{border-top-color:currentColor;opacity:.9;}";
+        $html_salida .= ".vbp-princ--filled .vbp-princ__item strong{font-family:var(--mono);font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;}";
+        $html_salida .= ".vbp-princ--filled .vbp-princ__item-desc{font-family:var(--mono);font-size:.78rem;letter-spacing:.05em;line-height:1.6;opacity:.9;}";
+        // Relation split (3 columnas con conector central)
+        $html_salida .= ".vbp-relation{padding:4rem 2rem;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:2fr 1fr 2fr;gap:0;align-items:stretch;}";
+        $html_salida .= "@media(max-width:700px){.vbp-relation{grid-template-columns:1fr;}}";
+        $html_salida .= ".vbp-relation__col{padding:2rem;border-right:1px solid var(--rule);}";
+        $html_salida .= ".vbp-relation__col:last-child{border-right:none;}";
+        $html_salida .= "@media(max-width:700px){.vbp-relation__col{border-right:none;border-bottom:1px solid var(--rule);padding:1.5rem 0;}.vbp-relation__col:last-child{border-bottom:none;}}";
+        $html_salida .= ".vbp-relation__title{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin:0 0 .8rem;}";
+        $html_salida .= ".vbp-relation__col p{font-size:.9rem;line-height:1.7;color:#3A3630;margin:0 0 .75rem;}";
+        $html_salida .= ".vbp-relation__connector{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);padding:2rem;text-align:center;line-height:2;border-right:1px solid var(--rule);}";
+        $html_salida .= "@media(max-width:700px){.vbp-relation__connector{border-right:none;border-bottom:1px solid var(--rule);padding:1.5rem 0;}}";
+        // Hosting dark (seccion oscura con pasos)
+        $html_salida .= ".vbp-hosting{padding:4rem 2rem;border-bottom:3px double var(--ink);background:var(--ink);color:var(--paper);}";
+        $html_salida .= ".vbp-hosting__inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}";
+        $html_salida .= "@media(max-width:700px){.vbp-hosting__inner{grid-template-columns:1fr;gap:2rem;}}";
+        $html_salida .= ".vbp-hosting__label{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,237,227,.5);margin-bottom:1rem;}";
+        $html_salida .= ".vbp-hosting__title{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1.1;margin:0 0 1rem;}";
+        $html_salida .= ".vbp-hosting__title em{font-style:italic;color:var(--red);}";
+        $html_salida .= ".vbp-hosting__desc{font-size:.92rem;line-height:1.8;opacity:.75;margin:0 0 1rem;}";
+        $html_salida .= ".vbp-hosting__cta{margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap;}";
+        $html_salida .= ".vbp-hosting__steps{list-style:none;display:flex;flex-direction:column;gap:1.2rem;padding:0;margin:0;}";
+        $html_salida .= ".vbp-hosting__step{display:flex;gap:1rem;align-items:flex-start;}";
+        $html_salida .= ".vbp-hosting__step-num{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--red);padding-top:.1rem;flex-shrink:0;}";
+        $html_salida .= ".vbp-hosting__step-text{font-size:.88rem;line-height:1.6;opacity:.8;}";
+        $html_salida .= ".vbp-hosting__step-text strong{opacity:1;color:var(--paper);font-weight:700;}";
+        // Footer editorial
+        $html_salida .= ".vbp-foot-edit{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}";
+        $html_salida .= ".vbp-foot-edit__logo{font-family:var(--serif);font-size:1rem;font-weight:700;}";
+        $html_salida .= ".vbp-foot-edit__logo-em{color:var(--red);}";
+        $html_salida .= ".vbp-foot-edit__links{display:flex;gap:1.5rem;flex-wrap:wrap;}";
+        $html_salida .= ".vbp-foot-edit__links a{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .15s;}";
+        $html_salida .= ".vbp-foot-edit__links a:hover{color:var(--ink);}";
+        $html_salida .= ".vbp-foot-edit__license{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--muted);}";
         // Reveal on scroll
         $html_salida .= ".vbp-reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}";
         $html_salida .= ".vbp-reveal.is-visible{opacity:1;transform:translateY(0);}";
@@ -2263,6 +2361,8 @@ class Flavor_VBP_Canvas {
         }
         $color_fondo = $data['color_fondo'] ?? '#111008';
         $color_texto = $data['color_texto'] ?? '#F2EDE3';
+        $separador   = (string) ( $data['separador'] ?? '◆' );
+        $html_sep    = $this->render_editorial_icon( $separador );
 
         $html_ticker  = $this->editorial_assets_once();
         $html_ticker .= sprintf(
@@ -2275,7 +2375,7 @@ class Flavor_VBP_Canvas {
         // Duplicamos la lista para que el loop -50% no muestre hueco.
         $lista_duplicada = array_merge( $items_decoded, $items_decoded );
         foreach ( $lista_duplicada as $texto_item ) {
-            $html_ticker .= '<span class="vbp-ticker-item"><span>◆</span> ' . esc_html( (string) $texto_item ) . '</span>';
+            $html_ticker .= '<span class="vbp-ticker-item">' . $html_sep . ' ' . esc_html( (string) $texto_item ) . '</span>';
         }
         $html_ticker .= '</div></div>';
         return $html_ticker;
@@ -2373,17 +2473,19 @@ class Flavor_VBP_Canvas {
             );
 
             foreach ( $items_decoded as $indice => $item_num ) {
-                $numero_item      = $item_num['numero']      ?? sprintf( '%02d', $indice + 1 );
+                $numero_item      = array_key_exists( 'numero', $item_num ) ? (string) $item_num['numero'] : sprintf( '%02d', $indice + 1 );
                 $titulo_item      = $item_num['titulo']      ?? '';
                 $descripcion_item = $item_num['descripcion'] ?? '';
-                $icono_item       = $item_num['icono']       ?? '';
+                $icono_item       = (string) ( $item_num['icono'] ?? '' );
                 $tags_item        = isset( $item_num['tags'] ) && is_array( $item_num['tags'] ) ? $item_num['tags'] : array();
 
                 $html_numbered .= '<div class="vbp-feat-num__item vbp-reveal">';
                 if ( $icono_item !== '' ) {
-                    $html_numbered .= '<div class="vbp-feat-num__icon" aria-hidden="true">' . esc_html( (string) $icono_item ) . '</div>';
+                    $html_numbered .= '<div class="vbp-feat-num__icon" aria-hidden="true">' . $this->render_editorial_icon( $icono_item ) . '</div>';
                 }
-                $html_numbered .= '<div class="vbp-feat-num__num">' . esc_html( (string) $numero_item ) . '</div>';
+                if ( $numero_item !== '' ) {
+                    $html_numbered .= '<div class="vbp-feat-num__num">' . esc_html( $numero_item ) . '</div>';
+                }
                 if ( $titulo_item !== '' ) {
                     $html_numbered .= '<h3 class="vbp-feat-num__title">' . esc_html( (string) $titulo_item ) . '</h3>';
                 }
@@ -2443,11 +2545,25 @@ class Flavor_VBP_Canvas {
         $data            = $elemento['data'] ?? array();
         $titulo_princ    = (string) ( $data['titulo'] ?? '' );
         $columnas_princ  = max( 1, min( 4, (int) ( $data['columnas'] ?? 2 ) ) );
+        $color_fondo     = trim( (string) ( $data['color_fondo'] ?? '' ) );
+        $color_texto     = trim( (string) ( $data['color_texto'] ?? '' ) );
 
         $items_decoded = $this->editorial_parse_items( $data, 'items' );
 
         $html_princ  = $this->editorial_assets_once();
-        $html_princ .= '<section class="vbp-editorial vbp-princ vbp-reveal">';
+
+        $clases_princ  = 'vbp-editorial vbp-princ vbp-reveal';
+        $estilo_princ  = '';
+        if ( $color_fondo !== '' ) {
+            $clases_princ .= ' vbp-princ--filled';
+            $estilo_princ .= 'background:' . esc_attr( $color_fondo ) . ';';
+        }
+        if ( $color_texto !== '' ) {
+            $estilo_princ .= 'color:' . esc_attr( $color_texto ) . ';';
+        }
+        $attr_estilo = $estilo_princ !== '' ? ' style="' . $estilo_princ . '"' : '';
+
+        $html_princ .= '<section class="' . esc_attr( $clases_princ ) . '"' . $attr_estilo . '>';
         if ( $titulo_princ !== '' ) {
             $html_princ .= '<h2 class="vbp-princ__title">' . wp_kses_post( $titulo_princ ) . '</h2>';
         }
@@ -2474,6 +2590,341 @@ class Flavor_VBP_Canvas {
 
         $html_princ .= '</section>';
         return $html_princ;
+    }
+
+    /**
+     * Renderiza el masthead editorial: cabecera con tagline + badge y doble
+     * rule inferior. Pensado como primer bloque de una landing editorial.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_masthead_editorial( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $tagline = trim( (string) ( $data['tagline'] ?? '' ) );
+        $badge   = trim( (string) ( $data['badge']   ?? '' ) );
+
+        if ( $tagline === '' && $badge === '' ) {
+            return '';
+        }
+
+        $html_masthead  = $this->editorial_assets_once();
+        $html_masthead .= '<header class="vbp-editorial vbp-masthead">';
+        if ( $tagline !== '' ) {
+            $html_masthead .= '<span class="vbp-masthead__tagline">' . esc_html( $tagline ) . '</span>';
+        }
+        if ( $badge !== '' ) {
+            $html_masthead .= '<span class="vbp-masthead__badge">' . esc_html( $badge ) . '</span>';
+        }
+        $html_masthead .= '</header>';
+        return $html_masthead;
+    }
+
+    /**
+     * Helper que genera el HTML de un boton editorial (light o red).
+     * Se usa en cta_strip y hosting_dark.
+     *
+     * @param string $texto  Texto visible del boton.
+     * @param string $url    URL destino.
+     * @param string $estilo 'light' (borde currentColor) o 'red' (relleno rojo).
+     * @param bool   $nueva  Si se abre en nueva pestana.
+     * @return string
+     */
+    private function render_editorial_button( $texto, $url, $estilo = 'light', $nueva = false ) {
+        $texto = trim( (string) $texto );
+        if ( $texto === '' ) {
+            return '';
+        }
+        $clase_boton = 'vbp-ed-btn vbp-ed-btn--' . ( $estilo === 'red' ? 'red' : 'light' );
+        $atributos   = 'class="' . esc_attr( $clase_boton ) . '"';
+        if ( $url !== '' ) {
+            $atributos .= ' href="' . esc_url( $url ) . '"';
+        } else {
+            $atributos .= ' href="#"';
+        }
+        if ( $nueva ) {
+            $atributos .= ' target="_blank" rel="noopener"';
+        }
+        return '<a ' . $atributos . '>' . esc_html( $texto ) . '</a>';
+    }
+
+    /**
+     * Renderiza una tira horizontal de CTA con texto mono + hasta 2 botones.
+     * Normalmente va sobre fondo ink/paper pero acepta cualquier combinacion.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_cta_strip( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $texto_cta   = trim( (string) ( $data['texto'] ?? '' ) );
+        $color_fondo = (string) ( $data['color_fondo'] ?? '#111008' );
+        $color_texto = (string) ( $data['color_texto'] ?? '#F2EDE3' );
+
+        $html_boton_1 = $this->render_editorial_button(
+            $data['boton_1_texto'] ?? '',
+            $data['boton_1_url']   ?? '',
+            $data['boton_1_estilo'] ?? 'light',
+            ! empty( $data['boton_1_nueva'] )
+        );
+        $html_boton_2 = $this->render_editorial_button(
+            $data['boton_2_texto'] ?? '',
+            $data['boton_2_url']   ?? '',
+            $data['boton_2_estilo'] ?? 'red',
+            ! empty( $data['boton_2_nueva'] )
+        );
+
+        if ( $texto_cta === '' && $html_boton_1 === '' && $html_boton_2 === '' ) {
+            return '';
+        }
+
+        $html_cta  = $this->editorial_assets_once();
+        $html_cta .= sprintf(
+            '<div class="vbp-editorial vbp-cta-strip" style="background:%s;color:%s;">',
+            esc_attr( $color_fondo ),
+            esc_attr( $color_texto )
+        );
+        if ( $texto_cta !== '' ) {
+            $html_cta .= '<p class="vbp-cta-strip__text">' . esc_html( $texto_cta ) . '</p>';
+        }
+        if ( $html_boton_1 !== '' || $html_boton_2 !== '' ) {
+            $html_cta .= '<div class="vbp-cta-strip__buttons">' . $html_boton_1 . $html_boton_2 . '</div>';
+        }
+        $html_cta .= '</div>';
+        return $html_cta;
+    }
+
+    /**
+     * Renderiza una seccion why-style: aside sticky con titulo (pre + em rojo)
+     * y lista de tags, junto a un body con HTML y una quote destacada.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_editorial_split_quote( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $titulo_pre  = trim( (string) ( $data['aside_titulo_pre'] ?? '' ) );
+        $titulo_em   = trim( (string) ( $data['aside_titulo_em']  ?? '' ) );
+        $body_html   = trim( (string) ( $data['body_html']         ?? '' ) );
+        $quote_html  = trim( (string) ( $data['quote_html']        ?? '' ) );
+        $tags_lista  = $this->editorial_parse_items( $data, 'aside_tags' );
+
+        $html_why  = $this->editorial_assets_once();
+        $html_why .= '<section class="vbp-editorial vbp-why">';
+        $html_why .= '<div class="vbp-why__grid">';
+
+        $html_why .= '<aside class="vbp-why__aside vbp-reveal">';
+        if ( $titulo_pre !== '' || $titulo_em !== '' ) {
+            $html_why .= '<h2 class="vbp-why__title">';
+            if ( $titulo_pre !== '' ) {
+                $html_why .= esc_html( $titulo_pre ) . '<br>';
+            }
+            if ( $titulo_em !== '' ) {
+                $html_why .= '<em>' . esc_html( $titulo_em ) . '</em>';
+            }
+            $html_why .= '</h2>';
+        }
+        if ( ! empty( $tags_lista ) ) {
+            $html_why .= '<div class="vbp-why__tags">';
+            foreach ( $tags_lista as $tag_texto ) {
+                $html_why .= '<span class="vbp-why__tag">' . esc_html( (string) $tag_texto ) . '</span>';
+            }
+            $html_why .= '</div>';
+        }
+        $html_why .= '</aside>';
+
+        $html_why .= '<div class="vbp-why__body vbp-reveal">';
+        if ( $body_html !== '' ) {
+            $html_why .= wp_kses_post( $body_html );
+        }
+        if ( $quote_html !== '' ) {
+            $html_why .= '<blockquote class="vbp-why__quote">' . wp_kses_post( $quote_html ) . '</blockquote>';
+        }
+        $html_why .= '</div>';
+
+        $html_why .= '</div></section>';
+        return $html_why;
+    }
+
+    /**
+     * Renderiza la relacion entre dos proyectos en 3 columnas (izq / conector
+     * central en mono / der). El conector admite saltos de linea.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_relation_split( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $izq_titulo  = trim( (string) ( $data['izq_titulo'] ?? '' ) );
+        $izq_html    = trim( (string) ( $data['izq_html']   ?? '' ) );
+        $der_titulo  = trim( (string) ( $data['der_titulo'] ?? '' ) );
+        $der_html    = trim( (string) ( $data['der_html']   ?? '' ) );
+        $conector    = trim( (string) ( $data['conector']   ?? '' ) );
+
+        $html_rel  = $this->editorial_assets_once();
+        $html_rel .= '<section class="vbp-editorial vbp-relation vbp-reveal">';
+
+        $html_rel .= '<div class="vbp-relation__col">';
+        if ( $izq_titulo !== '' ) {
+            $html_rel .= '<h3 class="vbp-relation__title">' . esc_html( $izq_titulo ) . '</h3>';
+        }
+        if ( $izq_html !== '' ) {
+            $html_rel .= wp_kses_post( $izq_html );
+        }
+        $html_rel .= '</div>';
+
+        $html_rel .= '<div class="vbp-relation__connector">';
+        if ( $conector !== '' ) {
+            $html_rel .= nl2br( esc_html( $conector ) );
+        }
+        $html_rel .= '</div>';
+
+        $html_rel .= '<div class="vbp-relation__col">';
+        if ( $der_titulo !== '' ) {
+            $html_rel .= '<h3 class="vbp-relation__title">' . esc_html( $der_titulo ) . '</h3>';
+        }
+        if ( $der_html !== '' ) {
+            $html_rel .= wp_kses_post( $der_html );
+        }
+        $html_rel .= '</div>';
+
+        $html_rel .= '</section>';
+        return $html_rel;
+    }
+
+    /**
+     * Renderiza una seccion oscura con etiqueta + titulo (pre + em rojo) +
+     * descripcion + lista numerada de pasos + 2 botones. Util para cerrar
+     * una landing con instrucciones de autohospedaje o siguiente paso.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_hosting_dark( $elemento ) {
+        $data         = $elemento['data'] ?? array();
+        $label        = trim( (string) ( $data['label']       ?? '' ) );
+        $titulo_pre   = trim( (string) ( $data['titulo_pre']  ?? '' ) );
+        $titulo_em    = trim( (string) ( $data['titulo_em']   ?? '' ) );
+        $descripcion  = trim( (string) ( $data['descripcion'] ?? '' ) );
+        $pasos_lista  = $this->editorial_parse_items( $data, 'pasos' );
+
+        $html_boton_1 = $this->render_editorial_button(
+            $data['boton_1_texto'] ?? '',
+            $data['boton_1_url']   ?? '',
+            $data['boton_1_estilo'] ?? 'light',
+            ! empty( $data['boton_1_nueva'] )
+        );
+        $html_boton_2 = $this->render_editorial_button(
+            $data['boton_2_texto'] ?? '',
+            $data['boton_2_url']   ?? '',
+            $data['boton_2_estilo'] ?? 'red',
+            ! empty( $data['boton_2_nueva'] )
+        );
+
+        $html_host  = $this->editorial_assets_once();
+        $html_host .= '<section class="vbp-editorial vbp-hosting">';
+        $html_host .= '<div class="vbp-hosting__inner">';
+
+        $html_host .= '<div class="vbp-hosting__intro vbp-reveal">';
+        if ( $label !== '' ) {
+            $html_host .= '<div class="vbp-hosting__label">' . esc_html( $label ) . '</div>';
+        }
+        if ( $titulo_pre !== '' || $titulo_em !== '' ) {
+            $html_host .= '<h2 class="vbp-hosting__title">';
+            if ( $titulo_pre !== '' ) {
+                $html_host .= esc_html( $titulo_pre ) . '<br>';
+            }
+            if ( $titulo_em !== '' ) {
+                $html_host .= '<em>' . esc_html( $titulo_em ) . '</em>';
+            }
+            $html_host .= '</h2>';
+        }
+        if ( $descripcion !== '' ) {
+            $html_host .= '<p class="vbp-hosting__desc">' . wp_kses_post( $descripcion ) . '</p>';
+        }
+        if ( $html_boton_1 !== '' || $html_boton_2 !== '' ) {
+            $html_host .= '<div class="vbp-hosting__cta">' . $html_boton_1 . $html_boton_2 . '</div>';
+        }
+        $html_host .= '</div>';
+
+        if ( ! empty( $pasos_lista ) ) {
+            $html_host .= '<ol class="vbp-hosting__steps vbp-reveal">';
+            foreach ( $pasos_lista as $indice => $paso_item ) {
+                $numero_paso      = sprintf( '%02d', $indice + 1 );
+                $titulo_paso      = trim( (string) ( $paso_item['titulo']      ?? '' ) );
+                $descripcion_paso = trim( (string) ( $paso_item['descripcion'] ?? '' ) );
+                $html_host .= '<li class="vbp-hosting__step">';
+                $html_host .= '<span class="vbp-hosting__step-num">' . esc_html( $numero_paso ) . ' —</span>';
+                $html_host .= '<span class="vbp-hosting__step-text">';
+                if ( $titulo_paso !== '' ) {
+                    $html_host .= '<strong>' . esc_html( $titulo_paso ) . '</strong> ';
+                }
+                if ( $descripcion_paso !== '' ) {
+                    $html_host .= wp_kses_post( $descripcion_paso );
+                }
+                $html_host .= '</span></li>';
+            }
+            $html_host .= '</ol>';
+        }
+
+        $html_host .= '</div></section>';
+        return $html_host;
+    }
+
+    /**
+     * Renderiza el footer editorial con logo tripartido (pre + em coloreado +
+     * post), lista de enlaces mono y texto de licencia a la derecha.
+     *
+     * @param array $elemento Elemento a renderizar.
+     * @return string
+     */
+    private function render_footer_editorial( $elemento ) {
+        $data       = $elemento['data'] ?? array();
+        $logo_pre   = trim( (string) ( $data['logo_pre']  ?? '' ) );
+        $logo_em    = trim( (string) ( $data['logo_em']   ?? '' ) );
+        $logo_post  = trim( (string) ( $data['logo_post'] ?? '' ) );
+        $license    = trim( (string) ( $data['license']   ?? '' ) );
+        $links_list = $this->editorial_parse_items( $data, 'links' );
+
+        $html_foot  = $this->editorial_assets_once();
+        $html_foot .= '<footer class="vbp-editorial vbp-foot-edit">';
+
+        if ( $logo_pre !== '' || $logo_em !== '' || $logo_post !== '' ) {
+            $html_foot .= '<span class="vbp-foot-edit__logo">';
+            if ( $logo_pre !== '' ) {
+                $html_foot .= esc_html( $logo_pre );
+            }
+            if ( $logo_em !== '' ) {
+                $html_foot .= ' <span class="vbp-foot-edit__logo-em">' . esc_html( $logo_em ) . '</span> ';
+            }
+            if ( $logo_post !== '' ) {
+                $html_foot .= esc_html( $logo_post );
+            }
+            $html_foot .= '</span>';
+        }
+
+        if ( ! empty( $links_list ) ) {
+            $html_foot .= '<nav class="vbp-foot-edit__links">';
+            foreach ( $links_list as $link_item ) {
+                $texto_link = trim( (string) ( $link_item['texto'] ?? '' ) );
+                $url_link   = trim( (string) ( $link_item['url']   ?? '' ) );
+                if ( $texto_link === '' ) {
+                    continue;
+                }
+                $abrir_nueva = ! empty( $link_item['nueva'] );
+                $rel_attr    = $abrir_nueva ? ' target="_blank" rel="noopener"' : '';
+                $url_segura  = $url_link !== '' ? esc_url( $url_link ) : '#';
+                $html_foot  .= '<a href="' . $url_segura . '"' . $rel_attr . '>' . esc_html( $texto_link ) . '</a>';
+            }
+            $html_foot .= '</nav>';
+        }
+
+        if ( $license !== '' ) {
+            $html_foot .= '<span class="vbp-foot-edit__license">' . esc_html( $license ) . '</span>';
+        }
+
+        $html_foot .= '</footer>';
+        return $html_foot;
     }
 
     /**
@@ -2978,17 +3429,18 @@ class Flavor_VBP_Canvas {
     }
 
     /**
-     * Renderiza Icon
+     * Renderiza Icon. Acepta clases FontAwesome, slugs Material Icons, SVG
+     * inline o emoji/unicode (vease render_editorial_icon).
      */
     private function render_icon( $elemento ) {
         $data        = $elemento['data'] ?? array();
         $estilos     = $elemento['styles'] ?? array();
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $icono = $data['icon'] ?? '⭐';
+        $icono = (string) ( $data['icon'] ?? '⭐' );
         $size  = $data['size'] ?? '48px';
 
-        return '<div class="vbp-icon" style="' . esc_attr( $estilos_css ) . '; font-size: ' . esc_attr( $size ) . ';">' . esc_html( $icono ) . '</div>';
+        return '<div class="vbp-icon" style="' . esc_attr( $estilos_css ) . '; font-size: ' . esc_attr( $size ) . ';">' . $this->render_editorial_icon( $icono ) . '</div>';
     }
 
     /**
