@@ -4605,8 +4605,8 @@ class Flavor_Portal_Shortcodes {
     }
 
     private function get_actividad_total() {
-        // TODO: Calcular actividad real de los módulos
-        return rand(50, 200);
+        $usuarios = count_users();
+        return intval($usuarios['total_users'] ?? 0);
     }
 
     /**
