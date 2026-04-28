@@ -667,6 +667,19 @@
     line-height: 1.3;
 }
 
+.preview-module-list__source {
+    font-size: 9px;
+    color: #9ca3af;
+    text-align: center;
+    padding: 4px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.phone-frame.is-dark .preview-module-list__source {
+    color: #64748b;
+}
+
 .preview-module-list__fab {
     position: sticky;
     bottom: 0;

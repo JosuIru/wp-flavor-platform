@@ -58,6 +58,7 @@ class Flavor_APK_Builder {
         add_action('wp_ajax_flavor_apk_check_build_status', array($this, 'ajax_check_build_status'));
         add_action('wp_ajax_flavor_apk_download_config', array($this, 'ajax_download_config'));
         add_action('wp_ajax_flavor_apk_list_builds', array($this, 'ajax_list_builds'));
+        add_action('wp_ajax_flavor_apk_module_preview', array($this, 'ajax_module_preview_data'));
     }
 
     /**
@@ -544,6 +545,142 @@ class Flavor_APK_Builder {
 
         $saved = get_option('flavor_apk_config', array());
         return wp_parse_args($saved, $defaults);
+    }
+
+    /**
+     * Devuelve el mapeo módulo → consulta SQL para alimentar el preview con
+     * datos reales del sitio. Cada entrada describe la tabla principal y los
+     * campos para construir título y subtítulo de cada item.
+     *
+     * Solo se incluyen módulos con tablas estables y schema conocido. Los que
+     * no aparezcan aquí caen al fallback de mock_items.
+     */
+    private function get_module_preview_queries() {
+        global $wpdb;
+        return array(
+            'eventos' => array(
+                'table'    => $wpdb->prefix . 'flavor_eventos',
+                'title'    => 'titulo',
+                'subtitle' => "DATE_FORMAT(fecha_inicio, '%d %b · %H:%i')",
+                'where'    => "fecha_inicio >= NOW()",
+                'order'    => 'fecha_inicio ASC',
+            ),
+            'marketplace' => array(
+                'table'    => $wpdb->prefix . 'flavor_marketplace_anuncios',
+                'title'    => 'titulo',
+                'subtitle' => "CONCAT(IFNULL(precio, 0), '€ · ', IFNULL(estado, ''))",
+                'where'    => "estado = 'activo'",
+                'order'    => 'created_at DESC',
+            ),
+            'foros' => array(
+                'table'    => $wpdb->prefix . 'flavor_foros_temas',
+                'title'    => 'titulo',
+                'subtitle' => "CONCAT(IFNULL(respuestas_count, 0), ' respuestas · ', IFNULL(estado, ''))",
+                'where'    => '1=1',
+                'order'    => 'COALESCE(ultima_actividad, updated_at, created_at) DESC',
+            ),
+            'socios' => array(
+                'table'    => $wpdb->prefix . 'flavor_socios',
+                'title'    => "CONCAT('Socio #', numero_socio)",
+                'subtitle' => "CONCAT(IFNULL(tipo_socio, 'consumidor'), ' · ', IFNULL(estado, 'activo'))",
+                'where'    => "estado = 'activo'",
+                'order'    => 'fecha_alta DESC',
+            ),
+            'incidencias' => array(
+                'table'    => $wpdb->prefix . 'flavor_incidencias',
+                'title'    => 'titulo',
+                'subtitle' => "CONCAT(IFNULL(estado, 'Reportada'), ' · ', DATE_FORMAT(fecha_reporte, '%d %b'))",
+                'where'    => '1=1',
+                'order'    => 'fecha_reporte DESC',
+            ),
+            'biblioteca' => array(
+                'table'    => $wpdb->prefix . 'flavor_biblioteca_libros',
+                'title'    => 'titulo',
+                'subtitle' => "CONCAT(IFNULL(autor, 'Sin autor'), ' · ', IFNULL(estado, 'disponible'))",
+                'where'    => '1=1',
+                'order'    => 'id DESC',
+            ),
+            'cursos' => array(
+                'table'    => $wpdb->prefix . 'flavor_cursos',
+                'title'    => 'titulo',
+                'subtitle' => "IFNULL(descripcion, '')",
+                'where'    => '1=1',
+                'order'    => 'id DESC',
+            ),
+            'talleres' => array(
+                'table'    => $wpdb->prefix . 'flavor_talleres',
+                'title'    => 'titulo',
+                'subtitle' => "DATE_FORMAT(fecha, '%d %b · %H:%i')",
+                'where'    => '1=1',
+                'order'    => 'fecha DESC',
+            ),
+            'reservas' => array(
+                'table'    => $wpdb->prefix . 'flavor_espacios_reservas',
+                'title'    => "IFNULL(motivo, 'Reserva')",
+                'subtitle' => "DATE_FORMAT(fecha_inicio, '%d %b · %H:%i')",
+                'where'    => "fecha_inicio >= NOW()",
+                'order'    => 'fecha_inicio ASC',
+            ),
+        );
+    }
+
+    /**
+     * AJAX: devuelve hasta 3 items reales del módulo solicitado.
+     * Si la tabla no existe o no hay filas, devuelve success=true con items=[]
+     * y el JS aplicará el fallback a mock_items.
+     */
+    public function ajax_module_preview_data() {
+        check_ajax_referer('flavor_apk_builder', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Sin permisos');
+        }
+
+        $modulo_id = isset($_POST['module']) ? sanitize_key($_POST['module']) : '';
+        if (empty($modulo_id)) {
+            wp_send_json_success(array('items' => array(), 'source' => 'mock'));
+        }
+
+        $queries = $this->get_module_preview_queries();
+        if (!isset($queries[$modulo_id])) {
+            wp_send_json_success(array('items' => array(), 'source' => 'mock'));
+        }
+
+        $config_modulo = $queries[$modulo_id];
+
+        global $wpdb;
+
+        // Tabla puede no existir si el módulo no se ha activado nunca.
+        $tabla_escapada = esc_sql($config_modulo['table']);
+        $tabla_existe = $wpdb->get_var(
+            $wpdb->prepare("SHOW TABLES LIKE %s", $tabla_escapada)
+        );
+        if (!$tabla_existe) {
+            wp_send_json_success(array('items' => array(), 'source' => 'mock'));
+        }
+
+        $sql = sprintf(
+            "SELECT %s AS titulo, %s AS subtitulo FROM %s WHERE %s ORDER BY %s LIMIT 3",
+            $config_modulo['title'],
+            $config_modulo['subtitle'],
+            $tabla_escapada,
+            $config_modulo['where'],
+            $config_modulo['order']
+        );
+
+        $resultados = $wpdb->get_results($sql, ARRAY_A);
+        if (!is_array($resultados) || empty($resultados)) {
+            wp_send_json_success(array('items' => array(), 'source' => 'mock'));
+        }
+
+        $items = array_map(function ($fila) {
+            return array(
+                'title'    => wp_strip_all_tags($fila['titulo'] ?? ''),
+                'subtitle' => wp_strip_all_tags($fila['subtitulo'] ?? ''),
+            );
+        }, $resultados);
+
+        wp_send_json_success(array('items' => $items, 'source' => 'real'));
     }
 
     /**

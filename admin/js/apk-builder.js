@@ -482,17 +482,9 @@
 	}
 
 	/**
-     * Renderiza la pantalla detalle de un módulo.
+     * Renderiza items en la lista del módulo (helper compartido por mock y real).
      */
-	function showModuleScreen(modId, meta) {
-		const color = meta.color || '#3b82f6';
-		const items = meta.mock_items || [];
-
-		// Header del módulo con su color de marca
-		$('#preview-module-header').css('background', color);
-		$('#preview-module-title').text(meta.name || modId).data('current-module', modId);
-
-		// Lista de items mock
+	function renderModuleItems(items, color, sourceLabel) {
 		const $list = $('#preview-module-list').empty();
 		items.forEach(function (item) {
 			$list.append(`
@@ -502,13 +494,45 @@
 				</div>
 			`);
 		});
+		if (sourceLabel) {
+			$list.append(`<div class="preview-module-list__source">${sourceLabel}</div>`);
+		}
 		$list.append(`
 			<div class="preview-module-list__fab" style="background:${color};" title="Crear">
 				<span class="material-icons-outlined">add</span>
 			</div>
 		`);
+	}
 
+	/**
+     * Renderiza la pantalla detalle de un módulo.
+     * Intenta primero traer datos reales desde el sitio (vía AJAX) y si la
+     * tabla está vacía o no existe, hace fallback a meta.mock_items.
+     */
+	function showModuleScreen(modId, meta) {
+		const color = meta.color || '#3b82f6';
+
+		$('#preview-module-header').css('background', color);
+		$('#preview-module-title').text(meta.name || modId).data('current-module', modId);
+
+		// Pintar mock inmediatamente para no dejar la pantalla en blanco
+		renderModuleItems(meta.mock_items || [], color, 'Datos de ejemplo');
 		setActiveView('module');
+
+		// Pedir datos reales en paralelo
+		$.post(flavorApkBuilder.ajaxUrl, {
+			action: 'flavor_apk_module_preview',
+			nonce: flavorApkBuilder.nonce,
+			module: modId,
+		}).done(function (response) {
+			// Confirmar que el usuario sigue en este mismo módulo (no haya saltado)
+			if ($('#preview-module-title').data('current-module') !== modId) {
+				return;
+			}
+			if (response && response.success && response.data && response.data.source === 'real') {
+				renderModuleItems(response.data.items, color, 'Datos reales del sitio');
+			}
+		});
 	}
 
 	/**
