@@ -194,7 +194,7 @@ class Flavor_Mesh_Loader {
         }
         // Solo llamar si el método existe (versión del addon tiene el método, core no)
         if ( method_exists( 'Flavor_Network_Installer', 'ensure_local_peer_exists' ) ) {
-            Flavor_Network_Installer::ensure_local_peer_exists();
+            Flavor_Network_Mesh_Installer::ensure_local_peer_exists();
         }
     }
 
@@ -419,7 +419,7 @@ class Flavor_Mesh_Loader {
      * @return array
      */
     public function get_status() {
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         $status = [
             'initialized'   => $this->initialized,

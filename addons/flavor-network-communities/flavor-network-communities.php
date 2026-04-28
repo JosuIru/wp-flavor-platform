@@ -80,8 +80,9 @@ function flavor_network_communities_init() {
     // Las clases de Network ahora se cargan desde el core en includes/network/
     // Solo verificamos que estén disponibles y añadimos extensiones si es necesario
 
-    // Si las clases del core no están disponibles (instalación antigua), cargar las del addon
-    if (!class_exists('Flavor_Network_Installer')) {
+    // Cargar el Mesh Installer (peers + keypair lifecycle) — clase del addon,
+    // independiente del Flavor_Network_Installer del core.
+    if (!class_exists('Flavor_Network_Mesh_Installer')) {
         require_once FLAVOR_NETWORK_PATH . 'includes/class-network-installer.php';
     }
     if (!class_exists('Flavor_Network_Node')) {
@@ -123,6 +124,11 @@ function flavor_network_communities_init() {
     // Crear tablas si no existen
     if (class_exists('Flavor_Network_Installer')) {
         Flavor_Network_Installer::create_tables();
+    }
+
+    // Crear tablas mesh (peers, etc.) — schema independiente del core
+    if (class_exists('Flavor_Network_Mesh_Installer')) {
+        Flavor_Network_Mesh_Installer::create_tables();
     }
 
     // Inicializar componentes principales (el singleton evita duplicados)

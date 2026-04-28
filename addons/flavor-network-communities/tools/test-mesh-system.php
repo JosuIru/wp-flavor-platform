@@ -186,7 +186,7 @@ if ($wp_loaded) {
 
     $local_peer = null;
     if (class_exists('Flavor_Network_Installer')) {
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
     }
 
     test_result(

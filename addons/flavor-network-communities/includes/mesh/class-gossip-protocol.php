@@ -575,7 +575,7 @@ class Flavor_Gossip_Protocol {
             return $cache->get_local_peer();
         }
 
-        return Flavor_Network_Installer::get_local_peer();
+        return Flavor_Network_Mesh_Installer::get_local_peer();
     }
 
     /**
@@ -639,7 +639,7 @@ class Flavor_Gossip_Protocol {
      * @return string Firma en base64
      */
     private function sign_message($message, $local_peer) {
-        $private_key = Flavor_Network_Installer::decrypt_private_key(
+        $private_key = Flavor_Network_Mesh_Installer::decrypt_private_key(
             $local_peer->private_key_encrypted
         );
 

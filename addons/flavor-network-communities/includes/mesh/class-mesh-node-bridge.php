@@ -278,7 +278,7 @@ class Flavor_Mesh_Node_Bridge {
         }
 
         $crdt = Flavor_CRDT_Manager::instance();
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         if (!$local_peer) {
             return;

@@ -106,7 +106,7 @@ class Flavor_Mesh_Admin {
         $status = $mesh_loader ? $mesh_loader->get_status() : ['initialized' => false];
 
         $local_peer = class_exists('Flavor_Network_Installer')
-            ? Flavor_Network_Installer::get_local_peer()
+            ? Flavor_Network_Mesh_Installer::get_local_peer()
             : null;
 
         ?>

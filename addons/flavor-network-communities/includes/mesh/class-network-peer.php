@@ -647,7 +647,7 @@ class Flavor_Network_Peer {
             return false;
         }
 
-        $private_key = Flavor_Network_Installer::decrypt_private_key($private_key_encrypted);
+        $private_key = Flavor_Network_Mesh_Installer::decrypt_private_key($private_key_encrypted);
         if (!$private_key) {
             return false;
         }

@@ -11,26 +11,35 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (class_exists('Flavor_Network_Installer', false)) {
+if (class_exists('Flavor_Network_Mesh_Installer', false)) {
     return;
 }
 
-class Flavor_Network_Installer {
+/**
+ * Instalador de la capa mesh (peers + keypair lifecycle).
+ *
+ * Esta clase vive en el addon flavor-network-communities y es independiente
+ * de Flavor_Network_Installer (core, en includes/network/), que se encarga
+ * del schema base de network. Antes ambas clases compartían nombre y la
+ * primera cargada ganaba — la del core sobreescribía esta perdiendo los
+ * 8 métodos exclusivos del mesh (get_local_peer, decrypt_private_key, etc).
+ */
+class Flavor_Network_Mesh_Installer {
 
     /**
-     * Prefijo de tablas de red
+     * Prefijo de tablas de red mesh
      */
     const TABLE_PREFIX = 'flavor_network_';
 
     /**
-     * Versión del esquema de BD
+     * Versión del esquema de BD del mesh
      */
     const DB_VERSION = '1.5.0';
 
     /**
-     * Opción que almacena la versión actual de BD
+     * Opción que almacena la versión del schema mesh (separada de la del core)
      */
-    const DB_VERSION_OPTION = 'flavor_network_db_version';
+    const DB_VERSION_OPTION = 'flavor_network_mesh_db_version';
 
     /**
      * Crea todas las tablas del sistema de red

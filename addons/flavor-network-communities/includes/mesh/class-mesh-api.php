@@ -337,7 +337,7 @@ class Flavor_Mesh_API {
         $discovery = Flavor_Peer_Discovery::instance();
         $peers = $discovery->get_shareable_peers($limit);
 
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         return new WP_REST_Response([
             'peers'    => $peers,
@@ -573,7 +573,7 @@ class Flavor_Mesh_API {
         }
 
         // Obtener peer local
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if (!$local_peer) {
             return new WP_Error(
                 'no_local_peer',
@@ -665,7 +665,7 @@ class Flavor_Mesh_API {
      * @return WP_REST_Response
      */
     public function health_check() {
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         return new WP_REST_Response([
             'status'    => 'ok',
@@ -700,7 +700,7 @@ class Flavor_Mesh_API {
             );
         }
 
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         return new WP_REST_Response([
             'status'    => 'pong',

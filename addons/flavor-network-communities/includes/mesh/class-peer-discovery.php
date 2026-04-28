@@ -144,7 +144,7 @@ class Flavor_Peer_Discovery {
     private function fetch_peer_list_from($url) {
         $endpoint = trailingslashit($url) . 'wp-json/flavor-mesh/v1/peers/list';
 
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if (!$local_peer) {
             return false;
         }
@@ -177,7 +177,7 @@ class Flavor_Peer_Discovery {
      */
     public function exchange_with_connected_peers() {
         $topology = Flavor_Mesh_Topology::instance();
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
 
         if (!$local_peer) {
             return 0;
@@ -216,7 +216,7 @@ class Flavor_Peer_Discovery {
     public function peer_exchange($peer) {
         $endpoint = trailingslashit($peer->site_url) . 'wp-json/flavor-mesh/v1/peers/exchange';
 
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if (!$local_peer) {
             return false;
         }
@@ -259,7 +259,7 @@ class Flavor_Peer_Discovery {
      * Anuncia nuestra presencia en la red via gossip
      */
     public function announce_self() {
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if (!$local_peer) {
             return;
         }
@@ -289,7 +289,7 @@ class Flavor_Peer_Discovery {
         }
 
         // No registrar nuestro propio anuncio
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if ($local_peer && $peer_id === $local_peer->peer_id) {
             return;
         }
@@ -348,7 +348,7 @@ class Flavor_Peer_Discovery {
         }
 
         // No registrar nuestro propio peer
-        $local_peer = Flavor_Network_Installer::get_local_peer();
+        $local_peer = Flavor_Network_Mesh_Installer::get_local_peer();
         if ($local_peer && $peer_id === $local_peer->peer_id) {
             return false;
         }
