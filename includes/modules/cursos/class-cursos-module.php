@@ -131,7 +131,7 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
         // Registrar como consumidor de integraciones
         $this->register_as_integration_consumer();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -476,18 +476,6 @@ class Flavor_Platform_Cursos_Module extends Flavor_Platform_Module_Base {
      */
     public function check_user_logged_in() {
         return is_user_logged_in();
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_cursos)) {
-            $this->create_tables();
-        }
     }
 
     /**

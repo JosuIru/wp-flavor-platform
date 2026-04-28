@@ -133,7 +133,7 @@ class Flavor_Platform_Presupuestos_Participativos_Module extends Flavor_Platform
      */
     public function init() {
         $this->register_as_integration_consumer();
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -2121,18 +2121,6 @@ class Flavor_Platform_Presupuestos_Participativos_Module extends Flavor_Platform
         }
 
         return $estadisticas;
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_proyectos)) {
-            $this->create_tables();
-        }
     }
 
     /**

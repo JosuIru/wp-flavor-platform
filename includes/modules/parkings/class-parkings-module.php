@@ -136,7 +136,7 @@ class Flavor_Platform_Parkings_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'registrar_shortcodes']);
         add_action('init', [$this, 'registrar_shortcodes_adicionales']);
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
@@ -168,15 +168,6 @@ class Flavor_Platform_Parkings_Module extends Flavor_Platform_Module_Base {
 
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_parkings)) {
-            $this->create_tables();
-        }
     }
 
     /**

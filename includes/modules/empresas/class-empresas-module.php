@@ -113,7 +113,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
     }
 
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
 
         $this->registrar_en_panel_unificado();
 
@@ -161,12 +161,6 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
-    }
-
-    public function maybe_create_tables() {
-        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_empresas)) {
-            $this->create_tables();
-        }
     }
 
     private function create_tables() {

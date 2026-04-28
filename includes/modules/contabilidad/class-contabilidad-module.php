@@ -66,7 +66,7 @@ class Flavor_Platform_Contabilidad_Module extends Flavor_Platform_Module_Base {
     }
 
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
 
         $this->registrar_en_panel_unificado();
 
@@ -131,15 +131,6 @@ class Flavor_Platform_Contabilidad_Module extends Flavor_Platform_Module_Base {
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
-    }
-
-    public function maybe_create_tables() {
-        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_movimientos)) {
-            $this->create_tables();
-        } else {
-            // Migración: añadir columna empresa_id si no existe
-            $this->maybe_add_empresa_id_columns();
-        }
     }
 
     /**

@@ -452,7 +452,7 @@ class Flavor_Platform_Empresarial_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_ajax_empresarial_contacto', [$this, 'ajax_contacto_form']);
         add_action('wp_ajax_nopriv_empresarial_contacto', [$this, 'ajax_contacto_form']);
@@ -1320,18 +1320,6 @@ class Flavor_Platform_Empresarial_Module extends Flavor_Platform_Module_Base {
     // =========================================================================
     // TABLAS DE BASE DE DATOS
     // =========================================================================
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_contactos = $wpdb->prefix . 'flavor_empresarial_contactos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_contactos)) {
-            $this->create_tables();
-        }
-    }
 
     /**
      * Crea las tablas necesarias para el módulo empresarial

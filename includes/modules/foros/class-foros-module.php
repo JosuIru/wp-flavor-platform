@@ -423,7 +423,7 @@ class Flavor_Platform_Foros_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         $this->register_as_integration_consumer();
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         $this->registrar_en_panel_unificado();
@@ -1247,19 +1247,6 @@ class Flavor_Platform_Foros_Module extends Flavor_Platform_Module_Base {
         </div>
         <?php
         return ob_get_clean();
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_foros = $wpdb->prefix . 'flavor_foros';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_foros)) {
-            $this->create_tables();
-            $this->crear_categorias_ejemplo();
-        }
     }
 
     /**

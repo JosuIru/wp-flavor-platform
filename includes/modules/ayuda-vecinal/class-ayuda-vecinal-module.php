@@ -205,7 +205,7 @@ class Flavor_Platform_Ayuda_Vecinal_Module extends Flavor_Platform_Module_Base {
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
@@ -225,18 +225,6 @@ class Flavor_Platform_Ayuda_Vecinal_Module extends Flavor_Platform_Module_Base {
         if (file_exists($archivo_controller)) {
             require_once $archivo_controller;
             Flavor_Ayuda_Vecinal_Frontend_Controller::get_instance();
-        }
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_solicitudes)) {
-            $this->create_tables();
         }
     }
 

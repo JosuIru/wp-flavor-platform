@@ -115,7 +115,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
     public function init() {
         $this->register_as_integration_consumer();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'registrar_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -2194,20 +2194,6 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
         }
 
         echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
-    }
-
-    /**
-     * Crea la tabla si no existe
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $nombre_tabla_reservas = $wpdb->prefix . 'flavor_reservas';
-        $nombre_tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($nombre_tabla_reservas)
-            || !Flavor_Platform_Helpers::tabla_existe($nombre_tabla_recursos)) {
-            $this->create_tables();
-        }
     }
 
     /**

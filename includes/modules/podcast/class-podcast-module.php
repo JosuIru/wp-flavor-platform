@@ -118,7 +118,7 @@ class Flavor_Platform_Podcast_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('init', [$this, 'register_rss_feed']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -262,15 +262,6 @@ class Flavor_Platform_Podcast_Module extends Flavor_Platform_Module_Base {
                 ],
                 'userId' => get_current_user_id(),
             ]);
-        }
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_series)) {
-            $this->create_tables();
         }
     }
 

@@ -100,7 +100,7 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -367,18 +367,6 @@ class Flavor_Platform_Biblioteca_Module extends Flavor_Platform_Module_Base {
      */
     public function check_user_logged_in() {
         return is_user_logged_in();
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_libros)) {
-            $this->create_tables();
-        }
     }
 
     /**

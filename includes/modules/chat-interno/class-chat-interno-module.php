@@ -97,7 +97,7 @@ class Flavor_Platform_Chat_Interno_Module extends Flavor_Platform_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_shortcodes']);
         $this->cargar_frontend_controller();
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -166,25 +166,6 @@ class Flavor_Platform_Chat_Interno_Module extends Flavor_Platform_Module_Base {
                 $controller_class::get_instance();
             }
         }
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
-        $tabla_estados = $wpdb->prefix . 'flavor_chat_estados_usuario';
-
-        // Verificar si falta alguna de las tablas principales
-        $existe_conversaciones = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $tabla_conversaciones ) );
-        $existe_estados = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $tabla_estados ) );
-
-        if ( ! $existe_conversaciones || ! $existe_estados ) {
-            $this->create_tables();
-        }
-
-        $this->migrate_tables();
     }
 
     /**

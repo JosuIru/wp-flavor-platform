@@ -69,16 +69,6 @@ class Flavor_Platform_Mapa_Actores_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores')) {
-            $this->create_tables();
-        }
-    }
-
-    /**
      * Crea las tablas del modulo
      */
     private function create_tables() {

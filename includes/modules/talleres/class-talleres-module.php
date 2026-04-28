@@ -132,7 +132,7 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -304,18 +304,6 @@ class Flavor_Platform_Talleres_Module extends Flavor_Platform_Module_Base {
      */
     public function check_user_logged_in() {
         return is_user_logged_in();
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_talleres)) {
-            $this->create_tables();
-        }
     }
 
     /**

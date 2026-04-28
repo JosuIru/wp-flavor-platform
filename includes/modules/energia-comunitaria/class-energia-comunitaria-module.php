@@ -119,7 +119,7 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -305,39 +305,6 @@ class Flavor_Platform_Energia_Comunitaria_Module extends Flavor_Platform_Module_
                 ],
             ],
         ];
-    }
-
-    public function maybe_create_tables()
-    {
-        global $wpdb;
-
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_comunidades')) {
-            $this->create_tables();
-            return;
-        }
-
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_participantes')) {
-            $this->create_tables();
-            return;
-        }
-
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_repartos_cierre')) {
-            $this->create_tables();
-            return;
-        }
-
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_energia_liquidaciones')) {
-            $this->create_tables();
-            return;
-        }
-
-        $tabla_liquidaciones = $wpdb->prefix . 'flavor_energia_liquidaciones';
-        $tiene_fecha_notificacion = $wpdb->get_var("SHOW COLUMNS FROM {$tabla_liquidaciones} LIKE 'fecha_notificacion'");
-        $tiene_fecha_aceptacion = $wpdb->get_var("SHOW COLUMNS FROM {$tabla_liquidaciones} LIKE 'fecha_aceptacion'");
-
-        if (!$tiene_fecha_notificacion || !$tiene_fecha_aceptacion) {
-            $this->create_tables();
-        }
     }
 
     private function create_tables()

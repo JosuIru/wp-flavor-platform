@@ -162,7 +162,7 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
@@ -384,17 +384,6 @@ class Flavor_Platform_Transparencia_Module extends Flavor_Platform_Module_Base {
         $css_file = plugin_dir_path(__FILE__) . 'assets/css/transparencia.css';
         $css_version = file_exists($css_file) ? (string) filemtime($css_file) : self::VERSION;
         wp_enqueue_style('flavor-transparencia-admin', plugin_dir_url(__FILE__) . 'assets/css/transparencia.css', [], $css_version);
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        $tabla_documentos = $this->prefijo_tabla . 'documentos_publicos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_documentos)) {
-            $this->create_tables();
-        }
     }
 
     /**

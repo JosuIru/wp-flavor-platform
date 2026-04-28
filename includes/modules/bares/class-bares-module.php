@@ -124,7 +124,7 @@ class Flavor_Platform_Bares_Module extends Flavor_Platform_Module_Base {
     public function init() {
         $this->register_as_integration_consumer();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
@@ -859,18 +859,6 @@ class Flavor_Platform_Bares_Module extends Flavor_Platform_Module_Base {
         echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_bares = $wpdb->prefix . 'flavor_bares';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bares)) {
-            $this->create_tables();
-        }
     }
 
     /**

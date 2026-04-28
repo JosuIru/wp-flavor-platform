@@ -1323,7 +1323,7 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
@@ -4016,18 +4016,6 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
         echo '</form>';
 
         echo '</div>';
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_comunidades)) {
-            $this->create_tables();
-        }
     }
 
     /**

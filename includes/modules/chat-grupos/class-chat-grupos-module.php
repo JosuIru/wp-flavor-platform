@@ -415,7 +415,7 @@ class Flavor_Platform_Chat_Grupos_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         $this->cargar_frontend_controller();
@@ -491,18 +491,6 @@ class Flavor_Platform_Chat_Grupos_Module extends Flavor_Platform_Module_Base {
     protected function get_mensajes_table() {
         global $wpdb;
         return $wpdb->prefix . 'flavor_platform_chat_grupos_mensajes';
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_grupos = $wpdb->prefix . 'flavor_platform_chat_grupos';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_grupos)) {
-            $this->create_tables();
-        }
     }
 
     /**

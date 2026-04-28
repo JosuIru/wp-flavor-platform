@@ -83,7 +83,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
      * {@inheritdoc}
      */
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -2009,18 +2009,6 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
             'total' => count($prestamos_formateados),
             'prestamos' => $prestamos_formateados,
         ], 200);
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_bicicletas)) {
-            $this->create_tables();
-        }
     }
 
     /**

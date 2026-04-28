@@ -526,7 +526,7 @@ class Flavor_Platform_Multimedia_Module extends Flavor_Platform_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
 
         // Register REST API routes
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -611,14 +611,6 @@ class Flavor_Platform_Multimedia_Module extends Flavor_Platform_Module_Base {
             if (!shortcode_exists($tag)) {
                 add_shortcode($tag, [$this, $method]);
             }
-        }
-    }
-
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla = $wpdb->prefix . 'flavor_multimedia';
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla)) {
-            $this->create_tables();
         }
     }
 

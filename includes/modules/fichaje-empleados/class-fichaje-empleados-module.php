@@ -100,7 +100,7 @@ class Flavor_Platform_Fichaje_Empleados_Module extends Flavor_Platform_Module_Ba
      * {@inheritdoc}
      */
     public function init() {
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -1041,18 +1041,6 @@ class Flavor_Platform_Fichaje_Empleados_Module extends Flavor_Platform_Module_Ba
         ]);
 
         echo '<div class="notice notice-success"><p>' . esc_html__('Horario guardado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_fichajes)) {
-            $this->create_tables();
-        }
     }
 
     /**

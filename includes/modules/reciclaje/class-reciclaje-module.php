@@ -110,7 +110,7 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_pages']);
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_post_types']);
         add_action('init', [$this, 'register_taxonomies']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -187,25 +187,6 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
             if (class_exists('Flavor_Reciclaje_Dashboard_Tab')) {
                 Flavor_Reciclaje_Dashboard_Tab::get_instance();
             }
-        }
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
-        $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos_reciclaje)) {
-            $this->create_tables();
-            return;
-        }
-
-        // Migración segura: sitios ya activos antes de añadir campañas.
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_campanas)) {
-            $this->maybe_create_campaigns_table();
         }
     }
 

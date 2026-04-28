@@ -293,7 +293,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
     public function init() {
         $this->register_as_integration_consumer();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_add_empresa_id']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -1185,18 +1185,6 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
         }
 
         return false;
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_incidencias)) {
-            $this->create_tables();
-        }
     }
 
     /**

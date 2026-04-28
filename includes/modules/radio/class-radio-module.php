@@ -102,7 +102,7 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         // Cargar Media Manager
         $this->inicializar_media_manager();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
 
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -207,18 +207,6 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         add_shortcode('radio_proponer', [$this, 'shortcode_proponer_programa']);
         add_shortcode('radio_podcasts', [$this, 'shortcode_podcasts']);
         add_shortcode('radio_mis_programas', [$this, 'shortcode_mis_programas']);
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_programas)) {
-            $this->create_tables();
-        }
     }
 
     /**

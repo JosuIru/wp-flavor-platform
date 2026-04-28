@@ -275,7 +275,7 @@ class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
      */
     public function init() {
         $this->register_as_integration_consumer();
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -373,18 +373,6 @@ class Flavor_Platform_Participacion_Module extends Flavor_Platform_Module_Base {
         }
 
         return false;
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_propuestas)) {
-            $this->create_tables();
-        }
     }
 
     /**

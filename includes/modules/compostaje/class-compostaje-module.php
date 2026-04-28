@@ -134,7 +134,7 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
 
-        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'ensure_database_schema']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('wp_ajax_compostaje_registrar_aportacion', [$this, 'ajax_registrar_aportacion']);
@@ -326,18 +326,6 @@ class Flavor_Platform_Compostaje_Module extends Flavor_Platform_Module_Base {
             }
         }
         return false;
-    }
-
-    /**
-     * Crea las tablas si no existen
-     */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
-
-        if (!Flavor_Platform_Helpers::tabla_existe($tabla_puntos)) {
-            $this->create_tables();
-        }
     }
 
     /**
