@@ -245,8 +245,8 @@ class Flavor_Theme_Customizer {
                     id="flavor-theme-toggle"
                     aria-label="<?php esc_attr_e('Cambiar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     title="<?php esc_attr_e('Cambiar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
-                <span class="flavor-theme-icon">
-                    <?php echo ($current_theme === 'dark') ? '☀️' : '🌙'; ?>
+                <span class="flavor-theme-icon material-icons material-icons-outlined" aria-hidden="true">
+                    <?php echo ($current_theme === 'dark') ? 'light_mode' : 'dark_mode'; ?>
                 </span>
             </button>
         </div>
@@ -270,9 +270,9 @@ class Flavor_Theme_Customizer {
 
                     html.setAttribute('data-theme', newTheme);
 
-                    // Cambiar icono
+                    // Cambiar icono (Material Icons Outlined slug)
                     const icon = this.querySelector('.flavor-theme-icon');
-                    icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    icon.textContent = newTheme === 'dark' ? 'light_mode' : 'dark_mode';
 
                     // Guardar preferencia
                     fetch('<?php echo admin_url('admin-ajax.php'); ?>', {

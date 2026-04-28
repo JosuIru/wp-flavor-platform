@@ -1,0 +1,65 @@
+/*
+ * Flavor FAB stack — apilado vertical de botones flotantes bottom-right.
+ *
+ * El ecosistema tiene hasta 3 FABs que antes competían por la misma esquina
+ * (donaciones de flavor-news-hub, chat IA de flavor-platform y el theme-toggle
+ * del customizer). Este archivo centraliza las posiciones usando variables
+ * CSS compartidas para que convivan sin pisarse.
+ *
+ * Orden de abajo a arriba:
+ *   slot 0 → donaciones   (.fnh-dona-fab)
+ *   slot 1 → chat IA      (.chat-ia-trigger)
+ *   slot 2 → theme toggle (.flavor-theme-switcher)
+ *
+ * Si en el futuro aparece un FAB nuevo, añadirle una regla con
+ * --flavor-fab-slot: N usando la misma fórmula.
+ */
+
+:root {
+  --flavor-fab-base: 20px;   /* distancia del fab inferior al borde */
+  --flavor-fab-size: 56px;   /* alto del fab estándar */
+  --flavor-fab-gap:  12px;   /* separación vertical entre fabs */
+  --flavor-fab-side: 20px;   /* separación horizontal al borde derecho */
+  --flavor-fab-step: calc(var(--flavor-fab-size) + var(--flavor-fab-gap));
+}
+
+/* Slot 0 — donaciones (flavor-news-hub) */
+.fnh-dona-fab {
+  bottom: var(--flavor-fab-base) !important;
+  right:  var(--flavor-fab-side) !important;
+}
+
+/* Slot 1 — chat IA (flavor-platform). El widget ya usa su propia variable
+ * --chat-ia-bottom-offset, así que la redefinimos para que compute el slot
+ * correspondiente sin tocar su CSS original. */
+.chat-ia-widget.chat-ia-floating,
+.chat-ia-trigger,
+.chat-ia-trigger-bottom-right,
+.chat-ia-trigger-bottom-left {
+  --chat-ia-bottom-offset: calc(var(--flavor-fab-base) + var(--flavor-fab-step));
+  --chat-ia-side-offset:   var(--flavor-fab-side);
+}
+
+/* Slot 2 — theme switcher (flavor-platform customizer) */
+.flavor-theme-switcher {
+  bottom: calc(var(--flavor-fab-base) + var(--flavor-fab-step) * 2) !important;
+  right:  var(--flavor-fab-side) !important;
+}
+
+/* Mobile: la barra de módulo del tema aparecía antes en bottom:80px del theme
+ * switcher; movemos también la base del stack para dejar hueco a la nav. */
+@media (width <= 768px) {
+  :root {
+    --flavor-fab-base: 80px;
+    --flavor-fab-side: 16px;
+    --flavor-fab-size: 52px;
+  }
+}
+
+/* Los iconos Material dentro de los FABs deben heredar tamaño del botón
+ * contenedor, no usar el font-size global de la fuente Material (24px). */
+.fnh-dona-fab .material-icons,
+.flavor-theme-switcher .material-icons {
+  font-size: inherit;
+  line-height: 1;
+}

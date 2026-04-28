@@ -1898,6 +1898,28 @@ class Flavor_Theme_Manager {
                 filemtime($modules_css_path)
             );
         }
+
+        // Material Icons Outlined — fuente usada por los FABs (theme-toggle y
+        // donaciones), por el preset editorial de VBP y por varios bloques
+        // que aceptan slugs como "dark_mode" o "volunteer_activism".
+        wp_enqueue_style(
+            'flavor-material-icons-outlined',
+            'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
+            [],
+            null
+        );
+
+        // FAB stack: coordina posición de botones flotantes (donaciones / chat
+        // IA / theme-toggle) para que no se solapen en bottom-right.
+        $fab_stack_css_path = FLAVOR_PLATFORM_PATH . 'assets/css/core/fab-stack.css';
+        if (file_exists($fab_stack_css_path)) {
+            wp_enqueue_style(
+                'flavor-fab-stack',
+                FLAVOR_PLATFORM_URL . 'assets/css/core/fab-stack.css',
+                ['flavor-base-css'],
+                filemtime($fab_stack_css_path)
+            );
+        }
     }
 
     /**
