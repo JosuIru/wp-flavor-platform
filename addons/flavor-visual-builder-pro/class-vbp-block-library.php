@@ -1879,8 +1879,9 @@ class Flavor_VBP_Block_Library {
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 10h18M3 18h18"/></svg>',
             'fields'   => array(
-                'tagline' => array( 'type' => 'text', 'label' => __( 'Tagline izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
-                'badge'   => array( 'type' => 'text', 'label' => __( 'Badge derecha (con borde)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'tagline'    => array( 'type' => 'text',     'label' => __( 'Tagline izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'links_json' => array( 'type' => 'textarea', 'label' => __( 'Enlaces nav (JSON: texto/url/nueva)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '[]' ),
+                'badge'      => array( 'type' => 'text',     'label' => __( 'Badge derecha (con borde)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 

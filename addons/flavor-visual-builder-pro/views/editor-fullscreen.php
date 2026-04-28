@@ -74,6 +74,118 @@ $datos_json = wp_json_encode( $datos );
             padding-top: 0 !important;
             margin-top: 0 !important;
         }
+
+        /* === POC: toggle del canvas iframe y wrapper === */
+        /* Checkbox oculto, es el "source of truth" pero se controla via boton de toolbar */
+        .vbp-iframe-canvas-toggle {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .vbp-iframe-canvas-toolbar-btn.is-active {
+            background: #3b82f6 !important;
+            border-color: #3b82f6 !important;
+            color: #fff !important;
+        }
+        .vbp-iframe-canvas-toolbar-btn.is-active svg {
+            stroke: #fff;
+        }
+        .vbp-iframe-canvas-wrapper {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            padding: 32px;
+            overflow: auto;
+            background: #f3f4f6;
+            z-index: 5;
+        }
+        .vbp-iframe-canvas-wrapper[hidden] {
+            display: none !important;
+        }
+        .vbp-iframe-canvas {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            min-height: 600px;
+            border: 0;
+            background: #ffffff;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            transition: max-width 250ms ease;
+        }
+        /* Responsive preview cuando cambia el device selector */
+        .vbp-iframe-canvas-wrapper[data-device="tablet"] .vbp-iframe-canvas {
+            max-width: 768px;
+        }
+        .vbp-iframe-canvas-wrapper[data-device="mobile"] .vbp-iframe-canvas {
+            max-width: 375px;
+        }
+        /* Cuando el modo iframe esta activo, ocultamos el canvas clasico y los adornos */
+        .vbp-canvas-area.vbp-mode-iframe .vbp-canvas-wrapper,
+        .vbp-canvas-area.vbp-mode-iframe .vbp-ruler,
+        .vbp-canvas-area.vbp-mode-iframe .vbp-breadcrumbs {
+            display: none !important;
+        }
+
+        /* Handles flotantes en el parent, posicionados sobre el iframe */
+        .vbp-iframe-handles {
+            position: fixed;
+            z-index: 9998;
+            display: flex;
+            gap: 2px;
+            background: #111827;
+            border-radius: 6px;
+            padding: 3px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            pointer-events: auto;
+            transform: translateY(-100%);
+            margin-top: -4px;
+        }
+        .vbp-iframe-handles[hidden] {
+            display: none !important;
+        }
+        .vbp-iframe-handles__btn {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: #e5e7eb;
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0;
+            transition: background 120ms;
+        }
+        .vbp-iframe-handles__btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .vbp-iframe-handles__btn[disabled] {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .vbp-iframe-handles__btn--danger:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+        .vbp-iframe-handles__label {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 8px 0 6px;
+            color: #f3f4f6;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 2px;
+        }
     </style>
 </head>
 <body class="vbp-editor-body" x-data="vbpApp()" x-init="initEditor(<?php echo esc_attr( $datos_json ); ?>)" @keydown.window="handleKeydown($event)">
@@ -201,6 +313,17 @@ $datos_json = wp_json_encode( $datos );
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
                 </button>
             </div>
+
+            <!-- POC: toggle del canvas iframe (paridad visual 1:1 con frontend) -->
+            <button type="button" id="vbp-iframe-canvas-toolbar-btn" class="vbp-btn vbp-btn-secondary vbp-iframe-canvas-toolbar-btn" data-tooltip="<?php esc_attr_e( 'Conmutar entre canvas actual y canvas iframe (beta)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" data-tooltip-position="bottom" aria-pressed="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="M2 9h20"/>
+                    <circle cx="5.5" cy="6.5" r="0.5" fill="currentColor"/>
+                    <circle cx="7.5" cy="6.5" r="0.5" fill="currentColor"/>
+                </svg>
+                <span><?php esc_html_e( 'Iframe', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+            </button>
 
             <div class="vbp-focus-hint" x-show="$store.vbp.inspectorMode === 'basic'" x-cloak aria-live="polite">
                 <span class="vbp-focus-hint__eyebrow"><?php esc_html_e( 'Modo foco', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
@@ -583,6 +706,15 @@ $datos_json = wp_json_encode( $datos );
 
         <!-- Canvas Central -->
         <section class="vbp-canvas-area" id="vbp-canvas-main" aria-label="<?php esc_attr_e( 'Área de diseño', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
+
+            <!-- POC: toggle para conmutar entre canvas actual e iframe (JS vanilla, no Alpine) -->
+            <div class="vbp-iframe-canvas-toggle">
+                <label>
+                    <input type="checkbox" id="vbp-iframe-canvas-checkbox">
+                    <span>Canvas iframe (beta)</span>
+                </label>
+            </div>
+
             <div class="vbp-ruler vbp-ruler-horizontal" x-show="showRulers" aria-hidden="true">
                 <canvas id="vbp-ruler-h" width="2000" height="20"></canvas>
             </div>
@@ -700,6 +832,16 @@ $datos_json = wp_json_encode( $datos );
                         </div>
                     </template>
                 </div>
+            </div>
+
+            <!-- POC: Canvas servido por iframe (mismo render PHP del frontend). Lazy-load por data-src. -->
+            <div class="vbp-iframe-canvas-wrapper" id="vbp-iframe-canvas-wrapper" hidden>
+                <iframe
+                    class="vbp-iframe-canvas"
+                    id="vbp-iframe-canvas-frame"
+                    data-src="<?php echo esc_url( Flavor_VBP_Iframe_Canvas::get_url_iframe( $post_id ) ); ?>"
+                    title="<?php esc_attr_e( 'Canvas del editor (iframe)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                ></iframe>
             </div>
 
             <!-- Overlay de Modo Viewer (sin permisos de edición) -->
@@ -2553,6 +2695,536 @@ $datos_json = wp_json_encode( $datos );
         overlay.classList.remove('active');
         document.body.classList.remove('vbp-mobile-sidebar-open');
     };
+
+    // POC: toggle del canvas iframe (JS vanilla, independiente de Alpine)
+    (function () {
+        function inicializarToggleIframe() {
+            var checkboxToggle  = document.getElementById('vbp-iframe-canvas-checkbox');
+            var botonToolbar    = document.getElementById('vbp-iframe-canvas-toolbar-btn');
+            var areaCanvas      = document.getElementById('vbp-canvas-main');
+            var wrapperIframe   = document.getElementById('vbp-iframe-canvas-wrapper');
+            var frameIframe     = document.getElementById('vbp-iframe-canvas-frame');
+
+            if (!checkboxToggle || !areaCanvas || !wrapperIframe || !frameIframe) {
+                console.warn('[vbp-iframe-toggle] faltan elementos del DOM');
+                return;
+            }
+
+            function aplicarEstado(estaActivo) {
+                if (estaActivo) {
+                    if (!frameIframe.getAttribute('src') && frameIframe.dataset.src) {
+                        frameIframe.setAttribute('src', frameIframe.dataset.src);
+                    }
+                    wrapperIframe.removeAttribute('hidden');
+                    areaCanvas.classList.add('vbp-mode-iframe');
+                    if (window.vbpIframeRefreshSelectivo) {
+                        window.vbpIframeRefreshSelectivo.instalar();
+                    }
+                } else {
+                    wrapperIframe.setAttribute('hidden', '');
+                    areaCanvas.classList.remove('vbp-mode-iframe');
+                    if (window.vbpIframeRefreshSelectivo) {
+                        window.vbpIframeRefreshSelectivo.desinstalar();
+                    }
+                    if (window.vbpIframeCanvasHost && typeof window.vbpIframeCanvasHost.hideHandles === 'function') {
+                        window.vbpIframeCanvasHost.hideHandles();
+                    }
+                }
+                if (botonToolbar) {
+                    botonToolbar.classList.toggle('is-active', estaActivo);
+                    botonToolbar.setAttribute('aria-pressed', estaActivo ? 'true' : 'false');
+                }
+                console.log('[vbp-iframe-toggle] ' + (estaActivo ? 'ACTIVADO' : 'desactivado') + ', src=', frameIframe.src || '(no cargado)');
+            }
+
+            function persistirPreferencia(valorEnabled) {
+                try { localStorage.setItem('vbp_iframe_canvas_enabled', valorEnabled ? '1' : '0'); } catch (_) {}
+            }
+
+            checkboxToggle.addEventListener('change', function (eventoCambio) {
+                aplicarEstado(eventoCambio.target.checked);
+                persistirPreferencia(eventoCambio.target.checked);
+            });
+
+            if (botonToolbar) {
+                botonToolbar.addEventListener('click', function () {
+                    checkboxToggle.checked = !checkboxToggle.checked;
+                    checkboxToggle.dispatchEvent(new Event('change'));
+                });
+            }
+
+            // Aplicar estado inicial segun localStorage. Default: activado.
+            var valorPersistidoInicial = null;
+            try { valorPersistidoInicial = localStorage.getItem('vbp_iframe_canvas_enabled'); } catch (_) {}
+            var estadoInicialActivo = valorPersistidoInicial !== '0';
+
+            if (estadoInicialActivo) {
+                checkboxToggle.checked = true;
+                aplicarEstado(true);
+                // Alpine puede no estar listo aun: re-intentar instalar el patch al init
+                document.addEventListener('alpine:initialized', function () {
+                    if (checkboxToggle.checked && window.vbpIframeRefreshSelectivo) {
+                        window.vbpIframeRefreshSelectivo.instalar();
+                    }
+                });
+            }
+
+            console.log('[vbp-iframe-toggle] inicializado (estado inicial: ' + (estadoInicialActivo ? 'ACTIVO' : 'inactivo') + ')');
+
+            inicializarResponsivePreviewIframe(wrapperIframe);
+        }
+
+        // Observa cambios en el device selector y proyecta el ancho al iframe wrapper
+        function inicializarResponsivePreviewIframe(wrapperIframeEl) {
+            var botonesDeviceSelector = document.querySelectorAll('.vbp-device-selector .vbp-btn-icon');
+            if (!botonesDeviceSelector.length || !wrapperIframeEl) return;
+
+            function detectarDeviceDesdeBoton(botonEvaluar) {
+                var tooltipTexto = (botonEvaluar.getAttribute('data-tooltip') || '').toLowerCase();
+                if (tooltipTexto.indexOf('tablet') !== -1) return 'tablet';
+                if (tooltipTexto.indexOf('mobile') !== -1 || tooltipTexto.indexOf('móvil') !== -1 || tooltipTexto.indexOf('movil') !== -1) return 'mobile';
+                return 'desktop';
+            }
+
+            function aplicarDeviceActivo() {
+                var botonActivoActual = document.querySelector('.vbp-device-selector .vbp-btn-icon.active');
+                var nombreDevice = botonActivoActual ? detectarDeviceDesdeBoton(botonActivoActual) : 'desktop';
+                wrapperIframeEl.setAttribute('data-device', nombreDevice);
+            }
+
+            var observadorMutacionDevice = new MutationObserver(aplicarDeviceActivo);
+            Array.prototype.forEach.call(botonesDeviceSelector, function (botonObservado) {
+                observadorMutacionDevice.observe(botonObservado, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            });
+
+            aplicarDeviceActivo(); // estado inicial
+
+            // Reposicionar handles tras transicion del ancho del iframe
+            wrapperIframeEl.addEventListener('transitionend', function () {
+                if (window.vbpIframeCanvasHost && typeof window.vbpIframeCanvasHost.requestRectRefresh === 'function') {
+                    window.vbpIframeCanvasHost.requestRectRefresh();
+                }
+            }, true);
+
+            // Reposicionar handles al resize de la ventana del parent
+            window.addEventListener('resize', function () {
+                if (window.vbpIframeCanvasHost && typeof window.vbpIframeCanvasHost.requestRectRefresh === 'function') {
+                    window.vbpIframeCanvasHost.requestRectRefresh();
+                }
+            });
+
+            console.log('[vbp-iframe-responsive] observador de device inicializado');
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inicializarToggleIframe);
+        } else {
+            inicializarToggleIframe();
+        }
+    })();
+
+    // POC: captura global de dragstart/dragend de los bloques del panel.
+    // Guarda el bloque arrastrado en window.__vbpDraggedBlock para que el
+    // bridge del iframe lo pueda leer (mismo origen) al soltar.
+    (function () {
+        function leerBloqueDesdeNodo(nodoBlock) {
+            if (!nodoBlock) return null;
+            var tipoBloque = nodoBlock.getAttribute('data-block-type');
+            if (!tipoBloque) return null;
+            return {
+                type: tipoBloque,
+                label: nodoBlock.getAttribute('data-block-label') || tipoBloque
+            };
+        }
+
+        document.addEventListener('dragstart', function (eventoDragstart) {
+            var nodoBlockItem = eventoDragstart.target && eventoDragstart.target.closest
+                ? eventoDragstart.target.closest('.vbp-block-item[data-block-type]')
+                : null;
+            if (!nodoBlockItem) return;
+            var bloqueInfo = leerBloqueDesdeNodo(nodoBlockItem);
+            if (!bloqueInfo) return;
+            window.__vbpDraggedBlock = bloqueInfo;
+            console.log('[vbp-iframe-dnd] dragstart bloque:', bloqueInfo);
+        }, true);
+
+        document.addEventListener('dragend', function () {
+            if (window.__vbpDraggedBlock) {
+                console.log('[vbp-iframe-dnd] dragend bloque:', window.__vbpDraggedBlock);
+            }
+            window.__vbpDraggedBlock = null;
+        }, true);
+    })();
+
+    // POC: refresh selectivo del iframe cuando cambia un elemento en el store.
+    // Se activa parcheando updateElement de Alpine cuando el toggle esta ON.
+    // Al desactivar, restauramos la funcion original.
+    (function () {
+        var updateElementOriginal = null;
+        var timeoutsPorElemento   = {}; // elementId -> timeoutId
+
+        function obtenerIframe() {
+            return document.getElementById('vbp-iframe-canvas-frame');
+        }
+
+        function buscarElementoPorId(idElemento) {
+            if (!window.Alpine || !Alpine.store) return null;
+            var storeVbp = Alpine.store('vbp');
+            if (!storeVbp || !storeVbp.elements) return null;
+            for (var i = 0; i < storeVbp.elements.length; i++) {
+                if (storeVbp.elements[i] && storeVbp.elements[i].id === idElemento) {
+                    return storeVbp.elements[i];
+                }
+            }
+            return null;
+        }
+
+        function ejecutarRefreshIframe(idElemento) {
+            var frameIframe = obtenerIframe();
+            if (!frameIframe || !frameIframe.contentWindow) return;
+            var apiIframe = frameIframe.contentWindow.vbpIframeCanvas;
+            if (!apiIframe || typeof apiIframe.replaceElementHtml !== 'function') {
+                console.warn('[vbp-iframe-host] API del iframe no disponible');
+                return;
+            }
+
+            var elementoActual = buscarElementoPorId(idElemento);
+            if (!elementoActual) return;
+
+            var configGlobal = window.VBP_Config || {};
+            var urlEndpoint  = (configGlobal.restUrl || '/wp-json/flavor-vbp/v1/') + 'iframe-canvas/render-element';
+
+            fetch(urlEndpoint, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': configGlobal.restNonce || ''
+                },
+                body: JSON.stringify({
+                    post_id: configGlobal.postId || 0,
+                    element: elementoActual,
+                    settings: (Alpine.store('vbp') && Alpine.store('vbp').settings) || {}
+                })
+            })
+            .then(function (respuestaHttp) {
+                if (!respuestaHttp.ok) throw new Error('HTTP ' + respuestaHttp.status);
+                return respuestaHttp.json();
+            })
+            .then(function (datosRespuesta) {
+                if (datosRespuesta && datosRespuesta.success && datosRespuesta.html) {
+                    apiIframe.replaceElementHtml(idElemento, datosRespuesta.html);
+                    console.log('[vbp-iframe-host] refresh OK para', idElemento);
+                }
+            })
+            .catch(function (errorFetch) {
+                console.warn('[vbp-iframe-host] refresh fallo para ' + idElemento + ':', errorFetch);
+            });
+        }
+
+        function programarRefreshIframe(idElemento) {
+            if (!idElemento) return;
+            if (timeoutsPorElemento[idElemento]) {
+                clearTimeout(timeoutsPorElemento[idElemento]);
+            }
+            timeoutsPorElemento[idElemento] = setTimeout(function () {
+                delete timeoutsPorElemento[idElemento];
+                ejecutarRefreshIframe(idElemento);
+            }, 250); // debounce
+        }
+
+        window.vbpIframeRefreshSelectivo = {
+            instalar: function () {
+                if (updateElementOriginal) return; // ya instalado
+                if (!window.Alpine || !Alpine.store) return;
+                var storeVbp = Alpine.store('vbp');
+                if (!storeVbp || typeof storeVbp.updateElement !== 'function') return;
+
+                updateElementOriginal = storeVbp.updateElement.bind(storeVbp);
+                storeVbp.updateElement = function (idElementoCambio, cambiosAplicados) {
+                    var resultadoUpdate = updateElementOriginal(idElementoCambio, cambiosAplicados);
+                    programarRefreshIframe(idElementoCambio);
+                    return resultadoUpdate;
+                };
+                console.log('[vbp-iframe-host] refresh selectivo INSTALADO');
+            },
+            desinstalar: function () {
+                if (!updateElementOriginal) return;
+                if (!window.Alpine || !Alpine.store) return;
+                var storeVbp = Alpine.store('vbp');
+                if (storeVbp) storeVbp.updateElement = updateElementOriginal;
+                updateElementOriginal = null;
+                // Cancelar refreshes pendientes
+                Object.keys(timeoutsPorElemento).forEach(function (idPendiente) {
+                    clearTimeout(timeoutsPorElemento[idPendiente]);
+                });
+                timeoutsPorElemento = {};
+                console.log('[vbp-iframe-host] refresh selectivo desinstalado');
+            },
+            refrescarAhora: ejecutarRefreshIframe
+        };
+    })();
+
+    // POC: host para el iframe canvas. Recibe eventos desde vbp-iframe-bridge.js
+    // del documento hijo y los proyecta al store Alpine del editor.
+    (function () {
+        function obtenerStoreAlpine() {
+            if (!window.Alpine || !Alpine.store) return null;
+            var store = Alpine.store('vbp');
+            return store || null;
+        }
+
+        function buscarElementoEnStore(storeVbp, idElemento) {
+            if (!storeVbp || !storeVbp.elements || !idElemento) return null;
+            for (var i = 0; i < storeVbp.elements.length; i++) {
+                if (storeVbp.elements[i] && storeVbp.elements[i].id === idElemento) {
+                    return storeVbp.elements[i];
+                }
+            }
+            return null;
+        }
+
+        function aplicarValorEnRuta(objetoDestino, rutaTexto, valorNuevo) {
+            if (!objetoDestino || !rutaTexto) return false;
+            var segmentos = String(rutaTexto).split('.');
+            var contenedorActual = objetoDestino;
+            for (var i = 0; i < segmentos.length - 1; i++) {
+                var clave = segmentos[i];
+                if (/^\d+$/.test(clave)) clave = parseInt(clave, 10);
+                if (contenedorActual[clave] === undefined || contenedorActual[clave] === null) {
+                    contenedorActual[clave] = /^\d+$/.test(segmentos[i + 1]) ? [] : {};
+                }
+                contenedorActual = contenedorActual[clave];
+            }
+            var claveFinal = segmentos[segmentos.length - 1];
+            if (/^\d+$/.test(claveFinal)) claveFinal = parseInt(claveFinal, 10);
+            contenedorActual[claveFinal] = valorNuevo;
+            return true;
+        }
+
+        // ---------- Handles flotantes sobre el iframe ----------
+        var idElementoSeleccionadoHost = null;
+        var rectUltimoElemento         = null;
+        var nodoHandles                = null;
+
+        function crearHandlesEnParent() {
+            if (nodoHandles) return nodoHandles;
+            nodoHandles = document.createElement('div');
+            nodoHandles.className = 'vbp-iframe-handles';
+            nodoHandles.hidden = true;
+            nodoHandles.innerHTML = ''
+                + '<span class="vbp-iframe-handles__label" data-role="label"></span>'
+                + '<button type="button" class="vbp-iframe-handles__btn" data-action="move-up" title="Mover arriba" aria-label="Mover arriba">'
+                +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'
+                + '</button>'
+                + '<button type="button" class="vbp-iframe-handles__btn" data-action="move-down" title="Mover abajo" aria-label="Mover abajo">'
+                +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>'
+                + '</button>'
+                + '<button type="button" class="vbp-iframe-handles__btn" data-action="duplicate" title="Duplicar" aria-label="Duplicar">'
+                +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>'
+                + '</button>'
+                + '<button type="button" class="vbp-iframe-handles__btn vbp-iframe-handles__btn--danger" data-action="delete" title="Borrar" aria-label="Borrar">'
+                +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>'
+                + '</button>';
+            document.body.appendChild(nodoHandles);
+
+            nodoHandles.addEventListener('click', function (eventoClick) {
+                var botonAccion = eventoClick.target.closest('button[data-action]');
+                if (!botonAccion) return;
+                ejecutarAccionHandles(botonAccion.dataset.action);
+            });
+
+            return nodoHandles;
+        }
+
+        function buscarIndiceElemento(idElemento) {
+            var storeVbp = obtenerStoreAlpine();
+            if (!storeVbp || !storeVbp.elements) return -1;
+            for (var i = 0; i < storeVbp.elements.length; i++) {
+                if (storeVbp.elements[i] && storeVbp.elements[i].id === idElemento) return i;
+            }
+            return -1;
+        }
+
+        function ejecutarAccionHandles(nombreAccion) {
+            if (!idElementoSeleccionadoHost) return;
+            var storeVbp = obtenerStoreAlpine();
+            if (!storeVbp) return;
+            var indiceActual = buscarIndiceElemento(idElementoSeleccionadoHost);
+
+            try {
+                if (nombreAccion === 'move-up' && indiceActual > 0 && typeof storeVbp.moveElement === 'function') {
+                    storeVbp.moveElement(indiceActual, indiceActual - 1);
+                } else if (nombreAccion === 'move-down' && indiceActual >= 0 && indiceActual < storeVbp.elements.length - 1 && typeof storeVbp.moveElement === 'function') {
+                    storeVbp.moveElement(indiceActual, indiceActual + 1);
+                } else if (nombreAccion === 'duplicate' && typeof storeVbp.duplicateElement === 'function') {
+                    storeVbp.duplicateElement(idElementoSeleccionadoHost);
+                } else if (nombreAccion === 'delete' && typeof storeVbp.removeElement === 'function') {
+                    if (confirm('¿Borrar este bloque? La accion no se puede deshacer sin Ctrl+Z.')) {
+                        storeVbp.removeElement(idElementoSeleccionadoHost);
+                        ocultarHandles();
+                    }
+                }
+                // Move/duplicate/delete estructurales requieren refresh completo del iframe
+                if (nombreAccion === 'move-up' || nombreAccion === 'move-down' || nombreAccion === 'duplicate' || nombreAccion === 'delete') {
+                    var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
+                    if (frameIframe && frameIframe.contentWindow && frameIframe.contentWindow.vbpIframeCanvas) {
+                        setTimeout(function () { frameIframe.contentWindow.vbpIframeCanvas.refresh(); }, 100);
+                    }
+                }
+            } catch (errorAccion) {
+                console.warn('[vbp-iframe-host] error ejecutando accion:', nombreAccion, errorAccion);
+            }
+        }
+
+        function posicionarHandlesSobreRect(rectElementoIframe) {
+            if (!nodoHandles) return;
+            var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
+            if (!frameIframe) { nodoHandles.hidden = true; return; }
+            var rectIframe = frameIframe.getBoundingClientRect();
+
+            // rectElementoIframe viene en coordenadas del viewport del iframe
+            var topFinal  = rectIframe.top + rectElementoIframe.top;
+            var rightFinal = rectIframe.left + rectElementoIframe.right;
+
+            // Clamp dentro del viewport visible del iframe
+            topFinal  = Math.max(rectIframe.top + 4, Math.min(topFinal, rectIframe.bottom - 4));
+            rightFinal = Math.max(rectIframe.left + 40, Math.min(rightFinal, rectIframe.right - 4));
+
+            nodoHandles.style.top  = topFinal + 'px';
+            nodoHandles.style.left = (rightFinal - nodoHandles.offsetWidth) + 'px';
+            nodoHandles.hidden = false;
+        }
+
+        function actualizarEstadoHandles(payloadSeleccion) {
+            if (!nodoHandles) return;
+            var storeVbp = obtenerStoreAlpine();
+            if (!storeVbp || !storeVbp.elements) return;
+            var indiceActual = buscarIndiceElemento(payloadSeleccion.elementId);
+            var totalElementos = storeVbp.elements.length;
+
+            var btnUp   = nodoHandles.querySelector('[data-action="move-up"]');
+            var btnDown = nodoHandles.querySelector('[data-action="move-down"]');
+            if (btnUp)   btnUp.disabled   = (indiceActual <= 0);
+            if (btnDown) btnDown.disabled = (indiceActual < 0 || indiceActual >= totalElementos - 1);
+
+            var labelBadge = nodoHandles.querySelector('[data-role="label"]');
+            if (labelBadge) labelBadge.textContent = payloadSeleccion.elementType || 'bloque';
+        }
+
+        function ocultarHandles() {
+            idElementoSeleccionadoHost = null;
+            rectUltimoElemento = null;
+            if (nodoHandles) nodoHandles.hidden = true;
+        }
+
+        window.vbpIframeCanvasHost = {
+            onElementSelected: function (payloadSeleccion) {
+                console.log('[vbp-iframe-host] seleccion:', payloadSeleccion);
+                var storeVbp = obtenerStoreAlpine();
+                if (!storeVbp) return;
+                try {
+                    if (payloadSeleccion && payloadSeleccion.elementId && typeof storeVbp.setSelection === 'function') {
+                        storeVbp.setSelection([payloadSeleccion.elementId]);
+                        idElementoSeleccionadoHost = payloadSeleccion.elementId;
+                        rectUltimoElemento = payloadSeleccion.rect || null;
+                        crearHandlesEnParent();
+                        actualizarEstadoHandles(payloadSeleccion);
+                        if (rectUltimoElemento) posicionarHandlesSobreRect(rectUltimoElemento);
+                    } else if (typeof storeVbp.clearSelection === 'function') {
+                        storeVbp.clearSelection();
+                        ocultarHandles();
+                    }
+                } catch (errorSync) {
+                    console.warn('[vbp-iframe-host] no se pudo sincronizar seleccion:', errorSync);
+                }
+            },
+
+            onElementRectChanged: function (payloadRect) {
+                if (!payloadRect || payloadRect.elementId !== idElementoSeleccionadoHost) return;
+                rectUltimoElemento = payloadRect.rect || null;
+                if (rectUltimoElemento) posicionarHandlesSobreRect(rectUltimoElemento);
+            },
+
+            hideHandles: ocultarHandles,
+
+            // Drop cross-document: el bridge del iframe llama aqui tras un drop valido
+            onBlockDropped: function (payloadDrop) {
+                if (!payloadDrop || !payloadDrop.blockType) return;
+                var storeVbp = obtenerStoreAlpine();
+                if (!storeVbp || typeof storeVbp.addElement !== 'function') {
+                    console.warn('[vbp-iframe-host] store.addElement no disponible');
+                    return;
+                }
+                console.log('[vbp-iframe-host] bloque soltado:', payloadDrop);
+                try {
+                    storeVbp.addElement(payloadDrop.blockType, payloadDrop.index);
+                } catch (errorAdd) {
+                    console.warn('[vbp-iframe-host] error al insertar bloque:', errorAdd);
+                    return;
+                }
+                // Estructura cambio, refrescar iframe completo
+                var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
+                setTimeout(function () {
+                    if (frameIframe && frameIframe.contentWindow && frameIframe.contentWindow.vbpIframeCanvas) {
+                        frameIframe.contentWindow.vbpIframeCanvas.refresh();
+                    }
+                }, 150);
+            },
+
+            // Fuerza al bridge a recomputar el rect del elemento actual
+            requestRectRefresh: function () {
+                var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
+                if (!frameIframe || !frameIframe.contentWindow) return;
+                var raizLanding = frameIframe.contentWindow.document && frameIframe.contentWindow.document.querySelector('.vbp-landing');
+                if (!raizLanding || !idElementoSeleccionadoHost) return;
+                var nodoSel = raizLanding.querySelector('.vbp-iframe-element[data-element-id="' + idElementoSeleccionadoHost + '"]');
+                if (nodoSel) posicionarHandlesSobreRect(nodoSel.getBoundingClientRect());
+            },
+
+            onFieldEdited: function (payloadEdicion) {
+                console.log('[vbp-iframe-host] edicion inline:', payloadEdicion);
+                if (!payloadEdicion || !payloadEdicion.elementId) return;
+
+                var storeVbp = obtenerStoreAlpine();
+                if (!storeVbp) {
+                    console.warn('[vbp-iframe-host] Alpine store no disponible');
+                    return;
+                }
+
+                var elementoEncontrado = buscarElementoEnStore(storeVbp, payloadEdicion.elementId);
+                if (!elementoEncontrado) {
+                    console.warn('[vbp-iframe-host] elemento no encontrado en store:', payloadEdicion.elementId);
+                    return;
+                }
+
+                // Clonar data para no mutar referencia en sitio y permitir reactividad
+                var dataClonada = JSON.parse(JSON.stringify(elementoEncontrado.data || {}));
+
+                if (payloadEdicion.path) {
+                    aplicarValorEnRuta(dataClonada, payloadEdicion.path, payloadEdicion.value);
+                } else if (payloadEdicion.field) {
+                    dataClonada[payloadEdicion.field] = payloadEdicion.value;
+                } else {
+                    return;
+                }
+
+                try {
+                    if (typeof storeVbp.updateElement === 'function') {
+                        storeVbp.updateElement(payloadEdicion.elementId, { data: dataClonada });
+                    } else {
+                        elementoEncontrado.data = dataClonada;
+                    }
+                    console.log('[vbp-iframe-host] elemento actualizado:', payloadEdicion.elementId);
+                } catch (errorUpdate) {
+                    console.warn('[vbp-iframe-host] error actualizando elemento:', errorUpdate);
+                }
+            }
+        };
+    })();
     </script>
 </body>
 </html>

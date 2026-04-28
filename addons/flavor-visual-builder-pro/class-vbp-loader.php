@@ -86,6 +86,7 @@ class Flavor_VBP_Loader {
             'class-vbp-editor.php',
             'class-vbp-block-library.php',
             'class-vbp-canvas.php',
+            'class-vbp-iframe-canvas.php',
             'class-vbp-rest-api.php',
             'class-vbp-form-handler.php',
             'class-vbp-global-widgets.php',

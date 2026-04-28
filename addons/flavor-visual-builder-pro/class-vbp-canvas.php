@@ -291,11 +291,26 @@ class Flavor_VBP_Canvas {
 
         $html .= '<div class="vbp-landing"' . $style_attr . '>';
 
+        $es_contexto_editor = $this->is_editor_context();
+
         foreach ( $elementos as $elemento ) {
             if ( isset( $elemento['visible'] ) && false === $elemento['visible'] ) {
                 continue;
             }
-            $html .= $this->renderizar_elemento( $elemento );
+            $contenido_elemento = $this->renderizar_elemento( $elemento );
+
+            // En contexto editor envolvemos cada elemento para poder identificarlo
+            // desde el bridge JS del iframe (seleccion, edicion inline, refresh).
+            if ( $es_contexto_editor && ! empty( $elemento['id'] ) ) {
+                $html .= sprintf(
+                    '<div class="vbp-iframe-element" data-element-id="%s" data-element-type="%s">%s</div>',
+                    esc_attr( $elemento['id'] ),
+                    esc_attr( $elemento['type'] ?? '' ),
+                    $contenido_elemento
+                );
+            } else {
+                $html .= $contenido_elemento;
+            }
         }
 
         $html .= '</div>';
@@ -2172,6 +2187,23 @@ class Flavor_VBP_Canvas {
      * @param string $icono_bruto Texto del icono tal como viene del campo.
      * @return string HTML del icono (ya escapado), o cadena vacia si esta vacio.
      */
+    /**
+     * Devuelve la clase CSS modificadora a apendar al wrapper editorial
+     * segun data.tema ("light" / "dark" / "red"). Por defecto no modifica
+     * (tema oscuro = default de .vbp-editorial).
+     *
+     * @param array $data Array data del elemento VBP.
+     * @return string Cadena con prefijo de espacio, o vacia.
+     */
+    private function editorial_tema_class( $data ) {
+        $tema = strtolower( trim( (string) ( $data['tema'] ?? '' ) ) );
+        $temas_validos = array( 'light', 'red' );
+        if ( ! in_array( $tema, $temas_validos, true ) ) {
+            return '';
+        }
+        return ' vbp-editorial--' . $tema;
+    }
+
     private function render_editorial_icon( $icono_bruto ) {
         $icono_bruto = trim( (string) $icono_bruto );
         if ( '' === $icono_bruto ) {
@@ -2222,10 +2254,19 @@ class Flavor_VBP_Canvas {
         // Material Icons para iconos en chips/cards (alternativa a emojis).
         $html_salida .= '<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">';
         $html_salida .= "\n<style id='vbp-editorial-base'>\n";
-        $html_salida .= ":root{--ink:#111008;--paper:#F2EDE3;--red:#C8261A;--muted:#7A7260;--rule:#C4BAA4;--serif:'Playfair Display',Georgia,serif;--body:'Libre Baskerville',Georgia,serif;--mono:'IBM Plex Mono',monospace;}";
-        $html_salida .= ".vbp-editorial{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.6;}";
+        $html_salida .= ":root{--ink:#0D0B07;--paper:#F2EDE3;--red:#C8261A;--amber:#D4920A;--muted:#6B6459;--rule:#2A2620;--rule-l:#C4BAA4;--serif:'Playfair Display',Georgia,serif;--body:'Libre Baskerville',Georgia,serif;--mono:'IBM Plex Mono',monospace;}";
+        // Tema por defecto = oscuro (el HTML original tiene body ink con islas paper).
+        // Cada seccion redefine variables locales para que los estilos internos
+        // (rule, body muted, rule-inline) funcionen en ambos temas sin duplicar CSS.
+        $html_salida .= ".vbp-editorial{background:var(--ink);color:var(--paper);font-family:var(--body);line-height:1.6;--rule:#2A2620;--body-muted:rgba(242,237,227,.72);--body-muted-strong:rgba(242,237,227,.85);}";
         $html_salida .= ".vbp-editorial *,.vbp-editorial *::before,.vbp-editorial *::after{box-sizing:border-box;}";
-        $html_salida .= ".vbp-editorial h1,.vbp-editorial h2,.vbp-editorial h3{font-family:var(--serif);color:var(--ink);}";
+        $html_salida .= ".vbp-editorial h1,.vbp-editorial h2,.vbp-editorial h3{font-family:var(--serif);color:inherit;}";
+        // Variante light: secciones claras (products first card, news-section, demo-section).
+        $html_salida .= ".vbp-editorial--light{background:var(--paper);color:var(--ink);--rule:#C4BAA4;--body-muted:#3A3630;--body-muted-strong:#2A2720;}";
+        // Variante red: manifiesto sobre fondo rojo — color texto paper
+        $html_salida .= ".vbp-editorial--red{background:var(--red);color:var(--paper);--rule:rgba(242,237,227,.25);--body-muted:rgba(242,237,227,.8);--body-muted-strong:rgba(242,237,227,.9);}";
+        // body por defecto en ink cuando hay preset editorial activo
+        $html_salida .= "body.vbp-editorial-page{background:var(--ink);color:var(--paper);}";
         // Grain overlay global
         $html_salida .= "body.vbp-editorial-page::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");background-size:200px 200px;}";
         // Ticker
@@ -2243,7 +2284,7 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-hero-edit__cols{display:grid;grid-template-columns:1fr 1fr;gap:0;}";
         $html_salida .= "@media(max-width:640px){.vbp-hero-edit__cols{grid-template-columns:1fr;}}";
         $html_salida .= ".vbp-hero-edit__lead{padding:2rem 2rem 2.5rem 0;border-right:1px solid var(--rule);}";
-        $html_salida .= ".vbp-hero-edit__lead p{font-size:1.05rem;line-height:1.75;color:#2A2720;max-width:44ch;}";
+        $html_salida .= ".vbp-hero-edit__lead p{font-size:1.05rem;line-height:1.75;color:var(--body-muted-strong);max-width:44ch;}";
         $html_salida .= ".vbp-hero-edit__lead p+p{margin-top:1rem;}";
         $html_salida .= ".vbp-hero-edit__stat{padding:2rem 0 2.5rem 2rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;}";
         $html_salida .= ".vbp-hero-edit__pull{font-family:var(--serif);font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;font-style:italic;line-height:1.3;color:var(--ink);border-left:3px solid var(--red);padding-left:1rem;margin:0;}";
@@ -2259,10 +2300,30 @@ class Flavor_VBP_Canvas {
         $html_salida .= "@media(max-width:900px){.vbp-feat-num__grid{grid-template-columns:1fr 1fr !important;}.vbp-feat-num__item{border-right:none;border-bottom:1px solid var(--rule);}}";
         $html_salida .= ".vbp-feat-num__num{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--red);margin-bottom:.75rem;}";
         $html_salida .= ".vbp-feat-num__title{font-family:var(--serif);font-size:1.15rem;font-weight:700;line-height:1.25;margin:0 0 .75rem;}";
-        $html_salida .= ".vbp-feat-num__desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;margin:0;}";
+        $html_salida .= ".vbp-feat-num__desc,.vbp-feat-num__desc p{font-size:.9rem;line-height:1.6;color:var(--body-muted-strong);opacity:.85;margin:0;}";
+        $html_salida .= ".vbp-feat-num__desc p+p{margin-top:.75rem;}";
         $html_salida .= ".vbp-feat-num__icon{font-size:1.6rem;line-height:1;margin-bottom:.75rem;}";
         $html_salida .= ".vbp-feat-num__tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem;}";
         $html_salida .= ".vbp-feat-num__tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;border:1px solid var(--rule);padding:.15rem .5rem;color:var(--muted);}";
+        // Items linkados: card entera clickable. Mantenemos colores del
+        // contenido y solo cambiamos cursor/hover. La flecha aparece a la
+        // derecha y se desplaza ligeramente al pasar el cursor.
+        $html_salida .= ".vbp-feat-num__item--linked{display:flex;flex-direction:column;text-decoration:none;color:inherit;position:relative;transition:background .15s ease;}";
+        $html_salida .= ".vbp-feat-num__item--linked:hover{background:rgba(200,38,26,.04);}";
+        $html_salida .= ".vbp-feat-num__item--linked:hover .vbp-feat-num__title{color:var(--red);}";
+        $html_salida .= ".vbp-feat-num__arrow{display:none;}";
+        $html_salida .= ".vbp-feat-num__item--linked .vbp-feat-num__arrow{display:inline-block;font-family:var(--mono);font-size:1rem;color:var(--red);margin-top:auto;padding-top:1rem;align-self:flex-start;transition:transform .2s ease;}";
+        $html_salida .= ".vbp-feat-num__item--linked:hover .vbp-feat-num__arrow{transform:translateX(.35rem);}";
+        $html_salida .= ".vbp-feat-num__kicker{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem;}";
+        // Variante big_numbers: numero grande amber (hero stats)
+        $html_salida .= ".vbp-feat-num--big_numbers{padding:2.5rem 2rem 3rem;}";
+        $html_salida .= ".vbp-feat-num--big_numbers .vbp-feat-num__item{padding:0 1rem;border-right:1px solid var(--rule);border-left:2px solid var(--rule);}";
+        $html_salida .= ".vbp-feat-num--big_numbers .vbp-feat-num__num{font-family:var(--serif);font-size:clamp(2.4rem,5vw,3.6rem);font-weight:900;line-height:1;color:var(--amber);letter-spacing:-.02em;margin-bottom:.4rem;}";
+        $html_salida .= ".vbp-feat-num--big_numbers .vbp-feat-num__title{font-family:var(--mono);font-size:.62rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0;}";
+        $html_salida .= ".vbp-feat-num--big_numbers .vbp-feat-num__desc{display:none;}";
+        // Variante rule_title: titulo subrayado con borde rojo inferior
+        $html_salida .= ".vbp-feat-num--rule_title .vbp-feat-num__title{border-bottom:2px solid var(--red);padding-bottom:.5rem;display:inline-block;}";
+        $html_salida .= ".vbp-feat-num--rule_title .vbp-feat-num__num{display:none;}";
         // Chip list
         $html_salida .= ".vbp-chips{display:flex;flex-wrap:wrap;gap:.5rem;padding:1rem 2rem;}";
         $html_salida .= ".vbp-chips__item{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--rule);padding:.3rem .75rem;color:var(--ink);background:transparent;border-radius:999px;}";
@@ -2273,10 +2334,13 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-princ__list{display:grid;gap:2rem;list-style:none;padding:0;margin:0;}";
         $html_salida .= ".vbp-princ__item{border-top:2px solid var(--ink);padding-top:1rem;}";
         $html_salida .= ".vbp-princ__item strong{display:block;font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}";
-        $html_salida .= ".vbp-princ__item-desc{font-size:.9rem;line-height:1.6;color:#2A2720;opacity:.85;}";
+        $html_salida .= ".vbp-princ__item-desc{font-size:.9rem;line-height:1.6;color:var(--body-muted-strong);opacity:.85;}";
         // Masthead
         $html_salida .= ".vbp-masthead{border-bottom:3px double var(--ink);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}";
         $html_salida .= ".vbp-masthead__tagline{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}";
+        $html_salida .= ".vbp-masthead__links{display:flex;gap:1.5rem;flex-wrap:wrap;}";
+        $html_salida .= ".vbp-masthead__links a{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .15s;}";
+        $html_salida .= ".vbp-masthead__links a:hover{color:var(--ink);}";
         $html_salida .= ".vbp-masthead__badge{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--rule);padding:.2rem .6rem;color:var(--muted);}";
         // CTA strip
         $html_salida .= ".vbp-cta-strip{padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-bottom:1px solid var(--rule);}";
@@ -2297,7 +2361,7 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-why__title em{font-style:italic;color:var(--red);}";
         $html_salida .= ".vbp-why__tags{display:flex;flex-wrap:wrap;gap:.4rem;}";
         $html_salida .= ".vbp-why__tag{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);padding:.2rem .55rem;color:var(--muted);}";
-        $html_salida .= ".vbp-why__body p{font-size:.98rem;line-height:1.85;color:#2A2720;margin:0 0 1.25rem;max-width:60ch;}";
+        $html_salida .= ".vbp-why__body p{font-size:.98rem;line-height:1.85;color:var(--body-muted-strong);margin:0 0 1.25rem;max-width:60ch;}";
         $html_salida .= ".vbp-why__body strong{font-weight:700;color:var(--ink);}";
         $html_salida .= ".vbp-why__quote{border-left:3px solid var(--red);padding:1rem 1.5rem;margin:2rem 0;background:rgba(200,38,26,.04);font-family:var(--serif);font-size:1.1rem;font-style:italic;line-height:1.6;color:var(--ink);}";
         // Principles filled variant (manifiesto rojo)
@@ -2312,7 +2376,7 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-relation__col:last-child{border-right:none;}";
         $html_salida .= "@media(max-width:700px){.vbp-relation__col{border-right:none;border-bottom:1px solid var(--rule);padding:1.5rem 0;}.vbp-relation__col:last-child{border-bottom:none;}}";
         $html_salida .= ".vbp-relation__title{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin:0 0 .8rem;}";
-        $html_salida .= ".vbp-relation__col p{font-size:.9rem;line-height:1.7;color:#3A3630;margin:0 0 .75rem;}";
+        $html_salida .= ".vbp-relation__col p{font-size:.9rem;line-height:1.7;color:var(--body-muted);margin:0 0 .75rem;}";
         $html_salida .= ".vbp-relation__connector{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);padding:2rem;text-align:center;line-height:2;border-right:1px solid var(--rule);}";
         $html_salida .= "@media(max-width:700px){.vbp-relation__connector{border-right:none;border-bottom:1px solid var(--rule);padding:1.5rem 0;}}";
         // Hosting dark (seccion oscura con pasos)
@@ -2337,6 +2401,14 @@ class Flavor_VBP_Canvas {
         $html_salida .= ".vbp-foot-edit__links a{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .15s;}";
         $html_salida .= ".vbp-foot-edit__links a:hover{color:var(--ink);}";
         $html_salida .= ".vbp-foot-edit__license{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--muted);}";
+        // Code block con syntax highlight (clases code-cmd/flag/url/string/comment)
+        $html_salida .= "pre.code-block{background:rgba(255,255,255,.03);border:1px solid var(--rule);padding:1.8rem;border-radius:0;overflow-x:auto;font-family:var(--mono);font-size:.73rem;line-height:1.7;color:rgba(242,237,227,.7);margin:0;}";
+        $html_salida .= ".vbp-editorial pre.code-block{background:#111008;color:rgba(242,237,227,.75);}";
+        $html_salida .= "pre.code-block .code-comment{color:#4A453D;}";
+        $html_salida .= "pre.code-block .code-cmd{color:var(--paper);}";
+        $html_salida .= "pre.code-block .code-flag{color:var(--amber);}";
+        $html_salida .= "pre.code-block .code-url{color:#7AADCF;}";
+        $html_salida .= "pre.code-block .code-string{color:#98C379;}";
         // Reveal on scroll
         $html_salida .= ".vbp-reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}";
         $html_salida .= ".vbp-reveal.is-visible{opacity:1;transform:translateY(0);}";
@@ -2372,10 +2444,12 @@ class Flavor_VBP_Canvas {
             $duracion_ticker
         );
         $html_ticker .= '<div class="vbp-ticker" aria-hidden="true">';
-        // Duplicamos la lista para que el loop -50% no muestre hueco.
-        $lista_duplicada = array_merge( $items_decoded, $items_decoded );
-        foreach ( $lista_duplicada as $texto_item ) {
-            $html_ticker .= '<span class="vbp-ticker-item">' . $html_sep . ' ' . esc_html( (string) $texto_item ) . '</span>';
+        // Primera copia editable, segunda copia solo para el loop visual.
+        foreach ( $items_decoded as $indice_item => $texto_item ) {
+            $html_ticker .= '<span class="vbp-ticker-item"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice_item ) . '>' . $html_sep . ' ' . esc_html( (string) $texto_item ) . '</span>';
+        }
+        foreach ( $items_decoded as $texto_item_dup ) {
+            $html_ticker .= '<span class="vbp-ticker-item" aria-hidden="true">' . $html_sep . ' ' . esc_html( (string) $texto_item_dup ) . '</span>';
         }
         $html_ticker .= '</div></div>';
         return $html_ticker;
@@ -2401,36 +2475,39 @@ class Flavor_VBP_Canvas {
         $meta_decoded = $this->editorial_parse_items( $data, 'meta' );
 
         $html_hero  = $this->editorial_assets_once();
-        $html_hero .= '<section class="vbp-editorial vbp-hero-edit">';
+        $html_hero .= '<section class="vbp-editorial vbp-hero-edit' . $this->editorial_tema_class( $data ) . '">';
 
         if ( $kicker_hero !== '' ) {
-            $html_hero .= '<p class="vbp-hero-edit__kicker">' . esc_html( $kicker_hero ) . '</p>';
+            $html_hero .= '<p class="vbp-hero-edit__kicker"' . $this->get_editor_contenteditable_attr( 'kicker' ) . '>' . esc_html( $kicker_hero ) . '</p>';
         }
 
         if ( $titulo_pre_hero !== '' || $titulo_em_hero !== '' || $titulo_post_hero !== '' ) {
             $html_hero .= '<h1 class="vbp-hero-edit__title">';
             if ( $titulo_pre_hero !== '' ) {
-                $html_hero .= esc_html( $titulo_pre_hero ) . '<br>';
+                // Los saltos de linea en pre/post se convierten en <br> para
+                // permitir titulares multilinea (p.ej. "Informarse / y luego /
+                // actuar." con solo la ultima linea en italic rojo).
+                $html_hero .= '<span' . $this->get_editor_contenteditable_attr( 'titulo_pre' ) . '>' . nl2br( esc_html( $titulo_pre_hero ) ) . '</span><br>';
             }
             if ( $titulo_em_hero !== '' ) {
-                $html_hero .= '<em>' . esc_html( $titulo_em_hero ) . '</em>';
+                $html_hero .= '<em' . $this->get_editor_contenteditable_attr( 'titulo_em' ) . '>' . nl2br( esc_html( $titulo_em_hero ) ) . '</em>';
                 if ( $titulo_post_hero !== '' ) {
                     $html_hero .= '<br>';
                 }
             }
             if ( $titulo_post_hero !== '' ) {
-                $html_hero .= esc_html( $titulo_post_hero );
+                $html_hero .= '<span' . $this->get_editor_contenteditable_attr( 'titulo_post' ) . '>' . nl2br( esc_html( $titulo_post_hero ) ) . '</span>';
             }
             $html_hero .= '</h1>';
         }
 
         $html_hero .= '<div class="vbp-hero-edit__rule"></div>';
         $html_hero .= '<div class="vbp-hero-edit__cols">';
-        $html_hero .= '<div class="vbp-hero-edit__lead vbp-reveal">' . wp_kses_post( $lead_html_hero ) . '</div>';
+        $html_hero .= '<div class="vbp-hero-edit__lead vbp-reveal"' . $this->get_editor_contenteditable_attr( 'lead_html' ) . '>' . wp_kses_post( $lead_html_hero ) . '</div>';
 
         $html_hero .= '<div class="vbp-hero-edit__stat vbp-reveal">';
         if ( $pull_quote_hero !== '' ) {
-            $html_hero .= '<blockquote class="vbp-hero-edit__pull">' . wp_kses_post( $pull_quote_hero ) . '</blockquote>';
+            $html_hero .= '<blockquote class="vbp-hero-edit__pull"' . $this->get_editor_contenteditable_attr( 'pull_quote' ) . '>' . wp_kses_post( $pull_quote_hero ) . '</blockquote>';
         }
         if ( ! empty( $meta_decoded ) ) {
             $html_hero .= '<ul class="vbp-hero-edit__meta">';
@@ -2456,14 +2533,24 @@ class Flavor_VBP_Canvas {
         $data          = $elemento['data'] ?? array();
         $label_superior = (string) ( $data['label'] ?? '' );
         $columnas_num  = max( 1, min( 6, (int) ( $data['columnas'] ?? 5 ) ) );
+        $variante_bloque = (string) ( $elemento['variant'] ?? $data['variant'] ?? 'default' );
+        $variantes_admitidas = array( 'default', 'big_numbers', 'rule_title' );
+        if ( ! in_array( $variante_bloque, $variantes_admitidas, true ) ) {
+            $variante_bloque = 'default';
+        }
 
         $items_decoded = $this->editorial_parse_items( $data, 'items' );
 
         $html_numbered  = $this->editorial_assets_once();
-        $html_numbered .= '<section class="vbp-editorial vbp-feat-num">';
+        $clase_seccion  = 'vbp-editorial vbp-feat-num';
+        if ( 'default' !== $variante_bloque ) {
+            $clase_seccion .= ' vbp-feat-num--' . $variante_bloque;
+        }
+        $clase_seccion .= $this->editorial_tema_class( $data );
+        $html_numbered .= '<section class="' . esc_attr( $clase_seccion ) . '">';
 
         if ( $label_superior !== '' ) {
-            $html_numbered .= '<div class="vbp-feat-num__label">' . esc_html( $label_superior ) . '</div>';
+            $html_numbered .= '<div class="vbp-feat-num__label"' . $this->get_editor_contenteditable_attr( 'label' ) . '>' . esc_html( $label_superior ) . '</div>';
         }
 
         if ( ! empty( $items_decoded ) ) {
@@ -2477,29 +2564,56 @@ class Flavor_VBP_Canvas {
                 $titulo_item      = $item_num['titulo']      ?? '';
                 $descripcion_item = $item_num['descripcion'] ?? '';
                 $icono_item       = (string) ( $item_num['icono'] ?? '' );
+                $kicker_item      = (string) ( $item_num['kicker'] ?? '' );
                 $tags_item        = isset( $item_num['tags'] ) && is_array( $item_num['tags'] ) ? $item_num['tags'] : array();
+                $url_item         = trim( (string) ( $item_num['url'] ?? '' ) );
+                $abrir_nueva_item = ! empty( $item_num['nueva'] );
 
-                $html_numbered .= '<div class="vbp-feat-num__item vbp-reveal">';
+                // Si el item lleva url, envolvemos la card entera en <a> para
+                // que toda la celda sea pulsable. Mantenemos las clases base y
+                // anadimos --linked para que el CSS quite text-decoration y
+                // aplique hover sutil sin pisar colores del contenido.
+                if ( $url_item !== '' ) {
+                    $atributos_link = ' class="vbp-feat-num__item vbp-feat-num__item--linked vbp-reveal" href="' . esc_url( $url_item ) . '"';
+                    if ( $abrir_nueva_item ) {
+                        $atributos_link .= ' target="_blank" rel="noopener"';
+                    }
+                    $html_numbered .= '<a' . $atributos_link . '>';
+                    $tag_cierre_item = '</a>';
+                } else {
+                    $html_numbered .= '<div class="vbp-feat-num__item vbp-reveal">';
+                    $tag_cierre_item = '</div>';
+                }
+                if ( $kicker_item !== '' ) {
+                    $html_numbered .= '<div class="vbp-feat-num__kicker"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.kicker' ) . '>' . esc_html( $kicker_item ) . '</div>';
+                }
                 if ( $icono_item !== '' ) {
                     $html_numbered .= '<div class="vbp-feat-num__icon" aria-hidden="true">' . $this->render_editorial_icon( $icono_item ) . '</div>';
                 }
                 if ( $numero_item !== '' ) {
-                    $html_numbered .= '<div class="vbp-feat-num__num">' . esc_html( $numero_item ) . '</div>';
+                    $html_numbered .= '<div class="vbp-feat-num__num"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.numero' ) . '>' . esc_html( $numero_item ) . '</div>';
                 }
                 if ( $titulo_item !== '' ) {
-                    $html_numbered .= '<h3 class="vbp-feat-num__title">' . esc_html( (string) $titulo_item ) . '</h3>';
+                    $html_numbered .= '<h3 class="vbp-feat-num__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( (string) $titulo_item ) . '</h3>';
                 }
                 if ( $descripcion_item !== '' ) {
-                    $html_numbered .= '<p class="vbp-feat-num__desc">' . wp_kses_post( (string) $descripcion_item ) . '</p>';
+                    // Contenedor div (no p) para aceptar varios <p> hijos sin
+                    // generar HTML invalido, p.ej. en arch-cards con 2 parrafos.
+                    $html_numbered .= '<div class="vbp-feat-num__desc"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.descripcion' ) . '>' . wp_kses_post( (string) $descripcion_item ) . '</div>';
                 }
                 if ( ! empty( $tags_item ) ) {
                     $html_numbered .= '<div class="vbp-feat-num__tags">';
-                    foreach ( $tags_item as $tag_texto ) {
-                        $html_numbered .= '<span class="vbp-feat-num__tag">' . esc_html( (string) $tag_texto ) . '</span>';
+                    foreach ( $tags_item as $indice_tag => $tag_texto ) {
+                        $html_numbered .= '<span class="vbp-feat-num__tag"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.tags.' . $indice_tag ) . '>' . esc_html( (string) $tag_texto ) . '</span>';
                     }
                     $html_numbered .= '</div>';
                 }
-                $html_numbered .= '</div>';
+                // Indicador visual de "ver mas" en items linkados (flecha mono
+                // a la derecha). Solo se muestra en --linked via CSS.
+                if ( $url_item !== '' ) {
+                    $html_numbered .= '<span class="vbp-feat-num__arrow" aria-hidden="true">→</span>';
+                }
+                $html_numbered .= $tag_cierre_item;
             }
             $html_numbered .= '</div>';
         }
@@ -2527,8 +2641,8 @@ class Flavor_VBP_Canvas {
         $html_chips  = $this->editorial_assets_once();
         $clase_mono  = $mono_activado ? ' vbp-chips__item--mono' : '';
         $html_chips .= '<div class="vbp-editorial vbp-chips">';
-        foreach ( $items_chips as $texto_chip ) {
-            $html_chips .= '<span class="vbp-chips__item' . $clase_mono . '">' . esc_html( (string) $texto_chip ) . '</span>';
+        foreach ( $items_chips as $indice_chip => $texto_chip ) {
+            $html_chips .= '<span class="vbp-chips__item' . $clase_mono . '"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice_chip ) . '>' . esc_html( (string) $texto_chip ) . '</span>';
         }
         $html_chips .= '</div>';
         return $html_chips;
@@ -2552,7 +2666,7 @@ class Flavor_VBP_Canvas {
 
         $html_princ  = $this->editorial_assets_once();
 
-        $clases_princ  = 'vbp-editorial vbp-princ vbp-reveal';
+        $clases_princ  = 'vbp-editorial vbp-princ vbp-reveal' . $this->editorial_tema_class( $data );
         $estilo_princ  = '';
         if ( $color_fondo !== '' ) {
             $clases_princ .= ' vbp-princ--filled';
@@ -2565,7 +2679,7 @@ class Flavor_VBP_Canvas {
 
         $html_princ .= '<section class="' . esc_attr( $clases_princ ) . '"' . $attr_estilo . '>';
         if ( $titulo_princ !== '' ) {
-            $html_princ .= '<h2 class="vbp-princ__title">' . wp_kses_post( $titulo_princ ) . '</h2>';
+            $html_princ .= '<h2 class="vbp-princ__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo_princ ) . '</h2>';
         }
 
         if ( ! empty( $items_decoded ) ) {
@@ -2573,15 +2687,15 @@ class Flavor_VBP_Canvas {
                 '<ul class="vbp-princ__list" style="grid-template-columns:repeat(%d,minmax(0,1fr));">',
                 $columnas_princ
             );
-            foreach ( $items_decoded as $item_princ ) {
+            foreach ( $items_decoded as $indice_princ => $item_princ ) {
                 $titulo_item      = $item_princ['titulo']      ?? '';
                 $descripcion_item = $item_princ['descripcion'] ?? '';
                 $html_princ      .= '<li class="vbp-princ__item">';
                 if ( $titulo_item !== '' ) {
-                    $html_princ .= '<strong>' . esc_html( (string) $titulo_item ) . '</strong>';
+                    $html_princ .= '<strong' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice_princ . '.titulo' ) . '>' . esc_html( (string) $titulo_item ) . '</strong>';
                 }
                 if ( $descripcion_item !== '' ) {
-                    $html_princ .= '<span class="vbp-princ__item-desc">' . wp_kses_post( (string) $descripcion_item ) . '</span>';
+                    $html_princ .= '<span class="vbp-princ__item-desc"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice_princ . '.descripcion' ) . '>' . wp_kses_post( (string) $descripcion_item ) . '</span>';
                 }
                 $html_princ .= '</li>';
             }
@@ -2603,18 +2717,36 @@ class Flavor_VBP_Canvas {
         $data    = $elemento['data'] ?? array();
         $tagline = trim( (string) ( $data['tagline'] ?? '' ) );
         $badge   = trim( (string) ( $data['badge']   ?? '' ) );
+        $enlaces_masthead = $this->editorial_parse_items( $data, 'links' );
 
-        if ( $tagline === '' && $badge === '' ) {
+        if ( $tagline === '' && $badge === '' && empty( $enlaces_masthead ) ) {
             return '';
         }
 
         $html_masthead  = $this->editorial_assets_once();
-        $html_masthead .= '<header class="vbp-editorial vbp-masthead">';
+        $html_masthead .= '<header class="vbp-editorial vbp-masthead' . $this->editorial_tema_class( $data ) . '">';
         if ( $tagline !== '' ) {
-            $html_masthead .= '<span class="vbp-masthead__tagline">' . esc_html( $tagline ) . '</span>';
+            $html_masthead .= '<span class="vbp-masthead__tagline"' . $this->get_editor_contenteditable_attr( 'tagline' ) . '>' . esc_html( $tagline ) . '</span>';
+        }
+        if ( ! empty( $enlaces_masthead ) ) {
+            $html_masthead .= '<nav class="vbp-masthead__links">';
+            foreach ( $enlaces_masthead as $enlace_masthead ) {
+                $texto_enlace = trim( (string) ( $enlace_masthead['texto'] ?? '' ) );
+                $url_enlace   = trim( (string) ( $enlace_masthead['url']   ?? '' ) );
+                if ( $texto_enlace === '' ) {
+                    continue;
+                }
+                $nueva_pestana = ! empty( $enlace_masthead['nueva'] );
+                $atributos_enlace = 'href="' . esc_url( $url_enlace !== '' ? $url_enlace : '#' ) . '"';
+                if ( $nueva_pestana ) {
+                    $atributos_enlace .= ' target="_blank" rel="noopener"';
+                }
+                $html_masthead .= '<a ' . $atributos_enlace . '>' . esc_html( $texto_enlace ) . '</a>';
+            }
+            $html_masthead .= '</nav>';
         }
         if ( $badge !== '' ) {
-            $html_masthead .= '<span class="vbp-masthead__badge">' . esc_html( $badge ) . '</span>';
+            $html_masthead .= '<span class="vbp-masthead__badge"' . $this->get_editor_contenteditable_attr( 'badge' ) . '>' . esc_html( $badge ) . '</span>';
         }
         $html_masthead .= '</header>';
         return $html_masthead;
@@ -2685,7 +2817,7 @@ class Flavor_VBP_Canvas {
             esc_attr( $color_texto )
         );
         if ( $texto_cta !== '' ) {
-            $html_cta .= '<p class="vbp-cta-strip__text">' . esc_html( $texto_cta ) . '</p>';
+            $html_cta .= '<p class="vbp-cta-strip__text"' . $this->get_editor_contenteditable_attr( 'texto' ) . '>' . esc_html( $texto_cta ) . '</p>';
         }
         if ( $html_boton_1 !== '' || $html_boton_2 !== '' ) {
             $html_cta .= '<div class="vbp-cta-strip__buttons">' . $html_boton_1 . $html_boton_2 . '</div>';
@@ -2710,24 +2842,24 @@ class Flavor_VBP_Canvas {
         $tags_lista  = $this->editorial_parse_items( $data, 'aside_tags' );
 
         $html_why  = $this->editorial_assets_once();
-        $html_why .= '<section class="vbp-editorial vbp-why">';
+        $html_why .= '<section class="vbp-editorial vbp-why' . $this->editorial_tema_class( $data ) . '">';
         $html_why .= '<div class="vbp-why__grid">';
 
         $html_why .= '<aside class="vbp-why__aside vbp-reveal">';
         if ( $titulo_pre !== '' || $titulo_em !== '' ) {
             $html_why .= '<h2 class="vbp-why__title">';
             if ( $titulo_pre !== '' ) {
-                $html_why .= esc_html( $titulo_pre ) . '<br>';
+                $html_why .= '<span' . $this->get_editor_contenteditable_attr( 'aside_titulo_pre' ) . '>' . esc_html( $titulo_pre ) . '</span><br>';
             }
             if ( $titulo_em !== '' ) {
-                $html_why .= '<em>' . esc_html( $titulo_em ) . '</em>';
+                $html_why .= '<em' . $this->get_editor_contenteditable_attr( 'aside_titulo_em' ) . '>' . esc_html( $titulo_em ) . '</em>';
             }
             $html_why .= '</h2>';
         }
         if ( ! empty( $tags_lista ) ) {
             $html_why .= '<div class="vbp-why__tags">';
-            foreach ( $tags_lista as $tag_texto ) {
-                $html_why .= '<span class="vbp-why__tag">' . esc_html( (string) $tag_texto ) . '</span>';
+            foreach ( $tags_lista as $indice_tag_why => $tag_texto ) {
+                $html_why .= '<span class="vbp-why__tag"' . $this->get_editor_contenteditable_path_attr( 'aside_tags.' . $indice_tag_why ) . '>' . esc_html( (string) $tag_texto ) . '</span>';
             }
             $html_why .= '</div>';
         }
@@ -2735,10 +2867,10 @@ class Flavor_VBP_Canvas {
 
         $html_why .= '<div class="vbp-why__body vbp-reveal">';
         if ( $body_html !== '' ) {
-            $html_why .= wp_kses_post( $body_html );
+            $html_why .= '<div class="vbp-why__body-inner"' . $this->get_editor_contenteditable_attr( 'body_html' ) . '>' . wp_kses_post( $body_html ) . '</div>';
         }
         if ( $quote_html !== '' ) {
-            $html_why .= '<blockquote class="vbp-why__quote">' . wp_kses_post( $quote_html ) . '</blockquote>';
+            $html_why .= '<blockquote class="vbp-why__quote"' . $this->get_editor_contenteditable_attr( 'quote_html' ) . '>' . wp_kses_post( $quote_html ) . '</blockquote>';
         }
         $html_why .= '</div>';
 
@@ -2762,18 +2894,18 @@ class Flavor_VBP_Canvas {
         $conector    = trim( (string) ( $data['conector']   ?? '' ) );
 
         $html_rel  = $this->editorial_assets_once();
-        $html_rel .= '<section class="vbp-editorial vbp-relation vbp-reveal">';
+        $html_rel .= '<section class="vbp-editorial vbp-relation vbp-reveal' . $this->editorial_tema_class( $data ) . '">';
 
         $html_rel .= '<div class="vbp-relation__col">';
         if ( $izq_titulo !== '' ) {
-            $html_rel .= '<h3 class="vbp-relation__title">' . esc_html( $izq_titulo ) . '</h3>';
+            $html_rel .= '<h3 class="vbp-relation__title"' . $this->get_editor_contenteditable_attr( 'izq_titulo' ) . '>' . esc_html( $izq_titulo ) . '</h3>';
         }
         if ( $izq_html !== '' ) {
-            $html_rel .= wp_kses_post( $izq_html );
+            $html_rel .= '<div class="vbp-relation__col-body"' . $this->get_editor_contenteditable_attr( 'izq_html' ) . '>' . wp_kses_post( $izq_html ) . '</div>';
         }
         $html_rel .= '</div>';
 
-        $html_rel .= '<div class="vbp-relation__connector">';
+        $html_rel .= '<div class="vbp-relation__connector"' . $this->get_editor_contenteditable_attr( 'conector' ) . '>';
         if ( $conector !== '' ) {
             $html_rel .= nl2br( esc_html( $conector ) );
         }
@@ -2781,10 +2913,10 @@ class Flavor_VBP_Canvas {
 
         $html_rel .= '<div class="vbp-relation__col">';
         if ( $der_titulo !== '' ) {
-            $html_rel .= '<h3 class="vbp-relation__title">' . esc_html( $der_titulo ) . '</h3>';
+            $html_rel .= '<h3 class="vbp-relation__title"' . $this->get_editor_contenteditable_attr( 'der_titulo' ) . '>' . esc_html( $der_titulo ) . '</h3>';
         }
         if ( $der_html !== '' ) {
-            $html_rel .= wp_kses_post( $der_html );
+            $html_rel .= '<div class="vbp-relation__col-body"' . $this->get_editor_contenteditable_attr( 'der_html' ) . '>' . wp_kses_post( $der_html ) . '</div>';
         }
         $html_rel .= '</div>';
 
@@ -2827,20 +2959,20 @@ class Flavor_VBP_Canvas {
 
         $html_host .= '<div class="vbp-hosting__intro vbp-reveal">';
         if ( $label !== '' ) {
-            $html_host .= '<div class="vbp-hosting__label">' . esc_html( $label ) . '</div>';
+            $html_host .= '<div class="vbp-hosting__label"' . $this->get_editor_contenteditable_attr( 'label' ) . '>' . esc_html( $label ) . '</div>';
         }
         if ( $titulo_pre !== '' || $titulo_em !== '' ) {
             $html_host .= '<h2 class="vbp-hosting__title">';
             if ( $titulo_pre !== '' ) {
-                $html_host .= esc_html( $titulo_pre ) . '<br>';
+                $html_host .= '<span' . $this->get_editor_contenteditable_attr( 'titulo_pre' ) . '>' . esc_html( $titulo_pre ) . '</span><br>';
             }
             if ( $titulo_em !== '' ) {
-                $html_host .= '<em>' . esc_html( $titulo_em ) . '</em>';
+                $html_host .= '<em' . $this->get_editor_contenteditable_attr( 'titulo_em' ) . '>' . esc_html( $titulo_em ) . '</em>';
             }
             $html_host .= '</h2>';
         }
         if ( $descripcion !== '' ) {
-            $html_host .= '<p class="vbp-hosting__desc">' . wp_kses_post( $descripcion ) . '</p>';
+            $html_host .= '<p class="vbp-hosting__desc"' . $this->get_editor_contenteditable_attr( 'descripcion' ) . '>' . wp_kses_post( $descripcion ) . '</p>';
         }
         if ( $html_boton_1 !== '' || $html_boton_2 !== '' ) {
             $html_host .= '<div class="vbp-hosting__cta">' . $html_boton_1 . $html_boton_2 . '</div>';
@@ -2857,10 +2989,10 @@ class Flavor_VBP_Canvas {
                 $html_host .= '<span class="vbp-hosting__step-num">' . esc_html( $numero_paso ) . ' —</span>';
                 $html_host .= '<span class="vbp-hosting__step-text">';
                 if ( $titulo_paso !== '' ) {
-                    $html_host .= '<strong>' . esc_html( $titulo_paso ) . '</strong> ';
+                    $html_host .= '<strong' . $this->get_editor_contenteditable_path_attr( 'pasos.' . $indice . '.titulo' ) . '>' . esc_html( $titulo_paso ) . '</strong> ';
                 }
                 if ( $descripcion_paso !== '' ) {
-                    $html_host .= wp_kses_post( $descripcion_paso );
+                    $html_host .= '<span' . $this->get_editor_contenteditable_path_attr( 'pasos.' . $indice . '.descripcion' ) . '>' . wp_kses_post( $descripcion_paso ) . '</span>';
                 }
                 $html_host .= '</span></li>';
             }
@@ -2887,25 +3019,25 @@ class Flavor_VBP_Canvas {
         $links_list = $this->editorial_parse_items( $data, 'links' );
 
         $html_foot  = $this->editorial_assets_once();
-        $html_foot .= '<footer class="vbp-editorial vbp-foot-edit">';
+        $html_foot .= '<footer class="vbp-editorial vbp-foot-edit' . $this->editorial_tema_class( $data ) . '">';
 
         if ( $logo_pre !== '' || $logo_em !== '' || $logo_post !== '' ) {
             $html_foot .= '<span class="vbp-foot-edit__logo">';
             if ( $logo_pre !== '' ) {
-                $html_foot .= esc_html( $logo_pre );
+                $html_foot .= '<span' . $this->get_editor_contenteditable_attr( 'logo_pre' ) . '>' . esc_html( $logo_pre ) . '</span>';
             }
             if ( $logo_em !== '' ) {
-                $html_foot .= ' <span class="vbp-foot-edit__logo-em">' . esc_html( $logo_em ) . '</span> ';
+                $html_foot .= ' <span class="vbp-foot-edit__logo-em"' . $this->get_editor_contenteditable_attr( 'logo_em' ) . '>' . esc_html( $logo_em ) . '</span> ';
             }
             if ( $logo_post !== '' ) {
-                $html_foot .= esc_html( $logo_post );
+                $html_foot .= '<span' . $this->get_editor_contenteditable_attr( 'logo_post' ) . '>' . esc_html( $logo_post ) . '</span>';
             }
             $html_foot .= '</span>';
         }
 
         if ( ! empty( $links_list ) ) {
             $html_foot .= '<nav class="vbp-foot-edit__links">';
-            foreach ( $links_list as $link_item ) {
+            foreach ( $links_list as $indice_link => $link_item ) {
                 $texto_link = trim( (string) ( $link_item['texto'] ?? '' ) );
                 $url_link   = trim( (string) ( $link_item['url']   ?? '' ) );
                 if ( $texto_link === '' ) {
@@ -2914,13 +3046,14 @@ class Flavor_VBP_Canvas {
                 $abrir_nueva = ! empty( $link_item['nueva'] );
                 $rel_attr    = $abrir_nueva ? ' target="_blank" rel="noopener"' : '';
                 $url_segura  = $url_link !== '' ? esc_url( $url_link ) : '#';
-                $html_foot  .= '<a href="' . $url_segura . '"' . $rel_attr . '>' . esc_html( $texto_link ) . '</a>';
+                $attr_edicion = $this->get_editor_link_path_attr( 'links.' . $indice_link . '.texto' );
+                $html_foot  .= '<a href="' . $url_segura . '"' . $rel_attr . $attr_edicion . '>' . esc_html( $texto_link ) . '</a>';
             }
             $html_foot .= '</nav>';
         }
 
         if ( $license !== '' ) {
-            $html_foot .= '<span class="vbp-foot-edit__license">' . esc_html( $license ) . '</span>';
+            $html_foot .= '<span class="vbp-foot-edit__license"' . $this->get_editor_contenteditable_attr( 'license' ) . '>' . esc_html( $license ) . '</span>';
         }
 
         $html_foot .= '</footer>';

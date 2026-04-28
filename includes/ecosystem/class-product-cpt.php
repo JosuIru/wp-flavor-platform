@@ -52,6 +52,9 @@ final class Flavor_Product_CPT {
 	 *   status   — filtra por estado concreto (stable|beta|alpha|coming|paused)
 	 *   columns  — 2|3|4 (default 3)
 	 *   limit    — máximo de productos (default -1 = todos)
+	 *   style    — "default" (cards tailwind) o "editorial" (tipografía serif,
+	 *              numeración 01/02, italic+rojo, tags mono; pensado para
+	 *              páginas que cargan el preset editorial de VBP)
 	 *
 	 * @param array<string, string> $atributos_shortcode Atributos pasados al shortcode.
 	 * @return string HTML renderizado.
@@ -62,6 +65,7 @@ final class Flavor_Product_CPT {
 				'status'  => '',
 				'columns' => '3',
 				'limit'   => '-1',
+				'style'   => 'default',
 			),
 			$atributos_shortcode,
 			'flavor_ecosystem'
@@ -107,6 +111,10 @@ final class Flavor_Product_CPT {
 		);
 
 		$columnas_grid = max( 1, min( 4, (int) $atributos_shortcode['columns'] ) );
+
+		if ( 'editorial' === $atributos_shortcode['style'] ) {
+			return $this->render_shortcode_ecosystem_editorial( $consulta_productos, $etiquetas_estado, $colores_estado, $columnas_grid );
+		}
 
 		ob_start();
 		?>
@@ -169,6 +177,94 @@ final class Flavor_Product_CPT {
 							</a>
 						<?php endif; ?>
 					</div>
+				</article>
+				<?php
+			endwhile;
+			wp_reset_postdata();
+			?>
+		</div>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renderiza la rejilla de productos con tipografía y paleta del preset
+	 * editorial de VBP (Playfair + Libre Baskerville + IBM Plex Mono, ink/paper/red).
+	 * Emula el estilo de las product-cards 01/02 con título italic+rojo,
+	 * excerpt, tags mono y botones con borde.
+	 *
+	 * @param WP_Query $consulta_productos Consulta ya preparada.
+	 * @param array    $etiquetas_estado   Mapa estado → etiqueta traducida.
+	 * @param array    $colores_estado     Mapa estado → color (fallback para tags).
+	 * @param int      $columnas_grid      Número de columnas 1..4.
+	 * @return string HTML renderizado.
+	 */
+	private function render_shortcode_ecosystem_editorial( $consulta_productos, $etiquetas_estado, $colores_estado, $columnas_grid ): string {
+		ob_start();
+		?>
+		<div class="flavor-ecosystem-grid flavor-ecosystem-grid--editorial" style="display:grid;grid-template-columns:repeat(<?php echo esc_attr( (string) $columnas_grid ); ?>,minmax(0,1fr));gap:0;border-top:1px solid #2A2620;border-bottom:1px solid #2A2620;">
+			<?php
+			$indice_producto = 0;
+			while ( $consulta_productos->have_posts() ) :
+				$consulta_productos->the_post();
+				$indice_producto++;
+				$id_producto    = get_the_ID();
+				$url_producto   = get_post_meta( $id_producto, self::META_URL, true );
+				$repo_producto  = get_post_meta( $id_producto, self::META_REPO, true );
+				$version_prod   = get_post_meta( $id_producto, self::META_VERSION, true );
+				$estado_prod    = get_post_meta( $id_producto, self::META_STATUS, true );
+				$etiqueta_estado = $etiquetas_estado[ $estado_prod ] ?? '';
+				$etiquetas_post = wp_get_post_terms( (int) $id_producto, self::TAXONOMY_TIPO, array( 'fields' => 'names' ) );
+				if ( is_wp_error( $etiquetas_post ) ) {
+					$etiquetas_post = array();
+				}
+				$es_ultima_columna = ( 0 === $indice_producto % $columnas_grid );
+				$numero_formateado = sprintf( '%02d', $indice_producto );
+				// Primera card = paper (light), resto hereda fondo ink del body
+				$es_card_clara = ( 1 === $indice_producto );
+				$bg_card        = $es_card_clara ? '#F2EDE3' : 'var(--ink, #0D0B07)';
+				$color_card     = $es_card_clara ? '#0D0B07' : '#F2EDE3';
+				$muted_card     = $es_card_clara ? '#7A7260' : 'rgba(242,237,227,.55)';
+				$rule_card      = $es_card_clara ? '#C4BAA4' : '#2A2620';
+				$body_card      = $es_card_clara ? '#3A3630' : 'rgba(242,237,227,.72)';
+				?>
+				<article class="flavor-ecosystem-card flavor-ecosystem-card--editorial" style="padding:4rem 3rem;position:relative;overflow:hidden;background:<?php echo esc_attr( $bg_card ); ?>;color:<?php echo esc_attr( $color_card ); ?>;<?php echo $es_ultima_columna ? '' : 'border-right:1px solid ' . esc_attr( $rule_card ) . ';'; ?>">
+					<span aria-hidden="true" style="position:absolute;top:2rem;right:2.5rem;font-family:'Playfair Display',Georgia,serif;font-size:7rem;font-weight:900;line-height:1;opacity:.06;pointer-events:none;color:<?php echo esc_attr( $color_card ); ?>;"><?php echo esc_html( $numero_formateado ); ?></span>
+					<div style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:<?php echo esc_attr( $muted_card ); ?>;display:flex;align-items:center;gap:.75rem;margin-bottom:2rem;">
+						<?php echo esc_html( get_the_title() ); ?>
+						<span style="flex:1;height:1px;background:<?php echo esc_attr( $rule_card ); ?>;"></span>
+						<?php if ( '' !== $etiqueta_estado ) : ?>
+							<span style="color:#C8261A;"><?php echo esc_html( $etiqueta_estado ); ?></span>
+						<?php endif; ?>
+					</div>
+					<h2 style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.05;margin:0 0 1.2rem;color:<?php echo esc_attr( $color_card ); ?>;">
+						<?php echo wp_kses_post( get_the_title() ); ?>
+					</h2>
+					<?php $resumen_producto = get_the_excerpt(); if ( '' !== $resumen_producto ) : ?>
+						<p style="font-family:'Libre Baskerville',Georgia,serif;font-size:.95rem;line-height:1.75;margin:0 0 1.8rem;color:<?php echo esc_attr( $body_card ); ?>;opacity:.9;"><?php echo esc_html( $resumen_producto ); ?></p>
+					<?php endif; ?>
+					<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;">
+						<?php if ( ! empty( $url_producto ) ) : ?>
+							<a href="<?php echo esc_url( $url_producto ); ?>" target="_blank" rel="noopener noreferrer" style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:.55rem 1.2rem;border:1px solid #C8261A;background:#C8261A;color:#F2EDE3;display:inline-flex;align-items:center;gap:.5rem;">
+								↗ <?php esc_html_e( 'Saber más', 'flavor-platform' ); ?>
+							</a>
+						<?php endif; ?>
+						<?php if ( ! empty( $repo_producto ) ) : ?>
+							<a href="<?php echo esc_url( $repo_producto ); ?>" target="_blank" rel="noopener noreferrer" style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:.55rem 1.2rem;border:1px solid <?php echo esc_attr( $color_card ); ?>;color:<?php echo esc_attr( $color_card ); ?>;display:inline-flex;align-items:center;gap:.5rem;">
+								GitHub
+							</a>
+						<?php endif; ?>
+					</div>
+					<?php if ( ! empty( $etiquetas_post ) || ! empty( $version_prod ) ) : ?>
+						<div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.8rem;">
+							<?php if ( ! empty( $version_prod ) ) : ?>
+								<span style="font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid <?php echo esc_attr( $rule_card ); ?>;padding:.18rem .55rem;color:<?php echo esc_attr( $muted_card ); ?>;">v<?php echo esc_html( $version_prod ); ?></span>
+							<?php endif; ?>
+							<?php foreach ( $etiquetas_post as $etiqueta_nombre ) : ?>
+								<span style="font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid <?php echo esc_attr( $rule_card ); ?>;padding:.18rem .55rem;color:<?php echo esc_attr( $muted_card ); ?>;"><?php echo esc_html( $etiqueta_nombre ); ?></span>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 				</article>
 				<?php
 			endwhile;
