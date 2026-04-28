@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$tabla_avisos = $wpdb->prefix . 'flavor_avisos_municipales';
+$tabla_avisos = $wpdb->prefix . 'flavor_avisos';
 $tabla_categorias = $wpdb->prefix . 'flavor_avisos_categorias';
 $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 

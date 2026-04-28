@@ -995,7 +995,7 @@ class Flavor_Platform_Foros_Module extends Flavor_Platform_Module_Base {
                 break;
 
             case 'aviso_municipal':
-                $tabla = $wpdb->prefix . 'flavor_avisos_municipales';
+                $tabla = $wpdb->prefix . 'flavor_avisos';
                 if (Flavor_Platform_Helpers::tabla_existe($tabla)) {
                     $entity = $wpdb->get_row($wpdb->prepare(
                         "SELECT titulo, contenido AS descripcion FROM {$tabla} WHERE id = %d",

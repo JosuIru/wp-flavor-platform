@@ -1829,7 +1829,7 @@ class Flavor_Portal_Shortcodes {
 
         $notifications = [];
         $candidate_tables = [
-            $wpdb->prefix . 'flavor_avisos_municipales',
+            $wpdb->prefix . 'flavor_avisos',
             $wpdb->prefix . 'flavor_avisos_avisos',
         ];
         $tabla_avisos = '';

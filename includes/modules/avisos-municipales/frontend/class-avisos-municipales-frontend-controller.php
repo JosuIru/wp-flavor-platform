@@ -55,7 +55,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     private function __construct() {
         global $wpdb;
         $this->tablas = [
-            'avisos' => $wpdb->prefix . 'flavor_avisos_municipales',
+            'avisos' => $wpdb->prefix . 'flavor_avisos',
             'categorias' => $wpdb->prefix . 'flavor_avisos_categorias',
             'zonas' => $wpdb->prefix . 'flavor_avisos_zonas',
             'suscripciones' => $wpdb->prefix . 'flavor_avisos_suscripciones',

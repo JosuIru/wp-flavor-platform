@@ -66,7 +66,7 @@ class Flavor_Avisos_Municipales_API {
         $categoria = $request->get_param('categoria');
 
         global $wpdb;
-        $tabla_avisos = $wpdb->prefix . 'flavor_avisos_municipales';
+        $tabla_avisos = $wpdb->prefix . 'flavor_avisos';
         $tabla_lecturas = $wpdb->prefix . 'flavor_avisos_lecturas';
         $tabla_suscripciones = $wpdb->prefix . 'flavor_avisos_suscripciones';
 
@@ -120,7 +120,7 @@ class Flavor_Avisos_Municipales_API {
         $aviso_id = $request->get_param('id');
 
         global $wpdb;
-        $tabla_avisos = $wpdb->prefix . 'flavor_avisos_municipales';
+        $tabla_avisos = $wpdb->prefix . 'flavor_avisos';
         $tabla_lecturas = $wpdb->prefix . 'flavor_avisos_lecturas';
 
         // Verificar que el aviso existe

@@ -2789,7 +2789,7 @@ class Flavor_Platform_Chat_Grupos_Module extends Flavor_Platform_Module_Base {
             'pp_proyecto' => ['tabla' => 'flavor_pp_proyectos', 'campo' => 'titulo'],
             'saber_ancestral' => ['tabla' => null, 'campo' => 'post_title'],
             'documento_transparencia' => ['tabla' => 'flavor_transparencia_documentos_publicos', 'campo' => 'titulo'],
-            'aviso_municipal' => ['tabla' => 'flavor_avisos_municipales', 'campo' => 'titulo'],
+            'aviso_municipal' => ['tabla' => 'flavor_avisos', 'campo' => 'titulo'],
             'economia_don' => ['tabla' => 'flavor_economia_dones', 'campo' => 'titulo'],
             'energia_comunidad' => ['tabla' => 'flavor_energia_comunidades', 'campo' => 'nombre'],
             'curso'         => ['tabla' => 'flavor_cursos', 'campo' => 'titulo'],

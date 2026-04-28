@@ -2986,7 +2986,7 @@ KNOWLEDGE;
             'color'    => 'warning', // Usa variable CSS --flavor-warning del tema
 
             'database' => [
-                'table'       => 'flavor_avisos_municipales',
+                'table'       => 'flavor_avisos',
                 'primary_key' => 'id',
             ],
 
