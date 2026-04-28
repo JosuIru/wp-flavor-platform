@@ -15,6 +15,7 @@
      */
 	function init() {
 		bindEvents();
+		bindPreviewInteractions();
 		initColorPickers();
 		checkEnvironment();
 		loadBuilds();
@@ -156,33 +157,198 @@
 	}
 
 	/**
-     * Update preview
+     * Devuelve los IDs de los módulos seleccionados en el orden del DOM.
+     */
+	function getSelectedModuleIds() {
+		const ids = [];
+		$('.module-item input:checked').each(function () {
+			ids.push($(this).val());
+		});
+		return ids;
+	}
+
+	/**
+     * Construye una Card Material para el módulo dado (estilo home Flutter).
+     */
+	function buildModuleCard(modId, meta) {
+		const color = meta.color || '#3b82f6';
+		const icon = meta.material_icon || 'apps';
+		const name = meta.name || modId;
+		const desc = meta.description || '';
+
+		const $card = $(`
+			<div class="preview-module-card" data-module="${modId}">
+				<div class="preview-module-card__avatar" style="background:${color};">
+					<span class="material-icons-outlined">${icon}</span>
+				</div>
+				<div class="preview-module-card__body">
+					<p class="preview-module-card__title">${name}</p>
+					<div class="preview-module-card__desc">${desc}</div>
+				</div>
+				<span class="material-icons-outlined preview-module-card__chevron">chevron_right</span>
+			</div>
+		`);
+
+		$card.on('click', function () {
+			showModuleScreen(modId, meta);
+		});
+
+		return $card;
+	}
+
+	/**
+     * Cambia la vista visible dentro de la pantalla del teléfono.
+     */
+	function setActiveView(viewName) {
+		$('#preview-screen .screen-view').hide();
+		$(`#preview-screen .screen-view[data-view="${viewName}"]`).css('display', 'flex');
+
+		// Actualiza el highlight del bottom nav según la vista (módulo cuenta como hub)
+		const navTab = (viewName === 'module') ? 'hub' : viewName;
+		$('#preview-navbar .nav-item').removeClass('active');
+		$(`#preview-navbar .nav-item[data-tab="${navTab}"]`).addClass('active');
+	}
+
+	/**
+     * Renderiza la pantalla detalle de un módulo.
+     */
+	function showModuleScreen(modId, meta) {
+		const color = meta.color || '#3b82f6';
+		const items = meta.mock_items || [];
+
+		// Header del módulo con su color de marca
+		$('#preview-module-header').css('background', color);
+		$('#preview-module-title').text(meta.name || modId);
+
+		// Lista de items mock
+		const $list = $('#preview-module-list').empty();
+		items.forEach(function (item) {
+			$list.append(`
+				<div class="preview-module-list__item" style="border-left-color:${color};">
+					<p class="preview-module-list__title">${item.title}</p>
+					<div class="preview-module-list__subtitle">${item.subtitle}</div>
+				</div>
+			`);
+		});
+		$list.append(`
+			<div class="preview-module-list__fab" style="background:${color};" title="Crear">
+				<span class="material-icons-outlined">add</span>
+			</div>
+		`);
+
+		setActiveView('module');
+	}
+
+	/**
+     * Renderiza la vista Buscar (sugerencias = primeros módulos seleccionados).
+     */
+	function renderSearchView(selectedIds, meta) {
+		const $list = $('#preview-search-suggestions').empty();
+		selectedIds.slice(0, 5).forEach(function (id) {
+			const m = meta[id];
+			if (!m) return;
+			const $card = buildModuleCard(id, m);
+			$list.append($card);
+		});
+	}
+
+	/**
+     * Renderiza la vista Avisos (uno por cada módulo, primer mock_item).
+     */
+	function renderAlertsView(selectedIds, meta) {
+		const $list = $('#preview-alerts-list').empty();
+		const visible = selectedIds.slice(0, 6);
+
+		if (!visible.length) {
+			$list.append(`
+				<div class="preview-empty">
+					<span class="material-icons-outlined">notifications_off</span>
+					<p>${flavorApkBuilder.i18n.noAlerts}</p>
+				</div>
+			`);
+			return;
+		}
+
+		visible.forEach(function (id) {
+			const m = meta[id];
+			if (!m || !m.mock_items || !m.mock_items.length) return;
+			const item = m.mock_items[0];
+			$list.append(`
+				<div class="alert-item">
+					<div class="alert-item__icon" style="background:${m.color};">
+						<span class="material-icons-outlined">${m.material_icon}</span>
+					</div>
+					<div>
+						<p class="alert-item__title">${item.title}</p>
+						<div class="alert-item__time">${m.name} · ${item.subtitle}</div>
+					</div>
+				</div>
+			`);
+		});
+	}
+
+	/**
+     * Update preview — sincroniza header, colores, módulos y vistas.
      */
 	function updatePreview() {
-		// Update app name
+		const meta = (window.flavorApkBuilder && flavorApkBuilder.modulesMeta) || {};
+
+		// Nombre + color primario del AppBar
 		const appName = $('#app_name').val() || 'Mi App';
 		$('#preview-header .app-title').text(appName);
 
-		// Update colors
-		const primaryColor = $('#color_primary').val() || '#2271b1';
+		const primaryColor = $('#color_primary').val() || '#3b82f6';
 		document.documentElement.style.setProperty('--preview-primary', primaryColor);
 		$('#preview-header').css('background', primaryColor);
+		$('#preview-search-header').css('background', primaryColor);
+		$('#preview-alerts-header').css('background', primaryColor);
+		$('#preview-profile-header').css('background', primaryColor);
 
-		// Update modules preview
-		const $modulesPreview = $('#preview-modules');
-		$modulesPreview.empty();
+		// Lista de módulos en la home
+		const selectedIds = getSelectedModuleIds();
+		const $modulesPreview = $('#preview-modules').empty();
+		const $empty = $('#preview-empty');
 
-		$('.module-item input:checked').each(function () {
-			const $item = $(this).closest('.module-item');
-			const icon = $item.find('.dashicons').attr('class').replace('dashicons ', '');
-			const name = $item.find('.module-name').text();
+		if (!selectedIds.length) {
+			$empty.show();
+		} else {
+			$empty.hide();
+			selectedIds.forEach(function (id) {
+				const m = meta[id];
+				if (!m) return;
+				$modulesPreview.append(buildModuleCard(id, m));
+			});
+		}
 
-			$modulesPreview.append(`
-                <div class="preview-module-item">
-                    <span class="dashicons ${icon}"></span>
-                    <span>${name}</span>
-                </div>
-            `);
+		// Refrescar vistas secundarias por si están abiertas
+		renderSearchView(selectedIds, meta);
+		renderAlertsView(selectedIds, meta);
+
+		// Si la vista actual de detalle hacía referencia a un módulo desmarcado,
+		// volver al hub para no quedarse en una pantalla desconectada.
+		const $activeModuleView = $('#preview-screen .screen-view[data-view="module"]:visible');
+		if ($activeModuleView.length) {
+			const currentId = $('#preview-module-title').data('current-module');
+			if (currentId && selectedIds.indexOf(currentId) === -1) {
+				setActiveView('hub');
+			}
+		}
+	}
+
+	/**
+     * Bind events del preview interactivo.
+     */
+	function bindPreviewInteractions() {
+		// Bottom navigation
+		$('#preview-navbar').on('click', '.nav-item', function () {
+			const tab = $(this).data('tab');
+			if (!tab) return;
+			setActiveView(tab);
+		});
+
+		// Botón back en pantalla de módulo
+		$('#preview-back').on('click', function () {
+			setActiveView('hub');
 		});
 	}
 

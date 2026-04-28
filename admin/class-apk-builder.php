@@ -110,9 +110,25 @@ class Flavor_APK_Builder {
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_media();
 
+        // Material Icons Outlined para que el preview se parezca a la APK Flutter,
+        // que usa la misma familia tipográfica de iconos.
+        wp_enqueue_style(
+            'flavor-apk-builder-material-icons',
+            'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
+            array(),
+            null
+        );
+        wp_enqueue_style(
+            'flavor-apk-builder-roboto',
+            'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap',
+            array(),
+            null
+        );
+
         wp_localize_script('flavor-apk-builder', 'flavorApkBuilder', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_apk_builder'),
+            'modulesMeta' => $this->get_available_modules(),
             'i18n' => array(
                 'checking' => __('Verificando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'building' => __('Compilando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -120,6 +136,14 @@ class Flavor_APK_Builder {
                 'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'selectIcon' => __('Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'confirmBuild' => __('¿Iniciar compilación? Este proceso puede tardar varios minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noModulesSelected' => __('Selecciona módulos para previsualizarlos en la app', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tabHome' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tabSearch' => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tabAlerts' => __('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tabProfile' => __('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'searchPlaceholder' => __('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noAlerts' => __('Sin avisos nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'profileGreeting' => __('Hola, vecino/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
             )
         ));
     }
@@ -360,30 +384,116 @@ class Flavor_APK_Builder {
                     <!-- Preview -->
                     <div class="preview-section">
                         <h2><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                        <p class="preview-hint">
+                            <?php _e('Simula la app cliente Flutter. Pulsa en cualquier módulo para ver su pantalla.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                        </p>
                         <div class="phone-preview">
                             <div class="phone-frame">
                                 <div class="phone-notch"></div>
-                                <div class="phone-screen">
-                                    <div class="app-header" id="preview-header">
-                                        <span class="app-title"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></span>
-                                    </div>
-                                    <div class="app-content">
-                                        <div class="preview-modules" id="preview-modules">
-                                            <!-- Se llena dinámicamente -->
+                                <div class="phone-status-bar">
+                                    <span class="status-time">9:41</span>
+                                    <span class="status-icons">
+                                        <span class="material-icons-outlined">network_wifi</span>
+                                        <span class="material-icons-outlined">battery_full</span>
+                                    </span>
+                                </div>
+                                <div class="phone-screen" id="preview-screen">
+
+                                    <!-- VISTA HUB (lista de módulos) -->
+                                    <div class="screen-view" data-view="hub">
+                                        <div class="app-header" id="preview-header">
+                                            <span class="app-title"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></span>
+                                            <span class="material-icons-outlined header-icon">notifications_none</span>
+                                        </div>
+                                        <div class="app-content app-content--hub">
+                                            <div class="preview-modules" id="preview-modules">
+                                                <!-- Se llena dinámicamente -->
+                                            </div>
+                                            <div class="preview-empty" id="preview-empty" style="display:none;">
+                                                <span class="material-icons-outlined">apps</span>
+                                                <p><?php _e('Selecciona módulos para previsualizarlos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <!-- VISTA MÓDULO (detalle) -->
+                                    <div class="screen-view" data-view="module" style="display:none;">
+                                        <div class="app-header app-header--module" id="preview-module-header">
+                                            <span class="material-icons-outlined header-icon header-icon--back" id="preview-back">arrow_back</span>
+                                            <span class="app-title" id="preview-module-title">Módulo</span>
+                                            <span class="material-icons-outlined header-icon">more_vert</span>
+                                        </div>
+                                        <div class="app-content app-content--module">
+                                            <div class="preview-module-list" id="preview-module-list">
+                                                <!-- Se llena dinámicamente -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- VISTA BUSCAR -->
+                                    <div class="screen-view" data-view="search" style="display:none;">
+                                        <div class="app-header" id="preview-search-header">
+                                            <span class="app-title"><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        </div>
+                                        <div class="app-content app-content--search">
+                                            <div class="search-bar">
+                                                <span class="material-icons-outlined">search</span>
+                                                <span class="search-placeholder"><?php _e('Buscar en la app...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                            </div>
+                                            <div class="search-suggestions" id="preview-search-suggestions">
+                                                <!-- Se llena con módulos -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- VISTA AVISOS -->
+                                    <div class="screen-view" data-view="alerts" style="display:none;">
+                                        <div class="app-header" id="preview-alerts-header">
+                                            <span class="app-title"><?php _e('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        </div>
+                                        <div class="app-content app-content--alerts">
+                                            <div class="alerts-list" id="preview-alerts-list">
+                                                <!-- Se llena dinámicamente -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- VISTA PERFIL -->
+                                    <div class="screen-view" data-view="profile" style="display:none;">
+                                        <div class="app-header" id="preview-profile-header">
+                                            <span class="app-title"><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        </div>
+                                        <div class="app-content app-content--profile">
+                                            <div class="profile-card">
+                                                <div class="profile-avatar"><span class="material-icons-outlined">person</span></div>
+                                                <div class="profile-name" id="preview-profile-name"><?php _e('Hola, vecino/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                                                <div class="profile-meta"><?php _e('Socio activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                                            </div>
+                                            <div class="profile-options">
+                                                <div class="profile-option"><span class="material-icons-outlined">settings</span><span><?php _e('Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
+                                                <div class="profile-option"><span class="material-icons-outlined">help_outline</span><span><?php _e('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
+                                                <div class="profile-option"><span class="material-icons-outlined">logout</span><span><?php _e('Cerrar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- BOTTOM NAVIGATION BAR -->
                                     <div class="app-navbar" id="preview-navbar">
-                                        <div class="nav-item active">
-                                            <span class="dashicons dashicons-admin-home"></span>
-                                            <span>Inicio</span>
+                                        <div class="nav-item active" data-tab="hub">
+                                            <span class="material-icons-outlined">home</span>
+                                            <span><?php _e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
-                                        <div class="nav-item">
-                                            <span class="dashicons dashicons-calendar-alt"></span>
-                                            <span>Eventos</span>
+                                        <div class="nav-item" data-tab="search">
+                                            <span class="material-icons-outlined">search</span>
+                                            <span><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
-                                        <div class="nav-item">
-                                            <span class="dashicons dashicons-admin-users"></span>
-                                            <span>Perfil</span>
+                                        <div class="nav-item" data-tab="alerts">
+                                            <span class="material-icons-outlined">notifications_none</span>
+                                            <span><?php _e('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        </div>
+                                        <div class="nav-item" data-tab="profile">
+                                            <span class="material-icons-outlined">person_outline</span>
+                                            <span><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -445,28 +555,232 @@ class Flavor_APK_Builder {
     }
 
     /**
-     * Obtener módulos disponibles
+     * Obtener módulos disponibles.
+     *
+     * Cada módulo lleva metadata para dos contextos:
+     *  - admin: 'icon' (dashicon) usado en el grid de selección.
+     *  - preview: 'material_icon' (Material Icons name), 'color' (hex que coincide
+     *    con app_colors.dart de Flutter), 'description' corta y 'mock_items' con
+     *    ejemplos plausibles que se renderizan en la pantalla del módulo.
      */
     private function get_available_modules() {
         return array(
-            'eventos' => array('name' => 'Eventos', 'icon' => 'dashicons-calendar-alt'),
-            'socios' => array('name' => 'Socios', 'icon' => 'dashicons-groups'),
-            'marketplace' => array('name' => 'Marketplace', 'icon' => 'dashicons-cart'),
-            'grupos_consumo' => array('name' => 'Grupos Consumo', 'icon' => 'dashicons-carrot'),
-            'banco_tiempo' => array('name' => 'Banco de Tiempo', 'icon' => 'dashicons-clock'),
-            'reservas' => array('name' => 'Reservas', 'icon' => 'dashicons-calendar'),
-            'foros' => array('name' => 'Foros', 'icon' => 'dashicons-format-chat'),
-            'cursos' => array('name' => 'Cursos', 'icon' => 'dashicons-welcome-learn-more'),
-            'talleres' => array('name' => 'Talleres', 'icon' => 'dashicons-hammer'),
-            'biblioteca' => array('name' => 'Biblioteca', 'icon' => 'dashicons-book'),
-            'transparencia' => array('name' => 'Transparencia', 'icon' => 'dashicons-visibility'),
-            'participacion' => array('name' => 'Participación', 'icon' => 'dashicons-megaphone'),
-            'incidencias' => array('name' => 'Incidencias', 'icon' => 'dashicons-warning'),
-            'tramites' => array('name' => 'Trámites', 'icon' => 'dashicons-clipboard'),
-            'chat_interno' => array('name' => 'Chat Interno', 'icon' => 'dashicons-format-chat'),
-            'red_social' => array('name' => 'Red Social', 'icon' => 'dashicons-share'),
-            'carpooling' => array('name' => 'Carpooling', 'icon' => 'dashicons-car'),
-            'encuestas' => array('name' => 'Encuestas', 'icon' => 'dashicons-forms'),
+            'eventos' => array(
+                'name' => 'Eventos',
+                'icon' => 'dashicons-calendar-alt',
+                'material_icon' => 'event',
+                'color' => '#9C27B0',
+                'description' => 'Calendario y agenda comunitaria',
+                'mock_items' => array(
+                    array('title' => 'Asamblea vecinal', 'subtitle' => 'Mañana · 19:00 · Centro Cívico'),
+                    array('title' => 'Mercadillo de trueque', 'subtitle' => 'Sábado · 10:00 · Plaza Mayor'),
+                    array('title' => 'Taller de compostaje', 'subtitle' => '15 may · 17:30 · Huerto urbano'),
+                ),
+            ),
+            'socios' => array(
+                'name' => 'Socios',
+                'icon' => 'dashicons-groups',
+                'material_icon' => 'groups',
+                'color' => '#3F51B5',
+                'description' => 'Directorio de personas socias',
+                'mock_items' => array(
+                    array('title' => 'María González', 'subtitle' => 'Socia activa · 12 contribuciones'),
+                    array('title' => 'Iker Etxebarria', 'subtitle' => 'Coordinador · Comisión huertos'),
+                    array('title' => 'Lucía Romero', 'subtitle' => 'Voluntaria · Banco de tiempo'),
+                ),
+            ),
+            'marketplace' => array(
+                'name' => 'Marketplace',
+                'icon' => 'dashicons-cart',
+                'material_icon' => 'storefront',
+                'color' => '#FF9800',
+                'description' => 'Anuncios entre vecinos',
+                'mock_items' => array(
+                    array('title' => 'Bicicleta urbana', 'subtitle' => '50€ · Buen estado'),
+                    array('title' => 'Clases de guitarra', 'subtitle' => '15€/hora · Domicilio'),
+                    array('title' => 'Mesa de comedor', 'subtitle' => 'Gratis · A recoger'),
+                ),
+            ),
+            'grupos_consumo' => array(
+                'name' => 'Grupos Consumo',
+                'icon' => 'dashicons-carrot',
+                'material_icon' => 'shopping_basket',
+                'color' => '#4CAF50',
+                'description' => 'Pedidos colectivos de productores',
+                'mock_items' => array(
+                    array('title' => 'Pedido fruta ecológica', 'subtitle' => 'Cierre: viernes · 12 socios'),
+                    array('title' => 'Cesta hortelana', 'subtitle' => 'Semanal · Lunes entrega'),
+                    array('title' => 'Aceite cooperativa', 'subtitle' => 'Mensual · 5L · 28€'),
+                ),
+            ),
+            'banco_tiempo' => array(
+                'name' => 'Banco de Tiempo',
+                'icon' => 'dashicons-clock',
+                'material_icon' => 'volunteer_activism',
+                'color' => '#009688',
+                'description' => 'Intercambio de servicios por horas',
+                'mock_items' => array(
+                    array('title' => 'Acompañamiento mayores', 'subtitle' => 'Ofrecido · 2h · Disponible'),
+                    array('title' => 'Clases de inglés', 'subtitle' => 'Solicitado · 1h/sem'),
+                    array('title' => 'Reparaciones bici', 'subtitle' => 'Ofrecido · 30min'),
+                ),
+            ),
+            'reservas' => array(
+                'name' => 'Reservas',
+                'icon' => 'dashicons-calendar',
+                'material_icon' => 'event_available',
+                'color' => '#00BCD4',
+                'description' => 'Reserva de espacios comunes',
+                'mock_items' => array(
+                    array('title' => 'Sala polivalente', 'subtitle' => 'Hoy 18:00-20:00 · Confirmada'),
+                    array('title' => 'Pista de pádel', 'subtitle' => 'Mañana 17:00 · Pendiente'),
+                    array('title' => 'Cocina comunitaria', 'subtitle' => 'Sáb 12:00 · Reserva activa'),
+                ),
+            ),
+            'foros' => array(
+                'name' => 'Foros',
+                'icon' => 'dashicons-format-chat',
+                'material_icon' => 'forum',
+                'color' => '#795548',
+                'description' => 'Debate y deliberación',
+                'mock_items' => array(
+                    array('title' => '¿Carril bici en c/ Mayor?', 'subtitle' => '23 respuestas · Activo'),
+                    array('title' => 'Propuesta huerto escolar', 'subtitle' => '8 respuestas · Hace 2h'),
+                    array('title' => 'Recogida residuos', 'subtitle' => '15 respuestas · Hace 1d'),
+                ),
+            ),
+            'cursos' => array(
+                'name' => 'Cursos',
+                'icon' => 'dashicons-welcome-learn-more',
+                'material_icon' => 'school',
+                'color' => '#E91E63',
+                'description' => 'Formación y aprendizaje',
+                'mock_items' => array(
+                    array('title' => 'Permacultura nivel 1', 'subtitle' => '4 sesiones · Inscripción abierta'),
+                    array('title' => 'Costura sostenible', 'subtitle' => 'Lunes · 18:00 · Gratis'),
+                    array('title' => 'Soberanía alimentaria', 'subtitle' => 'Online · Plazas limitadas'),
+                ),
+            ),
+            'talleres' => array(
+                'name' => 'Talleres',
+                'icon' => 'dashicons-hammer',
+                'material_icon' => 'handyman',
+                'color' => '#FF5722',
+                'description' => 'Talleres prácticos',
+                'mock_items' => array(
+                    array('title' => 'Reparación bicis', 'subtitle' => 'Sáb 11:00 · 3 plazas libres'),
+                    array('title' => 'Pan casero', 'subtitle' => 'Dom 10:00 · Completo'),
+                    array('title' => 'Kombucha', 'subtitle' => 'Próximamente'),
+                ),
+            ),
+            'biblioteca' => array(
+                'name' => 'Biblioteca',
+                'icon' => 'dashicons-book',
+                'material_icon' => 'menu_book',
+                'color' => '#673AB7',
+                'description' => 'Préstamo de libros y recursos',
+                'mock_items' => array(
+                    array('title' => 'La sociedad cooperativa', 'subtitle' => 'Disponible · Sala 2'),
+                    array('title' => 'Decrecimiento', 'subtitle' => 'Prestado · Devolución 12 may'),
+                    array('title' => 'Permacultura práctica', 'subtitle' => 'Reservado'),
+                ),
+            ),
+            'transparencia' => array(
+                'name' => 'Transparencia',
+                'icon' => 'dashicons-visibility',
+                'material_icon' => 'visibility',
+                'color' => '#607D8B',
+                'description' => 'Cuentas y decisiones públicas',
+                'mock_items' => array(
+                    array('title' => 'Balance Q1 2026', 'subtitle' => 'Publicado · 28 abr'),
+                    array('title' => 'Acta asamblea abril', 'subtitle' => 'Publicada · 15 abr'),
+                    array('title' => 'Presupuesto 2026', 'subtitle' => 'En consulta'),
+                ),
+            ),
+            'participacion' => array(
+                'name' => 'Participación',
+                'icon' => 'dashicons-megaphone',
+                'material_icon' => 'how_to_vote',
+                'color' => '#2196F3',
+                'description' => 'Decisiones colectivas',
+                'mock_items' => array(
+                    array('title' => 'Presupuesto huertos', 'subtitle' => 'Votación abierta · 142 votos'),
+                    array('title' => 'Nuevos horarios biblio', 'subtitle' => 'Cierra mañana · 89 votos'),
+                    array('title' => 'Calle peatonal', 'subtitle' => 'Recoge apoyos · 45/100'),
+                ),
+            ),
+            'incidencias' => array(
+                'name' => 'Incidencias',
+                'icon' => 'dashicons-warning',
+                'material_icon' => 'report_problem',
+                'color' => '#F44336',
+                'description' => 'Reporta problemas en el barrio',
+                'mock_items' => array(
+                    array('title' => 'Farola fundida c/ Sol', 'subtitle' => 'Reportado · En curso'),
+                    array('title' => 'Bache av. Libertad', 'subtitle' => 'Reportado hace 3d'),
+                    array('title' => 'Contenedor lleno', 'subtitle' => 'Resuelto · Hace 2h'),
+                ),
+            ),
+            'tramites' => array(
+                'name' => 'Trámites',
+                'icon' => 'dashicons-clipboard',
+                'material_icon' => 'description',
+                'color' => '#3F51B5',
+                'description' => 'Gestiones administrativas',
+                'mock_items' => array(
+                    array('title' => 'Empadronamiento', 'subtitle' => 'Cita disponible'),
+                    array('title' => 'Licencia obras', 'subtitle' => '15-20 días'),
+                    array('title' => 'Certificado convivencia', 'subtitle' => 'Online · 24h'),
+                ),
+            ),
+            'chat_interno' => array(
+                'name' => 'Chat Interno',
+                'icon' => 'dashicons-format-chat',
+                'material_icon' => 'chat_bubble',
+                'color' => '#4CAF50',
+                'description' => 'Mensajería entre socios',
+                'mock_items' => array(
+                    array('title' => 'Comisión huertos', 'subtitle' => 'María: ¿Quedamos el sábado?'),
+                    array('title' => 'Banco de tiempo', 'subtitle' => 'Iker: Tengo 2h disponibles'),
+                    array('title' => 'Asamblea general', 'subtitle' => '12 mensajes nuevos'),
+                ),
+            ),
+            'red_social' => array(
+                'name' => 'Red Social',
+                'icon' => 'dashicons-share',
+                'material_icon' => 'dynamic_feed',
+                'color' => '#03A9F4',
+                'description' => 'Muro de la comunidad',
+                'mock_items' => array(
+                    array('title' => 'Lucía R.', 'subtitle' => 'Comparte: La cosecha de hoy 🌱'),
+                    array('title' => 'Comisión cultura', 'subtitle' => 'Anuncia: Concierto solidario sábado'),
+                    array('title' => 'Asamblea', 'subtitle' => 'Recordatorio: jueves a las 19h'),
+                ),
+            ),
+            'carpooling' => array(
+                'name' => 'Carpooling',
+                'icon' => 'dashicons-car',
+                'material_icon' => 'directions_car',
+                'color' => '#8BC34A',
+                'description' => 'Comparte coche con vecinos',
+                'mock_items' => array(
+                    array('title' => 'Bilbao → Vitoria', 'subtitle' => 'Mañana 8:00 · 3 plazas · 5€'),
+                    array('title' => 'A la asamblea', 'subtitle' => 'Jueves 18:30 · 2 plazas'),
+                    array('title' => 'Mercadillo Gernika', 'subtitle' => 'Sáb 9:00 · 4 plazas'),
+                ),
+            ),
+            'encuestas' => array(
+                'name' => 'Encuestas',
+                'icon' => 'dashicons-forms',
+                'material_icon' => 'poll',
+                'color' => '#FF6F00',
+                'description' => 'Consultas y sondeos',
+                'mock_items' => array(
+                    array('title' => 'Horarios biblioteca', 'subtitle' => 'Activa · 67 respuestas'),
+                    array('title' => 'Tipo de huerto', 'subtitle' => 'Activa · 89 respuestas'),
+                    array('title' => 'Fiestas de barrio', 'subtitle' => 'Cerrada · 156 respuestas'),
+                ),
+            ),
         );
     }
 
