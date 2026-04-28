@@ -1007,6 +1007,12 @@ class Flavor_Platform_Module_Loader {
             $module->register_shortcodes();
         }
 
+        // Sincronizar schema de tablas (idempotente, basado en checksum del archivo).
+        // Esto fuerza dbDelta cuando el código del módulo cambia, evitando schema desync.
+        if (method_exists($module, 'ensure_database_schema')) {
+            $module->ensure_database_schema();
+        }
+
         // Si no puede activarse, intentar crear tablas automáticamente
         if (!$module->can_activate()) {
             flavor_platform_log("Intentando crear tablas para módulo: {$module_id}", 'info');

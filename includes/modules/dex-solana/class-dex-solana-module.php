@@ -40,12 +40,12 @@ class Flavor_Platform_Dex_Solana_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * {@inheritdoc}
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
-        return Flavor_Platform_Helpers::tabla_existe($tabla_swaps);
+        return true;
     }
 
     /**

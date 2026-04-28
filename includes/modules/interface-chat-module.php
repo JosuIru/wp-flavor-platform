@@ -355,6 +355,66 @@ abstract class Flavor_Platform_Module_Base implements Flavor_Platform_Module_Int
     }
 
     /**
+     * Sincroniza el schema de tablas del módulo de forma idempotente.
+     *
+     * Calcula un checksum del archivo de la clase concreta. Si difiere del
+     * guardado, invoca create_tables() (que internamente usa dbDelta) y
+     * actualiza el checksum. Esto permite que cambios de schema en el código
+     * se reflejen en BBDD sin necesidad de drop/recreate manual.
+     *
+     * Diseñado para resolver dos bugs históricos:
+     *  1. `if (!tabla_existe) create_tables()` → schema desync silencioso.
+     *  2. `can_activate()` exigiendo tabla → loop chicken-and-egg al activar.
+     *
+     * @return bool True si se ejecutó la migración, false si no era necesaria.
+     */
+    public function ensure_database_schema() {
+        if (!method_exists($this, 'create_tables')) {
+            return false;
+        }
+
+        $id_modulo = $this->get_id();
+        if (empty($id_modulo)) {
+            return false;
+        }
+
+        try {
+            $reflexion_clase = new ReflectionClass($this);
+            $archivo_clase = $reflexion_clase->getFileName();
+            if (!$archivo_clase || !is_readable($archivo_clase)) {
+                return false;
+            }
+
+            $contenido_archivo = file_get_contents($archivo_clase);
+            $checksum_actual = md5($contenido_archivo);
+
+            $clave_opcion_checksum = 'flavor_module_db_checksum_' . $id_modulo;
+            $checksum_guardado = get_option($clave_opcion_checksum, '');
+
+            if ($checksum_actual === $checksum_guardado) {
+                return false;
+            }
+
+            $reflexion_metodo = new ReflectionMethod($this, 'create_tables');
+            $reflexion_metodo->setAccessible(true);
+            $reflexion_metodo->invoke($this);
+
+            update_option($clave_opcion_checksum, $checksum_actual, false);
+
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log("Schema sincronizado para módulo: {$id_modulo}", 'info');
+            }
+
+            return true;
+        } catch (\Throwable $excepcion) {
+            if (function_exists('flavor_platform_log')) {
+                flavor_platform_log("Error sincronizando schema de {$id_modulo}: " . $excepcion->getMessage(), 'error');
+            }
+            return false;
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get_faqs() {

@@ -258,7 +258,12 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
             $instancia_modulo = $this->obtener_instancia_modulo($modulo_id);
 
             if ($instancia_modulo) {
-                // Intentar maybe_create_tables primero
+                // Forzar sincronización vía checksum si está disponible (idempotente)
+                if (method_exists($instancia_modulo, 'ensure_database_schema')) {
+                    delete_option('flavor_module_db_checksum_' . $modulo_id);
+                    $instancia_modulo->ensure_database_schema();
+                }
+                // Intentar maybe_create_tables como fallback
                 if (method_exists($instancia_modulo, 'maybe_create_tables')) {
                     $instancia_modulo->maybe_create_tables();
                 }

@@ -31,8 +31,13 @@ class Flavor_Platform_Contabilidad_Module extends Flavor_Platform_Module_Base {
         parent::__construct();
     }
 
+    /**
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
+     */
     public function can_activate() {
-        return Flavor_Platform_Helpers::tabla_existe($this->tabla_movimientos);
+        return true;
     }
 
     public function get_activation_error() {

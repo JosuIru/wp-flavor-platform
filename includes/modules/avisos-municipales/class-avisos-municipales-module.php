@@ -32,8 +32,14 @@ class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_B
         $this->description = 'Comunicados oficiales, cortes de servicio, eventos y notificaciones del ayuntamiento.'; // Translation loaded on init
 
         global $wpdb;
+        // Tabla principal sigue el patron flavor_<modulo> (alineado con el resto
+        // de modulos: bares, colectivos, etc.). Antes era flavor_avisos_municipales
+        // pero los consumidores (portal, widget VBP, API config) apuntan a
+        // flavor_avisos; renombrada en migracion del 2026-04-25.
         $this->tablas = [
-            'avisos'          => $wpdb->prefix . 'flavor_avisos_municipales',
+            'avisos'          => $wpdb->prefix . 'flavor_avisos',
+            'adjuntos'        => $wpdb->prefix . 'flavor_avisos_adjuntos',
+            'visualizaciones' => $wpdb->prefix . 'flavor_avisos_visualizaciones',
             'categorias'      => $wpdb->prefix . 'flavor_avisos_categorias',
             'zonas'           => $wpdb->prefix . 'flavor_avisos_zonas',
             'suscripciones'   => $wpdb->prefix . 'flavor_avisos_suscripciones',
@@ -49,27 +55,29 @@ class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_B
 
     /**
      * {@inheritdoc}
+     *
+     * Siempre true: las tablas se crean en init() via maybe_create_tables().
+     * Antes este metodo verificaba la existencia de la tabla, lo que creaba
+     * un chicken-and-egg donde la tabla no podia crearse hasta que el modulo
+     * estuviera activo.
      */
     public function can_activate() {
-        return Flavor_Platform_Helpers::tabla_existe($this->tablas['avisos']);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
     public function get_activation_error() {
-        if (!$this->can_activate()) {
-            return __('Las tablas de Avisos Municipales no estan creadas. Activa el modulo para crearlas automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
-        }
-        
-    return '';
+        return '';
     }
 
-/**
-     * Verifica si el módulo está activo
+    /**
+     * Verifica si el módulo está activo. Se considera activo cuando la tabla
+     * principal existe (efecto del init() que crea via dbDelta).
      */
     public function is_active() {
-        return $this->can_activate();
+        return Flavor_Platform_Helpers::tabla_existe($this->tablas['avisos']);
     }
 
     /**
@@ -83,25 +91,35 @@ class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_B
             $this->tablas['avisos'] => "CREATE TABLE {$this->tablas['avisos']} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 titulo varchar(255) NOT NULL,
-                contenido text NOT NULL,
+                contenido text DEFAULT NULL,
                 prioridad enum('urgente','alta','media','baja') NOT NULL DEFAULT 'media',
                 categoria varchar(100) DEFAULT NULL,
-                estado enum('borrador','publicado','archivado') NOT NULL DEFAULT 'borrador',
-                autor_id bigint(20) UNSIGNED NOT NULL,
-                fecha_publicacion datetime DEFAULT NULL,
+                categoria_id bigint(20) UNSIGNED DEFAULT NULL,
+                zona_id bigint(20) UNSIGNED DEFAULT NULL,
+                autor_id bigint(20) UNSIGNED NOT NULL DEFAULT 1,
+                fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_inicio datetime DEFAULT NULL,
+                fecha_fin datetime DEFAULT NULL,
                 fecha_expiracion datetime DEFAULT NULL,
+                estado enum('borrador','publicado','archivado') NOT NULL DEFAULT 'borrador',
+                publicado tinyint(1) NOT NULL DEFAULT 0,
+                destacado tinyint(1) NOT NULL DEFAULT 0,
                 tiene_adjuntos tinyint(1) NOT NULL DEFAULT 0,
                 total_visualizaciones int(11) NOT NULL DEFAULT 0,
                 total_confirmaciones int(11) NOT NULL DEFAULT 0,
                 requiere_confirmacion tinyint(1) NOT NULL DEFAULT 0,
-                created_at datetime NOT NULL,
-                updated_at datetime DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 KEY autor_id (autor_id),
                 KEY estado (estado),
+                KEY publicado (publicado),
                 KEY prioridad (prioridad),
                 KEY categoria (categoria),
-                KEY fecha_publicacion (fecha_publicacion)
+                KEY categoria_id (categoria_id),
+                KEY zona_id (zona_id),
+                KEY fecha_publicacion (fecha_publicacion),
+                KEY fecha_expiracion (fecha_expiracion)
             ) $charset_collate;",
 
             $this->tablas['adjuntos'] => "CREATE TABLE {$this->tablas['adjuntos']} (
@@ -286,17 +304,32 @@ class Flavor_Platform_Avisos_Municipales_Module extends Flavor_Platform_Module_B
     }
 
     /**
-     * Crea las tablas si no existen
+     * Crea o actualiza las tablas. Usa un checksum del schema declarado
+     * en get_table_schema() para detectar cambios automaticamente — asi se
+     * dispara dbDelta cada vez que el desarrollador modifica un CREATE TABLE,
+     * sin depender de incrementar manualmente una constante de version.
+     *
+     * dbDelta es idempotente y solo aplica diffs no destructivos, asi que
+     * llamarlo en cada init es seguro.
      */
     public function maybe_create_tables() {
-        $db_version = get_option('flavor_avisos_db_version', '0');
-        $current_version = '2.1.0'; // Incrementado para forzar recreación
+        $checksum_actual    = md5(serialize($this->get_table_schema()));
+        $checksum_guardado  = get_option('flavor_avisos_db_schema_checksum', '');
 
-        if (version_compare($db_version, $current_version, '<')) {
-            $this->create_tables();
-            $this->insertar_datos_iniciales();
-            update_option('flavor_avisos_db_version', $current_version);
+        if ($checksum_actual === $checksum_guardado) {
+            return;
         }
+
+        $tabla_principal = $this->tablas['avisos'];
+        $era_instalacion_nueva = !Flavor_Platform_Helpers::tabla_existe($tabla_principal);
+
+        $this->create_tables();
+
+        if ($era_instalacion_nueva) {
+            $this->insertar_datos_iniciales();
+        }
+
+        update_option('flavor_avisos_db_schema_checksum', $checksum_actual);
     }
 
     /**

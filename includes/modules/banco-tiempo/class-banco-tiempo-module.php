@@ -39,14 +39,12 @@ class Flavor_Platform_Banco_Tiempo_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * {@inheritdoc}
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        // Verificar si existe la tabla de banco de tiempo
-        global $wpdb;
-        $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
-
-        return Flavor_Platform_Helpers::tabla_existe($tabla_servicios);
+        return true;
     }
 
     /**

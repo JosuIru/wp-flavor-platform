@@ -32,20 +32,19 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * Verifica si el modulo puede activarse
+     * Verifica si el modulo puede activarse. Siempre true: las tablas se
+     * crean en init() via maybe_create_tables(), por lo que no tiene sentido
+     * bloquear la activacion por su ausencia (causaba un chicken-and-egg
+     * donde la tabla no podia crearse hasta que el modulo se activara).
      */
     public function can_activate() {
-        global $wpdb;
-        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias');
+        return true;
     }
 
     /**
-     * Mensaje de error si no puede activarse
+     * Mensaje de error si no puede activarse (no aplica con can_activate true).
      */
     public function get_activation_error() {
-        if (!$this->can_activate()) {
-            return 'Las tablas del modulo Campanias no estan creadas. Desactiva y reactiva el modulo.';
-        }
         return '';
     }
 
@@ -78,147 +77,158 @@ class Flavor_Platform_Campanias_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * Crea las tablas si no existen
+     * Crea o actualiza las tablas. Usa un checksum del schema declarado para
+     * detectar cambios automaticamente, asi futuras modificaciones del CREATE
+     * TABLE se aplican via dbDelta sin depender de bumpear una version a mano.
+     *
+     * dbDelta es idempotente y solo aplica diffs no destructivos.
      */
     public function maybe_create_tables() {
-        global $wpdb;
-        if (!Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
-            $this->create_tables();
+        $checksum_actual   = md5(serialize($this->get_table_schema()));
+        $checksum_guardado = get_option('flavor_campanias_db_schema_checksum', '');
+
+        if ($checksum_actual === $checksum_guardado) {
+            return;
         }
+
+        $this->create_tables();
+        update_option('flavor_campanias_db_schema_checksum', $checksum_actual);
     }
 
     /**
-     * Crea las tablas del modulo
+     * Devuelve el schema de las tablas del modulo. Cada entrada es un
+     * CREATE TABLE valido para dbDelta.
      */
-    private function create_tables() {
+    public function get_table_schema() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
+        $t_campanias       = $wpdb->prefix . 'flavor_campanias';
+        $t_participantes   = $wpdb->prefix . 'flavor_campanias_participantes';
+        $t_acciones        = $wpdb->prefix . 'flavor_campanias_acciones';
+        $t_actualizaciones = $wpdb->prefix . 'flavor_campanias_actualizaciones';
+        $t_firmas          = $wpdb->prefix . 'flavor_campanias_firmas';
+
+        return [
+            $t_campanias => "CREATE TABLE $t_campanias (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                titulo varchar(255) NOT NULL,
+                descripcion longtext NOT NULL,
+                tipo enum('protesta','recogida_firmas','concentracion','boicot','denuncia_publica','sensibilizacion','accion_legal','otra') NOT NULL DEFAULT 'otra',
+                estado enum('planificada','activa','pausada','completada','cancelada') NOT NULL DEFAULT 'planificada',
+                objetivo_descripcion text,
+                objetivo_firmas int unsigned DEFAULT 0,
+                firmas_actuales int unsigned DEFAULT 0,
+                fecha_inicio date,
+                fecha_fin date,
+                ubicacion varchar(255),
+                latitud decimal(10,8),
+                longitud decimal(11,8),
+                imagen varchar(255),
+                documentos text,
+                enlaces_externos text,
+                hashtags varchar(255),
+                colectivo_id bigint(20) unsigned,
+                comunidad_id bigint(20) unsigned,
+                creador_id bigint(20) unsigned NOT NULL,
+                visibilidad enum('publica','miembros','privada') NOT NULL DEFAULT 'publica',
+                destacada tinyint(1) DEFAULT 0,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY creador_id (creador_id),
+                KEY tipo (tipo),
+                KEY estado (estado),
+                KEY colectivo_id (colectivo_id),
+                KEY comunidad_id (comunidad_id),
+                KEY fecha_inicio (fecha_inicio)
+            ) $charset_collate;",
+
+            $t_participantes => "CREATE TABLE $t_participantes (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                campania_id bigint(20) unsigned NOT NULL,
+                user_id bigint(20) unsigned NOT NULL,
+                rol enum('organizador','coordinador','colaborador','firmante','asistente') NOT NULL DEFAULT 'colaborador',
+                estado enum('confirmado','pendiente','cancelado') NOT NULL DEFAULT 'pendiente',
+                tareas_asignadas text,
+                notas text,
+                fecha_union datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY campania_user (campania_id, user_id),
+                KEY campania_id (campania_id),
+                KEY user_id (user_id),
+                KEY rol (rol)
+            ) $charset_collate;",
+
+            $t_acciones => "CREATE TABLE $t_acciones (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                campania_id bigint(20) unsigned NOT NULL,
+                titulo varchar(255) NOT NULL,
+                descripcion text,
+                tipo enum('concentracion','manifestacion','charla','taller','difusion','reunion','entrega_firmas','rueda_prensa','otra') NOT NULL,
+                fecha datetime NOT NULL,
+                ubicacion varchar(255),
+                latitud decimal(10,8),
+                longitud decimal(11,8),
+                punto_encuentro varchar(255),
+                materiales_necesarios text,
+                responsable_id bigint(20) unsigned,
+                asistentes_esperados int unsigned DEFAULT 0,
+                asistentes_confirmados int unsigned DEFAULT 0,
+                estado enum('programada','en_curso','completada','cancelada') NOT NULL DEFAULT 'programada',
+                resultado text,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY campania_id (campania_id),
+                KEY fecha (fecha),
+                KEY estado (estado)
+            ) $charset_collate;",
+
+            $t_actualizaciones => "CREATE TABLE $t_actualizaciones (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                campania_id bigint(20) unsigned NOT NULL,
+                titulo varchar(255) NOT NULL,
+                contenido longtext NOT NULL,
+                tipo enum('noticia','logro','problema','llamamiento','media') NOT NULL DEFAULT 'noticia',
+                imagen varchar(255),
+                autor_id bigint(20) unsigned NOT NULL,
+                destacada tinyint(1) DEFAULT 0,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY campania_id (campania_id),
+                KEY autor_id (autor_id),
+                KEY created_at (created_at)
+            ) $charset_collate;",
+
+            $t_firmas => "CREATE TABLE $t_firmas (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                campania_id bigint(20) unsigned NOT NULL,
+                user_id bigint(20) unsigned,
+                nombre varchar(200),
+                email varchar(200),
+                dni_hash varchar(64),
+                localidad varchar(100),
+                comentario text,
+                visible tinyint(1) DEFAULT 1,
+                verificada tinyint(1) DEFAULT 0,
+                ip_hash varchar(64),
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY campania_id (campania_id),
+                KEY user_id (user_id),
+                KEY created_at (created_at)
+            ) $charset_collate;",
+        ];
+    }
+
+    /**
+     * Crea las tablas del modulo (idempotente via dbDelta).
+     */
+    private function create_tables() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-        // Tabla principal de campanias
-        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
-        $sql_campanias = "CREATE TABLE $tabla_campanias (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            titulo varchar(255) NOT NULL,
-            descripcion longtext NOT NULL,
-            tipo enum('protesta','recogida_firmas','concentracion','boicot','denuncia_publica','sensibilizacion','accion_legal','otra') NOT NULL DEFAULT 'otra',
-            estado enum('planificada','activa','pausada','completada','cancelada') NOT NULL DEFAULT 'planificada',
-            objetivo_descripcion text,
-            objetivo_firmas int unsigned DEFAULT 0,
-            firmas_actuales int unsigned DEFAULT 0,
-            fecha_inicio date,
-            fecha_fin date,
-            ubicacion varchar(255),
-            latitud decimal(10,8),
-            longitud decimal(11,8),
-            imagen varchar(255),
-            documentos text,
-            enlaces_externos text,
-            hashtags varchar(255),
-            colectivo_id bigint(20) unsigned,
-            comunidad_id bigint(20) unsigned,
-            creador_id bigint(20) unsigned NOT NULL,
-            visibilidad enum('publica','miembros','privada') NOT NULL DEFAULT 'publica',
-            destacada tinyint(1) DEFAULT 0,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY creador_id (creador_id),
-            KEY tipo (tipo),
-            KEY estado (estado),
-            KEY colectivo_id (colectivo_id),
-            KEY comunidad_id (comunidad_id),
-            KEY fecha_inicio (fecha_inicio)
-        ) $charset_collate;";
-        dbDelta($sql_campanias);
-
-        // Tabla de participantes en campanias
-        $tabla_participantes = $wpdb->prefix . 'flavor_campanias_participantes';
-        $sql_participantes = "CREATE TABLE $tabla_participantes (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            campania_id bigint(20) unsigned NOT NULL,
-            user_id bigint(20) unsigned NOT NULL,
-            rol enum('organizador','coordinador','colaborador','firmante','asistente') NOT NULL DEFAULT 'colaborador',
-            estado enum('confirmado','pendiente','cancelado') NOT NULL DEFAULT 'pendiente',
-            tareas_asignadas text,
-            notas text,
-            fecha_union datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY campania_user (campania_id, user_id),
-            KEY campania_id (campania_id),
-            KEY user_id (user_id),
-            KEY rol (rol)
-        ) $charset_collate;";
-        dbDelta($sql_participantes);
-
-        // Tabla de acciones/eventos de la campania
-        $tabla_acciones = $wpdb->prefix . 'flavor_campanias_acciones';
-        $sql_acciones = "CREATE TABLE $tabla_acciones (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            campania_id bigint(20) unsigned NOT NULL,
-            titulo varchar(255) NOT NULL,
-            descripcion text,
-            tipo enum('concentracion','manifestacion','charla','taller','difusion','reunion','entrega_firmas','rueda_prensa','otra') NOT NULL,
-            fecha datetime NOT NULL,
-            ubicacion varchar(255),
-            latitud decimal(10,8),
-            longitud decimal(11,8),
-            punto_encuentro varchar(255),
-            materiales_necesarios text,
-            responsable_id bigint(20) unsigned,
-            asistentes_esperados int unsigned DEFAULT 0,
-            asistentes_confirmados int unsigned DEFAULT 0,
-            estado enum('programada','en_curso','completada','cancelada') NOT NULL DEFAULT 'programada',
-            resultado text,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY campania_id (campania_id),
-            KEY fecha (fecha),
-            KEY estado (estado)
-        ) $charset_collate;";
-        dbDelta($sql_acciones);
-
-        // Tabla de actualizaciones/noticias de la campania
-        $tabla_actualizaciones = $wpdb->prefix . 'flavor_campanias_actualizaciones';
-        $sql_actualizaciones = "CREATE TABLE $tabla_actualizaciones (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            campania_id bigint(20) unsigned NOT NULL,
-            titulo varchar(255) NOT NULL,
-            contenido longtext NOT NULL,
-            tipo enum('noticia','logro','problema','llamamiento','media') NOT NULL DEFAULT 'noticia',
-            imagen varchar(255),
-            autor_id bigint(20) unsigned NOT NULL,
-            destacada tinyint(1) DEFAULT 0,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY campania_id (campania_id),
-            KEY autor_id (autor_id),
-            KEY created_at (created_at)
-        ) $charset_collate;";
-        dbDelta($sql_actualizaciones);
-
-        // Tabla de firmas (para recogida de firmas)
-        $tabla_firmas = $wpdb->prefix . 'flavor_campanias_firmas';
-        $sql_firmas = "CREATE TABLE $tabla_firmas (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            campania_id bigint(20) unsigned NOT NULL,
-            user_id bigint(20) unsigned,
-            nombre varchar(200),
-            email varchar(200),
-            dni_hash varchar(64),
-            localidad varchar(100),
-            comentario text,
-            visible tinyint(1) DEFAULT 1,
-            verificada tinyint(1) DEFAULT 0,
-            ip_hash varchar(64),
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY campania_id (campania_id),
-            KEY user_id (user_id),
-            KEY created_at (created_at)
-        ) $charset_collate;";
-        dbDelta($sql_firmas);
+        foreach ($this->get_table_schema() as $sql) {
+            dbDelta($sql);
+        }
     }
 
     /**

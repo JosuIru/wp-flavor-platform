@@ -50,13 +50,12 @@ class Flavor_Platform_Presupuestos_Participativos_Module extends Flavor_Platform
     }
 
     /**
-     * {@inheritdoc}
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
-
-        return Flavor_Platform_Helpers::tabla_existe($tabla_proyectos);
+        return true;
     }
 
     /**

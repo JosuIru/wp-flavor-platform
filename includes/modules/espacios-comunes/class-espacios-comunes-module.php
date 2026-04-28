@@ -213,13 +213,12 @@ class Flavor_Platform_Espacios_Comunes_Module extends Flavor_Platform_Module_Bas
     }
 
     /**
-     * {@inheritdoc}
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
-
-        return Flavor_Platform_Helpers::tabla_existe($tabla_espacios);
+        return true;
     }
 
     /**

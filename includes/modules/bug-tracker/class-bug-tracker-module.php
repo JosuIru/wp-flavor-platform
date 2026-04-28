@@ -108,13 +108,12 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
-     * Verifica si el módulo puede activarse
-     *
-     * @return bool
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        return Flavor_Platform_Helpers::tabla_existe($this->tabla_bugs);
+        return true;
     }
 
     /**

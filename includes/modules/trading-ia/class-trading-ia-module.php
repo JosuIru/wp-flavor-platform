@@ -45,13 +45,12 @@ class Flavor_Platform_Trading_IA_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
-     * {@inheritdoc}
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
-
-        return Flavor_Platform_Helpers::tabla_existe($tabla_trades);
+        return true;
     }
 
     /**

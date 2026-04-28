@@ -32,11 +32,12 @@ class Flavor_Platform_Seguimiento_Denuncias_Module extends Flavor_Platform_Modul
     }
 
     /**
-     * Verifica si el modulo puede activarse
+     * El gatekeeping legacy basado en tabla_existe() era chicken-and-egg.
+     * Ahora el loader llama ensure_database_schema() antes, garantizando
+     * que las tablas estén sincronizadas. Devolvemos true por defecto.
      */
     public function can_activate() {
-        global $wpdb;
-        return Flavor_Platform_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias');
+        return true;
     }
 
     /**
