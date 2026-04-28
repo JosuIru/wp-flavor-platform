@@ -383,12 +383,26 @@ class Flavor_APK_Builder {
                 <div class="preview-panel">
                     <!-- Preview -->
                     <div class="preview-section">
-                        <h2><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
-                        <p class="preview-hint">
+                        <h2>
+                            <?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                            <span class="preview-toolbar">
+                                <button type="button" class="preview-toolbar__btn" id="preview-theme-toggle" title="<?php esc_attr_e('Alternar light/dark', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                                    <span class="material-icons-outlined">dark_mode</span>
+                                </button>
+                                <button type="button" class="preview-toolbar__btn" id="preview-replay" title="<?php esc_attr_e('Reproducir splash', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                                    <span class="material-icons-outlined">replay</span>
+                                </button>
+                            </span>
+                        </h2>
+                        <p class="preview-hint" id="preview-hint">
                             <?php _e('Simula la app cliente Flutter en modo hybrid (4 tabs nativas + drawer con módulos). Pulsa el menú o cualquier módulo del drawer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
+                        <div class="preview-flavor-badge preview-flavor-badge--client" id="preview-flavor-badge">
+                            <span class="material-icons-outlined">person</span>
+                            <span id="preview-flavor-label"><?php _e('Modo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        </div>
                         <div class="phone-preview">
-                            <div class="phone-frame">
+                            <div class="phone-frame" id="preview-frame">
                                 <div class="phone-notch"></div>
                                 <div class="phone-status-bar">
                                     <span class="status-time">9:41</span>
@@ -398,6 +412,15 @@ class Flavor_APK_Builder {
                                     </span>
                                 </div>
                                 <div class="phone-screen" id="preview-screen">
+
+                                    <!-- SPLASH SCREEN (1.4s al iniciar) -->
+                                    <div class="screen-view screen-view--splash" data-view="splash" style="display:none;">
+                                        <div class="splash-logo">
+                                            <span class="material-icons-outlined">apartment</span>
+                                        </div>
+                                        <div class="splash-name" id="preview-splash-name"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></div>
+                                        <div class="splash-progress"><div class="splash-progress__bar"></div></div>
+                                    </div>
 
                                     <!-- VISTA TAB ACTIVA (chat, reservations, my_tickets, info) -->
                                     <div class="screen-view" data-view="tab">

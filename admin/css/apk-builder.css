@@ -381,6 +381,48 @@
     line-height: 1.4;
 }
 
+/* Toolbar del preview (toggle dark, replay splash) */
+.preview-section h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preview-toolbar {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.preview-toolbar__btn {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #50575e;
+    transition: all 0.15s ease;
+}
+
+.preview-toolbar__btn:hover {
+    background: #fff;
+    color: #2271b1;
+    border-color: #2271b1;
+}
+
+.preview-toolbar__btn.is-active {
+    background: #1d2327;
+    color: #fff;
+    border-color: #1d2327;
+}
+
+.preview-toolbar__btn .material-icons-outlined {
+    font-size: 18px;
+}
+
 .phone-preview {
     display: flex;
     justify-content: center;
@@ -1332,4 +1374,337 @@
 
 .wp-picker-container .wp-color-result {
     margin-bottom: 5px;
+}
+
+/* =========================================================
+   Splash screen (Flutter SplashScreen al arrancar la app)
+   ========================================================= */
+.screen-view--splash {
+    background: var(--preview-primary, #3b82f6);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 50;
+}
+
+.splash-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: splashLogoPulse 1.4s ease-in-out infinite;
+}
+
+.splash-logo .material-icons-outlined {
+    font-size: 40px;
+    color: #fff;
+}
+
+.splash-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 24px;
+}
+
+.splash-progress {
+    width: 80px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+}
+
+.splash-progress__bar {
+    width: 30%;
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    animation: splashProgress 1.4s ease-in-out infinite;
+}
+
+@keyframes splashLogoPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.95;
+    }
+
+    50% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
+}
+
+@keyframes splashProgress {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(280%); }
+}
+
+/* =========================================================
+   Animaciones de transición (Flutter Navigator + tab swap)
+   ========================================================= */
+@keyframes screenSlideIn {
+    from {
+        transform: translateX(20%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes tabFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.screen-view[data-view="module"] {
+    animation: screenSlideIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-content,
+.preview-module-list {
+    animation: tabFadeIn 0.18s ease-out;
+}
+
+/* =========================================================
+   Dark mode (espejo de app_colors.dart de Flutter)
+   ========================================================= */
+.phone-frame.is-dark .phone-screen {
+    background: #0F172A;
+}
+
+.phone-frame.is-dark .app-content {
+    background: #0F172A;
+}
+
+.phone-frame.is-dark .tab-content__card,
+.phone-frame.is-dark .preview-module-list__item,
+.phone-frame.is-dark .alert-item,
+.phone-frame.is-dark .profile-card,
+.phone-frame.is-dark .profile-options,
+.phone-frame.is-dark .search-bar,
+.phone-frame.is-dark .tab-content__hero {
+    background: #1E293B;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.phone-frame.is-dark .tab-content__title,
+.phone-frame.is-dark .preview-module-list__title,
+.phone-frame.is-dark .alert-item__title,
+.phone-frame.is-dark .profile-name,
+.phone-frame.is-dark .tab-content__hero-title,
+.phone-frame.is-dark .profile-option {
+    color: #F1F5F9;
+}
+
+.phone-frame.is-dark .tab-content__subtitle,
+.phone-frame.is-dark .preview-module-list__subtitle,
+.phone-frame.is-dark .alert-item__time,
+.phone-frame.is-dark .profile-meta,
+.phone-frame.is-dark .tab-content__hero-subtitle {
+    color: #94A3B8;
+}
+
+.phone-frame.is-dark .tab-content__avatar {
+    background: #334155;
+    color: #CBD5E1;
+}
+
+.phone-frame.is-dark .app-navbar {
+    background: #1E293B;
+    border-top-color: #334155;
+}
+
+.phone-frame.is-dark .nav-item {
+    color: #64748B;
+}
+
+.phone-frame.is-dark .app-drawer {
+    background: #1E293B;
+}
+
+.phone-frame.is-dark .app-drawer__item {
+    color: #F1F5F9;
+}
+
+.phone-frame.is-dark .app-drawer__item:hover {
+    background: #334155;
+}
+
+.phone-frame.is-dark .app-drawer__item-icon {
+    color: #94A3B8;
+}
+
+.phone-frame.is-dark .app-drawer__divider {
+    background: #334155;
+}
+
+.phone-frame.is-dark .app-drawer__section-label {
+    color: #64748B;
+}
+
+.phone-frame.is-dark .preview-module-list__item {
+    color: #F1F5F9;
+}
+
+/* =========================================================
+   Vista admin (dashboard de KPIs en lugar de hub cliente)
+   ========================================================= */
+.admin-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.admin-kpi-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-kpi-card__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.admin-kpi-card__icon .material-icons-outlined {
+    font-size: 16px;
+}
+
+.admin-kpi-card__value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2328;
+    line-height: 1.1;
+}
+
+.admin-kpi-card__label {
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.admin-kpi-card__delta {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.admin-kpi-card__delta--up { color: #16a34a; }
+.admin-kpi-card__delta--down { color: #dc2626; }
+
+.admin-quick-actions {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.admin-quick-actions__title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #1f2328;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-quick-actions__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-quick-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    background: #f6f7f7;
+    font-size: 12px;
+    color: #1f2328;
+    cursor: pointer;
+}
+
+.admin-quick-action .material-icons-outlined {
+    font-size: 18px;
+    color: var(--preview-primary, #3b82f6);
+}
+
+.phone-frame.is-dark .admin-kpi-card,
+.phone-frame.is-dark .admin-quick-actions {
+    background: #1E293B;
+}
+
+.phone-frame.is-dark .admin-kpi-card__value,
+.phone-frame.is-dark .admin-quick-actions__title,
+.phone-frame.is-dark .admin-quick-action {
+    color: #F1F5F9;
+}
+
+.phone-frame.is-dark .admin-quick-action {
+    background: #0F172A;
+}
+
+.phone-frame.is-dark .admin-kpi-card__label {
+    color: #94A3B8;
+}
+
+/* Indicador de flavor activo (chip arriba del frame) */
+.preview-flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #f6f7f7;
+    color: #50575e;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.preview-flavor-badge .material-icons-outlined {
+    font-size: 13px;
+}
+
+.preview-flavor-badge--admin {
+    background: #fff4d6;
+    color: #92400e;
+}
+
+.preview-flavor-badge--client {
+    background: #dbeafe;
+    color: #1e40af;
 }

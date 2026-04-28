@@ -20,6 +20,7 @@
 		checkEnvironment();
 		loadBuilds();
 		updatePreview();
+		playSplash();
 	}
 
 	/**
@@ -48,6 +49,9 @@
 
 		// App name change
 		$('#app_name').on('input', updatePreview);
+
+		// Flavor (client/admin) change → re-render
+		$('#flavor').on('change', updatePreview);
 
 		// Save config
 		$('#save-config').on('click', saveConfig);
@@ -191,28 +195,160 @@
 	}
 
 	/**
+     * Devuelve el flavor activo del builder ('client' | 'admin').
+     */
+	function getFlavor() {
+		return $('#flavor').val() || 'client';
+	}
+
+	/**
      * Cambia la tab nativa activa y renderiza su contenido.
+     * En modo admin las "tabs" se reemplazan por un dashboard único.
      */
 	function setActiveTab(tabId) {
 		const meta = (window.flavorApkBuilder && flavorApkBuilder.modulesMeta) || {};
-		const tab = NATIVE_TABS.find((t) => t.id === tabId) || NATIVE_TABS[3];
+		const flavor = getFlavor();
 
-		// Highlight bottom nav
-		$('#preview-navbar .nav-item').removeClass('active');
-		$(`#preview-navbar .nav-item[data-tab="${tab.id}"]`).addClass('active');
-
-		// Título del AppBar
+		// Título del AppBar (siempre app name)
 		const appName = $('#app_name').val() || 'Mi App';
 		$('#preview-tab-title').text(appName);
 
-		// Contenido de la tab
 		const $body = $('#preview-tab-body').empty();
-		$body.append(buildTabContent(tab.id, meta));
 
-		// Cerrar drawer si estaba abierto y volver a vista tab
+		if (flavor === 'admin') {
+			// Modo admin: dashboard único, sin tabs nativas funcionales
+			$body.append(buildAdminDashboard(meta));
+			// Mantener bottom nav visible pero solo "Inicio" activo
+			$('#preview-navbar .nav-item').removeClass('active');
+			$('#preview-navbar .nav-item[data-tab="info"]').addClass('active');
+			$('#preview-screen').data('current-tab', 'admin_dashboard');
+		} else {
+			const tab = NATIVE_TABS.find((t) => t.id === tabId) || NATIVE_TABS[3];
+			$('#preview-navbar .nav-item').removeClass('active');
+			$(`#preview-navbar .nav-item[data-tab="${tab.id}"]`).addClass('active');
+			$body.append(buildTabContent(tab.id, meta));
+			$('#preview-screen').data('current-tab', tab.id);
+		}
+
 		closeDrawer();
 		setActiveView('tab');
-		$('#preview-screen').data('current-tab', tab.id);
+	}
+
+	/**
+     * Dashboard admin (KPIs + acciones rápidas).
+     * Inspirado en main_admin.dart de la APK admin.
+     */
+	function buildAdminDashboard(meta) {
+		const selectedIds = getSelectedModuleIds();
+		const $wrap = $('<div class="admin-dashboard"></div>');
+
+		const kpis = [
+			{ value: '247', label: 'Socios activos', icon: 'groups', color: '#3F51B5', delta: '+12', up: true },
+			{ value: '34', label: 'Eventos próximos', icon: 'event', color: '#9C27B0', delta: '+3', up: true },
+			{ value: '128', label: 'Posts del mes', icon: 'article', color: '#FF9800', delta: '+24', up: true },
+			{ value: '5', label: 'Incidencias abiertas', icon: 'report_problem', color: '#F44336', delta: '-2', up: false },
+		];
+
+		const $grid = $('<div class="admin-kpi-grid"></div>');
+		kpis.forEach(function (k) {
+			$grid.append(`
+				<div class="admin-kpi-card">
+					<div class="admin-kpi-card__icon" style="background:${k.color};">
+						<span class="material-icons-outlined">${k.icon}</span>
+					</div>
+					<div class="admin-kpi-card__value">${k.value}</div>
+					<div class="admin-kpi-card__label">${k.label}</div>
+					<div class="admin-kpi-card__delta admin-kpi-card__delta--${k.up ? 'up' : 'down'}">${k.up ? '↗' : '↘'} ${k.delta}</div>
+				</div>
+			`);
+		});
+		$wrap.append($grid);
+
+		// Acciones rápidas: una por cada módulo seleccionado (top 4)
+		const $actions = $(`
+			<div class="admin-quick-actions">
+				<p class="admin-quick-actions__title">Acciones rápidas</p>
+				<div class="admin-quick-actions__list"></div>
+			</div>
+		`);
+		const $list = $actions.find('.admin-quick-actions__list');
+		const fallback = [
+			{ icon: 'add_circle_outline', label: 'Crear nueva publicación' },
+			{ icon: 'event_available', label: 'Programar evento' },
+			{ icon: 'notifications_active', label: 'Enviar aviso a socios' },
+			{ icon: 'assessment', label: 'Ver estadísticas' },
+		];
+
+		const top = selectedIds.slice(0, 4);
+		if (top.length) {
+			top.forEach(function (id) {
+				const m = meta[id];
+				if (!m) return;
+				$list.append(`
+					<div class="admin-quick-action">
+						<span class="material-icons-outlined" style="color:${m.color};">${m.material_icon}</span>
+						<span>Gestionar ${m.name.toLowerCase()}</span>
+					</div>
+				`);
+			});
+		} else {
+			fallback.forEach(function (a) {
+				$list.append(`
+					<div class="admin-quick-action">
+						<span class="material-icons-outlined">${a.icon}</span>
+						<span>${a.label}</span>
+					</div>
+				`);
+			});
+		}
+		$wrap.append($actions);
+
+		return $wrap;
+	}
+
+	/**
+     * Reproduce splash screen sobre el preview.
+     */
+	function playSplash() {
+		$('#preview-splash-name').text($('#app_name').val() || 'Mi App');
+		const $splash = $('#preview-screen .screen-view[data-view="splash"]');
+		$splash.css('display', 'flex');
+		setTimeout(function () {
+			$splash.fadeOut(220);
+		}, 1400);
+	}
+
+	/**
+     * Toggle light/dark del preview.
+     */
+	function toggleDarkMode() {
+		const $frame = $('#preview-frame');
+		const $btn = $('#preview-theme-toggle');
+		const isDark = $frame.toggleClass('is-dark').hasClass('is-dark');
+		$btn.toggleClass('is-active', isDark);
+		$btn.find('.material-icons-outlined').text(isDark ? 'light_mode' : 'dark_mode');
+	}
+
+	/**
+     * Refresca el badge del flavor activo.
+     */
+	function refreshFlavorBadge() {
+		const flavor = getFlavor();
+		const $badge = $('#preview-flavor-badge');
+		const $label = $('#preview-flavor-label');
+		const $hint = $('#preview-hint');
+		$badge.removeClass('preview-flavor-badge--client preview-flavor-badge--admin');
+		if (flavor === 'admin') {
+			$badge.addClass('preview-flavor-badge--admin');
+			$label.text('Modo Administrador');
+			$badge.find('.material-icons-outlined').text('admin_panel_settings');
+			$hint.text('Simula la app admin Flutter (dashboard con KPIs y acciones por módulo).');
+		} else {
+			$badge.addClass('preview-flavor-badge--client');
+			$label.text('Modo Cliente');
+			$badge.find('.material-icons-outlined').text('person');
+			$hint.text('Simula la app cliente Flutter en modo hybrid (4 tabs nativas + drawer con módulos). Pulsa el menú o cualquier módulo del drawer.');
+		}
 	}
 
 	/**
@@ -451,10 +587,17 @@
 		$('#preview-drawer-name').text(appName);
 		$('#preview-tab-title').text(appName);
 
-		// Reconstruir drawer
+		// Reconstruir drawer y badge de flavor
 		const selectedIds = getSelectedModuleIds();
 		const currentTabId = $('#preview-screen').data('current-tab') || DEFAULT_TAB_ID;
 		renderDrawer(selectedIds, meta, currentTabId);
+		refreshFlavorBadge();
+
+		// Re-pintar la tab actual para reflejar cambio de flavor o nombre
+		const $visibleTab = $('#preview-screen .screen-view[data-view="tab"]:visible');
+		if ($visibleTab.length) {
+			setActiveTab(currentTabId === 'admin_dashboard' ? DEFAULT_TAB_ID : currentTabId);
+		}
 
 		// Si está abierta la vista de un módulo desmarcado, volver a la tab.
 		const $activeModuleView = $('#preview-screen .screen-view[data-view="module"]:visible');
@@ -478,6 +621,10 @@
 	function bindPreviewInteractions() {
 		// Pintar tab por defecto al iniciar
 		setActiveTab(DEFAULT_TAB_ID);
+
+		// Toolbar
+		$('#preview-theme-toggle').on('click', toggleDarkMode);
+		$('#preview-replay').on('click', playSplash);
 
 		// Bottom navigation → cambia tab nativa
 		$('#preview-navbar').on('click', '.nav-item', function () {
