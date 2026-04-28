@@ -385,7 +385,7 @@ class Flavor_APK_Builder {
                     <div class="preview-section">
                         <h2><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <p class="preview-hint">
-                            <?php _e('Simula la app cliente Flutter. Pulsa en cualquier módulo para ver su pantalla.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                            <?php _e('Simula la app cliente Flutter en modo hybrid (4 tabs nativas + drawer con módulos). Pulsa el menú o cualquier módulo del drawer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <div class="phone-preview">
                             <div class="phone-frame">
@@ -399,20 +399,15 @@ class Flavor_APK_Builder {
                                 </div>
                                 <div class="phone-screen" id="preview-screen">
 
-                                    <!-- VISTA HUB (lista de módulos) -->
-                                    <div class="screen-view" data-view="hub">
+                                    <!-- VISTA TAB ACTIVA (chat, reservations, my_tickets, info) -->
+                                    <div class="screen-view" data-view="tab">
                                         <div class="app-header" id="preview-header">
-                                            <span class="app-title"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></span>
+                                            <span class="material-icons-outlined header-icon header-icon--menu" id="preview-menu-toggle">menu</span>
+                                            <span class="app-title" id="preview-tab-title"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></span>
                                             <span class="material-icons-outlined header-icon">notifications_none</span>
                                         </div>
-                                        <div class="app-content app-content--hub">
-                                            <div class="preview-modules" id="preview-modules">
-                                                <!-- Se llena dinámicamente -->
-                                            </div>
-                                            <div class="preview-empty" id="preview-empty" style="display:none;">
-                                                <span class="material-icons-outlined">apps</span>
-                                                <p><?php _e('Selecciona módulos para previsualizarlos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
-                                            </div>
+                                        <div class="app-content app-content--tab" id="preview-tab-body">
+                                            <!-- Se llena dinámicamente según la tab activa -->
                                         </div>
                                     </div>
 
@@ -430,70 +425,44 @@ class Flavor_APK_Builder {
                                         </div>
                                     </div>
 
-                                    <!-- VISTA BUSCAR -->
-                                    <div class="screen-view" data-view="search" style="display:none;">
-                                        <div class="app-header" id="preview-search-header">
-                                            <span class="app-title"><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                    <!-- DRAWER lateral (sobre la pantalla actual) -->
+                                    <div class="app-drawer" id="preview-drawer">
+                                        <div class="app-drawer__header">
+                                            <div class="app-drawer__avatar">
+                                                <span class="material-icons-outlined">person_outline</span>
+                                            </div>
+                                            <div class="app-drawer__user">
+                                                <div class="app-drawer__name" id="preview-drawer-name"><?php echo esc_html($config['app_name'] ?: 'Mi App'); ?></div>
+                                                <div class="app-drawer__email"><?php _e('vecino@cooperativa.org', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                                            </div>
                                         </div>
-                                        <div class="app-content app-content--search">
-                                            <div class="search-bar">
-                                                <span class="material-icons-outlined">search</span>
-                                                <span class="search-placeholder"><?php _e('Buscar en la app...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
-                                            </div>
-                                            <div class="search-suggestions" id="preview-search-suggestions">
-                                                <!-- Se llena con módulos -->
-                                            </div>
+                                        <div class="app-drawer__list" id="preview-drawer-list">
+                                            <!-- Se llena dinámicamente con tabs + módulos seleccionados -->
+                                        </div>
+                                        <div class="app-drawer__empty" id="preview-drawer-empty" style="display:none;">
+                                            <span class="material-icons-outlined">apps</span>
+                                            <p><?php _e('Selecciona módulos para que aparezcan aquí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                         </div>
                                     </div>
+                                    <div class="app-drawer-overlay" id="preview-drawer-overlay"></div>
 
-                                    <!-- VISTA AVISOS -->
-                                    <div class="screen-view" data-view="alerts" style="display:none;">
-                                        <div class="app-header" id="preview-alerts-header">
-                                            <span class="app-title"><?php _e('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
-                                        </div>
-                                        <div class="app-content app-content--alerts">
-                                            <div class="alerts-list" id="preview-alerts-list">
-                                                <!-- Se llena dinámicamente -->
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- VISTA PERFIL -->
-                                    <div class="screen-view" data-view="profile" style="display:none;">
-                                        <div class="app-header" id="preview-profile-header">
-                                            <span class="app-title"><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
-                                        </div>
-                                        <div class="app-content app-content--profile">
-                                            <div class="profile-card">
-                                                <div class="profile-avatar"><span class="material-icons-outlined">person</span></div>
-                                                <div class="profile-name" id="preview-profile-name"><?php _e('Hola, vecino/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                                                <div class="profile-meta"><?php _e('Socio activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                                            </div>
-                                            <div class="profile-options">
-                                                <div class="profile-option"><span class="material-icons-outlined">settings</span><span><?php _e('Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
-                                                <div class="profile-option"><span class="material-icons-outlined">help_outline</span><span><?php _e('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
-                                                <div class="profile-option"><span class="material-icons-outlined">logout</span><span><?php _e('Cerrar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- BOTTOM NAVIGATION BAR -->
+                                    <!-- BOTTOM NAVIGATION BAR (Material 3 NavigationBar, max 4-5 tabs como en main_client_home.dart) -->
                                     <div class="app-navbar" id="preview-navbar">
-                                        <div class="nav-item active" data-tab="hub">
-                                            <span class="material-icons-outlined">home</span>
-                                            <span><?php _e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        <div class="nav-item" data-tab="chat">
+                                            <span class="material-icons-outlined">chat_bubble</span>
+                                            <span><?php _e('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
-                                        <div class="nav-item" data-tab="search">
-                                            <span class="material-icons-outlined">search</span>
-                                            <span><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        <div class="nav-item" data-tab="reservations">
+                                            <span class="material-icons-outlined">calendar_today</span>
+                                            <span><?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
-                                        <div class="nav-item" data-tab="alerts">
-                                            <span class="material-icons-outlined">notifications_none</span>
-                                            <span><?php _e('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        <div class="nav-item" data-tab="my_tickets">
+                                            <span class="material-icons-outlined">confirmation_number</span>
+                                            <span><?php _e('Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
-                                        <div class="nav-item" data-tab="profile">
-                                            <span class="material-icons-outlined">person_outline</span>
-                                            <span><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                        <div class="nav-item active" data-tab="info">
+                                            <span class="material-icons-outlined">info</span>
+                                            <span><?php _e('Info', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                     </div>
                                 </div>

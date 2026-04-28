@@ -157,6 +157,20 @@
 	}
 
 	/**
+     * Tabs nativas del cliente Flutter (orden y defaults extraídos de
+     * lib/main_client_home.dart::_applyDefaultConfig).
+     * Cada tab muestra contenido nativo (Chat de Flutter, lista de Reservas, etc).
+     * Los módulos seleccionados aparecen en el Drawer lateral, no como tabs.
+     */
+	const NATIVE_TABS = [
+		{ id: 'chat', label: 'Chat', icon: 'chat_bubble' },
+		{ id: 'reservations', label: 'Reservar', icon: 'calendar_today' },
+		{ id: 'my_tickets', label: 'Tickets', icon: 'confirmation_number' },
+		{ id: 'info', label: 'Info', icon: 'info' },
+	];
+	const DEFAULT_TAB_ID = 'info';
+
+	/**
      * Devuelve los IDs de los módulos seleccionados en el orden del DOM.
      */
 	function getSelectedModuleIds() {
@@ -167,46 +181,168 @@
 		return ids;
 	}
 
-	/**
-     * Construye una Card Material para el módulo dado (estilo home Flutter).
-     */
-	function buildModuleCard(modId, meta) {
-		const color = meta.color || '#3b82f6';
-		const icon = meta.material_icon || 'apps';
-		const name = meta.name || modId;
-		const desc = meta.description || '';
-
-		const $card = $(`
-			<div class="preview-module-card" data-module="${modId}">
-				<div class="preview-module-card__avatar" style="background:${color};">
-					<span class="material-icons-outlined">${icon}</span>
-				</div>
-				<div class="preview-module-card__body">
-					<p class="preview-module-card__title">${name}</p>
-					<div class="preview-module-card__desc">${desc}</div>
-				</div>
-				<span class="material-icons-outlined preview-module-card__chevron">chevron_right</span>
-			</div>
-		`);
-
-		$card.on('click', function () {
-			showModuleScreen(modId, meta);
-		});
-
-		return $card;
-	}
-
-	/**
+/**
      * Cambia la vista visible dentro de la pantalla del teléfono.
+     * La vista 'tab' es la única "raíz" — la 'module' es modal sobre las tabs.
      */
 	function setActiveView(viewName) {
 		$('#preview-screen .screen-view').hide();
 		$(`#preview-screen .screen-view[data-view="${viewName}"]`).css('display', 'flex');
+	}
 
-		// Actualiza el highlight del bottom nav según la vista (módulo cuenta como hub)
-		const navTab = (viewName === 'module') ? 'hub' : viewName;
+	/**
+     * Cambia la tab nativa activa y renderiza su contenido.
+     */
+	function setActiveTab(tabId) {
+		const meta = (window.flavorApkBuilder && flavorApkBuilder.modulesMeta) || {};
+		const tab = NATIVE_TABS.find((t) => t.id === tabId) || NATIVE_TABS[3];
+
+		// Highlight bottom nav
 		$('#preview-navbar .nav-item').removeClass('active');
-		$(`#preview-navbar .nav-item[data-tab="${navTab}"]`).addClass('active');
+		$(`#preview-navbar .nav-item[data-tab="${tab.id}"]`).addClass('active');
+
+		// Título del AppBar
+		const appName = $('#app_name').val() || 'Mi App';
+		$('#preview-tab-title').text(appName);
+
+		// Contenido de la tab
+		const $body = $('#preview-tab-body').empty();
+		$body.append(buildTabContent(tab.id, meta));
+
+		// Cerrar drawer si estaba abierto y volver a vista tab
+		closeDrawer();
+		setActiveView('tab');
+		$('#preview-screen').data('current-tab', tab.id);
+	}
+
+	/**
+     * Devuelve un Widget HTML según la tab nativa.
+     */
+	function buildTabContent(tabId, meta) {
+		const $wrap = $('<div class="tab-content"></div>');
+
+		if (tabId === 'chat') {
+			const sample = [
+				{ name: 'Comisión huertos', last: '¿Quedamos el sábado?', badge: '3' },
+				{ name: 'Banco de tiempo', last: 'Tengo 2h disponibles', badge: '' },
+				{ name: 'Asamblea general', last: '12 mensajes nuevos', badge: '12' },
+				{ name: 'Lucía R.', last: 'Te paso la receta luego', badge: '' },
+			];
+			sample.forEach(function (c) {
+				const badge = c.badge
+					? `<span class="tab-content__badge">${c.badge}</span>`
+					: '';
+				$wrap.append(`
+					<div class="tab-content__card">
+						<div class="tab-content__row">
+							<div class="tab-content__avatar tab-content__avatar--primary">
+								<span class="material-icons-outlined">forum</span>
+							</div>
+							<div class="tab-content__body">
+								<p class="tab-content__title">${c.name}</p>
+								<div class="tab-content__subtitle">${c.last}</div>
+							</div>
+							${badge}
+						</div>
+					</div>
+				`);
+			});
+		} else if (tabId === 'reservations') {
+			const sample = [
+				{ title: 'Sala polivalente', sub: 'Hoy 18:00 – 20:00 · Confirmada', icon: 'event_available' },
+				{ title: 'Pista de pádel', sub: 'Mañana 17:00 · Pendiente', icon: 'sports_tennis' },
+				{ title: 'Cocina comunitaria', sub: 'Sáb 12:00 · Reserva activa', icon: 'restaurant' },
+			];
+			sample.forEach(function (r) {
+				$wrap.append(`
+					<div class="tab-content__card">
+						<div class="tab-content__row">
+							<div class="tab-content__avatar tab-content__avatar--primary">
+								<span class="material-icons-outlined">${r.icon}</span>
+							</div>
+							<div class="tab-content__body">
+								<p class="tab-content__title">${r.title}</p>
+								<div class="tab-content__subtitle">${r.sub}</div>
+							</div>
+						</div>
+					</div>
+				`);
+			});
+		} else if (tabId === 'my_tickets') {
+			const sample = [
+				{ title: 'Concierto solidario', sub: 'Sáb 21:00 · QR válido', icon: 'qr_code_2' },
+				{ title: 'Asamblea general', sub: 'Jue 19:00 · Confirmado', icon: 'how_to_vote' },
+				{ title: 'Taller permacultura', sub: 'Próximo sábado · Inscrito', icon: 'school' },
+			];
+			sample.forEach(function (t) {
+				$wrap.append(`
+					<div class="tab-content__card">
+						<div class="tab-content__row">
+							<div class="tab-content__avatar tab-content__avatar--primary">
+								<span class="material-icons-outlined">${t.icon}</span>
+							</div>
+							<div class="tab-content__body">
+								<p class="tab-content__title">${t.title}</p>
+								<div class="tab-content__subtitle">${t.sub}</div>
+							</div>
+						</div>
+					</div>
+				`);
+			});
+		} else {
+			// info (default)
+			const appName = $('#app_name').val() || 'Mi App';
+			$wrap.append(`
+				<div class="tab-content__hero">
+					<div class="tab-content__hero-icon">
+						<span class="material-icons-outlined">apartment</span>
+					</div>
+					<div class="tab-content__hero-title">${appName}</div>
+					<div class="tab-content__hero-subtitle">Comunidad cooperativa local</div>
+				</div>
+				<div class="tab-content__card">
+					<div class="tab-content__row">
+						<div class="tab-content__avatar"><span class="material-icons-outlined">place</span></div>
+						<div class="tab-content__body">
+							<p class="tab-content__title">Dirección</p>
+							<div class="tab-content__subtitle">C/ Mayor 12 · Bilbao</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-content__card">
+					<div class="tab-content__row">
+						<div class="tab-content__avatar"><span class="material-icons-outlined">schedule</span></div>
+						<div class="tab-content__body">
+							<p class="tab-content__title">Horario de atención</p>
+							<div class="tab-content__subtitle">Lun–Vie 10:00 – 14:00</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-content__card">
+					<div class="tab-content__row">
+						<div class="tab-content__avatar"><span class="material-icons-outlined">phone</span></div>
+						<div class="tab-content__body">
+							<p class="tab-content__title">Contacto</p>
+							<div class="tab-content__subtitle">94 600 12 34 · info@cooperativa.org</div>
+						</div>
+					</div>
+				</div>
+			`);
+		}
+
+		return $wrap;
+	}
+
+	/**
+     * Apertura/cierre del drawer (Material Drawer).
+     */
+	function openDrawer() {
+		$('#preview-drawer').addClass('is-open');
+		$('#preview-drawer-overlay').addClass('is-visible');
+	}
+	function closeDrawer() {
+		$('#preview-drawer').removeClass('is-open');
+		$('#preview-drawer-overlay').removeClass('is-visible');
 	}
 
 	/**
@@ -218,7 +354,7 @@
 
 		// Header del módulo con su color de marca
 		$('#preview-module-header').css('background', color);
-		$('#preview-module-title').text(meta.name || modId);
+		$('#preview-module-title').text(meta.name || modId).data('current-module', modId);
 
 		// Lista de items mock
 		const $list = $('#preview-module-list').empty();
@@ -240,98 +376,99 @@
 	}
 
 	/**
-     * Renderiza la vista Buscar (sugerencias = primeros módulos seleccionados).
+     * Construye un item del drawer.
      */
-	function renderSearchView(selectedIds, meta) {
-		const $list = $('#preview-search-suggestions').empty();
-		selectedIds.slice(0, 5).forEach(function (id) {
-			const m = meta[id];
-			if (!m) return;
-			const $card = buildModuleCard(id, m);
-			$list.append($card);
-		});
+	function buildDrawerItem(opts) {
+		// opts: { icon, label, color?, selected?, kind: 'tab'|'module', target }
+		const colorStyle = opts.color
+			? `style="--preview-primary:${opts.color};"`
+			: '';
+		const selectedCls = opts.selected ? 'app-drawer__item--selected' : '';
+		const kindCls = `app-drawer__item--${opts.kind}`;
+
+		return $(`
+			<div class="app-drawer__item ${selectedCls} ${kindCls}" ${colorStyle}
+			     data-target="${opts.target}" data-kind="${opts.kind}">
+				<span class="app-drawer__item-icon">
+					<span class="material-icons-outlined">${opts.icon}</span>
+				</span>
+				<span>${opts.label}</span>
+			</div>
+		`);
 	}
 
 	/**
-     * Renderiza la vista Avisos (uno por cada módulo, primer mock_item).
+     * Reconstruye el drawer con tabs nativas + módulos seleccionados.
      */
-	function renderAlertsView(selectedIds, meta) {
-		const $list = $('#preview-alerts-list').empty();
-		const visible = selectedIds.slice(0, 6);
+	function renderDrawer(selectedIds, meta, currentTabId) {
+		const $list = $('#preview-drawer-list').empty();
+		const $empty = $('#preview-drawer-empty');
 
-		if (!visible.length) {
-			$list.append(`
-				<div class="preview-empty">
-					<span class="material-icons-outlined">notifications_off</span>
-					<p>${flavorApkBuilder.i18n.noAlerts}</p>
-				</div>
-			`);
-			return;
+		// Tabs nativas
+		NATIVE_TABS.forEach(function (tab) {
+			$list.append(buildDrawerItem({
+				icon: tab.icon,
+				label: tab.label,
+				selected: tab.id === currentTabId,
+				kind: 'tab',
+				target: tab.id,
+			}));
+		});
+
+		if (selectedIds.length) {
+			$empty.hide();
+			$list.append('<div class="app-drawer__divider"></div>');
+			$list.append(`<div class="app-drawer__section-label">${(flavorApkBuilder.i18n.tabHome ? 'Módulos' : 'Modules')}</div>`);
+
+			selectedIds.forEach(function (id) {
+				const m = meta[id];
+				if (!m) return;
+				$list.append(buildDrawerItem({
+					icon: m.material_icon,
+					label: m.name,
+					color: m.color,
+					kind: 'module',
+					target: id,
+				}));
+			});
 		}
-
-		visible.forEach(function (id) {
-			const m = meta[id];
-			if (!m || !m.mock_items || !m.mock_items.length) return;
-			const item = m.mock_items[0];
-			$list.append(`
-				<div class="alert-item">
-					<div class="alert-item__icon" style="background:${m.color};">
-						<span class="material-icons-outlined">${m.material_icon}</span>
-					</div>
-					<div>
-						<p class="alert-item__title">${item.title}</p>
-						<div class="alert-item__time">${m.name} · ${item.subtitle}</div>
-					</div>
-				</div>
-			`);
-		});
 	}
 
 	/**
-     * Update preview — sincroniza header, colores, módulos y vistas.
+     * Update preview — sincroniza header, colores, drawer y tab activa.
      */
 	function updatePreview() {
 		const meta = (window.flavorApkBuilder && flavorApkBuilder.modulesMeta) || {};
 
-		// Nombre + color primario del AppBar
-		const appName = $('#app_name').val() || 'Mi App';
-		$('#preview-header .app-title').text(appName);
-
+		// Color primario del AppBar
 		const primaryColor = $('#color_primary').val() || '#3b82f6';
 		document.documentElement.style.setProperty('--preview-primary', primaryColor);
 		$('#preview-header').css('background', primaryColor);
-		$('#preview-search-header').css('background', primaryColor);
-		$('#preview-alerts-header').css('background', primaryColor);
-		$('#preview-profile-header').css('background', primaryColor);
+		$('#preview-module-header').css('background', primaryColor);
 
-		// Lista de módulos en la home
+		// Nombre del app en drawer y tab
+		const appName = $('#app_name').val() || 'Mi App';
+		$('#preview-drawer-name').text(appName);
+		$('#preview-tab-title').text(appName);
+
+		// Reconstruir drawer
 		const selectedIds = getSelectedModuleIds();
-		const $modulesPreview = $('#preview-modules').empty();
-		const $empty = $('#preview-empty');
+		const currentTabId = $('#preview-screen').data('current-tab') || DEFAULT_TAB_ID;
+		renderDrawer(selectedIds, meta, currentTabId);
 
-		if (!selectedIds.length) {
-			$empty.show();
-		} else {
-			$empty.hide();
-			selectedIds.forEach(function (id) {
-				const m = meta[id];
-				if (!m) return;
-				$modulesPreview.append(buildModuleCard(id, m));
-			});
-		}
-
-		// Refrescar vistas secundarias por si están abiertas
-		renderSearchView(selectedIds, meta);
-		renderAlertsView(selectedIds, meta);
-
-		// Si la vista actual de detalle hacía referencia a un módulo desmarcado,
-		// volver al hub para no quedarse en una pantalla desconectada.
+		// Si está abierta la vista de un módulo desmarcado, volver a la tab.
 		const $activeModuleView = $('#preview-screen .screen-view[data-view="module"]:visible');
 		if ($activeModuleView.length) {
-			const currentId = $('#preview-module-title').data('current-module');
-			if (currentId && selectedIds.indexOf(currentId) === -1) {
-				setActiveView('hub');
+			const currentModId = $('#preview-module-title').data('current-module');
+			if (currentModId && selectedIds.indexOf(currentModId) === -1) {
+				setActiveTab(currentTabId);
 			}
+		}
+
+		// Si la vista actual es 'tab' y aún no se ha pintado, pintar la default.
+		const $tabView = $('#preview-screen .screen-view[data-view="tab"]:visible');
+		if ($tabView.length && !$('#preview-tab-body').children().length) {
+			setActiveTab(currentTabId);
 		}
 	}
 
@@ -339,16 +476,40 @@
      * Bind events del preview interactivo.
      */
 	function bindPreviewInteractions() {
-		// Bottom navigation
+		// Pintar tab por defecto al iniciar
+		setActiveTab(DEFAULT_TAB_ID);
+
+		// Bottom navigation → cambia tab nativa
 		$('#preview-navbar').on('click', '.nav-item', function () {
 			const tab = $(this).data('tab');
 			if (!tab) return;
-			setActiveView(tab);
+			setActiveTab(tab);
 		});
 
-		// Botón back en pantalla de módulo
+		// Hamburguesa → abrir drawer
+		$('#preview-menu-toggle').on('click', openDrawer);
+		$('#preview-drawer-overlay').on('click', closeDrawer);
+
+		// Click en item del drawer
+		$('#preview-drawer-list').on('click', '.app-drawer__item', function () {
+			const kind = $(this).data('kind');
+			const target = $(this).data('target');
+			if (kind === 'tab') {
+				setActiveTab(target);
+			} else if (kind === 'module') {
+				const meta = (window.flavorApkBuilder && flavorApkBuilder.modulesMeta) || {};
+				const m = meta[target];
+				if (m) {
+					closeDrawer();
+					showModuleScreen(target, m);
+				}
+			}
+		});
+
+		// Botón back en pantalla de módulo → vuelve a la tab activa
 		$('#preview-back').on('click', function () {
-			setActiveView('hub');
+			const currentTabId = $('#preview-screen').data('current-tab') || DEFAULT_TAB_ID;
+			setActiveTab(currentTabId);
 		});
 	}
 
