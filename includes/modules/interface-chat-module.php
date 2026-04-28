@@ -369,7 +369,10 @@ abstract class Flavor_Platform_Module_Base implements Flavor_Platform_Module_Int
      * @return bool True si se ejecutó la migración, false si no era necesaria.
      */
     public function ensure_database_schema() {
-        if (!method_exists($this, 'create_tables')) {
+        $tiene_create_tables = method_exists($this, 'create_tables');
+        $tiene_maybe_create_tables = method_exists($this, 'maybe_create_tables');
+
+        if (!$tiene_create_tables && !$tiene_maybe_create_tables) {
             return false;
         }
 
@@ -395,14 +398,15 @@ abstract class Flavor_Platform_Module_Base implements Flavor_Platform_Module_Int
                 return false;
             }
 
-            $reflexion_metodo = new ReflectionMethod($this, 'create_tables');
+            $metodo_a_invocar = $tiene_create_tables ? 'create_tables' : 'maybe_create_tables';
+            $reflexion_metodo = new ReflectionMethod($this, $metodo_a_invocar);
             $reflexion_metodo->setAccessible(true);
             $reflexion_metodo->invoke($this);
 
             update_option($clave_opcion_checksum, $checksum_actual, false);
 
             if (function_exists('flavor_platform_log')) {
-                flavor_platform_log("Schema sincronizado para módulo: {$id_modulo}", 'info');
+                flavor_platform_log("Schema sincronizado para módulo: {$id_modulo} (vía {$metodo_a_invocar})", 'info');
             }
 
             return true;
