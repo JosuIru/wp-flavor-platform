@@ -1301,21 +1301,6 @@ class Flavor_WP_Module_Integrations {
             ]);
         }
 
-        // Fallback a tabla principal
-        $tabla_items = $wpdb->prefix . 'flavor_biblioteca';
-        if ($this->tabla_existe($tabla_items)) {
-            return $wpdb->insert($tabla_items, [
-                'titulo'      => $post->post_title,
-                'descripcion' => wp_trim_words(strip_shortcodes($post->post_content), 100),
-                'tipo'        => 'articulo',
-                'url'         => get_permalink($post->ID),
-                'autor'       => get_the_author_meta('display_name', $post->post_author),
-                'fecha'       => $post->post_date,
-                'usuario_id'  => $post->post_author ?: get_current_user_id(),
-                'estado'      => 'disponible',
-            ]);
-        }
-
         return false;
     }
 
