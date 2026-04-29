@@ -1117,10 +1117,13 @@ class Flavor_VBP_REST_API {
         }
         $shortcode_string .= ']';
 
-        // Renderizar el shortcode
+        // Renderizar el shortcode y sanitizar el output: do_shortcode puede
+        // ejecutar handlers que devuelven HTML controlado por terceros.
+        // wp_kses_post permite el HTML válido de contenido pero neutraliza
+        // <script>, <iframe> hostiles y atributos on*.
         ob_start();
         echo do_shortcode( $shortcode_string );
-        $html = ob_get_clean();
+        $html = wp_kses_post( ob_get_clean() );
 
         // Si está vacío, mostrar mensaje
         if ( empty( trim( $html ) ) ) {
@@ -2378,17 +2381,7 @@ class Flavor_VBP_REST_API {
             ? $settings['api_key']
             : wp_hash( 'flavor-vbp-' . NONCE_SALT ); // Genera key única por instalación
 
-        // En desarrollo local, permitir key legacy (solo si está explícitamente habilitado)
-        $allow_legacy = defined( 'FLAVOR_VBP_ALLOW_LEGACY_KEY' ) && FLAVOR_VBP_ALLOW_LEGACY_KEY;
-        if ( $allow_legacy && $api_key === 'flavor-vbp-2024' ) {
-            // Log de advertencia
-            if ( function_exists( 'flavor_log_debug' ) ) {
-                flavor_log_debug( 'VBP API: Usando key legacy - configure una key segura en Ajustes > VBP', 'VBP-Security' );
-            }
-            return true;
-        }
-
-        if ( $api_key === $valid_key ) {
+        if ( hash_equals( (string) $valid_key, (string) $api_key ) ) {
             return true;
         }
 
