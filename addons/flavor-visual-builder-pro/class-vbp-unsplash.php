@@ -373,12 +373,23 @@ class Flavor_VBP_Unsplash {
     }
 
     /**
-     * Hace una petición a la API de Unsplash
+     * Hace una petición a la API de Unsplash con caché en transient.
+     *
+     * Las búsquedas y consultas individuales se cachean 1 hora bajo
+     * `vbp_unsplash_{md5(url)}` para evitar consumir el rate limit de
+     * Unsplash (50 req/h en cuenta demo, 5 000 en producción) cuando
+     * varios editores buscan los mismos términos.
      *
      * @param string $url URL de la API.
      * @return array|WP_Error
      */
     private function hacer_peticion( $url ) {
+        $clave_cache = 'vbp_unsplash_' . md5( $url );
+        $cached = get_transient( $clave_cache );
+        if ( false !== $cached ) {
+            return $cached;
+        }
+
         $response = wp_remote_get(
             $url,
             array(
@@ -402,6 +413,10 @@ class Flavor_VBP_Unsplash {
             $mensaje = isset( $data['errors'][0] ) ? $data['errors'][0] : __( 'Error en la API de Unsplash', FLAVOR_PLATFORM_TEXT_DOMAIN );
             return new WP_Error( 'unsplash_error', $mensaje );
         }
+
+        // Solo cacheamos respuestas válidas. TTL 1h: equilibra
+        // frescura del catálogo Unsplash y ahorro de cuota.
+        set_transient( $clave_cache, $data, HOUR_IN_SECONDS );
 
         return $data;
     }
