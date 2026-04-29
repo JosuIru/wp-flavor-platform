@@ -1684,79 +1684,24 @@ class Flavor_VBP_REST_API {
         $elementos = isset( $datos['elements'] ) ? $datos['elements'] : array();
         $settings  = isset( $datos['settings'] ) ? $datos['settings'] : array();
 
-        // Obtener design settings
         $design_settings = get_option( 'flavor_design_settings', array() );
 
-        $primary_color    = isset( $design_settings['primary_color'] ) ? $design_settings['primary_color'] : '#3b82f6';
-        $secondary_color  = isset( $design_settings['secondary_color'] ) ? $design_settings['secondary_color'] : '#8b5cf6';
-        $text_color       = isset( $design_settings['text_color'] ) ? $design_settings['text_color'] : '#1f2937';
-        $background_color = isset( $settings['backgroundColor'] ) ? $settings['backgroundColor'] : '#ffffff';
+        $titulo_documento    = $post->post_title;
+        $idioma_blog         = get_bloginfo( 'language' );
+        $color_primario      = isset( $design_settings['primary_color'] ) ? $design_settings['primary_color'] : '#3b82f6';
+        $color_secundario    = isset( $design_settings['secondary_color'] ) ? $design_settings['secondary_color'] : '#8b5cf6';
+        $color_texto         = isset( $design_settings['text_color'] ) ? $design_settings['text_color'] : '#1f2937';
+        $color_fondo         = isset( $settings['backgroundColor'] ) ? $settings['backgroundColor'] : '#ffffff';
+        $elementos_documento = $elementos;
+
+        $ruta_template = plugin_dir_path( __FILE__ ) . 'views/export-template.php';
+
+        if ( ! file_exists( $ruta_template ) ) {
+            return '';
+        }
 
         ob_start();
-        ?>
-<!DOCTYPE html>
-<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo esc_html( $post->post_title ); ?></title>
-    <style>
-        :root {
-            --primary-color: <?php echo esc_attr( $primary_color ); ?>;
-            --secondary-color: <?php echo esc_attr( $secondary_color ); ?>;
-            --text-color: <?php echo esc_attr( $text_color ); ?>;
-            --background-color: <?php echo esc_attr( $background_color ); ?>;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            color: var(--text-color);
-            background: var(--background-color);
-            line-height: 1.6;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        h1, h2, h3, h4, h5, h6 { line-height: 1.2; margin-bottom: 1rem; }
-        p { margin-bottom: 1rem; }
-        img { max-width: 100%; height: auto; }
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-        .button:hover { opacity: 0.9; }
-        section { padding: 80px 40px; }
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .grid { display: grid; gap: 24px; }
-        @media (min-width: 768px) {
-            .grid-2 { grid-template-columns: repeat(2, 1fr); }
-            .grid-3 { grid-template-columns: repeat(3, 1fr); }
-            .grid-4 { grid-template-columns: repeat(4, 1fr); }
-        }
-    </style>
-</head>
-<body>
-<?php
-        // Renderizar elementos
-        if ( class_exists( 'Flavor_VBP_Canvas' ) ) {
-            $canvas = Flavor_VBP_Canvas::get_instance();
-            foreach ( $elementos as $elemento ) {
-                echo $canvas->renderizar_elemento( $elemento );
-            }
-        }
-?>
-</body>
-</html>
-        <?php
+        include $ruta_template;
         return ob_get_clean();
     }
 
