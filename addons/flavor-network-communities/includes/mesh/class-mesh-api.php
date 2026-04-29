@@ -213,11 +213,17 @@ class Flavor_Mesh_API {
             $peer_id
         ));
 
-        // Si no conocemos al peer, aceptar pero marcarlo como desconocido
+        // Peer desconocido: rechazar. La auditoría 2026-04-29 detectó que
+        // antes se aceptaba "aceptar y marcar", lo que permitía a cualquier
+        // atacante claimar un peer_id arbitrario y saltar la verificación
+        // de firma. Para entrar a la red, el peer debe pasar por el
+        // handshake público en /mesh/connect, que registra su clave pública.
         if (empty($public_key_base64)) {
-            // Registrar peer desconocido
-            $request->set_param('_unknown_peer', true);
-            return true;
+            return new WP_Error(
+                'unknown_peer',
+                'Peer no registrado. Inicia el handshake en /mesh/connect.',
+                ['status' => 401]
+            );
         }
 
         // Verificar firma
@@ -289,17 +295,50 @@ class Flavor_Mesh_API {
     }
 
     /**
-     * Aplica rate limiting si el limitador global está disponible.
+     * Aplica rate limiting a endpoints públicos del mesh.
      *
-     * @param string $type Tipo de acceso.
-     * @return bool
+     * Fail-secure: si el rate limiter global no está cargado, devolver
+     * WP_Error en lugar de true. Antes se permitía el acceso sin límite,
+     * lo que dejaba `/peers/list`, `/peers/{id}` y `/health` abiertos a
+     * Sybil/flooding (ver auditoría 2026-04-29, item N3).
+     *
+     * Mapeo de $type a buckets de Flavor_Network_Rate_Limiter:
+     *  - 'get' / lecturas públicas → bucket 'directory' (60 req/min).
+     *  - 'post' / handshake nuevo  → bucket 'write' (10 req/min).
+     *
+     * @param string $type Tipo de acceso ("get" o "post").
+     * @return bool|WP_Error true si OK, WP_Error si rechazado.
      */
     private function check_public_rate_limit($type) {
+        // Preferimos el limiter específico de network (granularidad por
+        // endpoint_type) sobre el genérico Flavor_API_Rate_Limiter.
+        if (class_exists('Flavor_Network_Rate_Limiter')) {
+            $bucket = $type === 'post' ? 'write' : 'directory';
+            $resultado = Flavor_Network_Rate_Limiter::get_instance()->check_rate_limit($bucket);
+            if (!empty($resultado['allowed'])) {
+                return true;
+            }
+            return new WP_Error(
+                'rate_limit_exceeded',
+                'Rate limit exceeded for mesh public endpoint.',
+                [
+                    'status'    => 429,
+                    'retry_after' => isset($resultado['reset']) ? max(1, $resultado['reset'] - time()) : 60,
+                ]
+            );
+        }
+
         if (class_exists('Flavor_API_Rate_Limiter')) {
             return Flavor_API_Rate_Limiter::check_rate_limit($type);
         }
 
-        return true;
+        // Sin rate limiter disponible: rechazar el acceso a endpoints
+        // públicos en lugar de permitir cualquier carga.
+        return new WP_Error(
+            'rate_limiter_unavailable',
+            'Rate limiter no disponible. Endpoint mesh público temporalmente cerrado.',
+            ['status' => 503]
+        );
     }
 
     // ═══════════════════════════════════════════════════════════════════
