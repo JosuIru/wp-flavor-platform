@@ -19,6 +19,8 @@ error.log
 .idea/
 .vscode/
 *.sublime-*
+*.iml
+mobile-apps/.idea/
 
 # OS
 .DS_Store
