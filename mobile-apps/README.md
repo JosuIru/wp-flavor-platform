@@ -96,19 +96,39 @@ flutter run -t lib/main_admin.dart
 
 ## Compilar APK
 
-### App Cliente
+### Scripts disponibles
+
+| Script | Cuándo usar | Salida |
+|--------|-------------|--------|
+| `build_app.sh <client\|admin> [debug\|release]` | **Canónico**. Build local rápido, debug o release sin firma. | `build/app/outputs/flutter-apk/` |
+| `build_app_v2.sh client --release` | Build de release con validación previa, versionado automático y firma (requiere `android/key.properties`). Documentado en `README-SIGNING.md`. | `build/app/outputs/flutter-apk/` |
+| `build-release.sh` | Genera APK + AAB para subir a Google Play (incluye keystore checks). | `release/` |
+| `build-custom-apk.sh` | Genera APK con branding personalizado (logo, colores) leído de `config.json`. | `build/custom-apks/` |
+| `personalizar-app.sh [config.json\|--from-url URL]` | Inyecta config (nombres, colores, módulos) en `app_config.dart` antes del build. Usado por wp-admin → APK Builder. Documentado en `DOCUMENTACION_APPS.md`. | edita `lib/core/config/app_config.dart` |
+
+> Nota: la auditoría 2026-04-29 (item A11) inicialmente flagueó estos
+> scripts como solapados. Tras revisión cada uno tiene un rol distinto;
+> mantener todos pero usar `build_app.sh` para build manual normal.
+> Pendiente en P3.6: `class-apk-builder.php::ajax_start_build` debería
+> invocar uno de estos scripts (no los reemplaza).
+
+### Build manual con flutter
 
 ```bash
-flutter build apk -t lib/main_client.dart --release
+# Cliente
+flutter build apk -t lib/main_client.dart --release \
+  --dart-define=SERVER_URL=https://tu-sitio.com \
+  --dart-define=API_KEY=<key> \
+  --dart-define=DEBUG_MODE=false
+
+# Admin
+flutter build apk -t lib/main_admin.dart --release \
+  --dart-define=SERVER_URL=https://tu-sitio.com \
+  --dart-define=API_KEY=<key> \
+  --dart-define=DEBUG_MODE=false
 ```
 
 El APK se genera en: `build/app/outputs/flutter-apk/app-release.apk`
-
-### App Admin
-
-```bash
-flutter build apk -t lib/main_admin.dart --release
-```
 
 ## Compilar para iOS
 
