@@ -853,14 +853,26 @@ class Flavor_Platform_Crowdfunding_Module extends Flavor_Platform_Module_Base {
     // =========================================================
 
     /**
-     * Registra shortcodes
+     * Registra shortcodes propios del módulo.
+     *
+     * Nota: `crowdfunding_listado` lo registra
+     * Flavor_Crowdfunding_Frontend_Controller (con guarda shortcode_exists);
+     * aquí solo registramos los que no expone el frontend controller para
+     * evitar el doble registro detectado en la auditoría 2026-04-29.
      */
     public function register_shortcodes() {
-        add_shortcode('crowdfunding_listado', [$this, 'shortcode_listado']);
-        add_shortcode('crowdfunding_proyecto', [$this, 'shortcode_proyecto']);
-        add_shortcode('crowdfunding_destacados', [$this, 'shortcode_destacados']);
-        add_shortcode('crowdfunding_crear', [$this, 'shortcode_crear']);
-        add_shortcode('crowdfunding_mis_proyectos', [$this, 'shortcode_mis_proyectos']);
+        if (!shortcode_exists('crowdfunding_proyecto')) {
+            add_shortcode('crowdfunding_proyecto', [$this, 'shortcode_proyecto']);
+        }
+        if (!shortcode_exists('crowdfunding_destacados')) {
+            add_shortcode('crowdfunding_destacados', [$this, 'shortcode_destacados']);
+        }
+        if (!shortcode_exists('crowdfunding_crear')) {
+            add_shortcode('crowdfunding_crear', [$this, 'shortcode_crear']);
+        }
+        if (!shortcode_exists('crowdfunding_mis_proyectos')) {
+            add_shortcode('crowdfunding_mis_proyectos', [$this, 'shortcode_mis_proyectos']);
+        }
     }
 
     /**
