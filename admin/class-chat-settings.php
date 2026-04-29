@@ -760,7 +760,6 @@ class Flavor_Platform_Settings {
 
             <form method="post" action="" id="flavor-chat-settings-form">
                 <?php wp_nonce_field('flavor_platform_settings_save', 'flavor_platform_nonce'); ?>
-                <?php wp_nonce_field('flavor_platform_settings_save', 'flavor_platform_nonce'); ?>
                 <input type="hidden" name="flavor_chat_ia_action" value="save_settings">
                 <input type="hidden" name="flavor_platform_action" value="save_settings">
                 <input type="hidden" name="current_tab" value="<?php echo esc_attr($active_tab); ?>">

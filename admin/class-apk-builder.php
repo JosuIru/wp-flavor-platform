@@ -934,7 +934,7 @@ class Flavor_APK_Builder {
                 'mock_items' => array(
                     array('title' => 'Reparación bicis', 'subtitle' => 'Sáb 11:00 · 3 plazas libres'),
                     array('title' => 'Pan casero', 'subtitle' => 'Dom 10:00 · Completo'),
-                    array('title' => 'Kombucha', 'subtitle' => 'Próximamente'),
+                    array('title' => 'Kombucha', 'subtitle' => __('Próximamente', 'flavor-platform')),
                 ),
             ),
             'biblioteca' => array(
