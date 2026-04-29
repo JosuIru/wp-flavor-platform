@@ -107,8 +107,6 @@ class Flavor_Visual_Builder {
         add_action('wp_ajax_fvb_preview', [$this, 'ajax_preview']);
         add_action('wp_ajax_fvb_get_component', [$this, 'ajax_get_component']);
         add_action('wp_ajax_fvb_autosave', [$this, 'ajax_autosave']);
-        add_action('wp_ajax_fvb_undo', [$this, 'ajax_undo']);
-        add_action('wp_ajax_fvb_redo', [$this, 'ajax_redo']);
 
         // Renderizado
         add_filter('the_content', [$this, 'render_builder_content'], 10);
@@ -939,24 +937,6 @@ class Flavor_Visual_Builder {
     public function ajax_autosave() {
         // Similar a ajax_save_data pero sin mensaje de confirmación
         $this->ajax_save_data();
-    }
-
-    /**
-     * AJAX: Undo
-     */
-    public function ajax_undo() {
-        check_ajax_referer('flavor_vb_ajax', 'nonce');
-        // TODO: Implementar sistema de historial
-        wp_send_json_success(['message' => __('Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
-    }
-
-    /**
-     * AJAX: Redo
-     */
-    public function ajax_redo() {
-        check_ajax_referer('flavor_vb_ajax', 'nonce');
-        // TODO: Implementar sistema de historial
-        wp_send_json_success(['message' => __('Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
