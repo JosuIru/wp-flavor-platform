@@ -114,23 +114,38 @@ class Flavor_Network_Webhooks {
     }
 
     /**
-     * Verifica la firma del webhook
+     * Verifica la firma del webhook con protección contra replay.
+     *
+     * El cliente debe enviar:
+     * - X-Webhook-Signature : HMAC-SHA256 sobre "{timestamp}.{nonce}.{body}".
+     * - X-Webhook-Timestamp : segundos UNIX, ventana ±300s.
+     * - X-Webhook-Nonce     : UUIDv4 único por petición (un solo uso, TTL 600s).
+     * - X-Node-ID           : identificador del nodo origen.
+     *
+     * Sin nonce o con nonce repetido → 403. Esto cierra la ventana de
+     * replay de hasta 5 minutos detectada en la auditoría 2026-04-29.
      */
     public function verify_webhook_signature($request) {
         $signature = $request->get_header('X-Webhook-Signature');
         $timestamp = $request->get_header('X-Webhook-Timestamp');
+        $nonce_recibido = $request->get_header('X-Webhook-Nonce');
         $body = $request->get_body();
 
-        if (!$signature || !$timestamp) {
+        if (!$signature || !$timestamp || !$nonce_recibido) {
             return false;
         }
 
-        // Verificar que el timestamp no sea muy antiguo (5 minutos)
+        // Verificar que el timestamp esté dentro de la ventana ±300s.
         if (abs(time() - intval($timestamp)) > 300) {
             return false;
         }
 
-        // Obtener el secreto del nodo que envía
+        // Validar formato de nonce (UUIDv4 esperado, 36 chars hex+guiones).
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $nonce_recibido)) {
+            return false;
+        }
+
+        // Obtener el secreto del nodo que envía.
         $node_id = $request->get_header('X-Node-ID');
         $secret = $this->get_node_webhook_secret($node_id);
 
@@ -138,11 +153,26 @@ class Flavor_Network_Webhooks {
             return false;
         }
 
-        // Calcular firma esperada
-        $payload = $timestamp . '.' . $body;
+        // Anti-replay: el nonce debe ser único en la ventana TTL.
+        // Clave incluye node_id para evitar colisiones entre nodos distintos.
+        $nonce_key = 'flavor_webhook_nonce_' . md5($node_id . '|' . $nonce_recibido);
+        if (get_transient($nonce_key) !== false) {
+            return false;
+        }
+
+        // Calcular firma esperada con nonce incluido en el payload.
+        $payload = $timestamp . '.' . $nonce_recibido . '.' . $body;
         $expected_signature = hash_hmac('sha256', $payload, $secret);
 
-        return hash_equals($expected_signature, $signature);
+        if (!hash_equals($expected_signature, $signature)) {
+            return false;
+        }
+
+        // Marcar nonce como usado (TTL > ventana de timestamp para cubrir
+        // peticiones que entren en el límite de la ventana).
+        set_transient($nonce_key, 1, 600);
+
+        return true;
     }
 
     /**
@@ -561,14 +591,16 @@ class Flavor_Network_Webhooks {
         $secret = $this->get_local_webhook_secret($target_node_id);
 
         $timestamp = time();
+        $nonce_envio = wp_generate_uuid4();
         $body = wp_json_encode([
             'event' => $event,
             'data' => $data,
             'timestamp' => $timestamp,
         ]);
 
-        // Calcular firma
-        $signature = hash_hmac('sha256', $timestamp . '.' . $body, $secret);
+        // Firma incluye el nonce para que el receptor lo valide como
+        // single-use (anti-replay, ver verify_webhook_signature).
+        $signature = hash_hmac('sha256', $timestamp . '.' . $nonce_envio . '.' . $body, $secret);
 
         $response = wp_remote_post($url, [
             'timeout' => 10,
@@ -576,6 +608,7 @@ class Flavor_Network_Webhooks {
                 'Content-Type' => 'application/json',
                 'X-Webhook-Signature' => $signature,
                 'X-Webhook-Timestamp' => $timestamp,
+                'X-Webhook-Nonce' => $nonce_envio,
                 'X-Node-ID' => $node_id,
             ],
             'body' => $body,
