@@ -1,7 +1,11 @@
 import '../utils/flavor_url_launcher.dart';
 
-// Configuración generada automáticamente
-// Generado: 2026-03-18T01:30:29+00:00
+// Configuración generada / editable manualmente.
+// Última edición auditoría 2026-04-29: serverUrl/apiKey/isDebug se leen
+// desde --dart-define para que el binario release no embeba el host de
+// desarrollo ni una key vacía. Si se regenera este archivo desde
+// includes/api/class-app-config-api.php, mantener el patrón
+// `String.fromEnvironment(...)` para esos tres campos.
 
 class AppConfig {
   static const String appName = 'Komunitatea';
@@ -10,10 +14,14 @@ class AppConfig {
   static const String appId = 'com.komunitatea.app';
   static const String packageName = appId;
 
-  // IMPORTANTE: Configurar URL de producción antes de release
-  // En desarrollo local usar: 'http://sitio-prueba.local'
-  // En producción DEBE ser HTTPS: 'https://tu-dominio.com'
-  static const String serverUrl = 'https://sitio-prueba.local';
+  // Server URL: leído desde --dart-define=SERVER_URL=https://...
+  // Default solo se aplica en desarrollo. Build release sin define
+  // mantendrá el default — añadir guard en pre-build script si se
+  // quiere fallar la compilación.
+  static const String serverUrl = String.fromEnvironment(
+    'SERVER_URL',
+    defaultValue: 'https://sitio-prueba.local',
+  );
   static const String siteUrl = serverUrl;
   static const String apiUrl = '$serverUrl/wp-json/chat-ia-mobile/v1';
   static const String apiVersion = '2.1.0';
@@ -22,10 +30,18 @@ class AppConfig {
   static const String flavor = 'client';
   static const bool isAdminApp = false;
 
-  // SEGURIDAD: En producción debe ser false
-  static const bool isDebug = true;
+  // Debug: en release debe ser false. Permite HTTP y certs autofirmados
+  // en dev (httpOverrides en main.dart respeta este flag).
+  // Build: --dart-define=DEBUG_MODE=false
+  static const bool isDebug = bool.fromEnvironment(
+    'DEBUG_MODE',
+    defaultValue: true,
+  );
   static const int httpTimeout = 30;
-  static const String apiKey = '';
+
+  // API key: leída desde --dart-define=API_KEY=...
+  // Vacía en release fallará al primer hit del backend si éste la exige.
+  static const String apiKey = String.fromEnvironment('API_KEY', defaultValue: '');
 
   /// Fingerprints SHA-256 de certificados SSL para certificate pinning
   ///
@@ -39,10 +55,27 @@ class AppConfig {
   /// Incluye al menos 2 certificados:
   /// - El certificado actual del servidor
   /// - Un certificado de respaldo para rotación sin downtime
-  static const List<String> pinnedCertificates = [
-    // Ejemplo: 'AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99',
-    // Añade tus fingerprints aquí antes de release
-  ];
+  ///
+  /// Como const list no acepta fromEnvironment, los fingerprints se
+  /// inyectan vía --dart-define=PINNED_CERTS="hash1,hash2" y se parsean
+  /// en `pinnedCertificates`.
+  static const String _pinnedCertsRaw = String.fromEnvironment(
+    'PINNED_CERTS',
+    defaultValue: '',
+  );
+
+  /// Lista parseada de fingerprints. Vacía si no se inyectaron.
+  static List<String> get pinnedCertificates {
+    if (_pinnedCertsRaw.isEmpty) {
+      return const <String>[];
+    }
+    return _pinnedCertsRaw
+        .split(',')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList(growable: false);
+  }
+
   static const String userId = '';
   static const String developerName = 'Flavor';
   static const String developerEmail = '';
