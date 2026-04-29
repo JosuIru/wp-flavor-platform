@@ -3,11 +3,23 @@
  * Sistema de Cache de Rendimiento
  *
  * Cache inteligente para clases, rutas, estadísticas y configuraciones
- * Mejora significativamente el rendimiento reduciendo consultas a BD
+ * Mejora significativamente el rendimiento reduciendo consultas a BD.
+ *
+ * **Estado tras auditoría 2026-04-29 (item P5):** esta clase coexiste
+ * con Flavor_Cache_Manager y duplica funcionalidad. El sistema canónico
+ * es `Flavor_Cache_Manager` (estático, transient + period_key, usado
+ * en analytics/VBP/admin con 4 archivos consumidores). Performance_Cache
+ * tiene 3 callers (client-dashboard-api, system-initializer) que
+ * dependen de métodos extra (precarga, estadísticas, limpiar_grupo).
+ *
+ * **Para nuevos sitios usar `Flavor_Cache_Manager`.** Esta clase queda
+ * como wrapper de soporte hasta que sus 3 callers migren en P2 o P3.
  *
  * @package FlavorPlatform
  * @subpackage Performance
  * @since 3.0.0
+ * @deprecated 3.6.0 Migración a Flavor_Cache_Manager pendiente; usar
+ *             ese hasta que se complete la consolidación.
  */
 
 // Evitar acceso directo
@@ -16,9 +28,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Clase para gestión de cache de rendimiento
+ * Clase para gestión de cache de rendimiento.
  *
  * @since 3.0.0
+ * @deprecated 3.6.0 Use Flavor_Cache_Manager en código nuevo.
  */
 class Flavor_Performance_Cache {
 

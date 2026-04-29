@@ -175,7 +175,25 @@ Si añades funcionalidad mesh (gossip, CRDT, peer discovery), usa
 `Flavor_Network_Mesh_Installer::*`. Si tocas tablas de eventos/marketplace
 federados, usa `Flavor_Network_Installer::*`.
 
-### 3. APK Builder: preview interactivo
+### 3. Cache canónico: Flavor_Cache_Manager
+
+Hay dos clases de caché en el plugin:
+
+- **`Flavor_Cache_Manager`** (`includes/class-cache-manager.php`) — canónico.
+  Métodos estáticos: `get`, `set`, `remember($key, $callback, $ttl)`, `period_key`.
+  Usado en analytics, VBP REST, admin. Total: 4 archivos consumidores.
+- **`Flavor_Performance_Cache`** (`includes/class-performance-cache.php`) —
+  marcado `@deprecated` desde 3.6.0. Singleton con métodos de instancia.
+  Usado solo en `class-client-dashboard-api.php` y `class-system-initializer.php`
+  (3 callers). Conserva métodos extra (`precarga`, `mostrar_estadisticas`,
+  `limpiar_cache_modulos`) que no tienen equivalente en Cache_Manager.
+
+Para código nuevo: **siempre `Flavor_Cache_Manager::remember(...)`**. Si
+necesitas estadísticas o limpieza por grupo, añade el método al
+Cache_Manager antes de seguir usando Performance_Cache (evita ampliar
+la deuda).
+
+### 4. APK Builder: preview interactivo
 
 El previsualizador de APK en `admin/class-apk-builder.php` debe permanecer
 fiel al flujo Flutter real (`mobile-apps/lib/main_client_home.dart`):
