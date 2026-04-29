@@ -174,7 +174,11 @@ class Flavor_Platform_Radio_Module extends Flavor_Platform_Module_Base {
         // Dashboard tabs extendidos para el usuario
         $this->init_dashboard_tabs();
 
-        // Cron para actualizar oyentes
+        // Cron para actualizar oyentes — único cron del plugin que mantiene
+        // intervalo every_minute tras la auditoría P1.1 / P2. El contador
+        // de oyentes en una emisión en directo necesita granularidad fina
+        // para que el broadcaster vea audiencia en tiempo real; subir a 5
+        // min haría el feedback inutilizable.
         add_action('flavor_radio_actualizar_oyentes', [$this, 'cron_actualizar_oyentes']);
         if (!wp_next_scheduled('flavor_radio_actualizar_oyentes')) {
             wp_schedule_event(time(), 'every_minute', 'flavor_radio_actualizar_oyentes');

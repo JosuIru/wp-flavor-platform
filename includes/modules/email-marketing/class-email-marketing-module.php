@@ -328,8 +328,14 @@ class Flavor_Platform_Email_Marketing_Module extends Flavor_Platform_Module_Base
      * Programar eventos de cron
      */
     private function programar_cron_events() {
+        // em_procesar_cola_emails pasa de every_minute a every_five_minutes
+        // (P1.1 / P2). Si había un schedule legacy registrado lo limpiamos.
+        $existing_email_queue = wp_get_scheduled_event('em_procesar_cola_emails');
+        if ($existing_email_queue && isset($existing_email_queue->schedule) && $existing_email_queue->schedule === 'every_minute') {
+            wp_clear_scheduled_hook('em_procesar_cola_emails');
+        }
         if (!wp_next_scheduled('em_procesar_cola_emails')) {
-            wp_schedule_event(time(), 'every_minute', 'em_procesar_cola_emails');
+            wp_schedule_event(time(), 'every_five_minutes', 'em_procesar_cola_emails');
         }
 
         if (!wp_next_scheduled('em_procesar_automatizaciones')) {

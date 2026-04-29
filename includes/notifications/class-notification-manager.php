@@ -89,9 +89,15 @@ class Flavor_Notification_Manager {
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
-        // Cron para procesar cola
+        // Cron para procesar cola: cadencia 5 min (antes every_minute).
+        // Reducido en P1.1 / P2 — latencia adicional aceptable, las
+        // notificaciones siguen siendo asíncronas para el usuario.
+        $existing_queue = wp_get_scheduled_event('flavor_process_notification_queue');
+        if ($existing_queue && isset($existing_queue->schedule) && $existing_queue->schedule === 'every_minute') {
+            wp_clear_scheduled_hook('flavor_process_notification_queue');
+        }
         if (!wp_next_scheduled('flavor_process_notification_queue')) {
-            wp_schedule_event(time(), 'every_minute', 'flavor_process_notification_queue');
+            wp_schedule_event(time(), 'every_five_minutes', 'flavor_process_notification_queue');
         }
         add_action('flavor_process_notification_queue', [$this, 'process_queue']);
 
@@ -1184,12 +1190,14 @@ class Flavor_Notification_Manager {
     }
 }
 
-// Registrar cron interval
+// Registrar cron interval (every_five_minutes, antes every_minute).
 add_filter('cron_schedules', function($schedules) {
-    $schedules['every_minute'] = [
-        'interval' => 60,
-        'display' => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
-    ];
+    if (!isset($schedules['every_five_minutes'])) {
+        $schedules['every_five_minutes'] = [
+            'interval' => 300,
+            'display' => __('Cada 5 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ];
+    }
     return $schedules;
 });
 

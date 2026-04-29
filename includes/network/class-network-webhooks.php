@@ -75,24 +75,41 @@ class Flavor_Network_Webhooks {
         add_action('wp_ajax_webhook_subscribe', [$this, 'ajax_subscribe']);
         add_action('wp_ajax_webhook_unsubscribe', [$this, 'ajax_unsubscribe']);
 
-        // Procesar cola de webhooks pendientes
+        // Procesar cola de webhooks pendientes con cadencia de 5 min.
+        // Antes era every_minute (5 760 ejecuciones/día), reducido en
+        // P1.1 / P2 — la latencia adicional es aceptable para tráfico
+        // de federación cross-site y el coste en queries cae a ~1 152/día.
         add_action('flavor_process_webhook_queue', [$this, 'process_queue']);
-        if (!wp_next_scheduled('flavor_process_webhook_queue')) {
-            wp_schedule_event(time(), 'every_minute', 'flavor_process_webhook_queue');
-        }
+        $this->maybe_reschedule_queue();
 
         // Registrar intervalo personalizado
         add_filter('cron_schedules', [$this, 'add_cron_interval']);
     }
 
     /**
-     * Añade intervalo de cron personalizado
+     * Reprograma flavor_process_webhook_queue a every_five_minutes,
+     * desprogramando primero un schedule legacy (every_minute) si existe.
+     */
+    private function maybe_reschedule_queue() {
+        $existing = wp_get_scheduled_event('flavor_process_webhook_queue');
+        if ($existing && isset($existing->schedule) && $existing->schedule === 'every_minute') {
+            wp_clear_scheduled_hook('flavor_process_webhook_queue');
+        }
+        if (!wp_next_scheduled('flavor_process_webhook_queue')) {
+            wp_schedule_event(time(), 'every_five_minutes', 'flavor_process_webhook_queue');
+        }
+    }
+
+    /**
+     * Añade intervalos de cron personalizados.
      */
     public function add_cron_interval($schedules) {
-        $schedules['every_minute'] = [
-            'interval' => 60,
-            'display'  => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
-        ];
+        if (!isset($schedules['every_five_minutes'])) {
+            $schedules['every_five_minutes'] = [
+                'interval' => 300,
+                'display'  => __('Cada 5 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            ];
+        }
         return $schedules;
     }
 
