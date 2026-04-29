@@ -142,6 +142,61 @@ wp menu location list | grep -q primary && echo "OK Menus"
 
 ---
 
+## Patrones Arquitectonicos (importantes al tocar core)
+
+### 1. Migraciones de schema por checksum
+
+`Flavor_Platform_Module_Base::ensure_database_schema()` es la unica via canonica
+para sincronizar tablas de un modulo con `dbDelta()`. NO llames directamente a
+`maybe_create_tables()` ni a `create_tables()` desde hooks.
+
+- Calcula `md5_file()` del archivo de la clase y lo compara con la opcion
+  `flavor_module_db_checksum_{id}`.
+- Si difiere, invoca `create_tables()` (o cae a `maybe_create_tables()` por
+  Reflection) y guarda el nuevo checksum.
+- Hook: el module loader lo llama antes de `can_activate()`, asi que las
+  tablas siempre existen al chequear capacidad.
+- **Forzar re-ejecucion**: `wp eval "delete_option('flavor_module_db_checksum_<id>');"`
+- **NO uses** `add_action('init', [..., 'maybe_create_tables'])`. Si lo ves en
+  un PR, sustituyelo por `'ensure_database_schema'`.
+
+### 2. Mesh Installer separado del Network Installer del core
+
+Hay dos clases con responsabilidades distintas — no confundirlas:
+
+- `Flavor_Network_Installer` (core, `includes/network/`): 24+ tablas globales
+  de la red (eventos, marketplace, federation_log, etc.). Owner del schema base.
+- `Flavor_Network_Mesh_Installer` (addon, `addons/flavor-network-communities/`):
+  ciclo de vida de peers + keypair (Ed25519, sodium). 11 metodos:
+  `get_local_peer`, `decrypt_private_key`, `generate_peer_keypair`, etc.
+  Su option es `flavor_network_mesh_db_version`.
+
+Si añades funcionalidad mesh (gossip, CRDT, peer discovery), usa
+`Flavor_Network_Mesh_Installer::*`. Si tocas tablas de eventos/marketplace
+federados, usa `Flavor_Network_Installer::*`.
+
+### 3. APK Builder: preview interactivo
+
+El previsualizador de APK en `admin/class-apk-builder.php` debe permanecer
+fiel al flujo Flutter real (`mobile-apps/lib/main_client_home.dart`):
+
+- **Tabs nativas**: leer desde la opcion `flavor_apps_config['tabs']` via el
+  endpoint AJAX `flavor_apk_get_tabs_config`. JS rebuilds la barra inferior
+  llamando a `loadRealTabsConfig()` en init.
+- **Datos por modulo**: `ajax_module_preview_data()` valida con `DESCRIBE`
+  (cacheado en transient 5 min) que las columnas referenciadas existan antes
+  de ejecutar el SELECT. Si fallan, devuelve `source='mock'` con
+  `reason='schema_mismatch'`.
+- **Heuristica de columnas**: `extract_columns_from_expression()` ignora
+  keywords SQL (CONCAT, IFNULL, COALESCE, DATE_FORMAT, NOW, AS, ...) y strings.
+- **modulesMeta**: cada modulo expone `material_icon`, `color` (hex),
+  `description` y `mock_items` via `wp_localize_script`. Material Icons
+  Outlined se carga desde Google Fonts CDN.
+- **NO añadir queries** sin pasar por `get_module_preview_queries()` ni
+  saltarse la validacion DESCRIBE.
+
+---
+
 ## Documentacion Detallada
 
 | Archivo | Contenido |
