@@ -33,6 +33,24 @@ class Flavor_Platform_Assets {
      */
     private function __construct() {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+        // Añadir defer al script chat-widget para no bloquear el render
+        // del thread principal en páginas que no necesitan el widget
+        // inmediatamente. Compatible con WP 5.8+ vía script_loader_tag
+        // (la API strategy=>defer en wp_enqueue_script requiere WP 6.3+).
+        add_filter('script_loader_tag', [$this, 'defer_chat_widget'], 10, 2);
+    }
+
+    /**
+     * Añade el atributo `defer` al tag <script> del chat-widget.
+     */
+    public function defer_chat_widget($tag, $handle) {
+        if ($handle !== 'flavor-platform') {
+            return $tag;
+        }
+        if (strpos($tag, ' defer') !== false || strpos($tag, ' async') !== false) {
+            return $tag;
+        }
+        return str_replace(' src=', ' defer src=', $tag);
     }
 
     /**
