@@ -1,12 +1,60 @@
 # 🔍 AUDITORÍA COMPLETA DEL SISTEMA DE APPS MÓVILES
 
-**Fecha:** 11 de febrero de 2026
-**Auditor:** Claude Sonnet 4.5
+> ⚠️ **ACTUALIZACIÓN 2026-04-29**: la auditoría original (febrero 2026)
+> declaraba "0 TODOs" y nota 7.5/10. Una segunda auditoría detectó que
+> esa afirmación era incorrecta: hay 30+ TODOs activos en código de
+> servicios críticos (chat, upload de media), configuración Flutter
+> insegura por defecto y APKs binarios commiteados. Ver el bloque
+> "Estado real 2026-04-29" más abajo. El resto del documento se
+> conserva como referencia histórica del análisis de febrero.
+
+**Fecha original:** 11 de febrero de 2026
+**Auditor original:** Claude Sonnet 4.5
+**Revisión 2026-04-29:** Claude Opus 4.7 (auditoría 89-puntos)
 **Alcance:** Apps Flutter + Plugin WordPress + APIs
 
 ---
 
-## 📊 RESUMEN EJECUTIVO
+## 🔥 Estado real 2026-04-29
+
+### Hallazgos críticos no reflejados en la auditoría original
+
+| ID | Componente | Problema | Estado |
+|----|------------|----------|--------|
+| A1 | `chat_service.dart` | 13 TODOs `// TODO: Llamar API real`. `getConversations`, `getMessages`, `sendMessage`, `markAsRead`, `sendMediaMessage`, `sendVoiceMessage` operan sobre maps en memoria, sin red. | POC, marcado `@Deprecated` en P0.5 |
+| A7 | `media_upload_service.dart` | TODO `// Implementar subida real con http/dio`. Progreso simulado, no envía bytes al endpoint `/wp-json/flavor-chat/v1/media/upload`. | POC, marcado `@Deprecated` en P0.5 |
+| A2 | `app_config.dart:14-16` | `serverUrl = 'https://sitio-prueba.local'` con cert autofirmado → SSL handshake falla. | Pendiente P0.5 (`--dart-define`) |
+| A3 | `app_config.dart:28` | `apiKey = ''` hardcoded. | Pendiente P0.5 (`--dart-define`) |
+| A4 | `app_config.dart:42-45` | `pinnedCertificates = []`. Sin pinning en producción. | Pendiente P0.5 |
+| A5 | `mobile-apps/build/` | APKs `app-client-release.apk` (130 MB), `app-admin-debug.apk` (261 MB) presentes en árbol pero ya no trackeados. Repo limpio tras P0.5. | Cubierto |
+| A11 | `build_app.sh`, `build_app_v2.sh`, `build-custom-apk.sh`, `build-release.sh` | 4 scripts de build solapados sin un canónico documentado. | Pendiente P1.5 |
+| A14 | `personalizar-app.sh` → `/app-config/generate` | Endpoint sin contrato de auth claro. | Pendiente P3.6 |
+
+### Puntuación realista
+
+- **Frontend Flutter (estructura)**: 7/10 — bien organizado, pero los servicios core son POC.
+- **Servicios core conectados a backend**: 3/10 — chat y upload no funcionan contra el plugin.
+- **Configuración / seguridad**: 4/10 — pinning ausente, key hardcoded, host de dev en producción.
+- **Pipeline de build**: 4/10 — scripts solapados, APKs antes commiteados.
+
+Los hallazgos de la auditoría de febrero (35 módulos sin app, info sections,
+docs de usuario) **siguen vigentes**; los nuevos hallazgos son **adicionales**.
+
+### Roadmap de remediación
+
+Ver `docs/audit/estado-plugin-2026-04-29.md` (plan completo de 89 ítems
+en 4 olas). Para móviles:
+
+- **P0.5** (sprint actual): marcar stubs `@Deprecated`, dart-define para
+  config sensible, .gitignore reforzado.
+- **P1.5**: consolidar scripts build en uno canónico.
+- **P3.3**: implementar `chat_service` y `media_upload_service` reales.
+- **P3.6**: panel "config inicial" en wp-admin que persista `flavor_apps_config`
+  y endpoint REST único `/app-config/tabs` consumido por admin y app.
+
+---
+
+## 📊 RESUMEN EJECUTIVO (auditoría original — feb 2026, NO actualizado)
 
 ### Estado General: ✅ **BUENO** con áreas de mejora
 
@@ -18,7 +66,7 @@
 - ✅ 8 módulos funcionando correctamente
 - ✅ Sistema i18n completo (3 idiomas)
 - ✅ APIs bien documentadas y funcionales
-- ✅ Sin deuda técnica visible (0 TODOs)
+- ⚠️ ~~Sin deuda técnica visible (0 TODOs)~~ **Falso, ver actualización 2026-04-29**
 
 #### Áreas de Mejora:
 - ⚠️ 35 módulos de WordPress SIN apps móviles

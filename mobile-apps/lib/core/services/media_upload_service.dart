@@ -61,7 +61,18 @@ enum MediaType {
   document,
 }
 
-/// Servicio para subir archivos multimedia al servidor
+/// Servicio para subir archivos multimedia al servidor.
+///
+/// **ESTADO ACTUAL: POC sin upload real (auditoría 2026-04-29).**
+///
+/// `uploadFile`, `uploadFromBytes`, `cancelUpload` y `deleteFile`
+/// contienen TODOs (`// TODO: Implementar subida real con http/dio`).
+/// Hoy registran progreso simulado pero **no envían los bytes** al
+/// endpoint `/wp-json/flavor-chat/v1/media/upload`.
+///
+/// Pendiente en P3.3 del plan de remediación: implementar con `dio`
+/// (multipart, retry, cancelación, progreso real).
+@Deprecated('POC — media_upload_service no envía archivos al backend (auditoría 2026-04-29)')
 class MediaUploadService {
   static MediaUploadService? _instance;
 

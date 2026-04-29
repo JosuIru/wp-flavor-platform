@@ -451,7 +451,22 @@ class PollOption {
   }
 }
 
-/// Servicio completo de chat tipo Telegram/WhatsApp
+/// Servicio completo de chat tipo Telegram/WhatsApp.
+///
+/// **ESTADO ACTUAL: POC en memoria (auditoría 2026-04-29).**
+///
+/// Los métodos `getConversations`, `getMessages`, `sendMessage`,
+/// `markAsRead`, `sendMediaMessage`, `sendVoiceMessage` y otros
+/// devuelven datos de los maps internos en memoria. **No están
+/// conectados al backend WordPress**.
+///
+/// Cuando se vuelvan a producción, los TODOs marcados en el código
+/// (`// TODO: Llamar API real`, `// TODO: Enviar a API`, etc.) deberán
+/// reemplazarse por llamadas reales contra los endpoints REST del
+/// módulo `chat-interno`/`chat-grupos` consolidado en P2.1 del plan.
+///
+/// Ver `mobile-apps/AUDITORIA_COMPLETA_APPS.md` para el roadmap.
+@Deprecated('POC — chat_service no conecta al backend (ver auditoría 2026-04-29)')
 class ChatService extends ChangeNotifier {
   static ChatService? _instance;
 
