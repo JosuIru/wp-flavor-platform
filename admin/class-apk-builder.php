@@ -59,6 +59,7 @@ class Flavor_APK_Builder {
         add_action('wp_ajax_flavor_apk_download_config', array($this, 'ajax_download_config'));
         add_action('wp_ajax_flavor_apk_list_builds', array($this, 'ajax_list_builds'));
         add_action('wp_ajax_flavor_apk_module_preview', array($this, 'ajax_module_preview_data'));
+        add_action('wp_ajax_flavor_apk_tabs_config', array($this, 'ajax_get_tabs_config'));
     }
 
     /**
@@ -548,6 +549,72 @@ class Flavor_APK_Builder {
     }
 
     /**
+     * AJAX: devuelve las tabs configuradas por el usuario para la APK cliente.
+     *
+     * Lee `flavor_apps_config['tabs']` (gestionado en el panel de App Integration).
+     * Si no hay config válida, devuelve las 4 tabs nativas por defecto que también
+     * usa lib/main_client_home.dart::_applyDefaultConfig.
+     */
+    public function ajax_get_tabs_config() {
+        check_ajax_referer('flavor_apk_builder', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Sin permisos');
+        }
+
+        $defaults = array(
+            array('id' => 'chat',         'label' => 'Chat',     'icon' => 'chat_bubble',         'enabled' => true, 'order' => 0),
+            array('id' => 'reservations', 'label' => 'Reservar', 'icon' => 'calendar_today',      'enabled' => true, 'order' => 1),
+            array('id' => 'my_tickets',   'label' => 'Tickets',  'icon' => 'confirmation_number', 'enabled' => true, 'order' => 2),
+            array('id' => 'info',         'label' => 'Info',     'icon' => 'info',                'enabled' => true, 'order' => 3),
+        );
+
+        $app_config = get_option('flavor_apps_config', array());
+        $tabs_raw = is_array($app_config) && !empty($app_config['tabs']) && is_array($app_config['tabs'])
+            ? $app_config['tabs']
+            : $defaults;
+
+        $tabs_enabled = array_values(array_filter($tabs_raw, function ($tab) {
+            return !empty($tab['enabled']);
+        }));
+
+        usort($tabs_enabled, function ($a, $b) {
+            return ($a['order'] ?? 0) - ($b['order'] ?? 0);
+        });
+
+        // El bottom nav de Flutter (NavigationBar) acepta máximo 5 destinations.
+        $tabs_enabled = array_slice($tabs_enabled, 0, 5);
+
+        // Si la config dejó menos de 2 tabs, recurrir a defaults.
+        if (count($tabs_enabled) < 2) {
+            $tabs_enabled = $defaults;
+        }
+
+        $default_tab = isset($app_config['default_tab']) && is_string($app_config['default_tab'])
+            ? $app_config['default_tab']
+            : 'info';
+
+        $tabs_simplificadas = array_map(function ($tab) {
+            return array(
+                'id'    => sanitize_key($tab['id'] ?? ''),
+                'label' => sanitize_text_field($tab['label'] ?? ucfirst($tab['id'] ?? '')),
+                'icon'  => sanitize_text_field($tab['icon'] ?? 'apps'),
+            );
+        }, $tabs_enabled);
+
+        // Filtrar tabs sin id válido tras sanitizar
+        $tabs_simplificadas = array_values(array_filter($tabs_simplificadas, function ($t) {
+            return !empty($t['id']);
+        }));
+
+        wp_send_json_success(array(
+            'tabs'        => $tabs_simplificadas,
+            'default_tab' => $default_tab,
+            'source'      => !empty($app_config['tabs']) ? 'config' : 'default',
+        ));
+    }
+
+    /**
      * Devuelve el mapeo módulo → consulta SQL para alimentar el preview con
      * datos reales del sitio. Cada entrada describe la tabla principal y los
      * campos para construir título y subtítulo de cada item.
@@ -625,9 +692,71 @@ class Flavor_APK_Builder {
     }
 
     /**
+     * Lista de columnas referenciadas en una expresión SQL.
+     * Heurística simple: busca identificadores tipo word_word fuera de strings.
+     * Sirve para validar contra el schema antes de ejecutar la query.
+     */
+    private function extract_columns_from_expression($expr) {
+        // Quitar contenido de strings 'foo'/"foo"
+        $clean = preg_replace("/'[^']*'/", '', $expr);
+        $clean = preg_replace('/"[^"]*"/', '', $clean);
+
+        // Funciones y palabras reservadas a ignorar
+        $reservadas = array(
+            'CONCAT', 'IFNULL', 'COALESCE', 'DATE_FORMAT', 'NOW',
+            'SELECT', 'FROM', 'WHERE', 'ORDER', 'BY', 'AS', 'AND', 'OR',
+            'NULL', 'ASC', 'DESC', 'LIMIT', 'IS', 'NOT', 'LIKE',
+        );
+
+        preg_match_all('/[a-z_][a-z0-9_]*/i', $clean, $coincidencias);
+        $candidatos = array();
+        foreach ($coincidencias[0] as $token) {
+            $upper = strtoupper($token);
+            if (in_array($upper, $reservadas, true)) continue;
+            if (is_numeric($token)) continue;
+            $candidatos[$token] = true;
+        }
+        return array_keys($candidatos);
+    }
+
+    /**
+     * Comprueba que todas las columnas referenciadas por la query existen en la tabla.
+     * Devuelve true si la query es ejecutable, false si falta alguna columna.
+     * Cachea el schema 5 minutos por tabla.
+     */
+    private function validate_query_columns($tabla, $config_modulo) {
+        $clave_cache = 'flavor_apk_schema_' . md5($tabla);
+        $columnas_existentes = get_transient($clave_cache);
+
+        if (false === $columnas_existentes) {
+            global $wpdb;
+            $describe = $wpdb->get_col("DESCRIBE " . esc_sql($tabla));
+            if (!is_array($describe) || empty($describe)) {
+                return false;
+            }
+            $columnas_existentes = array_map('strtolower', $describe);
+            set_transient($clave_cache, $columnas_existentes, 5 * MINUTE_IN_SECONDS);
+        }
+
+        $todas = array_merge(
+            $this->extract_columns_from_expression($config_modulo['title']),
+            $this->extract_columns_from_expression($config_modulo['subtitle']),
+            $this->extract_columns_from_expression($config_modulo['where']),
+            $this->extract_columns_from_expression($config_modulo['order'])
+        );
+
+        foreach ($todas as $columna) {
+            if (!in_array(strtolower($columna), $columnas_existentes, true)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * AJAX: devuelve hasta 3 items reales del módulo solicitado.
-     * Si la tabla no existe o no hay filas, devuelve success=true con items=[]
-     * y el JS aplicará el fallback a mock_items.
+     * Si la tabla no existe, no tiene las columnas esperadas o no hay filas,
+     * devuelve success=true con items=[] y el JS aplicará el fallback a mock_items.
      */
     public function ajax_module_preview_data() {
         check_ajax_referer('flavor_apk_builder', 'nonce');
@@ -657,6 +786,12 @@ class Flavor_APK_Builder {
         );
         if (!$tabla_existe) {
             wp_send_json_success(array('items' => array(), 'source' => 'mock'));
+        }
+
+        // Validar que el schema actual soporta la query (la tabla puede haber
+        // sido refactorizada y mis nombres de columna estar obsoletos).
+        if (!$this->validate_query_columns($tabla_escapada, $config_modulo)) {
+            wp_send_json_success(array('items' => array(), 'source' => 'mock', 'reason' => 'schema_mismatch'));
         }
 
         $sql = sprintf(

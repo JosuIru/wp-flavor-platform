@@ -21,6 +21,7 @@
 		loadBuilds();
 		updatePreview();
 		playSplash();
+		loadRealTabsConfig();
 	}
 
 	/**
@@ -161,18 +162,18 @@
 	}
 
 	/**
-     * Tabs nativas del cliente Flutter (orden y defaults extraídos de
-     * lib/main_client_home.dart::_applyDefaultConfig).
-     * Cada tab muestra contenido nativo (Chat de Flutter, lista de Reservas, etc).
-     * Los módulos seleccionados aparecen en el Drawer lateral, no como tabs.
+     * Tabs nativas del cliente Flutter.
+     * Empieza con los defaults de lib/main_client_home.dart pero se sobreescribe
+     * dinámicamente con la config real del sitio (flavor_apps_config['tabs']) tras
+     * el primer fetch a flavor_apk_tabs_config.
      */
-	const NATIVE_TABS = [
+	let NATIVE_TABS = [
 		{ id: 'chat', label: 'Chat', icon: 'chat_bubble' },
 		{ id: 'reservations', label: 'Reservar', icon: 'calendar_today' },
 		{ id: 'my_tickets', label: 'Tickets', icon: 'confirmation_number' },
 		{ id: 'info', label: 'Info', icon: 'info' },
 	];
-	const DEFAULT_TAB_ID = 'info';
+	let DEFAULT_TAB_ID = 'info';
 
 	/**
      * Devuelve los IDs de los módulos seleccionados en el orden del DOM.
@@ -426,15 +427,20 @@
 				`);
 			});
 		} else {
-			// info (default)
+			// info (default) o tab custom (modules, etc.) → fallback a hero + info
 			const appName = $('#app_name').val() || 'Mi App';
+			const customTab = NATIVE_TABS.find((t) => t.id === tabId);
+			const heroIcon = customTab ? customTab.icon : 'apartment';
+			const heroLabel = (customTab && tabId !== 'info')
+				? customTab.label
+				: 'Comunidad cooperativa local';
 			$wrap.append(`
 				<div class="tab-content__hero">
 					<div class="tab-content__hero-icon">
-						<span class="material-icons-outlined">apartment</span>
+						<span class="material-icons-outlined">${heroIcon}</span>
 					</div>
 					<div class="tab-content__hero-title">${appName}</div>
-					<div class="tab-content__hero-subtitle">Comunidad cooperativa local</div>
+					<div class="tab-content__hero-subtitle">${heroLabel}</div>
 				</div>
 				<div class="tab-content__card">
 					<div class="tab-content__row">
@@ -479,6 +485,57 @@
 	function closeDrawer() {
 		$('#preview-drawer').removeClass('is-open');
 		$('#preview-drawer-overlay').removeClass('is-visible');
+	}
+
+	/**
+     * Re-renderiza el bottom nav con las tabs actuales (NATIVE_TABS).
+     */
+	function rebuildBottomNav() {
+		const $nav = $('#preview-navbar').empty();
+		NATIVE_TABS.forEach(function (tab) {
+			$nav.append(`
+				<div class="nav-item" data-tab="${tab.id}">
+					<span class="material-icons-outlined">${tab.icon}</span>
+					<span>${tab.label}</span>
+				</div>
+			`);
+		});
+	}
+
+	/**
+     * Carga las tabs reales del sitio (flavor_apps_config['tabs']) y, si difieren
+     * de los defaults, sobreescribe NATIVE_TABS y re-pinta el bottom nav.
+     */
+	function loadRealTabsConfig() {
+		$.post(flavorApkBuilder.ajaxUrl, {
+			action: 'flavor_apk_tabs_config',
+			nonce: flavorApkBuilder.nonce,
+		}).done(function (response) {
+			if (!response || !response.success || !response.data) return;
+			const tabs = response.data.tabs || [];
+			if (!tabs.length) return;
+
+			NATIVE_TABS = tabs.map(function (t) {
+				return { id: t.id, label: t.label, icon: t.icon };
+			});
+
+			// Si el default declarado existe entre las tabs, usarlo
+			const declared = response.data.default_tab;
+			if (declared && NATIVE_TABS.find((t) => t.id === declared)) {
+				DEFAULT_TAB_ID = declared;
+			} else {
+				DEFAULT_TAB_ID = NATIVE_TABS[NATIVE_TABS.length - 1].id;
+			}
+
+			rebuildBottomNav();
+			setActiveTab(DEFAULT_TAB_ID);
+
+			if (response.data.source === 'config') {
+				$('#preview-hint').append(
+					' <span style="color:#0a7634;font-weight:500;">· Tabs cargadas de tu configuración</span>'
+				);
+			}
+		});
 	}
 
 	/**
