@@ -200,6 +200,8 @@ class Flavor_Contextual_Help {
             return;
         }
 
+        $contenido_especifico_aplicado = false;
+
         // Verificar si hay ayuda registrada para esta página
         foreach ($this->page_help as $page_slug => $help_data) {
             if (strpos($screen->id, $page_slug) !== false) {
@@ -212,7 +214,30 @@ class Flavor_Contextual_Help {
                 if (!empty($help_data['sidebar'])) {
                     $screen->set_help_sidebar($help_data['sidebar']);
                 }
+
+                $contenido_especifico_aplicado = true;
             }
+        }
+
+        // Fallback genérico para cualquier página admin flavor-* sin entrada
+        // específica (auditoría 2026-04-29 U7).
+        if (!$contenido_especifico_aplicado && strpos($screen->id, 'flavor') !== false) {
+            $screen->add_help_tab([
+                'id'      => 'flavor_help_generico',
+                'title'   => __('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'content' => '<p>' . esc_html__(
+                    'Esta página forma parte de Flavor Platform. Consulta la documentación completa o contacta soporte si necesitas ayuda específica.',
+                    FLAVOR_PLATFORM_TEXT_DOMAIN
+                ) . '</p>',
+            ]);
+
+            $screen->set_help_sidebar(
+                '<p><strong>' . esc_html__('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong></p>' .
+                '<p><a href="https://docs.flavor-platform.com" target="_blank" rel="noopener">' .
+                esc_html__('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>' .
+                '<p><a href="https://support.flavor-platform.com" target="_blank" rel="noopener">' .
+                esc_html__('Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>'
+            );
         }
     }
 
@@ -336,8 +361,17 @@ class Flavor_Contextual_Help {
 
         wp_enqueue_style('dashicons');
 
-        // El CSS se incluye en onboarding.css
-        // El JS se incluye en onboarding.js
+        // CSS de accesibilidad (focus visible, screen reader, contraste).
+        // Antes solo se cargaba en el dashboard unificado (auditoría 2026-04-29 U8).
+        $version_plugin = defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '4.1.0';
+        if (defined('FLAVOR_PLATFORM_URL')) {
+            wp_enqueue_style(
+                'flavor-admin-a11y',
+                FLAVOR_PLATFORM_URL . 'assets/css/dashboard-a11y.css',
+                [],
+                $version_plugin
+            );
+        }
     }
 
     /**
