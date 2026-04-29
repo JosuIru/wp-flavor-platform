@@ -86,12 +86,16 @@ class Flavor_Gossip_Protocol {
         add_action('flavor_mesh_heartbeat', [$this, 'send_heartbeats']);
         add_action('flavor_mesh_cleanup_expired', [$this, 'cleanup_expired_messages']);
 
-        // Programar crons si no existen
+        // Programar crons si no existen.
+        // Las keys de intervalo deben coincidir con las registradas por
+        // Flavor_Mesh_Loader::add_cron_schedules() (every_minute,
+        // every_five_minutes). Antes se usaba `every_5_minutes` que nunca
+        // estaba registrado en cron_schedules y WP fallaba silenciosamente.
         if (!wp_next_scheduled('flavor_mesh_gossip_batch')) {
             wp_schedule_event(time(), 'every_minute', 'flavor_mesh_gossip_batch');
         }
         if (!wp_next_scheduled('flavor_mesh_heartbeat')) {
-            wp_schedule_event(time(), 'every_5_minutes', 'flavor_mesh_heartbeat');
+            wp_schedule_event(time(), 'every_five_minutes', 'flavor_mesh_heartbeat');
         }
         if (!wp_next_scheduled('flavor_mesh_cleanup_expired')) {
             wp_schedule_event(time(), 'hourly', 'flavor_mesh_cleanup_expired');
@@ -1163,19 +1167,8 @@ class Flavor_Gossip_Protocol {
     }
 }
 
-// Registrar intervalos de cron personalizados
-add_filter('cron_schedules', function ($schedules) {
-    if (!isset($schedules['every_minute'])) {
-        $schedules['every_minute'] = [
-            'interval' => 60,
-            'display'  => __('Every Minute'),
-        ];
-    }
-    if (!isset($schedules['every_5_minutes'])) {
-        $schedules['every_5_minutes'] = [
-            'interval' => 300,
-            'display'  => __('Every 5 Minutes'),
-        ];
-    }
-    return $schedules;
-});
+// Los intervalos de cron personalizados (every_minute, every_five_minutes)
+// los registra Flavor_Mesh_Loader::add_cron_schedules(). Antes había aquí
+// un filtro huérfano que añadía `every_5_minutes` (clave inconsistente con
+// la del loader), produciendo un evento de heartbeat que jamás se ejecutaba.
+// Eliminado en P0.3 / N4 — mesh-loader es la fuente única de schedules.
