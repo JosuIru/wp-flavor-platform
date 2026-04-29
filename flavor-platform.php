@@ -375,16 +375,29 @@ function flavor_register_rest_route( $route_namespace, $route, $args = array(), 
 /**
  * Obtiene los settings principales con compatibilidad entre nombre legado y nuevo.
  *
+ * Cachea el resultado en `$flavor_settings_cache['main']` para evitar el
+ * doble `get_option()` (platform + legacy) en cada call. Invalidación
+ * centralizada vía `flavor_invalidate_settings_cache('main')`.
+ *
  * @return array
  */
 function flavor_get_main_settings() {
+    global $flavor_settings_cache;
+
+    if ( isset( $flavor_settings_cache['main'] ) ) {
+        return $flavor_settings_cache['main'];
+    }
+
     $platform_settings = get_option( FLAVOR_PLATFORM_SETTINGS_OPTION, null );
     if ( is_array( $platform_settings ) ) {
+        $flavor_settings_cache['main'] = $platform_settings;
         return $platform_settings;
     }
 
     $legacy_settings = get_option( FLAVOR_CHAT_IA_SETTINGS_OPTION, array() );
-    return is_array( $legacy_settings ) ? $legacy_settings : array();
+    $result = is_array( $legacy_settings ) ? $legacy_settings : array();
+    $flavor_settings_cache['main'] = $result;
+    return $result;
 }
 
 /**
@@ -449,15 +462,29 @@ function flavor_get_module_option_names( $module_id ) {
  * @return array
  */
 function flavor_get_module_settings( $module_id ) {
+    global $flavor_settings_cache;
+
+    // Cache key = $module_id directo: coincide con la API de
+    // flavor_invalidate_settings_cache($module_id) ya en uso
+    // (línea 479, 492). Como 'main' y 'vbp' son los únicos slots
+    // reservados a nivel global, no hay colisión real con módulos.
+    $module_id = (string) $module_id;
+    if ( isset( $flavor_settings_cache[ $module_id ] ) ) {
+        return $flavor_settings_cache[ $module_id ];
+    }
+
     $option_names = flavor_get_module_option_names( $module_id );
 
     $platform_settings = get_option( $option_names['platform'], null );
     if ( is_array( $platform_settings ) ) {
+        $flavor_settings_cache[ $module_id ] = $platform_settings;
         return $platform_settings;
     }
 
     $legacy_settings = get_option( $option_names['legacy'], array() );
-    return is_array( $legacy_settings ) ? $legacy_settings : array();
+    $result = is_array( $legacy_settings ) ? $legacy_settings : array();
+    $flavor_settings_cache[ $module_id ] = $result;
+    return $result;
 }
 
 /**
