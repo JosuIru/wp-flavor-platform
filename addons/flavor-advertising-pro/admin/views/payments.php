@@ -17,7 +17,9 @@ if (!current_user_can('manage_options')) {
 }
 
 global $wpdb;
-$tabla_pagos = $wpdb->prefix . 'flavor_advertising_payments';
+// Las solicitudes de pago/payouts se almacenan en flavor_ad_transactions
+// (no existe ninguna tabla flavor_advertising_payments).
+$tabla_transacciones = $wpdb->prefix . 'flavor_ad_transactions';
 
 // Procesar solicitud de pago
 if (isset($_POST['flavor_request_payment']) && check_admin_referer('flavor_request_payment_action', 'flavor_request_payment_nonce')) {
@@ -26,18 +28,19 @@ if (isset($_POST['flavor_request_payment']) && check_admin_referer('flavor_reque
 
     // Insertar solicitud de pago
     $wpdb->insert(
-        $tabla_pagos,
+        $tabla_transacciones,
         [
-            'fecha' => current_time('mysql'),
-            'concepto' => 'Solicitud de pago',
-            'anuncio_id' => null,
-            'sitio_origen' => get_bloginfo('name'),
-            'monto' => $monto_solicitud,
-            'estado' => 'pending',
-            'metodo_pago' => $metodo_pago_seleccionado,
-            'usuario_id' => get_current_user_id()
+            'ad_id' => 0,
+            'site_id' => get_option('flavor_site_id', 'local'),
+            'amount' => $monto_solicitud,
+            'type' => 'payout_request',
+            'status' => 'pending',
+            'concept' => __('Solicitud de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'payment_method' => $metodo_pago_seleccionado,
+            'user_id' => get_current_user_id(),
+            'created_at' => current_time('mysql'),
         ],
-        ['%s', '%s', '%d', '%s', '%f', '%s', '%s', '%d']
+        ['%d', '%s', '%f', '%s', '%s', '%s', '%s', '%d', '%s']
     );
 
     echo '<div class="notice notice-success"><p>' . esc_html__('Solicitud de pago enviada correctamente. Te notificaremos cuando sea procesada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
@@ -66,33 +69,42 @@ $filtro_fecha_inicio = isset($_GET['fecha_inicio']) ? sanitize_text_field($_GET[
 $filtro_fecha_fin = isset($_GET['fecha_fin']) ? sanitize_text_field($_GET['fecha_fin']) : '';
 
 // Calcular balance actual
-$balance_actual = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'pending'") ?? 0;
-$total_pagado = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'paid'") ?? 0;
-$total_cancelado = $wpdb->get_var("SELECT SUM(monto) FROM {$tabla_pagos} WHERE estado = 'cancelled'") ?? 0;
+$balance_actual = $wpdb->get_var("SELECT SUM(amount) FROM {$tabla_transacciones} WHERE status = 'pending'") ?? 0;
+$total_pagado = $wpdb->get_var("SELECT SUM(amount) FROM {$tabla_transacciones} WHERE status = 'paid'") ?? 0;
+$total_cancelado = $wpdb->get_var("SELECT SUM(amount) FROM {$tabla_transacciones} WHERE status = 'cancelled'") ?? 0;
 
 // Obtener umbral mínimo de pago
 $umbral_minimo_pago = get_option('flavor_advertising_min_payout', 50);
 
-// Construir consulta de historial de pagos
-$query_historial = "SELECT * FROM {$tabla_pagos} WHERE 1=1";
+// Construir consulta de historial de pagos. Se exponen alias en español para que
+// el HTML de la tabla siga usando los mismos nombres de campo.
+$query_historial = "SELECT
+        created_at as fecha,
+        concept as concepto,
+        ad_id as anuncio_id,
+        site_id as sitio_origen,
+        amount as monto,
+        status as estado,
+        payment_method as metodo_pago
+    FROM {$tabla_transacciones} WHERE 1=1";
 $parametros_consulta = [];
 
 if (!empty($filtro_estado)) {
-    $query_historial .= " AND estado = %s";
+    $query_historial .= " AND status = %s";
     $parametros_consulta[] = $filtro_estado;
 }
 
 if (!empty($filtro_fecha_inicio)) {
-    $query_historial .= " AND fecha >= %s";
+    $query_historial .= " AND created_at >= %s";
     $parametros_consulta[] = $filtro_fecha_inicio . ' 00:00:00';
 }
 
 if (!empty($filtro_fecha_fin)) {
-    $query_historial .= " AND fecha <= %s";
+    $query_historial .= " AND created_at <= %s";
     $parametros_consulta[] = $filtro_fecha_fin . ' 23:59:59';
 }
 
-$query_historial .= " ORDER BY fecha DESC LIMIT 100";
+$query_historial .= " ORDER BY created_at DESC LIMIT 100";
 
 if (!empty($parametros_consulta)) {
     $historial_pagos = $wpdb->get_results($wpdb->prepare($query_historial, $parametros_consulta));
@@ -100,24 +112,29 @@ if (!empty($parametros_consulta)) {
     $historial_pagos = $wpdb->get_results($query_historial);
 }
 
-// Estadísticas por anunciante
+// Estadísticas por sitio/anunciante
 $estadisticas_anunciantes = $wpdb->get_results(
     "SELECT
-        sitio_origen,
+        site_id as sitio_origen,
         COUNT(*) as total_pagos,
-        SUM(CASE WHEN estado = 'paid' THEN monto ELSE 0 END) as total_pagado,
-        SUM(CASE WHEN estado = 'pending' THEN monto ELSE 0 END) as pendiente
-    FROM {$tabla_pagos}
-    GROUP BY sitio_origen
+        SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as total_pagado,
+        SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pendiente
+    FROM {$tabla_transacciones}
+    GROUP BY site_id
     ORDER BY total_pagado DESC
     LIMIT 10"
 );
 
 // Próximos pagos programados
 $proximos_pagos = $wpdb->get_results(
-    "SELECT * FROM {$tabla_pagos}
-    WHERE estado = 'pending'
-    ORDER BY fecha ASC
+    "SELECT
+        created_at as fecha,
+        concept as concepto,
+        amount as monto,
+        payment_method as metodo_pago
+    FROM {$tabla_transacciones}
+    WHERE status = 'pending'
+    ORDER BY created_at ASC
     LIMIT 5"
 );
 
