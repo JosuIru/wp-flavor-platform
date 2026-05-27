@@ -329,10 +329,7 @@ class Flavor_Global_Search {
 
     public function ajax_buscar() {
         $nonce = $_REQUEST['nonce'] ?? '';
-        if (
-            !wp_verify_nonce($nonce, 'flavor_platform_nonce')
-            && !wp_verify_nonce($nonce, 'flavor_platform_nonce')
-        ) {
+        if ( ! wp_verify_nonce( $nonce, 'flavor_platform_nonce' ) ) {
             wp_send_json_error(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN), 403);
         }
 
