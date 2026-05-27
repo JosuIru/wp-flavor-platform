@@ -283,8 +283,11 @@ class Flavor_Restaurant_Manager {
 
     /**
      * Obtener precio de un item
+     *
+     * Público: lo consume Flavor_Order_Manager (otra clase) al calcular totales
+     * y al añadir items al pedido. Si vuelve a 'private' rompe toda creación de pedidos.
      */
-    private function get_item_price($post_id) {
+    public function get_item_price($post_id) {
         // Intentar obtener precio de diferentes fuentes
         $price = get_post_meta($post_id, '_price', true);
 
