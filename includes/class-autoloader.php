@@ -613,11 +613,11 @@ class Flavor_Autoloader {
      * @param string $nivel Nivel de log
      * @return void
      */
-    private static function log($mensaje, $nivel = 'info') {
-        if (!self::$debug) {
-            return;
-        }
-
+    private static function log($mensaje, $nivel = 'debug') {
+        // Las trazas del autoloader son ruido en producción: cada request carga
+        // ~50 clases, de modo que cualquier nivel >= info satura los logs.
+        // Por eso el nivel por defecto es 'debug' y dependemos del filtro de
+        // flavor_platform_log() para descartarlo salvo cuando se eleva a warning.
         if (function_exists('flavor_platform_log')) {
             flavor_platform_log('[Autoloader] ' . $mensaje, $nivel);
         }

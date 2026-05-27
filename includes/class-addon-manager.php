@@ -163,10 +163,10 @@ class Flavor_Addon_Manager {
         }
 
         if ($addons_encontrados > 0) {
-            flavor_platform_log(sprintf(
-                'Escaneado directorio addons/: %d addons encontrados',
-                $addons_encontrados
-            ));
+            flavor_platform_log(
+                sprintf('Escaneado directorio addons/: %d addons encontrados', $addons_encontrados),
+                'debug'
+            );
         }
     }
 
@@ -189,10 +189,10 @@ class Flavor_Addon_Manager {
          */
         do_action('flavor_register_addons');
 
-        flavor_platform_log(sprintf(
-            'Sistema de addons iniciado. %d addons registrados',
-            count($this->addons_registrados)
-        ));
+        flavor_platform_log(
+            sprintf('Sistema de addons iniciado. %d addons registrados', count($this->addons_registrados)),
+            'debug'
+        );
     }
 
     /**
@@ -275,7 +275,7 @@ class Flavor_Addon_Manager {
         // Registrar el addon
         $instancia->addons_registrados[$slug_addon] = $configuracion;
 
-        flavor_platform_log("Addon registrado: {$slug_addon} v{$configuracion['version']}");
+        flavor_platform_log("Addon registrado: {$slug_addon} v{$configuracion['version']}", 'debug');
 
         /**
          * Acción después de registrar un addon
@@ -299,11 +299,10 @@ class Flavor_Addon_Manager {
             $this->load_addon($slug_addon);
         }
 
-        flavor_platform_log(sprintf(
-            '%d addons cargados de %d activos',
-            count($this->addons_cargados),
-            count($this->addons_activos)
-        ));
+        flavor_platform_log(
+            sprintf('%d addons cargados de %d activos', count($this->addons_cargados), count($this->addons_activos)),
+            'debug'
+        );
     }
 
     /**
@@ -350,7 +349,7 @@ class Flavor_Addon_Manager {
         // Marcar como cargado
         $this->addons_cargados[$slug_addon] = true;
 
-        flavor_platform_log("Addon cargado: {$slug_addon}");
+        flavor_platform_log("Addon cargado: {$slug_addon}", 'debug');
 
         /**
          * Acción después de cargar un addon

@@ -1015,7 +1015,7 @@ class Flavor_Platform_Module_Loader {
 
         // Si no puede activarse, intentar crear tablas automáticamente
         if (!$module->can_activate()) {
-            flavor_platform_log("Intentando crear tablas para módulo: {$module_id}", 'info');
+            flavor_platform_log("Intentando crear tablas para módulo: {$module_id}", 'debug');
 
             // Intentar activate() primero (algunos módulos lo implementan)
             if (method_exists($module, 'activate')) {
@@ -1029,7 +1029,17 @@ class Flavor_Platform_Module_Loader {
 
             // Verificar de nuevo tras crear tablas
             if (!$module->can_activate()) {
-                flavor_platform_log("Módulo no puede activarse tras crear tablas: {$module_id} - " . $module->get_activation_error(), 'warning');
+                // Throttle: si el motivo de fallo no cambia, sólo loguear una vez por hora
+                // por módulo. Evita inundar el log cuando un módulo declara una dependencia
+                // ausente de forma estable (p.ej. WooCommerce no instalado).
+                $clave_throttle = "flavor_module_load_fail_{$module_id}";
+                $razon_actual = (string) $module->get_activation_error();
+                $razon_cacheada = get_transient($clave_throttle);
+
+                if ($razon_cacheada !== $razon_actual) {
+                    flavor_platform_log("Módulo no puede activarse tras crear tablas: {$module_id} - {$razon_actual}", 'warning');
+                    set_transient($clave_throttle, $razon_actual, HOUR_IN_SECONDS);
+                }
                 return false;
             }
         }
@@ -1039,7 +1049,7 @@ class Flavor_Platform_Module_Loader {
 
         $this->loaded_modules[$module_id] = $module;
 
-        flavor_platform_log("Módulo cargado: {$module_id}", 'info');
+        flavor_platform_log("Módulo cargado: {$module_id}", 'debug');
 
         return true;
     }

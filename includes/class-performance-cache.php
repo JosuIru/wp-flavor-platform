@@ -111,10 +111,9 @@ class Flavor_Performance_Cache {
         add_action('update_option_flavor_chat_settings', [$this, 'limpiar_cache_configuracion']);
         add_action('update_option_flavor_app_profile', [$this, 'limpiar_cache_perfiles']);
 
-        // Mostrar estadísticas en debug mode
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            add_action('shutdown', [$this, 'mostrar_estadisticas']);
-        }
+        // Las stats se exponen vía get_estadisticas() para que el admin las consuma.
+        // No registrar shutdown handler: en producción con WP_DEBUG cualquier request
+        // (incluyendo cada heartbeat de admin-ajax) escribía 6 líneas DEBUG al log.
     }
 
     /**
@@ -432,8 +431,14 @@ class Flavor_Performance_Cache {
 /**
  * Función helper para acceder al cache
  *
+ * Guarda function_exists: class-cache-manager.php declara también flavor_cache()
+ * (con otra firma). Sin esta guarda, según el orden de carga, una redeclararía a la
+ * otra y provocaría un fatal "Cannot redeclare flavor_cache()".
+ *
  * @return Flavor_Performance_Cache
  */
-function flavor_cache() {
-    return Flavor_Performance_Cache::get_instance();
+if ( ! function_exists( 'flavor_cache' ) ) {
+    function flavor_cache() {
+        return Flavor_Performance_Cache::get_instance();
+    }
 }
