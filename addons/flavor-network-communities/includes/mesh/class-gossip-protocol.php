@@ -698,8 +698,12 @@ class Flavor_Gossip_Protocol {
         }
 
         if (!$public_key_base64) {
-            // Peer desconocido - aceptar pero con precaución
-            return true; // TODO: Implementar registro de peers desconocidos
+            // Peer desconocido: rechazar. Aceptar mensajes firmados por un peer cuya
+            // clave pública no conocemos permitía falsificar el origin_peer_id (spoofing
+            // de autoría en el gossip). Coherente con el endurecimiento aplicado en
+            // Flavor_Network_Mesh_API: para entrar a la red el peer debe registrar su
+            // clave pública mediante el handshake en /mesh/connect.
+            return false;
         }
 
         try {

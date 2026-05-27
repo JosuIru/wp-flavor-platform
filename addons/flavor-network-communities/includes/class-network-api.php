@@ -3024,18 +3024,31 @@ class Flavor_Network_API {
         $datos = $cuerpo['data'] ?? [];
         $timestamp = $cuerpo['timestamp'] ?? current_time('c');
 
-        // Verificar firma HMAC si hay secreto configurado
+        // Verificar firma HMAC: OBLIGATORIA. El endpoint es público (__return_true),
+        // así que la única barrera es la firma. Antes la verificación era opcional (se
+        // saltaba si faltaba la firma o el source.id), permitiendo a cualquiera disparar
+        // las acciones flavor_network_webhook_* con datos arbitrarios. Ahora se exige
+        // identificar el nodo de origen registrado y una firma válida.
         $firma_recibida = $request->get_header('X-Webhook-Signature');
-        if ($firma_recibida && $origen && !empty($origen['id'])) {
-            $nodo_origen = Flavor_Network_Node::find($origen['id']);
-            if ($nodo_origen && !empty($nodo_origen->api_secret)) {
-                $cuerpo_raw = $request->get_body();
-                $firma_esperada = 'sha256=' . hash_hmac('sha256', $cuerpo_raw, $nodo_origen->api_secret);
 
-                if (!hash_equals($firma_esperada, $firma_recibida)) {
-                    return new WP_Error('invalid_signature', __('Firma de webhook inválida', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
-                }
-            }
+        if (empty($origen) || empty($origen['id'])) {
+            return new WP_Error('missing_source', __('El webhook debe identificar su nodo de origen', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
+        }
+
+        $nodo_origen = Flavor_Network_Node::find($origen['id']);
+        if (!$nodo_origen || empty($nodo_origen->api_secret)) {
+            return new WP_Error('unknown_source', __('Nodo de origen no registrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
+        }
+
+        if (empty($firma_recibida)) {
+            return new WP_Error('missing_signature', __('Falta la firma del webhook', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
+        }
+
+        $cuerpo_raw = $request->get_body();
+        $firma_esperada = 'sha256=' . hash_hmac('sha256', $cuerpo_raw, $nodo_origen->api_secret);
+
+        if (!hash_equals($firma_esperada, $firma_recibida)) {
+            return new WP_Error('invalid_signature', __('Firma de webhook inválida', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
         }
 
         // Disparar acción para que otros componentes procesen el webhook
