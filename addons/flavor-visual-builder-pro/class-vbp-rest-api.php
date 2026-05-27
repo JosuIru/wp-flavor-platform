@@ -2320,14 +2320,37 @@ class Flavor_VBP_REST_API {
     public function verificar_api_key_claude( $request ) {
         $api_key = $request->get_header( 'X-VBP-Key' );
 
-        // Obtener key desde opciones (configurable) con fallback seguro
-        $settings = get_option( 'flavor_vbp_settings', array() );
-        $valid_key = isset( $settings['api_key'] ) && ! empty( $settings['api_key'] )
-            ? $settings['api_key']
-            : wp_hash( 'flavor-vbp-' . NONCE_SALT ); // Genera key única por instalación
+        // Rate limiting por API key (100 req/min). Los endpoints batch que usan este
+        // callback son de alto impacto (crean múltiples páginas/elementos de una vez)
+        // y antes no tenían ningún límite, a diferencia de verificar_api_key().
+        if ( ! empty( $api_key ) ) {
+            $transient_key = 'vbp_batch_rate_' . md5( $api_key );
+            $count = (int) get_transient( $transient_key );
+            if ( $count >= 100 ) {
+                return new WP_Error(
+                    'rate_limit_exceeded',
+                    __( 'Demasiadas peticiones. Inténtalo de nuevo en un minuto.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    array( 'status' => 429 )
+                );
+            }
+            set_transient( $transient_key, $count + 1, MINUTE_IN_SECONDS );
+        }
 
-        if ( hash_equals( (string) $valid_key, (string) $api_key ) ) {
+        // Validación timing-safe centralizada (incluye su propio rate limit de fuerza bruta).
+        if ( ! empty( $api_key ) && function_exists( 'flavor_verify_vbp_api_key' ) && flavor_verify_vbp_api_key( $api_key ) ) {
             return true;
+        }
+
+        // Fallback: comparación directa con la key configurada.
+        if ( ! empty( $api_key ) ) {
+            $settings = get_option( 'flavor_vbp_settings', array() );
+            $valid_key = isset( $settings['api_key'] ) && ! empty( $settings['api_key'] )
+                ? $settings['api_key']
+                : wp_hash( 'flavor-vbp-' . NONCE_SALT ); // Genera key única por instalación
+
+            if ( hash_equals( (string) $valid_key, (string) $api_key ) ) {
+                return true;
+            }
         }
 
         // Fallback: verificar permisos normales (usuario autenticado)

@@ -3923,7 +3923,7 @@ class Flavor_VBP_Canvas {
         }
 
         if ( $html_custom ) {
-            $html .= '<div class="vbp-section__html">' . $html_custom . '</div>';
+            $html .= '<div class="vbp-section__html">' . wp_kses_post( $html_custom ) . '</div>';
         }
 
         // Renderizar hijos
