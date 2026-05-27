@@ -2817,101 +2817,100 @@ class Flavor_VBP_Claude_API {
 	 * @return array|null
 	 */
 	private function generate_section_block( $type, $colors, $context ) {
-		// IMPORTANTE: la estructura debe coincidir con lo que renderiza Flavor_VBP_Canvas,
-		// que lee el contenido de $elemento['data'] y los estilos de $elemento['styles']
-		// (NO de 'props'). El nivel de heading es la cadena 'h1'..'h6'. Los tipos válidos
-		// con renderer propio son section/heading/text/button/columns (no existe feature-card).
-		$topic          = $context['topic'] ?? 'Nuestros Servicios';
-		$color_primario = $colors['primary'] ?? '#3b82f6';
+		$topic = $context['topic'] ?? 'Nuestros Servicios';
 
 		switch ( $type ) {
 			case 'hero':
 				return array(
 					'type'     => 'section',
 					'id'       => 'section_hero_' . wp_generate_uuid4(),
-					'data'     => array(),
-					'styles'   => array(
-						'spacing' => array(
-							'padding' => array( 'top' => '80px', 'bottom' => '80px', 'left' => '20px', 'right' => '20px' ),
+					'props'    => array(
+						'className'  => 'hero-section',
+						'background' => array(
+							'type'  => 'gradient',
+							'from'  => $colors['primary'] ?? '#3b82f6',
+							'to'    => $colors['secondary'] ?? '#1e40af',
 						),
-						'colors'  => array( 'background' => $color_primario ),
+						'padding'    => '80px 0',
 					),
 					'children' => array(
 						array(
-							'type'   => 'heading',
-							'id'     => 'heading_' . wp_generate_uuid4(),
-							'data'   => array( 'text' => $topic, 'level' => 'h1' ),
-							'styles' => array(
-								'typography' => array( 'textAlign' => 'center' ),
-								'colors'     => array( 'text' => '#ffffff' ),
+							'type'  => 'heading',
+							'props' => array(
+								'level' => 1,
+								'text'  => $topic,
+								'align' => 'center',
+								'color' => '#ffffff',
 							),
 						),
 						array(
-							'type'   => 'text',
-							'id'     => 'text_' . wp_generate_uuid4(),
-							'data'   => array( 'text' => 'Descubre todo lo que podemos ofrecerte' ),
-							'styles' => array(
-								'typography' => array( 'textAlign' => 'center' ),
-								'colors'     => array( 'text' => '#ffffff' ),
+							'type'  => 'text',
+							'props' => array(
+								'content' => 'Descubre todo lo que podemos ofrecerte',
+								'align'   => 'center',
+								'color'   => '#ffffff',
 							),
 						),
 						array(
-							'type'   => 'button',
-							'id'     => 'button_' . wp_generate_uuid4(),
-							'data'   => array( 'text' => 'Comenzar', 'url' => '#' ),
-							'styles' => array(
-								'typography' => array( 'textAlign' => 'center' ),
+							'type'  => 'button',
+							'props' => array(
+								'text'  => 'Comenzar',
+								'style' => 'primary',
+								'size'  => 'large',
+								'align' => 'center',
 							),
 						),
 					),
 				);
 
 			case 'features':
-				// Cada tarjeta es una sub-sección (heading + texto) dentro de una columna,
-				// porque el renderer no tiene un tipo 'feature-card'.
-				$crear_tarjeta = function ( $titulo, $descripcion ) {
-					return array(
-						'type'     => 'section',
-						'id'       => 'feature_' . wp_generate_uuid4(),
-						'data'     => array(),
-						'styles'   => array(),
-						'children' => array(
-							array(
-								'type'   => 'heading',
-								'id'     => 'heading_' . wp_generate_uuid4(),
-								'data'   => array( 'text' => $titulo, 'level' => 'h3' ),
-								'styles' => array( 'typography' => array( 'textAlign' => 'center' ) ),
-							),
-							array(
-								'type'   => 'text',
-								'id'     => 'text_' . wp_generate_uuid4(),
-								'data'   => array( 'text' => $descripcion ),
-								'styles' => array( 'typography' => array( 'textAlign' => 'center' ) ),
-							),
-						),
-					);
-				};
-
 				return array(
 					'type'     => 'section',
 					'id'       => 'section_features_' . wp_generate_uuid4(),
-					'data'     => array( 'titulo' => 'Caracteristicas' ),
-					'styles'   => array(
-						'spacing'    => array(
-							'padding' => array( 'top' => '60px', 'bottom' => '60px', 'left' => '20px', 'right' => '20px' ),
-						),
-						'typography' => array( 'textAlign' => 'center' ),
+					'props'    => array(
+						'className' => 'features-section',
+						'padding'   => '60px 0',
 					),
 					'children' => array(
 						array(
+							'type'  => 'heading',
+							'props' => array(
+								'level' => 2,
+								'text'  => 'Caracteristicas',
+								'align' => 'center',
+							),
+						),
+						array(
 							'type'     => 'columns',
-							'id'       => 'columns_' . wp_generate_uuid4(),
-							'data'     => array( 'columns' => 3, 'gap' => 30 ),
-							'styles'   => array(),
+							'props'    => array(
+								'columns' => 3,
+								'gap'     => '30px',
+							),
 							'children' => array(
-								$crear_tarjeta( 'Calidad', 'Los mejores estandares' ),
-								$crear_tarjeta( 'Rapido', 'Resultados inmediatos' ),
-								$crear_tarjeta( 'Seguro', 'Tu tranquilidad primero' ),
+								array(
+									'type'  => 'feature-card',
+									'props' => array(
+										'icon'  => 'star',
+										'title' => 'Calidad',
+										'text'  => 'Los mejores estandares',
+									),
+								),
+								array(
+									'type'  => 'feature-card',
+									'props' => array(
+										'icon'  => 'clock',
+										'title' => 'Rapido',
+										'text'  => 'Resultados inmediatos',
+									),
+								),
+								array(
+									'type'  => 'feature-card',
+									'props' => array(
+										'icon'  => 'shield',
+										'title' => 'Seguro',
+										'text'  => 'Tu tranquilidad primero',
+									),
+								),
 							),
 						),
 					),
@@ -2921,29 +2920,28 @@ class Flavor_VBP_Claude_API {
 				return array(
 					'type'     => 'section',
 					'id'       => 'section_cta_' . wp_generate_uuid4(),
-					'data'     => array(),
-					'styles'   => array(
-						'spacing' => array(
-							'padding' => array( 'top' => '60px', 'bottom' => '60px', 'left' => '20px', 'right' => '20px' ),
-						),
-						'colors'  => array( 'background' => $color_primario ),
+					'props'    => array(
+						'className'  => 'cta-section',
+						'background' => $colors['primary'] ?? '#3b82f6',
+						'padding'    => '60px 0',
 					),
 					'children' => array(
 						array(
-							'type'   => 'heading',
-							'id'     => 'heading_' . wp_generate_uuid4(),
-							'data'   => array( 'text' => 'Listo para empezar?', 'level' => 'h2' ),
-							'styles' => array(
-								'typography' => array( 'textAlign' => 'center' ),
-								'colors'     => array( 'text' => '#ffffff' ),
+							'type'  => 'heading',
+							'props' => array(
+								'level' => 2,
+								'text'  => 'Listo para empezar?',
+								'align' => 'center',
+								'color' => '#ffffff',
 							),
 						),
 						array(
-							'type'   => 'button',
-							'id'     => 'button_' . wp_generate_uuid4(),
-							'data'   => array( 'text' => 'Contactanos', 'url' => '#' ),
-							'styles' => array(
-								'typography' => array( 'textAlign' => 'center' ),
+							'type'  => 'button',
+							'props' => array(
+								'text'  => 'Contactanos',
+								'style' => 'secondary',
+								'size'  => 'large',
+								'align' => 'center',
 							),
 						),
 					),
@@ -3215,9 +3213,6 @@ if ( ! function_exists( 'flavor_verify_vbp_api_key' ) ) {
 			? $settings['api_key']
 			: wp_hash( 'flavor-vbp-' . NONCE_SALT );
 
-		// Comparación timing-safe. Este fallback solo se define si la versión canónica
-		// de flavor-platform.php no se cargó (p.ej. el addon aislado en tests); aun así
-		// no debe usar comparación directa '===' susceptible a timing attacks.
-		return hash_equals( (string) $valid_key, (string) $key );
+		return $key === $valid_key;
 	}
 }
