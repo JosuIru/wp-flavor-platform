@@ -898,7 +898,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
             'post_type' => 'cc_registro_horas',
             'post_title' => sprintf(
                 __('%s - %s horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($user_id)->display_name,
+                Flavor_Platform_Helpers::nombre_usuario($user_id),
                 $horas
             ),
             'post_status' => 'publish',

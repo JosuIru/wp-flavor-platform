@@ -382,7 +382,7 @@ class Flavor_Platform_Justicia_Restaurativa_Module extends Flavor_Platform_Modul
                         <td><a href="<?php echo get_edit_post_link($proc->ID); ?>"><?php echo esc_html($proc->post_title); ?></a></td>
                         <td><?php echo esc_html(self::TIPOS_PROCESO[$tipo]['nombre'] ?? $tipo); ?></td>
                         <td><span style="color: <?php echo esc_attr(self::ESTADOS_PROCESO[$estado]['color'] ?? '#ccc'); ?>"><?php echo esc_html(self::ESTADOS_PROCESO[$estado]['nombre'] ?? $estado); ?></span></td>
-                        <td><?php echo $mediador_id ? esc_html(get_userdata($mediador_id)->display_name) : '—'; ?></td>
+                        <td><?php echo $mediador_id ? esc_html(Flavor_Platform_Helpers::nombre_usuario($mediador_id)) : '—'; ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

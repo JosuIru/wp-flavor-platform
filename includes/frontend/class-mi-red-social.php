@@ -2076,7 +2076,7 @@ class Flavor_Mi_Red_Social {
             'origen' => 'red-social',
             'autor' => [
                 'id' => $pub['autor_id'],
-                'nombre' => get_userdata($pub['autor_id'])->display_name ?? '',
+                'nombre' => Flavor_Platform_Helpers::nombre_usuario($pub['autor_id']),
                 'avatar' => get_avatar_url($pub['autor_id'], ['size' => 48]),
             ],
             'contenido' => [

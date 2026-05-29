@@ -4555,7 +4555,7 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
                 "SELECT actividad_id, COUNT(*) as total FROM $tabla_reacciones WHERE actividad_id IN ($placeholders) GROUP BY actividad_id",
                 ...$actividad_ids
             );
-            foreach ($wpdb->get_results($likes_query) as $fila) {
+            foreach (($wpdb->get_results($likes_query) ?: []) as $fila) {
                 $likes_map[(int)$fila->actividad_id] = (int)$fila->total;
             }
         }
@@ -4568,7 +4568,7 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
                 $usuario_actual_id,
                 ...$actividad_ids
             );
-            foreach ($wpdb->get_results($liked_query) as $fila) {
+            foreach (($wpdb->get_results($liked_query) ?: []) as $fila) {
                 $liked_map[(int)$fila->actividad_id] = true;
             }
         }
@@ -7134,7 +7134,7 @@ KNOWLEDGE;
             sprintf(__('Nueva publicación en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $comunidad->nombre),
             sprintf(
                 __('%s publicó en %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($publicacion->user_id)->display_name ?? __('Alguien', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                Flavor_Platform_Helpers::nombre_usuario($publicacion->user_id, __('Alguien', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 $comunidad->nombre
             ),
             [

@@ -122,7 +122,7 @@ $ingresos = [
 
             <div class="artista-datos">
                 <h2>
-                    <?php echo esc_html($artista->nombre_artistico ?: get_userdata($current_user_id)->display_name); ?>
+                    <?php echo esc_html($artista->nombre_artistico ?: Flavor_Platform_Helpers::nombre_usuario($current_user_id)); ?>
                     <?php if ($artista->verificado): ?>
                         <span class="verified-badge" title="Artista verificado">✓</span>
                     <?php endif; ?>

@@ -303,7 +303,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
 
         // Verificar por shortcode o por URL
         return has_shortcode($post->post_content, 'gc_checkout')
-            || strpos($_SERVER['REQUEST_URI'], 'checkout') !== false;
+            || strpos($_SERVER['REQUEST_URI'] ?? '', 'checkout') !== false;
     }
 
     /**

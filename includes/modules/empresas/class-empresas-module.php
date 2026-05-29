@@ -479,7 +479,7 @@ class Flavor_Platform_Empresas_Module extends Flavor_Platform_Module_Base {
         if ($resultado !== false) {
             $this->registrar_actividad($empresa_id, 'miembro_agregado', sprintf(
                 __('Miembro añadido: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($user_id)->display_name ?? ''
+                Flavor_Platform_Helpers::nombre_usuario($user_id)
             ));
             do_action('flavor_empresa_miembro_agregado', $empresa_id, $user_id, $rol);
         }
