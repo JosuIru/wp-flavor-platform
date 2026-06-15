@@ -318,8 +318,8 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
         }
 
         $modulo_facturas = $this->get_facturas_module();
-        if (!$modulo_facturas) {
-            return new WP_Error('modulo_no_encontrado', 'Módulo facturas no disponible');
+        if (!$modulo_facturas || !method_exists($modulo_facturas, 'registrar_pago')) {
+            return ['success' => false, 'message' => 'Módulo facturas no disponible'];
         }
 
         $resultado_pago = $modulo_facturas->registrar_pago([

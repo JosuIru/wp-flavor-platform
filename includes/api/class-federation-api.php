@@ -692,8 +692,13 @@ class Flavor_Federation_API {
             return new WP_Error('nodo_no_registrado', 'Nodo de origen no registrado', ['status' => 403]);
         }
 
-        // Verificar token si existe
-        if (!empty($nodo->token) && $nodo->token !== $token) {
+        // Verificar la credencial del nodo (api_key) si está provisionada.
+        // El campo correcto es api_key (igual que class-network-webhooks);
+        // antes se comprobaba $nodo->token, columna inexistente, por lo que el
+        // check nunca se ejecutaba. Comparación con hash_equals (timing-safe).
+        // No se exige de forma obligatoria porque la mayoría de nodos aún no
+        // tienen api_key provisionada y exigirla rompería la federación actual.
+        if (!empty($nodo->api_key) && !hash_equals((string) $nodo->api_key, (string) $token)) {
             $this->log_federation_event('error', 'Token de nodo invalido', [
                 'nodo_id'  => $nodo->id,
                 'origen'   => $origen,
