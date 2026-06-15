@@ -661,6 +661,21 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
         $categorias = $this->settings['categorias_predeterminadas'] ?? [];
         $usuario_id = get_current_user_id();
 
+        // Precarga de membresías del usuario en una sola consulta (evita N+1:
+        // antes se consultaba la membresía dentro del bucle, una por comunidad).
+        $comunidades_del_usuario = [];
+        if ($usuario_id && !empty($comunidades)) {
+            $ids_comunidades = wp_list_pluck($comunidades, 'id');
+            $marcadores = implode(',', array_fill(0, count($ids_comunidades), '%d'));
+            $parametros = array_merge([$usuario_id], $ids_comunidades);
+            $filas_miembro = $wpdb->get_col($wpdb->prepare(
+                "SELECT comunidad_id FROM $tabla_miembros
+                 WHERE user_id = %d AND estado = 'activo' AND comunidad_id IN ($marcadores)",
+                $parametros
+            ));
+            $comunidades_del_usuario = array_map('intval', $filas_miembro);
+        }
+
         ob_start();
         ?>
         <div class="flavor-comunidades-grid">
@@ -680,13 +695,7 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($comunidades as $comunidad):
                         $categoria_nombre = $categorias[$comunidad->categoria] ?? ucfirst($comunidad->categoria);
-                        $es_miembro = false;
-                        if ($usuario_id) {
-                            $es_miembro = $wpdb->get_var($wpdb->prepare(
-                                "SELECT COUNT(*) FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
-                                $comunidad->id, $usuario_id
-                            )) > 0;
-                        }
+                        $es_miembro = in_array((int) $comunidad->id, $comunidades_del_usuario, true);
                     ?>
                         <div class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
                             <?php if ($comunidad->imagen_portada): ?>
@@ -1833,17 +1842,32 @@ class Flavor_Platform_Comunidades_Module extends Flavor_Platform_Module_Base {
 
         $actividades = $wpdb->get_results($query);
 
-        // Agregar conteo de likes
-        foreach ($actividades as &$actividad) {
-            $actividad->likes_count = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_reacciones WHERE actividad_id = %d",
-                $actividad->id
-            ));
-            $actividad->usuario_dio_like = (bool) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_reacciones WHERE actividad_id = %d AND user_id = %d",
-                $actividad->id,
-                $usuario_id
-            ));
+        // Conteo de likes y si el usuario dio like, en 2 consultas agregadas
+        // (antes era N+1: 2 consultas por cada actividad).
+        if (!empty($actividades)) {
+            $ids_actividades = wp_list_pluck($actividades, 'id');
+            $marcadores_act = implode(',', array_fill(0, count($ids_actividades), '%d'));
+
+            $conteos_likes = $wpdb->get_results($wpdb->prepare(
+                "SELECT actividad_id, COUNT(*) AS total FROM $tabla_reacciones
+                 WHERE actividad_id IN ($marcadores_act) GROUP BY actividad_id",
+                $ids_actividades
+            ), OBJECT_K);
+
+            $likes_del_usuario = [];
+            if ($usuario_id) {
+                $likes_del_usuario = array_map('intval', (array) $wpdb->get_col($wpdb->prepare(
+                    "SELECT DISTINCT actividad_id FROM $tabla_reacciones
+                     WHERE user_id = %d AND actividad_id IN ($marcadores_act)",
+                    array_merge([$usuario_id], $ids_actividades)
+                )));
+            }
+
+            foreach ($actividades as &$actividad) {
+                $actividad->likes_count = isset($conteos_likes[$actividad->id]) ? (int) $conteos_likes[$actividad->id]->total : 0;
+                $actividad->usuario_dio_like = in_array((int) $actividad->id, $likes_del_usuario, true);
+            }
+            unset($actividad);
         }
 
         return $actividades;

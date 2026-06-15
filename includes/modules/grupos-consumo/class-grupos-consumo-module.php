@@ -672,15 +672,21 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
         $importados = 0;
         $omitidos = 0;
 
-        foreach ($usuarios_ids as $usuario_id) {
-            // Verificar si ya existe
-            $existe = $wpdb->get_var($wpdb->prepare(
-                "SELECT id FROM {$tabla_consumidores} WHERE grupo_id = %d AND usuario_id = %d",
-                $grupo_id,
-                $usuario_id
-            ));
+        // Precarga de consumidores ya existentes en una sola consulta
+        // (antes se consultaba la existencia dentro del bucle, una por usuario).
+        $ya_existentes = [];
+        if (!empty($usuarios_ids)) {
+            $marcadores = implode(',', array_fill(0, count($usuarios_ids), '%d'));
+            $parametros = array_merge([$grupo_id], array_map('intval', $usuarios_ids));
+            $ya_existentes = array_map('intval', (array) $wpdb->get_col($wpdb->prepare(
+                "SELECT usuario_id FROM {$tabla_consumidores}
+                 WHERE grupo_id = %d AND usuario_id IN ($marcadores)",
+                $parametros
+            )));
+        }
 
-            if ($existe) {
+        foreach ($usuarios_ids as $usuario_id) {
+            if (in_array((int) $usuario_id, $ya_existentes, true)) {
                 $omitidos++;
                 continue;
             }
@@ -699,6 +705,8 @@ class Flavor_Platform_Grupos_Consumo_Module extends Flavor_Platform_Module_Base 
 
             if ($resultado) {
                 $importados++;
+                // Evita reinsertar si el lote trae usuarios_ids duplicados.
+                $ya_existentes[] = (int) $usuario_id;
             }
         }
 

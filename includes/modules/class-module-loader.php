@@ -146,6 +146,7 @@ class Flavor_Platform_Module_Loader {
         // Economía y recursos
         'grupos_consumo'        => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['autonomia', 'resiliencia']],
         'banco_tiempo'          => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+        'ahorro_rotativo'       => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia', 'autonomia']],
         'marketplace'           => ['principios' => ['economia_local'], 'contribuye_a' => ['autonomia']],
         'economia_don'          => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia']],
         'economia_suficiencia'  => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['resiliencia', 'impacto']],
@@ -474,6 +475,10 @@ class Flavor_Platform_Module_Loader {
                 'file' => $modules_path . 'banco-tiempo/class-banco-tiempo-module.php',
                 'class' => flavor_get_runtime_class_name('Flavor_Chat_Banco_Tiempo_Module'),
             ],
+            'ahorro_rotativo' => [
+                'file' => $modules_path . 'ahorro-rotativo/class-ahorro-rotativo-module.php',
+                'class' => flavor_get_runtime_class_name('Flavor_Chat_Ahorro_Rotativo_Module'),
+            ],
             'marketplace' => [
                 'file' => $modules_path . 'marketplace/class-marketplace-module.php',
                 'class' => flavor_get_runtime_class_name('Flavor_Chat_Marketplace_Module'),
@@ -764,6 +769,7 @@ class Flavor_Platform_Module_Loader {
         'gc-dashboard' => 'grupos-consumo', 'gc-pedidos' => 'grupos-consumo', 'gc-productos' => 'grupos-consumo',
         'marketplace-dashboard' => 'marketplace', 'marketplace-anuncios' => 'marketplace',
         'banco-tiempo-dashboard' => 'banco-tiempo', 'banco-tiempo-intercambios' => 'banco-tiempo',
+        'ahorro-rotativo-dashboard' => 'ahorro-rotativo', 'ahorro-rotativo-circulos' => 'ahorro-rotativo',
         // Actividades
         'eventos-dashboard' => 'eventos', 'eventos-calendario' => 'eventos', 'eventos-asistentes' => 'eventos',
         'cursos-dashboard' => 'cursos', 'cursos-listado' => 'cursos',
@@ -888,6 +894,11 @@ class Flavor_Platform_Module_Loader {
 
         if (!empty($page)) {
             $required_module = $this->get_module_for_page($page);
+            // Normalizar a guion bajo: PAGE_TO_MODULE usa guiones pero
+            // $active_modules / $registered_modules usan guion bajo.
+            if ($required_module) {
+                $required_module = str_replace('-', '_', $required_module);
+            }
 
             if ($required_module && in_array($required_module, $active_modules, true)) {
                 $modules_to_load[] = $required_module;
@@ -942,20 +953,23 @@ class Flavor_Platform_Module_Loader {
      * @return array IDs de módulos dependientes
      */
     private function get_module_dependencies($module_id) {
-        // Por ahora, dependencias hardcodeadas
-        // TODO: Leer de metadata del módulo
+        // Dependencias declaradas. IDs normalizados con guion bajo para que
+        // coincidan con las claves de $registered_modules (discover_modules);
+        // antes usaban guion y nunca casaban, así que NO se cargaban.
+        // TODO: leer también de get_dependencies() del propio módulo.
         $dependencies = [
-            'grupos-consumo' => ['socios'],
-            'marketplace' => ['socios'],
-            'eventos' => ['socios'],
-            'cursos' => ['socios'],
-            'talleres' => ['socios'],
-            'reservas' => ['socios', 'espacios-comunes'],
-            'participacion' => ['socios'],
-            'huertos-urbanos' => ['socios'],
+            'grupos_consumo'  => ['socios'],
+            'marketplace'     => ['socios'],
+            'eventos'         => ['socios'],
+            'cursos'          => ['socios'],
+            'talleres'        => ['socios'],
+            'reservas'        => ['socios', 'espacios_comunes'],
+            'participacion'   => ['socios'],
+            'huertos_urbanos' => ['socios'],
         ];
 
-        return $dependencies[$module_id] ?? [];
+        $clave = str_replace('-', '_', $module_id);
+        return $dependencies[$clave] ?? [];
     }
 
     /**

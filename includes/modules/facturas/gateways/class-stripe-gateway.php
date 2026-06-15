@@ -254,15 +254,17 @@ class Flavor_Stripe_Gateway extends Flavor_Payment_Gateway {
             return new WP_Error('webhook_invalido', 'Payload o firma faltante');
         }
 
-        // Verificar firma del webhook
-        if (!empty($this->webhook_secret)) {
-            $evento = $this->verify_webhook_signature($payload, $sig_header);
-            if (is_wp_error($evento)) {
-                return $evento;
-            }
-        } else {
-            // Sin webhook_secret, decodificar directamente (menos seguro)
-            $evento = json_decode($payload, true);
+        // Verificar firma del webhook. Fail-closed: sin webhook_secret
+        // configurado NO se procesa el evento (un payload sin firmar es
+        // falsificable y permitiría marcar facturas como pagadas).
+        if (empty($this->webhook_secret)) {
+            $this->log('Webhook Stripe rechazado: webhook_secret no configurado', 'warning');
+            return new WP_Error('webhook_sin_secreto', 'Webhook secret de Stripe no configurado; webhook rechazado');
+        }
+
+        $evento = $this->verify_webhook_signature($payload, $sig_header);
+        if (is_wp_error($evento)) {
+            return $evento;
         }
 
         $tipo_evento = $evento['type'] ?? '';

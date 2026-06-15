@@ -438,36 +438,23 @@ class Flavor_API_Rate_Limiter_V2 {
     }
 
     /**
-     * Obtiene IP del cliente
+     * Obtiene IP del cliente.
+     *
+     * Delega en el detector central, que solo confía en cabeceras de proxy
+     * (CF-Connecting-IP / X-Forwarded-For / X-Real-IP) cuando la conexión
+     * proviene de un proxy de confianza declarado vía el filtro
+     * 'flavor_trusted_proxies'. Evita el bypass del rate limiting por
+     * spoofing de cabeceras.
      */
     public function get_client_ip() {
-        $headers = [
-            'HTTP_CF_CONNECTING_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_REAL_IP',
-            'REMOTE_ADDR',
-        ];
-
-        foreach ($headers as $header) {
-            if (!empty($_SERVER[$header])) {
-                $value = sanitize_text_field(wp_unslash($_SERVER[$header]));
-                
-                if ($header === 'HTTP_X_FORWARDED_FOR') {
-                    // SEGURIDAD: Usar última IP para evitar spoofing via X-Forwarded-For
-                    // La última IP es la añadida por el proxy más cercano (más confiable)
-                    $ips = explode(',', $value);
-                    $ip = trim(end($ips));
-                } else {
-                    $ip = trim($value);
-                }
-
-                if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                    return $ip;
-                }
-            }
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::obtener_ip_cliente();
         }
-
-        return '';
+        // Fallback seguro: sin el detector central, usar solo REMOTE_ADDR.
+        $remote_addr = isset($_SERVER['REMOTE_ADDR'])
+            ? trim(sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])))
+            : '';
+        return filter_var($remote_addr, FILTER_VALIDATE_IP) ? $remote_addr : '';
     }
 
     // =========================================================================

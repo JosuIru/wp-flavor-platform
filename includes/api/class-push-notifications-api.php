@@ -850,7 +850,7 @@ class Flavor_Push_Notifications_API {
             $history = array_slice( $history, -200 );
         }
 
-        update_option( 'flavor_push_history', $history );
+        update_option( 'flavor_push_history', $history, false );
     }
 
     /**

@@ -180,6 +180,7 @@ final class Flavor_Database_Setup {
             'facturas',
             'banco-tiempo',
             'grupos-consumo',
+            'ahorro-rotativo',
         ];
 
         foreach ($modules_con_install as $module_slug) {

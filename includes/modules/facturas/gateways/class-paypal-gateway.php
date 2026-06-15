@@ -198,6 +198,15 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
      */
     public function process_webhook() {
         $payload = @file_get_contents('php://input');
+
+        // Verificar la autenticidad del webhook ANTES de confiar en su contenido.
+        // Sin esta comprobación, cualquiera podría marcar facturas como pagadas.
+        $verificacion = $this->verify_webhook_signature($payload);
+        if (is_wp_error($verificacion)) {
+            $this->log('Webhook PayPal rechazado: ' . $verificacion->get_error_message(), 'warning');
+            return $verificacion;
+        }
+
         $evento = json_decode($payload, true);
 
         $tipo_evento = $evento['event_type'] ?? '';
@@ -209,6 +218,78 @@ class Flavor_PayPal_Gateway extends Flavor_Payment_Gateway {
         }
 
         return ['success' => true, 'message' => 'Evento ignorado'];
+    }
+
+    /**
+     * Verificar la firma del webhook contra la API de PayPal.
+     *
+     * Usa el endpoint oficial verify-webhook-signature de PayPal con las
+     * cabeceras de transmisión y el webhook ID configurado. Fail-closed:
+     * si falta el webhook ID o la verificación no es SUCCESS, se rechaza.
+     *
+     * @param string $payload Cuerpo crudo recibido.
+     * @return true|WP_Error
+     */
+    private function verify_webhook_signature($payload) {
+        $webhook_id = $this->test_mode
+            ? $this->get_setting('test_webhook_id', '')
+            : $this->get_setting('live_webhook_id', '');
+        if (empty($webhook_id)) {
+            $webhook_id = $this->get_setting('webhook_id', '');
+        }
+
+        if (empty($webhook_id)) {
+            return new WP_Error('paypal_webhook_no_config', __('Webhook ID de PayPal no configurado; no se puede verificar la firma.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        $cabeceras = [
+            'transmission_id'   => $_SERVER['HTTP_PAYPAL_TRANSMISSION_ID'] ?? '',
+            'transmission_time' => $_SERVER['HTTP_PAYPAL_TRANSMISSION_TIME'] ?? '',
+            'cert_url'          => $_SERVER['HTTP_PAYPAL_CERT_URL'] ?? '',
+            'auth_algo'         => $_SERVER['HTTP_PAYPAL_AUTH_ALGO'] ?? '',
+            'transmission_sig'  => $_SERVER['HTTP_PAYPAL_TRANSMISSION_SIG'] ?? '',
+        ];
+        foreach ($cabeceras as $valor) {
+            if (empty($valor)) {
+                return new WP_Error('paypal_webhook_sin_firma', __('Faltan cabeceras de firma de PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            }
+        }
+
+        $access_token = $this->get_access_token();
+        if (is_wp_error($access_token)) {
+            return $access_token;
+        }
+
+        $api_base = $this->test_mode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+        $cuerpo_verificacion = [
+            'transmission_id'   => sanitize_text_field(wp_unslash($cabeceras['transmission_id'])),
+            'transmission_time' => sanitize_text_field(wp_unslash($cabeceras['transmission_time'])),
+            'cert_url'          => esc_url_raw(wp_unslash($cabeceras['cert_url'])),
+            'auth_algo'         => sanitize_text_field(wp_unslash($cabeceras['auth_algo'])),
+            'transmission_sig'  => sanitize_text_field(wp_unslash($cabeceras['transmission_sig'])),
+            'webhook_id'        => $webhook_id,
+            'webhook_event'     => json_decode($payload, true),
+        ];
+
+        $response = wp_remote_post($api_base . '/v1/notifications/verify-webhook-signature', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $access_token,
+                'Content-Type'  => 'application/json',
+            ],
+            'body'    => wp_json_encode($cuerpo_verificacion),
+            'timeout' => 30,
+        ]);
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        if (($body['verification_status'] ?? '') !== 'SUCCESS') {
+            return new WP_Error('paypal_webhook_invalido', __('La firma del webhook de PayPal no se pudo verificar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        }
+
+        return true;
     }
 
     /**

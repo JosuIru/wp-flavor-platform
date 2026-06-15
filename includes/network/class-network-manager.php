@@ -36,6 +36,47 @@ class Flavor_Network_Manager {
     private $tablas_cache = [];
 
     /**
+     * Realiza una petición GET a un nodo remoto validando antes la URL,
+     * para evitar SSRF (peticiones a localhost, IPs privadas o metadata cloud
+     * como 169.254.169.254) si la URL de un nodo fuese manipulada.
+     *
+     * @param string $url
+     * @param array  $args Argumentos para wp_remote_get.
+     * @return array|WP_Error
+     */
+    private function fetch_nodo_seguro( $url, $args = [] ) {
+        if ( ! $this->url_nodo_permitida( $url ) ) {
+            return new WP_Error( 'url_no_permitida', 'URL de nodo no permitida (posible SSRF): ' . esc_url_raw( $url ), [ 'status' => 400 ] );
+        }
+        return wp_remote_get( $url, $args );
+    }
+
+    /**
+     * ¿La URL apunta a un host externo legítimo (http/https, sin IPs
+     * privadas/reservadas/loopback)?
+     *
+     * @param string $url
+     * @return bool
+     */
+    private function url_nodo_permitida( $url ) {
+        // wp_http_validate_url ya rechaza esquemas no http(s) y varios rangos.
+        if ( ! wp_http_validate_url( $url ) ) {
+            return false;
+        }
+        $host = wp_parse_url( $url, PHP_URL_HOST );
+        if ( empty( $host ) ) {
+            return false;
+        }
+        // Resolver y bloquear explícitamente rangos privados/reservados.
+        $ip = filter_var( $host, FILTER_VALIDATE_IP ) ? $host : gethostbyname( $host );
+        if ( filter_var( $ip, FILTER_VALIDATE_IP )
+            && ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * OPTIMIZACIÓN: Verificar existencia de tabla con cache
      *
      * @param string $tabla Nombre completo de la tabla
@@ -182,7 +223,7 @@ class Flavor_Network_Manager {
                     'por_pagina' => 100,
                 ], $site_url . '/wp-json/flavor-network/v1/directory');
 
-                $response = wp_remote_get($url, [
+                $response = $this->fetch_nodo_seguro($url, [
                     'timeout' => 12,
                     'headers' => [
                         'User-Agent' => 'FlavorChatIA/1.0 (+https://flavor-chat-ia)',
@@ -274,7 +315,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/producers'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -378,7 +419,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/events'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -481,7 +522,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/carpooling'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -582,7 +623,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/workshops'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -689,7 +730,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/spaces'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -790,7 +831,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/marketplace'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -894,7 +935,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/timebank'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',
@@ -997,7 +1038,7 @@ class Flavor_Network_Manager {
                 $site_url . '/wp-json/flavor-integration/v1/federation/courses'
             );
 
-            $response = wp_remote_get($url, [
+            $response = $this->fetch_nodo_seguro($url, [
                 'timeout' => 15,
                 'headers' => [
                     'User-Agent'    => 'FlavorChatIA/1.0',

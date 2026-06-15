@@ -133,7 +133,7 @@ class Flavor_App_Profiles {
                 'descripcion' => 'Plataforma vecinal completa con ayuda mutua, huertos, bicicletas y recursos compartidos.',
                 'icono' => 'dashicons-location',
                 'modulos_requeridos' => ['ayuda_vecinal'],
-                'modulos_opcionales' => ['huertos_urbanos', 'bicicletas_compartidas', 'espacios_comunes', 'banco_tiempo', 'incidencias', 'reciclaje', 'compostaje', 'carpooling', 'talleres', 'eventos', 'chat_grupos', 'reservas'],
+                'modulos_opcionales' => ['huertos_urbanos', 'bicicletas_compartidas', 'espacios_comunes', 'banco_tiempo', 'ahorro_rotativo', 'incidencias', 'reciclaje', 'compostaje', 'carpooling', 'talleres', 'eventos', 'chat_grupos', 'reservas'],
                 'tipo_organizacion' => ['comunidad'],
                 'impacto_social' => ['cohesion_social', 'sostenibilidad'],
                 'color' => '#22c55e',

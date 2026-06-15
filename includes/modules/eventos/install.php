@@ -22,7 +22,7 @@ function flavor_eventos_crear_tablas() {
 
     // Tabla principal de eventos
     $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
-    $sql_eventos = "CREATE TABLE IF NOT EXISTS $tabla_eventos (
+    $sql_eventos = "CREATE TABLE $tabla_eventos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         titulo varchar(255) NOT NULL,
         slug varchar(255) NOT NULL,
@@ -88,7 +88,7 @@ function flavor_eventos_crear_tablas() {
 
     // Tabla de inscripciones
     $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
-    $sql_inscripciones = "CREATE TABLE IF NOT EXISTS $tabla_inscripciones (
+    $sql_inscripciones = "CREATE TABLE $tabla_inscripciones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         evento_id bigint(20) unsigned NOT NULL,
         usuario_id bigint(20) unsigned DEFAULT NULL,
@@ -119,7 +119,7 @@ function flavor_eventos_crear_tablas() {
 
     // Tabla de categorías de eventos
     $tabla_categorias = $wpdb->prefix . 'flavor_eventos_categorias';
-    $sql_categorias = "CREATE TABLE IF NOT EXISTS $tabla_categorias (
+    $sql_categorias = "CREATE TABLE $tabla_categorias (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         slug varchar(100) NOT NULL,

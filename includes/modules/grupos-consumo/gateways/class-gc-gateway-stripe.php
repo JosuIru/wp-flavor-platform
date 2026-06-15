@@ -336,16 +336,11 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
             return;
         }
 
-        // Verificar firma (simplificado, usar Stripe SDK en producción)
-        if (empty($sig_header)) {
-            wp_send_json_error(['message' => 'No signature'], 400);
-            return;
-        }
-
-        $event = json_decode($payload, true);
-
-        if (!$event) {
-            wp_send_json_error(['message' => 'Invalid payload'], 400);
+        // Verificar la firma HMAC del webhook (fail-closed). Sin esta
+        // comprobación, un payload falsificado marcaría pagos como exitosos.
+        $event = $this->verificar_firma_webhook($payload, $sig_header, $endpoint_secret);
+        if (is_wp_error($event)) {
+            wp_send_json_error(['message' => $event->get_error_message()], 400);
             return;
         }
 
@@ -361,6 +356,57 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         }
 
         wp_send_json(['received' => true]);
+    }
+
+    /**
+     * Verifica la firma HMAC-SHA256 del webhook de Stripe.
+     *
+     * Calcula la firma esperada sobre "{timestamp}.{payload}" y la compara
+     * con hash_equals; rechaza firmas mal formadas, expiradas (>5 min) o
+     * inválidas. Devuelve el evento decodificado si es legítimo.
+     *
+     * @param string $payload Cuerpo crudo del webhook.
+     * @param string $sig_header Cabecera Stripe-Signature.
+     * @param string $secret Secreto del endpoint (whsec_...).
+     * @return array|WP_Error
+     */
+    private function verificar_firma_webhook(string $payload, string $sig_header, string $secret) {
+        if (empty($sig_header)) {
+            return new WP_Error('gc_webhook_sin_firma', 'No signature');
+        }
+
+        $timestamp = 0;
+        $firma = '';
+        foreach (explode(',', $sig_header) as $elemento) {
+            $par = explode('=', $elemento, 2);
+            if (count($par) !== 2) {
+                continue;
+            }
+            if ($par[0] === 't') {
+                $timestamp = (int) $par[1];
+            } elseif ($par[0] === 'v1') {
+                $firma = $par[1];
+            }
+        }
+
+        if (empty($timestamp) || empty($firma)) {
+            return new WP_Error('gc_webhook_firma_invalida', 'Firma mal formada');
+        }
+        if (abs(time() - $timestamp) > 300) {
+            return new WP_Error('gc_webhook_expirado', 'Webhook expirado');
+        }
+
+        $firma_esperada = hash_hmac('sha256', $timestamp . '.' . $payload, $secret);
+        if (!hash_equals($firma_esperada, $firma)) {
+            return new WP_Error('gc_webhook_firma_invalida', 'Firma no válida');
+        }
+
+        $evento = json_decode($payload, true);
+        if (!is_array($evento)) {
+            return new WP_Error('gc_webhook_payload', 'Invalid payload');
+        }
+
+        return $evento;
     }
 
     /**

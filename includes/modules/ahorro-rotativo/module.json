@@ -1,0 +1,36 @@
+{
+  "$schema": "../module-schema.json",
+  "id": "ahorro-rotativo",
+  "name": "Ahorro Rotativo",
+  "version": "0.1.0",
+  "description": "Panderos y círculos de ahorro rotativo entre miembros, con transparencia y reputación de reciprocidad.",
+  "long_description": "Un grupo aporta una cantidad fija cada periodo y, por turnos, a cada miembro le toca llevarse el bote. La plataforma coordina y da transparencia; no custodia ni mueve dinero. La confianza se autorregula con la reputación derivada de las aportaciones cumplidas.",
+  "author": { "name": "Flavor Platform" },
+  "license": "GPL-2.0-or-later",
+  "category": "economy",
+  "tags": ["ahorro", "pandero", "tanda", "rosca", "reciprocidad", "economia-solidaria"],
+  "icon": "dashicons-update",
+  "main_class": "Flavor_Platform_Ahorro_Rotativo_Module",
+  "stability": "experimental",
+  "optional_dependencies": {
+    "socios": "^1.0.0",
+    "colectivos": "^1.0.0"
+  },
+  "database": {
+    "tables": [
+      "flavor_ahorro_rotativo_circulos",
+      "flavor_ahorro_rotativo_miembros",
+      "flavor_ahorro_rotativo_rondas",
+      "flavor_ahorro_rotativo_aportaciones"
+    ]
+  },
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "date": "2026-06-15",
+      "changes": [
+        { "type": "added", "description": "Módulo inicial: círculos, miembros, turnos (fijo/sorteo verificable), rondas y aportaciones con doble confirmación." }
+      ]
+    }
+  ]
+}

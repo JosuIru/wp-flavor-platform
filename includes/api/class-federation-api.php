@@ -75,7 +75,7 @@ class Flavor_Federation_API {
         $logs = get_option('flavor_network_federation_logs', []);
         array_unshift($logs, $log_entry);
         $logs = array_slice($logs, 0, 500);
-        update_option('flavor_network_federation_logs', $logs);
+        update_option('flavor_network_federation_logs', $logs, false);
 
         // Tambien a error_log si esta en modo debug
         if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -564,26 +564,59 @@ class Flavor_Federation_API {
             $status = 'warning';
         }
 
+        // Payload público mínimo (liveness). Los detalles de entorno, versiones,
+        // esquema de BD y estadísticas solo se exponen a llamadas confiables
+        // (admin o nodo de federación registrado), para no dar reconocimiento.
         $health = [
-            'status'          => $status,
-            'timestamp'       => current_time('c'),
-            'version'         => defined('FLAVOR_NETWORK_VERSION') ? FLAVOR_NETWORK_VERSION : (defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0'),
-            'node_id'         => $nodo_local ? $nodo_local->id : null,
-            'node_name'       => $nodo_local ? $nodo_local->nombre : get_bloginfo('name'),
-            'node_url'        => home_url(),
-            'database'        => [
-                'status' => $todas_tablas_ok ? 'ok' : 'missing_tables',
-                'tables' => $tablas_estado,
-            ],
-            'stats'           => $stats,
-            'uptime_seconds'  => $uptime_seconds,
-            'uptime_human'    => $this->format_uptime($uptime_seconds),
-            'errors_24h'      => $errores_recientes,
-            'php_version'     => PHP_VERSION,
-            'wp_version'      => get_bloginfo('version'),
+            'status'    => $status,
+            'timestamp' => current_time('c'),
+            'version'   => defined('FLAVOR_NETWORK_VERSION') ? FLAVOR_NETWORK_VERSION : (defined('FLAVOR_PLATFORM_VERSION') ? FLAVOR_PLATFORM_VERSION : '1.0.0'),
+            'node_name' => $nodo_local ? $nodo_local->nombre : get_bloginfo('name'),
         ];
 
+        if ($this->request_es_confiable($request)) {
+            $health += [
+                'node_id'        => $nodo_local ? $nodo_local->id : null,
+                'node_url'       => home_url(),
+                'database'       => [
+                    'status' => $todas_tablas_ok ? 'ok' : 'missing_tables',
+                    'tables' => $tablas_estado,
+                ],
+                'stats'          => $stats,
+                'uptime_seconds' => $uptime_seconds,
+                'uptime_human'   => $this->format_uptime($uptime_seconds),
+                'errors_24h'     => $errores_recientes,
+                'php_version'    => PHP_VERSION,
+                'wp_version'     => get_bloginfo('version'),
+            ];
+        }
+
         return new WP_REST_Response($health, $status_code);
+    }
+
+    /**
+     * ¿La petición proviene de un origen confiable (admin o nodo de
+     * federación registrado, activo y con token válido)?
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    private function request_es_confiable($request) {
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+        $origen = $request->get_header('X-Origin-Node');
+        $token = $request->get_header('X-Node-Token');
+        if (empty($origen) || empty($token)) {
+            return false;
+        }
+        global $wpdb;
+        $tabla_nodos = $wpdb->prefix . 'flavor_network_nodes';
+        $nodo = $wpdb->get_row($wpdb->prepare(
+            "SELECT token FROM {$tabla_nodos} WHERE site_url = %s AND activo = 1",
+            $origen
+        ));
+        return $nodo && !empty($nodo->token) && hash_equals((string) $nodo->token, (string) $token);
     }
 
     /**
@@ -650,13 +683,13 @@ class Flavor_Federation_API {
         ));
 
         if (!$nodo) {
-            // Permitir nodos no registrados pero marcar la petición
-            $this->log_federation_event('info', 'Peticion de nodo no registrado', [
+            // Rechazar nodos no registrados: estos endpoints de federación no
+            // deben servir datos a orígenes desconocidos (era un control opcional).
+            $this->log_federation_event('warning', 'Peticion rechazada de nodo no registrado', [
                 'origen'   => $origen,
                 'endpoint' => $endpoint,
             ]);
-            $request->set_param('_nodo_no_registrado', true);
-            return true;
+            return new WP_Error('nodo_no_registrado', 'Nodo de origen no registrado', ['status' => 403]);
         }
 
         // Verificar token si existe

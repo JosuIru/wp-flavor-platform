@@ -1578,6 +1578,37 @@ KNOWLEDGE;
             ARRAY_A
         );
 
+        // Pre-agregar horas dadas/recibidas en 2 consultas (antes era N+1:
+        // 2 SUM por cada miembro del listado).
+        $horas_dadas_por_usuario = [];
+        $horas_recibidas_por_usuario = [];
+        if (!empty($miembros)) {
+            $ids_usuarios = array_map('intval', wp_list_pluck($miembros, 'usuario_id'));
+            $marcadores_u = implode(',', array_fill(0, count($ids_usuarios), '%d'));
+
+            $filas_dadas = $wpdb->get_results($wpdb->prepare(
+                "SELECT usuario_receptor_id AS uid, COALESCE(SUM(horas), 0) AS total
+                 FROM $tabla_transacciones
+                 WHERE estado = 'completado' AND usuario_receptor_id IN ($marcadores_u)
+                 GROUP BY usuario_receptor_id",
+                $ids_usuarios
+            ));
+            foreach ($filas_dadas as $fila) {
+                $horas_dadas_por_usuario[(int) $fila->uid] = (float) $fila->total;
+            }
+
+            $filas_recibidas = $wpdb->get_results($wpdb->prepare(
+                "SELECT usuario_solicitante_id AS uid, COALESCE(SUM(horas), 0) AS total
+                 FROM $tabla_transacciones
+                 WHERE estado = 'completado' AND usuario_solicitante_id IN ($marcadores_u)
+                 GROUP BY usuario_solicitante_id",
+                $ids_usuarios
+            ));
+            foreach ($filas_recibidas as $fila) {
+                $horas_recibidas_por_usuario[(int) $fila->uid] = (float) $fila->total;
+            }
+        }
+
         if (!empty($miembros)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
@@ -1593,18 +1624,10 @@ KNOWLEDGE;
             foreach ($miembros as $miembro) {
                 $usuario = get_userdata($miembro['usuario_id']);
 
-                // Calcular saldo
-                $horas_dadas = (float) $wpdb->get_var($wpdb->prepare(
-                    "SELECT COALESCE(SUM(horas), 0) FROM $tabla_transacciones
-                     WHERE usuario_receptor_id = %d AND estado = 'completado'",
-                    $miembro['usuario_id']
-                ));
-
-                $horas_recibidas = (float) $wpdb->get_var($wpdb->prepare(
-                    "SELECT COALESCE(SUM(horas), 0) FROM $tabla_transacciones
-                     WHERE usuario_solicitante_id = %d AND estado = 'completado'",
-                    $miembro['usuario_id']
-                ));
+                // Saldo a partir de los totales pre-agregados (sin N+1).
+                $uid = (int) $miembro['usuario_id'];
+                $horas_dadas = $horas_dadas_por_usuario[$uid] ?? 0.0;
+                $horas_recibidas = $horas_recibidas_por_usuario[$uid] ?? 0.0;
 
                 $saldo = $horas_dadas - $horas_recibidas;
                 $clase_saldo = $saldo >= 0 ? 'status-positive' : 'status-negative';
