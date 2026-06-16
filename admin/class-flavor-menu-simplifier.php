@@ -33,18 +33,11 @@ class Flavor_Menu_Simplifier {
         // 1. Remover el menú "Gestión" gigante completamente
         remove_menu_page('flavor-gestion');
 
-        // 2. Remover categorías vacías creadas por el organizador
-        remove_menu_page('flavor-cat-personas');
-        remove_menu_page('flavor-cat-economia');
-        remove_menu_page('flavor-cat-operaciones');
-        remove_menu_page('flavor-cat-recursos');
-        remove_menu_page('flavor-cat-comunicacion');
-        remove_menu_page('flavor-cat-actividades');
-        remove_menu_page('flavor-cat-servicios');
-        remove_menu_page('flavor-cat-comunidad');
-        remove_menu_page('flavor-cat-sostenibilidad');
+        // (Se eliminaron 9 remove_menu_page('flavor-cat-*'): eran no-op desde
+        // que la clase Flavor_Menu_Organizer que creaba esas categorías quedó
+        // como código muerto y fue eliminada.)
 
-        // 3. Ocultar CPTs del sidebar (siguen existiendo, solo no saturan el menú)
+        // 2. Ocultar CPTs del sidebar (siguen existiendo, solo no saturan el menú)
         // Los usuarios pueden acceder desde el Unified Dashboard
         remove_menu_page('edit.php?post_type=gc_productor');
         remove_menu_page('edit.php?post_type=marketplace_item');
@@ -52,11 +45,11 @@ class Flavor_Menu_Simplifier {
         remove_menu_page('edit.php?post_type=guia_reciclaje');
         remove_menu_page('edit.php?post_type=camps');
 
-        // 4. Remover "Clientes Semana" (parece duplicado)
+        // 3. Remover "Clientes Semana" (parece duplicado)
         remove_menu_page('clientes_semana');
 
-        // 5. Log para debugging
-        flavor_log_debug( 'Menús simplificados: Gestión y categorías removidos, CPTs ocultados', 'MenuSimplifier' );
+        // 4. Log para debugging
+        flavor_log_debug( 'Menús simplificados: Gestión removido, CPTs ocultados', 'MenuSimplifier' );
     }
 }
 
