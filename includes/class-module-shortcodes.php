@@ -67,6 +67,79 @@ class Flavor_Module_Shortcodes {
         // Handler AJAX para formularios
         add_action('wp_ajax_flavor_module_action', [$this, 'handle_form_submission']);
         add_action('wp_ajax_nopriv_flavor_module_action', [$this, 'handle_form_submission']);
+
+        // Feeds del calendario y mapa universales (los consumen render_universal_calendar
+        // y render_universal_map). Delegan en el módulo si expone get_calendar_events()/
+        // get_map_markers(); si no, devuelven vacío para no romper el widget.
+        add_action('wp_ajax_flavor_get_calendar_events', [$this, 'ajax_get_calendar_events']);
+        add_action('wp_ajax_nopriv_flavor_get_calendar_events', [$this, 'ajax_get_calendar_events']);
+        add_action('wp_ajax_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
+        add_action('wp_ajax_nopriv_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
+    }
+
+    /**
+     * Resuelve la instancia viva de un módulo por su slug (tolera guion y guion bajo).
+     *
+     * @param string $module_slug
+     * @return object|null
+     */
+    private function resolver_instancia_modulo($module_slug) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
+            return null;
+        }
+        $loader = Flavor_Platform_Module_Loader::get_instance();
+        $instancia = $loader->get_module(str_replace('-', '_', $module_slug));
+        if (!$instancia) {
+            $instancia = $loader->get_module(str_replace('_', '-', $module_slug));
+        }
+        return $instancia;
+    }
+
+    /**
+     * Feed AJAX de eventos para FullCalendar (action=flavor_get_calendar_events).
+     *
+     * Responde un array JSON plano de eventos (formato FullCalendar). Delega en
+     * el método get_calendar_events() del módulo si existe; si no, array vacío.
+     */
+    public function ajax_get_calendar_events() {
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'flavor_frontend')) {
+            wp_send_json([], 403);
+        }
+
+        $module_slug = isset($_REQUEST['module']) ? sanitize_title(wp_unslash($_REQUEST['module'])) : '';
+        $eventos = [];
+
+        $instancia = $this->resolver_instancia_modulo($module_slug);
+        if ($instancia && method_exists($instancia, 'get_calendar_events')) {
+            $eventos = (array) $instancia->get_calendar_events();
+        }
+
+        // FullCalendar consume un array plano (no la envoltura success/data).
+        wp_send_json(array_values($eventos));
+    }
+
+    /**
+     * Feed AJAX de marcadores para el mapa universal (action=flavor_get_map_markers).
+     *
+     * Responde {success:true, data:{markers:[...]}}. Delega en get_map_markers()
+     * del módulo si existe; si no, lista vacía.
+     */
+    public function ajax_get_map_markers() {
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'flavor_frontend')) {
+            wp_send_json_error(['message' => __('Sesión no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
+        }
+
+        $module_slug = isset($_REQUEST['module']) ? sanitize_title(wp_unslash($_REQUEST['module'])) : '';
+        $markers = [];
+
+        $instancia = $this->resolver_instancia_modulo($module_slug);
+        if ($instancia && method_exists($instancia, 'get_map_markers')) {
+            $markers = (array) $instancia->get_map_markers();
+        }
+
+        wp_send_json_success(['markers' => array_values($markers)]);
     }
 
     /**
