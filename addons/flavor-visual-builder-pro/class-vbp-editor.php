@@ -261,9 +261,12 @@ class Flavor_VBP_Editor {
             array( $this, 'renderizar_pagina_editor' )
         );
 
-        // Submenú visible en Flavor Platform
+        // Submenú visible en Flavor Platform. El parent debe ser el slug
+        // top-level real (FLAVOR_PLATFORM_TEXT_DOMAIN); 'flavor-dashboard' es un
+        // submenú, y usarlo como parent dejaba esta página huérfana (solo
+        // accesible por URL directa).
         add_submenu_page(
-            'flavor-dashboard',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             __( 'Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             __( '🎨 Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'edit_posts',
