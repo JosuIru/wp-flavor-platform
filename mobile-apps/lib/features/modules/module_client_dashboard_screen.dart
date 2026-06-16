@@ -5,21 +5,47 @@ import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
 import '../../core/widgets/flavor_state_widgets.dart';
 
-class ModuleClientDashboardScreen extends ConsumerWidget {
+class ModuleClientDashboardScreen extends ConsumerStatefulWidget {
   const ModuleClientDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ModuleClientDashboardScreen> createState() =>
+      _ModuleClientDashboardScreenState();
+}
+
+class _ModuleClientDashboardScreenState
+    extends ConsumerState<ModuleClientDashboardScreen> {
+  late Future<List<_DashboardMetric>> _metricsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _metricsFuture = _loadMetrics(ref.read(apiClientProvider));
+  }
+
+  void _reloadMetrics() {
+    setState(() {
+      _metricsFuture = _loadMetrics(ref.read(apiClientProvider));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final api = ref.read(apiClientProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.clientDashboardTitle),
       ),
       body: FutureBuilder<List<_DashboardMetric>>(
-        future: _loadMetrics(api),
+        future: _metricsFuture,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return FlavorErrorState(
+              message: i18n.commonError(snapshot.error.toString()),
+              onRetry: _reloadMetrics,
+            );
+          }
           if (!snapshot.hasData) {
             return const FlavorLoadingState();
           }

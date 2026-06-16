@@ -8,7 +8,7 @@ import '../../core/modules/module_screen_registry.dart';
 import '../../core/widgets/flavor_state_widgets.dart';
 import 'module_client_dashboard_screen.dart';
 
-class ModuleHubScreen extends ConsumerWidget {
+class ModuleHubScreen extends ConsumerStatefulWidget {
   final bool isAdmin;
 
   const ModuleHubScreen({
@@ -17,17 +17,42 @@ class ModuleHubScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ModuleHubScreen> createState() => _ModuleHubScreenState();
+}
+
+class _ModuleHubScreenState extends ConsumerState<ModuleHubScreen> {
+  late Future<ApiResponse<Map<String, dynamic>>> _modulesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _modulesFuture = ref.read(apiClientProvider).getAvailableModules();
+  }
+
+  void _reloadModules() {
+    setState(() {
+      _modulesFuture = ref.read(apiClientProvider).getAvailableModules();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final api = ref.read(apiClientProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.moduleHubTitle),
       ),
       body: FutureBuilder<ApiResponse<Map<String, dynamic>>>(
-        future: api.getAvailableModules(),
+        future: _modulesFuture,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return FlavorErrorState(
+              message: i18n.commonError(snapshot.error.toString()),
+              icon: Icons.extension_off_outlined,
+              onRetry: _reloadModules,
+            );
+          }
           if (!snapshot.hasData) {
             return const FlavorLoadingState();
           }
@@ -36,6 +61,7 @@ class ModuleHubScreen extends ConsumerWidget {
             return FlavorErrorState(
               message: i18n.moduleHubError,
               icon: Icons.extension_off_outlined,
+              onRetry: _reloadModules,
             );
           }
           final modules = (response.data!['modules'] as List<dynamic>? ?? [])
