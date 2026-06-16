@@ -49,6 +49,35 @@ class Flavor_Frontend_Assets {
      */
     private function __construct() {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // `flavorAjax` debe estar disponible globalmente en todo el frontend:
+        // los <script> inline que generan los shortcodes de módulo y el portal
+        // dinámico (/mi-portal) se renderizan al vuelo y no dependen de ningún
+        // handle encolado, por lo que no basta con wp_localize_script (que
+        // además se omite en las rutas del portal). Se imprime pronto en el
+        // <head> para que cualquier script inline posterior lo encuentre.
+        add_action('wp_head', [$this, 'print_global_ajax_config'], 1);
+    }
+
+    /**
+     * Imprime la configuración AJAX global (`window.flavorAjax`) en el frontend.
+     *
+     * Expone la URL de admin-ajax y un nonce para las peticiones de los
+     * shortcodes y formularios de módulo. Se define de forma idempotente para
+     * no pisar una posible definición previa.
+     */
+    public function print_global_ajax_config() {
+        if (is_admin()) {
+            return;
+        }
+
+        $config_ajax_frontend = [
+            'url'   => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('flavor_frontend'),
+        ];
+
+        echo '<script id="flavor-ajax-config">window.flavorAjax = window.flavorAjax || '
+            . wp_json_encode($config_ajax_frontend) . ';</script>' . "\n";
     }
 
     /**
