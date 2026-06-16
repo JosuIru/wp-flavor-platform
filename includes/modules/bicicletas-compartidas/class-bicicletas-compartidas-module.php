@@ -295,6 +295,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             if (typeof L === 'undefined') {
                 console.warn('Leaflet no está cargado');
                 return;
@@ -343,13 +344,13 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                 var marcador = L.marker([est.lat, est.lng], { icon: icono }).addTo(map);
 
                 var popupContent = '<div class="flavor-bici-popup">' +
-                    '<strong>' + est.nombre + '</strong><br>' +
-                    '<span class="text-gray-600">' + est.direccion + '</span><br>' +
+                    '<strong>' + escHtml(est.nombre) + '</strong><br>' +
+                    '<span class="text-gray-600">' + escHtml(est.direccion) + '</span><br>' +
                     '<div style="margin-top:8px; padding:8px; background:#f3f4f6; border-radius:8px;">' +
-                    '<span style="font-size:1.5em; font-weight:bold; color:' + color + ';">' + est.disponibles + '</span> / ' + est.capacidad + ' bicis<br>' +
-                    '<small>' + (est.capacidad - est.disponibles) + ' huecos libres</small>' +
+                    '<span style="font-size:1.5em; font-weight:bold; color:' + color + ';">' + escHtml(est.disponibles) + '</span> / ' + escHtml(est.capacidad) + ' bicis<br>' +
+                    '<small>' + escHtml(est.capacidad - est.disponibles) + ' huecos libres</small>' +
                     '</div>' +
-                    '<a href="?estacion_id=' + est.id + '" class="inline-block mt-2 px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Ver bicicletas</a>' +
+                    '<a href="?estacion_id=' + encodeURIComponent(est.id) + '" class="inline-block mt-2 px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Ver bicicletas</a>' +
                     '</div>';
 
                 marcador.bindPopup(popupContent);

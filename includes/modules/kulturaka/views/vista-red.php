@@ -770,6 +770,8 @@ $conexiones_mapa = array_map(function($c) {
 const nodosData = <?php echo json_encode($nodos_mapa); ?>;
 const conexionesData = <?php echo json_encode($conexiones_mapa); ?>;
 
+function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
 // Filtros
 document.querySelectorAll('.filtro-btn[data-tipo]').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -873,9 +875,9 @@ if (typeof L !== 'undefined' && nodosData.length > 0) {
             }).addTo(map);
 
             marker.bindPopup(`
-                <strong>${nodo.nombre}</strong><br>
-                <em>${nodo.tipo}</em> - ${nodo.ciudad}<br>
-                ⭐ ${nodo.indice.toFixed(1)} | 🎤 ${nodo.artistas} artistas
+                <strong>${escHtml(nodo.nombre)}</strong><br>
+                <em>${escHtml(nodo.tipo)}</em> - ${escHtml(nodo.ciudad)}<br>
+                ⭐ ${nodo.indice.toFixed(1)} | 🎤 ${escHtml(nodo.artistas)} artistas
             `);
         }
     });

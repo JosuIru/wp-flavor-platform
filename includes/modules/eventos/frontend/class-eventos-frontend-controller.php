@@ -1797,6 +1797,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         <script>
         jQuery(document).ready(function($) {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             var mapaContenedor = document.getElementById('<?php echo esc_js($id_mapa_unico); ?>');
             var marcadoresEventos = <?php echo wp_json_encode($marcadores_json); ?>;
             var centroMapa = { lat: <?php echo esc_js($centro_latitud); ?>, lng: <?php echo esc_js($centro_longitud); ?> };
@@ -1824,11 +1825,12 @@ class Flavor_Eventos_Frontend_Controller {
 
                 var marcadoresGrupo = [];
                 marcadoresEventos.forEach(function(evento) {
+                    var urlEventoSegura = (evento.url && /^https?:\/\//i.test(evento.url)) ? evento.url : '#';
                     var popupContenido = '<div class="popup-evento">' +
-                        '<strong>' + evento.titulo + '</strong><br>' +
-                        '<small>' + evento.fecha + '</small><br>' +
-                        '<small>' + evento.ubicacion + '</small><br>' +
-                        '<a href="' + evento.url + '" class="ver-evento-link">Ver evento</a>' +
+                        '<strong>' + escHtml(evento.titulo) + '</strong><br>' +
+                        '<small>' + escHtml(evento.fecha) + '</small><br>' +
+                        '<small>' + escHtml(evento.ubicacion) + '</small><br>' +
+                        '<a href="' + escHtml(urlEventoSegura) + '" class="ver-evento-link">Ver evento</a>' +
                         '</div>';
 
                     var marcador = L.marker([evento.lat, evento.lng])
@@ -1876,11 +1878,12 @@ class Flavor_Eventos_Frontend_Controller {
                     bounds.extend(posicion);
 
                     marcador.addListener('click', function() {
+                        var urlEventoSegura = (evento.url && /^https?:\/\//i.test(evento.url)) ? evento.url : '#';
                         var contenido = '<div class="popup-evento">' +
-                            '<strong>' + evento.titulo + '</strong><br>' +
-                            '<small>' + evento.fecha + '</small><br>' +
-                            '<small>' + evento.ubicacion + '</small><br>' +
-                            '<a href="' + evento.url + '">Ver evento</a>' +
+                            '<strong>' + escHtml(evento.titulo) + '</strong><br>' +
+                            '<small>' + escHtml(evento.fecha) + '</small><br>' +
+                            '<small>' + escHtml(evento.ubicacion) + '</small><br>' +
+                            '<a href="' + escHtml(urlEventoSegura) + '">Ver evento</a>' +
                             '</div>';
                         infoWindow.setContent(contenido);
                         infoWindow.open(mapa, marcador);

@@ -6384,6 +6384,8 @@ KNOWLEDGE;
                 }
             }
 
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
             function crearMapa(productores, latUsuario, lngUsuario) {
                 if (mapaLeaflet) {
                     mapaLeaflet.remove();
@@ -6418,7 +6420,7 @@ KNOWLEDGE;
 
                         L.marker([productor.coordenadas.lat, productor.coordenadas.lng], {icon: iconoProductor})
                             .addTo(mapaLeaflet)
-                            .bindPopup('<strong>' + productor.nombre + '</strong><br>' + productor.distancia_km + ' km' + (productor.certificacion_eco ? ' <span style="color: #16a34a;">ECO</span>' : ''));
+                            .bindPopup('<strong>' + escHtml(productor.nombre) + '</strong><br>' + escHtml(productor.distancia_km) + ' km' + (productor.certificacion_eco ? ' <span style="color: #16a34a;">ECO</span>' : ''));
 
                         // Círculo de cobertura
                         L.circle([productor.coordenadas.lat, productor.coordenadas.lng], {
