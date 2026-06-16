@@ -474,19 +474,20 @@ $prioridad_classes = [
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     // Modal ver aviso
     $('.am-ver-aviso').on('click', function(e) {
         e.preventDefault();
         var $btn = $(this);
         var html = '<table class="form-table">';
-        html += '<tr><th>Título:</th><td><strong>' + $btn.data('titulo') + '</strong></td></tr>';
-        html += '<tr><th>Categoría:</th><td>' + ($btn.data('categoria') || '-') + '</td></tr>';
-        html += '<tr><th>Prioridad:</th><td>' + $btn.data('prioridad') + '</td></tr>';
-        html += '<tr><th>Fecha:</th><td>' + $btn.data('fecha') + '</td></tr>';
-        html += '<tr><th>Contenido:</th><td>' + ($btn.data('contenido') || '-') + '</td></tr>';
+        html += '<tr><th>Título:</th><td><strong>' + escHtml($btn.data('titulo')) + '</strong></td></tr>';
+        html += '<tr><th>Categoría:</th><td>' + escHtml($btn.data('categoria') || '-') + '</td></tr>';
+        html += '<tr><th>Prioridad:</th><td>' + escHtml($btn.data('prioridad')) + '</td></tr>';
+        html += '<tr><th>Fecha:</th><td>' + escHtml($btn.data('fecha')) + '</td></tr>';
+        html += '<tr><th>Contenido:</th><td>' + escHtml($btn.data('contenido') || '-') + '</td></tr>';
         html += '</table>';
         $('#contenido-aviso').html(html);
-        $('#btn-republicar-aviso').attr('href', '<?php echo admin_url('admin.php?page=avisos-nuevo&republicar='); ?>' + $btn.data('id'));
+        $('#btn-republicar-aviso').attr('href', '<?php echo admin_url('admin.php?page=avisos-nuevo&republicar='); ?>' + encodeURIComponent($btn.data('id')));
         $('#modal-ver-aviso').fadeIn(200);
     });
 
