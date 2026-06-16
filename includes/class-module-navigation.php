@@ -148,7 +148,7 @@ class Flavor_Module_Navigation {
                 $items[] = [
                     'slug' => $item_str,
                     'label' => ucfirst(str_replace('-', ' ', $item_str)),
-                    'url' => home_url("/{$module_id}/{$item_str}/"),
+                    'url' => Flavor_Platform_Helpers::get_action_url($module_id, $item_str),
                     'icon' => '',
                 ];
             }
@@ -158,14 +158,14 @@ class Flavor_Module_Navigation {
         // Items por defecto según módulo
         $default_items = [
             'eventos' => [
-                ['slug' => 'listado', 'label' => __('Todos los Eventos', 'flavor-platform'), 'url' => home_url('/eventos/'), 'icon' => '📅'],
-                ['slug' => 'mis-eventos', 'label' => __('Mis Eventos', 'flavor-platform'), 'url' => home_url('/eventos/mis-eventos/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Crear Evento', 'flavor-platform'), 'url' => home_url('/eventos/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todos los Eventos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('eventos', ''), 'icon' => '📅'],
+                ['slug' => 'mis-eventos', 'label' => __('Mis Eventos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'mis-eventos'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Crear Evento', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('eventos', 'crear'), 'icon' => '➕'],
             ],
             'talleres' => [
-                ['slug' => 'listado', 'label' => __('Todos los Talleres', 'flavor-platform'), 'url' => home_url('/talleres/'), 'icon' => '🎨'],
-                ['slug' => 'mis-talleres', 'label' => __('Mis Talleres', 'flavor-platform'), 'url' => home_url('/talleres/mis-talleres/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Proponer Taller', 'flavor-platform'), 'url' => home_url('/talleres/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todos los Talleres', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('talleres', ''), 'icon' => '🎨'],
+                ['slug' => 'mis-talleres', 'label' => __('Mis Talleres', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('talleres', 'mis-talleres'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Proponer Taller', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('talleres', 'crear'), 'icon' => '➕'],
             ],
             'grupos-consumo' => [
                 ['slug' => 'listado', 'label' => __('Todos los Grupos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', ''), 'icon' => '🌱'],
@@ -173,14 +173,14 @@ class Flavor_Module_Navigation {
                 ['slug' => 'pedidos', 'label' => __('Pedidos', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('grupos_consumo', 'pedidos'), 'icon' => '🛒'],
             ],
             'incidencias' => [
-                ['slug' => 'listado', 'label' => __('Todas las Incidencias', 'flavor-platform'), 'url' => home_url('/incidencias/'), 'icon' => '🔧'],
-                ['slug' => 'mis-incidencias', 'label' => __('Mis Incidencias', 'flavor-platform'), 'url' => home_url('/incidencias/mis-incidencias/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Reportar Incidencia', 'flavor-platform'), 'url' => home_url('/incidencias/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todas las Incidencias', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', ''), 'icon' => '🔧'],
+                ['slug' => 'mis-incidencias', 'label' => __('Mis Incidencias', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'mis-incidencias'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Reportar Incidencia', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('incidencias', 'crear'), 'icon' => '➕'],
             ],
             'espacios-comunes' => [
-                ['slug' => 'listado', 'label' => __('Espacios Disponibles', 'flavor-platform'), 'url' => home_url('/espacios-comunes/'), 'icon' => '🏛️'],
-                ['slug' => 'mis-reservas', 'label' => __('Mis Reservas', 'flavor-platform'), 'url' => home_url('/espacios-comunes/mis-reservas/'), 'icon' => '⭐'],
-                ['slug' => 'reservar', 'label' => __('Reservar Espacio', 'flavor-platform'), 'url' => home_url('/espacios-comunes/reservar/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Espacios Disponibles', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('espacios-comunes', ''), 'icon' => '🏛️'],
+                ['slug' => 'mis-reservas', 'label' => __('Mis Reservas', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('espacios-comunes', 'mis-reservas'), 'icon' => '⭐'],
+                ['slug' => 'reservar', 'label' => __('Reservar Espacio', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('espacios-comunes', 'reservar'), 'icon' => '➕'],
             ],
             'mi-red' => [
                 ['slug' => 'feed', 'label' => __('Feed', 'flavor-platform'), 'url' => Flavor_Platform_Helpers::get_action_url('mi_red', ''), 'icon' => '🏠'],
