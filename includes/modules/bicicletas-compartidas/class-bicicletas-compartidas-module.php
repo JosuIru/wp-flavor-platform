@@ -674,6 +674,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
 
                     <script>
                     (function() {
+                        function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
                         var form = document.getElementById('form-reservar-bicicleta');
                         var estacionSelect = document.getElementById('estacion_id');
                         var bicicletasContainer = document.getElementById('bicicletas-container');
@@ -699,14 +700,14 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                                         var html = '';
                                         data.bicicletas.forEach(function(bici) {
                                             html += '<label class="bicicleta-opcion flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-green-400 transition-colors">' +
-                                                '<input type="radio" name="bicicleta_id" value="' + bici.id + '" class="sr-only" required>' +
+                                                '<input type="radio" name="bicicleta_id" value="' + escHtml(bici.id) + '" class="sr-only" required>' +
                                                 '<div class="flex-1">' +
                                                 '<div class="flex items-center gap-2">' +
-                                                '<span class="font-bold text-gray-800">' + bici.codigo + '</span>' +
-                                                '<span class="px-2 py-0.5 bg-gray-100 rounded text-xs">' + bici.tipo + '</span>' +
+                                                '<span class="font-bold text-gray-800">' + escHtml(bici.codigo) + '</span>' +
+                                                '<span class="px-2 py-0.5 bg-gray-100 rounded text-xs">' + escHtml(bici.tipo) + '</span>' +
                                                 '</div>' +
-                                                '<p class="text-sm text-gray-500">' + (bici.marca || '') + ' ' + (bici.modelo || '') + '</p>' +
-                                                '<p class="text-xs text-gray-400">Talla: ' + (bici.talla || '-') + ' | Color: ' + (bici.color || '-') + '</p>' +
+                                                '<p class="text-sm text-gray-500">' + escHtml(bici.marca || '') + ' ' + escHtml(bici.modelo || '') + '</p>' +
+                                                '<p class="text-xs text-gray-400">Talla: ' + escHtml(bici.talla || '-') + ' | Color: ' + escHtml(bici.color || '-') + '</p>' +
                                                 '</div>' +
                                                 '<span class="text-2xl">🚲</span>' +
                                                 '</label>';
@@ -761,7 +762,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                             .then(function(r) { return r.json(); })
                             .then(function(data) {
                                 if (data.success) {
-                                    mensajeDiv.innerHTML = '<div class="bg-green-50 border border-green-200 rounded-xl p-4 text-green-700"><strong>✓</strong> ' + data.data.mensaje + '</div>';
+                                    mensajeDiv.innerHTML = '<div class="bg-green-50 border border-green-200 rounded-xl p-4 text-green-700"><strong>✓</strong> ' + escHtml(data.data.mensaje) + '</div>';
                                     mensajeDiv.classList.remove('hidden');
                                     form.reset();
                                     bicicletasContainer.style.display = 'none';
@@ -769,7 +770,7 @@ class Flavor_Platform_Bicicletas_Compartidas_Module extends Flavor_Platform_Modu
                                         window.location.reload();
                                     }, 2000);
                                 } else {
-                                    mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><strong>✗</strong> ' + (data.data || '<?php echo esc_js(__('Error al reservar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</div>';
+                                    mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><strong>✗</strong> ' + escHtml(data.data || '<?php echo esc_js(__('Error al reservar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</div>';
                                     mensajeDiv.classList.remove('hidden');
                                 }
                             })

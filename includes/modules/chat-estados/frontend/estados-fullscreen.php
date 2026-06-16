@@ -898,7 +898,7 @@ $user_id = get_current_user_id();
             switch (estado.tipo) {
                 case 'imagen':
                     contenedor.addClass('tipo-imagen');
-                    html = '<img src="' + estado.url + '" alt="">';
+                    html = '<img src="' + this.escapeUrl(estado.url) + '" alt="">';
                     if (estado.texto) {
                         textoOverlay.text(estado.texto).show();
                     }
@@ -906,7 +906,7 @@ $user_id = get_current_user_id();
 
                 case 'video':
                     contenedor.addClass('tipo-video');
-                    html = '<video src="' + estado.url + '" ' + (this.silenciado ? 'muted' : '') + ' autoplay playsinline></video>';
+                    html = '<video src="' + this.escapeUrl(estado.url) + '" ' + (this.silenciado ? 'muted' : '') + ' autoplay playsinline></video>';
                     if (estado.texto) {
                         textoOverlay.text(estado.texto).show();
                     }
@@ -915,7 +915,7 @@ $user_id = get_current_user_id();
                 case 'texto':
                 default:
                     contenedor.addClass('tipo-texto');
-                    var bgStyle = estado.fondo ? 'background:' + estado.fondo + ';' : '';
+                    var bgStyle = estado.fondo ? 'background:' + this.escapeHtml(estado.fondo) + ';' : '';
                     html = '<div class="texto-principal" style="' + bgStyle + '">' + this.escapeHtml(estado.texto) + '</div>';
                     break;
             }
@@ -1142,7 +1142,7 @@ $user_id = get_current_user_id();
         },
 
         mostrarFeedback: function(mensaje) {
-            var feedback = $('<div class="estado-feedback-toast">' + mensaje + '</div>');
+            var feedback = $('<div class="estado-feedback-toast">' + this.escapeHtml(mensaje) + '</div>');
             this.container.append(feedback);
 
             setTimeout(function() {
@@ -1169,6 +1169,14 @@ $user_id = get_current_user_id();
             var div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        },
+
+        escapeUrl: function(url) {
+            var valor = String(url == null ? '' : url);
+            if (/^https?:\/\//i.test(valor) || /^\//.test(valor)) {
+                return this.escapeHtml(valor);
+            }
+            return '';
         }
     };
 

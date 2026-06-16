@@ -803,15 +803,16 @@ class Flavor_Platform_Bares_Module extends Flavor_Platform_Module_Base {
 
             echo '<script>
             jQuery(document).ready(function($) {
+                function escHtml(valor){return String(valor==null?"":valor).replace(/[&<>"\']/g,function(caracter){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","\'":"&#39;"}[caracter];});}
                 $(".bar-ver-reserva").on("click", function(e) {
                     e.preventDefault();
                     var d = $(this).data();
                     var html = "<table class=\"form-table\">";
-                    html += "<tr><th>Nombre:</th><td><strong>" + d.nombre + "</strong></td></tr>";
-                    html += "<tr><th>Teléfono:</th><td>" + d.telefono + "</td></tr>";
-                    html += "<tr><th>Fecha:</th><td>" + d.fecha + "</td></tr>";
-                    html += "<tr><th>Hora:</th><td>" + d.hora + "</td></tr>";
-                    html += "<tr><th>Comensales:</th><td>" + d.comensales + "</td></tr>";
+                    html += "<tr><th>Nombre:</th><td><strong>" + escHtml(d.nombre) + "</strong></td></tr>";
+                    html += "<tr><th>Teléfono:</th><td>" + escHtml(d.telefono) + "</td></tr>";
+                    html += "<tr><th>Fecha:</th><td>" + escHtml(d.fecha) + "</td></tr>";
+                    html += "<tr><th>Hora:</th><td>" + escHtml(d.hora) + "</td></tr>";
+                    html += "<tr><th>Comensales:</th><td>" + escHtml(d.comensales) + "</td></tr>";
                     html += "</table>";
                     $("#contenido-reserva").html(html);
                     $("#modal-ver-reserva").fadeIn();

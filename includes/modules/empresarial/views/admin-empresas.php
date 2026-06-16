@@ -417,6 +417,8 @@ $conteo_estados = $wpdb->get_results(
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
     // Ver contacto
     $('.ver-contacto').on('click', function(e) {
         e.preventDefault();
@@ -437,13 +439,13 @@ jQuery(document).ready(function($) {
 
         setTimeout(function() {
             var html = '<div class="contacto-detalle-info">';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Nombre:</span><span>' + nombre + '</span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Email:</span><span><a href="mailto:' + email + '">' + email + '</a></span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Teléfono:</span><span>' + telefono + '</span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Empresa:</span><span>' + empresa + '</span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Asunto:</span><span>' + asunto + '</span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Estado:</span><span class="estado-badge estado-' + estado.toLowerCase() + '">' + estado + '</span></div>';
-            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Fecha:</span><span>' + fecha + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Nombre:</span><span>' + escHtml(nombre) + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Email:</span><span><a href="mailto:' + escHtml(encodeURIComponent(email)) + '">' + escHtml(email) + '</a></span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Teléfono:</span><span>' + escHtml(telefono) + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Empresa:</span><span>' + escHtml(empresa) + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Asunto:</span><span>' + escHtml(asunto) + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Estado:</span><span class="estado-badge estado-' + escHtml(estado.toLowerCase()) + '">' + escHtml(estado) + '</span></div>';
+            html += '<div class="contacto-detalle-row"><span class="contacto-detalle-label">Fecha:</span><span>' + escHtml(fecha) + '</span></div>';
             html += '</div>';
 
             $('#contacto-detalle').html(html);

@@ -504,6 +504,7 @@ if (!defined('ABSPATH')) {
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     let currentDate = new Date();
     let currentReservaId = null;
 
@@ -587,7 +588,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(espacio => {
-                        options += `<option value="<?php echo esc_attr__('${espacio.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${espacio.nombre}</option>`;
+                        options += `<option value="${escHtml(espacio.id)}">${escHtml(espacio.nombre)}</option>`;
                     });
                     $('#reserva-espacio, #filtro-espacio, #filtro-espacio-calendario').html(options);
                 }
@@ -604,7 +605,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="<?php echo esc_attr__('${usuario.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${usuario.nombre}</option>`;
+                        options += `<option value="${escHtml(usuario.id)}">${escHtml(usuario.nombre)}</option>`;
                     });
                     $('#reserva-usuario').html(options);
                 }
@@ -667,8 +668,8 @@ jQuery(document).ready(function($) {
 
             if (reservas[dateStr]) {
                 reservas[dateStr].forEach(reserva => {
-                    html += `<div class="flavor-calendar-reserva ${reserva.estado}" data-id="${reserva.id}" title="<?php echo esc_attr__('${reserva.espacio} - ${reserva.hora_inicio}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
-                        ${reserva.hora_inicio} ${reserva.espacio_corto}
+                    html += `<div class="flavor-calendar-reserva ${escHtml(reserva.estado)}" data-id="${escHtml(reserva.id)}" title="${escHtml(reserva.espacio)} - ${escHtml(reserva.hora_inicio)}">
+                        ${escHtml(reserva.hora_inicio)} ${escHtml(reserva.espacio_corto)}
                     </div>`;
                 });
             }
@@ -708,21 +709,21 @@ jQuery(document).ready(function($) {
         reservas.forEach(reserva => {
             html += `
                 <tr>
-                    <td>#${reserva.id}</td>
-                    <td>${reserva.espacio_nombre}</td>
-                    <td>${reserva.usuario_nombre}</td>
-                    <td>${reserva.fecha_formato}</td>
-                    <td>${reserva.hora_inicio} - ${reserva.hora_fin}</td>
-                    <td>${reserva.duracion}</td>
-                    <td><span class="flavor-estado-badge ${reserva.estado}">${reserva.estado}</span></td>
+                    <td>#${escHtml(reserva.id)}</td>
+                    <td>${escHtml(reserva.espacio_nombre)}</td>
+                    <td>${escHtml(reserva.usuario_nombre)}</td>
+                    <td>${escHtml(reserva.fecha_formato)}</td>
+                    <td>${escHtml(reserva.hora_inicio)} - ${escHtml(reserva.hora_fin)}</td>
+                    <td>${escHtml(reserva.duracion)}</td>
+                    <td><span class="flavor-estado-badge ${escHtml(reserva.estado)}">${escHtml(reserva.estado)}</span></td>
                     <td>
-                        <button class="button button-small btn-ver-reserva" data-id="${reserva.id}">
+                        <button class="button button-small btn-ver-reserva" data-id="${escHtml(reserva.id)}">
                             <span class="dashicons dashicons-visibility"></span>
                         </button>
-                        <button class="button button-small btn-editar-reserva" data-id="${reserva.id}">
+                        <button class="button button-small btn-editar-reserva" data-id="${escHtml(reserva.id)}">
                             <span class="dashicons dashicons-edit"></span>
                         </button>
-                        <button class="button button-small btn-eliminar-reserva" data-id="${reserva.id}">
+                        <button class="button button-small btn-eliminar-reserva" data-id="${escHtml(reserva.id)}">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </td>
@@ -756,36 +757,36 @@ jQuery(document).ready(function($) {
             <div class="flavor-detalle-grid">
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.espacio_nombre}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.espacio_nombre)}</div>
                 </div>
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.usuario_nombre}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.usuario_nombre)}</div>
                 </div>
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.fecha_formato}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.fecha_formato)}</div>
                 </div>
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.hora_inicio} - ${reserva.hora_fin}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.hora_inicio)} - ${escHtml(reserva.hora_fin)}</div>
                 </div>
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value"><span class="flavor-estado-badge ${reserva.estado}">${reserva.estado}</span></div>
+                    <div class="flavor-detalle-value"><span class="flavor-estado-badge ${escHtml(reserva.estado)}">${escHtml(reserva.estado)}</span></div>
                 </div>
                 <div class="flavor-detalle-item">
                     <div class="flavor-detalle-label"><?php _e('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.num_asistentes || '-'}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.num_asistentes || '-')}</div>
                 </div>
                 <div class="flavor-detalle-item" style="grid-column: span 2;">
                     <div class="flavor-detalle-label"><?php _e('Propósito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.proposito || '-'}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.proposito || '-')}</div>
                 </div>
                 ${reserva.notas_admin ? `
                 <div class="flavor-detalle-item" style="grid-column: span 2;">
                     <div class="flavor-detalle-label"><?php _e('Notas internas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
-                    <div class="flavor-detalle-value">${reserva.notas_admin}</div>
+                    <div class="flavor-detalle-value">${escHtml(reserva.notas_admin)}</div>
                 </div>
                 ` : ''}
             </div>

@@ -426,15 +426,16 @@ $todos_los_grupos = get_posts([
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     function gcAviso(mensaje, tipo) {
         tipo = tipo || 'error';
         $('.gc-inline-notice').remove();
-        $('<div class="gc-inline-notice gc-inline-notice-' + tipo + '"><p>' + mensaje + '</p></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+        $('<div class="gc-inline-notice gc-inline-notice-' + tipo + '"><p>' + escHtml(mensaje) + '</p></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
     }
 
     function gcConfirmar(mensaje, onConfirm) {
         $('.gc-inline-notice').remove();
-        var $confirm = $('<div class="gc-inline-notice gc-inline-notice-error"><p>' + mensaje + '</p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button></div></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+        var $confirm = $('<div class="gc-inline-notice gc-inline-notice-error"><p>' + escHtml(mensaje) + '</p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></button></div></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
         $confirm.on('click', '.gc-confirmar', function() {
             $confirm.remove();
             onConfirm();
@@ -574,43 +575,44 @@ jQuery(document).ready(function($) {
         }, function(response) {
             if (response.success) {
                 var c = response.data.consumidor;
+                var avatarUrl = (c.avatar && /^https?:\/\//i.test(c.avatar)) ? c.avatar : '#';
                 var html = '<div class="gc-detalles-grid">';
                 html += '<div class="gc-detalle-avatar">';
-                html += '<img src="' + c.avatar + '" alt="" style="width:80px;height:80px;border-radius:50%;">';
+                html += '<img src="' + escHtml(avatarUrl) + '" alt="" style="width:80px;height:80px;border-radius:50%;">';
                 html += '</div>';
                 html += '<div class="gc-detalle-info">';
-                html += '<h3 style="margin:0 0 5px;">' + c.nombre + '</h3>';
-                html += '<p style="margin:0;color:#646970;"><a href="mailto:' + c.email + '">' + c.email + '</a></p>';
+                html += '<h3 style="margin:0 0 5px;">' + escHtml(c.nombre) + '</h3>';
+                html += '<p style="margin:0;color:#646970;"><a href="mailto:' + escHtml(c.email) + '">' + escHtml(c.email) + '</a></p>';
                 if (c.telefono) {
-                    html += '<p style="margin:5px 0 0;color:#646970;">' + c.telefono + '</p>';
+                    html += '<p style="margin:5px 0 0;color:#646970;">' + escHtml(c.telefono) + '</p>';
                 }
                 html += '</div>';
                 html += '</div>';
 
                 html += '<table class="gc-detalles-tabla" style="width:100%;margin-top:20px;">';
                 html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;"><span class="gc-estado-badge gc-estado-' + c.estado + '">' + c.estado_label + '</span></td></tr>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;"><span class="gc-estado-badge gc-estado-' + escHtml(c.estado) + '">' + escHtml(c.estado_label) + '</span></td></tr>';
                 html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.rol_label + '</td></tr>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + escHtml(c.rol_label) + '</td></tr>';
                 html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Fecha de alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.fecha_alta + '</td></tr>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + escHtml(c.fecha_alta) + '</td></tr>';
                 html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Saldo pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;' + (c.saldo > 0 ? 'color:#d63638;font-weight:600;' : '') + '">' + c.saldo + ' €</td></tr>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;' + (c.saldo > 0 ? 'color:#d63638;font-weight:600;' : '') + '">' + escHtml(c.saldo) + ' €</td></tr>';
                 if (c.preferencias) {
                     html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.preferencias + '</td></tr>';
+                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + escHtml(c.preferencias) + '</td></tr>';
                 }
                 if (c.alergias) {
                     html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Alergias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;color:#d63638;">' + c.alergias + '</td></tr>';
+                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;color:#d63638;">' + escHtml(c.alergias) + '</td></tr>';
                 }
                 html += '<tr><th style="text-align:left;padding:8px 0;"><?php _e('Total pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>';
-                html += '<td style="padding:8px 0;">' + c.total_pedidos + '</td></tr>';
+                html += '<td style="padding:8px 0;">' + escHtml(c.total_pedidos) + '</td></tr>';
                 html += '</table>';
 
                 $contenido.html(html);
             } else {
-                $contenido.html('<p style="text-align:center;padding:30px;color:#d63638;">' + (response.data.error || 'Error') + '</p>');
+                $contenido.html('<p style="text-align:center;padding:30px;color:#d63638;">' + escHtml(response.data.error || 'Error') + '</p>');
             }
         });
     });
@@ -633,10 +635,10 @@ jQuery(document).ready(function($) {
                 var html = '<div class="gc-usuarios-checkboxes">';
                 $.each(response.data.usuarios, function(i, usuario) {
                     html += '<label class="gc-usuario-checkbox">';
-                    html += '<input type="checkbox" name="usuarios[]" value="' + usuario.id + '">';
+                    html += '<input type="checkbox" name="usuarios[]" value="' + escHtml(usuario.id) + '">';
                     html += '<span class="gc-usuario-info">';
-                    html += '<strong>' + usuario.nombre + '</strong>';
-                    html += '<small>' + usuario.email + '</small>';
+                    html += '<strong>' + escHtml(usuario.nombre) + '</strong>';
+                    html += '<small>' + escHtml(usuario.email) + '</small>';
                     html += '</span></label>';
                 });
                 html += '</div>';
@@ -644,7 +646,7 @@ jQuery(document).ready(function($) {
             } else if (response.success && response.data.usuarios.length === 0) {
                 $lista.html('<p style="text-align:center;padding:20px;color:#646970;"><?php _e('Todos los usuarios ya son miembros del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
             } else {
-                $lista.html('<p style="text-align:center;padding:20px;color:#d63638;">' + (response.data.error || 'Error') + '</p>');
+                $lista.html('<p style="text-align:center;padding:20px;color:#d63638;">' + escHtml(response.data.error || 'Error') + '</p>');
             }
         });
     });

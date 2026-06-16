@@ -1366,6 +1366,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         <script>
         jQuery(document).ready(function($) {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             // Manejar envio del formulario de inscripcion
             $('.form-inscripcion-evento').on('submit', function(e) {
                 e.preventDefault();
@@ -1391,7 +1392,7 @@ class Flavor_Eventos_Frontend_Controller {
                     },
                     success: function(respuesta) {
                         if (respuesta.success) {
-                            $formulario.html('<div class="flavor-notice flavor-notice-success"><span class="dashicons dashicons-yes-alt"></span><div class="notice-content"><strong>' + respuesta.data.mensaje + '</strong></div></div>');
+                            $formulario.html('<div class="flavor-notice flavor-notice-success"><span class="dashicons dashicons-yes-alt"></span><div class="notice-content"><strong>' + escHtml(respuesta.data.mensaje) + '</strong></div></div>');
                             setTimeout(function() {
                                 location.reload();
                             }, 2000);

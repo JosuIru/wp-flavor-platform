@@ -475,6 +475,7 @@ if (!defined('ABSPATH')) {
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     let mediaUploader;
 
     // Cargar espacios
@@ -533,7 +534,8 @@ jQuery(document).ready(function($) {
         mediaUploader.on('select', function() {
             const attachment = mediaUploader.state().get('selection').first().toJSON();
             $('#espacio-imagen').val(attachment.url);
-            $('#imagen-preview').html('<img src="' + attachment.url + '" alt="">');
+            var urlImagenSegura = (attachment.url && /^https?:\/\//i.test(attachment.url)) ? attachment.url : '#';
+            $('#imagen-preview').html('<img src="' + escHtml(urlImagenSegura) + '" alt="">');
         });
         mediaUploader.open();
     });
@@ -569,34 +571,35 @@ jQuery(document).ready(function($) {
 
         let html = '';
         espacios.forEach(espacio => {
-            const imagen = espacio.imagen_url ?
-                `<img src="${espacio.imagen_url}" alt="<?php echo esc_attr__('${espacio.nombre}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="flavor-espacio-image">` :
+            const urlImagenEspacio = (espacio.imagen_url && /^https?:\/\//i.test(espacio.imagen_url)) ? espacio.imagen_url : '';
+            const imagen = urlImagenEspacio ?
+                `<img src="${escHtml(urlImagenEspacio)}" alt="${escHtml(espacio.nombre)}" class="flavor-espacio-image">` :
                 '<div class="flavor-espacio-image"><span class="dashicons dashicons-admin-home"></span></div>';
 
             const equipamiento = espacio.equipamiento ? JSON.parse(espacio.equipamiento).map(eq =>
-                `<span class="flavor-badge">${eq}</span>`
+                `<span class="flavor-badge">${escHtml(eq)}</span>`
             ).join('') : '';
 
             html += `
-                <div class="flavor-espacio-card" data-id="${espacio.id}">
+                <div class="flavor-espacio-card" data-id="${escHtml(espacio.id)}">
                     ${imagen}
                     <div class="flavor-espacio-body">
                         <div class="flavor-espacio-header">
-                            <h3>${espacio.nombre}</h3>
-                            <span class="flavor-espacio-status ${espacio.estado}">${espacio.estado}</span>
+                            <h3>${escHtml(espacio.nombre)}</h3>
+                            <span class="flavor-espacio-status ${escHtml(espacio.estado)}">${escHtml(espacio.estado)}</span>
                         </div>
-                        <p>${espacio.descripcion || ''}</p>
+                        <p>${escHtml(espacio.descripcion || '')}</p>
                         <div class="flavor-espacio-meta">
-                            ${espacio.capacidad ? `<span class="flavor-espacio-meta-item"><span class="dashicons dashicons-groups"></span> ${espacio.capacidad} personas</span>` : ''}
-                            ${espacio.superficie ? `<span class="flavor-espacio-meta-item"><span class="dashicons dashicons-admin-home"></span> ${espacio.superficie} m²</span>` : ''}
+                            ${espacio.capacidad ? `<span class="flavor-espacio-meta-item"><span class="dashicons dashicons-groups"></span> ${escHtml(espacio.capacidad)} personas</span>` : ''}
+                            ${espacio.superficie ? `<span class="flavor-espacio-meta-item"><span class="dashicons dashicons-admin-home"></span> ${escHtml(espacio.superficie)} m²</span>` : ''}
                         </div>
                         <div class="flavor-espacio-equipamiento">${equipamiento}</div>
                     </div>
                     <div class="flavor-espacio-footer">
-                        <button class="button btn-editar-espacio" data-id="${espacio.id}">
+                        <button class="button btn-editar-espacio" data-id="${escHtml(espacio.id)}">
                             <span class="dashicons dashicons-edit"></span> <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
-                        <button class="button btn-eliminar-espacio" data-id="${espacio.id}">
+                        <button class="button btn-eliminar-espacio" data-id="${escHtml(espacio.id)}">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </div>
@@ -666,7 +669,8 @@ jQuery(document).ready(function($) {
 
         if (espacio.imagen_url) {
             $('#espacio-imagen').val(espacio.imagen_url);
-            $('#imagen-preview').html('<img src="' + espacio.imagen_url + '" alt="">');
+            var urlImagenFormulario = (espacio.imagen_url && /^https?:\/\//i.test(espacio.imagen_url)) ? espacio.imagen_url : '#';
+            $('#imagen-preview').html('<img src="' + escHtml(urlImagenFormulario) + '" alt="">');
         }
 
         if (espacio.equipamiento) {

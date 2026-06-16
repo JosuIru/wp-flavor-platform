@@ -839,7 +839,7 @@ function abrirPanelNodo(id) {
     const panel = document.getElementById('panel-nodo');
     panel.style.display = 'block';
     // Aquí cargarías los datos del nodo vía AJAX
-    panel.querySelector('.panel-content').innerHTML = `<p>Cargando nodo #${id}...</p>`;
+    panel.querySelector('.panel-content').innerHTML = `<p>Cargando nodo #${escHtml(id)}...</p>`;
 }
 
 document.querySelector('.panel-close')?.addEventListener('click', function() {

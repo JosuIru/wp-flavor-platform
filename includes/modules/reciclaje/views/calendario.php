@@ -357,6 +357,7 @@ $nombres_meses = [
 </div>
 
 <script>
+function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
 function abrirModalRecogida() {
     document.getElementById('modal-recogida').style.display = 'flex';
 }
@@ -373,11 +374,11 @@ function verDetalleRecogida(id) {
     }, function(response) {
         if (response.success) {
             var r = response.data;
-            var html = '<h3>' + r.tipo + '</h3>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.fecha + '</p>' +
-                '<p><strong><?php echo esc_js(__('Horario:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.horario + '</p>' +
-                '<p><strong><?php echo esc_js(__('Zona:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.zona + '</p>' +
-                (r.notas ? '<p><strong><?php echo esc_js(__('Notas:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + r.notas + '</p>' : '');
+            var html = '<h3>' + escHtml(r.tipo) + '</h3>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(r.fecha) + '</p>' +
+                '<p><strong><?php echo esc_js(__('Horario:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(r.horario) + '</p>' +
+                '<p><strong><?php echo esc_js(__('Zona:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(r.zona) + '</p>' +
+                (r.notas ? '<p><strong><?php echo esc_js(__('Notas:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(r.notas) + '</p>' : '');
 
             if (!document.getElementById('modal-detalle-recogida')) {
                 jQuery('body').append('<div id="modal-detalle-recogida" class="flavor-modal" style="display:none;"><div class="flavor-modal-overlay" onclick="cerrarDetalleRecogida()"></div><div class="flavor-modal-content" style="min-width:400px;"><button class="flavor-modal-close" onclick="cerrarDetalleRecogida()">&times;</button><div id="contenido-detalle-recogida"></div></div></div>');

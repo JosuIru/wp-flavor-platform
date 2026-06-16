@@ -140,6 +140,7 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 </div>
 
 <script>
+function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
 function abrirModalNuevaEmision() {
     var html = '<h3><?php echo esc_js(__('Nueva Emisión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
         '<form id="form-nueva-emision">' +
@@ -208,11 +209,11 @@ function verEmision(id) {
     }, function(response) {
         if (response.success) {
             var e = response.data;
-            var html = '<h3>' + e.programa_nombre + '</h3>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.fecha + '</p>' +
-                '<p><strong><?php echo esc_js(__('Duración:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.duracion + ' min</p>' +
-                '<p><strong><?php echo esc_js(__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.estado + '</p>' +
-                '<p><strong><?php echo esc_js(__('Oyentes pico:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + e.oyentes_pico + '</p>';
+            var html = '<h3>' + escHtml(e.programa_nombre) + '</h3>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(e.fecha) + '</p>' +
+                '<p><strong><?php echo esc_js(__('Duración:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(e.duracion) + ' min</p>' +
+                '<p><strong><?php echo esc_js(__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(e.estado) + '</p>' +
+                '<p><strong><?php echo esc_js(__('Oyentes pico:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + escHtml(e.oyentes_pico) + '</p>';
             document.getElementById('modal-emision-contenido').innerHTML = html;
         } else {
             document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';

@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) exit;
 </style>
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     let currentDate = new Date();
     let currentView = 'month';
     renderizarCalendario();
@@ -68,7 +69,7 @@ jQuery(document).ready(function($) {
             html += `<div class="flavor-calendar-cell ${isToday ? 'today' : ''}"><div style="font-weight:600;margin-bottom:5px;">${day}</div>`;
             if (eventos[dateStr]) {
                 eventos[dateStr].forEach(evento => {
-                    html += `<div class="flavor-evento-mini" title="<?php echo esc_attr__('${evento.titulo}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${evento.hora} ${evento.titulo}</div>`;
+                    html += `<div class="flavor-evento-mini" title="${escHtml(evento.titulo)}">${escHtml(evento.hora)} ${escHtml(evento.titulo)}</div>`;
                 });
             }
             html += '</div>';

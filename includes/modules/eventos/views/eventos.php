@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) exit;
 </style>
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     cargarEventos();
     $('#btn-nuevo-evento').on('click', function() {
         $('#form-evento')[0].reset();
@@ -48,7 +49,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let html = '';
                     response.data.forEach(evento => {
-                        html += `<tr><td>#${evento.id}</td><td>${evento.titulo}</td><td>${evento.fecha}</td><td>${evento.ubicacion || '-'}</td><td>${evento.asistentes_confirmados}/${evento.capacidad || '∞'}</td><td><span class="flavor-badge ${evento.estado}">${evento.estado}</span></td><td><button class="button button-small btn-editar-evento" data-id="${evento.id}"><span class="dashicons dashicons-edit"></span></button></td></tr>`;
+                        html += `<tr><td>#${escHtml(evento.id)}</td><td>${escHtml(evento.titulo)}</td><td>${escHtml(evento.fecha)}</td><td>${escHtml(evento.ubicacion || '-')}</td><td>${escHtml(evento.asistentes_confirmados)}/${escHtml(evento.capacidad || '∞')}</td><td><span class="flavor-badge ${escHtml(evento.estado)}">${escHtml(evento.estado)}</span></td><td><button class="button button-small btn-editar-evento" data-id="${escHtml(evento.id)}"><span class="dashicons dashicons-edit"></span></button></td></tr>`;
                     });
                     $('#eventos-list').html(html || '<tr><td colspan="7" style="text-align:center;"><?php _e('No se encontraron eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>');
                 }

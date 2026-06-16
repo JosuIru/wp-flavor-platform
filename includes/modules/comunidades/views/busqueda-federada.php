@@ -677,7 +677,7 @@ $origenes = [
                     html += '<img src="' + escapeHtml(item.imagen) + '" alt="" loading="lazy">';
                 } else {
                     html += '<div class="flavor-resultado-imagen-placeholder">' +
-                            '<span class="dashicons dashicons-' + (item.icono || 'admin-site') + '"></span>' +
+                            '<span class="dashicons dashicons-' + escapeHtml(item.icono || 'admin-site') + '"></span>' +
                             '</div>';
                 }
 

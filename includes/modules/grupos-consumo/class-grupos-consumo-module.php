@@ -5992,6 +5992,7 @@ KNOWLEDGE;
 
                 <script>
                 jQuery(document).ready(function($) {
+                    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
                     $('#gc-form-union').on('submit', function(e) {
                         e.preventDefault();
                         var $form = $(this);
@@ -6017,11 +6018,11 @@ KNOWLEDGE;
                             success: function(response) {
                                 if (response.success) {
                                     $mensaje.removeClass('gc-error').addClass('gc-success')
-                                        .html('<p>' + response.data.mensaje + '</p>').show();
+                                        .html('<p>' + escHtml(response.data.mensaje) + '</p>').show();
                                     $form.find('input, textarea, select, button').prop('disabled', true);
                                 } else {
                                     $mensaje.removeClass('gc-success').addClass('gc-error')
-                                        .html('<p>' + response.data.mensaje + '</p>').show();
+                                        .html('<p>' + escHtml(response.data.mensaje) + '</p>').show();
                                     $boton.prop('disabled', false).text('<?php echo esc_js(__('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                                 }
                             },

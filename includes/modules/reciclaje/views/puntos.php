@@ -442,7 +442,7 @@ jQuery(document).ready(function($) {
         frame.on('select', function() {
             const attachment = frame.state().get('selection').first().toJSON();
             $('#foto_url').val(attachment.url);
-            $('#preview-foto').html(`<img src="${attachment.url}" style="max-width: 300px; height: auto; border-radius: 4px;">`);
+            $('#preview-foto').html(`<img src="${escHtml(attachment.url)}" style="max-width: 300px; height: auto; border-radius: 4px;">`);
         });
 
         frame.open();
