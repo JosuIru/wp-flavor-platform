@@ -10485,10 +10485,50 @@ class Flavor_Dynamic_Pages {
      * Filtra el título de la página
      */
     public function filter_page_title($title) {
-        if (get_query_var('flavor_app')) {
+        // El portal puede servirse por la ruta canónica /mi-portal/<modulo>/
+        // embebida en una página (vía shortcode), en cuyo caso el <title> se
+        // genera en wp_head ANTES de que el shortcode pueble current_module y
+        // sin que se setee la query var flavor_app. Se detecta el módulo desde
+        // la URL para que el título refleje el módulo en todos los caminos.
+        $modulo = !empty($this->current_module)
+            ? $this->current_module
+            : $this->detect_portal_module_from_uri();
+
+        if (get_query_var('flavor_app') || !empty($modulo)) {
+            $modulo_previo = $this->current_module;
+            $this->current_module = $modulo;
             $title['title'] = $this->get_page_title();
+            $this->current_module = $modulo_previo;
         }
         return $title;
+    }
+
+    /**
+     * Detecta el slug del módulo a partir de la URL del portal (/mi-portal/<modulo>/).
+     *
+     * Solo actúa sobre rutas bajo el base_path del portal, para no alterar el
+     * título de páginas ajenas.
+     *
+     * @return string Slug del módulo o cadena vacía si no aplica.
+     */
+    private function detect_portal_module_from_uri() {
+        if (empty($_SERVER['REQUEST_URI'])) {
+            return '';
+        }
+
+        $request_uri = trim(strtok((string) $_SERVER['REQUEST_URI'], '?'), '/');
+        $base = $this->base_path;
+
+        if (preg_match("#^{$base}/([^/]+)#", $request_uri, $matches)) {
+            $segmento = sanitize_key($matches[1]);
+            // 'mi-cuenta' es una sección especial, no un módulo.
+            if ($segmento === '' || $segmento === 'mi-cuenta') {
+                return '';
+            }
+            return $segmento;
+        }
+
+        return '';
     }
 
     /**
