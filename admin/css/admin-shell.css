@@ -2084,3 +2084,142 @@ body.fls-shell-active .post-php #post-body {
         transform: scaleX(0.9);
     }
 }
+
+/* ============================================================
+   Cabecera de página del Shell (fls-page-header)
+   Migas de pan + título + pestañas de subpáginas.
+   Sin estos estilos, el <ol> de migas se renderizaba como lista
+   numerada vertical y las pestañas perdían su maquetación.
+   ============================================================ */
+.fls-page-header {
+    margin: 0 0 20px;
+    padding: 0;
+}
+
+.fls-breadcrumbs {
+    margin: 0 0 12px;
+}
+
+.fls-breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+}
+
+.fls-breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+}
+
+.fls-breadcrumbs__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.fls-breadcrumbs__link:hover {
+    color: #135e96;
+    text-decoration: underline;
+}
+
+.fls-breadcrumbs__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--crumb-color, #1d2327);
+    font-weight: 600;
+}
+
+.fls-breadcrumbs__icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+.fls-breadcrumbs__separator {
+    display: inline-flex;
+    align-items: center;
+    color: #8c8f94;
+}
+
+.fls-breadcrumbs__separator svg {
+    width: 14px;
+    height: 14px;
+}
+
+.fls-page-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+}
+
+.fls-page-header__icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    line-height: 1;
+    color: var(--fls-accent, #2271b1);
+}
+
+.fls-page-header__title {
+    margin: 0;
+    padding: 0;
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.fls-page-header__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.fls-page-header__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    color: #50575e;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.fls-page-header__tab:hover {
+    color: #2271b1;
+    background: #f6f7f7;
+}
+
+.fls-page-header__tab--active {
+    color: #1d2327;
+    font-weight: 600;
+    background: #fff;
+    border-color: #dcdcde;
+    margin-bottom: -1px;
+}
+
+.fls-page-header__tab-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
