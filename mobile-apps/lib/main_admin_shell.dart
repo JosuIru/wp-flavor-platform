@@ -169,8 +169,13 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
     return Scaffold(
       appBar: hasDrawer ? AppBar(title: Text(i18n.adminAppTitle)) : null,
       drawer: hasDrawer
+          // Solo se pasan los tabs navegables por índice (los que están en el
+          // IndexedStack); pasar `tabs` completos permitía seleccionar índices
+          // fuera de rango (p. ej. el 5º tab) y provocaba un RangeError. Los
+          // tabs sobrantes (extraTabs, normalmente "Ajustes") se alcanzan por
+          // el ListTile de Ajustes, que hace fallback a Navigator.push.
           ? _AdminDrawer(
-              tabs: tabs,
+              tabs: bottomTabs,
               currentIndex: _currentIndex,
               onTabSelected: _navigateToTab,
             )
