@@ -2041,9 +2041,26 @@ class Flavor_Module_Shortcodes {
             const markerLayer = L.layerGroup().addTo(map);
             markers.forEach(m => {
                 const marker = L.marker([m.lat, m.lng]).addTo(markerLayer);
-                let popupContent = '<strong>' + m.title + '</strong>';
-                if (m.description) popupContent += '<br>' + m.description;
-                if (m.url) popupContent += '<br><a href="' + m.url + '">Ver detalles</a>';
+                // Se construye el popup con nodos DOM y textContent en lugar de
+                // concatenar HTML: los datos provienen de la BD y, inyectados
+                // como innerHTML, permitirían XSS o rotura de marcado.
+                const popupContent = document.createElement('div');
+                const titleEl = document.createElement('strong');
+                titleEl.textContent = m.title || '';
+                popupContent.appendChild(titleEl);
+                if (m.description) {
+                    popupContent.appendChild(document.createElement('br'));
+                    popupContent.appendChild(document.createTextNode(m.description));
+                }
+                // Solo se enlazan URLs http(s); evita esquemas como javascript:.
+                const safeUrl = (m.url && /^https?:\/\//i.test(m.url)) ? m.url : null;
+                if (safeUrl) {
+                    popupContent.appendChild(document.createElement('br'));
+                    const link = document.createElement('a');
+                    link.href = safeUrl;
+                    link.textContent = <?php echo wp_json_encode(__('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>;
+                    popupContent.appendChild(link);
+                }
                 marker.bindPopup(popupContent);
             });
 
