@@ -35,13 +35,59 @@ class Flavor_Theme_Customizer {
         add_action('wp_ajax_flavor_save_theme_preference', [$this, 'ajax_save_preference']);
         add_action('wp_ajax_nopriv_flavor_save_theme_preference', [$this, 'ajax_save_preference']);
         add_shortcode('flavor_theme_customizer', [$this, 'render_customizer']);
+
+        // Refleja la preferencia de tema en el atributo data-theme del <html>.
+        // Es la pieza que conecta la preferencia del usuario con el CSS: el
+        // dark mode de flavor-base.css usa @media (prefers-color-scheme:dark)
+        // con el guard :root:not([data-theme=light]); sin este atributo, el
+        // modo oscuro del SO pisaba SIEMPRE las variables (texto claro sobre
+        // fondo claro). Con data-theme=light/dark explícito se respeta la
+        // preferencia (por defecto 'light'); en 'auto' se omite y sigue al SO.
+        add_filter('language_attributes', [$this, 'add_theme_data_attribute']);
+    }
+
+    /**
+     * Añade data-theme="light|dark" al <html> del frontend según la preferencia.
+     *
+     * @param string $output Atributos actuales de <html>.
+     * @return string
+     */
+    public function add_theme_data_attribute($output) {
+        if (is_admin()) {
+            return $output;
+        }
+        if (strpos($output, 'data-theme') !== false) {
+            return $output; // No pisar un valor ya presente.
+        }
+
+        $output .= ' data-theme="' . esc_attr($this->get_effective_frontend_theme()) . '"';
+
+        return $output;
+    }
+
+    /**
+     * Tema EFECTIVO del frontend.
+     *
+     * El dark mode del plugin está incompleto (oscurece los colores de texto
+     * pero no los fondos de los componentes del portal, dejando texto claro
+     * sobre fondos claros). Hasta que se complete, el frontend se fuerza a
+     * 'light' para garantizar legibilidad. Se expone un filtro para poder
+     * reactivar el modo según preferencia cuando el dark mode sea coherente.
+     *
+     * @return string 'light' | 'dark'
+     */
+    private function get_effective_frontend_theme() {
+        $tema = apply_filters('flavor_frontend_effective_theme', 'light', $this->get_user_theme());
+        return ($tema === 'dark') ? 'dark' : 'light';
     }
 
     /**
      * Encola estilos del tema
      */
     public function enqueue_theme_styles() {
-        $current_theme = $this->get_user_theme();
+        // Usa el tema EFECTIVO (forzado a claro mientras el dark esté incompleto)
+        // para que las variables inline coincidan con el data-theme del <html>.
+        $current_theme = $this->get_effective_frontend_theme();
         $custom_colors = $this->get_user_colors();
 
         // CSS variables
@@ -238,7 +284,10 @@ class Flavor_Theme_Customizer {
      * Añade switcher de tema al footer
      */
     public function add_theme_switcher() {
-        $current_theme = $this->get_user_theme();
+        // Tema efectivo (forzado a claro mientras el dark esté incompleto), para
+        // que el JS no reaplique una preferencia 'dark' guardada que dejaría el
+        // frontend ilegible. Coincide con enqueue_theme_styles y data-theme.
+        $current_theme = $this->get_effective_frontend_theme();
         ?>
         <div class="flavor-theme-switcher">
             <button class="flavor-theme-switcher__button"

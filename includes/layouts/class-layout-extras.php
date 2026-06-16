@@ -268,7 +268,12 @@ class Flavor_Layout_Extras {
         $settings = get_option('flavor_layout_settings', []);
         return [
             'enabled' => $settings['dark_mode_enabled'] ?? false,
-            'auto' => $settings['dark_mode_auto'] ?? true,
+            // 'auto' forzado a false: el seguimiento automático del modo oscuro
+            // del SO dejaba el frontend ilegible (varios sistemas de dark mode
+            // descoordinados oscurecían el texto pero no los fondos). Se ignora
+            // el valor guardado para garantizar legibilidad; el modo oscuro solo
+            // se aplica por activación explícita del usuario, no por el SO.
+            'auto' => false,
             'toggle_position' => $settings['dark_mode_toggle_position'] ?? 'header',
         ];
     }

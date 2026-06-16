@@ -1056,36 +1056,9 @@
     color: var(--fl-text-muted, var(--flavor-text-muted, #6b7280));
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .fud-frontend-dashboard {
-        background: #1a1a2e;
-    }
-
-    .fud-header h2 {
-        color: #f8fafc;
-    }
-
-    .fud-widget {
-        background: #2d2d44;
-    }
-
-    .fud-widget-header h3 {
-        color: #f8fafc;
-    }
-
-    .fud-stat {
-        background: #1a1a2e;
-    }
-
-    .fud-stat-label {
-        color: #9ca3af;
-    }
-
-    .fud-widget-actions {
-        border-color: #3d3d5c;
-    }
-}
+/* Dark mode automático retirado: el portal/dashboard se mantiene en claro
+   de forma uniforme (evita que unos componentes salgan oscuros y otros claros
+   cuando el SO está en modo oscuro, sin que el tema del sitio acompañe). */
 
 /* ==========================================
    Panel de Impacto Regenerativo (Gailu)

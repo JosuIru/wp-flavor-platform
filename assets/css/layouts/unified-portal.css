@@ -892,19 +892,14 @@
 /* ============================================
    13. DARK MODE
    ============================================ */
-@media (prefers-color-scheme: dark) {
-    .flavor-unified-portal {
-        --fup-bg: var(--fl-neutral-900, #111827);
-        --fup-surface: var(--fl-neutral-800, #1f2937);
-        --fup-border: var(--fl-neutral-700, #374151);
-        --fup-text: var(--fl-neutral-100, #f3f4f6);
-        --fup-text-secondary: var(--fl-neutral-300, #d1d5db);
-        --fup-text-muted: var(--fl-neutral-500, #6b7280);
-        --fup-primary-light: rgba(99, 102, 241, 0.15);
-    }
-}
+/*
+   El dark mode automático por prefers-color-scheme se ha retirado: solo
+   oscurecía las variables del portal, no el fondo del tema del sitio, dejando
+   texto claro sobre fondos claros (ilegible) cuando el SO está en modo oscuro.
+   El dark mode sigue disponible de forma EXPLÍCITA vía la clase .dark/.fup--dark.
+*/
 
-/* También soportar clase .dark */
+/* Dark mode explícito por clase (opt-in) */
 .dark .flavor-unified-portal,
 .flavor-unified-portal.fup--dark {
     --fup-bg: var(--fl-neutral-900, #111827);
@@ -1475,15 +1470,7 @@
 }
 
 /* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .flavor-unified-portal.fup--loading::after {
-        background: rgba(0, 0, 0, 0.5);
-    }
-
-    .fup-toast {
-        background: var(--fup-card-bg, #374151);
-    }
-}
+/* Dark mode automático retirado (ver nota en sección 13). */
 
 .dark .flavor-unified-portal.fup--loading::after {
     background: rgba(0, 0, 0, 0.5);

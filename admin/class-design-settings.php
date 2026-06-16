@@ -2490,17 +2490,28 @@ foreach ($modulos_colores as $module_id => $module_data) {
     --fl-secondary-500: var(--flavor-secondary);
     --fl-accent-500: var(--flavor-accent);
 
+    <?php /*
+        La escala --fl-neutral-* DEBE ser una rampa monotónica clara→oscura:
+        muchos componentes (p. ej. el unified portal: --fup-bg = neutral-50,
+        --fup-text = neutral-900) asumen que 50 es casi-blanco y 900 casi-negro.
+        Antes, neutral-50/400/900 tomaban background_color/text_muted/text_color
+        de los ajustes; con un tema oscuro (fondo oscuro + texto claro) eso
+        invertía esos peldaños y dejaba la rampa incoherente → texto claro sobre
+        fondos claros (portal ilegible). Se fija la rampa a valores estándar;
+        los colores del usuario se siguen aplicando vía --flavor-bg/--flavor-text
+        al resto del sitio, sin corromper la escala de neutrales.
+    */ ?>
     --fl-neutral-0: #ffffff;
-    --fl-neutral-50: <?php echo esc_attr($settings['background_color']); ?>;
+    --fl-neutral-50: #f9fafb;
     --fl-neutral-100: #f3f4f6;
     --fl-neutral-200: #e5e7eb;
     --fl-neutral-300: #d1d5db;
-    --fl-neutral-400: <?php echo esc_attr($settings['text_muted_color']); ?>;
+    --fl-neutral-400: #9ca3af;
     --fl-neutral-500: #6b7280;
     --fl-neutral-600: #4b5563;
     --fl-neutral-700: #374151;
     --fl-neutral-800: #1f2937;
-    --fl-neutral-900: <?php echo esc_attr($settings['text_color']); ?>;
+    --fl-neutral-900: #111827;
 
     --fl-success-500: var(--flavor-success);
     --fl-warning-500: var(--flavor-warning);
