@@ -386,6 +386,14 @@ class Flavor_VBP_Popup_Builder {
             );
         }
 
+        // Verificar propiedad del popup concreto (no basta con edit_posts genérico).
+        if ( ! current_user_can( 'edit_post', $popup_id ) ) {
+            return new WP_REST_Response(
+                array( 'error' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                403
+            );
+        }
+
         // Crear copia
         $nuevo_popup_id = wp_insert_post(
             array(

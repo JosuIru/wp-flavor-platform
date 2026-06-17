@@ -603,6 +603,17 @@ class Flavor_VBP_Version_History {
         $post_id    = (int) $request->get_param( 'post_id' );
         $version_id = (int) $request->get_param( 'version_id' );
 
+        // Verificar propiedad del post concreto (no basta con edit_posts genérico).
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return new WP_REST_Response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+                403
+            );
+        }
+
         // Obtener la versión
         $contenido = $this->obtener_contenido_version( $version_id );
 
@@ -877,6 +888,17 @@ class Flavor_VBP_Version_History {
         $post_id    = (int) $request->get_param( 'post_id' );
         $version_id = (int) $request->get_param( 'version_id' );
 
+        // Verificar propiedad del post concreto (no basta con edit_posts genérico).
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return new WP_REST_Response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+                403
+            );
+        }
+
         $eliminado = $wpdb->delete(
             $this->tabla_versiones,
             array(
@@ -917,6 +939,17 @@ class Flavor_VBP_Version_History {
         $post_id    = (int) $request->get_param( 'post_id' );
         $version_id = (int) $request->get_param( 'version_id' );
         $label      = sanitize_text_field( $request->get_param( 'label' ) ?? '' );
+
+        // Verificar propiedad del post concreto (no basta con edit_posts genérico).
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return new WP_REST_Response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                ),
+                403
+            );
+        }
 
         $actualizado = $wpdb->update(
             $this->tabla_versiones,

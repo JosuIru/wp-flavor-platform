@@ -502,6 +502,17 @@ class Flavor_VBP_Branching {
 		$desde_branch_id  = $request->get_param( 'from_branch' );
 		$usuario_actual   = get_current_user_id();
 
+		// Verificar propiedad del post concreto (no basta con edit_posts genérico).
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+				),
+				403
+			);
+		}
+
 		// Generar slug único
 		$branch_slug = sanitize_title( $nombre_branch );
 		$slug_base   = $branch_slug;
@@ -808,6 +819,17 @@ class Flavor_VBP_Branching {
 		$target_branch_id     = (int) $request->get_param( 'target_branch_id' );
 		$conflict_resolutions = $request->get_param( 'conflict_resolutions' );
 		$usuario_actual       = get_current_user_id();
+
+		// Verificar propiedad del post concreto (no basta con edit_posts genérico).
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+				),
+				403
+			);
+		}
 
 		// Verificar que ambas branches existen
 		$source_branch = $this->obtener_datos_branch( $source_branch_id );
@@ -1306,6 +1328,17 @@ class Flavor_VBP_Branching {
 
 		$post_id   = (int) $request->get_param( 'post_id' );
 		$branch_id = (int) $request->get_param( 'branch_id' );
+
+		// Verificar propiedad del post concreto (no basta con edit_posts genérico).
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'message' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+				),
+				403
+			);
+		}
 
 		$branch = $this->obtener_datos_branch( $branch_id );
 

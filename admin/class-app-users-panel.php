@@ -140,7 +140,14 @@ class Flavor_App_Users_Panel {
     }
 
     /**
-     * Verificar autenticación de la app
+     * Verificar autenticación de la app.
+     *
+     * Solo exige usuario autenticado: las rutas protegidas por este callback
+     * (register/unregister device, start/end session) operan exclusivamente
+     * sobre datos del propio usuario actual (get_current_user_id()), por lo que
+     * la propiedad se garantiza en cada handler (ver rest_unregister_device,
+     * que valida el dueño del dispositivo antes de desregistrarlo). No exponen
+     * datos de otros usuarios.
      */
     public function check_app_auth( $request ) {
         $user_id = get_current_user_id();
@@ -761,10 +768,13 @@ class Flavor_App_Users_Panel {
             return new WP_Error( 'missing_params', 'device_id y platform requeridos', array( 'status' => 400 ) );
         }
 
-        // Check if device exists
+        // Check if device exists PARA ESTE usuario. Acotar por user_id evita que
+        // un usuario sobrescriba (robe el fcm_token / reasigne) el dispositivo de
+        // otro reutilizando su device_id (IDOR).
         $existing = $wpdb->get_var( $wpdb->prepare(
-            "SELECT id FROM {$this->devices_table} WHERE device_id = %s",
-            $device_id
+            "SELECT id FROM {$this->devices_table} WHERE device_id = %s AND user_id = %d",
+            $device_id,
+            $user_id
         ) );
 
         $data = array(
@@ -779,7 +789,7 @@ class Flavor_App_Users_Panel {
         );
 
         if ( $existing ) {
-            $wpdb->update( $this->devices_table, $data, array( 'device_id' => $device_id ) );
+            $wpdb->update( $this->devices_table, $data, array( 'device_id' => $device_id, 'user_id' => $user_id ) );
         } else {
             $data['registered_at'] = current_time( 'mysql' );
             $wpdb->insert( $this->devices_table, $data );
@@ -797,12 +807,32 @@ class Flavor_App_Users_Panel {
     public function rest_unregister_device( $request ) {
         global $wpdb;
 
-        $device_id = sanitize_text_field( $request->get_param( 'device_id' ) );
+        $device_id        = sanitize_text_field( $request->get_param( 'device_id' ) );
+        $current_user_id  = get_current_user_id();
+
+        // Verificar que el dispositivo pertenece al usuario actual antes de desregistrar.
+        $device_owner_id = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT user_id FROM {$this->devices_table} WHERE device_id = %s",
+                $device_id
+            )
+        );
+
+        if ( ! $device_owner_id || $device_owner_id !== (int) $current_user_id ) {
+            return new WP_Error(
+                'forbidden',
+                __( 'Sin permiso sobre este dispositivo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                array( 'status' => 403 )
+            );
+        }
 
         $wpdb->update(
             $this->devices_table,
             array( 'status' => 'unregistered' ),
-            array( 'device_id' => $device_id )
+            array(
+                'device_id' => $device_id,
+                'user_id'   => $current_user_id,
+            )
         );
 
         return rest_ensure_response( array(

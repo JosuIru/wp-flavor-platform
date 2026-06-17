@@ -903,6 +903,10 @@ class Flavor_Unified_Admin_Panel {
     public function ajax_obtener_estadisticas() {
         check_ajax_referer('flavor_gestion_nonce', 'nonce');
 
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
+        }
+
         $stats = $this->obtener_estadisticas_globales();
 
         wp_send_json_success(['estadisticas' => $stats]);

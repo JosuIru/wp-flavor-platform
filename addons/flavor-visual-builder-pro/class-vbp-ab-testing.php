@@ -347,6 +347,14 @@ class Flavor_VBP_AB_Testing {
             );
         }
 
+        // Verificar propiedad del post concreto (no basta con edit_posts genérico).
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return new WP_REST_Response(
+                array( 'error' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                403
+            );
+        }
+
         $wpdb->insert(
             $this->tabla_tests,
             array(
@@ -450,6 +458,17 @@ class Flavor_VBP_AB_Testing {
 
         $test_id = absint( $request->get_param( 'id' ) );
 
+        // Verificar propiedad del post asociado al test (no basta con edit_posts genérico).
+        $test_post_id = (int) $wpdb->get_var(
+            $wpdb->prepare( "SELECT post_id FROM {$this->tabla_tests} WHERE id = %d", $test_id )
+        );
+        if ( ! $test_post_id || ! current_user_can( 'edit_post', $test_post_id ) ) {
+            return new WP_REST_Response(
+                array( 'error' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                403
+            );
+        }
+
         $datos = array();
         $tipos = array();
 
@@ -502,6 +521,17 @@ class Flavor_VBP_AB_Testing {
         global $wpdb;
 
         $test_id = absint( $request->get_param( 'id' ) );
+
+        // Verificar propiedad del post asociado al test (no basta con edit_posts genérico).
+        $test_post_id = (int) $wpdb->get_var(
+            $wpdb->prepare( "SELECT post_id FROM {$this->tabla_tests} WHERE id = %d", $test_id )
+        );
+        if ( ! $test_post_id || ! current_user_can( 'edit_post', $test_post_id ) ) {
+            return new WP_REST_Response(
+                array( 'error' => __( 'Sin permiso sobre este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                403
+            );
+        }
 
         // Eliminar conversiones de las variantes
         $variantes = $wpdb->get_col(
