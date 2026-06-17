@@ -319,11 +319,20 @@ class Flavor_CRDT_Manager {
         ));
 
         if ($existing) {
+            // Actualizar campos y, por separado, incrementar merge_count de
+            // forma atómica. No se puede pasar 'merge_count + 1' como valor a
+            // $wpdb->update() (lo escaparía como string y dispararía
+            // _doing_it_wrong sin incrementar nada).
             $result = $wpdb->update(
                 $this->table_name,
-                array_merge($data, ['merge_count' => $wpdb->prepare('merge_count + 1')]),
+                $data,
                 ['id' => $existing]
             );
+
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->table_name} SET merge_count = merge_count + 1 WHERE id = %d",
+                $existing
+            ));
         } else {
             $result = $wpdb->insert($this->table_name, $data);
         }
@@ -514,11 +523,20 @@ class Flavor_CRDT_Manager {
         ];
 
         if ($existing) {
-            return $wpdb->update(
+            $result = $wpdb->update(
                 $this->clock_table,
-                array_merge($data, ['merged_count' => $wpdb->prepare('merged_count + 1')]),
+                $data,
                 ['id' => $existing]
-            ) !== false;
+            );
+
+            // Incremento atómico real de merged_count (no puede ir como valor
+            // dentro de $wpdb->update(): se escaparía como string).
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->clock_table} SET merged_count = merged_count + 1 WHERE id = %d",
+                $existing
+            ));
+
+            return $result !== false;
         }
 
         return $wpdb->insert($this->clock_table, $data) !== false;
