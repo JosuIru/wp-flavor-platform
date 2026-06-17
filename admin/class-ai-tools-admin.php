@@ -193,6 +193,41 @@ class Flavor_AI_Tools_Admin {
                 '4.4.1',
                 true
             );
+
+            $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+
+            // Binding de la página de Reportes Semanales
+            if ($page === 'flavor-ai-weekly-reports') {
+                wp_enqueue_script(
+                    'flavor-ai-weekly-reports',
+                    FLAVOR_PLATFORM_URL . 'admin/js/ai-weekly-reports.js',
+                    ['jquery', 'flavor-ai-tools'],
+                    FLAVOR_PLATFORM_VERSION,
+                    true
+                );
+            }
+
+            // Binding de la página del Analizador de Datos
+            if ($page === 'flavor-ai-data-analyzer') {
+                wp_enqueue_script(
+                    'flavor-ai-data-analyzer',
+                    FLAVOR_PLATFORM_URL . 'admin/js/ai-data-analyzer.js',
+                    ['jquery', 'flavor-ai-tools'],
+                    FLAVOR_PLATFORM_VERSION,
+                    true
+                );
+            }
+
+            // Binding de la página del Generador de Datos Demo
+            if ($page === 'flavor-ai-demo-generator') {
+                wp_enqueue_script(
+                    'flavor-ai-demo-generator',
+                    FLAVOR_PLATFORM_URL . 'admin/js/ai-demo-generator.js',
+                    ['jquery'],
+                    FLAVOR_PLATFORM_VERSION,
+                    true
+                );
+            }
         }
     }
 

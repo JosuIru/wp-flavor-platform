@@ -80,7 +80,12 @@ $available_modules = [
                 <?php esc_html_e('Generar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
-            <form id="demo-generator-form" class="generator-form">
+            <form id="demo-generator-form" class="generator-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="flavor_generate_demo_data">
+                <?php wp_nonce_field('flavor_demo_data', 'demo_nonce'); ?>
+                <p class="description" style="margin: 0 0 15px;">
+                    <?php esc_html_e('Genera el conjunto demo "Tejido Empresarial" (usuarios, marketplace, banco de tiempo, grupo de consumo y taller). Las opciones de cantidad/módulos de abajo son orientativas: el generador actual crea siempre este preset.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                </p>
                 <!-- Selección de Módulos -->
                 <div class="form-group">
                     <label><?php esc_html_e('Selecciona módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
@@ -212,17 +217,19 @@ $available_modules = [
             </h2>
 
             <div class="existing-data-list" id="existing-data-list">
-                <p class="loading">
-                    <span class="spinner is-active"></span>
-                    <?php esc_html_e('Cargando información...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
-                </p>
+                <p><?php esc_html_e('Usa el botón inferior para eliminar el conjunto demo "Tejido Empresarial" (usuarios, productos, servicios, grupos y talleres).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="cleanup-actions">
-                <button type="button" class="button button-link-delete" id="cleanup-all-demo">
-                    <span class="dashicons dashicons-trash"></span>
-                    <?php esc_html_e('Limpiar todos los datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
-                </button>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"
+                      onsubmit="return confirm('<?php echo esc_js(__('¿Eliminar todos los datos demo?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');">
+                    <input type="hidden" name="action" value="flavor_cleanup_demo_data">
+                    <?php wp_nonce_field('flavor_demo_data', 'demo_nonce'); ?>
+                    <button type="submit" class="button button-link-delete" id="cleanup-all-demo">
+                        <span class="dashicons dashicons-trash"></span>
+                        <?php esc_html_e('Limpiar todos los datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
