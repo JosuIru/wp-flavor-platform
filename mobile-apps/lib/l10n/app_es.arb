@@ -1870,6 +1870,71 @@
   },
   "circulosCuidadosJoin": "Unirse",
   "circulosCuidadosView": "Ver",
+  "circulosCuidadosCreateTitle": "Crear Circulo de Cuidados",
+  "circulosCuidadosTypeGeneral": "General",
+  "circulosCuidadosTypeInfancia": "Cuidado de infancia",
+  "circulosCuidadosTypeMayores": "Apoyo a mayores",
+  "circulosCuidadosTypeSalud": "Acompanamiento salud",
+  "circulosCuidadosTypeEmocional": "Apoyo emocional",
+  "circulosCuidadosNameLabel": "Nombre del circulo",
+  "circulosCuidadosNameHint": "Ej: Circulo de apoyo vecinal",
+  "circulosCuidadosTypeLabel": "Tipo de circulo",
+  "circulosCuidadosDescriptionLabel": "Descripcion",
+  "circulosCuidadosDescriptionHint": "Describe el proposito del circulo...",
+  "circulosCuidadosNameRequired": "El nombre es obligatorio",
+  "circulosCuidadosCreateButton": "Crear circulo",
+  "circulosCuidadosCreatedSuccess": "Circulo creado correctamente",
+  "circulosCuidadosJoinTitle": "Unirse al circulo",
+  "circulosCuidadosJoinConfirm": "¿Deseas enviar una solicitud para unirte a \"{nombre}\"?",
+  "@circulosCuidadosJoinConfirm": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosJoinSend": "Enviar solicitud",
+  "circulosCuidadosJoinSent": "Solicitud enviada a {nombre}",
+  "@circulosCuidadosJoinSent": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosStatMembers": "Miembros",
+  "circulosCuidadosStatMeetings": "Reuniones",
+  "circulosCuidadosStatHelp": "Ayudas",
+  "circulosCuidadosNextMeeting": "Proxima reunion",
+  "circulosCuidadosMeetingPlaceTbd": "Lugar por definir",
+  "circulosCuidadosChat": "Chat",
+  "circulosCuidadosOfferHelp": "Ofrecer ayuda",
+  "circulosCuidadosOfferHelpTitle": "Ofrecer Ayuda",
+  "circulosCuidadosHelpTypeGeneral": "Ayuda general",
+  "circulosCuidadosHelpTypeNinos": "Cuidado de ninos",
+  "circulosCuidadosHelpTypeMayores": "Cuidado de mayores",
+  "circulosCuidadosHelpTypeCompras": "Compras y recados",
+  "circulosCuidadosHelpTypeTransporte": "Transporte",
+  "circulosCuidadosHelpTypeCompania": "Compania",
+  "circulosCuidadosOfferCircleLabel": "Circulo: {nombre}",
+  "@circulosCuidadosOfferCircleLabel": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosHelpTypeLabel": "Tipo de ayuda",
+  "circulosCuidadosOfferDescriptionLabel": "Descripcion de tu oferta",
+  "circulosCuidadosOfferDescriptionHint": "Describe como puedes ayudar...",
+  "circulosCuidadosOfferDescriptionRequired": "Describe tu oferta de ayuda",
+  "circulosCuidadosOfferSend": "Enviar oferta",
+  "circulosCuidadosOfferSent": "Oferta de ayuda enviada correctamente",
+  "circulosCuidadosChatDefaultTitle": "Chat del circulo",
+  "circulosCuidadosChatEmptyTitle": "No hay mensajes aun",
+  "circulosCuidadosChatEmptyMessage": "Se el primero en escribir",
+  "circulosCuidadosChatDefaultAuthor": "Usuario",
+  "circulosCuidadosChatInputHint": "Escribe un mensaje...",
   "moduleNotFound": "Módulo no encontrado",
   "moduleLoadError": "Error al cargar módulo",
   "commonBack": "Volver",

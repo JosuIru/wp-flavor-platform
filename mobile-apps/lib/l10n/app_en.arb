@@ -1870,6 +1870,71 @@
   },
   "circulosCuidadosJoin": "Join",
   "circulosCuidadosView": "View",
+  "circulosCuidadosCreateTitle": "Create Care Circle",
+  "circulosCuidadosTypeGeneral": "General",
+  "circulosCuidadosTypeInfancia": "Childcare",
+  "circulosCuidadosTypeMayores": "Elderly support",
+  "circulosCuidadosTypeSalud": "Health support",
+  "circulosCuidadosTypeEmocional": "Emotional support",
+  "circulosCuidadosNameLabel": "Circle name",
+  "circulosCuidadosNameHint": "E.g.: Neighborhood support circle",
+  "circulosCuidadosTypeLabel": "Circle type",
+  "circulosCuidadosDescriptionLabel": "Description",
+  "circulosCuidadosDescriptionHint": "Describe the purpose of the circle...",
+  "circulosCuidadosNameRequired": "Name is required",
+  "circulosCuidadosCreateButton": "Create circle",
+  "circulosCuidadosCreatedSuccess": "Circle created successfully",
+  "circulosCuidadosJoinTitle": "Join circle",
+  "circulosCuidadosJoinConfirm": "Do you want to send a request to join \"{nombre}\"?",
+  "@circulosCuidadosJoinConfirm": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosJoinSend": "Send request",
+  "circulosCuidadosJoinSent": "Request sent to {nombre}",
+  "@circulosCuidadosJoinSent": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosStatMembers": "Members",
+  "circulosCuidadosStatMeetings": "Meetings",
+  "circulosCuidadosStatHelp": "Help",
+  "circulosCuidadosNextMeeting": "Next meeting",
+  "circulosCuidadosMeetingPlaceTbd": "Place to be defined",
+  "circulosCuidadosChat": "Chat",
+  "circulosCuidadosOfferHelp": "Offer help",
+  "circulosCuidadosOfferHelpTitle": "Offer Help",
+  "circulosCuidadosHelpTypeGeneral": "General help",
+  "circulosCuidadosHelpTypeNinos": "Childcare",
+  "circulosCuidadosHelpTypeMayores": "Elderly care",
+  "circulosCuidadosHelpTypeCompras": "Shopping and errands",
+  "circulosCuidadosHelpTypeTransporte": "Transport",
+  "circulosCuidadosHelpTypeCompania": "Companionship",
+  "circulosCuidadosOfferCircleLabel": "Circle: {nombre}",
+  "@circulosCuidadosOfferCircleLabel": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosHelpTypeLabel": "Help type",
+  "circulosCuidadosOfferDescriptionLabel": "Description of your offer",
+  "circulosCuidadosOfferDescriptionHint": "Describe how you can help...",
+  "circulosCuidadosOfferDescriptionRequired": "Describe your help offer",
+  "circulosCuidadosOfferSend": "Send offer",
+  "circulosCuidadosOfferSent": "Help offer sent successfully",
+  "circulosCuidadosChatDefaultTitle": "Circle chat",
+  "circulosCuidadosChatEmptyTitle": "No messages yet",
+  "circulosCuidadosChatEmptyMessage": "Be the first to write",
+  "circulosCuidadosChatDefaultAuthor": "User",
+  "circulosCuidadosChatInputHint": "Write a message...",
   "moduleNotFound": "Module not found",
   "moduleLoadError": "Error loading module",
   "commonBack": "Back",
