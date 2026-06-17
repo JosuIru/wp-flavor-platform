@@ -1316,3 +1316,65 @@
         padding: 0.25rem 0.5rem;
     }
 }
+
+/* ============================================
+   DARK MODE EXPLÍCITO (opt-in)
+   ============================================ */
+/*
+   La mayoría de superficies del dashboard usan var(--flavor-bg, #fff) y
+   similares, así que ya oscurecen su FONDO cuando flavor-base.css remapea
+   las variables --flavor-* bajo [data-theme="dark"] / .flavor-dark. Estas
+   reglas solo cubren las superficies con colores CLAROS hardcodeados (white,
+   gradientes a #ffffff, #fff7ed, #f3f4f6) que, de lo contrario, quedarían
+   con texto claro sobre fondo claro (ilegible) al activar dark explícito.
+
+   Solo se activa con dark EXPLÍCITO ([data-theme="dark"] / .flavor-dark);
+   NO se usa @media (prefers-color-scheme: dark) — el auto-dark por SO se
+   retiró a propósito y el default es claro forzado.
+*/
+[data-theme="dark"] .fud-ecosystem-card,
+.flavor-dark .fud-ecosystem-card {
+    background: linear-gradient(180deg, var(--flavor-bg-secondary, #1f2937) 0%, var(--flavor-bg-tertiary, #111827) 100%);
+    border-color: var(--flavor-border, #374151);
+}
+
+[data-theme="dark"] .fud-ecosystem-group__base,
+.flavor-dark .fud-ecosystem-group__base {
+    background: linear-gradient(180deg, var(--flavor-bg-tertiary, #111827) 0%, var(--flavor-bg-secondary, #1f2937) 100%);
+    border-color: var(--flavor-border, #374151);
+}
+
+[data-theme="dark"] .fud-widget__context,
+.flavor-dark .fud-widget__context {
+    background: var(--flavor-bg-tertiary, #111827);
+    color: var(--flavor-text-secondary, #d1d5db);
+}
+
+[data-theme="dark"] .fud-widget__severity--attention,
+.flavor-dark .fud-widget__severity--attention {
+    background: color-mix(in srgb, var(--flavor-warning, #f59e0b) 20%, var(--flavor-bg-secondary, #1f2937));
+}
+
+[data-theme="dark"] .fud-gailu-panel__score,
+.flavor-dark .fud-gailu-panel__score,
+[data-theme="dark"] .fud-gailu-card,
+.flavor-dark .fud-gailu-card {
+    background: var(--flavor-bg-secondary, #1f2937);
+}
+
+[data-theme="dark"] .fud-gailu-card,
+.flavor-dark .fud-gailu-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .fud-gailu-card__title,
+.flavor-dark .fud-gailu-card__title {
+    color: var(--flavor-text, #f3f4f6);
+    border-bottom-color: var(--flavor-border, #374151);
+}
+
+[data-theme="dark"] .fud-gailu-principio.is-inactive,
+.flavor-dark .fud-gailu-principio.is-inactive {
+    background: var(--flavor-bg-tertiary, #111827);
+    border-color: var(--flavor-border, #374151);
+}

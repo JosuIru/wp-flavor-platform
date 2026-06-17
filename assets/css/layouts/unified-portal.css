@@ -899,9 +899,24 @@
    El dark mode sigue disponible de forma EXPLÍCITA vía la clase .dark/.fup--dark.
 */
 
-/* Dark mode explícito por clase (opt-in) */
+/*
+   Dark mode explícito por clase (opt-in).
+
+   Se incluyen [data-theme="dark"] y .flavor-dark para coherencia con el gestor
+   de tema global (FlavorDarkMode emite data-theme en <html> al togglear). Sin
+   esto, al activar dark EXPLÍCITO los componentes del portal (.fup-panel,
+   .fup-card, .fup-header, .fup-sidebar, etc.) seguían usando los --fup-* claros
+   y quedaban con texto claro sobre fondo claro (ilegible). Remapeando los
+   --fup-* aquí, todas esas superficies oscurecen su FONDO automáticamente.
+   NO usar @media (prefers-color-scheme: dark): el auto-dark por SO se retiró
+   a propósito; el default es claro forzado.
+*/
 .dark .flavor-unified-portal,
-.flavor-unified-portal.fup--dark {
+.flavor-unified-portal.fup--dark,
+[data-theme="dark"] .flavor-unified-portal,
+.flavor-dark .flavor-unified-portal,
+[data-theme="dark"].flavor-unified-portal,
+.flavor-dark.flavor-unified-portal {
     --fup-bg: var(--fl-neutral-900, #111827);
     --fup-surface: var(--fl-neutral-800, #1f2937);
     --fup-border: var(--fl-neutral-700, #374151);
@@ -909,6 +924,14 @@
     --fup-text-secondary: var(--fl-neutral-300, #d1d5db);
     --fup-text-muted: var(--fl-neutral-500, #6b7280);
     --fup-primary-light: rgba(99, 102, 241, 0.15);
+
+    /* Superficies secundarias usadas por los paneles de prioridad, el feed
+       y otros componentes (con fallback claro inline). Sin remapearlas aquí
+       quedaban claras dentro del portal oscuro. */
+    --fup-card-bg: var(--fl-neutral-800, #1f2937);
+    --fup-bg-subtle: var(--fl-neutral-800, #1f2937);
+    --fup-bg-hover: var(--fl-neutral-700, #374151);
+    --fup-border-light: var(--fl-neutral-700, #374151);
 }
 
 /* ============================================
