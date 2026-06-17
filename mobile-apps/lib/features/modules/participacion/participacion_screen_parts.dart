@@ -404,6 +404,7 @@ class _VotacionDetalleScreenState
       final clienteApi = ref.read(apiClientProvider);
       final respuesta =
           await clienteApi.get('/participacion/procesos/${widget.procesoId}');
+      if (!mounted) return;
       if (respuesta.success && respuesta.data != null) {
         setState(() {
           _datosProceso = respuesta.data!['data'] ?? respuesta.data!;
@@ -418,6 +419,7 @@ class _VotacionDetalleScreenState
         });
       }
     } catch (excepcion) {
+      if (!mounted) return;
       setState(() {
         _mensajeError = excepcion.toString();
         _cargando = false;
@@ -727,6 +729,7 @@ class _PropuestaDetalleScreenState
       final api = ref.read(apiClientProvider);
       final respuesta =
           await api.get('/participacion/propuestas/${widget.propuestaId}');
+      if (!mounted) return;
       if (respuesta.success && respuesta.data != null) {
         setState(() {
           _propuesta = respuesta.data!['propuesta'] ?? respuesta.data!;
@@ -740,6 +743,7 @@ class _PropuestaDetalleScreenState
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _cargando = false;

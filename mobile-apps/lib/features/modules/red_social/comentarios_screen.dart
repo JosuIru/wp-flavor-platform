@@ -59,6 +59,7 @@ class _ComentariosScreenState extends ConsumerState<ComentariosScreen> {
       final response =
           await apiClient.get('/red-social/publicaciones/$publicacionId/comentarios');
 
+      if (!mounted) return;
       if (response.success && response.data != null) {
         setState(() {
           _comentarios = response.data!['comentarios'] ??
@@ -74,6 +75,7 @@ class _ComentariosScreenState extends ConsumerState<ComentariosScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _cargando = false;

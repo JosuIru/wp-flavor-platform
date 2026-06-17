@@ -297,6 +297,7 @@ class _EpisodioDetalleScreenState extends ConsumerState<EpisodioDetalleScreen> {
     try {
       setState(() => _cargandoAudio = true);
       await _audioPlayer.setUrl(urlAudio);
+      if (!mounted) return;
       setState(() => _cargandoAudio = false);
     } catch (e) {
       if (mounted) {

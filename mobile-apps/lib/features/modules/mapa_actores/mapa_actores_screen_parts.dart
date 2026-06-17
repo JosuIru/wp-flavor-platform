@@ -398,6 +398,7 @@ class _ActorDetalleScreenState extends ConsumerState<_ActorDetalleScreen> {
     try {
       final api = ref.read(apiClientProvider);
       final respuesta = await api.get('/actores/${widget.actorId}');
+      if (!mounted) return;
       if (respuesta.success && respuesta.data != null) {
         setState(() {
           _actor = respuesta.data!['actor'];
@@ -409,6 +410,7 @@ class _ActorDetalleScreenState extends ConsumerState<_ActorDetalleScreen> {
       // Cargar relaciones adicionales
       final respRelaciones =
           await api.get('/actores/${widget.actorId}/relaciones');
+      if (!mounted) return;
       if (respRelaciones.success && respRelaciones.data != null) {
         setState(() {
           final comoOrigen =
@@ -419,7 +421,7 @@ class _ActorDetalleScreenState extends ConsumerState<_ActorDetalleScreen> {
         });
       }
     } finally {
-      setState(() => _cargando = false);
+      if (mounted) setState(() => _cargando = false);
     }
   }
 
