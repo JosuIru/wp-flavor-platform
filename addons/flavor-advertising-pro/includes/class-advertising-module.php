@@ -64,6 +64,100 @@ class Flavor_Platform_Advertising_Module extends Flavor_Platform_Module_Base {
     }
 
     /**
+     * Acción: estadísticas de publicidad agregadas por periodo.
+     *
+     * Consulta la tabla real flavor_ad_stats (impressions/clicks/revenue/date).
+     *
+     * @param array $params ['periodo' => today|week|month]
+     * @return array
+     */
+    private function action_ver_estadisticas($params) {
+        global $wpdb;
+
+        $periodo = isset($params['periodo']) ? sanitize_key($params['periodo']) : 'month';
+        $offsets = ['today' => 0, 'week' => 6, 'month' => 29];
+        $offset_dias = isset($offsets[$periodo]) ? $offsets[$periodo] : 29;
+        $desde = gmdate('Y-m-d', current_time('timestamp') - ($offset_dias * DAY_IN_SECONDS));
+
+        $tabla_stats = $wpdb->prefix . 'flavor_ad_stats';
+        $anuncios_activos = (int) ( wp_count_posts('flavor_ad')->publish ?? 0 );
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_stats)) {
+            return [
+                'success' => true,
+                'data' => [
+                    'periodo' => $periodo, 'desde' => $desde,
+                    'impresiones' => 0, 'clicks' => 0, 'ctr' => 0, 'ingresos' => 0,
+                    'anuncios_activos' => $anuncios_activos,
+                ],
+            ];
+        }
+
+        $fila = $wpdb->get_row($wpdb->prepare(
+            "SELECT COALESCE(SUM(impressions),0) AS imp, COALESCE(SUM(clicks),0) AS clk, COALESCE(SUM(revenue),0) AS rev
+             FROM {$tabla_stats} WHERE date >= %s",
+            $desde
+        ));
+
+        $impresiones = (int) ($fila->imp ?? 0);
+        $clicks = (int) ($fila->clk ?? 0);
+
+        return [
+            'success' => true,
+            'data' => [
+                'periodo' => $periodo,
+                'desde' => $desde,
+                'impresiones' => $impresiones,
+                'clicks' => $clicks,
+                'ctr' => $impresiones > 0 ? round($clicks / $impresiones * 100, 2) : 0,
+                'ingresos' => round((float) ($fila->rev ?? 0), 2),
+                'anuncios_activos' => $anuncios_activos,
+            ],
+        ];
+    }
+
+    /**
+     * Acción: lista los anuncios (CPT flavor_ad) filtrando por estado.
+     *
+     * @param array $params ['estado' => publish|draft|pending|any]
+     * @return array
+     */
+    private function action_listar_anuncios($params) {
+        $estado = isset($params['estado']) && $params['estado'] !== '' ? sanitize_key($params['estado']) : 'publish';
+        if (!in_array($estado, ['publish', 'draft', 'pending', 'future', 'any'], true)) {
+            $estado = 'publish';
+        }
+
+        $posts = get_posts([
+            'post_type'   => 'flavor_ad',
+            'post_status' => $estado,
+            'numberposts' => 50,
+            'orderby'     => 'date',
+            'order'       => 'DESC',
+        ]);
+
+        $anuncios = [];
+        foreach ($posts as $post) {
+            $anuncios[] = [
+                'id'     => (int) $post->ID,
+                'titulo' => $post->post_title,
+                'estado' => $post->post_status,
+                'fecha'  => $post->post_date,
+                'tipo'   => (string) get_post_meta($post->ID, '_flavor_ad_type', true),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => [
+                'estado'   => $estado,
+                'total'    => count($anuncios),
+                'anuncios' => $anuncios,
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get_tool_definitions() {
