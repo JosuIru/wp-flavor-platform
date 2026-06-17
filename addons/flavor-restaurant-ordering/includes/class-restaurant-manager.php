@@ -338,7 +338,7 @@ class Flavor_Restaurant_Manager {
     /**
      * Obtener etiqueta de categoría
      */
-    private function get_category_label($category) {
+    public function get_category_label($category) {
         $labels = [
             'dishes' => 'Platos',
             'drinks' => 'Bebidas',

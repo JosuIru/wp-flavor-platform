@@ -2357,14 +2357,14 @@ class Flavor_Admin_Menu_Manager {
 
     public function callback_analytics() {
         if (class_exists('Flavor_Analytics_Dashboard')) {
-            Flavor_Analytics_Dashboard::get_instance()->render_page();
+            Flavor_Analytics_Dashboard::get_instance()->render_dashboard();
         } else {
             // Intentar cargar la clase
             $dashboard_path = FLAVOR_PLATFORM_PATH . 'admin/class-analytics-dashboard.php';
             if (file_exists($dashboard_path)) {
                 require_once $dashboard_path;
                 if (class_exists('Flavor_Analytics_Dashboard')) {
-                    Flavor_Analytics_Dashboard::get_instance()->render_page();
+                    Flavor_Analytics_Dashboard::get_instance()->render_dashboard();
                     return;
                 }
             }
