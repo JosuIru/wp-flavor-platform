@@ -1487,8 +1487,8 @@
   "bicicletasTabHistory": "Bicicletashistory",
   "bicicletasTabStations": "Bicicletasstations",
   "commonContact": "Commoncontact",
-  "commonDelete": "Commondelete",
-  "commonEdit": "Commonedit",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
   "commonInfo": "Commoninfo",
   "commonMessage": "Commonmessage",
   "commonView": "Commonview",
@@ -1678,7 +1678,6 @@
   "reciclajeCO2Saved": "CO₂ Saved",
   "adminDrawerSectionNavigation": "Navigation",
   "adminDrawerSectionManagement": "Management",
-  "adminDrawerManualCustomers": "Manual customers",
   "networkExploreTitle": "Explore Network",
   "networkExploreSubtitle": "Discover nearby communities",
   "networkAddCommunityTitle": "Add Community",
@@ -1713,9 +1712,7 @@
   "networkConnectionError": "Connection error: check URL",
   "networkCommunityAdded": "Community added successfully",
   "networkVerifyConnection": "Verify connection",
-
   "commonLogin": "Login",
-  "commonLoading": "Loading...",
   "commonOk": "OK",
   "loginSubtitle": "Sign in to access all features",
   "loginUsernameLabel": "Username or email",
@@ -1767,5 +1764,114 @@
   "adminModulesEnableInWordPress": "Enable modules from the WordPress panel",
   "adminModuleScheduledEvents": "Scheduled events",
   "adminModuleActive": "Active module",
-  "adminChartsSectionTitle": "Analytics and trends"
+  "adminChartsSectionTitle": "Analytics and trends",
+  "clientDashboardMyOrders": "My orders",
+  "clientDashboardConsumerGroups": "Consumer groups",
+  "clientDashboardMyServices": "My services",
+  "clientDashboardTimeBank": "Time bank",
+  "clientDashboardMyAds": "My ads",
+  "clientDashboardMarketplace": "Marketplace",
+  "carpoolingTitle": "Shared rides",
+  "carpoolingFilterAll": "All",
+  "carpoolingFilterOffer": "I offer a ride",
+  "carpoolingFilterSearch": "I'm looking for a ride",
+  "carpoolingLoadError": "Error loading rides",
+  "carpoolingEmpty": "No rides available",
+  "carpoolingPublishRide": "Publish ride",
+  "carpoolingOfferRide": "Offer ride",
+  "carpoolingDriverLabel": "Driver: {name}",
+  "@carpoolingDriverLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveSeat": "Reserve seat",
+  "carpoolingNoSeats": "No seats available",
+  "carpoolingReserveDialogTitle": "Reserve seat",
+  "carpoolingReserveOrigin": "Origin: {value}",
+  "@carpoolingReserveOrigin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDestination": "Destination: {value}",
+  "@carpoolingReserveDestination": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDate": "Date: {value}",
+  "@carpoolingReserveDate": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveTime": "Time: {value}",
+  "@carpoolingReserveTime": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveConfirmQuestion": "Do you confirm the seat reservation?",
+  "carpoolingReserveAction": "Reserve",
+  "carpoolingSeatReserved": "Seat reserved successfully",
+  "carpoolingReserveError": "Error reserving",
+  "carpoolingDeleteRideTitle": "Delete ride",
+  "carpoolingDeleteRideConfirm": "Are you sure you want to delete this ride?",
+  "carpoolingRideDeleted": "Ride deleted",
+  "carpoolingDeleteError": "Error deleting",
+  "carpoolingRideUpdated": "Ride updated",
+  "carpoolingRidePublished": "Ride published",
+  "carpoolingSaveError": "Error saving",
+  "carpoolingEditRideTitle": "Edit ride",
+  "carpoolingNewRideTitle": "New ride",
+  "carpoolingAdTypeLabel": "Ad type",
+  "carpoolingOriginLabel": "Origin *",
+  "carpoolingOriginHint": "City or departure point",
+  "carpoolingOriginRequired": "Origin is required",
+  "carpoolingDestinationLabel": "Destination *",
+  "carpoolingDestinationHint": "City or arrival point",
+  "carpoolingDestinationRequired": "Destination is required",
+  "carpoolingDateLabel": "Date *",
+  "carpoolingTimeLabel": "Time *",
+  "carpoolingSeatsLabel": "Available seats *",
+  "carpoolingSeatsRange": "1-8 seats",
+  "carpoolingPricePerSeatLabel": "Price per seat",
+  "carpoolingNotesLabel": "Additional notes",
+  "carpoolingNotesHint": "Meeting point, allowed luggage, etc.",
+  "carpoolingSaving": "Saving...",
+  "carpoolingSaveChanges": "Save changes",
+  "circulosCuidadosTitle": "Care circles",
+  "circulosCuidadosTabMine": "My circles",
+  "circulosCuidadosTabExplore": "Explore",
+  "circulosCuidadosCreate": "Create circle",
+  "circulosCuidadosNoneMine": "You don't belong to any circle yet",
+  "circulosCuidadosExploreAction": "Explore circles",
+  "circulosCuidadosNoneAvailable": "No circles available",
+  "circulosCuidadosUnnamed": "Unnamed circle",
+  "circulosCuidadosMemberChip": "Member",
+  "circulosCuidadosMembersCount": "{count} members",
+  "@circulosCuidadosMembersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "circulosCuidadosJoin": "Join",
+  "circulosCuidadosView": "View",
+  "moduleNotFound": "Module not found",
+  "moduleLoadError": "Error loading module",
+  "commonBack": "Back",
+  "commonErrorTitle": "Error"
 }

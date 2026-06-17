@@ -1488,8 +1488,8 @@
   "bicicletasTabHistory": "Bicicletashistory",
   "bicicletasTabStations": "Bicicletasstations",
   "commonContact": "Commoncontact",
-  "commonDelete": "Commondelete",
-  "commonEdit": "Commonedit",
+  "commonDelete": "Ezabatu",
+  "commonEdit": "Editatu",
   "commonInfo": "Commoninfo",
   "commonMessage": "Commonmessage",
   "commonView": "Commonview",
@@ -1679,7 +1679,6 @@
   "reciclajeCO2Saved": "CO₂ Aurreztua",
   "adminDrawerSectionNavigation": "Nabigazioa",
   "adminDrawerSectionManagement": "Kudeaketa",
-  "adminDrawerManualCustomers": "Eskuzko bezeroak",
   "networkExploreTitle": "Sarea Arakatu",
   "networkExploreSubtitle": "Inguruko komunitateak aurkitu",
   "networkAddCommunityTitle": "Komunitatea Gehitu",
@@ -1741,5 +1740,114 @@
   "adminModulesEnableInWordPress": "Aktibatu moduluak WordPress paneletik",
   "adminModuleScheduledEvents": "Programatutako ekitaldiak",
   "adminModuleActive": "Modulu aktiboa",
-  "adminChartsSectionTitle": "Analitika eta joerak"
+  "adminChartsSectionTitle": "Analitika eta joerak",
+  "clientDashboardMyOrders": "Nire eskaerak",
+  "clientDashboardConsumerGroups": "Kontsumo taldeak",
+  "clientDashboardMyServices": "Nire zerbitzuak",
+  "clientDashboardTimeBank": "Denbora bankua",
+  "clientDashboardMyAds": "Nire iragarkiak",
+  "clientDashboardMarketplace": "Marketplace",
+  "carpoolingTitle": "Partekatutako bidaiak",
+  "carpoolingFilterAll": "Guztiak",
+  "carpoolingFilterOffer": "Bidaia eskaintzen dut",
+  "carpoolingFilterSearch": "Bidaia bila nabil",
+  "carpoolingLoadError": "Errorea bidaiak kargatzean",
+  "carpoolingEmpty": "Ez dago bidaiarik eskuragarri",
+  "carpoolingPublishRide": "Bidaia argitaratu",
+  "carpoolingOfferRide": "Bidaia eskaini",
+  "carpoolingDriverLabel": "Gidaria: {name}",
+  "@carpoolingDriverLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveSeat": "Plaza erreserbatu",
+  "carpoolingNoSeats": "Ez dago plazarik eskuragarri",
+  "carpoolingReserveDialogTitle": "Plaza erreserbatu",
+  "carpoolingReserveOrigin": "Jatorria: {value}",
+  "@carpoolingReserveOrigin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDestination": "Helmuga: {value}",
+  "@carpoolingReserveDestination": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDate": "Data: {value}",
+  "@carpoolingReserveDate": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveTime": "Ordua: {value}",
+  "@carpoolingReserveTime": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveConfirmQuestion": "Plaza baten erreserba berresten duzu?",
+  "carpoolingReserveAction": "Erreserbatu",
+  "carpoolingSeatReserved": "Plaza ondo erreserbatu da",
+  "carpoolingReserveError": "Errorea erreserbatzean",
+  "carpoolingDeleteRideTitle": "Bidaia ezabatu",
+  "carpoolingDeleteRideConfirm": "Ziur zaude bidaia hau ezabatu nahi duzula?",
+  "carpoolingRideDeleted": "Bidaia ezabatuta",
+  "carpoolingDeleteError": "Errorea ezabatzean",
+  "carpoolingRideUpdated": "Bidaia eguneratuta",
+  "carpoolingRidePublished": "Bidaia argitaratuta",
+  "carpoolingSaveError": "Errorea gordetzean",
+  "carpoolingEditRideTitle": "Bidaia editatu",
+  "carpoolingNewRideTitle": "Bidaia berria",
+  "carpoolingAdTypeLabel": "Iragarki mota",
+  "carpoolingOriginLabel": "Jatorria *",
+  "carpoolingOriginHint": "Hiria edo irteera puntua",
+  "carpoolingOriginRequired": "Jatorria nahitaezkoa da",
+  "carpoolingDestinationLabel": "Helmuga *",
+  "carpoolingDestinationHint": "Hiria edo iritsiera puntua",
+  "carpoolingDestinationRequired": "Helmuga nahitaezkoa da",
+  "carpoolingDateLabel": "Data *",
+  "carpoolingTimeLabel": "Ordua *",
+  "carpoolingSeatsLabel": "Plaza eskuragarriak *",
+  "carpoolingSeatsRange": "1-8 plaza",
+  "carpoolingPricePerSeatLabel": "Plaza bakoitzeko prezioa",
+  "carpoolingNotesLabel": "Ohar gehigarriak",
+  "carpoolingNotesHint": "Topagunea, baimendutako ekipajea, etab.",
+  "carpoolingSaving": "Gordetzen...",
+  "carpoolingSaveChanges": "Aldaketak gorde",
+  "circulosCuidadosTitle": "Zaintza zirkuluak",
+  "circulosCuidadosTabMine": "Nire zirkuluak",
+  "circulosCuidadosTabExplore": "Arakatu",
+  "circulosCuidadosCreate": "Zirkulua sortu",
+  "circulosCuidadosNoneMine": "Oraindik ez zara zirkulu batekoa",
+  "circulosCuidadosExploreAction": "Zirkuluak arakatu",
+  "circulosCuidadosNoneAvailable": "Ez dago zirkulurik eskuragarri",
+  "circulosCuidadosUnnamed": "Izenik gabeko zirkulua",
+  "circulosCuidadosMemberChip": "Kidea",
+  "circulosCuidadosMembersCount": "{count} kide",
+  "@circulosCuidadosMembersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "circulosCuidadosJoin": "Sartu",
+  "circulosCuidadosView": "Ikusi",
+  "moduleNotFound": "Ez da modulua aurkitu",
+  "moduleLoadError": "Errorea modulua kargatzean",
+  "commonBack": "Itzuli",
+  "commonErrorTitle": "Errorea"
 }

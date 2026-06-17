@@ -130,28 +130,38 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
 
       if (mounted) {
         setState(() => _guardando = false);
+        final i18n = AppLocalizations.of(context);
 
         if (respuesta.success) {
-          FlavorSnackbar.showSuccess(context, _esEdicion ? 'Viaje actualizado' : 'Viaje publicado');
+          FlavorSnackbar.showSuccess(
+              context,
+              _esEdicion
+                  ? i18n.carpoolingRideUpdated
+                  : i18n.carpoolingRidePublished);
           widget.onViajeCreado();
           Navigator.pop(context);
         } else {
-          FlavorSnackbar.showError(context, respuesta.error ?? 'Error al guardar');
+          FlavorSnackbar.showError(
+              context, respuesta.error ?? i18n.carpoolingSaveError);
         }
       }
     } catch (e) {
       if (mounted) {
         setState(() => _guardando = false);
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(
+            context, AppLocalizations.of(context).commonError(e.toString()));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_esEdicion ? 'Editar viaje' : 'Nuevo viaje'),
+        title: Text(_esEdicion
+            ? i18n.carpoolingEditRideTitle
+            : i18n.carpoolingNewRideTitle),
       ),
       body: Form(
         key: _formKey,
@@ -159,19 +169,20 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             // Tipo de viaje
-            const Text('Tipo de anuncio', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(i18n.carpoolingAdTypeLabel,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             SegmentedButton<String>(
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: 'ofrezco',
-                  label: Text('Ofrezco viaje'),
-                  icon: Icon(Icons.directions_car),
+                  label: Text(i18n.carpoolingFilterOffer),
+                  icon: const Icon(Icons.directions_car),
                 ),
                 ButtonSegment(
                   value: 'busco',
-                  label: Text('Busco viaje'),
-                  icon: Icon(Icons.search),
+                  label: Text(i18n.carpoolingFilterSearch),
+                  icon: const Icon(Icons.search),
                 ),
               ],
               selected: {_tipoViaje},
@@ -184,15 +195,15 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
             // Origen
             TextFormField(
               controller: _origenController,
-              decoration: const InputDecoration(
-                labelText: 'Origen *',
-                hintText: 'Ciudad o punto de salida',
-                prefixIcon: Icon(Icons.trip_origin, color: Colors.green),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.carpoolingOriginLabel,
+                hintText: i18n.carpoolingOriginHint,
+                prefixIcon: const Icon(Icons.trip_origin, color: Colors.green),
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El origen es obligatorio';
+                  return i18n.carpoolingOriginRequired;
                 }
                 return null;
               },
@@ -202,15 +213,15 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
             // Destino
             TextFormField(
               controller: _destinoController,
-              decoration: const InputDecoration(
-                labelText: 'Destino *',
-                hintText: 'Ciudad o punto de llegada',
-                prefixIcon: Icon(Icons.location_on, color: Colors.red),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.carpoolingDestinationLabel,
+                hintText: i18n.carpoolingDestinationHint,
+                prefixIcon: const Icon(Icons.location_on, color: Colors.red),
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El destino es obligatorio';
+                  return i18n.carpoolingDestinationRequired;
                 }
                 return null;
               },
@@ -224,10 +235,10 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
                   child: InkWell(
                     onTap: _seleccionarFecha,
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Fecha *',
-                        prefixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: i18n.carpoolingDateLabel,
+                        prefixIcon: const Icon(Icons.calendar_today),
+                        border: const OutlineInputBorder(),
                       ),
                       child: Text(
                         '${_fechaSeleccionada.day}/${_fechaSeleccionada.month}/${_fechaSeleccionada.year}',
@@ -240,10 +251,10 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
                   child: InkWell(
                     onTap: _seleccionarHora,
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Hora *',
-                        prefixIcon: Icon(Icons.schedule),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: i18n.carpoolingTimeLabel,
+                        prefixIcon: const Icon(Icons.schedule),
+                        border: const OutlineInputBorder(),
                       ),
                       child: Text(
                         '${_horaSeleccionada.hour.toString().padLeft(2, '0')}:${_horaSeleccionada.minute.toString().padLeft(2, '0')}',
@@ -261,19 +272,19 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _plazasController,
-                    decoration: const InputDecoration(
-                      labelText: 'Plazas disponibles *',
-                      prefixIcon: Icon(Icons.event_seat),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: i18n.carpoolingSeatsLabel,
+                      prefixIcon: const Icon(Icons.event_seat),
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Requerido';
+                        return i18n.commonRequired;
                       }
                       final num = int.tryParse(value);
                       if (num == null || num < 1 || num > 8) {
-                        return '1-8 plazas';
+                        return i18n.carpoolingSeatsRange;
                       }
                       return null;
                     },
@@ -283,11 +294,11 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _precioController,
-                    decoration: const InputDecoration(
-                      labelText: 'Precio por plaza',
-                      prefixIcon: Icon(Icons.euro),
+                    decoration: InputDecoration(
+                      labelText: i18n.carpoolingPricePerSeatLabel,
+                      prefixIcon: const Icon(Icons.euro),
                       suffixText: '€',
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
@@ -299,11 +310,11 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
             // Notas
             TextFormField(
               controller: _notasController,
-              decoration: const InputDecoration(
-                labelText: 'Notas adicionales',
-                hintText: 'Punto de encuentro, equipaje permitido, etc.',
-                prefixIcon: Icon(Icons.notes),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.carpoolingNotesLabel,
+                hintText: i18n.carpoolingNotesHint,
+                prefixIcon: const Icon(Icons.notes),
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -316,8 +327,10 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
                   ? const FlavorInlineSpinner()
                   : const Icon(Icons.check),
               label: Text(_guardando
-                  ? 'Guardando...'
-                  : (_esEdicion ? 'Guardar cambios' : 'Publicar viaje')),
+                  ? i18n.carpoolingSaving
+                  : (_esEdicion
+                      ? i18n.carpoolingSaveChanges
+                      : i18n.carpoolingPublishRide)),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

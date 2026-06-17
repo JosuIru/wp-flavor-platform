@@ -17,15 +17,22 @@ class _ModuleClientDashboardScreenState
     extends ConsumerState<ModuleClientDashboardScreen> {
   late Future<List<_DashboardMetric>> _metricsFuture;
 
+  bool _metricsInitialized = false;
+
   @override
-  void initState() {
-    super.initState();
-    _metricsFuture = _loadMetrics(ref.read(apiClientProvider));
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_metricsInitialized) {
+      _metricsInitialized = true;
+      _metricsFuture =
+          _loadMetrics(ref.read(apiClientProvider), AppLocalizations.of(context));
+    }
   }
 
   void _reloadMetrics() {
     setState(() {
-      _metricsFuture = _loadMetrics(ref.read(apiClientProvider));
+      _metricsFuture =
+          _loadMetrics(ref.read(apiClientProvider), AppLocalizations.of(context));
     });
   }
 
@@ -80,15 +87,18 @@ class _ModuleClientDashboardScreenState
     );
   }
 
-  Future<List<_DashboardMetric>> _loadMetrics(ApiClient api) async {
+  Future<List<_DashboardMetric>> _loadMetrics(
+    ApiClient api,
+    AppLocalizations i18n,
+  ) async {
     final results = <_DashboardMetric>[];
 
     final pedidos = await api.getGruposConsumoMisPedidos();
     if (pedidos.success && pedidos.data != null) {
       final list = (pedidos.data!['data'] as List<dynamic>? ?? []);
       results.add(_DashboardMetric(
-        title: 'Mis pedidos',
-        subtitle: 'Grupos de Consumo',
+        title: i18n.clientDashboardMyOrders,
+        subtitle: i18n.clientDashboardConsumerGroups,
         value: list.length.toString(),
         icon: Icons.shopping_basket_outlined,
       ));
@@ -98,8 +108,8 @@ class _ModuleClientDashboardScreenState
     if (servicios.success && servicios.data != null) {
       final list = (servicios.data!['servicios'] as List<dynamic>? ?? []);
       results.add(_DashboardMetric(
-        title: 'Mis servicios',
-        subtitle: 'Banco de Tiempo',
+        title: i18n.clientDashboardMyServices,
+        subtitle: i18n.clientDashboardTimeBank,
         value: list.length.toString(),
         icon: Icons.volunteer_activism,
       ));
@@ -109,8 +119,8 @@ class _ModuleClientDashboardScreenState
     if (anuncios.success && anuncios.data != null) {
       final list = (anuncios.data!['anuncios'] as List<dynamic>? ?? []);
       results.add(_DashboardMetric(
-        title: 'Mis anuncios',
-        subtitle: 'Marketplace',
+        title: i18n.clientDashboardMyAds,
+        subtitle: i18n.clientDashboardMarketplace,
         value: list.length.toString(),
         icon: Icons.storefront_outlined,
       ));

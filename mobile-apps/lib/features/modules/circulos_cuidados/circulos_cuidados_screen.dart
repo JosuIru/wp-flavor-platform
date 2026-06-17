@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/flavor_snackbar.dart';
@@ -47,15 +48,16 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Circulos de Cuidados'),
-          bottom: const TabBar(
+          title: Text(i18n.circulosCuidadosTitle),
+          bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.people), text: 'Mis Circulos'),
-              Tab(icon: Icon(Icons.explore), text: 'Explorar'),
+              Tab(icon: const Icon(Icons.people), text: i18n.circulosCuidadosTabMine),
+              Tab(icon: const Icon(Icons.explore), text: i18n.circulosCuidadosTabExplore),
             ],
           ),
         ),
@@ -68,22 +70,23 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _crearCirculo,
           icon: const Icon(Icons.add),
-          label: const Text('Crear circulo'),
+          label: Text(i18n.circulosCuidadosCreate),
         ),
       ),
     );
   }
 
   Widget _buildMisCirculos() {
+    final i18n = AppLocalizations.of(context);
     if (_isLoading) return const FlavorLoadingState();
 
     if (_misCirculos.isEmpty) {
       return FlavorEmptyState(
         icon: Icons.favorite_border,
-        title: 'Aun no perteneces a ningun circulo',
+        title: i18n.circulosCuidadosNoneMine,
         action: TextButton(
           onPressed: () => DefaultTabController.of(context).animateTo(1),
-          child: const Text('Explorar circulos'),
+          child: Text(i18n.circulosCuidadosExploreAction),
         ),
       );
     }
@@ -99,12 +102,13 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
   }
 
   Widget _buildExplorarCirculos() {
+    final i18n = AppLocalizations.of(context);
     if (_isLoading) return const FlavorLoadingState();
 
     if (_circulos.isEmpty) {
-      return const FlavorEmptyState(
+      return FlavorEmptyState(
         icon: Icons.search_off,
-        title: 'No hay circulos disponibles',
+        title: i18n.circulosCuidadosNoneAvailable,
       );
     }
 
@@ -119,7 +123,8 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
   }
 
   Widget _buildCirculoCard(Map<String, dynamic> circulo, {bool esMiembro = false}) {
-    final nombre = circulo['nombre'] ?? 'Circulo sin nombre';
+    final i18n = AppLocalizations.of(context);
+    final nombre = circulo['nombre'] ?? i18n.circulosCuidadosUnnamed;
     final descripcion = circulo['descripcion'] ?? '';
     final miembros = circulo['total_miembros'] ?? 0;
     final tipo = circulo['tipo'] ?? '';
@@ -151,7 +156,7 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
                 ),
                 if (esMiembro)
                   Chip(
-                    label: const Text('Miembro'),
+                    label: Text(i18n.circulosCuidadosMemberChip),
                     backgroundColor: Colors.green.shade100,
                     labelStyle: TextStyle(color: Colors.green.shade700, fontSize: 12),
                   ),
@@ -166,7 +171,10 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
               children: [
                 Icon(Icons.group, size: 16, color: Colors.grey.shade500),
                 const SizedBox(width: 4),
-                Text('$miembros miembros', style: TextStyle(color: Colors.grey.shade600)),
+                Text(
+                    i18n.circulosCuidadosMembersCount(
+                        int.tryParse(miembros.toString()) ?? 0),
+                    style: TextStyle(color: Colors.grey.shade600)),
                 if (proximaReunion.isNotEmpty) ...[
                   const SizedBox(width: 16),
                   Icon(Icons.event, size: 16, color: Colors.grey.shade500),
@@ -177,12 +185,12 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
                 if (!esMiembro)
                   TextButton(
                     onPressed: () => _unirseCirculo(circulo),
-                    child: const Text('Unirse'),
+                    child: Text(i18n.circulosCuidadosJoin),
                   )
                 else
                   TextButton(
                     onPressed: () => _verCirculo(circulo),
-                    child: const Text('Ver'),
+                    child: Text(i18n.circulosCuidadosView),
                   ),
               ],
             ),
