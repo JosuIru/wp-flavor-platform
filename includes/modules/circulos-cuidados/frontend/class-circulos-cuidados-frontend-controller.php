@@ -106,6 +106,9 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         add_action('wp_ajax_flavor_circulos_confirmar_horas', [$this, 'ajax_confirmar_horas']);
         add_action('wp_ajax_flavor_circulos_obtener', [$this, 'ajax_obtener_circulos']);
         add_action('wp_ajax_nopriv_flavor_circulos_obtener', [$this, 'ajax_obtener_circulos']);
+        add_action('wp_ajax_flavor_circulos_obtener_mapa', [$this, 'ajax_obtener_mapa']);
+        add_action('wp_ajax_nopriv_flavor_circulos_obtener_mapa', [$this, 'ajax_obtener_mapa']);
+        add_action('wp_ajax_flavor_circulos_salir', [$this, 'ajax_salir']);
 
         // Dashboard tabs
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tabs']);
@@ -1206,6 +1209,100 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ");
 
         wp_send_json_success(['circulos' => $circulos]);
+    }
+
+    /**
+     * AJAX: Datos para el mapa de círculos
+     *
+     * Devuelve los círculos activos con sus coordenadas para que el JS pinte los
+     * marcadores Leaflet (espera circulos[].latitud, .longitud, .nombre, .tipo, .url).
+     *
+     * Lectura pública (el JS no envía nonce y se registra también para nopriv), por
+     * lo que no se exige nonce; solo se exponen círculos activos.
+     */
+    public function ajax_obtener_mapa() {
+        // Defensivo: si las tablas aún no existen, devolvemos lista vacía en vez de
+        // un fatal por tabla inexistente.
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_circulos)) {
+            wp_send_json_success(['circulos' => []]);
+        }
+
+        global $wpdb;
+
+        $filas = $wpdb->get_results("
+            SELECT c.id, c.nombre, c.tipo, c.latitud, c.longitud
+            FROM {$this->tabla_circulos} c
+            WHERE c.estado = 'activo'
+              AND c.latitud IS NOT NULL
+              AND c.longitud IS NOT NULL
+            ORDER BY c.fecha_creacion DESC
+            LIMIT 200
+        ");
+
+        $circulos = [];
+        foreach ($filas as $fila) {
+            $tipo_info = $this->tipos_circulo[$fila->tipo] ?? ['nombre' => $fila->tipo];
+            $circulos[] = [
+                'id'       => (int) $fila->id,
+                'nombre'   => $fila->nombre,
+                'tipo'     => $tipo_info['nombre'],
+                'latitud'  => (float) $fila->latitud,
+                'longitud' => (float) $fila->longitud,
+                'url'      => add_query_arg('circulo_id', (int) $fila->id, remove_query_arg('circulo_id')),
+            ];
+        }
+
+        wp_send_json_success(['circulos' => $circulos]);
+    }
+
+    /**
+     * AJAX: Salir de un círculo
+     *
+     * El usuario abandona un círculo del que es miembro. Solo puede afectar a su
+     * propia membresía (verificación de propiedad por usuario_id, evita IDOR).
+     * Marcamos la fila como 'inactivo' en lugar de borrarla para preservar el
+     * histórico de horas/aportaciones asociado.
+     */
+    public function ajax_salir() {
+        check_ajax_referer('flavor_circulos_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $circulo_id = absint($_POST['circulo_id'] ?? 0);
+        $usuario_id = get_current_user_id();
+
+        if (!$circulo_id) {
+            wp_send_json_error(['message' => __('Círculo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_miembros)) {
+            wp_send_json_error(['message' => __('El sistema de círculos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (!$this->es_miembro($circulo_id, $usuario_id)) {
+            wp_send_json_error(['message' => __('No formas parte de este círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+
+        // Solo afecta a la membresía propia: el WHERE incluye usuario_id.
+        $resultado = $wpdb->update(
+            $this->tabla_miembros,
+            ['estado' => 'inactivo'],
+            ['circulo_id' => $circulo_id, 'usuario_id' => $usuario_id, 'estado' => 'activo'],
+            ['%s'],
+            ['%d', '%d', '%s']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(['message' => __('Error al salir del círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        wp_send_json_success([
+            'message' => __('Has salido del círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
     }
 
     // =========================================================
