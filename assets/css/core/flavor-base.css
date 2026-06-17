@@ -81,14 +81,14 @@
    DARK MODE - Ajustes especificos de componentes
    ========================================================================== */
 
-/* Cards en dark mode */
+/* Cards en dark mode (solo activación explícita; el auto-dark por SO se
+   retiró a propósito). La regla anterior era CSS inválido —mezclaba una
+   lista de selectores con un @media tras una coma— y el navegador la
+   descartaba entera, dejando las cards sin fondo oscuro en dark mode. */
 [data-theme="dark"] .flavor-card,
-.flavor-dark .flavor-card,
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]):not(.flavor-light) .flavor-card {
-        background: var(--flavor-card-dark);
-        border-color: var(--flavor-border-dark);
-    }
+.flavor-dark .flavor-card {
+    background: var(--flavor-card-dark);
+    border-color: var(--flavor-border-dark);
 }
 
 [data-theme="dark"] .flavor-card--flat,
