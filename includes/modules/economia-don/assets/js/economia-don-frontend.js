@@ -71,7 +71,7 @@
             var btnText = $btn.html();
 
             var formData = new FormData($form[0]);
-            formData.append('action', 'flavor_economia_don_ofrecer');
+            formData.append('action', 'flavor_don_ofrecer');
 
             $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + this.config.strings.procesando);
 
@@ -119,7 +119,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'flavor_economia_don_solicitar',
+                    action: 'flavor_don_solicitar',
                     nonce: this.config.nonce,
                     don_id: donId,
                     mensaje: mensaje
@@ -158,7 +158,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'flavor_economia_don_confirmar_entrega',
+                    action: 'flavor_don_confirmar_entrega',
                     nonce: this.config.nonce,
                     don_id: donId,
                     receptor_id: receptorId
@@ -193,7 +193,7 @@
             $.ajax({
                 url: this.config.ajaxUrl,
                 type: 'POST',
-                data: $form.serialize() + '&action=flavor_economia_don_agradecer',
+                data: $form.serialize() + '&action=flavor_don_agradecer',
                 success: function(response) {
                     if (response.success) {
                         FlavorEconomiaDon.showNotice(response.data.message, 'success');

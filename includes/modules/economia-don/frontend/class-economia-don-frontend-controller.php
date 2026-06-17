@@ -150,7 +150,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             true
         );
 
-        wp_localize_script('flavor-economia-don-frontend', 'flavorDonConfig', [
+        wp_localize_script('flavor-economia-don-frontend', 'flavorEconomiaDonConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_don_nonce'),
             'strings' => [

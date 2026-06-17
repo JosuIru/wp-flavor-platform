@@ -570,7 +570,7 @@
             url: this.ajaxurl,
             type: 'GET',
             data: {
-                action: 'flavor_chat_interno_conversaciones',
+                action: 'flavor_platform_chat_interno_conversaciones',
                 nonce: this.nonce,
                 archivadas: incluirArchivadas ? 1 : 0,
             },
@@ -712,7 +712,7 @@
         const container = $('#ci-mensajes');
 
         const params = {
-            action: 'flavor_chat_interno_mensajes',
+            action: 'flavor_platform_chat_interno_mensajes',
             nonce: this.nonce,
             conversacion_id: conversacionId,
             limite: 50,
@@ -1091,7 +1091,7 @@
         btnEnviar.prop('disabled', true);
 
         const datos = {
-            action: 'flavor_chat_interno_enviar',
+            action: 'flavor_platform_chat_interno_enviar',
             nonce: this.nonce,
             conversacion_id: this.conversacionActual,
             mensaje: mensaje,
@@ -1250,7 +1250,7 @@
             url: this.ajaxurl,
             type: 'GET',
             data: {
-                action: 'flavor_chat_interno_usuarios',
+                action: 'flavor_platform_chat_interno_usuarios',
                 nonce: this.nonce,
                 query: query,
             },
@@ -1323,7 +1323,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_iniciar',
+                action: 'flavor_platform_chat_interno_iniciar',
                 nonce: this.nonce,
                 usuario_id: usuarioId,
                 mensaje: mensajeInicial,
@@ -1381,7 +1381,7 @@
 
         const self = this;
         const pollData = {
-            action: 'flavor_chat_interno_poll',
+            action: 'flavor_platform_chat_interno_poll',
             nonce: this.nonce,
             conversacion_id: this.conversacionActual,
             ultimo_mensaje_id: this.lastMessageId,
@@ -1489,7 +1489,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_typing',
+                action: 'flavor_platform_chat_interno_typing',
                 nonce: this.nonce,
                 conversacion_id: this.conversacionActual,
                 escribiendo: escribiendo ? 1 : 0,
@@ -1567,7 +1567,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_eliminar_msg',
+                action: 'flavor_platform_chat_interno_eliminar_msg',
                 nonce: this.nonce,
                 mensaje_id: mensajeId,
                 para_todos: 1,
@@ -1649,7 +1649,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_editar_msg',
+                action: 'flavor_platform_chat_interno_editar_msg',
                 nonce: this.nonce,
                 mensaje_id: mensajeId,
                 mensaje: nuevoTexto,
@@ -1710,7 +1710,7 @@
         const self = this;
         const formData = new FormData();
 
-        formData.append('action', 'flavor_chat_interno_upload');
+        formData.append('action', 'flavor_platform_chat_interno_upload');
         formData.append('nonce', this.nonce);
         formData.append('file', file);
 
@@ -1753,7 +1753,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_enviar',
+                action: 'flavor_platform_chat_interno_enviar',
                 nonce: this.nonce,
                 conversacion_id: this.conversacionActual,
                 mensaje: archivo.nombre,
@@ -1820,7 +1820,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_archivar',
+                action: 'flavor_platform_chat_interno_archivar',
                 nonce: this.nonce,
                 conversacion_id: this.conversacionActual,
                 archivar: 1,
@@ -1847,7 +1847,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_silenciar',
+                action: 'flavor_platform_chat_interno_silenciar',
                 nonce: this.nonce,
                 conversacion_id: this.conversacionActual,
                 silenciar: silenciar ? 1 : 0,
@@ -1897,7 +1897,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_bloquear',
+                action: 'flavor_platform_chat_interno_bloquear',
                 nonce: this.nonce,
                 // Necesitamos obtener el usuario_id del otro participante
                 conversacion_id: this.conversacionActual,
@@ -2260,7 +2260,7 @@
             url: this.ajaxurl,
             type: 'POST',
             data: {
-                action: 'flavor_chat_interno_estado',
+                action: 'flavor_platform_chat_interno_estado',
                 nonce: this.nonce,
             }
         });
