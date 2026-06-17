@@ -237,6 +237,8 @@ class Flavor_Frontend_Assets {
 
         // Lista de shortcodes a detectar (una sola regex)
         $shortcodes = [
+            'flavor',        // shortcode universal [flavor module="..." view="..."]
+            'flavor_view',   // alias del universal
             'flavor_module_listing',
             'flavor_module_form',
             'flavor_module_detail',
