@@ -22,6 +22,34 @@
  *       }
  *   }
  *
+ * -----------------------------------------------------------------------------
+ * PATRÓN DE ADOPCIÓN (chrome admin común)
+ * -----------------------------------------------------------------------------
+ * Objetivo: unificar la cabecera/stats/tabs de las páginas admin de los módulos
+ * bajo las clases `fmod-*` en vez de marcado ad-hoc (`<div class="wrap"><h1>...`).
+ *
+ * Migración mecánica y de bajo riesgo (recomendada por pasos):
+ *   1. Añadir `use Flavor_Module_Admin_UI_Trait;` en la clase del módulo.
+ *   2. Sustituir SOLO el bloque de cabecera (`<h1>...</h1>` y, si existe, la
+ *      fila de estadísticas) por una llamada a `render_ui_page_header()`.
+ *      NO tocar el contenido de las pestañas ni la lógica de datos.
+ *   3. Opcional: reemplazar grids de métricas por `render_stats_grid()`.
+ *
+ * Notas importantes:
+ *   - `render_ui_page_header()` lee `$this->icon` de forma defensiva
+ *     (`!empty($this->icon)`), por lo que es seguro aunque el módulo no
+ *     declare la propiedad: simplemente no se pinta el icono.
+ *   - Los estilos van inline en cada helper, así que no hay dependencias de
+ *     enqueue: el trait funciona aislado en cualquier página admin.
+ *   - Es retrocompatible: migrar un módulo no afecta a los demás.
+ *
+ * Ejemplo vivo de referencia (cabecera migrada):
+ *   includes/modules/bug-tracker/class-bug-tracker-module.php
+ *   -> Flavor_Bug_Tracker_Module::render_pagina_admin()
+ *
+ * No se migran los 70 módulos de golpe (riesgo alto y bajo retorno): se adopta
+ * de forma incremental cuando se toca la página admin de cada módulo.
+ *
  * @package FlavorPlatform
  * @subpackage Modules
  * @since 4.2.0

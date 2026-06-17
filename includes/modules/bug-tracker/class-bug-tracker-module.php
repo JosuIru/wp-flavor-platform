@@ -788,7 +788,11 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap flavor-bug-tracker-admin">
-            <h1><?php esc_html_e('Bug Tracker', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+            <?php
+            // Chrome admin común: cabecera unificada vía Flavor_Module_Admin_UI_Trait.
+            // Ejemplo de referencia para migrar otros módulos al patrón fmod-*.
+            $this->render_ui_page_header(__('Bug Tracker', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            ?>
 
             <nav class="nav-tab-wrapper">
                 <a href="?page=flavor-bug-tracker&tab=lista" class="nav-tab <?php echo $tab_actual === 'lista' ? 'nav-tab-active' : ''; ?>">

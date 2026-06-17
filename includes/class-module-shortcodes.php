@@ -54,6 +54,14 @@ class Flavor_Module_Shortcodes {
         add_action('init', [$this, 'register_module_shortcodes'], 20);
         add_action('init', [$this, 'register_specific_shortcodes'], 21);
 
+        // Coherencia de prefijos: tras registrar todos los shortcodes de
+        // módulos (los controladores lo hacen en init@10 y esta clase en
+        // init@20-21), genera un alias canónico `flavor_<tag>` para cada
+        // shortcode "bare" (sin prefijo flavor_). NO elimina el tag antiguo:
+        // ambos quedan disponibles (retrocompatibilidad total).
+        // Prioridad 99 para correr después de cualquier registro de módulo.
+        add_action('init', [$this, 'register_flavor_aliases'], 99);
+
         // Shortcodes adicionales
         add_shortcode('flavor_module_form', [$this, 'render_module_form']);
         add_shortcode('flavor_module_listing', [$this, 'render_module_listing']);
@@ -75,6 +83,85 @@ class Flavor_Module_Shortcodes {
         add_action('wp_ajax_nopriv_flavor_get_calendar_events', [$this, 'ajax_get_calendar_events']);
         add_action('wp_ajax_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
         add_action('wp_ajax_nopriv_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
+    }
+
+    /**
+     * Shortcodes de WordPress (core/embeds) que NO deben aliasarse.
+     *
+     * El alias `flavor_<tag>` vive en nuestro espacio de nombres, así que
+     * aliasar uno de estos sería inofensivo pero ruidoso. Los excluimos para
+     * mantener el set de aliases limitado a shortcodes de la plataforma.
+     */
+    private const CORE_SHORTCODES_NO_ALIAS = [
+        'wp_caption', 'caption', 'gallery', 'playlist', 'audio', 'video',
+        'embed', 'wp_video', 'wp_audio_shortcode', 'wp_video_shortcode',
+    ];
+
+    /**
+     * Registra un alias canónico `flavor_<tag>` para cada shortcode "bare".
+     *
+     * Recorre el registro global de shortcodes de WordPress y, para cada tag
+     * que NO empiece por `flavor_`, registra un alias `flavor_<tag>` apuntando
+     * al MISMO callback. El tag original se conserva intacto (retrocompat).
+     *
+     * Idempotente: si el alias ya existe (porque un módulo ya expone su forma
+     * `flavor_*`, p.ej. circulos-cuidados), no se sobreescribe.
+     *
+     * Se engancha en init@99, después de que todos los módulos registren sus
+     * shortcodes. Para módulos cargados de forma diferida tras `init`, el
+     * loader vuelve a llamar a register_shortcodes(); en ese flujo este método
+     * puede re-ejecutarse de forma segura (idempotente) si se invoca de nuevo.
+     *
+     * @return void
+     */
+    public function register_flavor_aliases() {
+        if (empty($GLOBALS['shortcode_tags']) || !is_array($GLOBALS['shortcode_tags'])) {
+            return;
+        }
+
+        // Copia de las claves: vamos a añadir entradas mientras iteramos, así
+        // que congelamos la lista de tags existentes antes del bucle.
+        $tags_existentes = array_keys($GLOBALS['shortcode_tags']);
+
+        $aliases_creados = 0;
+
+        foreach ($tags_existentes as $tag) {
+            if (!is_string($tag) || $tag === '') {
+                continue;
+            }
+
+            // Ya tiene la forma canónica.
+            if (strpos($tag, 'flavor_') === 0) {
+                continue;
+            }
+
+            // No tocar shortcodes de WordPress core/embeds.
+            if (in_array($tag, self::CORE_SHORTCODES_NO_ALIAS, true)) {
+                continue;
+            }
+
+            $alias = 'flavor_' . $tag;
+
+            // No sobreescribir un alias ya existente (un módulo puede haber
+            // registrado su propia forma flavor_*).
+            if (shortcode_exists($alias)) {
+                continue;
+            }
+
+            // El alias apunta al MISMO callback que el tag original. Tomamos
+            // la referencia directamente del registro global para preservar
+            // closures, [obj, metodo] y callables de forma transparente.
+            $callback = $GLOBALS['shortcode_tags'][$tag];
+            add_shortcode($alias, $callback);
+            $aliases_creados++;
+        }
+
+        if ($aliases_creados > 0 && function_exists('flavor_platform_log')) {
+            flavor_platform_log(
+                "Aliases flavor_ de shortcodes registrados: {$aliases_creados}",
+                'debug'
+            );
+        }
     }
 
     /**
