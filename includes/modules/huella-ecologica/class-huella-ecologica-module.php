@@ -518,7 +518,7 @@ class Flavor_Platform_Huella_Ecologica_Module extends Flavor_Platform_Module_Bas
             || has_shortcode($post->post_content, 'flavor_huella_logros')
             || has_shortcode($post->post_content, 'flavor_huella_comunidad')
             || has_shortcode($post->post_content, 'flavor_huella_proyectos')
-            || strpos($_SERVER['REQUEST_URI'], '/huella-ecologica') !== false;
+            || strpos($_SERVER['REQUEST_URI'] ?? '', '/huella-ecologica') !== false;
     }
 
     /**

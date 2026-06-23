@@ -3049,6 +3049,27 @@ $datos_json = wp_json_encode( $datos );
             return -1;
         }
 
+        // Persiste el estado en el servidor ANTES de recargar el iframe.
+        // El iframe se re-renderiza desde el meta GUARDADO del post; si se
+        // confiara solo en el autosave (debounce de 3s), el refresh mostraría
+        // datos obsoletos y el cambio estructural (mover/duplicar/borrar/soltar)
+        // se revertiría visualmente hasta el siguiente guardado manual.
+        function guardarYRefrescarIframe() {
+            function refrescar() {
+                var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
+                if (frameIframe && frameIframe.contentWindow && frameIframe.contentWindow.vbpIframeCanvas) {
+                    frameIframe.contentWindow.vbpIframeCanvas.refresh();
+                }
+            }
+            var storeVbp = obtenerStoreAlpine();
+            if (storeVbp && typeof storeVbp.saveDocument === 'function') {
+                storeVbp.saveDocument({ force: true }).then(refrescar).catch(refrescar);
+            } else {
+                // Sin store accesible: se conserva el comportamiento anterior.
+                setTimeout(refrescar, 150);
+            }
+        }
+
         function ejecutarAccionHandles(nombreAccion) {
             if (!idElementoSeleccionadoHost) return;
             var storeVbp = obtenerStoreAlpine();
@@ -3068,12 +3089,11 @@ $datos_json = wp_json_encode( $datos );
                         ocultarHandles();
                     }
                 }
-                // Move/duplicate/delete estructurales requieren refresh completo del iframe
+                // Move/duplicate/delete estructurales requieren refresh completo
+                // del iframe, pero solo tras persistir el estado (evita el revert
+                // visual por la ventana de autosave de 3s).
                 if (nombreAccion === 'move-up' || nombreAccion === 'move-down' || nombreAccion === 'duplicate' || nombreAccion === 'delete') {
-                    var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
-                    if (frameIframe && frameIframe.contentWindow && frameIframe.contentWindow.vbpIframeCanvas) {
-                        setTimeout(function () { frameIframe.contentWindow.vbpIframeCanvas.refresh(); }, 100);
-                    }
+                    guardarYRefrescarIframe();
                 }
             } catch (errorAccion) {
                 console.warn('[vbp-iframe-host] error ejecutando accion:', nombreAccion, errorAccion);
@@ -3166,13 +3186,9 @@ $datos_json = wp_json_encode( $datos );
                     console.warn('[vbp-iframe-host] error al insertar bloque:', errorAdd);
                     return;
                 }
-                // Estructura cambio, refrescar iframe completo
-                var frameIframe = document.getElementById('vbp-iframe-canvas-frame');
-                setTimeout(function () {
-                    if (frameIframe && frameIframe.contentWindow && frameIframe.contentWindow.vbpIframeCanvas) {
-                        frameIframe.contentWindow.vbpIframeCanvas.refresh();
-                    }
-                }, 150);
+                // Estructura cambió: persistir y luego refrescar el iframe
+                // (evita que el reload muestre el estado previo al drop).
+                guardarYRefrescarIframe();
             },
 
             // Fuerza al bridge a recomputar el rect del elemento actual

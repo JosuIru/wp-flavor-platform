@@ -111,7 +111,9 @@ class Flavor_VBP_Loader {
             'class-vbp-global-styles.php',
             'class-vbp-plugin-system.php',
             'class-vbp-figma-tokens.php',
-            'class-vbp-claude-api.php',
+            // class-vbp-claude-api.php: eliminado. Era un duplicado obsoleto del core
+            // (includes/api/class-vbp-claude-api.php) con guarda class_exists -> nunca
+            // se cargaba (código muerto). La clase Flavor_VBP_Claude_API la provee el core.
             'class-vbp-code-components.php',
             'ai/class-vbp-ai-content.php',
             'ai/class-vbp-ai-layout.php',

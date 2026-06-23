@@ -403,7 +403,7 @@ class Flavor_Auto_Reply_Suggester {
             $log = array_slice($log, -100);
         }
 
-        update_option('flavor_suggestion_log', $log);
+        update_option('flavor_suggestion_log', $log, false);
     }
 
     /**

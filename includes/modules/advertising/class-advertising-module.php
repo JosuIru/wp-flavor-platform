@@ -1082,7 +1082,7 @@ class Flavor_Platform_Advertising_Module extends Flavor_Platform_Module_Base {
             'datos' => [
                 'ad_id' => $post_id,
                 'titulo' => $titulo,
-                'anunciante' => get_userdata($usuario_id)->display_name,
+                'anunciante' => Flavor_Platform_Helpers::nombre_usuario($usuario_id),
             ],
         ]);
 

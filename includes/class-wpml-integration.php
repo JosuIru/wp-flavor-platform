@@ -56,7 +56,7 @@ class Flavor_WPML_Integration {
         $this->wpml_active = defined('ICL_SITEPRESS_VERSION') || class_exists('SitePress');
 
         if ($this->wpml_active) {
-            flavor_platform_log('WPML detectado y activo', 'info');
+            flavor_platform_log('WPML detectado y activo', 'debug');
         }
     }
 
@@ -97,7 +97,7 @@ class Flavor_WPML_Integration {
             $this->current_language = get_locale();
         }
 
-        flavor_platform_log('Idioma detectado: ' . $this->current_language, 'info');
+        flavor_platform_log('Idioma detectado: ' . $this->current_language, 'debug');
     }
 
     /**

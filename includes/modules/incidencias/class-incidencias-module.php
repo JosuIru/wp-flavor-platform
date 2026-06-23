@@ -683,6 +683,7 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
                 if (!mapEl) {
                     return;
                 }
+                function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>\"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[caracter];});}
                 var map = L.map(mapEl).setView([$centro_lat, $centro_lng], $zoom);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -692,9 +693,9 @@ class Flavor_Platform_Incidencias_Module extends Flavor_Platform_Module_Base {
                 data.forEach(function(item) {
                     if (!item.lat || !item.lng) return;
                     var marker = L.marker([item.lat, item.lng]).addTo(map);
-                    var popup = '<strong>' + (item.numero || '') + '</strong><br>' +
-                        (item.titulo || '') + '<br>' +
-                        (item.estado || '') + (item.direccion ? '<br>' + item.direccion : '');
+                    var popup = '<strong>' + escHtml(item.numero || '') + '</strong><br>' +
+                        escHtml(item.titulo || '') + '<br>' +
+                        escHtml(item.estado || '') + (item.direccion ? '<br>' + escHtml(item.direccion) : '');
                     marker.bindPopup(popup);
                 });
             });

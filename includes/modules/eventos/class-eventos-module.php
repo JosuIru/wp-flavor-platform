@@ -418,6 +418,48 @@ class Flavor_Platform_Eventos_Module extends Flavor_Platform_Module_Base {
     // =========================================================================
 
     /**
+     * Devuelve los eventos publicados en formato FullCalendar.
+     *
+     * Lo consume el feed AJAX universal (flavor_get_calendar_events) que usa el
+     * calendario de los shortcodes [eventos_calendario] / [flavor view=calendario].
+     *
+     * @return array Lista de eventos con claves title/start/end/url.
+     */
+    public function get_calendar_events() {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_eventos)) {
+            return [];
+        }
+
+        $filas = $wpdb->get_results(
+            "SELECT id, titulo, fecha_inicio, fecha_fin
+             FROM {$tabla_eventos}
+             WHERE estado = 'publicado' AND fecha_inicio IS NOT NULL
+             ORDER BY fecha_inicio ASC
+             LIMIT 500"
+        );
+
+        if (empty($filas)) {
+            return [];
+        }
+
+        $eventos = [];
+        foreach ($filas as $fila) {
+            $eventos[] = [
+                'id'    => (int) $fila->id,
+                'title' => (string) $fila->titulo,
+                'start' => mysql2date('c', $fila->fecha_inicio),
+                'end'   => !empty($fila->fecha_fin) ? mysql2date('c', $fila->fecha_fin) : null,
+                'url'   => Flavor_Platform_Helpers::get_item_url('eventos', (int) $fila->id),
+            ];
+        }
+
+        return $eventos;
+    }
+
+    /**
      * Renderiza el tab de proximos eventos
      *
      * @param int $usuario_id ID del usuario actual

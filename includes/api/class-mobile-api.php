@@ -2126,6 +2126,223 @@ class Chat_IA_Mobile_API {
         return new WP_Error('admin_chat_unavailable', 'Chat admin no disponible', ['status' => 500]);
     }
 
+    /**
+     * Lista los chats escalados (solicitudes de atención humana).
+     *
+     * Consulta la tabla flavor_chat_escalations unida a flavor_chat_conversations.
+     * Soporta filtro opcional por estado (?status=pending|contacted|resolved).
+     */
+    public function get_escalated_chats($request) {
+        global $wpdb;
+
+        $tabla_escalaciones = $wpdb->prefix . 'flavor_chat_escalations';
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_escalaciones)) {
+            return rest_ensure_response([
+                'success' => true,
+                'escalations' => [],
+                'total' => 0,
+                'notice' => 'No hay chats escalados aún',
+            ]);
+        }
+
+        $estado_filtro = sanitize_text_field($request->get_param('status'));
+        $estados_validos = ['pending', 'contacted', 'resolved'];
+
+        if ($estado_filtro && in_array($estado_filtro, $estados_validos, true)) {
+            $resultados = $wpdb->get_results($wpdb->prepare(
+                "SELECT e.id, e.conversation_id, e.reason, e.summary, e.contact_method,
+                        e.status, e.created_at, e.resolved_at, e.notes,
+                        c.session_id, c.started_at AS conversation_started
+                 FROM {$tabla_escalaciones} e
+                 LEFT JOIN {$tabla_conversaciones} c ON e.conversation_id = c.id
+                 WHERE e.status = %s
+                 ORDER BY e.created_at DESC",
+                $estado_filtro
+            ), ARRAY_A);
+        } else {
+            $resultados = $wpdb->get_results(
+                "SELECT e.id, e.conversation_id, e.reason, e.summary, e.contact_method,
+                        e.status, e.created_at, e.resolved_at, e.notes,
+                        c.session_id, c.started_at AS conversation_started
+                 FROM {$tabla_escalaciones} e
+                 LEFT JOIN {$tabla_conversaciones} c ON e.conversation_id = c.id
+                 ORDER BY e.created_at DESC",
+                ARRAY_A
+            );
+        }
+
+        $escalaciones = is_array($resultados) ? $resultados : [];
+
+        return rest_ensure_response([
+            'success' => true,
+            'escalations' => $escalaciones,
+            'total' => count($escalaciones),
+        ]);
+    }
+
+    /**
+     * Detalle de un chat escalado: ticket + transcripción de la conversación.
+     */
+    public function get_escalated_chat_detail($request) {
+        global $wpdb;
+
+        $escalation_id = absint($request->get_param('id'));
+        if (!$escalation_id) {
+            return new WP_Error('invalid_id', 'Identificador de escalado inválido', ['status' => 400]);
+        }
+
+        $tabla_escalaciones = $wpdb->prefix . 'flavor_chat_escalations';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_messages';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_escalaciones)) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        $escalacion = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_escalaciones} WHERE id = %d",
+            $escalation_id
+        ), ARRAY_A);
+
+        if (!$escalacion) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        $mensajes = [];
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_mensajes) && !empty($escalacion['conversation_id'])) {
+            $mensajes = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, role, content, created_at
+                 FROM {$tabla_mensajes}
+                 WHERE conversation_id = %d
+                 ORDER BY created_at ASC",
+                (int) $escalacion['conversation_id']
+            ), ARRAY_A);
+            $mensajes = is_array($mensajes) ? $mensajes : [];
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'escalation' => $escalacion,
+            'messages' => $mensajes,
+        ]);
+    }
+
+    /**
+     * Responde a un chat escalado.
+     *
+     * Registra la respuesta del agente humano como un mensaje del rol "assistant"
+     * en la conversación asociada y marca el escalado como "contacted".
+     */
+    public function reply_escalated_chat($request) {
+        global $wpdb;
+
+        $escalation_id = absint($request->get_param('id'));
+        $reply = trim((string) $request->get_param('message'));
+        $reply = sanitize_textarea_field($reply);
+
+        if (!$escalation_id) {
+            return new WP_Error('invalid_id', 'Identificador de escalado inválido', ['status' => 400]);
+        }
+        if ($reply === '') {
+            return new WP_Error('empty_message', 'La respuesta no puede estar vacía', ['status' => 400]);
+        }
+
+        $tabla_escalaciones = $wpdb->prefix . 'flavor_chat_escalations';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_messages';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_escalaciones)) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        $escalacion = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, conversation_id, status FROM {$tabla_escalaciones} WHERE id = %d",
+            $escalation_id
+        ), ARRAY_A);
+
+        if (!$escalacion) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        $mensaje_guardado = false;
+        if (Flavor_Platform_Helpers::tabla_existe($tabla_mensajes) && !empty($escalacion['conversation_id'])) {
+            $insertado = $wpdb->insert(
+                $tabla_mensajes,
+                [
+                    'conversation_id' => (int) $escalacion['conversation_id'],
+                    'role' => 'assistant',
+                    'content' => $reply,
+                    'created_at' => current_time('mysql'),
+                ],
+                ['%d', '%s', '%s', '%s']
+            );
+            $mensaje_guardado = ($insertado !== false);
+        }
+
+        // Marcar como contactado si seguía pendiente (usando la lógica canónica).
+        if (($escalacion['status'] ?? '') === 'pending' && class_exists('Flavor_Platform_Escalation')) {
+            Flavor_Platform_Escalation::get_instance()->update_status($escalation_id, 'contacted');
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'escalation_id' => $escalation_id,
+            'message_saved' => $mensaje_guardado,
+            'status' => 'contacted',
+        ]);
+    }
+
+    /**
+     * Marca un chat escalado como resuelto.
+     */
+    public function resolve_escalated_chat($request) {
+        global $wpdb;
+
+        $escalation_id = absint($request->get_param('id'));
+        $notes = sanitize_textarea_field((string) $request->get_param('notes'));
+
+        if (!$escalation_id) {
+            return new WP_Error('invalid_id', 'Identificador de escalado inválido', ['status' => 400]);
+        }
+
+        $tabla_escalaciones = $wpdb->prefix . 'flavor_chat_escalations';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_escalaciones)) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_escalaciones} WHERE id = %d",
+            $escalation_id
+        ));
+
+        if (!$existe) {
+            return new WP_Error('not_found', 'Escalado no encontrado', ['status' => 404]);
+        }
+
+        if (class_exists('Flavor_Platform_Escalation')) {
+            $ok = Flavor_Platform_Escalation::get_instance()->update_status($escalation_id, 'resolved', $notes);
+        } else {
+            $ok = $wpdb->update(
+                $tabla_escalaciones,
+                ['status' => 'resolved', 'resolved_at' => current_time('mysql'), 'notes' => $notes],
+                ['id' => $escalation_id],
+                ['%s', '%s', '%s'],
+                ['%d']
+            ) !== false;
+        }
+
+        if (!$ok) {
+            return new WP_Error('update_failed', 'No se pudo resolver el escalado', ['status' => 500]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'escalation_id' => $escalation_id,
+            'status' => 'resolved',
+        ]);
+    }
+
     // ==========================================
     // INFORMACIÓN PÚBLICA
     // ==========================================

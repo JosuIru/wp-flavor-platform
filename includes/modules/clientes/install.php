@@ -22,7 +22,7 @@ function flavor_clientes_crear_tablas() {
 
     // Tabla principal de clientes
     $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
-    $sql_clientes = "CREATE TABLE IF NOT EXISTS $tabla_clientes (
+    $sql_clientes = "CREATE TABLE $tabla_clientes (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         numero_cliente varchar(50) NOT NULL,
         usuario_id bigint(20) unsigned DEFAULT NULL,

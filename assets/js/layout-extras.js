@@ -30,32 +30,21 @@
 		initDarkMode() {
 			if (!this.config.darkMode?.enabled) {return;}
 
-			// Verificar preferencia guardada o del sistema
+			// Solo se respeta una preferencia EXPLICITA guardada por el usuario.
+			// El auto-dark por prefers-color-scheme se retiro a proposito: el
+			// portal arranca en claro por defecto y config.darkMode.auto esta
+			// forzado a false en el servidor (class-layout-extras.php).
+			// NO reintroducir lecturas de matchMedia('(prefers-color-scheme: dark)')
+			// aqui; dark-mode.js (FlavorDarkMode) es el unico gestor del atributo.
 			const savedTheme = localStorage.getItem('flavor-theme');
-			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-			let currentTheme = savedTheme;
-			if (!currentTheme && this.config.darkMode.auto) {
-				currentTheme = prefersDark ? 'dark' : 'light';
-			}
-
-			if (currentTheme) {
-				document.documentElement.setAttribute('data-theme', currentTheme);
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
 			}
 
 			// Toggle buttons
 			document.querySelectorAll('.flavor-dark-mode-toggle').forEach(toggle => {
 				toggle.addEventListener('click', () => this.toggleDarkMode());
 			});
-
-			// Escuchar cambios en preferencia del sistema
-			if (this.config.darkMode.auto) {
-				window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-					if (!localStorage.getItem('flavor-theme')) {
-						document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-					}
-				});
-			}
 		},
 
 		toggleDarkMode() {

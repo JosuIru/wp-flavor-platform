@@ -2400,7 +2400,21 @@ class Chat_IA_Admin_Assistant_Tools {
         $filepath = $upload_dir['basedir'] . '/chat-ia-exports/' . $filename;
 
         // Crear directorio si no existe
-        wp_mkdir_p(dirname($filepath));
+        $export_dir = dirname($filepath);
+        wp_mkdir_p($export_dir);
+
+        // Proteger el directorio: contiene datos personales y la URL es adivinable.
+        $htaccess_path = $export_dir . '/.htaccess';
+        if (!file_exists($htaccess_path)) {
+            file_put_contents(
+                $htaccess_path,
+                "Order deny,allow\nDeny from all\n# Apache 2.4\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n"
+            );
+        }
+        $index_path = $export_dir . '/index.php';
+        if (!file_exists($index_path)) {
+            file_put_contents($index_path, "<?php\n// Silence is golden.\n");
+        }
 
         // Añadir BOM para Excel (UTF-8)
         $csv_with_bom = "\xEF\xBB\xBF" . $csv_content;

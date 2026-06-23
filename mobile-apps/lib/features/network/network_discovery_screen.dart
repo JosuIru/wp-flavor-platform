@@ -304,6 +304,13 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
     return FutureBuilder<List<SavedBusiness>>(
       future: ServerConfig.getBusinesses(),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return FlavorErrorState(
+            message: 'Error al cargar las comunidades guardadas: '
+                '${snapshot.error}',
+            onRetry: () => setState(() {}),
+          );
+        }
         if (!snapshot.hasData) {
           return const FlavorLoadingState();
         }

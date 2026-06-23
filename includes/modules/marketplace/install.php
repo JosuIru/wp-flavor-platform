@@ -22,7 +22,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla principal de anuncios
     $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
-    $sql_anuncios = "CREATE TABLE IF NOT EXISTS $tabla_anuncios (
+    $sql_anuncios = "CREATE TABLE $tabla_anuncios (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         titulo varchar(255) NOT NULL,
         slug varchar(255) NOT NULL,
@@ -82,7 +82,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de categorías
     $tabla_categorias = $wpdb->prefix . 'flavor_marketplace_categorias';
-    $sql_categorias = "CREATE TABLE IF NOT EXISTS $tabla_categorias (
+    $sql_categorias = "CREATE TABLE $tabla_categorias (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         slug varchar(100) NOT NULL,
@@ -104,7 +104,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de favoritos
     $tabla_favoritos = $wpdb->prefix . 'flavor_marketplace_favoritos';
-    $sql_favoritos = "CREATE TABLE IF NOT EXISTS $tabla_favoritos (
+    $sql_favoritos = "CREATE TABLE $tabla_favoritos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         anuncio_id bigint(20) unsigned NOT NULL,
         usuario_id bigint(20) unsigned NOT NULL,
@@ -117,7 +117,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de mensajes/contactos
     $tabla_mensajes = $wpdb->prefix . 'flavor_marketplace_mensajes';
-    $sql_mensajes = "CREATE TABLE IF NOT EXISTS $tabla_mensajes (
+    $sql_mensajes = "CREATE TABLE $tabla_mensajes (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         anuncio_id bigint(20) unsigned NOT NULL,
         conversacion_id varchar(50) NOT NULL,
@@ -138,7 +138,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de valoraciones
     $tabla_valoraciones = $wpdb->prefix . 'flavor_marketplace_valoraciones';
-    $sql_valoraciones = "CREATE TABLE IF NOT EXISTS $tabla_valoraciones (
+    $sql_valoraciones = "CREATE TABLE $tabla_valoraciones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         vendedor_id bigint(20) unsigned NOT NULL,
         comprador_id bigint(20) unsigned NOT NULL,
@@ -157,7 +157,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de reportes de fraude/abuso
     $tabla_reportes = $wpdb->prefix . 'flavor_marketplace_reportes';
-    $sql_reportes = "CREATE TABLE IF NOT EXISTS $tabla_reportes (
+    $sql_reportes = "CREATE TABLE $tabla_reportes (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         anuncio_id bigint(20) unsigned DEFAULT NULL,
         usuario_reportado_id bigint(20) unsigned DEFAULT NULL,
@@ -178,7 +178,7 @@ function flavor_marketplace_crear_tablas() {
 
     // Tabla de transacciones/ventas completadas
     $tabla_transacciones = $wpdb->prefix . 'flavor_marketplace_transacciones';
-    $sql_transacciones = "CREATE TABLE IF NOT EXISTS $tabla_transacciones (
+    $sql_transacciones = "CREATE TABLE $tabla_transacciones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         anuncio_id bigint(20) unsigned NOT NULL,
         vendedor_id bigint(20) unsigned NOT NULL,

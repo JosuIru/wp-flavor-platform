@@ -805,6 +805,8 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                 return;
             }
 
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
             var mapa = L.map('<?php echo esc_js($mapa_id); ?>').setView([<?php echo esc_js($centro_lat); ?>, <?php echo esc_js($centro_lng); ?>], 12);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -835,10 +837,10 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                     var marker = L.marker([huerto.lat, huerto.lng], {icon: icono}).addTo(mapa);
                     marker.bindPopup(
-                        '<strong>' + huerto.nombre + '</strong><br>' +
-                        '<small>' + huerto.direccion + '</small><br>' +
-                        '<span style="color:' + color + '">' + huerto.disponibles + '/' + huerto.total + ' parcelas disponibles</span><br>' +
-                        '<a href="<?php echo esc_url(home_url('/huertos/')); ?>?huerto_id=' + huerto.id + '" class="flavor-btn flavor-btn-sm">Ver huerto</a>'
+                        '<strong>' + escHtml(huerto.nombre) + '</strong><br>' +
+                        '<small>' + escHtml(huerto.direccion) + '</small><br>' +
+                        '<span style="color:' + color + '">' + escHtml(huerto.disponibles) + '/' + escHtml(huerto.total) + ' parcelas disponibles</span><br>' +
+                        '<a href="<?php echo esc_url(home_url('/huertos/')); ?>?huerto_id=' + escHtml(huerto.id) + '" class="flavor-btn flavor-btn-sm">Ver huerto</a>'
                     );
                 }
             });

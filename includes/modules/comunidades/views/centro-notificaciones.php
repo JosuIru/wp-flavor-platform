@@ -620,7 +620,7 @@ $tipos_notificacion = [
                 } else {
                     listaNotificaciones.innerHTML = '<div class="flavor-notif-vacia">' +
                         '<span class="dashicons dashicons-warning"></span>' +
-                        '<p>' + (data.data?.message || 'Error al cargar notificaciones') + '</p>' +
+                        '<p>' + escapeHtml(data.data?.message || 'Error al cargar notificaciones') + '</p>' +
                         '</div>';
                 }
             })
@@ -645,8 +645,8 @@ $tipos_notificacion = [
                 var claseLeida = notif.is_read == 0 ? 'no-leida' : '';
                 var fecha = calcularTiempoRelativo(notif.created_at);
 
-                html += '<div class="flavor-notif-item ' + claseLeida + '" data-id="' + notif.id + '" data-link="' + (notif.link || '') + '">' +
-                    '<span class="flavor-notif-icono">' + (notif.icon || '🔔') + '</span>' +
+                html += '<div class="flavor-notif-item ' + claseLeida + '" data-id="' + escapeHtml(notif.id) + '" data-link="' + escapeHtml(notif.link || '') + '">' +
+                    '<span class="flavor-notif-icono">' + escapeHtml(notif.icon || '🔔') + '</span>' +
                     '<div class="flavor-notif-contenido">' +
                         '<h4 class="flavor-notif-titulo-item">' + escapeHtml(notif.title) + '</h4>' +
                         '<p class="flavor-notif-mensaje">' + escapeHtml(notif.message) + '</p>' +
@@ -749,8 +749,8 @@ $tipos_notificacion = [
 
         function escapeHtml(text) {
             var div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            div.textContent = (text == null ? '' : text);
+            return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
     });
 })();

@@ -90,6 +90,135 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
     }
 
     /**
+     * Crea/sincroniza las tablas del módulo.
+     *
+     * Invocado automáticamente por Flavor_Platform_Module_Base::ensure_database_schema()
+     * (vía checksum del archivo) antes de can_activate(). No llamar directamente.
+     *
+     * Estas 5 tablas las consume el frontend controller
+     * (class-circulos-cuidados-frontend-controller.php), el dashboard tab y la vista
+     * de dashboard admin. Sin ellas el módulo no funciona en runtime.
+     *
+     * @return void
+     */
+    protected function create_tables() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $tabla_circulos    = $wpdb->prefix . 'flavor_circulos_cuidados';
+        $tabla_miembros    = $wpdb->prefix . 'flavor_circulos_miembros';
+        $tabla_necesidades = $wpdb->prefix . 'flavor_circulos_necesidades';
+        $tabla_respuestas  = $wpdb->prefix . 'flavor_circulos_respuestas';
+        $tabla_horas       = $wpdb->prefix . 'flavor_circulos_horas';
+
+        // Círculos. Owner de columnas usadas en el listado/detalle del frontend
+        // controller, en mi-red-social (creador_id, privacidad) y en el dashboard tab (zona).
+        $sql_circulos = "CREATE TABLE {$tabla_circulos} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nombre varchar(191) NOT NULL,
+            tipo varchar(50) NOT NULL DEFAULT '',
+            descripcion text DEFAULT NULL,
+            valores text DEFAULT NULL,
+            barrio varchar(191) DEFAULT NULL,
+            zona varchar(191) DEFAULT NULL,
+            latitud decimal(10,7) DEFAULT NULL,
+            longitud decimal(10,7) DEFAULT NULL,
+            max_miembros int(11) DEFAULT NULL,
+            privacidad varchar(20) NOT NULL DEFAULT 'publico',
+            creador_id bigint(20) unsigned NOT NULL DEFAULT 0,
+            estado varchar(20) NOT NULL DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            KEY tipo (tipo),
+            KEY estado (estado),
+            KEY creador_id (creador_id),
+            KEY privacidad (privacidad),
+            KEY fecha_creacion (fecha_creacion)
+        ) {$charset_collate};";
+
+        // Miembros de cada círculo.
+        $sql_miembros = "CREATE TABLE {$tabla_miembros} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            circulo_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            rol varchar(30) NOT NULL DEFAULT 'miembro',
+            estado varchar(20) NOT NULL DEFAULT 'activo',
+            fecha_union datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            KEY circulo_id (circulo_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) {$charset_collate};";
+
+        // Necesidades publicadas. tipo/cuidador_id los lee la vista admin
+        // (views/dashboard.php) y el dashboard tab respectivamente.
+        $sql_necesidades = "CREATE TABLE {$tabla_necesidades} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            circulo_id bigint(20) unsigned DEFAULT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            cuidador_id bigint(20) unsigned DEFAULT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo varchar(50) DEFAULT NULL,
+            urgencia varchar(20) NOT NULL DEFAULT 'media',
+            fecha_necesaria date DEFAULT NULL,
+            horas_estimadas decimal(6,2) DEFAULT NULL,
+            estado varchar(20) NOT NULL DEFAULT 'abierta',
+            fecha_creacion datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            KEY circulo_id (circulo_id),
+            KEY usuario_id (usuario_id),
+            KEY cuidador_id (cuidador_id),
+            KEY estado (estado),
+            KEY urgencia (urgencia),
+            KEY fecha_creacion (fecha_creacion)
+        ) {$charset_collate};";
+
+        // Respuestas (ofrecimientos de ayuda) a una necesidad. cuidador_id lo lee
+        // la vista admin; usuario_id es el que usan los handlers AJAX del controller.
+        $sql_respuestas = "CREATE TABLE {$tabla_respuestas} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            necesidad_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            cuidador_id bigint(20) unsigned DEFAULT NULL,
+            mensaje text DEFAULT NULL,
+            estado varchar(20) NOT NULL DEFAULT 'pendiente',
+            fecha_creacion datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            KEY necesidad_id (necesidad_id),
+            KEY usuario_id (usuario_id),
+            KEY cuidador_id (cuidador_id),
+            KEY estado (estado),
+            KEY fecha_creacion (fecha_creacion)
+        ) {$charset_collate};";
+
+        // Banco de horas confirmadas.
+        $sql_horas = "CREATE TABLE {$tabla_horas} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            circulo_id bigint(20) unsigned DEFAULT NULL,
+            necesidad_id bigint(20) unsigned DEFAULT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            horas decimal(6,2) NOT NULL DEFAULT 0,
+            descripcion varchar(255) DEFAULT NULL,
+            estado varchar(20) NOT NULL DEFAULT 'confirmado',
+            fecha datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            KEY circulo_id (circulo_id),
+            KEY necesidad_id (necesidad_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha (fecha)
+        ) {$charset_collate};";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql_circulos);
+        dbDelta($sql_miembros);
+        dbDelta($sql_necesidades);
+        dbDelta($sql_respuestas);
+        dbDelta($sql_horas);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function get_default_settings() {
@@ -898,7 +1027,7 @@ class Flavor_Platform_Circulos_Cuidados_Module extends Flavor_Platform_Module_Ba
             'post_type' => 'cc_registro_horas',
             'post_title' => sprintf(
                 __('%s - %s horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($user_id)->display_name,
+                Flavor_Platform_Helpers::nombre_usuario($user_id),
                 $horas
             ),
             'post_status' => 'publish',

@@ -22,7 +22,7 @@ function flavor_kulturaka_crear_tablas() {
 
     // Tabla de nodos geográficos (red de espacios/comunidades)
     $tabla_nodos = $wpdb->prefix . 'flavor_kulturaka_nodos';
-    $sql_nodos = "CREATE TABLE IF NOT EXISTS $tabla_nodos (
+    $sql_nodos = "CREATE TABLE $tabla_nodos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(200) NOT NULL,
         slug varchar(200) NOT NULL,
@@ -119,7 +119,7 @@ function flavor_kulturaka_crear_tablas() {
 
     // Tabla de agradecimientos (muro de gratitud)
     $tabla_agradecimientos = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
-    $sql_agradecimientos = "CREATE TABLE IF NOT EXISTS $tabla_agradecimientos (
+    $sql_agradecimientos = "CREATE TABLE $tabla_agradecimientos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 
         -- Quien agradece
@@ -172,7 +172,7 @@ function flavor_kulturaka_crear_tablas() {
 
     // Tabla de propuestas artista → espacio
     $tabla_propuestas = $wpdb->prefix . 'flavor_kulturaka_propuestas';
-    $sql_propuestas = "CREATE TABLE IF NOT EXISTS $tabla_propuestas (
+    $sql_propuestas = "CREATE TABLE $tabla_propuestas (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 
         -- Artista que propone
@@ -233,7 +233,7 @@ function flavor_kulturaka_crear_tablas() {
 
     // Tabla de métricas de impacto
     $tabla_metricas = $wpdb->prefix . 'flavor_kulturaka_metricas';
-    $sql_metricas = "CREATE TABLE IF NOT EXISTS $tabla_metricas (
+    $sql_metricas = "CREATE TABLE $tabla_metricas (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 
         -- Entidad medida
@@ -287,7 +287,7 @@ function flavor_kulturaka_crear_tablas() {
 
     // Tabla de conexiones entre nodos (red descentralizada)
     $tabla_conexiones = $wpdb->prefix . 'flavor_kulturaka_conexiones';
-    $sql_conexiones = "CREATE TABLE IF NOT EXISTS $tabla_conexiones (
+    $sql_conexiones = "CREATE TABLE $tabla_conexiones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 
         nodo_origen_id bigint(20) unsigned NOT NULL,

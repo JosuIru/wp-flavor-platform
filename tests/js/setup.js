@@ -9,6 +9,14 @@
 
 // Detect test framework (Jest or Vitest)
 const isVitest = typeof vi !== 'undefined';
+
+// Compat: los test suites usan el global `jest` (jest.fn, clearAllMocks,
+// resetModules, restoreAllMocks), pero el runner real es vitest. Exponemos
+// `vi` como `jest` para que esa API funcione sin reescribir los tests.
+if (isVitest && typeof globalThis.jest === 'undefined') {
+    globalThis.jest = vi;
+}
+
 const mockFn = isVitest ? vi.fn : (typeof jest !== 'undefined' ? jest.fn : () => () => {});
 
 // Mock de jQuery (conditional require for Node.js environment)

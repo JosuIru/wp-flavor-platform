@@ -81,10 +81,18 @@ class Flavor_Gossip_Protocol {
      * Inicializa hooks de WordPress
      */
     private function init_hooks() {
-        // Cron jobs para gossip
+        // Cron jobs para gossip. Esta clase es el ÚNICO punto que programa y
+        // engancha gossip_batch y heartbeat (antes el loader los duplicaba,
+        // provocando doble ejecución por tick).
         add_action('flavor_mesh_gossip_batch', [$this, 'process_gossip_batch']);
         add_action('flavor_mesh_heartbeat', [$this, 'send_heartbeats']);
-        add_action('flavor_mesh_cleanup_expired', [$this, 'cleanup_expired_messages']);
+
+        // NOTA: flavor_mesh_cleanup_expired lo programa y engancha
+        // Flavor_Mesh_Loader::register_cron_jobs(), cuyo callback es un
+        // superconjunto de cleanup_expired_messages() (también marca peers
+        // offline y purga sync_log). No registrar el hook aquí evita
+        // solapamiento de borrado y el conflicto de intervalo.
+        // cleanup_expired_messages() permanece como método invocable.
 
         // Programar crons si no existen.
         // Las keys de intervalo deben coincidir con las registradas por
@@ -96,9 +104,6 @@ class Flavor_Gossip_Protocol {
         }
         if (!wp_next_scheduled('flavor_mesh_heartbeat')) {
             wp_schedule_event(time(), 'every_five_minutes', 'flavor_mesh_heartbeat');
-        }
-        if (!wp_next_scheduled('flavor_mesh_cleanup_expired')) {
-            wp_schedule_event(time(), 'hourly', 'flavor_mesh_cleanup_expired');
         }
     }
 
@@ -698,8 +703,12 @@ class Flavor_Gossip_Protocol {
         }
 
         if (!$public_key_base64) {
-            // Peer desconocido - aceptar pero con precaución
-            return true; // TODO: Implementar registro de peers desconocidos
+            // Peer desconocido: rechazar. Aceptar mensajes firmados por un peer cuya
+            // clave pública no conocemos permitía falsificar el origin_peer_id (spoofing
+            // de autoría en el gossip). Coherente con el endurecimiento aplicado en
+            // Flavor_Network_Mesh_API: para entrar a la red el peer debe registrar su
+            // clave pública mediante el handshake en /mesh/connect.
+            return false;
         }
 
         try {

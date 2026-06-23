@@ -594,6 +594,8 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof L === 'undefined') return;
 
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
             var mapa = L.map('<?php echo esc_js($mapa_id); ?>').setView([40.4168, -3.7038], 6);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap'
@@ -612,9 +614,9 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
 
                     L.marker([parseFloat(a.latitud), parseFloat(a.longitud)], {icon: icono})
                         .bindPopup(
-                            '<strong>' + a.nombre_comun + '</strong><br>' +
-                            '<em>' + a.nombre_cientifico + '</em><br>' +
-                            '<small>' + a.fecha + '</small>'
+                            '<strong>' + escHtml(a.nombre_comun) + '</strong><br>' +
+                            '<em>' + escHtml(a.nombre_cientifico) + '</em><br>' +
+                            '<small>' + escHtml(a.fecha) + '</small>'
                         )
                         .addTo(mapa);
                 }

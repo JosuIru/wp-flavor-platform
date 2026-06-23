@@ -54,7 +54,10 @@ class Flavor_Settings_Hub {
 	 * Constructor
 	 */
 	private function __construct() {
-		add_action( 'admin_menu', [ $this, 'register_menu' ], 5 );
+		// Prioridad 6 para correr DESPUÉS de que el Menu Manager registre el
+		// menú top-level (prioridad 5); de lo contrario el submenú podría
+		// intentar colgarse de un parent inexistente.
+		add_action( 'admin_menu', [ $this, 'register_menu' ], 6 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'wp_ajax_flavor_hub_search', [ $this, 'ajax_search' ] );
 
@@ -580,8 +583,12 @@ class Flavor_Settings_Hub {
 	 * Registrar página de menú
 	 */
 	public function register_menu() {
+		// El parent debe ser el slug del menú TOP-LEVEL del plugin
+		// (FLAVOR_PLATFORM_TEXT_DOMAIN); 'flavor-dashboard' es un submenú, y
+		// usarlo como parent dejaba la página huérfana (no se renderiza en el
+		// sidebar, solo accesible por URL directa).
 		add_submenu_page(
-			'flavor-dashboard',
+			FLAVOR_PLATFORM_TEXT_DOMAIN,
 			__( 'Configuración', 'flavor-platform' ),
 			__( 'Configuración', 'flavor-platform' ),
 			'manage_options',

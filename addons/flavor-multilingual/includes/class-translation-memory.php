@@ -934,7 +934,11 @@ class Flavor_Translation_Memory {
         register_rest_route('flavor-multilingual/v1', '/memory/search', array(
             'methods'             => WP_REST_Server::CREATABLE,
             'callback'            => array($this, 'api_search_memory'),
-            'permission_callback' => '__return_true',
+            // La memoria de traducción contiene contenido del sitio; restringir a
+            // editores/traductores en vez de acceso anónimo público.
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            },
         ));
     }
 

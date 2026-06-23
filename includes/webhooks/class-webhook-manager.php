@@ -688,6 +688,152 @@ class Flavor_Webhook_Manager {
     }
 
     /**
+     * REST: Crear webhook
+     *
+     * Estos cuatro métodos (create/get/update/delete) estaban referenciados en
+     * register_rest_routes() pero no existían: cualquier POST/GET/PUT/DELETE sobre
+     * /flavor/v1/webhooks[/{id}] devolvía un error 500 (undefined method). Reutilizan
+     * la misma validación que los handlers ajax_* equivalentes.
+     */
+    public function rest_create_webhook($request) {
+        global $wpdb;
+
+        $name = sanitize_text_field($request->get_param('name') ?? '');
+        $url = esc_url_raw($request->get_param('url') ?? '');
+        $events = array_map('sanitize_text_field', (array) $request->get_param('events'));
+        $secret = sanitize_text_field($request->get_param('secret') ?? '');
+
+        if (empty($name) || empty($url) || empty($events)) {
+            return new WP_Error('missing_fields', __('Campos requeridos incompletos', 'flavor-platform'), ['status' => 400]);
+        }
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return new WP_Error('invalid_url', __('URL inválida', 'flavor-platform'), ['status' => 400]);
+        }
+
+        foreach ($events as $event) {
+            if (!isset($this->events[$event])) {
+                return new WP_Error('invalid_event', __('Evento inválido: ', 'flavor-platform') . $event, ['status' => 400]);
+            }
+        }
+
+        $result = $wpdb->insert($this->table_webhooks, [
+            'name' => $name,
+            'url' => $url,
+            'secret' => $secret ?: null,
+            'events' => wp_json_encode($events),
+            'status' => 'active',
+            'created_by' => get_current_user_id(),
+        ]);
+
+        if ($result === false) {
+            return new WP_Error('db_error', __('Error al crear webhook', 'flavor-platform'), ['status' => 500]);
+        }
+
+        return new WP_REST_Response([
+            'id' => $wpdb->insert_id,
+            'message' => __('Webhook creado correctamente', 'flavor-platform'),
+        ], 201);
+    }
+
+    /**
+     * REST: Obtener un webhook
+     */
+    public function rest_get_webhook($request) {
+        global $wpdb;
+
+        $webhook_id = (int) $request['id'];
+        $webhook = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->table_webhooks} WHERE id = %d",
+            $webhook_id
+        ));
+
+        if (!$webhook) {
+            return new WP_Error('not_found', __('Webhook no encontrado', 'flavor-platform'), ['status' => 404]);
+        }
+
+        $webhook->events = json_decode($webhook->events, true);
+        unset($webhook->secret); // No exponer secreto
+
+        return rest_ensure_response($webhook);
+    }
+
+    /**
+     * REST: Actualizar webhook
+     */
+    public function rest_update_webhook($request) {
+        global $wpdb;
+
+        $webhook_id = (int) $request['id'];
+        $update_data = [];
+
+        $name = sanitize_text_field($request->get_param('name') ?? '');
+        if (!empty($name)) {
+            $update_data['name'] = $name;
+        }
+
+        $url = $request->get_param('url');
+        if (!empty($url)) {
+            $url = esc_url_raw($url);
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                return new WP_Error('invalid_url', __('URL inválida', 'flavor-platform'), ['status' => 400]);
+            }
+            $update_data['url'] = $url;
+        }
+
+        $events = $request->get_param('events');
+        if (!empty($events)) {
+            $events = array_map('sanitize_text_field', (array) $events);
+            foreach ($events as $event) {
+                if (!isset($this->events[$event])) {
+                    return new WP_Error('invalid_event', __('Evento inválido: ', 'flavor-platform') . $event, ['status' => 400]);
+                }
+            }
+            $update_data['events'] = wp_json_encode($events);
+        }
+
+        $status = sanitize_text_field($request->get_param('status') ?? '');
+        if (in_array($status, ['active', 'inactive'], true)) {
+            $update_data['status'] = $status;
+        }
+
+        if ($request->get_param('secret') !== null) {
+            $update_data['secret'] = sanitize_text_field($request->get_param('secret')) ?: null;
+        }
+
+        if (empty($update_data)) {
+            return new WP_Error('nothing_to_update', __('Nada que actualizar', 'flavor-platform'), ['status' => 400]);
+        }
+
+        $result = $wpdb->update($this->table_webhooks, $update_data, ['id' => $webhook_id]);
+
+        if ($result === false) {
+            return new WP_Error('db_error', __('Error al actualizar webhook', 'flavor-platform'), ['status' => 500]);
+        }
+
+        return rest_ensure_response(['message' => __('Webhook actualizado', 'flavor-platform')]);
+    }
+
+    /**
+     * REST: Eliminar webhook
+     */
+    public function rest_delete_webhook($request) {
+        global $wpdb;
+
+        $webhook_id = (int) $request['id'];
+
+        // Eliminar logs asociados y luego el webhook
+        $wpdb->delete($this->table_logs, ['webhook_id' => $webhook_id]);
+        $result = $wpdb->delete($this->table_webhooks, ['id' => $webhook_id]);
+
+        if ($result === false) {
+            return new WP_Error('db_error', __('Error al eliminar webhook', 'flavor-platform'), ['status' => 500]);
+        }
+
+        return rest_ensure_response(['message' => __('Webhook eliminado', 'flavor-platform')]);
+    }
+
+    /**
      * REST: Listar eventos disponibles
      */
     public function rest_list_events($request) {

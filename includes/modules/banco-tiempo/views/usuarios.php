@@ -294,6 +294,8 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 <script>
 jQuery(document).ready(function($) {
 
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
     // Ver historial
     $('.ver-historial').click(function(e) {
         e.preventDefault();
@@ -315,16 +317,16 @@ jQuery(document).ready(function($) {
                 if (response.success && response.data) {
                     var d = response.data;
                     var html = '<div class="historial-resumen" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px;">';
-                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.horas_ganadas + '</strong><br><small>Horas ganadas</small></div>';
-                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.horas_gastadas + '</strong><br><small>Horas gastadas</small></div>';
-                    html += '<div style="background:#d4edda;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.saldo + '</strong><br><small>Saldo actual</small></div>';
-                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.intercambios + '</strong><br><small>Intercambios</small></div>';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + escHtml(d.horas_ganadas) + '</strong><br><small>Horas ganadas</small></div>';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + escHtml(d.horas_gastadas) + '</strong><br><small>Horas gastadas</small></div>';
+                    html += '<div style="background:#d4edda;padding:15px;border-radius:4px;text-align:center;"><strong>' + escHtml(d.saldo) + '</strong><br><small>Saldo actual</small></div>';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + escHtml(d.intercambios) + '</strong><br><small>Intercambios</small></div>';
                     html += '</div>';
 
                     if (d.historial && d.historial.length > 0) {
                         html += '<table class="wp-list-table widefat fixed striped"><thead><tr><th>Fecha</th><th>Tipo</th><th>Servicio</th><th>Con</th><th>Horas</th></tr></thead><tbody>';
                         d.historial.forEach(function(item) {
-                            html += '<tr><td>' + item.fecha + '</td><td>' + item.tipo + '</td><td>' + item.servicio + '</td><td>' + item.con_usuario + '</td><td>' + item.horas + '</td></tr>';
+                            html += '<tr><td>' + escHtml(item.fecha) + '</td><td>' + escHtml(item.tipo) + '</td><td>' + escHtml(item.servicio) + '</td><td>' + escHtml(item.con_usuario) + '</td><td>' + escHtml(item.horas) + '</td></tr>';
                         });
                         html += '</tbody></table>';
                     } else {

@@ -322,6 +322,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -332,6 +334,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -351,6 +355,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -361,6 +367,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -372,6 +380,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -385,6 +395,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -405,6 +417,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -423,6 +437,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -439,6 +455,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -458,6 +476,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -474,6 +494,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -488,6 +510,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -498,6 +522,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -511,6 +537,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -524,6 +552,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -546,6 +576,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -564,6 +596,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -582,6 +616,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -592,6 +628,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -611,6 +649,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -635,6 +675,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -649,6 +691,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -678,6 +722,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -688,6 +734,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -699,6 +747,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -713,6 +763,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -727,6 +779,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -743,6 +797,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -763,6 +819,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -781,6 +839,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -800,6 +860,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -822,6 +884,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -843,6 +907,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -864,6 +930,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -875,6 +943,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -887,6 +957,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -897,6 +969,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -917,6 +991,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -934,6 +1010,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -954,6 +1032,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -977,6 +1057,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -988,6 +1070,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
   // ==========================================
@@ -1007,6 +1091,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1025,6 +1111,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1039,6 +1127,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1068,6 +1158,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1080,6 +1172,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1100,6 +1194,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1121,6 +1217,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1157,6 +1255,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1168,6 +1268,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1191,6 +1293,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1202,6 +1306,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1226,6 +1332,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1242,6 +1350,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1257,6 +1367,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1272,6 +1384,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1327,6 +1441,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1384,6 +1500,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1395,6 +1513,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1410,6 +1530,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1425,6 +1547,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1436,6 +1560,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1461,6 +1587,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1480,6 +1608,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1499,6 +1629,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1518,6 +1650,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1546,6 +1680,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1559,6 +1695,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1572,6 +1710,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1586,6 +1726,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1608,6 +1750,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1622,6 +1766,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1636,6 +1782,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1649,6 +1797,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1665,6 +1815,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1679,6 +1831,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1703,6 +1857,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1730,6 +1886,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1744,6 +1902,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1764,6 +1924,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1778,6 +1940,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1806,6 +1970,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1819,6 +1985,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1849,6 +2017,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1862,6 +2032,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1881,6 +2053,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1895,6 +2069,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1909,6 +2085,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1933,6 +2111,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1958,6 +2138,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -1972,6 +2154,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2002,6 +2186,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2032,6 +2218,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2045,6 +2233,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2059,6 +2249,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2087,6 +2279,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2100,6 +2294,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2114,6 +2310,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2140,6 +2338,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2159,6 +2359,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2178,6 +2380,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2217,6 +2421,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2235,6 +2441,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2261,6 +2469,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2275,6 +2485,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2289,6 +2501,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2316,6 +2530,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2329,6 +2545,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2342,6 +2560,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2357,6 +2577,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2386,6 +2608,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2399,6 +2623,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2412,6 +2638,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2426,6 +2654,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2441,6 +2671,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2456,6 +2688,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2470,6 +2704,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2484,6 +2720,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2511,6 +2749,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2524,6 +2764,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2538,6 +2780,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2564,6 +2808,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2578,6 +2824,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2605,6 +2853,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2618,6 +2868,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2631,6 +2883,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2645,6 +2899,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2659,6 +2915,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2686,6 +2944,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2699,6 +2959,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2712,6 +2974,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2732,6 +2996,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2746,6 +3012,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2763,6 +3031,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2784,6 +3054,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2798,6 +3070,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2815,6 +3089,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2832,6 +3108,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2847,6 +3125,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2860,6 +3140,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2871,6 +3153,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2886,6 +3170,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2907,6 +3193,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2921,6 +3209,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2933,6 +3223,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2951,6 +3243,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2963,6 +3257,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2976,6 +3272,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -2991,6 +3289,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3014,6 +3314,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3026,6 +3328,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3038,6 +3342,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3054,6 +3360,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3073,6 +3381,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3096,6 +3406,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3117,6 +3429,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3142,6 +3456,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3154,6 +3470,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3166,6 +3484,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3194,6 +3514,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3209,6 +3531,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3230,6 +3554,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3250,6 +3576,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3272,6 +3600,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3288,6 +3618,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3304,6 +3636,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3328,6 +3662,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3353,6 +3689,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3371,6 +3709,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3389,6 +3729,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3464,6 +3806,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3484,6 +3828,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3494,6 +3840,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3513,6 +3861,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3536,6 +3886,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3554,6 +3906,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3564,6 +3918,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3590,6 +3946,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3600,6 +3958,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3623,6 +3983,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3646,6 +4008,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3667,6 +4031,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3690,6 +4056,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3711,6 +4079,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3730,6 +4100,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3750,6 +4122,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3769,6 +4143,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3790,6 +4166,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3810,6 +4188,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3828,6 +4208,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3844,6 +4226,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3895,6 +4279,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3929,6 +4315,8 @@ class ApiClient {
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -3970,6 +4358,8 @@ class ApiClient {
       return ApiResponse.error('Respuesta de subida inválida');
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
+    } catch (e) {
+      return ApiResponse.error(_handleUnexpectedError(e));
     }
   }
 
@@ -4007,6 +4397,21 @@ class ApiClient {
       default:
         return 'Error de red desconocido';
     }
+  }
+
+  /// Maneja errores inesperados que NO son DioException.
+  ///
+  /// El caso mas habitual: el servidor responde 200 pero con un cuerpo que no
+  /// es el `Map<String, dynamic>` esperado (una lista JSON, o HTML de una
+  /// pagina de error/redireccion). Al construir `ApiResponse.success(...)` o
+  /// al castear `response.data as Map<String, dynamic>` se lanza un `TypeError`
+  /// que no es DioException; sin este catch la excepcion escaparia del metodo y
+  /// dejaria la pantalla (FutureBuilder) en spinner infinito.
+  String _handleUnexpectedError(Object error) {
+    if (AppConfig.isDebug) {
+      return 'Respuesta inesperada del servidor: $error';
+    }
+    return 'Respuesta inesperada del servidor';
   }
 }
 

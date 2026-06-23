@@ -73,7 +73,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'flavor_parkings_buscar_plazas',
+                    action: 'flavor_parkings_buscar',
                     nonce: this.config.nonce
                 },
                 success: function(response) {
@@ -246,7 +246,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'flavor_parkings_cancelar_reserva',
+                    action: 'flavor_parkings_cancelar',
                     nonce: this.config.nonce,
                     reserva_id: reservaId
                 },
@@ -340,7 +340,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'flavor_parkings_liberar_plaza',
+                    action: 'flavor_parkings_liberar',
                     nonce: this.config.nonce,
                     plaza_id: plazaId,
                     fecha_inicio: fechaInicio,

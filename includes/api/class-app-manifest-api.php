@@ -1681,7 +1681,7 @@ class Flavor_App_Manifest_API {
             $qr_log = array_slice( $qr_log, -50 );
         }
 
-        update_option( 'flavor_qr_codes_log', $qr_log );
+        update_option( 'flavor_qr_codes_log', $qr_log, false );
     }
 
     /**
@@ -1999,7 +1999,7 @@ class Flavor_App_Manifest_API {
             $history = array_slice( $history, -200 );
         }
 
-        update_option( 'flavor_app_webhook_history', $history );
+        update_option( 'flavor_app_webhook_history', $history, false );
     }
 
     /**

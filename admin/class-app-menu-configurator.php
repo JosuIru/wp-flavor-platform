@@ -343,8 +343,12 @@ class Flavor_App_Menu_Configurator {
      * Añadir menú de administración
      */
     public function add_admin_menu() {
+        // El parent debe ser el slug del menú TOP-LEVEL del plugin
+        // (FLAVOR_PLATFORM_TEXT_DOMAIN); 'flavor-dashboard' es un submenú, y
+        // usarlo como parent dejaba esta página huérfana (no aparecía en el
+        // sidebar, solo accesible por URL directa).
         add_submenu_page(
-            'flavor-dashboard',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             __( 'Menú App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             __( 'Menú App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_options',

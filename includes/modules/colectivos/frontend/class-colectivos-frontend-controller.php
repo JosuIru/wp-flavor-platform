@@ -941,6 +941,8 @@ class Flavor_Colectivos_Frontend_Controller {
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof L === 'undefined') return;
 
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
             var mapa = L.map('flavor-mapa-colectivos').setView([40.4168, -3.7038], 6);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap'
@@ -950,7 +952,7 @@ class Flavor_Colectivos_Frontend_Controller {
             colectivos.forEach(function(c) {
                 if (c.latitud && c.longitud) {
                     L.marker([parseFloat(c.latitud), parseFloat(c.longitud)])
-                        .bindPopup('<strong>' + c.nombre + '</strong><br>' + (c.descripcion_corta || ''))
+                        .bindPopup('<strong>' + escHtml(c.nombre) + '</strong><br>' + escHtml(c.descripcion_corta || ''))
                         .addTo(mapa);
                 }
             });

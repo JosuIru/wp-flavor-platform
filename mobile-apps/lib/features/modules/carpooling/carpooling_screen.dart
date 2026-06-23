@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
@@ -48,7 +49,8 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
         });
       } else {
         setState(() {
-          _mensajeError = respuesta.error ?? 'Error al cargar viajes';
+          _mensajeError =
+              respuesta.error ?? AppLocalizations.of(context).carpoolingLoadError;
           _cargandoDatos = false;
         });
       }
@@ -62,9 +64,10 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Viajes Compartidos'),
+        title: Text(i18n.carpoolingTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -82,11 +85,11 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                _construirFiltroChip('Todos', 'todos'),
+                _construirFiltroChip(i18n.carpoolingFilterAll, 'todos'),
                 const SizedBox(width: 8),
-                _construirFiltroChip('Ofrezco viaje', 'ofrezco'),
+                _construirFiltroChip(i18n.carpoolingFilterOffer, 'ofrezco'),
                 const SizedBox(width: 8),
-                _construirFiltroChip('Busco viaje', 'busco'),
+                _construirFiltroChip(i18n.carpoolingFilterSearch, 'busco'),
               ],
             ),
           ),
@@ -103,11 +106,11 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
                     : _viajesCompartidos.isEmpty
                         ? FlavorEmptyState(
                             icon: Icons.directions_car,
-                            title: 'No hay viajes disponibles',
+                            title: i18n.carpoolingEmpty,
                             action: FilledButton.icon(
                               onPressed: _mostrarFormularioNuevoViaje,
                               icon: const Icon(Icons.add),
-                              label: const Text('Publicar viaje'),
+                              label: Text(i18n.carpoolingPublishRide),
                             ),
                           )
                         : RefreshIndicator(
@@ -125,7 +128,7 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _mostrarFormularioNuevoViaje,
         icon: const Icon(Icons.add),
-        label: const Text('Ofrecer viaje'),
+        label: Text(i18n.carpoolingOfferRide),
       ),
     );
   }
@@ -151,6 +154,7 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
   }
 
   Widget _construirTarjetaViaje(dynamic viaje) {
+    final i18n = AppLocalizations.of(context);
     final datosViaje = viaje as Map<String, dynamic>;
     final viajeId = datosViaje['id']?.toString() ?? '';
     final origenViaje =
@@ -241,10 +245,11 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(value: 'editar', child: Text('Editar')),
-                      const PopupMenuItem(
+                      PopupMenuItem(value: 'editar', child: Text(i18n.commonEdit)),
+                      PopupMenuItem(
                         value: 'eliminar',
-                        child: Text('Eliminar', style: TextStyle(color: Colors.red)),
+                        child: Text(i18n.commonDelete,
+                            style: const TextStyle(color: Colors.red)),
                       ),
                     ],
                   ),
@@ -266,7 +271,8 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
                   children: [
                     const Icon(Icons.event_seat, size: 16, color: Colors.grey),
                     const SizedBox(width: 4),
-                    Text('$plazasDisponibles plazas'),
+                    Text(i18n.commonPlacesAvailable(
+                        int.tryParse(plazasDisponibles.toString()) ?? 0)),
                   ],
                 ),
                 if (precioViaje.toString().isNotEmpty)
@@ -289,7 +295,7 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
                 children: [
                   const Icon(Icons.person, size: 16, color: Colors.grey),
                   const SizedBox(width: 4),
-                  Text('Conductor: $conductorViaje'),
+                  Text(i18n.carpoolingDriverLabel(conductorViaje.toString())),
                 ],
               ),
             ],
@@ -299,16 +305,16 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => _reservarPlaza(viajeId, datosViaje),
-                  child: const Text('Reservar plaza'),
+                  child: Text(i18n.carpoolingReserveSeat),
                 ),
               )
             else if (!esMio && plazasDisponibles == 0)
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Sin plazas disponibles',
+                  i18n.carpoolingNoSeats,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ),
           ],
@@ -318,31 +324,36 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
   }
 
   Future<void> _reservarPlaza(String viajeId, Map<String, dynamic> viaje) async {
+    final i18n = AppLocalizations.of(context);
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Reservar plaza'),
+        title: Text(i18n.carpoolingReserveDialogTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Origen: ${viaje['origen'] ?? viaje['from'] ?? 'N/A'}'),
-            Text('Destino: ${viaje['destino'] ?? viaje['to'] ?? 'N/A'}'),
+            Text(i18n.carpoolingReserveOrigin(
+                (viaje['origen'] ?? viaje['from'] ?? 'N/A').toString())),
+            Text(i18n.carpoolingReserveDestination(
+                (viaje['destino'] ?? viaje['to'] ?? 'N/A').toString())),
             const SizedBox(height: 8),
-            Text('Fecha: ${viaje['fecha_salida'] ?? viaje['fecha'] ?? 'N/A'}'),
-            Text('Hora: ${viaje['hora_salida'] ?? viaje['hora'] ?? 'N/A'}'),
+            Text(i18n.carpoolingReserveDate(
+                (viaje['fecha_salida'] ?? viaje['fecha'] ?? 'N/A').toString())),
+            Text(i18n.carpoolingReserveTime(
+                (viaje['hora_salida'] ?? viaje['hora'] ?? 'N/A').toString())),
             const SizedBox(height: 16),
-            const Text('¿Confirmas la reserva de una plaza?'),
+            Text(i18n.carpoolingReserveConfirmQuestion),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Reservar'),
+            child: Text(i18n.carpoolingReserveAction),
           ),
         ],
       ),
@@ -356,15 +367,16 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
 
       if (mounted) {
         if (respuesta.success) {
-          FlavorSnackbar.showSuccess(context, 'Plaza reservada correctamente');
+          FlavorSnackbar.showSuccess(context, i18n.carpoolingSeatReserved);
           _cargarViajes();
         } else {
-          FlavorSnackbar.showError(context, respuesta.error ?? 'Error al reservar');
+          FlavorSnackbar.showError(
+              context, respuesta.error ?? i18n.carpoolingReserveError);
         }
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, i18n.commonError(e.toString()));
       }
     }
   }
@@ -381,20 +393,21 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
   }
 
   Future<void> _eliminarViaje(String viajeId) async {
+    final i18n = AppLocalizations.of(context);
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar viaje'),
-        content: const Text('¿Estas seguro de que quieres eliminar este viaje?'),
+        title: Text(i18n.carpoolingDeleteRideTitle),
+        content: Text(i18n.carpoolingDeleteRideConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar'),
+            child: Text(i18n.commonDelete),
           ),
         ],
       ),
@@ -408,15 +421,16 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
 
       if (mounted) {
         if (respuesta.success) {
-          FlavorSnackbar.showSuccess(context, 'Viaje eliminado');
+          FlavorSnackbar.showSuccess(context, i18n.carpoolingRideDeleted);
           _cargarViajes();
         } else {
-          FlavorSnackbar.showError(context, respuesta.error ?? 'Error al eliminar');
+          FlavorSnackbar.showError(
+              context, respuesta.error ?? i18n.carpoolingDeleteError);
         }
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, i18n.commonError(e.toString()));
       }
     }
   }

@@ -569,6 +569,10 @@ class Flavor_Module_Relations_Admin {
     public function ajax_obtener_relaciones() {
         check_ajax_referer('flavor_module_relations', 'nonce');
 
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
+        }
+
         $parent_id = $this->normalizar_module_id($_POST['parent_id'] ?? '');
         $context = sanitize_text_field($_POST['context'] ?? 'global');
 

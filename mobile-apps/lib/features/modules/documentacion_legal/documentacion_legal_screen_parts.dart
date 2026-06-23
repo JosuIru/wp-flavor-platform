@@ -520,13 +520,14 @@ class _DocumentoDetalleScreenState
       final api = ref.read(apiClientProvider);
       final respuesta =
           await api.get('/documentacion-legal/${widget.documentoId}');
+      if (!mounted) return;
       if (respuesta.success && respuesta.data != null) {
         setState(() {
           _documento = respuesta.data!['documento'];
         });
       }
     } finally {
-      setState(() => _cargando = false);
+      if (mounted) setState(() => _cargando = false);
     }
   }
 
@@ -534,6 +535,7 @@ class _DocumentoDetalleScreenState
     final api = ref.read(apiClientProvider);
     final respuesta =
         await api.post('/documentacion-legal/${widget.documentoId}/favorito');
+    if (!mounted) return;
     if (respuesta.success && respuesta.data != null) {
       setState(() {
         _esFavorito = respuesta.data!['es_favorito'] ?? false;

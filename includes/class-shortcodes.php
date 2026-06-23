@@ -91,14 +91,21 @@ class Flavor_Shortcodes {
             }
         }
 
-        // Log solo una vez
-        static $logged = false;
-        if ( ! $logged && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-            error_log( sprintf(
-                '[Flavor] Desactivados filtros regex: %d shortcodes registrados (límite: 500)',
-                count( $shortcode_tags )
-            ) );
-            $logged = true;
+        // Log throttled: el static se reinicia en cada request, así que aquí
+        // usamos un transient (1 hora) para no saturar el log en producción.
+        // Solo se registra cuando cambia el número de shortcodes.
+        if ( function_exists( 'flavor_platform_log' ) ) {
+            $cantidad_shortcodes = count( $shortcode_tags );
+            $clave_throttle = 'flavor_shortcodes_filtros_desactivados';
+            $cantidad_cacheada = get_transient( $clave_throttle );
+
+            if ( $cantidad_cacheada !== (string) $cantidad_shortcodes ) {
+                flavor_platform_log(
+                    sprintf( 'Desactivados filtros regex: %d shortcodes registrados (límite: 500)', $cantidad_shortcodes ),
+                    'debug'
+                );
+                set_transient( $clave_throttle, (string) $cantidad_shortcodes, HOUR_IN_SECONDS );
+            }
         }
     }
 

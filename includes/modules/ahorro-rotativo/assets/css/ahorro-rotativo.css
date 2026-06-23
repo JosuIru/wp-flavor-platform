@@ -1,0 +1,158 @@
+/* Ahorro Rotativo — estilos frontend */
+.flavor-ar {
+	--ar-acento: #2e7d6b;
+
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.flavor-ar__titulo {
+	margin-bottom: .75rem;
+}
+
+.flavor-ar__lista {
+	list-style: none;
+	margin: 0 0 1.5rem;
+	padding: 0;
+	display: grid;
+	gap: .75rem;
+}
+
+.flavor-ar__card {
+	border: 1px solid #e2e2e2;
+	border-radius: 14px;
+}
+
+.flavor-ar__card a {
+	display: grid;
+	gap: .25rem;
+	padding: 1rem;
+	text-decoration: none;
+	color: inherit;
+}
+
+.flavor-ar__card-nombre {
+	font-weight: 600;
+	font-size: 1.05rem;
+}
+
+.flavor-ar__card-meta {
+	color: #555;
+	font-size: .9rem;
+}
+
+.flavor-ar__estado {
+	display: inline-block;
+	font-size: .75rem;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	padding: .1rem .5rem;
+	border-radius: 999px;
+	background: #eee;
+	width: max-content;
+}
+
+.flavor-ar__estado--activo {
+	background: #d8efe7;
+	color: var(--ar-acento);
+}
+
+.flavor-ar__estado--borrador {
+	background: #fdf3d8;
+	color: #8a6d1a;
+}
+
+.flavor-ar__turnos {
+	display: grid;
+	gap: .4rem;
+	padding-left: 0;
+	list-style: none;
+}
+
+.flavor-ar__turnos li {
+	display: flex;
+	align-items: center;
+	gap: .75rem;
+	padding: .5rem .75rem;
+	border: 1px solid #eee;
+	border-radius: 10px;
+}
+
+.flavor-ar__pos {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.8rem;
+	height: 1.8rem;
+	border-radius: 50%;
+	background: var(--ar-acento);
+	color: #fff;
+	font-weight: 600;
+}
+
+.flavor-ar__nombre {
+	flex: 1;
+}
+
+.flavor-ar__estado-inv {
+	font-size: .8rem;
+	color: #777;
+}
+
+.flavor-ar__form {
+	display: grid;
+	gap: .75rem;
+	margin-top: 1rem;
+}
+
+.flavor-ar__form label {
+	display: grid;
+	gap: .25rem;
+	font-size: .9rem;
+}
+
+.flavor-ar__form-inline {
+	display: flex;
+	gap: .5rem;
+	margin-bottom: .75rem;
+}
+
+.flavor-ar__acciones-creador {
+	margin-top: 1.5rem;
+	display: grid;
+	gap: 1rem;
+}
+
+.flavor-ar-aviso {
+	padding: 1rem;
+	background: #f6f6f6;
+	border-radius: 10px;
+}
+
+/* Admin */
+.flavor-ar-admin__stats {
+	display: flex;
+	gap: 1rem;
+	margin-top: 1rem;
+	flex-wrap: wrap;
+}
+
+.flavor-ar-admin__stat {
+	background: #fff;
+	border: 1px solid #e2e2e2;
+	border-radius: 12px;
+	padding: 1rem 1.5rem;
+	min-width: 140px;
+}
+
+.flavor-ar-admin__num {
+	display: block;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #2e7d6b;
+}
+
+.flavor-ar-admin__label {
+	color: #666;
+	font-size: .85rem;
+}

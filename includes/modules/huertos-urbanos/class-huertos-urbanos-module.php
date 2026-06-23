@@ -401,7 +401,7 @@ class Flavor_Platform_Huertos_Urbanos_Module extends Flavor_Platform_Module_Base
                 echo '<td>' . esc_html($parcela['huerto_id']) . '</td>';
                 echo '<td>' . esc_html($parcela['tamano_m2'] ?? '-') . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($parcela['estado'])) . '</span></td>';
-                echo '<td>' . esc_html($parcela['user_id'] ? get_userdata($parcela['user_id'])->display_name ?? '-' : '-') . '</td>';
+                echo '<td>' . esc_html($parcela['user_id'] ? Flavor_Platform_Helpers::nombre_usuario($parcela['user_id'], '-') : '-') . '</td>';
                 echo '<td><a href="#" class="button button-small hu-editar-parcela" data-id="' . esc_attr($parcela['id']) . '" data-codigo="' . esc_attr($parcela['codigo']) . '" data-estado="' . esc_attr($parcela['estado']) . '" data-tamano="' . esc_attr($parcela['tamano_m2'] ?? '') . '">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }

@@ -174,6 +174,7 @@ class _RedSocialScreenState extends ConsumerState<RedSocialScreen> {
 
       final response = await apiClient.post(endpoint, data: {});
 
+      if (!mounted) return;
       if (response.success) {
         setState(() {
           final publicacion = _publicaciones[index] as Map<String, dynamic>;

@@ -417,14 +417,19 @@ class Flavor_Mesh_Topology {
             $peer_b_id = $temp;
         }
 
-        $wpdb->update(
-            $this->connections_table,
-            [
-                'last_activity'       => current_time('mysql'),
-                'messages_exchanged'  => $wpdb->prepare('messages_exchanged + 1'),
-            ],
-            ['peer_a_id' => $peer_a_id, 'peer_b_id' => $peer_b_id]
-        );
+        // Incremento atómico real de messages_exchanged + actualización de
+        // last_activity. No puede pasarse 'messages_exchanged + 1' como valor
+        // a $wpdb->update() (se escaparía como string y dispararía
+        // _doing_it_wrong sin incrementar).
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$this->connections_table}
+             SET messages_exchanged = messages_exchanged + 1,
+                 last_activity = %s
+             WHERE peer_a_id = %s AND peer_b_id = %s",
+            current_time('mysql'),
+            $peer_a_id,
+            $peer_b_id
+        ));
     }
 
     /**

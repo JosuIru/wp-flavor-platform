@@ -22,7 +22,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla principal de proyectos/campañas de crowdfunding
     $tabla_proyectos = $wpdb->prefix . 'flavor_crowdfunding_proyectos';
-    $sql_proyectos = "CREATE TABLE IF NOT EXISTS $tabla_proyectos (
+    $sql_proyectos = "CREATE TABLE $tabla_proyectos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         titulo varchar(255) NOT NULL,
         slug varchar(255) NOT NULL,
@@ -125,7 +125,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla de tiers/niveles de recompensa
     $tabla_tiers = $wpdb->prefix . 'flavor_crowdfunding_tiers';
-    $sql_tiers = "CREATE TABLE IF NOT EXISTS $tabla_tiers (
+    $sql_tiers = "CREATE TABLE $tabla_tiers (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         proyecto_id bigint(20) unsigned NOT NULL,
 
@@ -169,7 +169,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla de aportaciones/contribuciones
     $tabla_aportaciones = $wpdb->prefix . 'flavor_crowdfunding_aportaciones';
-    $sql_aportaciones = "CREATE TABLE IF NOT EXISTS $tabla_aportaciones (
+    $sql_aportaciones = "CREATE TABLE $tabla_aportaciones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         proyecto_id bigint(20) unsigned NOT NULL,
         tier_id bigint(20) unsigned DEFAULT NULL,
@@ -233,7 +233,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla de actualizaciones del proyecto
     $tabla_actualizaciones = $wpdb->prefix . 'flavor_crowdfunding_actualizaciones';
-    $sql_actualizaciones = "CREATE TABLE IF NOT EXISTS $tabla_actualizaciones (
+    $sql_actualizaciones = "CREATE TABLE $tabla_actualizaciones (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         proyecto_id bigint(20) unsigned NOT NULL,
         autor_id bigint(20) unsigned NOT NULL,
@@ -267,7 +267,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla de comentarios/agradecimientos
     $tabla_comentarios = $wpdb->prefix . 'flavor_crowdfunding_comentarios';
-    $sql_comentarios = "CREATE TABLE IF NOT EXISTS $tabla_comentarios (
+    $sql_comentarios = "CREATE TABLE $tabla_comentarios (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         proyecto_id bigint(20) unsigned NOT NULL,
         usuario_id bigint(20) unsigned DEFAULT NULL,
@@ -295,7 +295,7 @@ function flavor_crowdfunding_crear_tablas() {
 
     // Tabla de categorías de crowdfunding
     $tabla_categorias = $wpdb->prefix . 'flavor_crowdfunding_categorias';
-    $sql_categorias = "CREATE TABLE IF NOT EXISTS $tabla_categorias (
+    $sql_categorias = "CREATE TABLE $tabla_categorias (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         slug varchar(100) NOT NULL,

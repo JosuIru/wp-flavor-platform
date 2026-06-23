@@ -118,8 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
     </h1>
 
     <?php if ($mensaje): ?>
-        <div class="notice notice-<?php echo esc_attr($tipo_mensaje); ?> <?php esc_html_e('is-dismissible">
-', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>            <p><?php echo esc_html($mensaje); ?></p>
+        <div class="notice notice-<?php echo esc_attr($tipo_mensaje); ?> is-dismissible">
+            <p><?php echo esc_html($mensaje); ?></p>
         </div>
     <?php endif; ?>
 

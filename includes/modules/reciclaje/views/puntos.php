@@ -362,6 +362,7 @@ $puntos_reciclaje = $wpdb->get_results("
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     const puntosData = <?php echo json_encode($puntos_reciclaje); ?>;
     let mapaListado, mapaFormulario, marcadorFormulario;
 
@@ -372,7 +373,7 @@ jQuery(document).ready(function($) {
 
         puntosData.forEach(punto => {
             const marker = L.marker([punto.latitud, punto.longitud]).addTo(mapaListado);
-            marker.bindPopup(`<strong>${punto.nombre}</strong><br>${punto.direccion}`);
+            marker.bindPopup(`<strong>${escHtml(punto.nombre)}</strong><br>${escHtml(punto.direccion)}`);
         });
     }
 
@@ -441,7 +442,7 @@ jQuery(document).ready(function($) {
         frame.on('select', function() {
             const attachment = frame.state().get('selection').first().toJSON();
             $('#foto_url').val(attachment.url);
-            $('#preview-foto').html(`<img src="${attachment.url}" style="max-width: 300px; height: auto; border-radius: 4px;">`);
+            $('#preview-foto').html(`<img src="${escHtml(attachment.url)}" style="max-width: 300px; height: auto; border-radius: 4px;">`);
         });
 
         frame.open();

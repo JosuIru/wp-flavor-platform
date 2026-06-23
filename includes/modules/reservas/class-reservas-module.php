@@ -1046,6 +1046,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             var diasCalendario = document.querySelectorAll('.reservas-calendario-dia[data-fecha]');
             diasCalendario.forEach(function(elementoDia) {
                 if (!elementoDia.classList.contains('pasado') && !elementoDia.classList.contains('lleno')) {
@@ -1067,12 +1068,12 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                             .then(function(respuesta) { return respuesta.json(); })
                             .then(function(datos) {
                                 if (datos.success && datos.data.franjas) {
-                                    var htmlFranjas = '<h4><?php esc_html_e('Franjas para', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> ' + fechaSeleccionada + '</h4>';
+                                    var htmlFranjas = '<h4><?php esc_html_e('Franjas para', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> ' + escHtml(fechaSeleccionada) + '</h4>';
                                     datos.data.franjas.forEach(function(franja) {
                                         var claseDisponible = franja.disponible ? 'disponible' : 'no-disponible';
                                         htmlFranjas += '<div class="reservas-franja">';
-                                        htmlFranjas += '<span class="reservas-franja-hora">' + franja.hora_inicio + ' - ' + franja.hora_fin + '</span>';
-                                        htmlFranjas += '<span class="reservas-franja-plazas">' + franja.plazas_libres + ' <?php esc_html_e('plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>';
+                                        htmlFranjas += '<span class="reservas-franja-hora">' + escHtml(franja.hora_inicio) + ' - ' + escHtml(franja.hora_fin) + '</span>';
+                                        htmlFranjas += '<span class="reservas-franja-plazas">' + escHtml(franja.plazas_libres) + ' <?php esc_html_e('plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>';
                                         htmlFranjas += '</div>';
                                     });
                                     contenedorFranjas.innerHTML = htmlFranjas;
@@ -1206,6 +1207,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             var formularioReserva = document.getElementById('form-nueva-reserva');
             if (formularioReserva) {
                 formularioReserva.addEventListener('submit', function(evento) {
@@ -1229,7 +1231,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                     .then(function(respuesta) { return respuesta.json(); })
                     .then(function(datos) {
                         if (datos.success) {
-                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-success">' + datos.data.mensaje + '</div>';
+                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-success">' + escHtml(datos.data.mensaje) + '</div>';
                             formularioReserva.reset();
                             if (datos.data.redirect) {
                                 setTimeout(function() {
@@ -1237,7 +1239,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                                 }, 2000);
                             }
                         } else {
-                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + datos.data.error + '</div>';
+                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + escHtml(datos.data.error) + '</div>';
                         }
                     })
                     .catch(function(error) {
@@ -1529,6 +1531,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             var formularioDisponibilidad = document.getElementById('form-disponibilidad');
             if (formularioDisponibilidad) {
                 formularioDisponibilidad.addEventListener('submit', function(evento) {
@@ -1559,7 +1562,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                             var htmlResultado = '<div class="reservas-disponibilidad-resultado ' + claseResultado + '">';
                             htmlResultado += '<div class="reservas-disponibilidad-icono">' + iconoResultado + '</div>';
                             htmlResultado += '<h3>' + (resultado.disponible ? '<?php esc_html_e('¡Disponible!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' : '<?php esc_html_e('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>') + '</h3>';
-                            htmlResultado += '<p>' + resultado.mensaje + '</p>';
+                            htmlResultado += '<p>' + escHtml(resultado.mensaje) + '</p>';
 
                             if (resultado.franjas && resultado.franjas.length > 0) {
                                 htmlResultado += '<div class="reservas-franjas" style="text-align:left;margin-top:1rem;">';
@@ -1567,8 +1570,8 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                                 resultado.franjas.forEach(function(franja) {
                                     var claseFranja = franja.disponible ? 'disponible' : '';
                                     htmlResultado += '<div class="reservas-franja ' + claseFranja + '">';
-                                    htmlResultado += '<span class="reservas-franja-hora">' + franja.hora_inicio + ' - ' + franja.hora_fin + '</span>';
-                                    htmlResultado += '<span class="reservas-franja-plazas">' + franja.plazas_libres + ' <?php esc_html_e('plazas libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>';
+                                    htmlResultado += '<span class="reservas-franja-hora">' + escHtml(franja.hora_inicio) + ' - ' + escHtml(franja.hora_fin) + '</span>';
+                                    htmlResultado += '<span class="reservas-franja-plazas">' + escHtml(franja.plazas_libres) + ' <?php esc_html_e('plazas libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>';
                                     htmlResultado += '</div>';
                                 });
                                 htmlResultado += '</div>';
@@ -1577,7 +1580,7 @@ class Flavor_Platform_Reservas_Module extends Flavor_Platform_Module_Base {
                             htmlResultado += '</div>';
                             contenedorResultado.innerHTML = htmlResultado;
                         } else {
-                            contenedorResultado.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + datos.data.error + '</div>';
+                            contenedorResultado.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + escHtml(datos.data.error) + '</div>';
                         }
                     })
                     .catch(function(error) {

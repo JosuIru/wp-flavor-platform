@@ -855,7 +855,7 @@ $categorias = [
                 if (anuncio.destacado) clases.push('destacado');
                 if (anuncio.categoria === 'urgente') clases.push('urgente');
 
-                html += '<article class="' + clases.join(' ') + '" data-id="' + anuncio.id + '">' +
+                html += '<article class="' + clases.join(' ') + '" data-id="' + escapeHtml(anuncio.id) + '">' +
                     '<div class="flavor-anuncio-header">' +
                         '<div class="flavor-anuncio-meta">' +
                             '<span class="flavor-anuncio-categoria" style="--cat-color: ' + catConfig.color + '">' +
@@ -870,7 +870,7 @@ $categorias = [
                 }
 
                 html += '</div>' +
-                        '<span class="flavor-anuncio-fecha">' + anuncio.fecha + '</span>' +
+                        '<span class="flavor-anuncio-fecha">' + escapeHtml(anuncio.fecha) + '</span>' +
                     '</div>' +
                     '<div class="flavor-anuncio-body">' +
                         '<h3 class="flavor-anuncio-titulo">' + escapeHtml(anuncio.titulo) + '</h3>' +
@@ -880,14 +880,14 @@ $categorias = [
                         '<div class="flavor-anuncio-comunidad">';
 
                 if (anuncio.comunidad_imagen) {
-                    html += '<img src="' + anuncio.comunidad_imagen + '" alt="" class="flavor-anuncio-comunidad-img">';
+                    html += '<img src="' + escapeHtml(sanitizarUrl(anuncio.comunidad_imagen)) + '" alt="" class="flavor-anuncio-comunidad-img">';
                 }
                 html += '<span>' + escapeHtml(anuncio.comunidad_nombre) + '</span>' +
                         '</div>' +
                         '<div class="flavor-anuncio-acciones">';
 
                 if (anuncio.url) {
-                    html += '<a href="' + anuncio.url + '" class="flavor-anuncio-btn"' +
+                    html += '<a href="' + escapeHtml(sanitizarUrl(anuncio.url)) + '" class="flavor-anuncio-btn"' +
                             (anuncio.origen === 'federado' ? ' target="_blank" rel="noopener"' : '') + '>' +
                             '<span class="dashicons dashicons-visibility"></span><?php echo esc_js(__('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' +
                             '</a>';
@@ -963,7 +963,16 @@ $categorias = [
             if (!text) return '';
             var div = document.createElement('div');
             div.textContent = text;
-            return div.innerHTML;
+            return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function sanitizarUrl(url) {
+            if (!url) return '';
+            var limpia = String(url).trim();
+            if (/^(https?:|\/|#|\?)/i.test(limpia) && !/^javascript:/i.test(limpia)) {
+                return limpia;
+            }
+            return '#';
         }
     });
 })();

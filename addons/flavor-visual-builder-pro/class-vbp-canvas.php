@@ -3923,7 +3923,7 @@ class Flavor_VBP_Canvas {
         }
 
         if ( $html_custom ) {
-            $html .= '<div class="vbp-section__html">' . $html_custom . '</div>';
+            $html .= '<div class="vbp-section__html">' . wp_kses_post( $html_custom ) . '</div>';
         }
 
         // Renderizar hijos
@@ -5358,6 +5358,621 @@ class Flavor_VBP_Canvas {
     /**
      * Renderizado genérico
      */
+    /**
+     * Resuelve el post actual para los bloques dinámicos.
+     *
+     * En frontend devuelve el objeto consultado o el global $post.
+     * En el editor no hay contexto de post real.
+     *
+     * @return WP_Post|null
+     */
+    private function get_post_dinamico_actual() {
+        $post_actual = get_queried_object();
+        if ( $post_actual instanceof WP_Post ) {
+            return $post_actual;
+        }
+
+        $post_global = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
+        if ( $post_global instanceof WP_Post ) {
+            return $post_global;
+        }
+
+        return null;
+    }
+
+    /**
+     * Marca de posición para bloques dinámicos sin contexto de post (editor).
+     *
+     * @param string $etiqueta_bloque Etiqueta legible del bloque.
+     * @return string
+     */
+    private function render_dynamic_placeholder( $etiqueta_bloque ) {
+        $clases = 'vbp-element vbp-dynamic-placeholder';
+
+        return '<div class="' . esc_attr( $clases ) . '">'
+            . '<span class="vbp-dynamic-placeholder__label">'
+            . esc_html( sprintf( __( '%s (dinámico)', FLAVOR_PLATFORM_TEXT_DOMAIN ), $etiqueta_bloque ) )
+            . '</span>'
+            . '</div>';
+    }
+
+    /**
+     * Renderiza un formulario contenedor.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_form( $elemento ) {
+        $datos            = $elemento['data'] ?? array();
+        $estilos          = $elemento['styles'] ?? array();
+        $hijos            = $elemento['children'] ?? array();
+        $estilos_css      = $this->generar_estilos_elemento( $estilos );
+        $estilos_anim     = $this->generar_estilos_animacion( $estilos );
+        $clases_anim      = $this->generar_clases_animacion( $estilos );
+        $atributos_anim   = $this->generar_atributos_animacion( $estilos );
+
+        $accion       = $datos['action'] ?? '';
+        $metodo       = strtoupper( $datos['method'] ?? 'POST' );
+        $metodo       = in_array( $metodo, array( 'POST', 'GET' ), true ) ? $metodo : 'POST';
+        $texto_envio  = $datos['submit_text'] ?? __( 'Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN );
+        $mensaje_exito = $datos['success_msg'] ?? '';
+
+        $estilo_completo = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
+        $clases          = trim( 'vbp-form ' . $clases_anim );
+
+        $atributo_accion = $accion ? ' action="' . esc_url( $accion ) . '"' : '';
+
+        $html = '<form class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_completo ) . '" '
+            . $atributos_anim . ' method="' . esc_attr( $metodo ) . '"' . $atributo_accion;
+
+        if ( $mensaje_exito ) {
+            $html .= ' data-success-message="' . esc_attr( $mensaje_exito ) . '"';
+        }
+
+        $html .= '>';
+
+        // Renderizar campos hijos del formulario.
+        foreach ( $hijos as $hijo ) {
+            $html .= $this->renderizar_elemento( $hijo );
+        }
+
+        $html .= '<button type="submit" class="vbp-form__submit vbp-button"'
+            . $this->get_editor_link_attr( 'submit_text' ) . '>' . esc_html( $texto_envio ) . '</button>';
+        $html .= '</form>';
+
+        return $html;
+    }
+
+    /**
+     * Genera la envoltura común (label + estilos) de un control de formulario.
+     *
+     * @param array  $elemento     Datos del elemento.
+     * @param string $clase_extra  Clase modificadora.
+     * @return array{label_html:string,wrapper_open:string,wrapper_close:string,name:string,required:bool}
+     */
+    private function get_form_field_wrapper( $elemento, $clase_extra ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $etiqueta  = $datos['label'] ?? '';
+        $requerido = ! empty( $datos['required'] );
+        $name      = $etiqueta ? sanitize_title( $etiqueta ) : 'campo';
+
+        $clases = trim( 'vbp-form-field ' . $clase_extra . ' ' . $clases_anim );
+
+        $label_html = '';
+        if ( $etiqueta ) {
+            $marca_requerido = $requerido ? ' <span class="vbp-form-field__required">*</span>' : '';
+            $label_html      = '<label class="vbp-form-field__label"'
+                . $this->get_editor_contenteditable_attr( 'label' ) . '>'
+                . esc_html( $etiqueta ) . $marca_requerido . '</label>';
+        }
+
+        return array(
+            'label_html'   => $label_html,
+            'wrapper_open' => '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>',
+            'wrapper_close' => '</div>',
+            'name'         => $name,
+            'required'     => $requerido,
+        );
+    }
+
+    /**
+     * Renderiza un campo de entrada de texto.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_input( $elemento ) {
+        $datos    = $elemento['data'] ?? array();
+        $wrapper  = $this->get_form_field_wrapper( $elemento, 'vbp-form-field--input' );
+
+        $tipos_validos = array( 'text', 'email', 'tel', 'number', 'password', 'url', 'date' );
+        $tipo          = $datos['type'] ?? 'text';
+        $tipo          = in_array( $tipo, $tipos_validos, true ) ? $tipo : 'text';
+        $placeholder   = $datos['placeholder'] ?? '';
+
+        $html  = $wrapper['wrapper_open'];
+        $html .= $wrapper['label_html'];
+        $html .= '<input type="' . esc_attr( $tipo ) . '" name="' . esc_attr( $wrapper['name'] ) . '"'
+            . ' class="vbp-form-field__control"'
+            . ( $placeholder ? ' placeholder="' . esc_attr( $placeholder ) . '"' : '' )
+            . ( $wrapper['required'] ? ' required' : '' ) . '>';
+        $html .= $wrapper['wrapper_close'];
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un área de texto.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_textarea( $elemento ) {
+        $datos   = $elemento['data'] ?? array();
+        $wrapper = $this->get_form_field_wrapper( $elemento, 'vbp-form-field--textarea' );
+
+        $placeholder = $datos['placeholder'] ?? '';
+        $filas       = isset( $datos['rows'] ) ? max( 1, intval( $datos['rows'] ) ) : 4;
+
+        $html  = $wrapper['wrapper_open'];
+        $html .= $wrapper['label_html'];
+        $html .= '<textarea name="' . esc_attr( $wrapper['name'] ) . '"'
+            . ' class="vbp-form-field__control" rows="' . esc_attr( $filas ) . '"'
+            . ( $placeholder ? ' placeholder="' . esc_attr( $placeholder ) . '"' : '' )
+            . ( $wrapper['required'] ? ' required' : '' ) . '></textarea>';
+        $html .= $wrapper['wrapper_close'];
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un selector (select).
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_select( $elemento ) {
+        $datos   = $elemento['data'] ?? array();
+        $wrapper = $this->get_form_field_wrapper( $elemento, 'vbp-form-field--select' );
+
+        $opciones = $datos['options'] ?? array();
+        if ( ! is_array( $opciones ) ) {
+            $opciones = array();
+        }
+
+        $html  = $wrapper['wrapper_open'];
+        $html .= $wrapper['label_html'];
+        $html .= '<select name="' . esc_attr( $wrapper['name'] ) . '" class="vbp-form-field__control"'
+            . ( $wrapper['required'] ? ' required' : '' ) . '>';
+        $html .= '<option value="">' . esc_html__( 'Selecciona…', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</option>';
+
+        foreach ( $opciones as $opcion ) {
+            if ( is_array( $opcion ) ) {
+                $valor_opcion = $opcion['value'] ?? ( $opcion['label'] ?? '' );
+                $texto_opcion = $opcion['label'] ?? $valor_opcion;
+            } else {
+                $valor_opcion = $opcion;
+                $texto_opcion = $opcion;
+            }
+            $html .= '<option value="' . esc_attr( $valor_opcion ) . '">' . esc_html( $texto_opcion ) . '</option>';
+        }
+
+        $html .= '</select>';
+        $html .= $wrapper['wrapper_close'];
+
+        return $html;
+    }
+
+    /**
+     * Renderiza una casilla de verificación.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_checkbox( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $etiqueta  = $datos['label'] ?? '';
+        $marcado   = ! empty( $datos['checked'] );
+        $requerido = ! empty( $datos['required'] );
+        $name      = $etiqueta ? sanitize_title( $etiqueta ) : 'checkbox';
+
+        $clases = trim( 'vbp-form-field vbp-form-field--checkbox ' . $clases_anim );
+
+        $marca_requerido = $requerido ? ' <span class="vbp-form-field__required">*</span>' : '';
+
+        $html  = '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>';
+        $html .= '<label class="vbp-form-field__checkbox-label">';
+        $html .= '<input type="checkbox" name="' . esc_attr( $name ) . '" value="1"'
+            . ( $marcado ? ' checked' : '' )
+            . ( $requerido ? ' required' : '' ) . '>';
+        $html .= '<span class="vbp-form-field__checkbox-text"'
+            . $this->get_editor_contenteditable_attr( 'label' ) . '>'
+            . esc_html( $etiqueta ) . $marca_requerido . '</span>';
+        $html .= '</label>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un campo dinámico del post actual.
+     *
+     * Soporta: post_title, post_content, post_excerpt, permalink,
+     * meta_* y taxonomy_*.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_field( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $clave_campo = $datos['field_key'] ?? 'post_title';
+        $etiqueta    = $datos['tag'] ?? 'div';
+        $fallback    = $datos['fallback'] ?? '';
+
+        $etiquetas_validas = array( 'div', 'p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
+        $etiqueta          = in_array( $etiqueta, $etiquetas_validas, true ) ? $etiqueta : 'div';
+
+        $clases = trim( 'vbp-dynamic-field ' . $clases_anim );
+
+        $post_actual = $this->get_post_dinamico_actual();
+        if ( ! $post_actual ) {
+            return $this->render_dynamic_placeholder( __( 'Campo dinámico', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        $valor      = '';
+        $es_html    = false;
+
+        if ( 'post_title' === $clave_campo ) {
+            $valor = get_the_title( $post_actual );
+        } elseif ( 'post_content' === $clave_campo ) {
+            $valor   = apply_filters( 'the_content', $post_actual->post_content );
+            $es_html = true;
+        } elseif ( 'post_excerpt' === $clave_campo ) {
+            $valor = $post_actual->post_excerpt ? $post_actual->post_excerpt : wp_trim_words( $post_actual->post_content, 55 );
+        } elseif ( 'permalink' === $clave_campo ) {
+            $valor = get_permalink( $post_actual );
+        } elseif ( 0 === strpos( $clave_campo, 'meta_' ) ) {
+            $clave_meta = substr( $clave_campo, 5 );
+            $valor      = get_post_meta( $post_actual->ID, $clave_meta, true );
+            if ( is_array( $valor ) ) {
+                $valor = implode( ', ', array_map( 'strval', $valor ) );
+            }
+        } elseif ( 0 === strpos( $clave_campo, 'taxonomy_' ) ) {
+            $taxonomia = substr( $clave_campo, 9 );
+            $terminos  = get_the_terms( $post_actual, $taxonomia );
+            if ( $terminos && ! is_wp_error( $terminos ) ) {
+                $valor = implode( ', ', wp_list_pluck( $terminos, 'name' ) );
+            }
+        }
+
+        if ( '' === $valor || null === $valor ) {
+            $valor = $fallback;
+        }
+
+        if ( '' === (string) $valor ) {
+            return '';
+        }
+
+        $contenido = $es_html ? wp_kses_post( $valor ) : esc_html( $valor );
+
+        return '<' . $etiqueta . ' class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" '
+            . $atributos_anim . '>' . $contenido . '</' . $etiqueta . '>';
+    }
+
+    /**
+     * Renderiza la imagen destacada del post actual.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_featured_image( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $tamano_validos = array( 'thumbnail', 'medium', 'large', 'full' );
+        $tamano         = $datos['size'] ?? 'large';
+        $tamano         = in_array( $tamano, $tamano_validos, true ) ? $tamano : 'large';
+        $proporcion     = $datos['aspect_ratio'] ?? 'auto';
+        $imagen_defecto = $datos['fallback_image'] ?? '';
+
+        $clases     = trim( 'vbp-dynamic-featured-image ' . $clases_anim );
+        $estilo_img = ( $proporcion && 'auto' !== $proporcion ) ? 'aspect-ratio: ' . esc_attr( $proporcion ) . '; object-fit: cover;' : '';
+
+        $post_actual = $this->get_post_dinamico_actual();
+        $url_imagen  = '';
+
+        if ( $post_actual ) {
+            $id_miniatura = get_post_thumbnail_id( $post_actual );
+            if ( $id_miniatura ) {
+                $url_imagen = wp_get_attachment_image_url( $id_miniatura, $tamano );
+            }
+        } elseif ( $this->is_editor_context() ) {
+            return $this->render_dynamic_placeholder( __( 'Imagen destacada', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        if ( ! $url_imagen ) {
+            $url_imagen = $imagen_defecto;
+        }
+
+        if ( ! $url_imagen ) {
+            return '';
+        }
+
+        $texto_alt = $post_actual ? get_the_title( $post_actual ) : '';
+
+        $html  = '<figure class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>';
+        $html .= '<img src="' . esc_url( $url_imagen ) . '" alt="' . esc_attr( $texto_alt ) . '"'
+            . ( $estilo_img ? ' style="' . esc_attr( $estilo_img ) . '"' : '' ) . '>';
+        $html .= '</figure>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza la información del autor del post actual.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_author( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $mostrar_avatar = isset( $datos['show_avatar'] ) ? ! empty( $datos['show_avatar'] ) : true;
+        $mostrar_nombre = isset( $datos['show_name'] ) ? ! empty( $datos['show_name'] ) : true;
+        $mostrar_bio    = ! empty( $datos['show_bio'] );
+        $tamano_avatar  = isset( $datos['avatar_size'] ) ? max( 16, intval( $datos['avatar_size'] ) ) : 48;
+
+        $clases = trim( 'vbp-dynamic-author ' . $clases_anim );
+
+        $post_actual = $this->get_post_dinamico_actual();
+        if ( ! $post_actual ) {
+            return $this->render_dynamic_placeholder( __( 'Autor', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        $id_autor      = $post_actual->post_author;
+        $nombre_autor  = get_the_author_meta( 'display_name', $id_autor );
+        $bio_autor     = get_the_author_meta( 'description', $id_autor );
+        $url_avatar    = get_avatar_url( $id_autor, array( 'size' => $tamano_avatar * 2 ) );
+
+        $html  = '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>';
+
+        if ( $mostrar_avatar && $url_avatar ) {
+            $html .= '<img class="vbp-dynamic-author__avatar" src="' . esc_url( $url_avatar ) . '"'
+                . ' width="' . esc_attr( $tamano_avatar ) . '" height="' . esc_attr( $tamano_avatar ) . '"'
+                . ' alt="' . esc_attr( $nombre_autor ) . '">';
+        }
+
+        if ( $mostrar_nombre || $mostrar_bio ) {
+            $html .= '<div class="vbp-dynamic-author__meta">';
+            if ( $mostrar_nombre && $nombre_autor ) {
+                $html .= '<span class="vbp-dynamic-author__name">' . esc_html( $nombre_autor ) . '</span>';
+            }
+            if ( $mostrar_bio && $bio_autor ) {
+                $html .= '<p class="vbp-dynamic-author__bio">' . esc_html( $bio_autor ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza la fecha del post actual.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_date( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $formato          = $datos['format'] ?? 'full';
+        $formato_personal = $datos['custom_format'] ?? 'j F, Y';
+        $prefijo          = $datos['prefix'] ?? '';
+
+        $clases = trim( 'vbp-dynamic-date ' . $clases_anim );
+
+        $post_actual = $this->get_post_dinamico_actual();
+        if ( ! $post_actual ) {
+            return $this->render_dynamic_placeholder( __( 'Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        $marca_tiempo = get_post_time( 'U', false, $post_actual );
+
+        if ( 'human' === $formato ) {
+            $valor_fecha = sprintf(
+                /* translators: %s: human-readable time difference. */
+                __( 'hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                human_time_diff( $marca_tiempo, current_time( 'timestamp' ) )
+            );
+        } elseif ( 'short' === $formato ) {
+            $valor_fecha = date_i18n( 'd/m/Y', $marca_tiempo );
+        } elseif ( 'custom' === $formato ) {
+            $valor_fecha = date_i18n( $formato_personal, $marca_tiempo );
+        } else {
+            $valor_fecha = date_i18n( get_option( 'date_format' ), $marca_tiempo );
+        }
+
+        $fecha_iso = gmdate( 'c', $marca_tiempo );
+        $texto     = ( $prefijo ? $prefijo . ' ' : '' ) . $valor_fecha;
+
+        return '<time class="' . esc_attr( $clases ) . '" datetime="' . esc_attr( $fecha_iso ) . '"'
+            . ' style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>'
+            . esc_html( $texto ) . '</time>';
+    }
+
+    /**
+     * Renderiza las taxonomías (categorías/tags) del post actual.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_terms( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $taxonomia    = $datos['taxonomy'] ?? 'category';
+        $estilo_terms = $datos['style'] ?? 'badges';
+        $separador    = $datos['separator'] ?? ', ';
+
+        $estilos_validos = array( 'links', 'badges', 'pills', 'plain' );
+        $estilo_terms    = in_array( $estilo_terms, $estilos_validos, true ) ? $estilo_terms : 'badges';
+
+        $clases = trim( 'vbp-dynamic-terms vbp-dynamic-terms--' . $estilo_terms . ' ' . $clases_anim );
+
+        $post_actual = $this->get_post_dinamico_actual();
+        if ( ! $post_actual ) {
+            return $this->render_dynamic_placeholder( __( 'Categorías/Tags', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        $terminos = get_the_terms( $post_actual, $taxonomia );
+        if ( ! $terminos || is_wp_error( $terminos ) ) {
+            return '';
+        }
+
+        $html  = '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>';
+
+        $piezas = array();
+        foreach ( $terminos as $termino ) {
+            if ( 'plain' === $estilo_terms ) {
+                $piezas[] = esc_html( $termino->name );
+            } else {
+                $enlace = get_term_link( $termino );
+                $url    = ( $enlace && ! is_wp_error( $enlace ) ) ? $enlace : '#';
+                $piezas[] = '<a class="vbp-dynamic-terms__item" href="' . esc_url( $url ) . '">'
+                    . esc_html( $termino->name ) . '</a>';
+            }
+        }
+
+        if ( 'plain' === $estilo_terms || 'links' === $estilo_terms ) {
+            $html .= implode( esc_html( $separador ), $piezas );
+        } else {
+            $html .= implode( '', $piezas );
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza posts relacionados con el post actual.
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_dynamic_related_posts( $elemento ) {
+        $datos          = $elemento['data'] ?? array();
+        $estilos        = $elemento['styles'] ?? array();
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        $cantidad       = isset( $datos['count'] ) ? max( 1, intval( $datos['count'] ) ) : 3;
+        $columnas       = isset( $datos['columns'] ) ? max( 1, min( 4, intval( $datos['columns'] ) ) ) : 3;
+        $mostrar_imagen = isset( $datos['show_image'] ) ? ! empty( $datos['show_image'] ) : true;
+        $mostrar_extracto = ! empty( $datos['show_excerpt'] );
+        $relacion       = $datos['relation'] ?? 'category';
+
+        $clases = trim( 'vbp-dynamic-related vbp-dynamic-related--cols-' . $columnas . ' ' . $clases_anim );
+
+        $post_actual = $this->get_post_dinamico_actual();
+        if ( ! $post_actual ) {
+            return $this->render_dynamic_placeholder( __( 'Posts relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
+        }
+
+        $args = array(
+            'post_type'           => $post_actual->post_type,
+            'posts_per_page'      => $cantidad,
+            'post__not_in'        => array( $post_actual->ID ),
+            'ignore_sticky_posts' => true,
+            'no_found_rows'       => true,
+        );
+
+        if ( 'random' === $relacion ) {
+            $args['orderby'] = 'rand';
+        } elseif ( 'author' === $relacion ) {
+            $args['author'] = $post_actual->post_author;
+        } elseif ( 'tag' === $relacion ) {
+            $tags = get_the_terms( $post_actual, 'post_tag' );
+            if ( $tags && ! is_wp_error( $tags ) ) {
+                $args['tag__in'] = wp_list_pluck( $tags, 'term_id' );
+            }
+        } else {
+            $categorias = get_the_terms( $post_actual, 'category' );
+            if ( $categorias && ! is_wp_error( $categorias ) ) {
+                $args['category__in'] = wp_list_pluck( $categorias, 'term_id' );
+            }
+        }
+
+        $consulta = new WP_Query( $args );
+        if ( ! $consulta->have_posts() ) {
+            wp_reset_postdata();
+            return '';
+        }
+
+        $html  = '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilos_css ) . '" ' . $atributos_anim . '>';
+        $html .= '<div class="vbp-dynamic-related__grid" style="display:grid; grid-template-columns:repeat(' . esc_attr( $columnas ) . ', 1fr); gap:1.5rem;">';
+
+        foreach ( $consulta->posts as $post_relacionado ) {
+            $url_post = get_permalink( $post_relacionado );
+            $html    .= '<article class="vbp-dynamic-related__item">';
+
+            if ( $mostrar_imagen && has_post_thumbnail( $post_relacionado ) ) {
+                $html .= '<a class="vbp-dynamic-related__thumb" href="' . esc_url( $url_post ) . '">'
+                    . get_the_post_thumbnail( $post_relacionado, 'medium' )
+                    . '</a>';
+            }
+
+            $html .= '<h3 class="vbp-dynamic-related__title"><a href="' . esc_url( $url_post ) . '">'
+                . esc_html( get_the_title( $post_relacionado ) ) . '</a></h3>';
+
+            if ( $mostrar_extracto ) {
+                $extracto = $post_relacionado->post_excerpt ? $post_relacionado->post_excerpt : wp_trim_words( $post_relacionado->post_content, 20 );
+                $html    .= '<p class="vbp-dynamic-related__excerpt">' . esc_html( $extracto ) . '</p>';
+            }
+
+            $html .= '</article>';
+        }
+
+        wp_reset_postdata();
+
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
     private function render_generico( $elemento ) {
         $tipo             = $elemento['type'] ?? 'unknown';
         $nombre           = $elemento['name'] ?? $tipo;

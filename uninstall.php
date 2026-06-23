@@ -310,8 +310,11 @@ try {
         error_log('Flavor Platform: Desinstalación completa - Todos los datos han sido eliminados.');
     }
 
-} catch (Exception $e) {
-    // Rollback en caso de error
+} catch (\Throwable $e) {
+    // Rollback en caso de error. Capturamos \Throwable (no solo Exception) para
+    // cubrir también \Error/\TypeError de PHP 7+. NOTA: los DROP TABLE de arriba
+    // provocan un commit implícito en MySQL/InnoDB, así que el rollback solo puede
+    // revertir las operaciones DML posteriores (options, postmeta), no las tablas.
     $wpdb->query('ROLLBACK');
 
     if (defined('WP_DEBUG') && WP_DEBUG) {

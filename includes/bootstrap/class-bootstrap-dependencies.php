@@ -375,8 +375,10 @@ final class Flavor_Bootstrap_Dependencies {
             require_once FLAVOR_PLATFORM_PATH . 'includes/network/class-network-federation-shortcodes.php';
         }
 
-        // Crear tablas de red si no existen
-        Flavor_Network_Installer::create_tables();
+        // Crear/actualizar tablas de red solo cuando cambia la versión del schema.
+        // maybe_upgrade() compara DB_VERSION_OPTION con DB_VERSION; llamar a
+        // create_tables() directamente ejecutaba dbDelta() de 24+ tablas en CADA request.
+        Flavor_Network_Installer::maybe_upgrade();
 
         // Inicializar gestor de red y API REST
         Flavor_Network_Manager::get_instance();

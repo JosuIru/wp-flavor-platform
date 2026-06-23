@@ -246,9 +246,18 @@ class Flavor_Notification_Center {
      * @param int $notification_id
      * @return bool
      */
-    public function mark_read($notification_id) {
+    public function mark_read($notification_id, $user_id = null) {
         global $wpdb;
         $table_name = $wpdb->prefix . self::TABLE_NAME;
+
+        // Si se indica un usuario, restringir al propietario para evitar que un
+        // usuario marque como leídas notificaciones de otros (IDOR).
+        $where = ['id' => absint($notification_id)];
+        $where_format = ['%d'];
+        if ($user_id !== null) {
+            $where['user_id'] = absint($user_id);
+            $where_format[] = '%d';
+        }
 
         $result = $wpdb->update(
             $table_name,
@@ -256,9 +265,9 @@ class Flavor_Notification_Center {
                 'is_read' => 1,
                 'read_at' => current_time('mysql'),
             ],
-            ['id' => absint($notification_id)],
+            $where,
             ['%d', '%s'],
-            ['%d']
+            $where_format
         );
 
         return $result !== false;
@@ -297,14 +306,23 @@ class Flavor_Notification_Center {
      * @param int $notification_id
      * @return bool
      */
-    public function delete($notification_id) {
+    public function delete($notification_id, $user_id = null) {
         global $wpdb;
         $table_name = $wpdb->prefix . self::TABLE_NAME;
 
+        // Si se indica un usuario, restringir al propietario para evitar que un
+        // usuario elimine notificaciones de otros (IDOR).
+        $where = ['id' => absint($notification_id)];
+        $where_format = ['%d'];
+        if ($user_id !== null) {
+            $where['user_id'] = absint($user_id);
+            $where_format[] = '%d';
+        }
+
         $result = $wpdb->delete(
             $table_name,
-            ['id' => absint($notification_id)],
-            ['%d']
+            $where,
+            $where_format
         );
 
         return $result !== false;
@@ -501,7 +519,7 @@ class Flavor_Notification_Center {
      */
     public function rest_mark_read($request) {
         $notification_id = absint($request['id']);
-        $result = $this->mark_read($notification_id);
+        $result = $this->mark_read($notification_id, get_current_user_id());
 
         return rest_ensure_response([
             'success' => $result,
@@ -525,7 +543,7 @@ class Flavor_Notification_Center {
      */
     public function rest_delete_notification($request) {
         $notification_id = absint($request['id']);
-        $result = $this->delete($notification_id);
+        $result = $this->delete($notification_id, get_current_user_id());
 
         return rest_ensure_response([
             'success' => $result,
@@ -539,7 +557,7 @@ class Flavor_Notification_Center {
         check_ajax_referer('flavor_notifications', 'nonce');
 
         $notification_id = absint($_POST['id'] ?? 0);
-        $result = $this->mark_read($notification_id);
+        $result = $this->mark_read($notification_id, get_current_user_id());
 
         wp_send_json_success(['marked' => $result]);
     }
@@ -563,7 +581,7 @@ class Flavor_Notification_Center {
         check_ajax_referer('flavor_notifications', 'nonce');
 
         $notification_id = absint($_POST['id'] ?? 0);
-        $result = $this->delete($notification_id);
+        $result = $this->delete($notification_id, get_current_user_id());
 
         wp_send_json_success(['deleted' => $result]);
     }

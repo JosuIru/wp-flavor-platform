@@ -7854,6 +7854,151 @@ class Flavor_VBP_Claude_API {
     // NOTA: get_page_seo(), update_page_seo(), get_page_schema(), update_page_schema() movidos a VBP_API_SEO
     // NOTA: get_page_animations(), set_block_animation(), batch_set_animations(), get_animation_presets() movidos a VBP_API_Animations
     // NOTA: get_page_responsive_styles(), set_block_responsive_styles(), get_custom_breakpoints(), set_custom_breakpoints(), set_block_visibility() movidos a VBP_API_Responsive
+
+    /**
+     * Lista los widgets que aportan los módulos activos.
+     *
+     * Endpoint: GET /claude/widgets
+     * Reutiliza el mapeo de módulos->widgets ya definido para las capacidades
+     * (get_module_widgets_for_capabilities) para mantener una única fuente de verdad.
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response
+     */
+    public function get_available_widgets( $request ) {
+        $module_widgets = $this->get_module_widgets_for_capabilities();
+
+        return new WP_REST_Response( array(
+            'success' => true,
+            'widgets' => $module_widgets,
+            'total'   => count( $module_widgets ),
+        ), 200 );
+    }
+
+    /**
+     * Crea una plantilla de bloque reutilizable.
+     *
+     * Endpoint: POST /claude/block-templates
+     * Persiste en la misma opción que consume list_block_templates()
+     * (flavor_vbp_block_templates) para que aparezca al listar.
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response
+     */
+    public function create_block_template( $request ) {
+        $name = sanitize_text_field( $request->get_param( 'name' ) );
+        $block_data = $request->get_param( 'block_data' );
+        $category = sanitize_text_field( $request->get_param( 'category' ) ) ?: 'custom';
+        $thumbnail = esc_url_raw( (string) $request->get_param( 'thumbnail' ) );
+
+        if ( empty( $name ) ) {
+            return new WP_REST_Response( array(
+                'success' => false,
+                'error'   => 'El nombre es requerido.',
+            ), 400 );
+        }
+
+        if ( empty( $block_data ) || ! is_array( $block_data ) ) {
+            return new WP_REST_Response( array(
+                'success' => false,
+                'error'   => 'block_data es requerido y debe ser un objeto.',
+            ), 400 );
+        }
+
+        $templates = get_option( 'flavor_vbp_block_templates', array() );
+        if ( ! is_array( $templates ) ) {
+            $templates = array();
+        }
+
+        $template_id = 'tpl_' . bin2hex( random_bytes( 6 ) );
+        $templates[ $template_id ] = array(
+            'name'        => $name,
+            'category'    => $category,
+            'block'       => $block_data,
+            'block_type'  => $block_data['type'] ?? 'unknown',
+            'thumbnail'   => $thumbnail,
+            'created_at'  => current_time( 'mysql' ),
+            'created_by'  => get_current_user_id(),
+        );
+
+        update_option( 'flavor_vbp_block_templates', $templates );
+
+        return new WP_REST_Response( array(
+            'success'     => true,
+            'template_id' => $template_id,
+            'name'        => $name,
+            'category'    => $category,
+        ), 201 );
+    }
+
+    /**
+     * Inserta en una página un bloque a partir de una plantilla guardada.
+     *
+     * Endpoint: POST /claude/pages/{id}/blocks/from-template
+     * Regenera los IDs del bloque de la plantilla y lo añade a _flavor_vbp_data,
+     * coherente con add_block()/add_block_to_page().
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response
+     */
+    public function add_block_from_template( $request ) {
+        $post_id = (int) $request->get_param( 'id' );
+        $template_id = sanitize_text_field( $request->get_param( 'template_id' ) );
+        $position = $request->get_param( 'position' );
+        $position = ( null === $position ) ? -1 : (int) $position;
+
+        $post = get_post( $post_id );
+        if ( ! $this->is_valid_vbp_post( $post ) ) {
+            return new WP_REST_Response( array(
+                'success' => false,
+                'error'   => 'Página no encontrada o no es un post type soportado.',
+            ), 404 );
+        }
+
+        $templates = get_option( 'flavor_vbp_block_templates', array() );
+        if ( ! is_array( $templates ) || ! isset( $templates[ $template_id ] ) ) {
+            return new WP_REST_Response( array(
+                'success' => false,
+                'error'   => 'Plantilla no encontrada.',
+            ), 404 );
+        }
+
+        $block = $templates[ $template_id ]['block'] ?? null;
+        if ( empty( $block ) || ! is_array( $block ) ) {
+            return new WP_REST_Response( array(
+                'success' => false,
+                'error'   => 'La plantilla no contiene un bloque válido.',
+            ), 422 );
+        }
+
+        // Regenerar IDs para evitar colisiones con elementos existentes.
+        $fresh = $this->regenerate_element_ids( array( $block ) );
+        $new_block = $fresh[0];
+
+        $vbp_data = get_post_meta( $post_id, '_flavor_vbp_data', true );
+        if ( ! is_array( $vbp_data ) ) {
+            $vbp_data = array();
+        }
+        $elements = $vbp_data['elements'] ?? array();
+
+        // Insertar en la posición indicada (-1 o fuera de rango = al final).
+        if ( $position < 0 || $position >= count( $elements ) ) {
+            $elements[] = $new_block;
+        } else {
+            array_splice( $elements, $position, 0, array( $new_block ) );
+        }
+
+        $vbp_data['elements'] = $elements;
+        update_post_meta( $post_id, '_flavor_vbp_data', $vbp_data );
+
+        return new WP_REST_Response( array(
+            'success'     => true,
+            'page_id'     => $post_id,
+            'template_id' => $template_id,
+            'block_id'    => $new_block['id'] ?? null,
+            'edit_url'    => admin_url( "admin.php?page=vbp-editor&post_id={$post_id}" ),
+        ), 201 );
+    }
 }
 
 // Inicializar

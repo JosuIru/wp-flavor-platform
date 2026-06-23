@@ -105,6 +105,8 @@ class Flavor_Economia_Don_Frontend_Controller {
         add_action('wp_ajax_flavor_don_ofrecer', [$this, 'ajax_ofrecer']);
         add_action('wp_ajax_flavor_don_solicitar', [$this, 'ajax_solicitar']);
         add_action('wp_ajax_flavor_don_confirmar_entrega', [$this, 'ajax_confirmar_entrega']);
+        // El JS dispara la cancelación con la acción 'flavor_economia_don_cancelar'.
+        add_action('wp_ajax_flavor_economia_don_cancelar', [$this, 'ajax_cancelar']);
         add_action('wp_ajax_flavor_don_agradecer', [$this, 'ajax_agradecer']);
         add_action('wp_ajax_flavor_don_obtener', [$this, 'ajax_obtener']);
         add_action('wp_ajax_nopriv_flavor_don_obtener', [$this, 'ajax_obtener']);
@@ -150,7 +152,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             true
         );
 
-        wp_localize_script('flavor-economia-don-frontend', 'flavorDonConfig', [
+        wp_localize_script('flavor-economia-don-frontend', 'flavorEconomiaDonConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_don_nonce'),
             'strings' => [
@@ -957,12 +959,161 @@ class Flavor_Economia_Don_Frontend_Controller {
 
     /**
      * AJAX: Confirmar entrega
+     *
+     * Solo el donante (propietario del don) puede confirmar que lo ha entregado.
+     * Marca el don como 'entregado' y registra la entrega en la tabla de entregas
+     * para que el receptor pueda agradecerla.
      */
     public function ajax_confirmar_entrega() {
         check_ajax_referer('flavor_don_nonce', 'nonce');
 
-        // Implementar confirmación de entrega
-        wp_send_json_success(['message' => __('Entrega confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $don_id = absint($_POST['don_id'] ?? 0);
+        $usuario_id = get_current_user_id();
+
+        if (!$don_id) {
+            wp_send_json_error(['message' => __('Don no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+
+        // Cargar el don y verificar propiedad: solo el donante confirma la entrega (evita IDOR).
+        $don = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_dones} WHERE id = %d",
+            $don_id
+        ));
+
+        if (!$don) {
+            wp_send_json_error(['message' => __('Don no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if ($don->usuario_id != $usuario_id) {
+            wp_send_json_error(['message' => __('Solo quien ofrece el don puede confirmar su entrega.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (in_array($don->estado, ['entregado', 'recibido'], true)) {
+            wp_send_json_error(['message' => __('Este don ya estaba marcado como entregado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Determinar el receptor. Preferimos una solicitud aceptada (fuente de verdad del lado servidor)
+        // y solo caemos al receptor_id enviado por el cliente si no hay solicitud aceptada todavía.
+        $receptor_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT usuario_id FROM {$this->tabla_solicitudes}
+             WHERE don_id = %d AND estado = 'aceptada'
+             ORDER BY fecha DESC LIMIT 1",
+            $don_id
+        ));
+
+        if (!$receptor_id) {
+            $receptor_id_solicitado = absint($_POST['receptor_id'] ?? 0);
+            // Validamos que el receptor enviado tenga al menos una solicitud sobre este don.
+            if ($receptor_id_solicitado) {
+                $tiene_solicitud = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$this->tabla_solicitudes} WHERE don_id = %d AND usuario_id = %d",
+                    $don_id,
+                    $receptor_id_solicitado
+                ));
+                if ($tiene_solicitud) {
+                    $receptor_id = $receptor_id_solicitado;
+                }
+            }
+        }
+
+        if (!$receptor_id) {
+            wp_send_json_error(['message' => __('No hay un receptor válido para este don todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Marcar el don como entregado.
+        $actualizado = $wpdb->update(
+            $this->tabla_dones,
+            [
+                'estado' => 'entregado',
+                'fecha_actualizacion' => current_time('mysql'),
+            ],
+            ['id' => $don_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+
+        if ($actualizado === false) {
+            wp_send_json_error(['message' => __('Error al confirmar la entrega.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Registrar la entrega (idempotente: no duplicar si ya existe).
+        $entrega_existente = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$this->tabla_entregas} WHERE don_id = %d AND receptor_id = %d",
+            $don_id,
+            $receptor_id
+        ));
+
+        if (!$entrega_existente) {
+            $wpdb->insert($this->tabla_entregas, [
+                'don_id' => $don_id,
+                'donante_id' => $usuario_id,
+                'receptor_id' => $receptor_id,
+                'fecha_entrega' => current_time('mysql'),
+                'gratitud_enviada' => 0,
+            ]);
+        }
+
+        wp_send_json_success(['message' => __('Entrega confirmada. ¡Gracias por compartir!', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+    }
+
+    /**
+     * AJAX: Cancelar don
+     *
+     * Solo el donante (propietario) puede cancelar su propio don. Como el enum de
+     * estado de la tabla (`disponible`,`reservado`,`entregado`,`recibido`) no incluye
+     * un valor `cancelado`, eliminamos el registro junto con sus solicitudes asociadas.
+     * Si en el futuro se añade el estado `cancelado` al esquema, basta con cambiar el
+     * borrado por un UPDATE de estado.
+     */
+    public function ajax_cancelar() {
+        check_ajax_referer('flavor_don_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $don_id = absint($_POST['don_id'] ?? 0);
+        $usuario_id = get_current_user_id();
+
+        if (!$don_id) {
+            wp_send_json_error(['message' => __('Don no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+
+        $don = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_dones} WHERE id = %d",
+            $don_id
+        ));
+
+        if (!$don) {
+            wp_send_json_error(['message' => __('Don no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificación de propiedad: solo el donante puede cancelar su don (evita IDOR).
+        if ($don->usuario_id != $usuario_id) {
+            wp_send_json_error(['message' => __('Solo quien ofrece el don puede cancelarlo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (in_array($don->estado, ['entregado', 'recibido'], true)) {
+            wp_send_json_error(['message' => __('No puedes cancelar un don que ya ha sido entregado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // El esquema no contempla un estado 'cancelado': borramos el don y sus solicitudes.
+        $wpdb->delete($this->tabla_solicitudes, ['don_id' => $don_id], ['%d']);
+        $borrado = $wpdb->delete($this->tabla_dones, ['id' => $don_id], ['%d']);
+
+        if ($borrado === false) {
+            wp_send_json_error(['message' => __('Error al cancelar el don.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        wp_send_json_success(['message' => __('Don cancelado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

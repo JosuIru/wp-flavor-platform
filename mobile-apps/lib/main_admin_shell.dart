@@ -21,14 +21,14 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
     final modulesAsync = ref.watch(adminModulesProvider);
 
     return modulesAsync.when(
-      loading: () => const Scaffold(
+      loading: () => Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Cargando...'),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(i18n.commonLoading),
             ],
           ),
         ),
@@ -43,11 +43,11 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
               children: [
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
-                Text('Error: ${error.toString()}'),
+                Text(i18n.commonError(error.toString())),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => ref.invalidate(adminModulesProvider),
-                  child: const Text('Reintentar'),
+                  child: Text(i18n.commonRetry),
                 ),
               ],
             ),
@@ -169,8 +169,13 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
     return Scaffold(
       appBar: hasDrawer ? AppBar(title: Text(i18n.adminAppTitle)) : null,
       drawer: hasDrawer
+          // Solo se pasan los tabs navegables por índice (los que están en el
+          // IndexedStack); pasar `tabs` completos permitía seleccionar índices
+          // fuera de rango (p. ej. el 5º tab) y provocaba un RangeError. Los
+          // tabs sobrantes (extraTabs, normalmente "Ajustes") se alcanzan por
+          // el ListTile de Ajustes, que hace fallback a Navigator.push.
           ? _AdminDrawer(
-              tabs: tabs,
+              tabs: bottomTabs,
               currentIndex: _currentIndex,
               onTabSelected: _navigateToTab,
             )

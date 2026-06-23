@@ -339,10 +339,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'tabs',
                     'items' => [
-                        ['label' => 'Inicio', 'url' => '/mi-portal'],
-                        ['label' => 'Mis Cursos', 'url' => '/mis-cursos'],
-                        ['label' => 'Explorar', 'url' => '/cursos'],
-                        ['label' => 'Certificados', 'url' => '/certificados'],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Mis Cursos', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'mis-cursos')],
+                        ['label' => 'Explorar', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', '')],
+                        ['label' => 'Certificados', 'url' => Flavor_Platform_Helpers::get_action_url('cursos', 'certificados')],
                     ],
                 ],
                 'busqueda' => true,
@@ -365,10 +365,10 @@ class Flavor_Portal_Profiles {
                     'acciones_rapidas' => [
                         'mostrar' => true,
                         'acciones' => [
-                            ['label' => '🛍️ Explorar', 'url' => '/marketplace', 'color' => 'primary'],
-                            ['label' => '❤️ Favoritos', 'url' => '/favoritos', 'color' => 'error'],
-                            ['label' => '📦 Mis Compras', 'url' => '/mis-compras', 'color' => 'success'],
-                            ['label' => '📢 Publicar', 'url' => '/nueva-publicacion', 'color' => 'warning'],
+                            ['label' => '🛍️ Explorar', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', ''), 'color' => 'primary'],
+                            ['label' => '❤️ Favoritos', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'favoritos'), 'color' => 'error'],
+                            ['label' => '📦 Mis Compras', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'mis-compras'), 'color' => 'success'],
+                            ['label' => '📢 Publicar', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'nueva-publicacion'), 'color' => 'warning'],
                         ],
                     ],
                     'stats' => [
@@ -389,10 +389,10 @@ class Flavor_Portal_Profiles {
                 'navegacion' => [
                     'estilo' => 'tabs',
                     'items' => [
-                        ['label' => 'Inicio', 'url' => '/mi-portal'],
-                        ['label' => 'Explorar', 'url' => '/marketplace'],
-                        ['label' => 'Mis Anuncios', 'url' => '/mis-anuncios'],
-                        ['label' => 'Favoritos', 'url' => '/favoritos'],
+                        ['label' => 'Inicio', 'url' => Flavor_Platform_Helpers::get_portal_url()],
+                        ['label' => 'Explorar', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', '')],
+                        ['label' => 'Mis Anuncios', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'mis-anuncios')],
+                        ['label' => 'Favoritos', 'url' => Flavor_Platform_Helpers::get_action_url('marketplace', 'favoritos')],
                     ],
                 ],
                 'busqueda' => true,

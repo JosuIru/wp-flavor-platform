@@ -530,6 +530,24 @@ class Flavor_Platform_Helpers {
     public static function module_id_to_slug( $module_id ) {
         return str_replace( '_', '-', strtolower( trim( $module_id ) ) );
     }
+
+    /**
+     * Devuelve el display_name de un usuario de forma segura.
+     *
+     * Evita el warning "Attempt to read property on bool" en PHP 8.x cuando el
+     * usuario no existe (p. ej. fue borrado) y get_userdata() devuelve false.
+     *
+     * @param int    $usuario_id ID del usuario.
+     * @param string $por_defecto Texto a devolver si el usuario no existe.
+     * @return string Nombre visible del usuario o el valor por defecto.
+     */
+    public static function nombre_usuario( $usuario_id, $por_defecto = '' ) {
+        if ( $por_defecto === '' ) {
+            $por_defecto = __( 'Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN );
+        }
+        $datos_usuario = $usuario_id ? get_userdata( (int) $usuario_id ) : false;
+        return $datos_usuario ? $datos_usuario->display_name : $por_defecto;
+    }
 }
 
 if (!class_exists('Flavor_Chat_Helpers', false)) {

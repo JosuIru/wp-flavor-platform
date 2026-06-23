@@ -4,6 +4,7 @@ import '../../core/api/api_client.dart';
 import '../../core/config/server_config.dart';
 import '../../core/widgets/flavor_snackbar.dart';
 import '../../core/widgets/flavor_state_widgets.dart';
+import 'network_discovery_screen.dart';
 
 /// Pantalla para añadir una comunidad manualmente introduciendo la URL
 class AddCommunityScreen extends ConsumerStatefulWidget {
@@ -270,7 +271,12 @@ class _AddCommunityScreenState extends ConsumerState<AddCommunityScreen> {
               // Botón explorar
               OutlinedButton.icon(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/network/discover');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NetworkDiscoveryScreen(),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.explore),
                 label: const Text('Explorar comunidades conocidas'),

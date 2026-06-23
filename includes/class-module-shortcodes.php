@@ -54,6 +54,14 @@ class Flavor_Module_Shortcodes {
         add_action('init', [$this, 'register_module_shortcodes'], 20);
         add_action('init', [$this, 'register_specific_shortcodes'], 21);
 
+        // Coherencia de prefijos: tras registrar todos los shortcodes de
+        // módulos (los controladores lo hacen en init@10 y esta clase en
+        // init@20-21), genera un alias canónico `flavor_<tag>` para cada
+        // shortcode "bare" (sin prefijo flavor_). NO elimina el tag antiguo:
+        // ambos quedan disponibles (retrocompatibilidad total).
+        // Prioridad 99 para correr después de cualquier registro de módulo.
+        add_action('init', [$this, 'register_flavor_aliases'], 99);
+
         // Shortcodes adicionales
         add_shortcode('flavor_module_form', [$this, 'render_module_form']);
         add_shortcode('flavor_module_listing', [$this, 'render_module_listing']);
@@ -67,6 +75,158 @@ class Flavor_Module_Shortcodes {
         // Handler AJAX para formularios
         add_action('wp_ajax_flavor_module_action', [$this, 'handle_form_submission']);
         add_action('wp_ajax_nopriv_flavor_module_action', [$this, 'handle_form_submission']);
+
+        // Feeds del calendario y mapa universales (los consumen render_universal_calendar
+        // y render_universal_map). Delegan en el módulo si expone get_calendar_events()/
+        // get_map_markers(); si no, devuelven vacío para no romper el widget.
+        add_action('wp_ajax_flavor_get_calendar_events', [$this, 'ajax_get_calendar_events']);
+        add_action('wp_ajax_nopriv_flavor_get_calendar_events', [$this, 'ajax_get_calendar_events']);
+        add_action('wp_ajax_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
+        add_action('wp_ajax_nopriv_flavor_get_map_markers', [$this, 'ajax_get_map_markers']);
+    }
+
+    /**
+     * Shortcodes de WordPress (core/embeds) que NO deben aliasarse.
+     *
+     * El alias `flavor_<tag>` vive en nuestro espacio de nombres, así que
+     * aliasar uno de estos sería inofensivo pero ruidoso. Los excluimos para
+     * mantener el set de aliases limitado a shortcodes de la plataforma.
+     */
+    private const CORE_SHORTCODES_NO_ALIAS = [
+        'wp_caption', 'caption', 'gallery', 'playlist', 'audio', 'video',
+        'embed', 'wp_video', 'wp_audio_shortcode', 'wp_video_shortcode',
+    ];
+
+    /**
+     * Registra un alias canónico `flavor_<tag>` para cada shortcode "bare".
+     *
+     * Recorre el registro global de shortcodes de WordPress y, para cada tag
+     * que NO empiece por `flavor_`, registra un alias `flavor_<tag>` apuntando
+     * al MISMO callback. El tag original se conserva intacto (retrocompat).
+     *
+     * Idempotente: si el alias ya existe (porque un módulo ya expone su forma
+     * `flavor_*`, p.ej. circulos-cuidados), no se sobreescribe.
+     *
+     * Se engancha en init@99, después de que todos los módulos registren sus
+     * shortcodes. Para módulos cargados de forma diferida tras `init`, el
+     * loader vuelve a llamar a register_shortcodes(); en ese flujo este método
+     * puede re-ejecutarse de forma segura (idempotente) si se invoca de nuevo.
+     *
+     * @return void
+     */
+    public function register_flavor_aliases() {
+        if (empty($GLOBALS['shortcode_tags']) || !is_array($GLOBALS['shortcode_tags'])) {
+            return;
+        }
+
+        // Copia de las claves: vamos a añadir entradas mientras iteramos, así
+        // que congelamos la lista de tags existentes antes del bucle.
+        $tags_existentes = array_keys($GLOBALS['shortcode_tags']);
+
+        $aliases_creados = 0;
+
+        foreach ($tags_existentes as $tag) {
+            if (!is_string($tag) || $tag === '') {
+                continue;
+            }
+
+            // Ya tiene la forma canónica.
+            if (strpos($tag, 'flavor_') === 0) {
+                continue;
+            }
+
+            // No tocar shortcodes de WordPress core/embeds.
+            if (in_array($tag, self::CORE_SHORTCODES_NO_ALIAS, true)) {
+                continue;
+            }
+
+            $alias = 'flavor_' . $tag;
+
+            // No sobreescribir un alias ya existente (un módulo puede haber
+            // registrado su propia forma flavor_*).
+            if (shortcode_exists($alias)) {
+                continue;
+            }
+
+            // El alias apunta al MISMO callback que el tag original. Tomamos
+            // la referencia directamente del registro global para preservar
+            // closures, [obj, metodo] y callables de forma transparente.
+            $callback = $GLOBALS['shortcode_tags'][$tag];
+            add_shortcode($alias, $callback);
+            $aliases_creados++;
+        }
+
+        if ($aliases_creados > 0 && function_exists('flavor_platform_log')) {
+            flavor_platform_log(
+                "Aliases flavor_ de shortcodes registrados: {$aliases_creados}",
+                'debug'
+            );
+        }
+    }
+
+    /**
+     * Resuelve la instancia viva de un módulo por su slug (tolera guion y guion bajo).
+     *
+     * @param string $module_slug
+     * @return object|null
+     */
+    private function resolver_instancia_modulo($module_slug) {
+        if (!class_exists('Flavor_Platform_Module_Loader')) {
+            return null;
+        }
+        $loader = Flavor_Platform_Module_Loader::get_instance();
+        $instancia = $loader->get_module(str_replace('-', '_', $module_slug));
+        if (!$instancia) {
+            $instancia = $loader->get_module(str_replace('_', '-', $module_slug));
+        }
+        return $instancia;
+    }
+
+    /**
+     * Feed AJAX de eventos para FullCalendar (action=flavor_get_calendar_events).
+     *
+     * Responde un array JSON plano de eventos (formato FullCalendar). Delega en
+     * el método get_calendar_events() del módulo si existe; si no, array vacío.
+     */
+    public function ajax_get_calendar_events() {
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'flavor_frontend')) {
+            wp_send_json([], 403);
+        }
+
+        $module_slug = isset($_REQUEST['module']) ? sanitize_title(wp_unslash($_REQUEST['module'])) : '';
+        $eventos = [];
+
+        $instancia = $this->resolver_instancia_modulo($module_slug);
+        if ($instancia && method_exists($instancia, 'get_calendar_events')) {
+            $eventos = (array) $instancia->get_calendar_events();
+        }
+
+        // FullCalendar consume un array plano (no la envoltura success/data).
+        wp_send_json(array_values($eventos));
+    }
+
+    /**
+     * Feed AJAX de marcadores para el mapa universal (action=flavor_get_map_markers).
+     *
+     * Responde {success:true, data:{markers:[...]}}. Delega en get_map_markers()
+     * del módulo si existe; si no, lista vacía.
+     */
+    public function ajax_get_map_markers() {
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'flavor_frontend')) {
+            wp_send_json_error(['message' => __('Sesión no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
+        }
+
+        $module_slug = isset($_REQUEST['module']) ? sanitize_title(wp_unslash($_REQUEST['module'])) : '';
+        $markers = [];
+
+        $instancia = $this->resolver_instancia_modulo($module_slug);
+        if ($instancia && method_exists($instancia, 'get_map_markers')) {
+            $markers = (array) $instancia->get_map_markers();
+        }
+
+        wp_send_json_success(['markers' => array_values($markers)]);
     }
 
     /**
@@ -2041,9 +2201,26 @@ class Flavor_Module_Shortcodes {
             const markerLayer = L.layerGroup().addTo(map);
             markers.forEach(m => {
                 const marker = L.marker([m.lat, m.lng]).addTo(markerLayer);
-                let popupContent = '<strong>' + m.title + '</strong>';
-                if (m.description) popupContent += '<br>' + m.description;
-                if (m.url) popupContent += '<br><a href="' + m.url + '">Ver detalles</a>';
+                // Se construye el popup con nodos DOM y textContent en lugar de
+                // concatenar HTML: los datos provienen de la BD y, inyectados
+                // como innerHTML, permitirían XSS o rotura de marcado.
+                const popupContent = document.createElement('div');
+                const titleEl = document.createElement('strong');
+                titleEl.textContent = m.title || '';
+                popupContent.appendChild(titleEl);
+                if (m.description) {
+                    popupContent.appendChild(document.createElement('br'));
+                    popupContent.appendChild(document.createTextNode(m.description));
+                }
+                // Solo se enlazan URLs http(s); evita esquemas como javascript:.
+                const safeUrl = (m.url && /^https?:\/\//i.test(m.url)) ? m.url : null;
+                if (safeUrl) {
+                    popupContent.appendChild(document.createElement('br'));
+                    const link = document.createElement('a');
+                    link.href = safeUrl;
+                    link.textContent = <?php echo wp_json_encode(__('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>;
+                    popupContent.appendChild(link);
+                }
                 marker.bindPopup(popupContent);
             });
 

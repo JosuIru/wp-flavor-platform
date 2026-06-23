@@ -1488,8 +1488,8 @@
   "bicicletasTabHistory": "Bicicletashistory",
   "bicicletasTabStations": "Bicicletasstations",
   "commonContact": "Commoncontact",
-  "commonDelete": "Commondelete",
-  "commonEdit": "Commonedit",
+  "commonDelete": "Ezabatu",
+  "commonEdit": "Editatu",
   "commonInfo": "Commoninfo",
   "commonMessage": "Commonmessage",
   "commonView": "Commonview",
@@ -1679,7 +1679,6 @@
   "reciclajeCO2Saved": "CO₂ Aurreztua",
   "adminDrawerSectionNavigation": "Nabigazioa",
   "adminDrawerSectionManagement": "Kudeaketa",
-  "adminDrawerManualCustomers": "Eskuzko bezeroak",
   "networkExploreTitle": "Sarea Arakatu",
   "networkExploreSubtitle": "Inguruko komunitateak aurkitu",
   "networkAddCommunityTitle": "Komunitatea Gehitu",
@@ -1714,6 +1713,31 @@
   "networkConnectionError": "Konexio errorea: URL-a egiaztatu",
   "networkCommunityAdded": "Komunitatea ongi gehitu da",
   "networkVerifyConnection": "Konexioa egiaztatu",
+  "commonLogin": "Saioa hasi",
+  "commonOk": "Ados",
+  "loginSubtitle": "Hasi saioa funtzio guztietara sartzeko",
+  "loginUsernameLabel": "Erabiltzailea edo emaila",
+  "loginUsernameHint": "tu@email.com",
+  "loginUsernameRequired": "Erabiltzailea beharrezkoa da",
+  "loginPasswordLabel": "Pasahitza",
+  "loginPasswordRequired": "Pasahitza beharrezkoa da",
+  "loginNeedHelp": "Sartzeko laguntza behar duzu?",
+  "loginInfoText": "Erabili komunitatearen webgunera sartzeko erabiltzen dituzun kredentzial berberak.",
+  "loginHelpTitle": "Saioa hasteko laguntza",
+  "loginHelpContent": "Konturik ez baduzu, komunitatearen webgunean erregistratu zaitezke. Pasahitza ahaztu baduzu, erabili webguneko \"Pasahitza ahaztu dut\" aukera.",
+  "loginSuccess": "Saioa ondo hasi da",
+  "loginLogout": "Saioa itxi",
+  "loginLogoutConfirm": "Ziur zaude saioa itxi nahi duzula?",
+  "loginLogoutSuccess": "Saioa itxita",
+  "loginRequired": "Saioa hasi behar duzu funtzio honetara sartzeko",
+  "loginWelcome": "Ongi etorri, {name}",
+  "@loginWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminMetricOpenOrders": "Irekitako eskaerak",
   "adminMetricActiveServices": "Zerbitzu aktiboak",
   "adminMetricActiveListings": "Iragarki aktiboak",
@@ -1741,5 +1765,179 @@
   "adminModulesEnableInWordPress": "Aktibatu moduluak WordPress paneletik",
   "adminModuleScheduledEvents": "Programatutako ekitaldiak",
   "adminModuleActive": "Modulu aktiboa",
-  "adminChartsSectionTitle": "Analitika eta joerak"
+  "adminChartsSectionTitle": "Analitika eta joerak",
+  "clientDashboardMyOrders": "Nire eskaerak",
+  "clientDashboardConsumerGroups": "Kontsumo taldeak",
+  "clientDashboardMyServices": "Nire zerbitzuak",
+  "clientDashboardTimeBank": "Denbora bankua",
+  "clientDashboardMyAds": "Nire iragarkiak",
+  "clientDashboardMarketplace": "Marketplace",
+  "carpoolingTitle": "Partekatutako bidaiak",
+  "carpoolingFilterAll": "Guztiak",
+  "carpoolingFilterOffer": "Bidaia eskaintzen dut",
+  "carpoolingFilterSearch": "Bidaia bila nabil",
+  "carpoolingLoadError": "Errorea bidaiak kargatzean",
+  "carpoolingEmpty": "Ez dago bidaiarik eskuragarri",
+  "carpoolingPublishRide": "Bidaia argitaratu",
+  "carpoolingOfferRide": "Bidaia eskaini",
+  "carpoolingDriverLabel": "Gidaria: {name}",
+  "@carpoolingDriverLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveSeat": "Plaza erreserbatu",
+  "carpoolingNoSeats": "Ez dago plazarik eskuragarri",
+  "carpoolingReserveDialogTitle": "Plaza erreserbatu",
+  "carpoolingReserveOrigin": "Jatorria: {value}",
+  "@carpoolingReserveOrigin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDestination": "Helmuga: {value}",
+  "@carpoolingReserveDestination": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveDate": "Data: {value}",
+  "@carpoolingReserveDate": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveTime": "Ordua: {value}",
+  "@carpoolingReserveTime": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "carpoolingReserveConfirmQuestion": "Plaza baten erreserba berresten duzu?",
+  "carpoolingReserveAction": "Erreserbatu",
+  "carpoolingSeatReserved": "Plaza ondo erreserbatu da",
+  "carpoolingReserveError": "Errorea erreserbatzean",
+  "carpoolingDeleteRideTitle": "Bidaia ezabatu",
+  "carpoolingDeleteRideConfirm": "Ziur zaude bidaia hau ezabatu nahi duzula?",
+  "carpoolingRideDeleted": "Bidaia ezabatuta",
+  "carpoolingDeleteError": "Errorea ezabatzean",
+  "carpoolingRideUpdated": "Bidaia eguneratuta",
+  "carpoolingRidePublished": "Bidaia argitaratuta",
+  "carpoolingSaveError": "Errorea gordetzean",
+  "carpoolingEditRideTitle": "Bidaia editatu",
+  "carpoolingNewRideTitle": "Bidaia berria",
+  "carpoolingAdTypeLabel": "Iragarki mota",
+  "carpoolingOriginLabel": "Jatorria *",
+  "carpoolingOriginHint": "Hiria edo irteera puntua",
+  "carpoolingOriginRequired": "Jatorria nahitaezkoa da",
+  "carpoolingDestinationLabel": "Helmuga *",
+  "carpoolingDestinationHint": "Hiria edo iritsiera puntua",
+  "carpoolingDestinationRequired": "Helmuga nahitaezkoa da",
+  "carpoolingDateLabel": "Data *",
+  "carpoolingTimeLabel": "Ordua *",
+  "carpoolingSeatsLabel": "Plaza eskuragarriak *",
+  "carpoolingSeatsRange": "1-8 plaza",
+  "carpoolingPricePerSeatLabel": "Plaza bakoitzeko prezioa",
+  "carpoolingNotesLabel": "Ohar gehigarriak",
+  "carpoolingNotesHint": "Topagunea, baimendutako ekipajea, etab.",
+  "carpoolingSaving": "Gordetzen...",
+  "carpoolingSaveChanges": "Aldaketak gorde",
+  "circulosCuidadosTitle": "Zaintza zirkuluak",
+  "circulosCuidadosTabMine": "Nire zirkuluak",
+  "circulosCuidadosTabExplore": "Arakatu",
+  "circulosCuidadosCreate": "Zirkulua sortu",
+  "circulosCuidadosNoneMine": "Oraindik ez zara zirkulu batekoa",
+  "circulosCuidadosExploreAction": "Zirkuluak arakatu",
+  "circulosCuidadosNoneAvailable": "Ez dago zirkulurik eskuragarri",
+  "circulosCuidadosUnnamed": "Izenik gabeko zirkulua",
+  "circulosCuidadosMemberChip": "Kidea",
+  "circulosCuidadosMembersCount": "{count} kide",
+  "@circulosCuidadosMembersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "circulosCuidadosJoin": "Sartu",
+  "circulosCuidadosView": "Ikusi",
+  "circulosCuidadosCreateTitle": "Zaintza zirkulua sortu",
+  "circulosCuidadosTypeGeneral": "Orokorra",
+  "circulosCuidadosTypeInfancia": "Haurren zaintza",
+  "circulosCuidadosTypeMayores": "Adinekoen laguntza",
+  "circulosCuidadosTypeSalud": "Osasun laguntza",
+  "circulosCuidadosTypeEmocional": "Laguntza emozionala",
+  "circulosCuidadosNameLabel": "Zirkuluaren izena",
+  "circulosCuidadosNameHint": "Adib.: Auzo laguntza zirkulua",
+  "circulosCuidadosTypeLabel": "Zirkulu mota",
+  "circulosCuidadosDescriptionLabel": "Deskribapena",
+  "circulosCuidadosDescriptionHint": "Deskribatu zirkuluaren helburua...",
+  "circulosCuidadosNameRequired": "Izena beharrezkoa da",
+  "circulosCuidadosCreateButton": "Zirkulua sortu",
+  "circulosCuidadosCreatedSuccess": "Zirkulua ondo sortu da",
+  "circulosCuidadosJoinTitle": "Zirkulura batu",
+  "circulosCuidadosJoinConfirm": "Eskaera bat bidali nahi duzu \"{nombre}\"-(e)ra batzeko?",
+  "@circulosCuidadosJoinConfirm": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosJoinSend": "Eskaera bidali",
+  "circulosCuidadosJoinSent": "Eskaera {nombre}-(r)i bidali zaio",
+  "@circulosCuidadosJoinSent": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosStatMembers": "Kideak",
+  "circulosCuidadosStatMeetings": "Bilerak",
+  "circulosCuidadosStatHelp": "Laguntzak",
+  "circulosCuidadosNextMeeting": "Hurrengo bilera",
+  "circulosCuidadosMeetingPlaceTbd": "Lekua zehazteke",
+  "circulosCuidadosChat": "Chat",
+  "circulosCuidadosOfferHelp": "Laguntza eskaini",
+  "circulosCuidadosOfferHelpTitle": "Laguntza eskaini",
+  "circulosCuidadosHelpTypeGeneral": "Laguntza orokorra",
+  "circulosCuidadosHelpTypeNinos": "Haurren zaintza",
+  "circulosCuidadosHelpTypeMayores": "Adinekoen zaintza",
+  "circulosCuidadosHelpTypeCompras": "Erosketak eta mandatuak",
+  "circulosCuidadosHelpTypeTransporte": "Garraioa",
+  "circulosCuidadosHelpTypeCompania": "Laguntza",
+  "circulosCuidadosOfferCircleLabel": "Zirkulua: {nombre}",
+  "@circulosCuidadosOfferCircleLabel": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "circulosCuidadosHelpTypeLabel": "Laguntza mota",
+  "circulosCuidadosOfferDescriptionLabel": "Zure eskaintzaren deskribapena",
+  "circulosCuidadosOfferDescriptionHint": "Deskribatu nola lagun dezakezun...",
+  "circulosCuidadosOfferDescriptionRequired": "Deskribatu zure laguntza eskaintza",
+  "circulosCuidadosOfferSend": "Eskaintza bidali",
+  "circulosCuidadosOfferSent": "Laguntza eskaintza ondo bidali da",
+  "circulosCuidadosChatDefaultTitle": "Zirkuluaren chata",
+  "circulosCuidadosChatEmptyTitle": "Oraindik ez dago mezurik",
+  "circulosCuidadosChatEmptyMessage": "Izan idazten lehena",
+  "circulosCuidadosChatDefaultAuthor": "Erabiltzailea",
+  "circulosCuidadosChatInputHint": "Idatzi mezu bat...",
+  "moduleNotFound": "Ez da modulua aurkitu",
+  "moduleLoadError": "Errorea modulua kargatzean",
+  "commonBack": "Itzuli",
+  "commonErrorTitle": "Errorea"
 }

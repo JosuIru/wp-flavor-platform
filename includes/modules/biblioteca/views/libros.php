@@ -233,6 +233,7 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     // Nuevo libro
     $('#btn-nuevo-libro').on('click', function(e) {
         e.preventDefault();
@@ -265,7 +266,7 @@ jQuery(document).ready(function($) {
                 } else {
                     html += '<table class="wp-list-table widefat striped"><thead><tr><th><?php echo esc_js(__('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th><th><?php echo esc_js(__('Fecha préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th><th><?php echo esc_js(__('Fecha devolución', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th></tr></thead><tbody>';
                     response.data.forEach(function(p) {
-                        html += '<tr><td>' + p.usuario + '</td><td>' + p.fecha_prestamo + '</td><td>' + (p.fecha_devolucion || '-') + '</td></tr>';
+                        html += '<tr><td>' + escHtml(p.usuario) + '</td><td>' + escHtml(p.fecha_prestamo) + '</td><td>' + escHtml(p.fecha_devolucion || '-') + '</td></tr>';
                     });
                     html += '</tbody></table>';
                 }

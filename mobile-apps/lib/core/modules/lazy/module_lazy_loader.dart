@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../module_definition.dart';
 import '../builders/module_screen_builder.dart';
@@ -117,7 +118,7 @@ class _LazyModuleScreenState extends State<LazyModuleScreen> {
     final module = widget.module ?? await loader.loadModule(widget.moduleId);
 
     if (module == null) {
-      return const _ErrorScreen(message: 'Módulo no encontrado');
+      return _ErrorScreen(message: AppLocalizations.of(context).moduleNotFound);
     }
 
     return ModuleScreenBuilder.buildGenericScreen(context, module);
@@ -147,25 +148,26 @@ class _LazyModuleScreenState extends State<LazyModuleScreen> {
 }
 
 class _ErrorScreen extends StatelessWidget {
-  final String message;
+  final String? message;
 
-  const _ErrorScreen({this.message = 'Error al cargar módulo'});
+  const _ErrorScreen({this.message});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Error')),
+      appBar: AppBar(title: Text(i18n.commonErrorTitle)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
-            Text(message),
+            Text(message ?? i18n.moduleLoadError),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Volver'),
+              child: Text(i18n.commonBack),
             ),
           ],
         ),

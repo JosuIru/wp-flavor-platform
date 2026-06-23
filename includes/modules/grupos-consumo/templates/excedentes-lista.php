@@ -373,6 +373,7 @@ $nonce = wp_create_nonce('flavor_gc_conciencia_nonce');
 
 <script>
 (function() {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.querySelector('.gc-excedentes');
         if (!container) return;
@@ -404,7 +405,7 @@ $nonce = wp_create_nonce('flavor_gc_conciencia_nonce');
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    form.innerHTML = '<p style="color: var(--gc-success); margin: 0;"><span class="dashicons dashicons-yes"></span> ' + data.data.message + '</p>';
+                    form.innerHTML = '<p style="color: var(--gc-success); margin: 0;"><span class="dashicons dashicons-yes"></span> ' + escHtml(data.data.message) + '</p>';
                 } else {
                     if (window.gcToast) {
                         window.gcToast(data.data.message || '<?php echo esc_js(__('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');

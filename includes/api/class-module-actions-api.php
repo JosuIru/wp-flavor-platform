@@ -229,7 +229,25 @@ class Flavor_Module_Actions_API {
             }
         }
 
-        if (!$es_publica && !is_user_logged_in()) {
+        // Validar el token de app móvil (X-Flavor-Token) contra los tokens registrados.
+        // Un header presente pero inválido NO debe conceder ninguna confianza.
+        $app_token = $request->get_header('X-Flavor-Token');
+        $has_valid_app_token = false;
+        if (is_string($app_token) && $app_token !== '') {
+            $valid_tokens = get_option('flavor_apps_tokens', []);
+            if (is_array($valid_tokens)) {
+                foreach ($valid_tokens as $token_data) {
+                    if (isset($token_data['token']) && hash_equals((string) $token_data['token'], $app_token)) {
+                        $has_valid_app_token = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Las acciones no públicas requieren un usuario autenticado (cookie/JWT) o un
+        // token de app válido.
+        if (!$es_publica && !is_user_logged_in() && !$has_valid_app_token) {
             return new WP_Error(
                 'unauthorized',
                 __('Debes iniciar sesión para realizar esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
@@ -237,24 +255,23 @@ class Flavor_Module_Actions_API {
             );
         }
 
-        // Para acciones no públicas, permitir auth móvil por token/bearer
-        // y exigir nonce solo en contextos web tradicionales.
+        // Para acciones no públicas autenticadas por sesión web (cookie) exigir nonce
+        // como protección CSRF. Las apps (token válido o Bearer JWT) quedan exentas.
+        // IMPORTANTE: no hacer 'return true' aquí; la ejecución debe continuar hasta el
+        // control de acciones de administrador (más abajo) para no escalar privilegios.
         if (!$es_publica) {
             $authorization = $request->get_header('Authorization');
             $has_bearer_auth = is_string($authorization) && stripos($authorization, 'Bearer ') === 0;
-            $has_app_token = (bool) $request->get_header('X-Flavor-Token');
 
-            if ($has_bearer_auth || $has_app_token) {
-                return true;
-            }
-
-            $nonce = $request->get_header('X-WP-Nonce');
-            if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
-                return new WP_Error(
-                    'invalid_nonce',
-                    __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    ['status' => 403]
-                );
+            if (!$has_valid_app_token && !$has_bearer_auth) {
+                $nonce = $request->get_header('X-WP-Nonce');
+                if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
+                    return new WP_Error(
+                        'invalid_nonce',
+                        __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        ['status' => 403]
+                    );
+                }
             }
         }
 

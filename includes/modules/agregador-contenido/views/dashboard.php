@@ -685,6 +685,7 @@ if (in_array('foros', $active_modules)) {
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     // Añadir video YouTube
     $('#add-youtube-form').on('submit', function(e) {
         e.preventDefault();
@@ -705,10 +706,10 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    $result.html('<div class="notice notice-success"><p>Video añadido: <strong>' + response.data.title + '</strong> <a href="' + response.data.edit_url + '">Editar</a></p></div>');
+                    $result.html('<div class="notice notice-success"><p>Video añadido: <strong>' + escHtml(response.data.title) + '</strong> <a href="' + escHtml(response.data.edit_url) + '">Editar</a></p></div>');
                     $('#youtube-url').val('');
                 } else {
-                    $result.html('<div class="notice notice-error"><p>' + response.data + '</p></div>');
+                    $result.html('<div class="notice notice-error"><p>' + escHtml(response.data) + '</p></div>');
                 }
             },
             error: function() {

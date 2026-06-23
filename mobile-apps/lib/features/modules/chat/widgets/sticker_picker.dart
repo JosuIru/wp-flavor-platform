@@ -128,12 +128,14 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
       // Simular carga de packs
       await Future.delayed(const Duration(milliseconds: 500));
 
+      if (!mounted) return;
       final packs = _getMockStickerPacks();
       setState(() {
         _stickerPacks = packs;
         _isLoadingStickers = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isLoadingStickers = false);
     }
   }
@@ -145,12 +147,14 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
       // TODO: Integrar con Giphy API
       await Future.delayed(const Duration(milliseconds: 500));
 
+      if (!mounted) return;
       final gifs = _getMockGifs();
       setState(() {
         _trendingGifs = gifs;
         _isLoadingGifs = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isLoadingGifs = false);
     }
   }
@@ -158,6 +162,7 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
   Future<void> _searchGifsHandler(String query) async {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (!mounted) return;
       if (query.isEmpty) {
         setState(() {
           _searchGifs = [];
@@ -172,12 +177,14 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
         // TODO: Integrar con Giphy Search API
         await Future.delayed(const Duration(milliseconds: 500));
 
+        if (!mounted) return;
         final gifs = _getMockGifs(); // Simular resultados
         setState(() {
           _searchGifs = gifs;
           _isSearchingGifs = false;
         });
       } catch (e) {
+        if (!mounted) return;
         setState(() => _isSearchingGifs = false);
       }
     });

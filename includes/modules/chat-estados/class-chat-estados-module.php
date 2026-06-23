@@ -814,7 +814,7 @@ class Flavor_Platform_Estados_Module extends Flavor_Platform_Module_Base {
             do_action('flavor_notificar_usuario', $estado->usuario_id, [
                 'tipo' => 'reaccion_estado',
                 'titulo' => sprintf(__('%s reaccionó a tu estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                    get_userdata($usuario_id)->display_name),
+                    Flavor_Platform_Helpers::nombre_usuario($usuario_id)),
                 'mensaje' => $emoji,
                 'url' => '#estado-' . $estado_id
             ]);
@@ -876,7 +876,7 @@ class Flavor_Platform_Estados_Module extends Flavor_Platform_Module_Base {
         do_action('flavor_notificar_usuario', $estado->usuario_id, [
             'tipo' => 'respuesta_estado',
             'titulo' => sprintf(__('%s respondió a tu estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($usuario_id)->display_name),
+                Flavor_Platform_Helpers::nombre_usuario($usuario_id)),
             'mensaje' => wp_trim_words($mensaje, 15),
             'url' => '#estado-' . $estado_id
         ]);
@@ -988,8 +988,8 @@ class Flavor_Platform_Estados_Module extends Flavor_Platform_Module_Base {
             'titulo' => __('Estado reportado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mensaje' => sprintf(
                 __('El usuario %s ha reportado un estado de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($usuario_id)->display_name,
-                get_userdata($estado->usuario_id)->display_name
+                Flavor_Platform_Helpers::nombre_usuario($usuario_id),
+                Flavor_Platform_Helpers::nombre_usuario($estado->usuario_id)
             ),
             'url' => admin_url('admin.php?page=flavor-moderacion&estado=' . $estado_id)
         ]);

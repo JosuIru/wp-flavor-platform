@@ -106,6 +106,9 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         add_action('wp_ajax_flavor_circulos_confirmar_horas', [$this, 'ajax_confirmar_horas']);
         add_action('wp_ajax_flavor_circulos_obtener', [$this, 'ajax_obtener_circulos']);
         add_action('wp_ajax_nopriv_flavor_circulos_obtener', [$this, 'ajax_obtener_circulos']);
+        add_action('wp_ajax_flavor_circulos_obtener_mapa', [$this, 'ajax_obtener_mapa']);
+        add_action('wp_ajax_nopriv_flavor_circulos_obtener_mapa', [$this, 'ajax_obtener_mapa']);
+        add_action('wp_ajax_flavor_circulos_salir', [$this, 'ajax_salir']);
 
         // Dashboard tabs
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tabs']);
@@ -144,20 +147,22 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
     public function registrar_assets() {
         wp_register_style(
             'flavor-circulos-frontend',
-            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-frontend.css',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/css/circulos-cuidados-frontend.css',
             [],
             FLAVOR_PLATFORM_VERSION
         );
 
         wp_register_script(
             'flavor-circulos-frontend',
-            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-frontend.js',
+            FLAVOR_PLATFORM_URL . 'includes/modules/circulos-cuidados/assets/js/circulos-cuidados-frontend.js',
             ['jquery'],
             FLAVOR_PLATFORM_VERSION,
             true
         );
 
-        wp_localize_script('flavor-circulos-frontend', 'flavorCirculosConfig', [
+        // El JS lee window.flavorCirculosCuidadosConfig; el nombre debe coincidir
+        // o no recibe ajaxUrl/nonce y todas las llamadas AJAX fallan el nonce.
+        wp_localize_script('flavor-circulos-frontend', 'flavorCirculosCuidadosConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_circulos_nonce'),
             'strings' => [
@@ -1091,12 +1096,101 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
 
     /**
      * AJAX: Confirmar horas
+     *
+     * El usuario que ofreció ayuda a una necesidad (su respuesta = "apoyo") confirma
+     * las horas dedicadas. Registramos esas horas como 'confirmado' en la tabla de
+     * horas y marcamos la respuesta como 'completada'.
+     *
+     * Nota defensiva: las tablas de este módulo (respuestas/horas/necesidades) no
+     * tienen definición de esquema en el instalador, así que comprobamos su existencia
+     * antes de operar en lugar de fingir éxito.
      */
     public function ajax_confirmar_horas() {
         check_ajax_referer('flavor_circulos_nonce', 'nonce');
 
-        // Implementar confirmación de horas
-        wp_send_json_success(['message' => __('Horas confirmadas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $apoyo_id = absint($_POST['apoyo_id'] ?? 0);
+        $horas = floatval($_POST['horas'] ?? 0);
+        $usuario_id = get_current_user_id();
+
+        if (!$apoyo_id) {
+            wp_send_json_error(['message' => __('Apoyo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if ($horas <= 0) {
+            wp_send_json_error(['message' => __('Indica un número de horas válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_respuestas)
+            || !Flavor_Platform_Helpers::tabla_existe($this->tabla_horas)) {
+            wp_send_json_error(['message' => __('El sistema de horas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+
+        // El "apoyo" es la respuesta del usuario a una necesidad.
+        $respuesta = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_respuestas} WHERE id = %d",
+            $apoyo_id
+        ));
+
+        if (!$respuesta) {
+            wp_send_json_error(['message' => __('Apoyo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Verificación de propiedad: solo quien ofreció la ayuda confirma sus horas (evita IDOR).
+        if ($respuesta->usuario_id != $usuario_id) {
+            wp_send_json_error(['message' => __('Solo puedes confirmar las horas de tu propio apoyo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if ($respuesta->estado === 'completada') {
+            wp_send_json_error(['message' => __('Las horas de este apoyo ya estaban confirmadas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Recuperar la necesidad asociada para obtener el círculo (necesario para los
+        // recuentos de horas por círculo que usa el resto del controlador).
+        $necesidad = null;
+        if (!empty($respuesta->necesidad_id) && Flavor_Platform_Helpers::tabla_existe($this->tabla_necesidades)) {
+            $necesidad = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$this->tabla_necesidades} WHERE id = %d",
+                $respuesta->necesidad_id
+            ));
+        }
+
+        $circulo_id = $necesidad && !empty($necesidad->circulo_id) ? (int) $necesidad->circulo_id : 0;
+        $descripcion = $necesidad ? $necesidad->titulo : __('Apoyo confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN);
+
+        // Registrar las horas confirmadas.
+        $insertado = $wpdb->insert($this->tabla_horas, [
+            'circulo_id' => $circulo_id,
+            'necesidad_id' => (int) ($respuesta->necesidad_id ?? 0),
+            'usuario_id' => $usuario_id,
+            'horas' => $horas,
+            'descripcion' => $descripcion,
+            'estado' => 'confirmado',
+            'fecha' => current_time('mysql'),
+        ]);
+
+        if ($insertado === false) {
+            wp_send_json_error(['message' => __('Error al registrar las horas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Marcar la respuesta como completada.
+        $wpdb->update(
+            $this->tabla_respuestas,
+            ['estado' => 'completada'],
+            ['id' => $apoyo_id],
+            ['%s'],
+            ['%d']
+        );
+
+        wp_send_json_success([
+            'message' => __('Horas confirmadas. ¡Gracias por cuidar!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'horas' => $horas,
+        ]);
     }
 
     /**
@@ -1115,6 +1209,100 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
         ");
 
         wp_send_json_success(['circulos' => $circulos]);
+    }
+
+    /**
+     * AJAX: Datos para el mapa de círculos
+     *
+     * Devuelve los círculos activos con sus coordenadas para que el JS pinte los
+     * marcadores Leaflet (espera circulos[].latitud, .longitud, .nombre, .tipo, .url).
+     *
+     * Lectura pública (el JS no envía nonce y se registra también para nopriv), por
+     * lo que no se exige nonce; solo se exponen círculos activos.
+     */
+    public function ajax_obtener_mapa() {
+        // Defensivo: si las tablas aún no existen, devolvemos lista vacía en vez de
+        // un fatal por tabla inexistente.
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_circulos)) {
+            wp_send_json_success(['circulos' => []]);
+        }
+
+        global $wpdb;
+
+        $filas = $wpdb->get_results("
+            SELECT c.id, c.nombre, c.tipo, c.latitud, c.longitud
+            FROM {$this->tabla_circulos} c
+            WHERE c.estado = 'activo'
+              AND c.latitud IS NOT NULL
+              AND c.longitud IS NOT NULL
+            ORDER BY c.fecha_creacion DESC
+            LIMIT 200
+        ");
+
+        $circulos = [];
+        foreach ($filas as $fila) {
+            $tipo_info = $this->tipos_circulo[$fila->tipo] ?? ['nombre' => $fila->tipo];
+            $circulos[] = [
+                'id'       => (int) $fila->id,
+                'nombre'   => $fila->nombre,
+                'tipo'     => $tipo_info['nombre'],
+                'latitud'  => (float) $fila->latitud,
+                'longitud' => (float) $fila->longitud,
+                'url'      => add_query_arg('circulo_id', (int) $fila->id, remove_query_arg('circulo_id')),
+            ];
+        }
+
+        wp_send_json_success(['circulos' => $circulos]);
+    }
+
+    /**
+     * AJAX: Salir de un círculo
+     *
+     * El usuario abandona un círculo del que es miembro. Solo puede afectar a su
+     * propia membresía (verificación de propiedad por usuario_id, evita IDOR).
+     * Marcamos la fila como 'inactivo' en lugar de borrarla para preservar el
+     * histórico de horas/aportaciones asociado.
+     */
+    public function ajax_salir() {
+        check_ajax_referer('flavor_circulos_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $circulo_id = absint($_POST['circulo_id'] ?? 0);
+        $usuario_id = get_current_user_id();
+
+        if (!$circulo_id) {
+            wp_send_json_error(['message' => __('Círculo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (!Flavor_Platform_Helpers::tabla_existe($this->tabla_miembros)) {
+            wp_send_json_error(['message' => __('El sistema de círculos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        if (!$this->es_miembro($circulo_id, $usuario_id)) {
+            wp_send_json_error(['message' => __('No formas parte de este círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+
+        // Solo afecta a la membresía propia: el WHERE incluye usuario_id.
+        $resultado = $wpdb->update(
+            $this->tabla_miembros,
+            ['estado' => 'inactivo'],
+            ['circulo_id' => $circulo_id, 'usuario_id' => $usuario_id, 'estado' => 'activo'],
+            ['%s'],
+            ['%d', '%d', '%s']
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(['message' => __('Error al salir del círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        wp_send_json_success([
+            'message' => __('Has salido del círculo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        ]);
     }
 
     // =========================================================

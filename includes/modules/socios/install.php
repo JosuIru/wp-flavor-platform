@@ -22,7 +22,7 @@ function flavor_socios_crear_tablas() {
 
     // Tabla principal de socios
     $tabla_socios = $wpdb->prefix . 'flavor_socios';
-    $sql_socios = "CREATE TABLE IF NOT EXISTS $tabla_socios (
+    $sql_socios = "CREATE TABLE $tabla_socios (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         numero_socio varchar(50) NOT NULL,
         usuario_id bigint(20) unsigned DEFAULT NULL,
@@ -79,7 +79,7 @@ function flavor_socios_crear_tablas() {
 
     // Tabla de cuotas/pagos
     $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
-    $sql_cuotas = "CREATE TABLE IF NOT EXISTS $tabla_cuotas (
+    $sql_cuotas = "CREATE TABLE $tabla_cuotas (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         socio_id bigint(20) unsigned NOT NULL,
         concepto varchar(255) NOT NULL,
@@ -113,7 +113,7 @@ function flavor_socios_crear_tablas() {
 
     // Tabla de tipos de socio
     $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
-    $sql_tipos = "CREATE TABLE IF NOT EXISTS $tabla_tipos (
+    $sql_tipos = "CREATE TABLE $tabla_tipos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         slug varchar(100) NOT NULL,
@@ -138,7 +138,7 @@ function flavor_socios_crear_tablas() {
 
     // Tabla de historial de cambios
     $tabla_historial = $wpdb->prefix . 'flavor_socios_historial';
-    $sql_historial = "CREATE TABLE IF NOT EXISTS $tabla_historial (
+    $sql_historial = "CREATE TABLE $tabla_historial (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         socio_id bigint(20) unsigned NOT NULL,
         accion varchar(100) NOT NULL,

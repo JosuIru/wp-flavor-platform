@@ -319,6 +319,7 @@ $clases_estado = [
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     var gcNonce = '<?php echo wp_create_nonce('flavor_grupos_consumo_nonce'); ?>';
     var solicitudActual = null;
     var $notice = $('<div class="gc-inline-notice"></div>').insertBefore('.wrap h1').hide();
@@ -420,14 +421,14 @@ jQuery(document).ready(function($) {
                 var s = response.data.solicitud;
                 var html = '<div class="gc-detalle-seccion">' +
                     '<h4><?php _e('Informacion del Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
-                    '<p><strong><?php _e('Nombre:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.usuario_nombre + '</p>' +
-                    '<p><strong><?php _e('Email:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <a href="mailto:' + s.usuario_email + '">' + s.usuario_email + '</a></p>' +
-                    '<p><strong><?php _e('Fecha solicitud:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.fecha_solicitud + '</p>' +
+                    '<p><strong><?php _e('Nombre:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.usuario_nombre) + '</p>' +
+                    '<p><strong><?php _e('Email:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <a href="mailto:' + escHtml(s.usuario_email) + '">' + escHtml(s.usuario_email) + '</a></p>' +
+                    '<p><strong><?php _e('Fecha solicitud:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.fecha_solicitud) + '</p>' +
                 '</div>';
 
                 html += '<div class="gc-detalle-seccion">' +
                     '<h4><?php _e('Motivacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
-                    '<p>' + (s.motivacion || '<em><?php _e('No especificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></em>') + '</p>' +
+                    '<p>' + (s.motivacion ? escHtml(s.motivacion) : '<em><?php _e('No especificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></em>') + '</p>' +
                 '</div>';
 
                 if (s.preferencias && s.preferencias.length > 0) {
@@ -435,7 +436,7 @@ jQuery(document).ready(function($) {
                         '<h4><?php _e('Preferencias Alimentarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
                         '<div class="gc-preferencias-tags">';
                     s.preferencias.forEach(function(pref) {
-                        html += '<span class="gc-tag">' + pref + '</span>';
+                        html += '<span class="gc-tag">' + escHtml(pref) + '</span>';
                     });
                     html += '</div></div>';
                 }
@@ -443,29 +444,29 @@ jQuery(document).ready(function($) {
                 if (s.alergias) {
                     html += '<div class="gc-detalle-seccion gc-seccion-alergias">' +
                         '<h4><span class="dashicons dashicons-warning"></span> <?php _e('Alergias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
-                        '<p>' + s.alergias + '</p>' +
+                        '<p>' + escHtml(s.alergias) + '</p>' +
                     '</div>';
                 }
 
                 if (s.como_nos_conocio) {
                     html += '<div class="gc-detalle-seccion">' +
                         '<h4><?php _e('Como nos conocio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
-                        '<p>' + s.como_nos_conocio + '</p>' +
+                        '<p>' + escHtml(s.como_nos_conocio) + '</p>' +
                     '</div>';
                 }
 
                 if (s.estado !== 'pendiente') {
                     html += '<div class="gc-detalle-seccion gc-seccion-resolucion">' +
                         '<h4><?php _e('Resolucion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>' +
-                        '<p><strong><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.estado + '</p>';
+                        '<p><strong><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.estado) + '</p>';
                     if (s.resuelto_por_nombre) {
-                        html += '<p><strong><?php _e('Resuelta por:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.resuelto_por_nombre + '</p>';
+                        html += '<p><strong><?php _e('Resuelta por:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.resuelto_por_nombre) + '</p>';
                     }
                     if (s.fecha_resolucion) {
-                        html += '<p><strong><?php _e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.fecha_resolucion + '</p>';
+                        html += '<p><strong><?php _e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.fecha_resolucion) + '</p>';
                     }
                     if (s.motivo_rechazo) {
-                        html += '<p><strong><?php _e('Motivo rechazo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + s.motivo_rechazo + '</p>';
+                        html += '<p><strong><?php _e('Motivo rechazo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ' + escHtml(s.motivo_rechazo) + '</p>';
                     }
                     html += '</div>';
                 }
@@ -477,7 +478,7 @@ jQuery(document).ready(function($) {
                     $('#gc-modal-acciones').show();
                 }
             } else {
-                $('#gc-detalles-contenido').html('<p class="gc-error">' + (response.data.error || '<?php _e('Error al cargar los detalles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>') + '</p>');
+                $('#gc-detalles-contenido').html('<p class="gc-error">' + escHtml(response.data.error || '<?php _e('Error al cargar los detalles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>') + '</p>');
             }
         });
     });

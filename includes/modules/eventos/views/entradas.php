@@ -20,6 +20,7 @@ if (!defined('ABSPATH')) exit;
 </style>
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     cargarEstadisticasEntradas();
     cargarTiposEntrada();
     function cargarEstadisticasEntradas() {
@@ -49,7 +50,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let html = '';
                     response.data.forEach(tipo => {
-                        html += `<div class="flavor-tipo-entrada"><h4>${tipo.nombre}</h4><div class="flavor-tipo-precio">${tipo.precio}€</div><p style="font-size:12px;color:#666;margin:8px 0 0 0;">${tipo.descripcion}</p></div>`;
+                        html += `<div class="flavor-tipo-entrada"><h4>${escHtml(tipo.nombre)}</h4><div class="flavor-tipo-precio">${escHtml(tipo.precio)}€</div><p style="font-size:12px;color:#666;margin:8px 0 0 0;">${escHtml(tipo.descripcion)}</p></div>`;
                     });
                     $('#tipos-entrada-list').html(html || '<p><?php _e('No hay tipos de entrada configurados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
                 }

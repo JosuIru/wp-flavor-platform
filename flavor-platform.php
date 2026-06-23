@@ -16,7 +16,7 @@
  * Domain Path: /languages
  * Requires at least: 5.8
  * Tested up to: 6.4
- * Requires PHP: 7.4
+ * Requires PHP: 8.2
  * WC requires at least: 5.0
  * WC tested up to: 8.4
  */
@@ -202,10 +202,12 @@ function flavor_platform_log( $message, $level = 'info', $module = '' ) {
     }
 
     // FIX: Sanitizar mensaje para no exponer secrets (API keys, tokens, passwords)
+    // Nota: el regex genérico para "tokens largos alfanuméricos" se eliminó porque
+    // generaba falsos positivos masivos sobre nombres de clase, rutas y locale strings
+    // (todo identificador PHP largo terminaba como [REDACTED_TOKEN]).
     $sanitized_message = preg_replace(
         [
-            '/([a-f0-9]{32,})/i',                           // Hashes MD5, API keys hex
-            '/([A-Za-z0-9_-]{20,})/i',                      // Tokens largos alfanuméricos
+            '/\b([a-f0-9]{32,})\b/i',                       // Hashes hex (MD5/SHA, API keys hex puras)
             '/(Bearer\s+[a-zA-Z0-9._-]+)/i',                // Bearer tokens
             '/(api[_-]?key[=:]\s*)[^\s&]+/i',               // api_key=value
             '/(password[=:]\s*)[^\s&]+/i',                  // password=value
@@ -214,7 +216,6 @@ function flavor_platform_log( $message, $level = 'info', $module = '' ) {
         ],
         [
             '[REDACTED_HASH]',
-            '[REDACTED_TOKEN]',
             'Bearer [REDACTED]',
             '$1[REDACTED]',
             '$1[REDACTED]',

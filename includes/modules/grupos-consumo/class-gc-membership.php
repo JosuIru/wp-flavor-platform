@@ -1427,6 +1427,7 @@ class Flavor_GC_Membership {
 
         <script>
         jQuery(document).ready(function($) {
+            function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
             $('#gc-formulario-union').on('submit', function(e) {
                 e.preventDefault();
 
@@ -1449,7 +1450,7 @@ class Flavor_GC_Membership {
                             $resultado
                                 .removeClass('gc-mensaje-error')
                                 .addClass('gc-mensaje-success')
-                                .html('<strong><?php _e('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + response.data.mensaje)
+                                .html('<strong><?php _e('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + escHtml(response.data.mensaje))
                                 .show();
 
                             // Ocultar formulario y mostrar mensaje de exito
@@ -1461,7 +1462,7 @@ class Flavor_GC_Membership {
                             $resultado
                                 .removeClass('gc-mensaje-success')
                                 .addClass('gc-mensaje-error')
-                                .html('<strong><?php _e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + (response.data.error || response.data.mensaje))
+                                .html('<strong><?php _e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>' + escHtml(response.data.error || response.data.mensaje))
                                 .show();
 
                             $btn.prop('disabled', false);

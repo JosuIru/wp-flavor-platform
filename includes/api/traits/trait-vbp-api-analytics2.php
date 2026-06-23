@@ -54,9 +54,12 @@ trait VBP_API_AnalyticsAdvanced {
      * @return WP_REST_Response
      */
     public function track_analytics_event( $request ) {
+        // Los parámetros registrados en la ruta son 'event' y 'data' (con 'event'
+        // marcado como required). Antes el callback leía 'event_type'/'event_data',
+        // que nunca llegaban, así que el switch jamás incrementaba contadores (no-op).
         $page_id = (int) $request->get_param( 'page_id' );
-        $event_type = sanitize_text_field( $request->get_param( 'event_type' ) );
-        $event_data = $request->get_param( 'event_data' ) ?: array();
+        $event_type = sanitize_text_field( $request->get_param( 'event' ) );
+        $event_data = $request->get_param( 'data' ) ?: array();
 
         $post = get_post( $page_id );
         if ( ! $this->is_valid_vbp_post( $post ) ) {

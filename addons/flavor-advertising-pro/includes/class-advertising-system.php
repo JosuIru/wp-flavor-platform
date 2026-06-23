@@ -17,6 +17,12 @@ if (!defined('ABSPATH')) {
 class Flavor_Advertising_System {
 
     /**
+     * Versión del schema de tablas. Incrementar al cambiar columnas para
+     * forzar la re-ejecución de dbDelta vía maybe_create_tables().
+     */
+    const SCHEMA_VERSION = '1.1.0';
+
+    /**
      * Instancia singleton
      */
     private static $instance = null;
@@ -60,8 +66,23 @@ class Flavor_Advertising_System {
         // Frontend
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_scripts']);
 
-        // Crear tablas
-        register_activation_hook(__FILE__, [$this, 'create_tables']);
+        // Crear/actualizar tablas. NO se puede usar register_activation_hook aquí:
+        // este archivo se carga vía el addon manager (init_callback), no como plugin
+        // de WordPress, así que el hook de activación nunca se dispararía. En su lugar
+        // sincronizamos el schema con guarda de versión (barato salvo cuando cambia).
+        $this->maybe_create_tables();
+    }
+
+    /**
+     * Crea o actualiza las tablas solo cuando cambia la versión del schema.
+     */
+    private function maybe_create_tables() {
+        if (get_option('flavor_advertising_db_version') === self::SCHEMA_VERSION) {
+            return;
+        }
+
+        $this->create_tables();
+        update_option('flavor_advertising_db_version', self::SCHEMA_VERSION);
     }
 
     /**
@@ -536,6 +557,9 @@ class Flavor_Advertising_System {
             amount decimal(10,2) NOT NULL,
             type varchar(50) NOT NULL,
             status varchar(50) DEFAULT 'pending',
+            concept varchar(255) DEFAULT '',
+            payment_method varchar(50) DEFAULT '',
+            user_id bigint(20) DEFAULT 0,
             paid_at datetime DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
@@ -568,7 +592,16 @@ class Flavor_Advertising_System {
     public function track_impression() {
         check_ajax_referer('flavor_ad_tracking', 'nonce');
 
-        $ad_id = intval($_POST['ad_id']);
+        $ad_id = isset($_POST['ad_id']) ? intval($_POST['ad_id']) : 0;
+
+        if (!$this->es_anuncio_valido($ad_id)) {
+            wp_send_json_error(['message' => __('Anuncio inválido', 'flavor-advertising-pro')], 400);
+        }
+
+        if ($this->tracking_limitado($ad_id, 'impression')) {
+            wp_send_json_success(['throttled' => true]);
+        }
+
         $this->record_stat($ad_id, 'impression');
 
         wp_send_json_success();
@@ -580,10 +613,52 @@ class Flavor_Advertising_System {
     public function track_click() {
         check_ajax_referer('flavor_ad_tracking', 'nonce');
 
-        $ad_id = intval($_POST['ad_id']);
+        $ad_id = isset($_POST['ad_id']) ? intval($_POST['ad_id']) : 0;
+
+        if (!$this->es_anuncio_valido($ad_id)) {
+            wp_send_json_error(['message' => __('Anuncio inválido', 'flavor-advertising-pro')], 400);
+        }
+
+        if ($this->tracking_limitado($ad_id, 'click')) {
+            wp_send_json_success(['throttled' => true]);
+        }
+
         $this->record_stat($ad_id, 'click');
 
         wp_send_json_success();
+    }
+
+    /**
+     * Comprueba que el ID corresponda a un anuncio publicado.
+     * Evita inflar stats o crear filas basura con ad_id arbitrarios.
+     *
+     * @param int $ad_id
+     * @return bool
+     */
+    private function es_anuncio_valido($ad_id) {
+        return $ad_id > 0
+            && get_post_type($ad_id) === 'flavor_ad'
+            && get_post_status($ad_id) === 'publish';
+    }
+
+    /**
+     * Rate-limit por IP + anuncio + tipo para mitigar el inflado trivial de
+     * impresiones/clicks. Ventana corta para no descartar tráfico legítimo.
+     *
+     * @param int    $ad_id
+     * @param string $type 'impression' | 'click'
+     * @return bool true si se debe descartar (dentro de la ventana)
+     */
+    private function tracking_limitado($ad_id, $type) {
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : 'unknown';
+        $clave = 'flavor_ad_track_' . md5($type . '|' . $ad_id . '|' . $ip);
+
+        if (get_transient($clave)) {
+            return true;
+        }
+
+        set_transient($clave, 1, $type === 'click' ? 5 : 2);
+        return false;
     }
 
     /**

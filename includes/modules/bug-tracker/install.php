@@ -22,7 +22,7 @@ function flavor_bug_tracker_crear_tablas() {
 
     // Tabla principal de reportes de bugs
     $tabla_bug_reports = $wpdb->prefix . 'flavor_bug_reports';
-    $sql_bug_reports = "CREATE TABLE IF NOT EXISTS $tabla_bug_reports (
+    $sql_bug_reports = "CREATE TABLE $tabla_bug_reports (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         codigo varchar(20) NOT NULL,
         tipo enum('error_php','exception','warning','notice','manual','crash','deprecation') NOT NULL DEFAULT 'error_php',
@@ -61,7 +61,7 @@ function flavor_bug_tracker_crear_tablas() {
 
     // Tabla de configuración de canales de notificación
     $tabla_bug_channels = $wpdb->prefix . 'flavor_bug_channels';
-    $sql_bug_channels = "CREATE TABLE IF NOT EXISTS $tabla_bug_channels (
+    $sql_bug_channels = "CREATE TABLE $tabla_bug_channels (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         tipo enum('slack','discord','email','webhook') NOT NULL,

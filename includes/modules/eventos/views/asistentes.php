@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) exit;
 </style>
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
     cargarAsistentes();
     cargarEventosSelect();
     function cargarAsistentes() {
@@ -30,7 +31,7 @@ jQuery(document).ready(function($) {
                     let html = '';
                     response.data.forEach(asistente => {
                         const checkinIcon = asistente.checkin ? '<span class="dashicons dashicons-yes" style="color:#10b981;"></span>' : '<span class="dashicons dashicons-minus" style="color:#ccc;"></span>';
-                        html += `<tr><td>#${asistente.id}</td><td>${asistente.nombre}</td><td>${asistente.email}</td><td>${asistente.evento_titulo}</td><td>${asistente.fecha_inscripcion}</td><td><span class="flavor-badge ${asistente.estado}">${asistente.estado}</span></td><td>${checkinIcon}</td><td><button class="button button-small btn-checkin" data-id="${asistente.id}" ${asistente.checkin ? 'disabled' : ''}><span class="dashicons dashicons-yes"></span></button></td></tr>`;
+                        html += `<tr><td>#${escHtml(asistente.id)}</td><td>${escHtml(asistente.nombre)}</td><td>${escHtml(asistente.email)}</td><td>${escHtml(asistente.evento_titulo)}</td><td>${escHtml(asistente.fecha_inscripcion)}</td><td><span class="flavor-badge ${escHtml(asistente.estado)}">${escHtml(asistente.estado)}</span></td><td>${checkinIcon}</td><td><button class="button button-small btn-checkin" data-id="${escHtml(asistente.id)}" ${asistente.checkin ? 'disabled' : ''}><span class="dashicons dashicons-yes"></span></button></td></tr>`;
                     });
                     $('#asistentes-list').html(html || '<tr><td colspan="8" style="text-align:center;"><?php _e('No se encontraron asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>');
                 }
@@ -46,7 +47,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(evento => {
-                        options += `<option value="<?php echo esc_attr__('${evento.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${evento.titulo}</option>`;
+                        options += `<option value="${escHtml(evento.id)}">${escHtml(evento.titulo)}</option>`;
                     });
                     $('#filtro-evento-asistentes').html(options);
                 }

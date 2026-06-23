@@ -22,7 +22,7 @@ function flavor_facturas_crear_tablas() {
 
     // 1. Tabla principal de facturas
     $tabla_facturas = $wpdb->prefix . 'flavor_facturas';
-    $sql_facturas = "CREATE TABLE IF NOT EXISTS $tabla_facturas (
+    $sql_facturas = "CREATE TABLE $tabla_facturas (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         numero_factura varchar(50) NOT NULL,
         serie varchar(10) DEFAULT 'A',
@@ -88,7 +88,7 @@ function flavor_facturas_crear_tablas() {
 
     // 2. Tabla de líneas de factura
     $tabla_lineas = $wpdb->prefix . 'flavor_facturas_lineas';
-    $sql_lineas = "CREATE TABLE IF NOT EXISTS $tabla_lineas (
+    $sql_lineas = "CREATE TABLE $tabla_lineas (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         factura_id bigint(20) unsigned NOT NULL,
         producto_servicio_id bigint(20) unsigned DEFAULT NULL,
@@ -118,7 +118,7 @@ function flavor_facturas_crear_tablas() {
 
     // 3. Tabla de pagos de facturas
     $tabla_pagos = $wpdb->prefix . 'flavor_facturas_pagos';
-    $sql_pagos = "CREATE TABLE IF NOT EXISTS $tabla_pagos (
+    $sql_pagos = "CREATE TABLE $tabla_pagos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         factura_id bigint(20) unsigned NOT NULL,
         importe decimal(10,2) NOT NULL,
@@ -149,7 +149,7 @@ function flavor_facturas_crear_tablas() {
 
     // 4. Tabla de series de facturación
     $tabla_series = $wpdb->prefix . 'flavor_facturas_series';
-    $sql_series = "CREATE TABLE IF NOT EXISTS $tabla_series (
+    $sql_series = "CREATE TABLE $tabla_series (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         serie varchar(10) NOT NULL,
         nombre varchar(100) NOT NULL,
@@ -177,7 +177,7 @@ function flavor_facturas_crear_tablas() {
 
     // 5. Tabla de impuestos (IVA, IRPF, etc.)
     $tabla_impuestos = $wpdb->prefix . 'flavor_facturas_impuestos';
-    $sql_impuestos = "CREATE TABLE IF NOT EXISTS $tabla_impuestos (
+    $sql_impuestos = "CREATE TABLE $tabla_impuestos (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         nombre varchar(100) NOT NULL,
         tipo enum('iva','irpf','recargo','otro') NOT NULL,

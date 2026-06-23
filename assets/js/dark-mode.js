@@ -34,25 +34,31 @@
 		init: function () {
 			this.loadPreference();
 			this.setupToggleButtons();
-			this.watchSystemPreference();
 			this.setupTransitions();
+			// NOTA: no se observa la preferencia del SO (prefers-color-scheme).
+			// El default del portal es CLARO forzado; solo un toggle/preferencia
+			// guardada explicita puede activar dark. Ver watchSystemPreference().
 		},
 
 		/**
-         * Carga la preferencia guardada del usuario
+         * Carga la preferencia guardada del usuario.
+         *
+         * Solo se aplica dark/light cuando hay una preferencia EXPLICITA en
+         * localStorage. NO se deriva el tema de prefers-color-scheme: el portal
+         * arranca en claro por defecto (decision de producto) y el atributo
+         * data-theme lo emite el servidor (class-theme-customizer.php).
          */
 		loadPreference: function () {
 			var savedTheme = localStorage.getItem(this.storageKey);
 
 			if (savedTheme) {
-				// Usuario tiene preferencia guardada
+				// Usuario tiene preferencia guardada explicita
 				document.documentElement.setAttribute('data-theme', savedTheme);
 				this.updateToggleButtons(savedTheme);
 			} else {
-				// Usar preferencia del sistema
-				var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-				var currentTheme = systemPrefersDark ? 'dark' : 'light';
-				this.updateToggleButtons(currentTheme);
+				// Sin preferencia guardada: respetar el tema emitido por el
+				// servidor (claro por defecto). No leer prefers-color-scheme.
+				this.updateToggleButtons(this.getCurrentTheme());
 			}
 		},
 
@@ -65,7 +71,9 @@
 			if (explicitTheme) {
 				return explicitTheme;
 			}
-			return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			// Sin atributo explicito el default es claro. NO se consulta
+			// prefers-color-scheme (auto-dark por SO retirado a proposito).
+			return 'light';
 		},
 
 		/**
@@ -74,12 +82,13 @@
          */
 		setTheme: function (theme) {
 			if (theme === 'auto') {
-				// Eliminar preferencia manual y usar sistema
+				// Eliminar preferencia manual y volver al default forzado (claro).
+				// NO se deriva el tema de prefers-color-scheme: el auto-dark por
+				// SO se retiro para no romper el portal claro por defecto.
 				localStorage.removeItem(this.storageKey);
 				document.documentElement.removeAttribute('data-theme');
-				var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-				this.updateToggleButtons(systemTheme);
-				this.dispatchChangeEvent(systemTheme, true);
+				this.updateToggleButtons('light');
+				this.dispatchChangeEvent('light', true);
 			} else {
 				document.documentElement.setAttribute('data-theme', theme);
 				localStorage.setItem(this.storageKey, theme);
@@ -161,27 +170,16 @@
 		},
 
 		/**
-         * Observa cambios en la preferencia del sistema
+         * Observa cambios en la preferencia del sistema.
+         *
+         * DESACTIVADO a proposito: el auto-dark por prefers-color-scheme se
+         * retiro para que el portal coincida con la decision "claro por
+         * defecto". Se mantiene como no-op para compatibilidad con cualquier
+         * codigo externo que aun lo invoque. NO reintroducir el listener de
+         * matchMedia aqui sin coordinar con el resto de gestores de tema.
          */
 		watchSystemPreference: function () {
-			var self = this;
-			var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-			var handleChange = function (event) {
-				// Solo aplicar si no hay preferencia manual guardada
-				if (!localStorage.getItem(self.storageKey)) {
-					var newTheme = event.matches ? 'dark' : 'light';
-					self.updateToggleButtons(newTheme);
-					self.dispatchChangeEvent(newTheme, true);
-				}
-			};
-
-			// Soporte para navegadores modernos y legacy
-			if (mediaQuery.addEventListener) {
-				mediaQuery.addEventListener('change', handleChange);
-			} else if (mediaQuery.addListener) {
-				mediaQuery.addListener(handleChange);
-			}
+			/* no-op: auto-dark por SO retirado intencionadamente */
 		},
 
 		/**

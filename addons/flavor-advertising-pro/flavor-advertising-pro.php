@@ -74,9 +74,14 @@ function flavor_advertising_pro_init() {
         require_once FLAVOR_ADVERTISING_PATH . 'includes/class-advertising-module.php';
 
         add_filter('flavor_register_modules', function($modules) {
+            // La clase real es Flavor_Platform_Advertising_Module (alias legacy
+            // Flavor_Chat_Advertising_Module). flavor_get_runtime_class_name() traduce
+            // el nombre legacy 'Flavor_Chat_*' -> 'Flavor_Platform_*'. El nombre anterior
+            // ('Flavor_Chat_Module_Advertising') tenía las palabras invertidas y nunca
+            // resolvía, así que el módulo no se registraba con la IA.
             $advertising_module_class = function_exists('flavor_get_runtime_class_name')
-                ? flavor_get_runtime_class_name('Flavor_Chat_Module_Advertising')
-                : 'Flavor_Chat_Module_Advertising';
+                ? flavor_get_runtime_class_name('Flavor_Chat_Advertising_Module')
+                : 'Flavor_Platform_Advertising_Module';
             if (class_exists($advertising_module_class)) {
                 $modules['advertising'] = new $advertising_module_class();
             }

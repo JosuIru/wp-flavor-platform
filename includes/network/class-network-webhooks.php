@@ -537,7 +537,7 @@ class Flavor_Network_Webhooks {
             'attempts' => 0,
         ];
 
-        update_option('flavor_webhook_queue', $queue);
+        update_option('flavor_webhook_queue', $queue, false);
     }
 
     /**
@@ -597,7 +597,7 @@ class Flavor_Network_Webhooks {
         }
 
         // Reindexar y guardar
-        update_option('flavor_webhook_queue', array_values($queue));
+        update_option('flavor_webhook_queue', array_values($queue), false);
     }
 
     /**
@@ -668,7 +668,7 @@ class Flavor_Network_Webhooks {
             'data' => $data,
         ];
 
-        update_option('flavor_webhook_logs', $logs);
+        update_option('flavor_webhook_logs', $logs, false);
     }
 
     /**

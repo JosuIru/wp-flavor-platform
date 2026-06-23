@@ -189,11 +189,13 @@ class Flavor_Mesh_Loader {
      * Asegura que existe el peer local
      */
     private function ensure_local_peer() {
-        if ( ! class_exists( 'Flavor_Network_Installer' ) ) {
+        // OJO: la clase con ensure_local_peer_exists() es Flavor_Network_Mesh_Installer
+        // (definida en el addon), NO Flavor_Network_Installer (core). Comprobar la clase
+        // del core dejaba esta autocreación como código muerto (el peer local nunca se creaba).
+        if ( ! class_exists( 'Flavor_Network_Mesh_Installer' ) ) {
             require_once dirname($this->base_dir) . '/class-network-installer.php';
         }
-        // Solo llamar si el método existe (versión del addon tiene el método, core no)
-        if ( method_exists( 'Flavor_Network_Installer', 'ensure_local_peer_exists' ) ) {
+        if ( method_exists( 'Flavor_Network_Mesh_Installer', 'ensure_local_peer_exists' ) ) {
             Flavor_Network_Mesh_Installer::ensure_local_peer_exists();
         }
     }
@@ -467,30 +469,29 @@ class Flavor_Mesh_Loader {
      * @since 1.5.0
      */
     private function register_cron_jobs() {
-        // Registrar intervalos personalizados
+        // Registrar intervalos personalizados (usados también por
+        // Flavor_Gossip_Protocol al programar sus eventos: every_minute,
+        // every_five_minutes). Debe mantenerse aquí.
         add_filter('cron_schedules', [$this, 'add_cron_schedules']);
 
-        // Registrar handlers de cron
-        add_action('flavor_mesh_gossip_batch', [$this, 'cron_process_gossip_batch']);
-        add_action('flavor_mesh_heartbeat', [$this, 'cron_send_heartbeats']);
-        add_action('flavor_mesh_peer_discovery', [$this, 'cron_discover_peers']);
+        // NOTA SOBRE DUPLICACIÓN DE CRONS:
+        // Los hooks flavor_mesh_gossip_batch, flavor_mesh_heartbeat y
+        // flavor_mesh_peer_discovery son programados y enganchados por sus
+        // clases especializadas (Flavor_Gossip_Protocol::init_hooks() y
+        // Flavor_Peer_Discovery::init_hooks()), que contienen la lógica real
+        // del callback. Antes el loader también los programaba/enganchaba, lo
+        // que provocaba doble ejecución por tick. Se eliminan aquí para dejar
+        // un único punto de registro por cron.
+        //
+        // El loader sólo conserva flavor_mesh_cleanup_expired porque su
+        // callback (cron_cleanup_expired) es un superconjunto del de gossip:
+        // además de borrar mensajes expirados, marca peers offline y purga el
+        // sync_log. El handler de Gossip para este hook se ha eliminado para
+        // evitar solapamiento y el conflicto de intervalo (twicedaily/hourly).
         add_action('flavor_mesh_cleanup_expired', [$this, 'cron_cleanup_expired']);
 
-        // Programar cron jobs si no están programados
-        if (!wp_next_scheduled('flavor_mesh_gossip_batch')) {
-            wp_schedule_event(time(), 'every_minute', 'flavor_mesh_gossip_batch');
-        }
-
-        if (!wp_next_scheduled('flavor_mesh_heartbeat')) {
-            wp_schedule_event(time(), 'every_five_minutes', 'flavor_mesh_heartbeat');
-        }
-
-        if (!wp_next_scheduled('flavor_mesh_peer_discovery')) {
-            wp_schedule_event(time(), 'hourly', 'flavor_mesh_peer_discovery');
-        }
-
         if (!wp_next_scheduled('flavor_mesh_cleanup_expired')) {
-            wp_schedule_event(time(), 'twicedaily', 'flavor_mesh_cleanup_expired');
+            wp_schedule_event(time(), 'hourly', 'flavor_mesh_cleanup_expired');
         }
     }
 

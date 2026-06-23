@@ -57,7 +57,11 @@ class Flavor_PO_MO_Handler {
             add_action('wp_ajax_flavor_ml_export_po', array($this, 'ajax_export_po'));
             add_action('wp_ajax_flavor_ml_export_mo', array($this, 'ajax_export_mo'));
             add_action('wp_ajax_flavor_ml_import_po', array($this, 'ajax_import_po'));
-            add_action('wp_ajax_flavor_ml_import_translations', array($this, 'ajax_import_translations'));
+            // Hook huérfano eliminado: el método ajax_import_translations() no
+            // existe en esta clase y ningún JS dispara la acción
+            // flavor_ml_import_translations (era un fatal latente). El import
+            // real lo maneja ajax_import_po(). Si en el futuro se necesita,
+            // añadir primero el método antes de re-registrar el hook.
             add_action('wp_ajax_flavor_ml_translate_po_ai', array($this, 'ajax_translate_po_ai'));
         }
     }

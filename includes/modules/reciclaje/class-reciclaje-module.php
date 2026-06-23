@@ -131,6 +131,18 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
         add_action('wp_ajax_flavor_reciclaje_ver_recogida', [$this, 'ajax_ver_recogida']);
         add_action('wp_ajax_nopriv_flavor_reciclaje_ver_recogida', [$this, 'ajax_ver_recogida']);
 
+        // Handlers usados por reciclaje.js (frontend). Comparten el nonce
+        // 'flavor_reciclaje_nonce' que enqueue_frontend_assets() localiza.
+        // Recogidas y retos son consultables sin login (nopriv) porque la
+        // vista de calendario/retos es pública; las estadísticas y la
+        // reclamación de recompensa requieren usuario autenticado.
+        add_action('wp_ajax_reciclaje_obtener_recogidas', [$this, 'ajax_obtener_recogidas']);
+        add_action('wp_ajax_nopriv_reciclaje_obtener_recogidas', [$this, 'ajax_obtener_recogidas']);
+        add_action('wp_ajax_reciclaje_obtener_estadisticas_usuario', [$this, 'ajax_obtener_estadisticas_usuario']);
+        add_action('wp_ajax_reciclaje_obtener_retos', [$this, 'ajax_obtener_retos']);
+        add_action('wp_ajax_nopriv_reciclaje_obtener_retos', [$this, 'ajax_obtener_retos']);
+        add_action('wp_ajax_reciclaje_reclamar_reto', [$this, 'ajax_reclamar_reto']);
+
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -1603,6 +1615,326 @@ class Flavor_Platform_Reciclaje_Module extends Flavor_Platform_Module_Base {
 
         wp_send_json_success([
             'recogida' => $datos_recogida,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener recogidas de un mes (consumido por reciclaje.js).
+     *
+     * El JS envía 'mes' (1-12) y 'anio' y espera data.recogidas[] con:
+     *   fecha, tipos_residuos (array), zona, hora_inicio.
+     * Tabla: {prefix}flavor_reciclaje_recogidas (columna tipos_residuos es JSON).
+     */
+    public function ajax_obtener_recogidas() {
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_recogidas = $wpdb->prefix . 'flavor_reciclaje_recogidas';
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_recogidas)) {
+            wp_send_json_success(['recogidas' => []]);
+        }
+
+        // Normalizar mes/anio; si no llegan, usar el mes actual.
+        $mes = intval($_POST['mes'] ?? date('n'));
+        $anio = intval($_POST['anio'] ?? date('Y'));
+        if ($mes < 1 || $mes > 12) {
+            $mes = intval(date('n'));
+        }
+        if ($anio < 2000 || $anio > 2100) {
+            $anio = intval(date('Y'));
+        }
+
+        $fecha_desde = sprintf('%04d-%02d-01 00:00:00', $anio, $mes);
+        $fecha_hasta = date('Y-m-t 23:59:59', strtotime($fecha_desde));
+
+        $recogidas = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, zona, tipos_residuos, fecha_programada, hora_inicio, hora_fin, tipo_recogida, estado
+             FROM $tabla_recogidas
+             WHERE fecha_programada BETWEEN %s AND %s
+             AND estado != 'cancelada'
+             ORDER BY fecha_programada ASC",
+            $fecha_desde,
+            $fecha_hasta
+        ));
+
+        $datos = array_map(function ($recogida) {
+            // tipos_residuos se guarda como JSON; degradar a array si viene texto plano.
+            $tipos_residuos = json_decode((string) $recogida->tipos_residuos, true);
+            if (!is_array($tipos_residuos)) {
+                $tipos_residuos = $recogida->tipos_residuos !== null && $recogida->tipos_residuos !== ''
+                    ? [(string) $recogida->tipos_residuos]
+                    : [];
+            }
+
+            return [
+                'id' => (int) $recogida->id,
+                'fecha' => $recogida->fecha_programada,
+                'tipos_residuos' => array_values($tipos_residuos),
+                'zona' => $recogida->zona,
+                'hora_inicio' => $recogida->hora_inicio,
+                'hora_fin' => $recogida->hora_fin,
+                'tipo' => $recogida->tipo_recogida,
+                'estado' => $recogida->estado,
+            ];
+        }, $recogidas);
+
+        wp_send_json_success(['recogidas' => $datos]);
+    }
+
+    /**
+     * AJAX: Estadísticas del usuario para el panel de impacto (reciclaje.js).
+     *
+     * El JS espera en data: total_kg, puntos_totales, total_depositos,
+     * co2_ahorrado, por_material (material => kg) e historial[] con
+     * (tipo_material, cantidad_kg, fecha, puntos).
+     * Tabla: {prefix}flavor_reciclaje_depositos (solo depósitos verificados).
+     */
+    public function ajax_obtener_estadisticas_usuario() {
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_depositos)) {
+            wp_send_json_success([
+                'total_kg' => 0,
+                'puntos_totales' => 0,
+                'total_depositos' => 0,
+                'co2_ahorrado' => 0,
+                'por_material' => (object) [],
+                'historial' => [],
+            ]);
+        }
+
+        $totales = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COALESCE(SUM(cantidad_kg), 0) as total_kg,
+                COALESCE(SUM(puntos_ganados), 0) as puntos_totales,
+                COUNT(*) as total_depositos
+             FROM $tabla_depositos
+             WHERE usuario_id = %d AND verificado = 1",
+            $usuario_id
+        ));
+
+        // Desglose por material para las barras de progreso.
+        $por_material_rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT tipo_material, COALESCE(SUM(cantidad_kg), 0) as kg
+             FROM $tabla_depositos
+             WHERE usuario_id = %d AND verificado = 1
+             GROUP BY tipo_material
+             ORDER BY kg DESC",
+            $usuario_id
+        ));
+
+        // Factores de CO2 alineados con Flavor_Reciclaje_Conciencia_Features.
+        $factores_co2 = [
+            'papel' => 0.7, 'plastico' => 1.5, 'vidrio' => 0.3, 'organico' => 0.2,
+            'electronico' => 2.0, 'ropa' => 3.0, 'aceite' => 2.5, 'pilas' => 5.0, 'metal' => 4.0,
+        ];
+
+        $por_material = [];
+        $co2_ahorrado = 0.0;
+        foreach ($por_material_rows as $fila) {
+            $kg = (float) $fila->kg;
+            $por_material[$fila->tipo_material] = round($kg, 2);
+            $co2_ahorrado += $kg * ($factores_co2[$fila->tipo_material] ?? 0.5);
+        }
+
+        // Historial de los últimos depósitos verificados.
+        $historial_rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT tipo_material, cantidad_kg, puntos_ganados, fecha_deposito
+             FROM $tabla_depositos
+             WHERE usuario_id = %d AND verificado = 1
+             ORDER BY fecha_deposito DESC
+             LIMIT 20",
+            $usuario_id
+        ));
+
+        $historial = array_map(function ($registro) {
+            return [
+                'tipo_material' => $registro->tipo_material,
+                'cantidad_kg' => (float) $registro->cantidad_kg,
+                'puntos' => (int) $registro->puntos_ganados,
+                'fecha' => $registro->fecha_deposito,
+            ];
+        }, $historial_rows);
+
+        wp_send_json_success([
+            'total_kg' => round((float) ($totales->total_kg ?? 0), 2),
+            'puntos_totales' => (int) ($totales->puntos_totales ?? 0),
+            'total_depositos' => (int) ($totales->total_depositos ?? 0),
+            'co2_ahorrado' => round($co2_ahorrado, 2),
+            'por_material' => empty($por_material) ? (object) [] : $por_material,
+            'historial' => $historial,
+        ]);
+    }
+
+    /**
+     * AJAX: Retos disponibles con el progreso del usuario (reciclaje.js).
+     *
+     * El JS espera data.retos[] con: id, nombre, descripcion, icono, meta,
+     * progreso, unidad, puntos_recompensa.
+     * Tablas (módulo conciencia): {prefix}flavor_rec_retos y
+     * {prefix}flavor_rec_reto_participaciones. El "progreso" mostrado es la
+     * contribución del usuario actual al reto (si participa), no el global.
+     */
+    public function ajax_obtener_retos() {
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
+
+        global $wpdb;
+        $tabla_retos = $wpdb->prefix . 'flavor_rec_retos';
+        $tabla_participaciones = $wpdb->prefix . 'flavor_rec_reto_participaciones';
+
+        // Tablas las crea Flavor_Reciclaje_Conciencia_Features; si aún no
+        // existen, devolvemos lista vacía en lugar de fallar.
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_retos)) {
+            wp_send_json_success(['retos' => []]);
+        }
+
+        $usuario_id = get_current_user_id();
+
+        $retos = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.id, r.titulo, r.descripcion, r.tipo, r.meta_cantidad, r.unidad,
+                    r.progreso_actual, r.puntos_recompensa, r.estado,
+                    COALESCE(p.contribucion, 0) as contribucion_usuario,
+                    p.id as participacion_id
+             FROM $tabla_retos r
+             LEFT JOIN $tabla_participaciones p
+                    ON p.reto_id = r.id AND p.usuario_id = %d
+             WHERE r.estado = 'activo'
+             AND r.fecha_fin >= CURDATE()
+             ORDER BY r.fecha_fin ASC
+             LIMIT 20",
+            $usuario_id
+        ));
+
+        // Iconos por tipo de reto, para la tarjeta.
+        $iconos = [
+            'reciclaje' => '♻️',
+            'reutilizacion' => '🔄',
+            'reparacion' => '🔧',
+            'reduccion' => '📉',
+        ];
+
+        $datos = array_map(function ($reto) use ($iconos) {
+            // Para usuarios que participan, mostramos su contribución; si no,
+            // el progreso global del reto como referencia.
+            $progreso = $reto->participacion_id
+                ? (float) $reto->contribucion_usuario
+                : (float) $reto->progreso_actual;
+
+            return [
+                'id' => (int) $reto->id,
+                'nombre' => $reto->titulo,
+                'descripcion' => $reto->descripcion,
+                'icono' => $iconos[$reto->tipo] ?? '🎯',
+                'meta' => (float) $reto->meta_cantidad,
+                'progreso' => $progreso,
+                'unidad' => $reto->unidad,
+                'puntos_recompensa' => (int) $reto->puntos_recompensa,
+            ];
+        }, $retos);
+
+        wp_send_json_success(['retos' => $datos]);
+    }
+
+    /**
+     * AJAX: Reclamar la recompensa de un reto completado (reciclaje.js).
+     *
+     * Distinto de unirse a un reto (rec_unirse_reto). Aquí el usuario reclama
+     * los puntos de su participación cuando alcanzó la meta. El JS envía
+     * 'reto_id' y espera data.puntos. Idempotente: marca la participación con
+     * 'recompensa_reclamada' (user_meta) para no reclamar dos veces.
+     * Tablas: {prefix}flavor_rec_retos y {prefix}flavor_rec_reto_participaciones.
+     */
+    public function ajax_reclamar_reto() {
+        check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $reto_id = intval($_POST['reto_id'] ?? 0);
+        if (!$reto_id) {
+            wp_send_json_error(['message' => __('Reto no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        global $wpdb;
+        $tabla_retos = $wpdb->prefix . 'flavor_rec_retos';
+        $tabla_participaciones = $wpdb->prefix . 'flavor_rec_reto_participaciones';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Platform_Helpers::tabla_existe($tabla_retos)
+            || !Flavor_Platform_Helpers::tabla_existe($tabla_participaciones)) {
+            wp_send_json_error(['message' => __('Los retos no están disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $reto = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_retos WHERE id = %d",
+            $reto_id
+        ));
+
+        if (!$reto) {
+            wp_send_json_error(['message' => __('El reto no existe', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        $participacion = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_participaciones WHERE reto_id = %d AND usuario_id = %d",
+            $reto_id,
+            $usuario_id
+        ));
+
+        if (!$participacion) {
+            wp_send_json_error(['message' => __('No participas en este reto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // El reto debe estar cumplido: o bien marcado completado, o la
+        // contribución del usuario alcanzó la meta.
+        $meta_alcanzada = $reto->estado === 'completado'
+            || (float) $participacion->contribucion >= (float) $reto->meta_cantidad;
+
+        if (!$meta_alcanzada) {
+            wp_send_json_error(['message' => __('Aún no has completado el reto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Evitar doble reclamación.
+        $clave_reclamado = '_reciclaje_reto_reclamado_' . $reto_id;
+        if (get_user_meta($usuario_id, $clave_reclamado, true)) {
+            wp_send_json_error(['message' => __('Ya has reclamado esta recompensa', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
+        }
+
+        // Puntos: los ya calculados al completar el reto, o la recompensa
+        // completa si todavía no se calcularon (fallback).
+        $puntos = (int) $participacion->puntos_ganados;
+        if ($puntos <= 0) {
+            $puntos = (int) $reto->puntos_recompensa;
+            $wpdb->update(
+                $tabla_participaciones,
+                ['puntos_ganados' => $puntos],
+                ['id' => $participacion->id],
+                ['%d'],
+                ['%d']
+            );
+        }
+
+        update_user_meta($usuario_id, $clave_reclamado, current_time('mysql'));
+
+        // Integrar con gamificación si está disponible (mismo patrón que el depósito).
+        if (class_exists('Flavor_Gamification')) {
+            do_action('flavor_gamification_award_points', $usuario_id, $puntos, 'reciclaje_reto_completado', [
+                'reto_id' => $reto_id,
+            ]);
+        }
+
+        wp_send_json_success([
+            'message' => __('Recompensa reclamada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'puntos' => $puntos,
         ]);
     }
 

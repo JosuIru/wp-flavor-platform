@@ -160,19 +160,28 @@ class Flavor_API_Rate_Limiter {
      * @return string Direccion IP del cliente o cadena vacia si no se puede determinar
      */
     public static function obtener_ip_cliente() {
-        $cabeceras_ip_prioritarias = [
-            'HTTP_CF_CONNECTING_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_REAL_IP',
-            'REMOTE_ADDR',
-        ];
+        $remote_addr = isset($_SERVER['REMOTE_ADDR'])
+            ? trim(sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])))
+            : '';
 
-        foreach ($cabeceras_ip_prioritarias as $nombre_cabecera) {
-            if (!empty($_SERVER[$nombre_cabecera])) {
+        // Las cabeceras X-Forwarded-For / CF-Connecting-IP / X-Real-IP son
+        // falsificables por el cliente. Solo se confían si la conexion viene
+        // de un proxy de confianza declarado. Sin proxies configurados (por
+        // defecto) se usa REMOTE_ADDR, que NO se puede falsificar.
+        //
+        // Configurar tras un proxy/CDN (Cloudflare, Nginx) con:
+        //   add_filter('flavor_trusted_proxies', fn() => ['192.0.2.10', '10.0.0.0/8']);
+        $proxies_confianza = array_filter((array) apply_filters('flavor_trusted_proxies', []));
+
+        if (!empty($proxies_confianza) && self::ip_en_lista($remote_addr, $proxies_confianza)) {
+            foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP'] as $nombre_cabecera) {
+                if (empty($_SERVER[$nombre_cabecera])) {
+                    continue;
+                }
                 $valor_cabecera = sanitize_text_field(wp_unslash($_SERVER[$nombre_cabecera]));
 
-                // X-Forwarded-For puede contener multiples IPs separadas por coma
-                // La primera IP es la del cliente original
+                // X-Forwarded-For puede contener multiples IPs separadas por coma;
+                // la primera es la del cliente original.
                 if ($nombre_cabecera === 'HTTP_X_FORWARDED_FOR') {
                     $lista_ips = explode(',', $valor_cabecera);
                     $direccion_ip_candidata = trim($lista_ips[0]);
@@ -180,14 +189,69 @@ class Flavor_API_Rate_Limiter {
                     $direccion_ip_candidata = trim($valor_cabecera);
                 }
 
-                // Validar que sea una IP valida (IPv4 o IPv6)
                 if (filter_var($direccion_ip_candidata, FILTER_VALIDATE_IP)) {
                     return $direccion_ip_candidata;
                 }
             }
         }
 
-        return '';
+        return filter_var($remote_addr, FILTER_VALIDATE_IP) ? $remote_addr : '';
+    }
+
+    /**
+     * ¿Está $ip dentro de la lista de IPs/CIDRs de confianza?
+     *
+     * @param string $ip
+     * @param array  $lista IPs exactas o rangos CIDR.
+     * @return bool
+     */
+    private static function ip_en_lista($ip, array $lista) {
+        if (empty($ip)) {
+            return false;
+        }
+        foreach ($lista as $entrada) {
+            $entrada = trim((string) $entrada);
+            if ($entrada === '') {
+                continue;
+            }
+            if (strpos($entrada, '/') === false) {
+                if ($ip === $entrada) {
+                    return true;
+                }
+                continue;
+            }
+            if (self::ip_en_cidr($ip, $entrada)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Comprueba si una IP (IPv4 o IPv6) pertenece a un rango CIDR.
+     *
+     * @param string $ip
+     * @param string $cidr p.ej. "10.0.0.0/8" o "2001:db8::/32".
+     * @return bool
+     */
+    private static function ip_en_cidr($ip, $cidr) {
+        list($subred, $bits) = array_pad(explode('/', $cidr, 2), 2, null);
+        $ip_bin = @inet_pton($ip);
+        $subred_bin = @inet_pton((string) $subred);
+        if ($ip_bin === false || $subred_bin === false || strlen($ip_bin) !== strlen($subred_bin)) {
+            return false;
+        }
+        $bits = (int) $bits;
+        $bytes_completos = intdiv($bits, 8);
+        $bits_resto = $bits % 8;
+        if ($bytes_completos > 0 && substr($ip_bin, 0, $bytes_completos) !== substr($subred_bin, 0, $bytes_completos)) {
+            return false;
+        }
+        if ($bits_resto === 0) {
+            return true;
+        }
+        $mascara = chr((0xff << (8 - $bits_resto)) & 0xff);
+        return (ord($ip_bin[$bytes_completos]) & ord($mascara)) === (ord($subred_bin[$bytes_completos]) & ord($mascara));
     }
 
     /**

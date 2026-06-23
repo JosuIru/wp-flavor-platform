@@ -168,7 +168,7 @@ curl -X POST "http://tu-sitio.local/wp-json/flavor-site-builder/v1/site/create" 
 ## Requisitos
 
 - WordPress **5.8+** (probado hasta 6.4)
-- PHP **7.4+**
+- PHP **8.2+**
 - Opcional: **WooCommerce 5.0+** para módulos de economía
 - Para apps móviles: **Flutter 3.19+**
 

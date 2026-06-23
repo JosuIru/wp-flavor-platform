@@ -400,6 +400,11 @@ class Flavor_Restaurant_API {
             'include_items' => $request->get_param('include_items') === 'true',
         ];
 
+        // Si es admin, puede ver todos los pedidos. Si no, solo los suyos (evita IDOR).
+        if (!current_user_can('manage_options') && is_user_logged_in()) {
+            $args['user_id'] = get_current_user_id();
+        }
+
         $order_manager = Flavor_Order_Manager::get_instance();
         $orders = $order_manager->get_orders($args);
 

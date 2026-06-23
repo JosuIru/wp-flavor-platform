@@ -2,16 +2,17 @@ part of 'circulos_cuidados_screen.dart';
 
 extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
   void _crearCirculo() {
+    final i18n = AppLocalizations.of(context);
     final nombreController = TextEditingController();
     final descripcionController = TextEditingController();
     String tipoSeleccionado = 'general';
 
     final tipos = [
-      {'id': 'general', 'nombre': 'General'},
-      {'id': 'infancia', 'nombre': 'Cuidado de infancia'},
-      {'id': 'mayores', 'nombre': 'Apoyo a mayores'},
-      {'id': 'salud', 'nombre': 'Acompanamiento salud'},
-      {'id': 'emocional', 'nombre': 'Apoyo emocional'},
+      {'id': 'general', 'nombre': i18n.circulosCuidadosTypeGeneral},
+      {'id': 'infancia', 'nombre': i18n.circulosCuidadosTypeInfancia},
+      {'id': 'mayores', 'nombre': i18n.circulosCuidadosTypeMayores},
+      {'id': 'salud', 'nombre': i18n.circulosCuidadosTypeSalud},
+      {'id': 'emocional', 'nombre': i18n.circulosCuidadosTypeEmocional},
     ];
 
     showModalBottomSheet(
@@ -37,9 +38,9 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                   children: [
                     Icon(Icons.favorite, color: Colors.pink.shade400),
                     const SizedBox(width: 12),
-                    const Text(
-                      'Crear Circulo de Cuidados',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Text(
+                      i18n.circulosCuidadosCreateTitle,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     IconButton(
@@ -51,20 +52,20 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nombreController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del circulo',
-                    prefixIcon: Icon(Icons.group),
-                    border: OutlineInputBorder(),
-                    hintText: 'Ej: Circulo de apoyo vecinal',
+                  decoration: InputDecoration(
+                    labelText: i18n.circulosCuidadosNameLabel,
+                    prefixIcon: const Icon(Icons.group),
+                    border: const OutlineInputBorder(),
+                    hintText: i18n.circulosCuidadosNameHint,
                   ),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: tipoSeleccionado,
-                  decoration: const InputDecoration(
-                    labelText: 'Tipo de circulo',
-                    prefixIcon: Icon(Icons.category),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: i18n.circulosCuidadosTypeLabel,
+                    prefixIcon: const Icon(Icons.category),
+                    border: const OutlineInputBorder(),
                   ),
                   items: tipos.map((tipo) {
                     return DropdownMenuItem<String>(
@@ -81,11 +82,11 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: descripcionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripcion',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                    hintText: 'Describe el proposito del circulo...',
+                  decoration: InputDecoration(
+                    labelText: i18n.circulosCuidadosDescriptionLabel,
+                    prefixIcon: const Icon(Icons.description),
+                    border: const OutlineInputBorder(),
+                    hintText: i18n.circulosCuidadosDescriptionHint,
                   ),
                   maxLines: 3,
                 ),
@@ -95,7 +96,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                   child: FilledButton.icon(
                     onPressed: () async {
                       if (nombreController.text.isEmpty) {
-                        FlavorSnackbar.showError(context, 'El nombre es obligatorio');
+                        FlavorSnackbar.showError(context, i18n.circulosCuidadosNameRequired);
                         return;
                       }
                       Navigator.pop(context);
@@ -106,7 +107,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                       );
                     },
                     icon: const Icon(Icons.add),
-                    label: const Text('Crear circulo'),
+                    label: Text(i18n.circulosCuidadosCreateButton),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -134,7 +135,8 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
 
       if (response.success) {
         if (mounted) {
-          FlavorSnackbar.showSuccess(context, 'Circulo creado correctamente');
+          FlavorSnackbar.showSuccess(
+              context, AppLocalizations.of(context).circulosCuidadosCreatedSuccess);
           _loadData();
         }
       } else {
@@ -142,25 +144,26 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, AppLocalizations.of(context).commonError(e.toString()));
       }
     }
   }
 
   void _unirseCirculo(Map<String, dynamic> circulo) async {
+    final i18n = AppLocalizations.of(context);
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Unirse al circulo'),
-        content: Text('¿Deseas enviar una solicitud para unirte a "${circulo['nombre']}"?'),
+        title: Text(i18n.circulosCuidadosJoinTitle),
+        content: Text(i18n.circulosCuidadosJoinConfirm(circulo['nombre']?.toString() ?? '')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Enviar solicitud'),
+            child: Text(i18n.circulosCuidadosJoinSend),
           ),
         ],
       ),
@@ -177,7 +180,10 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
 
       if (response.success) {
         if (mounted) {
-          FlavorSnackbar.showSuccess(context, 'Solicitud enviada a ${circulo['nombre']}');
+          FlavorSnackbar.showSuccess(
+              context,
+              AppLocalizations.of(context)
+                  .circulosCuidadosJoinSent(circulo['nombre']?.toString() ?? ''));
           _loadData();
         }
       } else {
@@ -185,12 +191,13 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, AppLocalizations.of(context).commonError(e.toString()));
       }
     }
   }
 
   void _verCirculo(Map<String, dynamic> circulo) {
+    final i18n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -252,17 +259,17 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                       _buildStatColumn(
                         icon: Icons.group,
                         value: '${circulo['total_miembros'] ?? 0}',
-                        label: 'Miembros',
+                        label: i18n.circulosCuidadosStatMembers,
                       ),
                       _buildStatColumn(
                         icon: Icons.event,
                         value: '${circulo['total_reuniones'] ?? 0}',
-                        label: 'Reuniones',
+                        label: i18n.circulosCuidadosStatMeetings,
                       ),
                       _buildStatColumn(
                         icon: Icons.volunteer_activism,
                         value: '${circulo['ayudas_prestadas'] ?? 0}',
-                        label: 'Ayudas',
+                        label: i18n.circulosCuidadosStatHelp,
                       ),
                     ],
                   ),
@@ -270,16 +277,16 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
               ),
               const SizedBox(height: 20),
               if ((circulo['proxima_reunion'] ?? '').isNotEmpty) ...[
-                const Text(
-                  'Proxima reunion',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Text(
+                  i18n.circulosCuidadosNextMeeting,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.event, color: Colors.pink.shade400),
                     title: Text(circulo['proxima_reunion']),
-                    subtitle: Text(circulo['lugar_reunion'] ?? 'Lugar por definir'),
+                    subtitle: Text(circulo['lugar_reunion'] ?? i18n.circulosCuidadosMeetingPlaceTbd),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -293,7 +300,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                         _abrirChatCirculo(circulo);
                       },
                       icon: const Icon(Icons.chat),
-                      label: const Text('Chat'),
+                      label: Text(i18n.circulosCuidadosChat),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -304,7 +311,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                         _ofrecerAyuda(circulo);
                       },
                       icon: const Icon(Icons.volunteer_activism),
-                      label: const Text('Ofrecer ayuda'),
+                      label: Text(i18n.circulosCuidadosOfferHelp),
                     ),
                   ),
                 ],
@@ -318,7 +325,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
 
   void _abrirChatCirculo(Map<String, dynamic> circulo) {
     final circuloId = circulo['id'];
-    final nombre = circulo['nombre'] ?? 'Chat del circulo';
+    final nombre = circulo['nombre'] ?? AppLocalizations.of(context).circulosCuidadosChatDefaultTitle;
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -331,16 +338,17 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
   }
 
   void _ofrecerAyuda(Map<String, dynamic> circulo) {
+    final i18n = AppLocalizations.of(context);
     final descripcionController = TextEditingController();
     String tipoAyuda = 'general';
 
     final tiposAyuda = [
-      {'id': 'general', 'nombre': 'Ayuda general'},
-      {'id': 'cuidado_ninos', 'nombre': 'Cuidado de ninos'},
-      {'id': 'cuidado_mayores', 'nombre': 'Cuidado de mayores'},
-      {'id': 'compras', 'nombre': 'Compras y recados'},
-      {'id': 'transporte', 'nombre': 'Transporte'},
-      {'id': 'compania', 'nombre': 'Compania'},
+      {'id': 'general', 'nombre': i18n.circulosCuidadosHelpTypeGeneral},
+      {'id': 'cuidado_ninos', 'nombre': i18n.circulosCuidadosHelpTypeNinos},
+      {'id': 'cuidado_mayores', 'nombre': i18n.circulosCuidadosHelpTypeMayores},
+      {'id': 'compras', 'nombre': i18n.circulosCuidadosHelpTypeCompras},
+      {'id': 'transporte', 'nombre': i18n.circulosCuidadosHelpTypeTransporte},
+      {'id': 'compania', 'nombre': i18n.circulosCuidadosHelpTypeCompania},
     ];
 
     showModalBottomSheet(
@@ -366,9 +374,9 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                   children: [
                     Icon(Icons.volunteer_activism, color: Colors.pink.shade400),
                     const SizedBox(width: 12),
-                    const Text(
-                      'Ofrecer Ayuda',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Text(
+                      i18n.circulosCuidadosOfferHelpTitle,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     IconButton(
@@ -379,16 +387,16 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Circulo: ${circulo['nombre']}',
+                  i18n.circulosCuidadosOfferCircleLabel(circulo['nombre']?.toString() ?? ''),
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   value: tipoAyuda,
-                  decoration: const InputDecoration(
-                    labelText: 'Tipo de ayuda',
-                    prefixIcon: Icon(Icons.category),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: i18n.circulosCuidadosHelpTypeLabel,
+                    prefixIcon: const Icon(Icons.category),
+                    border: const OutlineInputBorder(),
                   ),
                   items: tiposAyuda.map((tipo) {
                     return DropdownMenuItem<String>(
@@ -405,11 +413,11 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: descripcionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripcion de tu oferta',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                    hintText: 'Describe como puedes ayudar...',
+                  decoration: InputDecoration(
+                    labelText: i18n.circulosCuidadosOfferDescriptionLabel,
+                    prefixIcon: const Icon(Icons.description),
+                    border: const OutlineInputBorder(),
+                    hintText: i18n.circulosCuidadosOfferDescriptionHint,
                   ),
                   maxLines: 3,
                 ),
@@ -419,7 +427,8 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                   child: FilledButton.icon(
                     onPressed: () async {
                       if (descripcionController.text.trim().isEmpty) {
-                        FlavorSnackbar.showError(context, 'Describe tu oferta de ayuda');
+                        FlavorSnackbar.showError(
+                            context, i18n.circulosCuidadosOfferDescriptionRequired);
                         return;
                       }
                       Navigator.pop(context);
@@ -430,7 +439,7 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
                       );
                     },
                     icon: const Icon(Icons.send),
-                    label: const Text('Enviar oferta'),
+                    label: Text(i18n.circulosCuidadosOfferSend),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -457,14 +466,15 @@ extension _CirculosCuidadosScreenParts on _CirculosCuidadosScreenState {
 
       if (response.success) {
         if (mounted) {
-          FlavorSnackbar.showSuccess(context, 'Oferta de ayuda enviada correctamente');
+          FlavorSnackbar.showSuccess(
+              context, AppLocalizations.of(context).circulosCuidadosOfferSent);
         }
       } else {
         throw Exception(response.error ?? 'Error al enviar');
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, AppLocalizations.of(context).commonError(e.toString()));
       }
     }
   }
@@ -561,7 +571,7 @@ class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
       }
     } catch (e) {
       if (mounted) {
-        FlavorSnackbar.showError(context, 'Error: $e');
+        FlavorSnackbar.showError(context, AppLocalizations.of(context).commonError(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -572,6 +582,7 @@ class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.nombreCirculo),
@@ -588,10 +599,10 @@ class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
             child: _cargando
                 ? const FlavorLoadingState()
                 : _mensajes.isEmpty
-                    ? const FlavorEmptyState(
+                    ? FlavorEmptyState(
                         icon: Icons.chat_bubble_outline,
-                        title: 'No hay mensajes aun',
-                        message: 'Se el primero en escribir',
+                        title: i18n.circulosCuidadosChatEmptyTitle,
+                        message: i18n.circulosCuidadosChatEmptyMessage,
                       )
                     : RefreshIndicator(
                         onRefresh: _cargarMensajes,
@@ -602,7 +613,7 @@ class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
                           itemBuilder: (context, index) {
                             final mensaje = _mensajes[index];
                             final texto = mensaje['mensaje'] ?? '';
-                            final autor = mensaje['autor'] ?? 'Usuario';
+                            final autor = mensaje['autor'] ?? i18n.circulosCuidadosChatDefaultAuthor;
                             final fecha = mensaje['fecha'] ?? '';
                             final esMio = mensaje['es_mio'] == true;
 
@@ -664,10 +675,10 @@ class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
                   Expanded(
                     child: TextField(
                       controller: _mensajeController,
-                      decoration: const InputDecoration(
-                        hintText: 'Escribe un mensaje...',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
+                      decoration: InputDecoration(
+                        hintText: i18n.circulosCuidadosChatInputHint,
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 12,
                         ),

@@ -16,24 +16,27 @@ if (!current_user_can('manage_options')) {
     wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
-// Obtener estadísticas del mes actual
+// Obtener estadísticas del mes actual.
+// Esquema real: tabla flavor_ad_stats (ad_id, date, impressions, clicks, revenue),
+// tabla flavor_ad_transactions (ad_id, amount, status) y los anuncios son posts del
+// CPT flavor_ad (no existe ninguna tabla flavor_advertising_*).
 global $wpdb;
-$tabla_estadisticas = $wpdb->prefix . 'flavor_advertising_stats';
-$tabla_anuncios = $wpdb->prefix . 'flavor_advertising_ads';
+$tabla_estadisticas = $wpdb->prefix . 'flavor_ad_stats';
+$tabla_transacciones = $wpdb->prefix . 'flavor_ad_transactions';
 
-$fecha_inicio_mes = date('Y-m-01 00:00:00');
-$fecha_actual = current_time('mysql');
+$fecha_inicio_mes = date('Y-m-01');
+$fecha_fin_mes = date('Y-m-t');
 
-// Consultar estadísticas
+// Consultar estadísticas del mes
 $estadisticas_mes = $wpdb->get_row($wpdb->prepare(
     "SELECT
-        SUM(impresiones) as total_impresiones,
+        SUM(impressions) as total_impresiones,
         SUM(clicks) as total_clicks,
-        SUM(ingresos) as total_ingresos
+        SUM(revenue) as total_ingresos
     FROM {$tabla_estadisticas}
-    WHERE fecha >= %s AND fecha <= %s",
+    WHERE date >= %s AND date <= %s",
     $fecha_inicio_mes,
-    $fecha_actual
+    $fecha_fin_mes
 ));
 
 $total_impresiones = $estadisticas_mes->total_impresiones ?? 0;
@@ -43,50 +46,57 @@ $ctr_promedio = $total_impresiones > 0 ? ($total_clicks / $total_impresiones) * 
 
 // Obtener ingresos pendientes de pago
 $ingresos_pendientes = $wpdb->get_var(
-    "SELECT SUM(monto) FROM {$wpdb->prefix}flavor_advertising_payments WHERE estado = 'pending'"
+    "SELECT SUM(amount) FROM {$tabla_transacciones} WHERE status = 'pending'"
 ) ?? 0;
 
-// Anuncios activos vs pausados
-$anuncios_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE estado = 'activo'");
-$anuncios_pausados = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE estado = 'pausado'");
+// Anuncios activos (publicados) vs pausados (borrador/pendiente) sobre el CPT flavor_ad
+$conteo_anuncios = wp_count_posts('flavor_ad');
+$anuncios_activos = (int) ($conteo_anuncios->publish ?? 0);
+$anuncios_pausados = (int) (($conteo_anuncios->draft ?? 0) + ($conteo_anuncios->pending ?? 0));
 
-// Top 5 anuncios por rendimiento
-$top_anuncios = $wpdb->get_results(
+// Top 5 anuncios por rendimiento (el nombre se resuelve desde el post)
+$filas_top_anuncios = $wpdb->get_results($wpdb->prepare(
     "SELECT
-        a.id,
-        a.nombre,
-        SUM(s.impresiones) as impresiones,
-        SUM(s.clicks) as clicks,
-        SUM(s.ingresos) as ingresos,
+        ad_id,
+        SUM(impressions) as impresiones,
+        SUM(clicks) as clicks,
+        SUM(revenue) as ingresos,
         CASE
-            WHEN SUM(s.impresiones) > 0 THEN (SUM(s.clicks) / SUM(s.impresiones)) * 100
+            WHEN SUM(impressions) > 0 THEN (SUM(clicks) / SUM(impressions)) * 100
             ELSE 0
         END as ctr
-    FROM {$tabla_anuncios} a
-    LEFT JOIN {$tabla_estadisticas} s ON a.id = s.anuncio_id
-    WHERE s.fecha >= '{$fecha_inicio_mes}'
-    GROUP BY a.id
+    FROM {$tabla_estadisticas}
+    WHERE date >= %s
+    GROUP BY ad_id
     ORDER BY ingresos DESC
-    LIMIT 5"
-);
+    LIMIT 5",
+    $fecha_inicio_mes
+));
+
+$top_anuncios = [];
+foreach ((array) $filas_top_anuncios as $fila) {
+    $titulo = get_the_title($fila->ad_id);
+    $fila->nombre = $titulo !== '' ? $titulo : sprintf(__('Anuncio #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $fila->ad_id);
+    $top_anuncios[] = $fila;
+}
 
 // Datos para gráfica (últimos 30 días)
 $datos_grafica = $wpdb->get_results(
     "SELECT
-        DATE(fecha) as fecha,
-        SUM(impresiones) as impresiones,
+        date as fecha,
+        SUM(impressions) as impresiones,
         SUM(clicks) as clicks
     FROM {$tabla_estadisticas}
-    WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-    GROUP BY DATE(fecha)
-    ORDER BY fecha ASC"
+    WHERE date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+    GROUP BY date
+    ORDER BY date ASC"
 );
 
 $fechas_grafica = [];
 $impresiones_grafica = [];
 $clicks_grafica = [];
 
-foreach ($datos_grafica as $dato) {
+foreach ((array) $datos_grafica as $dato) {
     $fechas_grafica[] = date('d/m', strtotime($dato->fecha));
     $impresiones_grafica[] = (int) $dato->impresiones;
     $clicks_grafica[] = (int) $dato->clicks;

@@ -423,7 +423,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
 
         $solicitud_id = wp_insert_post([
             'post_type' => 'ed_solicitud',
-            'post_title' => sprintf(__('Solicitud de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_userdata($user_id)->display_name),
+            'post_title' => sprintf(__('Solicitud de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), Flavor_Platform_Helpers::nombre_usuario($user_id)),
             'post_status' => 'publish',
             'post_author' => $user_id,
         ], true);
@@ -937,7 +937,7 @@ class Flavor_Platform_Economia_Don_Module extends Flavor_Platform_Module_Base {
             'post_type' => 'ed_solicitud',
             'post_title' => sprintf(
                 __('Solicitud de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
-                get_userdata($user_id)->display_name
+                Flavor_Platform_Helpers::nombre_usuario($user_id)
             ),
             'post_status' => 'publish',
             'post_author' => $user_id,

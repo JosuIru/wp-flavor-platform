@@ -445,7 +445,7 @@ class Flavor_Demo_Data_Admin {
         }
 
         // Guardar log
-        update_option('flavor_demo_data_log', $results);
+        update_option('flavor_demo_data_log', $results, false);
 
         Flavor_Platform_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&generated=1'));
         exit;

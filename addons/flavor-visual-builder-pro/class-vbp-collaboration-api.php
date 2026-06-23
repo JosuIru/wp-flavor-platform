@@ -120,10 +120,25 @@ class Flavor_VBP_Collaboration_API {
     }
 
     /**
-     * Verificar permisos de comentario
+     * Verificar permisos de comentario.
+     *
+     * Los comentarios de colaboración son una función de edición de documentos, así que
+     * exigen capacidad de edición de contenido (no basta con 'read' de cualquier suscriptor).
+     * El control a nivel de objeto (edit_post sobre el documento concreto) se aplica además
+     * dentro de cada handler, ya que el post_id no siempre está disponible aquí.
      */
     public function check_comment_permission( $request ) {
-        return current_user_can( 'read' );
+        return current_user_can( 'edit_posts' );
+    }
+
+    /**
+     * Comprueba que el usuario actual pueda editar el documento indicado.
+     *
+     * @param int $post_id ID del documento VBP.
+     * @return bool
+     */
+    private function puede_editar_documento( $post_id ) {
+        return $post_id && current_user_can( 'edit_post', $post_id );
     }
 
     // ============ PRESENCIA ============
@@ -302,6 +317,10 @@ class Flavor_VBP_Collaboration_API {
             ) );
         }
 
+        if ( ! $this->puede_editar_documento( $post_id ) ) {
+            return new WP_Error( 'forbidden', 'No tienes permiso para comentar en este documento', array( 'status' => 403 ) );
+        }
+
         $comments = get_post_meta( $post_id, '_vbp_comments', true );
         if ( ! is_array( $comments ) ) {
             $comments = array();
@@ -358,6 +377,10 @@ class Flavor_VBP_Collaboration_API {
                 'success' => false,
                 'message' => 'Comentario no encontrado',
             ) );
+        }
+
+        if ( ! $this->puede_editar_documento( $post_id ) ) {
+            return new WP_Error( 'forbidden', 'No tienes permiso para comentar en este documento', array( 'status' => 403 ) );
         }
 
         $comments = get_post_meta( $post_id, '_vbp_comments', true );
@@ -418,6 +441,10 @@ class Flavor_VBP_Collaboration_API {
                 'success' => false,
                 'message' => 'Comentario no encontrado',
             ) );
+        }
+
+        if ( ! $this->puede_editar_documento( $post_id ) ) {
+            return new WP_Error( 'forbidden', 'No tienes permiso para modificar este documento', array( 'status' => 403 ) );
         }
 
         $comments = get_post_meta( $post_id, '_vbp_comments', true );

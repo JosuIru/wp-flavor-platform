@@ -332,6 +332,8 @@ $stats = [
 <script>
 jQuery(document).ready(function($) {
 
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
     // Ver detalle
     $('.ver-detalle').click(function(e) {
         e.preventDefault();
@@ -352,14 +354,14 @@ jQuery(document).ready(function($) {
                 if (response.success && response.data) {
                     var d = response.data;
                     var html = '<table class="form-table">';
-                    html += '<tr><th>Servicio:</th><td>' + (d.servicio_nombre || '-') + '</td></tr>';
-                    html += '<tr><th>Ofertante:</th><td>' + (d.ofertante || '-') + '</td></tr>';
-                    html += '<tr><th>Solicitante:</th><td>' + (d.solicitante || '-') + '</td></tr>';
-                    html += '<tr><th>Horas:</th><td>' + (d.horas || '0') + ' h</td></tr>';
-                    html += '<tr><th>Estado:</th><td>' + (d.estado || '-') + '</td></tr>';
-                    html += '<tr><th>Fecha:</th><td>' + (d.fecha || '-') + '</td></tr>';
+                    html += '<tr><th>Servicio:</th><td>' + escHtml(d.servicio_nombre || '-') + '</td></tr>';
+                    html += '<tr><th>Ofertante:</th><td>' + escHtml(d.ofertante || '-') + '</td></tr>';
+                    html += '<tr><th>Solicitante:</th><td>' + escHtml(d.solicitante || '-') + '</td></tr>';
+                    html += '<tr><th>Horas:</th><td>' + escHtml(d.horas || '0') + ' h</td></tr>';
+                    html += '<tr><th>Estado:</th><td>' + escHtml(d.estado || '-') + '</td></tr>';
+                    html += '<tr><th>Fecha:</th><td>' + escHtml(d.fecha || '-') + '</td></tr>';
                     if (d.notas) {
-                        html += '<tr><th>Notas:</th><td>' + d.notas + '</td></tr>';
+                        html += '<tr><th>Notas:</th><td>' + escHtml(d.notas) + '</td></tr>';
                     }
                     html += '</table>';
                     $contenido.html(html);

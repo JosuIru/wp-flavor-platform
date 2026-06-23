@@ -204,6 +204,8 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
 (function($) {
     'use strict';
 
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
     var $form = $('#gc-checkout-form');
     var $gatewayFields = $('#gc-gateway-fields');
     var $btnPay = $('#gc-btn-pay');
@@ -228,7 +230,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 if (response.success) {
                     $gatewayFields.html(response.data.html);
                 } else {
-                    $gatewayFields.html('<p class="gc-error">' + response.data.message + '</p>');
+                    $gatewayFields.html('<p class="gc-error">' + escHtml(response.data.message) + '</p>');
                 }
             },
             error: function() {

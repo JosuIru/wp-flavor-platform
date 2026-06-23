@@ -380,15 +380,19 @@ class Flavor_Mesh_Migration {
      * @return string
      */
     private static function get_encryption_key() {
-        $key = get_option('flavor_mesh_encryption_key');
+        // Debe ser la MISMA clave maestra que Flavor_Network_Mesh_Installer usa en
+        // encrypt_private_key()/decrypt_private_key(): opción 'flavor_mesh_master_key'
+        // (32 bytes en base64). Antes esta migración usaba 'flavor_mesh_encryption_key',
+        // de modo que las claves privadas que cifraba no se podían descifrar luego al
+        // firmar gossip (la firma salía vacía en silencio).
+        $master_key = get_option('flavor_mesh_master_key');
 
-        if (!$key) {
-            $key = sodium_crypto_secretbox_keygen();
-            update_option('flavor_mesh_encryption_key', base64_encode($key), false);
-            return $key;
+        if (!$master_key) {
+            $master_key = base64_encode(random_bytes(32));
+            update_option('flavor_mesh_master_key', $master_key, false);
         }
 
-        return base64_decode($key);
+        return base64_decode($master_key);
     }
 
     /**

@@ -88,15 +88,17 @@ $composteras = $wpdb->get_results("SELECT * FROM $tabla_composteras ORDER BY nom
 
 <script>
 jQuery(document).ready(function($) {
+    function escHtml(valor){return String(valor==null?'':valor).replace(/[&<>"']/g,function(caracter){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[caracter];});}
+
     const composterasData = <?php echo json_encode($composteras); ?>;
-    
+
     // Inicializar mapa
     const map = L.map('mapa-composteras').setView([43.3183, -1.9812], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     composterasData.forEach(compostera => {
         const marker = L.marker([compostera.latitud, compostera.longitud]).addTo(map);
-        marker.bindPopup(`<strong>${compostera.nombre}</strong><br>Nivel: ${compostera.nivel_llenado}%`);
+        marker.bindPopup(`<strong>${escHtml(compostera.nombre)}</strong><br>Nivel: ${escHtml(compostera.nivel_llenado)}%`);
     });
 
     $('.ver-en-mapa').on('click', function() {

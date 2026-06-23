@@ -145,7 +145,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
 
                 $donante_nombre = $anonimo
                     ? __('Donante anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)
-                    : get_userdata($donante_id)->display_name;
+                    : Flavor_Platform_Helpers::nombre_usuario($donante_id);
             ?>
             <article class="ed-don-card" style="--don-color: <?php echo esc_attr($cat_data['color']); ?>">
                 <div class="ed-don-card__imagen">
