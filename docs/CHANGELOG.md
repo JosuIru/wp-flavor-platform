@@ -9,7 +9,44 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Pendiente
+- Sistema de plugins de terceros para VBP
+- Exportacion a Figma nativa
+- Modo presentacion para clientes
+
+---
+
+## [3.6.0] - 2026-06-23
+
+### Seguridad
+- **XSS en popups de mapas Leaflet**: escape de datos en el renderizador generico y en 10 modulos con mapa propio que concatenaban datos de BD en `innerHTML`.
+- **Barrido `innerHTML`/`.html()`**: ~30 vistas y controllers de modulo escapados con helper `escHtml`; URLs validadas a `http(s)`; corregido el escape falso recurrente `esc_attr__('${var}')`.
+- **XSS en modal "Ver aviso"** de avisos municipales: datos escapados.
+- **Escalada de privilegios, IDOR y CRUD de webhooks** en el core; IDOR en el listado de pedidos del modulo restaurant; endpoints REST abiertos y export CSV sin proteger cerrados.
+- **Mesh/federacion**: anti-spoofing de peers, firma de webhook y credencial real de federacion.
+
+### Corregido
+- **`flavorAjax` indefinido**: se define `window.flavorAjax` global en frontend; los formularios de modulo volvian a romperse al enviar.
+- **URLs de navegacion con 404**: modulos y perfiles enrutados por `/mi-portal/` via `get_action_url()`; corregido el `<title>` generico de la ruta canonica.
+- **Crash del drawer admin (Flutter)**: ya no selecciona tabs fuera del `IndexedStack` (RangeError en el 5º tab); captura generica en `api_client` y guards `mounted`.
+- **FutureBuilders sin estado de error (Flutter)**: ramas `hasError` + reintento en pantallas que quedaban en spinner infinito.
+- **Canvas iframe VBP**: persiste (`saveDocument({force:true})`) antes de recargar; el cambio estructural ya no se revierte.
+- **Paginas admin huerfanas**: `Configuracion`, `Menu App` y `Visual Builder Pro` reparentadas al top-level real.
+- **Feeds AJAX de calendario y mapa universales**: `flavor_get_calendar_events` / `flavor_get_map_markers` no tenian handler; implementados con nonce + delegacion al modulo.
+- **Endpoints REST fatales y pagina Analytics en blanco**: corregidos.
+- **Nombres AJAX JS<->PHP desalineados** en chat-interno, parkings, economia-don y reciclaje.
+- **Cron duplicado, contadores CRDT y hook huerfano** en network/multilingual.
+- **PHP 8.2**: accesos seguros (`display_name`, `REQUEST_URI`, `get_results`); CI subido a minimo 8.2.
+- **CSS**: regla dark de `.flavor-card` mal formada; dark mode consolidado (claro por defecto, dark explicito coherente).
+
 ### Anadido
+- **Modulo Ahorro Rotativo** (juntas/tandas) con su dashboard.
+- **Render real para bloques VBP de formulario y dinamicos** (antes placeholder).
+- **Handlers AJAX reales** para reciclaje (4), circulos de cuidados (`obtener_mapa`/`salir`), economia-don (confirmar/cancelar) y advertising (`ver_estadisticas`/`listar_anuncios`); cableado del JS de las 3 paginas de herramientas IA.
+- **Alias `flavor_` canonico** para todos los shortcodes + chrome admin; deteccion del shortcode universal `[flavor]` para encolar assets.
+- **i18n app**: strings hardcodeados localizados en 6 pantallas + circulos de cuidados; `app_eu.arb` sincronizado.
+
+### Anadido (VBP editorial)
 - **Preset `editorial` como preset global del editor** (`class-vbp-design-presets`), antes solo existia en la API de Claude. Ahora sus tokens de color, fuentes (Playfair + Baskerville + IBM Plex Mono) y radius 0 aplican tambien a bloques genericos cuando se selecciona desde el picker del editor.
 - **6 bloques editoriales nuevos** para replicar landings tipo periodico 1:1 sin HTML raw:
   - `masthead_editorial`: cabecera con tagline + badge y doble rule inferior.
@@ -24,11 +61,6 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 ### Cambios internos
 - `render_feature_numbered` delega los iconos a `render_editorial_icon()` (antes los escapaba con `esc_html` plano). Ahora detecta FA (`fa-*`), SVG inline, slug Material Icons o emoji/unicode y pinta el tag correcto, igual que `render_features`.
 - Nuevo helper `render_editorial_button()` compartido entre `cta_strip` y `hosting_dark` para evitar duplicar el HTML de botones editoriales.
-
-### Pendiente
-- Sistema de plugins de terceros para VBP
-- Exportacion a Figma nativa
-- Modo presentacion para clientes
 
 ---
 
